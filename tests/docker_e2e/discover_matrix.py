@@ -8,10 +8,12 @@ Inputs (env):
   HEAD_SHA      : head SHA (optional; defaults to HEAD).
 
 Outputs (GITHUB_OUTPUT):
-  build_matrix  : JSON object {include: [...]}
-  flow_matrix   : JSON object {include: [...]}
-  full_run      : "true" or "false"
-  reason        : short human-readable reason.
+  build_matrix    : JSON object {include: [...]} (full, legacy/debug)
+  flow_matrix     : JSON object {include: [...]} (full, legacy/debug)
+  build_matrix_<n>: JSON object {include: [...]} per shard (0..SHARD_COUNT-1)
+  flow_matrix_<n> : JSON object {include: [...]} per shard (0..SHARD_COUNT-1)
+  full_run        : "true" or "false"
+  reason          : short human-readable reason.
 
 Logic:
   - If event is workflow_dispatch/schedule, or any changed file matches an
@@ -37,6 +39,17 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 MATRIX_PATH = ROOT / "tests" / "docker_e2e" / "matrix.json"
+
+# GitHub Actions hard-limits a single matrix to 256 jobs. The full feeder
+# matrix (build + flow) has outgrown that, so on a force_full run the matrix
+# can no longer instantiate as one strategy. We therefore split each section
+# into a fixed number of shards and emit one matrix output per shard
+# (build_matrix_0..N-1 / flow_matrix_0..N-1); the workflow fans these out to
+# parallel reusable-workflow calls. Entries fill shards sequentially up to
+# SHARD_CAP so that scoped (few-feeder) runs stay compact in shard 0 and only
+# spill into later shards when the full matrix runs.
+SHARD_COUNT = 4
+SHARD_CAP = 250  # < 256 GitHub limit, leaves headroom inside each shard
 
 # Anything under these paths invalidates per-feeder scoping and forces full
 # run UNLESS the change is purely additive (handled per-file below).
@@ -276,6 +289,26 @@ def _load_changed_files() -> list[str]:
     return [line.strip() for line in raw.splitlines() if line.strip()]
 
 
+def shard_entries(entries: list) -> list[list]:
+    """Split entries into SHARD_COUNT shards, filling sequentially up to
+    SHARD_CAP per shard so scoped runs stay in shard 0. Raises if the total
+    exceeds the total capacity (SHARD_COUNT * SHARD_CAP), which signals that
+    SHARD_COUNT must be increased (and matching jobs added to the workflow)."""
+    shards: list[list] = [[] for _ in range(SHARD_COUNT)]
+    for i, entry in enumerate(entries):
+        idx = i // SHARD_CAP
+        if idx >= SHARD_COUNT:
+            raise SystemExit(
+                f"[discover] matrix section has {len(entries)} entries, "
+                f"exceeding capacity {SHARD_COUNT * SHARD_CAP} "
+                f"(SHARD_COUNT={SHARD_COUNT} x SHARD_CAP={SHARD_CAP}). "
+                f"Increase SHARD_COUNT and add matching shard jobs to "
+                f"test-docker-e2e.yml."
+            )
+        shards[idx].append(entry)
+    return shards
+
+
 def main() -> int:
     matrix = json.loads(MATRIX_PATH.read_text())
     event = os.environ.get("EVENT_NAME", "")
@@ -334,8 +367,14 @@ def main() -> int:
 
     emit("full_run", "true" if force_full else "false")
     emit("reason", reason)
+    # Legacy single-matrix outputs (kept for debugging / external consumers).
     emit("build_matrix", json.dumps({"include": build}))
     emit("flow_matrix", json.dumps({"include": flow}))
+    # Sharded outputs consumed by the workflow (build_matrix_<n> / flow_matrix_<n>).
+    for n, chunk in enumerate(shard_entries(build)):
+        emit(f"build_matrix_{n}", json.dumps({"include": chunk}))
+    for n, chunk in enumerate(shard_entries(flow)):
+        emit(f"flow_matrix_{n}", json.dumps({"include": chunk}))
 
     print(f"[discover] full_run={force_full} reason={reason}", file=sys.stderr)
     print(

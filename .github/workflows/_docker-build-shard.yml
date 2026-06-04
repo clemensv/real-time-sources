@@ -1,0 +1,36 @@
+name: _docker-build-shard
+
+# Reusable workflow: builds + import-checks one shard of the Docker E2E build
+# matrix. Called once per shard by test-docker-e2e.yml so the combined matrix
+# can exceed GitHub Actions' 256-job-per-matrix limit. An empty shard (the
+# `{include: []}` shape) skips via the job-level `if` guard.
+
+on:
+  workflow_call:
+    inputs:
+      matrix:
+        description: JSON matrix ({include:[...]}) for this build shard.
+        required: true
+        type: string
+
+jobs:
+  build:
+    name: Docker Build & Import
+    if: ${{ inputs.matrix != '' && fromJson(inputs.matrix).include[0] != null }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix: ${{ fromJson(inputs.matrix) }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Build Docker image
+        run: |
+          docker build -t test-${{ matrix.image || matrix.module }} -f ./${{ matrix.dir }}/${{ matrix.file || 'Dockerfile' }} ./${{ matrix.dir }}
+
+      - name: Verify module imports
+        run: |
+          docker run --rm test-${{ matrix.image || matrix.module }} \
+            python -c "import ${{ matrix.module }}; print('OK')"
