@@ -4617,13 +4617,19 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
         observed_by_type.setdefault(ce_type, []).append(sample)
         observed_by_topic_leaf.setdefault((contract['topic'].rsplit('/', 1)[-1], contract['retain']), []).append(sample)
 
-    for contract in contracts.values():
+    for ce_type, contract in contracts.items():
         key = (contract['topic'].rsplit('/', 1)[-1], contract['retain'])
         if project_dir == 'usgs-iv' and key in {('info', True), ('timeseries', True), ('observation', True)}:
             continue
         # digitraffic-maritime: stream mode emits AIS location only (metadata arrives every 6 min — skipped with ONCE_MODE);
         # port-call families are tested via the Kafka E2E test
         if project_dir == 'digitraffic-maritime' and key in {('metadata', True), ('port-call', False), ('vessel-details', True), ('port-location', True)}:
+            continue
+        leaf = contract['topic'].rsplit('/', 1)[-1]
+        if '{' in leaf and '}' in leaf:
+            assert ce_type in observed_by_type, f"No MQTT message observed for contract {ce_type} ({contract['topic']})"
+            if contract['retain']:
+                assert any(m['retain'] for m in observed_by_type[ce_type]), f"No retained message observed for {contract['topic']}"
             continue
         assert key in observed_by_topic_leaf, f"No MQTT message observed for topic leaf/retain contract {key} ({contract['topic']})"
         if contract['retain']:
@@ -4701,6 +4707,11 @@ def usgs_earthquakes_mqtt_image():
     return build_image('usgs-earthquakes', dockerfile='Dockerfile.mqtt', tag='test-usgs-earthquakes-mqtt')
 
 
+@pytest.fixture(scope='module')
+def fdsn_seismology_mqtt_image():
+    return build_image('fdsn-seismology', dockerfile='Dockerfile.mqtt', tag='test-fdsn-seismology-mqtt')
+
+
 @pytest.fixture()
 def mosquitto_usgs_earthquakes():
     container, network, host_port = _generic_mosquitto('usgs-earthquakes-mqtt-e2e', 'usgs-earthquakes-mqtt-e2e-broker')
@@ -4716,6 +4727,23 @@ def mosquitto_usgs_earthquakes():
 class TestUSGSEarthquakesMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_usgs_earthquakes, usgs_earthquakes_mqtt_image):
         _run_mqtt_contract_flow('usgs-earthquakes', usgs_earthquakes_mqtt_image, mosquitto_usgs_earthquakes, timeout=420)
+
+
+@pytest.fixture()
+def mosquitto_fdsn_seismology():
+    container, network, host_port = _generic_mosquitto('fdsn-seismology-mqtt-e2e', 'fdsn-seismology-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'fdsn-seismology-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestFdsnSeismologyMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_fdsn_seismology, fdsn_seismology_mqtt_image):
+        _run_mqtt_contract_flow('fdsn-seismology', fdsn_seismology_mqtt_image, mosquitto_fdsn_seismology, timeout=420)
 
 
 @pytest.fixture(scope='module')

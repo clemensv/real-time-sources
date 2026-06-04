@@ -400,6 +400,14 @@ class TestUSGSEarthquakesAmqpDockerFlow(AmqpDockerFlowBase):
     expected_count = 1
 
 
+class TestFdsnSeismologyAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "fdsn-seismology"
+    image = "fdsn-seismology-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'org.fdsn.event.Node', 'org.fdsn.event.Earthquake'}
+    expected_count = 2
+
+
 class TestUSGSGeomagAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "usgs-geomag"
     image = "usgs-geomag-amqp"

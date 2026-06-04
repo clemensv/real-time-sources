@@ -337,6 +337,7 @@ HYDRO_AMQP_SOURCES = [
     ("rws-waterwebservices", "test-rws-waterwebservices-amqp", "NL.RWS.Waterwebservices.Station", "NL.RWS.Waterwebservices.WaterLevelObservation"),
     ("smhi-hydro", "test-smhi-hydro-amqp", "SE.Gov.SMHI.Hydro.Station", "SE.Gov.SMHI.Hydro.DischargeObservation"),
     ("wallonia-issep", "test-wallonia-issep-amqp", "be.issep.airquality.SensorConfiguration", "be.issep.airquality.Observation"),
+    ("fdsn-seismology", "test-fdsn-seismology-amqp", "org.fdsn.event.Node", "org.fdsn.event.Earthquake"),
 ]
 
 
@@ -420,7 +421,8 @@ def _run_generic_amqp_sb_flow(source_dir: str, image_tag: str, station_type: str
             assert result.get("StatusCode") == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs[-4000:]}"
         finally:
             feeder.remove(force=True)
-        messages = _receive_via_sdk(host_port, queue, SAS_KEY_NAME, SAS_KEY_VALUE, expected=2, timeout=30)
+        expected_messages = 16 if source_dir == "fdsn-seismology" else 2
+        messages = _receive_via_sdk(host_port, queue, SAS_KEY_NAME, SAS_KEY_VALUE, expected=expected_messages, timeout=60)
         assert messages, "No AMQP messages received from SB emulator"
         by_type: Dict[str, List[Any]] = {}
         for message in messages:
@@ -494,4 +496,9 @@ class TestSmhiHydroAmqpSbEmulatorFlow:
 class TestWalloniaIssepAmqpSbEmulatorFlow:
     def test_emits_cloudevents_to_sb_emulator_queue(self):
         _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[6])
+
+@pytest.mark.docker_e2e
+class TestFdsnSeismologyAmqpSbEmulatorFlow:
+    def test_emits_cloudevents_to_sb_emulator_queue(self):
+        _run_generic_amqp_sb_flow(*HYDRO_AMQP_SOURCES[7])
 

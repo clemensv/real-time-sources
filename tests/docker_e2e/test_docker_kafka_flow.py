@@ -93,6 +93,10 @@ def usgs_earthquakes_image():
     return build_image('usgs-earthquakes')
 
 @pytest.fixture(scope='module')
+def fdsn_seismology_image():
+    return build_image('fdsn-seismology')
+
+@pytest.fixture(scope='module')
 def nasa_firms_image():
     return build_image('nasa-firms')
 
@@ -942,6 +946,18 @@ class TestUSGSEarthquakesDockerFlow:
             reference_types=None,
             telemetry_types=['Earthquakes.Event'],
             min_messages=1,
+        )
+
+
+class TestFdsnSeismologyDockerFlow:
+    TOPIC = 'test-fdsn-seismology'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, fdsn_seismology_image):
+        _run_kafka_flow_test(
+            kafka, fdsn_seismology_image, self.TOPIC,
+            reference_types=['Node'],
+            telemetry_types=['Earthquake'],
+            timeout=420,
         )
 
 
