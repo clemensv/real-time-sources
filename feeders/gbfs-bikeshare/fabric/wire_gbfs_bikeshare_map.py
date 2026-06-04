@@ -98,7 +98,8 @@ def _kql_query(session: requests.Session, kusto_uri: str, db: str, csl: str) -> 
 GBFS_FUNCTIONS = [
     """
 .create-or-alter function with (folder = "Map", skipvalidation = "true") gbfs_station_availability() {
-    StationInformationLatest
+    StationInformation
+    | summarize arg_max(___time, *) by system_id, station_id
     | where isnotnull(lat) and isnotnull(lon)
     | where lat between (-89.999 .. 89.999)
     | where lon between (-179.999 .. 179.999)
@@ -112,7 +113,8 @@ GBFS_FUNCTIONS = [
         capacity = toint(capacity),
         address
     | join kind = leftouter (
-        StationStatusLatest
+        StationStatus
+        | summarize arg_max(___time, *) by system_id, station_id
         | project
             system_id,
             station_id,
@@ -127,8 +129,13 @@ GBFS_FUNCTIONS = [
     ) on system_id, station_id
     | extend
         bikes_available = toint(coalesce(num_bikes_available, 0)),
-        docks_available = toint(coalesce(num_docks_available, 0)),
+        docks_available = toint(coalesce(num_docks_available, 0))
+    | extend
         fill_ratio = iff(isnotnull(capacity) and capacity > 0, todouble(bikes_available) / todouble(capacity), real(null)),
+        availability_label = strcat(tostring(bikes_available), " bikes / ", tostring(docks_available), " docks"),
+        last_reported_utc = iff(isnull(last_reported), "", strcat(format_datetime(unixtime_seconds_todatetime(tolong(last_reported)), "yyyy-MM-dd HH:mm:ss"), "Z")),
+        geometry = bag_pack("type", "Point", "coordinates", pack_array(lon, lat))
+    | extend
         fill_percent = iff(isnull(fill_ratio), real(null), round(fill_ratio * 100.0, 1)),
         fill_bucket = case(
             isnull(fill_ratio), "unknown",
@@ -136,10 +143,7 @@ GBFS_FUNCTIONS = [
             fill_ratio < 0.4, "low",
             fill_ratio < 0.7, "balanced",
             fill_ratio < 0.9, "high",
-            "full"),
-        availability_label = strcat(tostring(bikes_available), " bikes / ", tostring(docks_available), " docks"),
-        last_reported_utc = iff(isnull(last_reported), "", format_datetime(unixtime_seconds_todatetime(tolong(last_reported)), "yyyy-MM-dd HH:mm:ss'Z'")),
-        geometry = bag_pack("type", "Point", "coordinates", pack_array(lon, lat))
+            "full")
     | project
         geometry,
         system_id,
@@ -167,7 +171,8 @@ GBFS_FUNCTIONS = [
 """.strip(),
     """
 .create-or-alter function with (folder = "Map", skipvalidation = "true") gbfs_free_bikes() {
-    FreeBikeStatusLatest
+    FreeBikeStatus
+    | summarize arg_max(___time, *) by system_id, bike_id
     | where isnotnull(lat) and isnotnull(lon)
     | where lat between (-89.999 .. 89.999)
     | where lon between (-179.999 .. 179.999)
@@ -177,7 +182,7 @@ GBFS_FUNCTIONS = [
             is_reserved == true, "reserved",
             "available"),
         range_km = iff(isnull(current_range_meters), real(null), round(todouble(current_range_meters) / 1000.0, 1)),
-        last_reported_utc = iff(isnull(last_reported), "", format_datetime(unixtime_seconds_todatetime(tolong(last_reported)), "yyyy-MM-dd HH:mm:ss'Z'")),
+        last_reported_utc = iff(isnull(last_reported), "", strcat(format_datetime(unixtime_seconds_todatetime(tolong(last_reported)), "yyyy-MM-dd HH:mm:ss"), "Z")),
         geometry = bag_pack("type", "Point", "coordinates", pack_array(todouble(lon), todouble(lat)))
     | project
         geometry,
@@ -569,7 +574,22 @@ def _put_definition(
         json={"definition": {"parts": list(parts.values())}},
     )
     print(f"updateDefinition HTTP {response.status_code}")
-    _poll_lro(fabric, response)
+    try:
+        _poll_lro(fabric, response)
+    except RuntimeError as exc:
+        # Fabric sometimes reports LRO "Failed" with "unknown error" even though
+        # the definition was actually written. Verify by re-fetching.
+        if "unknown error" in str(exc).lower():
+            print("  LRO reported 'unknown error' — verifying definition was saved...")
+            time.sleep(3)
+            try:
+                check_mp, _ = _get_definition(fabric, api_base, workspace_id, map_id)
+                if len(check_mp.get("layerSources", [])) == len(mp.get("layerSources", [])):
+                    print("  Definition verified OK (Fabric false-negative LRO).")
+                    return
+            except Exception:
+                pass
+        raise
 
 
 def _set_basemap(mp: dict[str, Any]) -> None:
