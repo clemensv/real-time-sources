@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -88,10 +89,9 @@ async def test_blitzortung_lightning_mqtt_blitzortung_lightning_mqtt_lightning_s
     for i in range(5):
         await publisher_client.publish_blitzortung_lightning_mqtt_lightning_stroke(
             topic=test_topic,
-            geohash5=f"test_geohash5_{i}",
-            geohash7=f"test_geohash7_{i}",
+            source_id=f"test_source_id_{i}",
             stroke_id=f"test_stroke_id_{i}",
-            event_time=f"test_event_time_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

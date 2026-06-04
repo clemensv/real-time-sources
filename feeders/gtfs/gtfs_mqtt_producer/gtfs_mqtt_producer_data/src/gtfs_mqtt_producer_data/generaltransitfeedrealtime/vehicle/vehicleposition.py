@@ -11,9 +11,9 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
-from typing import Any
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.position import Position
+from typing import Any
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
 
 
@@ -42,7 +42,7 @@ class VehiclePosition:
     current_stop_sequence: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="current_stop_sequence"))
     stop_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stop_id"))
     current_status: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="current_status"))
-    timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     congestion_level: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="congestion_level"))
     occupancy_status: typing.Optional[Any]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="occupancy_status"))
 
@@ -57,6 +57,8 @@ class VehiclePosition:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'timestamp' in data and isinstance(data['timestamp'], str):
+            data['timestamp'] = int(data['timestamp'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -67,6 +69,8 @@ class VehiclePosition:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'timestamp' in asdict_result and asdict_result['timestamp'] is not None:
+            asdict_result['timestamp'] = str(asdict_result['timestamp'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -174,10 +178,10 @@ class VehiclePosition:
             trip=None,
             vehicle=None,
             position=None,
-            current_stop_sequence=int(82),
-            stop_id='flpxfvfgtjptapgdrkoq',
+            current_stop_sequence=int(27),
+            stop_id='pvmadilgqwnfcmlpimqc',
             current_status=None,
-            timestamp=int(22),
+            timestamp=int(82),
             congestion_level=None,
             occupancy_status=None
         )

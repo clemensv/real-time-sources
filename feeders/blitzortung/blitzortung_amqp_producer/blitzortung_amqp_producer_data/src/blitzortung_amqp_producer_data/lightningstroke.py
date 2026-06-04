@@ -39,7 +39,7 @@ class LightningStroke:
     source_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_id"))
     stroke_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stroke_id"))
     event_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_time"))
-    event_timestamp_ms: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_timestamp_ms"))
+    event_timestamp_ms: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_timestamp_ms", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     server_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_id"))
@@ -60,6 +60,8 @@ class LightningStroke:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'event_timestamp_ms' in data and isinstance(data['event_timestamp_ms'], str):
+            data['event_timestamp_ms'] = int(data['event_timestamp_ms'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -70,6 +72,8 @@ class LightningStroke:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'event_timestamp_ms' in asdict_result and asdict_result['event_timestamp_ms'] is not None:
+            asdict_result['event_timestamp_ms'] = str(asdict_result['event_timestamp_ms'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -174,16 +178,16 @@ class LightningStroke:
             An instance of the dataclass.
         """
         return cls(
-            source_id=int(85),
-            stroke_id='xmlaymkrspzxxlcbmelp',
-            event_time='wnnuipooysdhihbpxmcv',
-            event_timestamp_ms=int(79),
-            latitude=float(69.7899046334333),
-            longitude=float(78.69276003895993),
-            server_id=int(94),
-            server_delay_ms=int(81),
-            accuracy_diameter_m=float(12.743486394338788),
-            detector_participations=[None],
-            geohash5='zvoyrcgxjodoyilxtmcu',
-            geohash7='vmlpnsqsvhlfylarcvjw'
+            source_id=int(17),
+            stroke_id='bgcxhcimyfpdkwndfjvm',
+            event_time='mqtcyqceigkzlziteogn',
+            event_timestamp_ms=int(89),
+            latitude=float(49.28696880996356),
+            longitude=float(93.75553402319402),
+            server_id=int(68),
+            server_delay_ms=int(37),
+            accuracy_diameter_m=float(57.360848460630365),
+            detector_participations=[None, None, None, None, None],
+            geohash5='nbvibolbulzkgtmxpxan',
+            geohash7='xashfsfivqsxpnvrytri'
         )

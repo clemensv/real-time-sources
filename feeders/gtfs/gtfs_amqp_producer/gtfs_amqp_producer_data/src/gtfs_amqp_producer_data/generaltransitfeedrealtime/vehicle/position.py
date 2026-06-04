@@ -159,9 +159,9 @@ class Position:
             An instance of the dataclass.
         """
         return cls(
-            latitude=float(56.48527811130436),
-            longitude=float(0.2502025630103377),
-            bearing=float(20.595669934234927),
-            odometer=float(50.58999104052538),
-            speed=float(16.756190131185956)
+            latitude=float(98.94237529899631),
+            longitude=float(12.283696584197445),
+            bearing=float(20.62675114723832),
+            odometer=float(79.61601751067495),
+            speed=float(53.09048990572657)
         )

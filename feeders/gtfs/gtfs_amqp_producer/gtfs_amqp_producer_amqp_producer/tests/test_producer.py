@@ -5,6 +5,7 @@
 Tests for gtfs_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,7 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
-from proton import symbol
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../gtfs_amqp_producer_data/src')))
@@ -292,6 +293,45 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(GeneralTransitFeedRealTimeAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -319,6 +359,7 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -351,6 +392,38 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_VehiclePosition.create_instance()
+
+        producer = GeneralTransitFeedRealTimeAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -378,6 +451,7 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -410,6 +484,38 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_TripUpdate.create_instance()
+
+        producer = GeneralTransitFeedRealTimeAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedRealTime.Trip.TripUpdate.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -437,6 +543,7 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -470,6 +577,38 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
         finally:
             producer.close()
 
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Alert.create_instance()
+
+        producer = GeneralTransitFeedRealTimeAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedRealTime.Alert.Alert.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
+
 
 
 class TestGeneralTransitFeedStaticAmqpProducer:
@@ -490,6 +629,45 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(GeneralTransitFeedStaticAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -517,6 +695,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -549,6 +728,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Agency.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Agency.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -576,6 +787,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -608,6 +820,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Areas.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Areas.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -635,6 +879,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -667,6 +912,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Attributions.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Attributions.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -694,6 +971,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -726,6 +1004,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_BookingRules.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeed.BookingRules.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -753,6 +1063,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -785,6 +1096,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_FareAttributes.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareAttributes.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -812,6 +1155,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -844,6 +1188,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_FareLegRules.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareLegRules.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -871,6 +1247,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -903,6 +1280,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_FareMedia.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareMedia.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -930,6 +1339,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -962,6 +1372,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_FareProducts.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareProducts.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -989,6 +1431,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1021,6 +1464,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_FareRules.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareRules.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1048,6 +1523,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1080,6 +1556,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_FareTransferRules.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareTransferRules.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1107,6 +1615,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1139,6 +1648,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_FeedInfo.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FeedInfo.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1166,6 +1707,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1198,6 +1740,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Frequencies.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Frequencies.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1225,6 +1799,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1257,6 +1832,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Levels.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Levels.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1284,6 +1891,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1316,6 +1924,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_LocationGeoJson.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.LocationGeoJson.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1343,6 +1983,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1375,6 +2016,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_LocationGroups.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.LocationGroups.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1402,6 +2075,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1434,6 +2108,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_LocationGroupStores.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.LocationGroupStores.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1461,6 +2167,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1493,6 +2200,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Networks.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Networks.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1520,6 +2259,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1552,6 +2292,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Pathways.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Pathways.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1579,6 +2351,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1611,6 +2384,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_RouteNetworks.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.RouteNetworks.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1638,6 +2443,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1670,6 +2476,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Routes.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Routes.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1697,6 +2535,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1729,6 +2568,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Shapes.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Shapes.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1756,6 +2627,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1788,6 +2660,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_StopAreas.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.StopAreas.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1815,6 +2719,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1847,6 +2752,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Stops.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Stops.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1874,6 +2811,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1906,6 +2844,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_StopTimes.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.StopTimes.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1933,6 +2903,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1965,6 +2936,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Timeframes.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Timeframes.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1992,6 +2995,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -2024,6 +3028,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Transfers.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Transfers.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -2051,6 +3087,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -2083,6 +3120,38 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Translations.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Translations.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -2110,6 +3179,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _agencyid="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -2142,4 +3212,36 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Trips.create_instance()
+
+        producer = GeneralTransitFeedStaticAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _agencyid="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Trips.amqp'
+        assert received.body is not None
+        assert received.subject == "{agencyid}".format(agencyid="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
 

@@ -42,7 +42,7 @@ class Record:
     icao24: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="icao24"))
     receiver_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="receiver_id"))
     msg_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
-    ts: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ts"))
+    ts: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ts", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     df: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="df"))
     tc: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tc"))
     bcode: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bcode"))
@@ -67,6 +67,8 @@ class Record:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'ts' in data and isinstance(data['ts'], str):
+            data['ts'] = int(data['ts'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -77,6 +79,8 @@ class Record:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'ts' in asdict_result and asdict_result['ts'] is not None:
+            asdict_result['ts'] = str(asdict_result['ts'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -181,20 +185,20 @@ class Record:
             An instance of the dataclass.
         """
         return cls(
-            icao24='blztniuiqjynccndukhe',
-            receiver_id='oaivworzipugkbapzijj',
-            msg_type='tcsrnvtcarpakrpvrfbp',
-            ts=int(63),
-            df=int(81),
-            tc=int(56),
-            bcode='lnzgxcxkwazyhsislmqp',
-            alt=int(59),
-            cs='efjapgvucydspiqjcdhz',
-            sq='jjawfdibirezbiznxkxp',
-            lat=float(82.98664850630026),
-            lon=float(50.81647034196127),
-            spd=float(93.05839114331387),
-            ang=float(55.704519314861386),
-            vr=int(1),
-            rssi=float(27.261586107630052)
+            icao24='kngvggsmkcjufarpdklk',
+            receiver_id='yvdpqurxtgilfzruasjj',
+            msg_type='vmgaodpstpmdelpxuniw',
+            ts=int(86),
+            df=int(63),
+            tc=int(6),
+            bcode='drupvimpsuyfeppjyvuh',
+            alt=int(54),
+            cs='xptdtdjkfcwcinhwsnkn',
+            sq='fqehureanrcgmlhsnlsd',
+            lat=float(84.45820137389084),
+            lon=float(54.859419218022744),
+            spd=float(95.60778742689273),
+            ang=float(99.07927448046253),
+            vr=int(69),
+            rssi=float(63.089101375703564)
         )

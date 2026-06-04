@@ -176,17 +176,17 @@ class Routes:
             An instance of the dataclass.
         """
         return cls(
-            routeId='qnjmyjmtohdxpgxeantk',
-            agencyId='pqbvnxjoxzmfjiuxylps',
-            routeShortName='crsmjpeytyzmmvtjtbpz',
-            routeLongName='kloccnpuqofseanalidp',
-            routeDesc='pjsovrurkswbvtegcien',
+            routeId='bpagokvirgcsjwbjndfk',
+            agencyId='xvnqlankugulxglfeeuq',
+            routeShortName='jyxdwwxanuhvunghkdbv',
+            routeLongName='hkjdsdwbpzhsewcszyxi',
+            routeDesc='phddsvvdombaffujpwlg',
             routeType=None,
-            routeUrl='sonfvpretpjcovqeictv',
-            routeColor='aifqdzhyxfeokegsvfgo',
-            routeTextColor='qskxujqjiteemqnvubem',
-            routeSortOrder=int(87),
+            routeUrl='srctvrdggmluxluprcdk',
+            routeColor='kumsnlfzffqrwvpxzdbb',
+            routeTextColor='kzgcieaovksiwbjwhvid',
+            routeSortOrder=int(72),
             continuousPickup=None,
             continuousDropOff=None,
-            networkId='dylvczbhvginbbgayyve'
+            networkId='yarzeuqbcrwxneuxhcto'
         )

@@ -25,8 +25,8 @@ class TimeRange:
     """
     
     
-    start: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start"))
-    end: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end"))
+    start: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
+    end: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'TimeRange':
@@ -39,6 +39,10 @@ class TimeRange:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'start' in data and isinstance(data['start'], str):
+            data['start'] = int(data['start'])
+        if 'end' in data and isinstance(data['end'], str):
+            data['end'] = int(data['end'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -49,6 +53,10 @@ class TimeRange:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'start' in asdict_result and asdict_result['start'] is not None:
+            asdict_result['start'] = str(asdict_result['start'])
+        if 'end' in asdict_result and asdict_result['end'] is not None:
+            asdict_result['end'] = str(asdict_result['end'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -153,6 +161,6 @@ class TimeRange:
             An instance of the dataclass.
         """
         return cls(
-            start=int(86),
-            end=int(18)
+            start=int(39),
+            end=int(95)
         )

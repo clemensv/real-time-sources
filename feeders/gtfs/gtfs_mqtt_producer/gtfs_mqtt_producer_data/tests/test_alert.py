@@ -10,9 +10,9 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.alert import Alert
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
-from typing import Any
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
+from typing import Any
 
 
 class Test_Alert(unittest.TestCase):

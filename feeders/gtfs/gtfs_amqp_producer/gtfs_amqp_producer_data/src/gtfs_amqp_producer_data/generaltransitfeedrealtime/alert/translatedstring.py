@@ -152,5 +152,5 @@ class TranslatedString:
             An instance of the dataclass.
         """
         return cls(
-            translation=[None, None, None]
+            translation=[None, None, None, None]
         )

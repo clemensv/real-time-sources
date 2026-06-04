@@ -36,7 +36,7 @@ class FareAttributes:
     paymentMethod: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="paymentMethod"))
     transfers: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transfers"))
     agencyId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
-    transferDuration: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transferDuration"))
+    transferDuration: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transferDuration", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'FareAttributes':
@@ -49,6 +49,8 @@ class FareAttributes:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'transferDuration' in data and isinstance(data['transferDuration'], str):
+            data['transferDuration'] = int(data['transferDuration'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -59,6 +61,8 @@ class FareAttributes:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'transferDuration' in asdict_result and asdict_result['transferDuration'] is not None:
+            asdict_result['transferDuration'] = str(asdict_result['transferDuration'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -163,11 +167,11 @@ class FareAttributes:
             An instance of the dataclass.
         """
         return cls(
-            fareId='bcbtaimtajnvcepdrhln',
-            price=float(91.51158830643895),
-            currencyType='pnypwvndcjcsyudqsfky',
-            paymentMethod=int(96),
-            transfers=int(57),
-            agencyId='jpnehirfzvkcwavjwpyc',
-            transferDuration=int(92)
+            fareId='otliqlewfodjkmazmbje',
+            price=float(73.0824287794282),
+            currencyType='ufzodoskvvfywhmgcgxx',
+            paymentMethod=int(45),
+            transfers=int(36),
+            agencyId='uzycljmuzqfkrtstrrxc',
+            transferDuration=int(48)
         )

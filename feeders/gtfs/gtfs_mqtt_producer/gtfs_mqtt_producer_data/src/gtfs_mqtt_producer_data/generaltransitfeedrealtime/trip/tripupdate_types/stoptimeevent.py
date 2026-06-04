@@ -27,7 +27,7 @@ class StopTimeEvent:
     
     
     delay: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="delay"))
-    time: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time"))
+    time: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="time", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     uncertainty: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uncertainty"))
 
     @classmethod
@@ -41,6 +41,8 @@ class StopTimeEvent:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'time' in data and isinstance(data['time'], str):
+            data['time'] = int(data['time'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -51,6 +53,8 @@ class StopTimeEvent:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'time' in asdict_result and asdict_result['time'] is not None:
+            asdict_result['time'] = str(asdict_result['time'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -155,7 +159,7 @@ class StopTimeEvent:
             An instance of the dataclass.
         """
         return cls(
-            delay=int(88),
-            time=int(34),
-            uncertainty=int(13)
+            delay=int(0),
+            time=int(61),
+            uncertainty=int(41)
         )

@@ -10,8 +10,8 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition import VehiclePosition
 from gtfs_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
-from gtfs_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
 from gtfs_producer_data.generaltransitfeedrealtime.vehicle.position import Position
+from gtfs_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
 from typing import Any
 
 
@@ -35,10 +35,10 @@ class Test_VehiclePosition(unittest.TestCase):
             trip=None,
             vehicle=None,
             position=None,
-            current_stop_sequence=int(65),
-            stop_id='ihdlkvjfsbstevekgyej',
+            current_stop_sequence=int(92),
+            stop_id='ujrbopdrajgcxzkuwprm',
             current_status=None,
-            timestamp=int(92),
+            timestamp=int(7),
             congestion_level=None,
             occupancy_status=None
         )
@@ -73,7 +73,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test current_stop_sequence property
         """
-        test_value = int(65)
+        test_value = int(92)
         self.instance.current_stop_sequence = test_value
         self.assertEqual(self.instance.current_stop_sequence, test_value)
     
@@ -81,7 +81,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'ihdlkvjfsbstevekgyej'
+        test_value = 'ujrbopdrajgcxzkuwprm'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     
@@ -97,7 +97,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(92)
+        test_value = int(7)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     

@@ -2117,23 +2117,6 @@ class TestJMAJapanDockerFlow:
 class TestWikimediaOsmDiffsDockerFlow:
     TOPIC = 'test-wikimedia-osm-diffs'
 
-    # WORKAROUND(https://github.com/clemensv/avrotize/issues/346): the generated
-    # MapChange dataclass serializes its int64 fields (sequence_number,
-    # element_id, changeset_id) as JSON numbers, but JSON Structure Core requires
-    # int64 on the wire as a JSON string. The E2E schema validator (correctly)
-    # rejects the number, so this deterministic synthetic-producer test fails on
-    # `Expected int64 as string at #/sequence_number, got int`. This is a real
-    # generator bug, not a test issue; do NOT string-encode the synthetic data to
-    # force-green it (that would hide the production defect). Skip loudly until
-    # the upstream int64-as-string codegen fix lands, then delete this marker —
-    # the test body already exercises the corrected wire format. A second,
-    # related under-reporting bug in the reference validator is tracked at
-    # https://github.com/json-structure/sdk/issues/160.
-    @pytest.mark.skip(reason=(
-        "WORKAROUND(clemensv/avrotize#346): generated producer emits int64 as "
-        "JSON number; JSON Structure Core requires int64 as string. Blocked on "
-        "upstream int64-as-string codegen fix."
-    ))
     def test_emits_telemetry(self, kafka: KafkaFixture, wikimedia_osm_diffs_image):
         # The live feeder must download the OpenStreetMap minutely replication
         # state plus a full diff file and reassemble element changes before it

@@ -157,8 +157,8 @@ class Transfers:
             An instance of the dataclass.
         """
         return cls(
-            fromStopId='zvmpaeaabieqiahqqebn',
-            toStopId='fppiagskxvqrgcrmbesg',
-            transferType=int(76),
-            minTransferTime=int(38)
+            fromStopId='ookceikfxzxoknjtyvch',
+            toStopId='jnzswwbplkecvxeoewin',
+            transferType=int(69),
+            minTransferTime=int(85)
         )

@@ -40,17 +40,17 @@ class MapChange:
     
     change_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="change_type"))
     element_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="element_type"))
-    element_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="element_id"))
+    element_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="element_id", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     geohash5: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="geohash5"))
     version: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="version"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    changeset_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="changeset_id"))
+    changeset_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="changeset_id", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     user_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="user_name"))
-    user_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="user_id"))
+    user_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="user_id", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     tags: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tags"))
-    sequence_number: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sequence_number"))
+    sequence_number: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sequence_number", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'MapChange':
@@ -63,6 +63,14 @@ class MapChange:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'element_id' in data and isinstance(data['element_id'], str):
+            data['element_id'] = int(data['element_id'])
+        if 'changeset_id' in data and isinstance(data['changeset_id'], str):
+            data['changeset_id'] = int(data['changeset_id'])
+        if 'user_id' in data and isinstance(data['user_id'], str):
+            data['user_id'] = int(data['user_id'])
+        if 'sequence_number' in data and isinstance(data['sequence_number'], str):
+            data['sequence_number'] = int(data['sequence_number'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -73,6 +81,14 @@ class MapChange:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'element_id' in asdict_result and asdict_result['element_id'] is not None:
+            asdict_result['element_id'] = str(asdict_result['element_id'])
+        if 'changeset_id' in asdict_result and asdict_result['changeset_id'] is not None:
+            asdict_result['changeset_id'] = str(asdict_result['changeset_id'])
+        if 'user_id' in asdict_result and asdict_result['user_id'] is not None:
+            asdict_result['user_id'] = str(asdict_result['user_id'])
+        if 'sequence_number' in asdict_result and asdict_result['sequence_number'] is not None:
+            asdict_result['sequence_number'] = str(asdict_result['sequence_number'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -177,17 +193,17 @@ class MapChange:
             An instance of the dataclass.
         """
         return cls(
-            change_type='jldrfiemlelogzqfpmqk',
-            element_type='osgmzjavluqjlxsqcoct',
-            element_id=int(15),
-            geohash5='zkwfpmffxrypjsmcejto',
-            version=int(2),
+            change_type='hcxamrctgszhtijzlrlk',
+            element_type='usxavabmnzdlwemdueww',
+            element_id=int(76),
+            geohash5='jktujeykhodauootrmrm',
+            version=int(26),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            changeset_id=int(0),
-            user_name='jclntqgaabznwlcnckkm',
-            user_id=int(19),
-            latitude=float(35.639272025132904),
-            longitude=float(64.04351684568181),
-            tags='lmxrmazedazxluxkgvpz',
-            sequence_number=int(54)
+            changeset_id=int(9),
+            user_name='dwzgpoqfqxdalopbktor',
+            user_id=int(88),
+            latitude=float(44.64582559501585),
+            longitude=float(10.596206171316503),
+            tags='uqqffsbmdnymhxkuhrnp',
+            sequence_number=int(97)
         )

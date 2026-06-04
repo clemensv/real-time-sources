@@ -33,9 +33,9 @@ class Test_TripUpdate(unittest.TestCase):
         instance = TripUpdate(
             trip=None,
             vehicle=None,
-            stop_time_update=[None, None, None, None, None],
-            timestamp=int(86),
-            delay=int(42)
+            stop_time_update=[None],
+            timestamp=int(48),
+            delay=int(64)
         )
         return instance
 
@@ -60,7 +60,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test stop_time_update property
         """
-        test_value = [None, None, None, None, None]
+        test_value = [None]
         self.instance.stop_time_update = test_value
         self.assertEqual(self.instance.stop_time_update, test_value)
     
@@ -68,7 +68,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(86)
+        test_value = int(48)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -76,7 +76,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test delay property
         """
-        test_value = int(42)
+        test_value = int(64)
         self.instance.delay = test_value
         self.assertEqual(self.instance.delay, test_value)
     

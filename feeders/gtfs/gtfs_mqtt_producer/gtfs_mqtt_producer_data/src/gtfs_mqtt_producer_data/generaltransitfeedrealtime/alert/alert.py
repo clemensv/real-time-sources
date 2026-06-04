@@ -12,9 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
-from typing import Any
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
+from typing import Any
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)

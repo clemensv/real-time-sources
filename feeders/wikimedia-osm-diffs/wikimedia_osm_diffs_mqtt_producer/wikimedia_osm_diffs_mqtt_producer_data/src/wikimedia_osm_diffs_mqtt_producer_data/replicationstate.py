@@ -28,7 +28,7 @@ class ReplicationState:
     """
     
     
-    sequence_number: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sequence_number"))
+    sequence_number: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sequence_number", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     source_url: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_url"))
 
@@ -43,6 +43,8 @@ class ReplicationState:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'sequence_number' in data and isinstance(data['sequence_number'], str):
+            data['sequence_number'] = int(data['sequence_number'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -53,6 +55,8 @@ class ReplicationState:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'sequence_number' in asdict_result and asdict_result['sequence_number'] is not None:
+            asdict_result['sequence_number'] = str(asdict_result['sequence_number'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -157,7 +161,7 @@ class ReplicationState:
             An instance of the dataclass.
         """
         return cls(
-            sequence_number=int(7),
+            sequence_number=int(64),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            source_url='upqqcqymzzglcayuryue'
+            source_url='ohggtrbzqjmkksaouvvc'
         )

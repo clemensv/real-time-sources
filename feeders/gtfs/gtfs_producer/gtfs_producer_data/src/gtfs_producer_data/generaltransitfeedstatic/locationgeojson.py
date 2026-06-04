@@ -155,7 +155,7 @@ class LocationGeoJson:
             An instance of the dataclass.
         """
         return cls(
-            locationGeoJsonId='eavxodnmzujwpkytfsqj',
-            locationGeoJsonType='iowsybenxzrqxbvkmzna',
-            locationGeoJsonData='xtgdsxqrxzganzkjbkkg'
+            locationGeoJsonId='enxbjihaveidmynkrnjn',
+            locationGeoJsonType='jsuhmybifdhzwrmseabb',
+            locationGeoJsonData='fuvwvoclexzeuvlsoqpq'
         )
