@@ -165,12 +165,12 @@ class Solar10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='boedbgzbyopitffjpuvt',
-            timestamp='dezosfihijjxobytkpto',
-            quality_level=int(27),
-            global_radiation=float(65.70551458561256),
-            sunshine_duration=float(59.91239724878529),
-            diffuse_radiation=float(78.21627756109696),
-            longwave_radiation=float(1.1791892378967384),
-            state='bnzongumqlmjwhcvhrkz'
+            station_id='qffcnnffoffphpwskcbh',
+            timestamp='oiosjxslkgkfolsvmqta',
+            quality_level=int(6),
+            global_radiation=float(39.586150541814),
+            sunshine_duration=float(1.591066200296165),
+            diffuse_radiation=float(79.51530645528884),
+            longwave_radiation=float(0.8748711244492613),
+            state='xubniayzmwekpuxsarzu'
         )

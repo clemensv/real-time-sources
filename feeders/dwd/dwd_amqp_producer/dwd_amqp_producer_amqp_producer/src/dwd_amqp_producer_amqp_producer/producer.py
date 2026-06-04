@@ -14,15 +14,62 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
 from datetime import datetime, timezone
 from urllib.parse import quote_plus
 from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -496,9 +543,7 @@ class DEDWDCDCAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -561,6 +606,32 @@ class DEDWDCDCAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -631,6 +702,7 @@ class DEDWDCDCAmqpProducer:
         data: StationMetadata,
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.CDC.amqp.StationMetadata` message
@@ -639,6 +711,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             _station_id (str): Value for placeholder station_id in attribute subject
             _state (str): Value for AMQP protocol option placeholder state
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (StationMetadata): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -651,6 +724,7 @@ class DEDWDCDCAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -703,12 +777,13 @@ class DEDWDCDCAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_station_metadata_batch(self,
         data_array: typing.List[StationMetadata],
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.CDC.amqp.StationMetadata` messages
@@ -716,6 +791,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             data_array (typing.List[StationMetadata]): Array of message data objects
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _state (str): Value for AMQP protocol option placeholder state
             content_type (str): The content type of the message data
         """
@@ -723,6 +799,7 @@ class DEDWDCDCAmqpProducer:
             self.send_station_metadata(
                 data=data,
                 _station_id=_station_id,
+                _time=_time,
                 _state=_state,
                 content_type=content_type)
     
@@ -731,6 +808,7 @@ class DEDWDCDCAmqpProducer:
         data: AirTemperature10Min,
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.CDC.amqp.AirTemperature10Min` message
@@ -739,6 +817,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             _station_id (str): Value for placeholder station_id in attribute subject
             _state (str): Value for AMQP protocol option placeholder state
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (AirTemperature10Min): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -751,6 +830,7 @@ class DEDWDCDCAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -803,12 +883,13 @@ class DEDWDCDCAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_air_temperature10_min_batch(self,
         data_array: typing.List[AirTemperature10Min],
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.CDC.amqp.AirTemperature10Min` messages
@@ -816,6 +897,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             data_array (typing.List[AirTemperature10Min]): Array of message data objects
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _state (str): Value for AMQP protocol option placeholder state
             content_type (str): The content type of the message data
         """
@@ -823,6 +905,7 @@ class DEDWDCDCAmqpProducer:
             self.send_air_temperature10_min(
                 data=data,
                 _station_id=_station_id,
+                _time=_time,
                 _state=_state,
                 content_type=content_type)
     
@@ -831,6 +914,7 @@ class DEDWDCDCAmqpProducer:
         data: Precipitation10Min,
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.CDC.amqp.Precipitation10Min` message
@@ -839,6 +923,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             _station_id (str): Value for placeholder station_id in attribute subject
             _state (str): Value for AMQP protocol option placeholder state
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Precipitation10Min): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -851,6 +936,7 @@ class DEDWDCDCAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -903,12 +989,13 @@ class DEDWDCDCAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_precipitation10_min_batch(self,
         data_array: typing.List[Precipitation10Min],
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.CDC.amqp.Precipitation10Min` messages
@@ -916,6 +1003,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             data_array (typing.List[Precipitation10Min]): Array of message data objects
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _state (str): Value for AMQP protocol option placeholder state
             content_type (str): The content type of the message data
         """
@@ -923,6 +1011,7 @@ class DEDWDCDCAmqpProducer:
             self.send_precipitation10_min(
                 data=data,
                 _station_id=_station_id,
+                _time=_time,
                 _state=_state,
                 content_type=content_type)
     
@@ -931,6 +1020,7 @@ class DEDWDCDCAmqpProducer:
         data: Wind10Min,
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.CDC.amqp.Wind10Min` message
@@ -939,6 +1029,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             _station_id (str): Value for placeholder station_id in attribute subject
             _state (str): Value for AMQP protocol option placeholder state
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Wind10Min): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -951,6 +1042,7 @@ class DEDWDCDCAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1003,12 +1095,13 @@ class DEDWDCDCAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_wind10_min_batch(self,
         data_array: typing.List[Wind10Min],
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.CDC.amqp.Wind10Min` messages
@@ -1016,6 +1109,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             data_array (typing.List[Wind10Min]): Array of message data objects
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _state (str): Value for AMQP protocol option placeholder state
             content_type (str): The content type of the message data
         """
@@ -1023,6 +1117,7 @@ class DEDWDCDCAmqpProducer:
             self.send_wind10_min(
                 data=data,
                 _station_id=_station_id,
+                _time=_time,
                 _state=_state,
                 content_type=content_type)
     
@@ -1031,6 +1126,7 @@ class DEDWDCDCAmqpProducer:
         data: Solar10Min,
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.CDC.amqp.Solar10Min` message
@@ -1039,6 +1135,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             _station_id (str): Value for placeholder station_id in attribute subject
             _state (str): Value for AMQP protocol option placeholder state
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Solar10Min): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1051,6 +1148,7 @@ class DEDWDCDCAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1103,12 +1201,13 @@ class DEDWDCDCAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_solar10_min_batch(self,
         data_array: typing.List[Solar10Min],
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.CDC.amqp.Solar10Min` messages
@@ -1116,6 +1215,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             data_array (typing.List[Solar10Min]): Array of message data objects
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _state (str): Value for AMQP protocol option placeholder state
             content_type (str): The content type of the message data
         """
@@ -1123,6 +1223,7 @@ class DEDWDCDCAmqpProducer:
             self.send_solar10_min(
                 data=data,
                 _station_id=_station_id,
+                _time=_time,
                 _state=_state,
                 content_type=content_type)
     
@@ -1131,6 +1232,7 @@ class DEDWDCDCAmqpProducer:
         data: HourlyObservation,
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.CDC.amqp.HourlyObservation` message
@@ -1139,6 +1241,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             _station_id (str): Value for placeholder station_id in attribute subject
             _state (str): Value for AMQP protocol option placeholder state
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (HourlyObservation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1151,6 +1254,7 @@ class DEDWDCDCAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1203,12 +1307,13 @@ class DEDWDCDCAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_hourly_observation_batch(self,
         data_array: typing.List[HourlyObservation],
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.CDC.amqp.HourlyObservation` messages
@@ -1216,6 +1321,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             data_array (typing.List[HourlyObservation]): Array of message data objects
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _state (str): Value for AMQP protocol option placeholder state
             content_type (str): The content type of the message data
         """
@@ -1223,6 +1329,7 @@ class DEDWDCDCAmqpProducer:
             self.send_hourly_observation(
                 data=data,
                 _station_id=_station_id,
+                _time=_time,
                 _state=_state,
                 content_type=content_type)
     
@@ -1231,6 +1338,7 @@ class DEDWDCDCAmqpProducer:
         data: ExtremeWind10Min,
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.CDC.amqp.ExtremeWind10Min` message
@@ -1239,6 +1347,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             _station_id (str): Value for placeholder station_id in attribute subject
             _state (str): Value for AMQP protocol option placeholder state
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ExtremeWind10Min): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1251,6 +1360,7 @@ class DEDWDCDCAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1303,12 +1413,13 @@ class DEDWDCDCAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_extreme_wind10_min_batch(self,
         data_array: typing.List[ExtremeWind10Min],
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.CDC.amqp.ExtremeWind10Min` messages
@@ -1316,6 +1427,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             data_array (typing.List[ExtremeWind10Min]): Array of message data objects
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _state (str): Value for AMQP protocol option placeholder state
             content_type (str): The content type of the message data
         """
@@ -1323,6 +1435,7 @@ class DEDWDCDCAmqpProducer:
             self.send_extreme_wind10_min(
                 data=data,
                 _station_id=_station_id,
+                _time=_time,
                 _state=_state,
                 content_type=content_type)
     
@@ -1331,6 +1444,7 @@ class DEDWDCDCAmqpProducer:
         data: ExtremeTemperature10Min,
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.CDC.amqp.ExtremeTemperature10Min` message
@@ -1339,6 +1453,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             _station_id (str): Value for placeholder station_id in attribute subject
             _state (str): Value for AMQP protocol option placeholder state
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ExtremeTemperature10Min): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1351,6 +1466,7 @@ class DEDWDCDCAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1403,12 +1519,13 @@ class DEDWDCDCAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_extreme_temperature10_min_batch(self,
         data_array: typing.List[ExtremeTemperature10Min],
         _station_id: str,
         _state: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.CDC.amqp.ExtremeTemperature10Min` messages
@@ -1416,6 +1533,7 @@ class DEDWDCDCAmqpProducer:
         Args:
             data_array (typing.List[ExtremeTemperature10Min]): Array of message data objects
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _state (str): Value for AMQP protocol option placeholder state
             content_type (str): The content type of the message data
         """
@@ -1423,6 +1541,7 @@ class DEDWDCDCAmqpProducer:
             self.send_extreme_temperature10_min(
                 data=data,
                 _station_id=_station_id,
+                _time=_time,
                 _state=_state,
                 content_type=content_type)
     
@@ -1543,9 +1662,7 @@ class DEDWDWeatherAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -1608,6 +1725,32 @@ class DEDWDWeatherAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -1679,6 +1822,7 @@ class DEDWDWeatherAmqpProducer:
         _state: str,
         _severity: str,
         _identifier: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.Weather.amqp.Alert` message
@@ -1688,6 +1832,7 @@ class DEDWDWeatherAmqpProducer:
             _state (str): Value for placeholder state in attribute subject
             _severity (str): Value for placeholder severity in attribute subject
             _identifier (str): Value for placeholder identifier in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Alert): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1700,6 +1845,7 @@ class DEDWDWeatherAmqpProducer:
             "subject":
             "{state}/{severity}/{identifier}".format(state=_state, severity=_severity, identifier=_identifier),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1751,13 +1897,14 @@ class DEDWDWeatherAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_alert_batch(self,
         data_array: typing.List[Alert],
         _state: str,
         _severity: str,
         _identifier: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.Weather.amqp.Alert` messages
@@ -1767,6 +1914,7 @@ class DEDWDWeatherAmqpProducer:
             _state (str): Value for placeholder state in attribute subject
             _severity (str): Value for placeholder severity in attribute subject
             _identifier (str): Value for placeholder identifier in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1775,6 +1923,7 @@ class DEDWDWeatherAmqpProducer:
                 _state=_state,
                 _severity=_severity,
                 _identifier=_identifier,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1894,9 +2043,7 @@ class DEDWDRadarAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -1959,6 +2106,32 @@ class DEDWDRadarAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -2028,6 +2201,7 @@ class DEDWDRadarAmqpProducer:
     def send_radar_product_catalog(self,
         data: RadarProductCatalog,
         _kind: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.Radar.amqp.RadarProductCatalog` message
@@ -2035,6 +2209,7 @@ class DEDWDRadarAmqpProducer:
         
         Args:
             _kind (str): Value for placeholder kind in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RadarProductCatalog): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2047,6 +2222,7 @@ class DEDWDRadarAmqpProducer:
             "subject":
             "{kind}".format(kind=_kind),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2098,11 +2274,12 @@ class DEDWDRadarAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_radar_product_catalog_batch(self,
         data_array: typing.List[RadarProductCatalog],
         _kind: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.Radar.amqp.RadarProductCatalog` messages
@@ -2110,12 +2287,14 @@ class DEDWDRadarAmqpProducer:
         Args:
             data_array (typing.List[RadarProductCatalog]): Array of message data objects
             _kind (str): Value for placeholder kind in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_radar_product_catalog(
                 data=data,
                 _kind=_kind,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2123,6 +2302,7 @@ class DEDWDRadarAmqpProducer:
         data: RadarFileProduct,
         _product_type: str,
         _file_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.Radar.amqp.RadarFileProduct` message
@@ -2131,6 +2311,7 @@ class DEDWDRadarAmqpProducer:
         Args:
             _product_type (str): Value for placeholder product_type in attribute subject
             _file_id (str): Value for placeholder file_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RadarFileProduct): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2143,6 +2324,7 @@ class DEDWDRadarAmqpProducer:
             "subject":
             "{product_type}/{file_id}".format(product_type=_product_type, file_id=_file_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2194,12 +2376,13 @@ class DEDWDRadarAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_radar_file_product_batch(self,
         data_array: typing.List[RadarFileProduct],
         _product_type: str,
         _file_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.Radar.amqp.RadarFileProduct` messages
@@ -2208,6 +2391,7 @@ class DEDWDRadarAmqpProducer:
             data_array (typing.List[RadarFileProduct]): Array of message data objects
             _product_type (str): Value for placeholder product_type in attribute subject
             _file_id (str): Value for placeholder file_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2215,6 +2399,7 @@ class DEDWDRadarAmqpProducer:
                 data=data,
                 _product_type=_product_type,
                 _file_id=_file_id,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2334,9 +2519,7 @@ class DEDWDForecastAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -2399,6 +2582,32 @@ class DEDWDForecastAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -2468,6 +2677,7 @@ class DEDWDForecastAmqpProducer:
     def send_forecast_model_catalog(self,
         data: ForecastModelCatalog,
         _kind: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.Forecast.amqp.ForecastModelCatalog` message
@@ -2475,6 +2685,7 @@ class DEDWDForecastAmqpProducer:
         
         Args:
             _kind (str): Value for placeholder kind in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ForecastModelCatalog): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2487,6 +2698,7 @@ class DEDWDForecastAmqpProducer:
             "subject":
             "{kind}".format(kind=_kind),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2538,11 +2750,12 @@ class DEDWDForecastAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_forecast_model_catalog_batch(self,
         data_array: typing.List[ForecastModelCatalog],
         _kind: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.Forecast.amqp.ForecastModelCatalog` messages
@@ -2550,12 +2763,14 @@ class DEDWDForecastAmqpProducer:
         Args:
             data_array (typing.List[ForecastModelCatalog]): Array of message data objects
             _kind (str): Value for placeholder kind in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_forecast_model_catalog(
                 data=data,
                 _kind=_kind,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2563,6 +2778,7 @@ class DEDWDForecastAmqpProducer:
         data: IconD2ForecastFile,
         _variable: str,
         _file_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.DWD.Forecast.amqp.IconD2ForecastFile` message
@@ -2571,6 +2787,7 @@ class DEDWDForecastAmqpProducer:
         Args:
             _variable (str): Value for placeholder variable in attribute subject
             _file_id (str): Value for placeholder file_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (IconD2ForecastFile): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2583,6 +2800,7 @@ class DEDWDForecastAmqpProducer:
             "subject":
             "{variable}/{file_id}".format(variable=_variable, file_id=_file_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2634,12 +2852,13 @@ class DEDWDForecastAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_icon_d2_forecast_file_batch(self,
         data_array: typing.List[IconD2ForecastFile],
         _variable: str,
         _file_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.DWD.Forecast.amqp.IconD2ForecastFile` messages
@@ -2648,6 +2867,7 @@ class DEDWDForecastAmqpProducer:
             data_array (typing.List[IconD2ForecastFile]): Array of message data objects
             _variable (str): Value for placeholder variable in attribute subject
             _file_id (str): Value for placeholder file_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2655,6 +2875,7 @@ class DEDWDForecastAmqpProducer:
                 data=data,
                 _variable=_variable,
                 _file_id=_file_id,
+                _time=_time,
                 content_type=content_type)
     
     
