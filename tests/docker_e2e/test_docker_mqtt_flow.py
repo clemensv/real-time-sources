@@ -793,7 +793,7 @@ class TestBfsOdlMqttDockerFlow:
                 pass
 
         messages = _collect_messages_topic(
-            '127.0.0.1', mosquitto_bfs_odl['host_port'], 'radiation/ch/bfs/bfs-odl/#',
+            '127.0.0.1', mosquitto_bfs_odl['host_port'], 'radiation/de/bfs/bfs-odl/#',
             timeout=40.0,
         )
         assert messages, 'No retained messages received from broker'
@@ -826,7 +826,7 @@ class TestBfsOdlMqttDockerFlow:
         assert info_payload is not None, f"info payload not parseable: {info_msgs[0]['payload']!r}"
         assert dose_payload is not None, f"dose-rate payload not parseable: {dose_msgs[0]['payload']!r}"
         assert 'station_id' in info_payload, info_payload
-        assert 'canton' in info_payload, info_payload
+        assert 'state' in info_payload, info_payload
         assert 'station_id' in dose_payload, dose_payload
         assert 'value' in dose_payload, dose_payload
 
