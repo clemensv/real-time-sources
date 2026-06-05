@@ -4085,5 +4085,17 @@
       "test_file": "test_docker_kafka_flow.py",
       "test_class": "TestWikimediaOsmDiffsDockerFlow"
     }
+  ],
+  "include": [
+    {
+      "dir": "feeders/siri",
+      "image": "siri-kafka",
+      "module": "siri_kafka"
+    },
+    {
+      "dir": "feeders/siri",
+      "image": "siri-mqtt",
+      "module": "siri_mqtt"
+    }
   ]
 }

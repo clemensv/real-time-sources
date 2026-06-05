@@ -937,6 +937,16 @@
     "amqp": true
   },
   {
+    "id": "siri",
+    "name": "SIRI",
+    "desc": "UK/EU \u2014 SIRI VehicleMonitoring real-time bus positions",
+    "slug": "siri",
+    "notebook": true,
+    "kafka": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "smhi-hydro",
     "name": "SMHI Hydro",
     "cat": "Hydrology",

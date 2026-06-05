@@ -929,3 +929,10 @@ class TestDigitrafficRoadAmqpDockerFlow(AmqpDockerFlowBase):
         "fi.digitraffic.road.messages.TrafficAnnouncement",
     }
     expected_count = 4
+
+class TestSiriAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = 'siri'
+    image = 'siri-amqp'
+    env = {'SIRI_SAMPLE_MODE': 'true', 'ONCE_MODE': 'true'}
+    expected_types = {'org.siri.Operator', 'org.siri.VehiclePosition'}
+    expected_count = 3

@@ -324,11 +324,22 @@ function Build-SourceWheels {
     New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
     # Build the producer sub-packages first (each is a self-contained poetry project),
-    # then the top-level source bridge package which references them via path-deps.
+    # then the top-level source bridge package(s) which reference them via path-deps.
     $subPackages = Get-ChildItem -Directory $producerRoot |
         Where-Object { Test-Path (Join-Path $_.FullName "pyproject.toml") } |
         ForEach-Object { $_.FullName }
-    $toBuild = @($subPackages) + @($srcDir)
+
+    # For multi-transport sources (no top-level pyproject.toml), find all buildable
+    # sub-packages (_core, _kafka, _mqtt, _amqp) with pyproject.toml in the source dir.
+    if (Test-Path (Join-Path $srcDir "pyproject.toml")) {
+        $bridgePackages = @($srcDir)
+    } else {
+        $bridgePackages = Get-ChildItem -Directory $srcDir |
+            Where-Object { (Test-Path (Join-Path $_.FullName "pyproject.toml")) -and ($_.Name -notlike "*_producer*") } |
+            ForEach-Object { $_.FullName }
+        if (-not $bridgePackages) { throw "No buildable packages found in $srcDir (no pyproject.toml at root or in subdirs)" }
+    }
+    $toBuild = @($subPackages) + @($bridgePackages)
 
     foreach ($pkgDir in $toBuild) {
         Write-Info "  pip wheel $($pkgDir | Split-Path -Leaf)"
@@ -356,6 +367,7 @@ function Upload-EnvironmentLibrary {
     <#
     POST /environments/{id}/staging/libraries with multipart/form-data 'file' part.
     The Fabric SDKs perform this upload one library file at a time.
+    If the library already exists (400), delete it first and retry.
     #>
     param([string]$WorkspaceId, [string]$EnvironmentId, [System.IO.FileInfo]$Wheel, [string]$Token)
 
@@ -367,6 +379,33 @@ function Upload-EnvironmentLibrary {
             -UseBasicParsing -ErrorAction Stop
         return $resp.StatusCode
     } catch {
+        $statusCode = 0
+        if ($_.Exception.Response) { $statusCode = [int]$_.Exception.Response.StatusCode }
+        if ($statusCode -eq 400) {
+            # Library likely already exists — delete and retry
+            $delUrl = "$url/$($Wheel.Name)"
+            try {
+                Invoke-WebRequest -Uri $delUrl -Method Delete `
+                    -Headers @{ Authorization = "Bearer $Token" } `
+                    -UseBasicParsing -ErrorAction Stop | Out-Null
+                Write-Info "    (replaced existing $($Wheel.Name))"
+            } catch {
+                # DELETE failed — maybe different error format; try encoded name
+                $encodedName = [System.Uri]::EscapeDataString($Wheel.Name)
+                $delUrl2 = "$url/$encodedName"
+                try {
+                    Invoke-WebRequest -Uri $delUrl2 -Method Delete `
+                        -Headers @{ Authorization = "Bearer $Token" } `
+                        -UseBasicParsing -ErrorAction Stop | Out-Null
+                } catch {}
+            }
+            # Retry upload
+            $resp2 = Invoke-WebRequest -Uri $url -Method Post `
+                -Headers @{ Authorization = "Bearer $Token" } `
+                -Form @{ file = $Wheel } `
+                -UseBasicParsing -ErrorAction Stop
+            return $resp2.StatusCode
+        }
         $errBody = ""
         if ($_.Exception.Response) {
             try {
@@ -581,6 +620,15 @@ if (-not $SkipEnvironment) {
     }
     $EnvironmentId = $envItem.id
     Write-OK "Environment: $EnvironmentName ($EnvironmentId)"
+
+    # Wait for any in-progress publish to complete before uploading
+    $envDetails = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/environments/$EnvironmentId"
+    if ($envDetails.properties -and $envDetails.properties.publishDetails -and
+        $envDetails.properties.publishDetails.state -eq "Running") {
+        Write-Info "Environment has a publish in progress — waiting for it to finish before uploading..."
+        Wait-EnvironmentPublished -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId
+        Write-OK "Previous publish completed."
+    }
 
     Write-Info "Uploading wheels one at a time to staging libraries..."
     $fabricToken = Get-FabricToken
