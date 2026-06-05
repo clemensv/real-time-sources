@@ -18,8 +18,8 @@ from nve_hydro.nve_hydro import (
     PARAM_STAGE,
     PARAM_DISCHARGE,
 )
-from nve_hydro_producer_data.no.nve.hydrology.station import Station
-from nve_hydro_producer_data.no.nve.hydrology.waterlevelobservation import WaterLevelObservation
+from nve_hydro_producer_data import Station
+from nve_hydro_producer_data import WaterLevelObservation
 from nve_hydro_producer_kafka_producer.producer import NONVEHydrologyEventProducer
 
 

@@ -16,8 +16,8 @@ from syke_hydro.syke_hydro import (
     feed_observations,
     SYKE_BASE_URL,
 )
-from syke_hydro_producer_data.fi.syke.hydrology.station import Station
-from syke_hydro_producer_data.fi.syke.hydrology.waterlevelobservation import WaterLevelObservation
+from syke_hydro_producer_data import Station
+from syke_hydro_producer_data import WaterLevelObservation
 from syke_hydro_producer_kafka_producer.producer import FISYKEHydrologyEventProducer
 
 
