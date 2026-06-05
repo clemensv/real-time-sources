@@ -20,9 +20,9 @@ ptwc_tsunami_producer_data = { path = "ptwc_tsunami_producer/ptwc_tsunami_produc
 ptwc_tsunami_producer_kafka_producer = { path = "ptwc_tsunami_producer/ptwc_tsunami_producer_kafka_producer" }
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 pytest-asyncio = ">=0.24.0"
-pytest-cov = ">=7.0.0"
+pytest-cov = ">=7.1.0"
 
 [tool.poetry.scripts]
 ptwc-tsunami = "ptwc_tsunami.ptwc_tsunami:main"

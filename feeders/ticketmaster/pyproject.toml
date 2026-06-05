@@ -11,13 +11,13 @@ confluent-kafka = ">=2.14.2"
 cloudevents = ">=1.12.1,<2.0.0"
 requests = ">=2.34.2"
 urllib3 = ">=2.2.0"
-avro = ">=1.11.3"
+avro = ">=1.12.1"
 dataclasses-json = ">=0.6.7"
 ticketmaster_producer_data = {path = "ticketmaster_producer/ticketmaster_producer_data"}
 ticketmaster_producer_kafka_producer = {path = "ticketmaster_producer/ticketmaster_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 flake8 = ">=7.1.1"
 pylint = ">=3.2.7"
 mypy = ">=1.11.2"

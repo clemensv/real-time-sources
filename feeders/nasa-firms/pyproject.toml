@@ -18,7 +18,7 @@ nasa_firms_producer_data = {path = "nasa_firms_producer/nasa_firms_producer_data
 nasa_firms_producer_kafka_producer = {path = "nasa_firms_producer/nasa_firms_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 flake8 = ">=7.1.1"
 pylint = ">=3.2.7"
 mypy = ">=1.11.2"

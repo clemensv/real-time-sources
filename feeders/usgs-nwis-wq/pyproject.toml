@@ -18,11 +18,11 @@ usgs_nwis_wq_producer_data = {path = "usgs_nwis_wq_producer/usgs_nwis_wq_produce
 usgs_nwis_wq_producer_kafka_producer = {path = "usgs_nwis_wq_producer/usgs_nwis_wq_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 flake8 = ">=7.1.1"
 pylint = ">=3.2.7"
 mypy = ">=1.11.2"
-testcontainers = ">=4.8.1"
+testcontainers = ">=4.14.2"
 pytest-asyncio = ">=0.24.0"
 pytest-cov = "^7.1.0"
 requests-mock = "^1.12.1"

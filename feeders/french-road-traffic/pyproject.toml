@@ -20,8 +20,8 @@ french_road_traffic_producer_data = { path = "french_road_traffic_producer/frenc
 french_road_traffic_producer_kafka_producer = { path = "french_road_traffic_producer/french_road_traffic_producer_kafka_producer" }
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
-testcontainers = ">=4.8.1"
+pytest = ">=9.0.3"
+testcontainers = ">=4.14.2"
 
 [tool.poetry.scripts]
 french-road-traffic = "french_road_traffic:main"

@@ -1,4 +1,4 @@
-avro>=1.11.0
+avro>=1.12.1
 confluent_kafka
 cloudevents>=1.12.1,<2.0.0
 requests

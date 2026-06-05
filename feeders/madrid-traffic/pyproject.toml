@@ -20,8 +20,8 @@ madrid_traffic_producer_data = { path = "madrid_traffic_producer/madrid_traffic_
 madrid_traffic_producer_kafka_producer = { path = "madrid_traffic_producer/madrid_traffic_producer_kafka_producer" }
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
-testcontainers = ">=4.8.1"
+pytest = ">=9.0.3"
+testcontainers = ">=4.14.2"
 
 [tool.poetry.scripts]
 madrid-traffic = "madrid_traffic:main"

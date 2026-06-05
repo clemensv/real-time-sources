@@ -14,14 +14,14 @@ requests = ">=2.34.2"
 confluent-kafka = ">=2.14.2"
 cloudevents = ">=1.12.1,<2.0.0"
 dataclasses_json = ">=0.6.7"
-avro = ">=1.11.3"
+avro = ">=1.12.1"
 cbp_border_wait_producer_data = {path = "cbp_border_wait_producer/cbp_border_wait_producer_data"}
 cbp_border_wait_producer_kafka_producer = {path = "cbp_border_wait_producer/cbp_border_wait_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
-pytest-cov = ">=5.0.0"
-testcontainers = ">=4.8.1"
+pytest = ">=9.0.3"
+pytest-cov = ">=7.1.0"
+testcontainers = ">=4.14.2"
 requests-mock = ">=1.12.1"
 
 [tool.poetry.scripts]

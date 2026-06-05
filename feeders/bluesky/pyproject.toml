@@ -22,13 +22,13 @@ dataclasses-json = ">=0.6.7"
 pydantic = ">=2.7.0"
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 pytest-asyncio = ">=0.24.0"
-pytest-cov = ">=5.0.0"
+pytest-cov = ">=7.1.0"
 flake8 = ">=7.1.1"
 pylint = ">=3.2.7"
 mypy = ">=1.11.2"
-testcontainers = ">=4.8.1"
+testcontainers = ">=4.14.2"
 
 [tool.poetry.scripts]
 bluesky_firehose = "bluesky.bluesky:main"
