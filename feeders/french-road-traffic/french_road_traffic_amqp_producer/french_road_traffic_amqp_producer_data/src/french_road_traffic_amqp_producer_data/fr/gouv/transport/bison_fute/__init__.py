@@ -1,4 +1,4 @@
-from .roadevent import RoadEvent
 from .trafficflowmeasurement import TrafficFlowMeasurement
+from .roadevent import RoadEvent
 
-__all__ = ["RoadEvent", "TrafficFlowMeasurement"]
+__all__ = ["TrafficFlowMeasurement", "RoadEvent"]

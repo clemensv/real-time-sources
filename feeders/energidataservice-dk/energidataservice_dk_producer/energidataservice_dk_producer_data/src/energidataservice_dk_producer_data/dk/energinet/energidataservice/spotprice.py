@@ -1,18 +1,16 @@
 """ SpotPrice dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -20,30 +18,21 @@ import avro.io
 class SpotPrice:
     """
     Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area.
+    
     Attributes:
-        hour_utc (str): UTC hour for which the spot price applies, in ISO 8601 format.
-        hour_dk (str): Danish local-time hour, in ISO 8601 format.
-        price_area (str): Nord Pool bidding zone code (DK1 or DK2).
-        spot_price_dkk (typing.Optional[float]): Day-ahead spot price in DKK/MWh.
-        spot_price_eur (typing.Optional[float]): Day-ahead spot price in EUR/MWh."""
+        hour_utc (str)
+        hour_dk (str)
+        price_area (str)
+        spot_price_dkk (typing.Optional[float])
+        spot_price_eur (typing.Optional[float])
+    """
+    
     
     hour_utc: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="hour_utc"))
     hour_dk: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="hour_dk"))
     price_area: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="price_area"))
     spot_price_dkk: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="spot_price_dkk"))
     spot_price_eur: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="spot_price_eur"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"SpotPrice\", \"namespace\": \"dk.energinet.energidataservice\", \"doc\": \"Day-ahead electricity spot price per bidding zone from Energi Data Service (Energinet / Nord Pool). One record per hour per price area.\", \"fields\": [{\"name\": \"hour_utc\", \"type\": \"string\", \"doc\": \"UTC hour for which the spot price applies, in ISO 8601 format.\"}, {\"name\": \"hour_dk\", \"type\": \"string\", \"doc\": \"Danish local-time hour, in ISO 8601 format.\"}, {\"name\": \"price_area\", \"type\": \"string\", \"doc\": \"Nord Pool bidding zone code (DK1 or DK2).\"}, {\"name\": \"spot_price_dkk\", \"type\": [\"double\", \"null\"], \"doc\": \"Day-ahead spot price in DKK/MWh.\"}, {\"name\": \"spot_price_eur\", \"type\": [\"double\", \"null\"], \"doc\": \"Day-ahead spot price in EUR/MWh.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.hour_utc=str(self.hour_utc)
-        self.hour_dk=str(self.hour_dk)
-        self.price_area=str(self.price_area)
-        self.spot_price_dkk=float(self.spot_price_dkk) if self.spot_price_dkk else None
-        self.spot_price_eur=float(self.spot_price_eur) if self.spot_price_eur else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'SpotPrice':
@@ -54,7 +43,7 @@ class SpotPrice:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -73,7 +62,7 @@ class SpotPrice:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -87,8 +76,6 @@ class SpotPrice:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -101,16 +88,12 @@ class SpotPrice:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -135,10 +118,6 @@ class SpotPrice:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -164,18 +143,6 @@ class SpotPrice:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return SpotPrice.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -183,5 +150,20 @@ class SpotPrice:
                 return SpotPrice.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'SpotPrice':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            hour_utc='rbpbgehbdjcnafyqbynv',
+            hour_dk='boaummgkuvtyltqorrcj',
+            price_area='mfupwrdacegmscrobnxm',
+            spot_price_dkk=float(34.58868710123683),
+            spot_price_eur=float(42.17784524623504)
+        )

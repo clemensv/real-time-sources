@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,13 +17,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import laqn_london_mqtt_producer_data
 from laqn_london_mqtt_producer_data import Site
-from test_laqn_london_mqtt_producer_data_site import Test_Site
+from test_site import Test_Site
 from laqn_london_mqtt_producer_data import Measurement
-from test_laqn_london_mqtt_producer_data_measurement import Test_Measurement
+from test_measurement import Test_Measurement
 from laqn_london_mqtt_producer_data import DailyIndex
-from test_laqn_london_mqtt_producer_data_dailyindex import Test_DailyIndex
+from test_dailyindex import Test_DailyIndex
 from laqn_london_mqtt_producer_data import Species
-from test_laqn_london_mqtt_producer_data_species import Test_Species
+from test_species import Test_Species
 from laqn_london_mqtt_producer_mqtt_client import UkKclLaqnMqttMqttClient
 from laqn_london_mqtt_producer_mqtt_client import UkKclLaqnSpeciesMqttMqttClient
 
@@ -96,6 +97,7 @@ async def test_uk_kcl_laqn_mqtt_uk_kcl_laqn_mqtt_site_py(mosquitto_broker):
         await publisher_client.publish_uk_kcl_laqn_mqtt_site(
             topic=test_topic,
             site_code=f"test_site_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -161,6 +163,7 @@ async def test_uk_kcl_laqn_mqtt_uk_kcl_laqn_mqtt_measurement_py(mosquitto_broker
         await publisher_client.publish_uk_kcl_laqn_mqtt_measurement(
             topic=test_topic,
             site_code=f"test_site_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -226,6 +229,7 @@ async def test_uk_kcl_laqn_mqtt_uk_kcl_laqn_mqtt_daily_index_py(mosquitto_broker
         await publisher_client.publish_uk_kcl_laqn_mqtt_daily_index(
             topic=test_topic,
             site_code=f"test_site_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -294,6 +298,7 @@ async def test_uk_kcl_laqn_species_mqtt_uk_kcl_laqn_species_mqtt_species_py(mosq
         await publisher_client.publish_uk_kcl_laqn_species_mqtt_species(
             topic=test_topic,
             species_code=f"test_species_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

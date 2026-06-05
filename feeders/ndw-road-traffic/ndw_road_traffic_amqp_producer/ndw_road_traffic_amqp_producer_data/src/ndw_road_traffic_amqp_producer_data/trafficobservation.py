@@ -92,6 +92,8 @@ class TrafficObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class TrafficObservation:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='zenrxoahhjpljrkzndet',
-            measurement_time='cmkszofuaoznuljglukq',
-            average_speed=float(52.605270228616504),
-            vehicle_flow_rate=int(83),
-            number_of_lanes_with_data=int(7)
+            measurement_site_id='idbceqsrdgbaomrqzkyq',
+            measurement_time='umkvdyvogkhktkdwlfoy',
+            average_speed=float(36.66632686009211),
+            vehicle_flow_rate=int(53),
+            number_of_lanes_with_data=int(13)
         )

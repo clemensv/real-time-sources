@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from madrid_traffic_producer_kafka_producer.producer import EsMadridInformoEventProducer
 from madrid_traffic_producer_data import MeasurementPoint
-from test_madrid_traffic_producer_data_measurementpoint import Test_MeasurementPoint
+from test_measurementpoint import Test_MeasurementPoint
 from madrid_traffic_producer_data import TrafficReading
-from test_madrid_traffic_producer_data_trafficreading import Test_TrafficReading
+from test_trafficreading import Test_TrafficReading
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -105,7 +105,8 @@ def test_es_madrid_informo_esmadridinformomeasurementpoint(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_es_madrid_informo_measurement_point(_sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_es_madrid_informo_measurement_point(_sensor_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -168,7 +169,8 @@ def test_es_madrid_informo_esmadridinformotrafficreading(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_es_madrid_informo_traffic_reading(_sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_es_madrid_informo_traffic_reading(_sensor_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

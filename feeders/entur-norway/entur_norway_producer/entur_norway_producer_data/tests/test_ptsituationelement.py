@@ -30,19 +30,19 @@ class Test_PtSituationElement(unittest.TestCase):
         Create instance of PtSituationElement for testing
         """
         instance = PtSituationElement(
-            situation_number='qpfgguglvorvuioqyzgj',
-            version='zwgjabcpsealigrrkxqz',
+            situation_number='wysmzfvbvnxzzpltuoqm',
+            version='jssltfnzxzwfijjhhhkg',
             creation_time=datetime.datetime.now(datetime.timezone.utc),
-            source_type='kqxccmvqlftwlrxvypqp',
-            source_name='yjwjkeouynygsgvuyzxv',
-            progress='hfyyuiamvnewywbowifp',
-            severity='puizfmltgnugpioftxjj',
-            keywords='wykxxwxnopzndlhrccvq',
-            summary='ydtbszqnzxavgkrzcgnj',
-            description='vcxngeeerjutshbdwobv',
-            affects_line_refs=['tgefjqpwylwhvlbsovak', 'frtlrhirblhhwcdwdtwf', 'fhydwydbfqivdeszakax', 'ibxqxgyjbufkdntpmuik'],
-            affects_stop_point_refs=['qfzuoltilmmxrwdbmgqj', 'occqtoxpxhtlmecihoyx', 'bpqvhkrhnrhsjlwgeslp', 'hqyldycgytadqeoyxetb'],
-            validity_periods=[ValidityPeriod(start_time=datetime.datetime.now(datetime.timezone.utc), end_time=None)]
+            source_type='kwohqjjyhtjibuenirwi',
+            source_name='clsjuvcqggnrmnfxdbsz',
+            progress='pryrhyvnfyomvdtpbfzn',
+            severity='axdzeycdndejbkahngaz',
+            keywords='dgnzdciwtnknoncgfxop',
+            summary='lfbztrwqebaklwdfxmsf',
+            description='glvptjvbnlyvxmhmpsgo',
+            affects_line_refs=['cmwgtrzzhwqdivqfpcta'],
+            affects_stop_point_refs=['vqhwbrihpdavvsiwrovq'],
+            validity_periods=[None]
         )
         return instance
 
@@ -51,7 +51,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test situation_number property
         """
-        test_value = 'qpfgguglvorvuioqyzgj'
+        test_value = 'wysmzfvbvnxzzpltuoqm'
         self.instance.situation_number = test_value
         self.assertEqual(self.instance.situation_number, test_value)
     
@@ -59,7 +59,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test version property
         """
-        test_value = 'zwgjabcpsealigrrkxqz'
+        test_value = 'jssltfnzxzwfijjhhhkg'
         self.instance.version = test_value
         self.assertEqual(self.instance.version, test_value)
     
@@ -75,7 +75,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test source_type property
         """
-        test_value = 'kqxccmvqlftwlrxvypqp'
+        test_value = 'kwohqjjyhtjibuenirwi'
         self.instance.source_type = test_value
         self.assertEqual(self.instance.source_type, test_value)
     
@@ -83,7 +83,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test source_name property
         """
-        test_value = 'yjwjkeouynygsgvuyzxv'
+        test_value = 'clsjuvcqggnrmnfxdbsz'
         self.instance.source_name = test_value
         self.assertEqual(self.instance.source_name, test_value)
     
@@ -91,7 +91,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test progress property
         """
-        test_value = 'hfyyuiamvnewywbowifp'
+        test_value = 'pryrhyvnfyomvdtpbfzn'
         self.instance.progress = test_value
         self.assertEqual(self.instance.progress, test_value)
     
@@ -99,7 +99,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = 'puizfmltgnugpioftxjj'
+        test_value = 'axdzeycdndejbkahngaz'
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -107,7 +107,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test keywords property
         """
-        test_value = 'wykxxwxnopzndlhrccvq'
+        test_value = 'dgnzdciwtnknoncgfxop'
         self.instance.keywords = test_value
         self.assertEqual(self.instance.keywords, test_value)
     
@@ -115,7 +115,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test summary property
         """
-        test_value = 'ydtbszqnzxavgkrzcgnj'
+        test_value = 'lfbztrwqebaklwdfxmsf'
         self.instance.summary = test_value
         self.assertEqual(self.instance.summary, test_value)
     
@@ -123,7 +123,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'vcxngeeerjutshbdwobv'
+        test_value = 'glvptjvbnlyvxmhmpsgo'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -131,7 +131,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test affects_line_refs property
         """
-        test_value = ['tgefjqpwylwhvlbsovak', 'frtlrhirblhhwcdwdtwf', 'fhydwydbfqivdeszakax', 'ibxqxgyjbufkdntpmuik']
+        test_value = ['cmwgtrzzhwqdivqfpcta']
         self.instance.affects_line_refs = test_value
         self.assertEqual(self.instance.affects_line_refs, test_value)
     
@@ -139,7 +139,7 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test affects_stop_point_refs property
         """
-        test_value = ['qfzuoltilmmxrwdbmgqj', 'occqtoxpxhtlmecihoyx', 'bpqvhkrhnrhsjlwgeslp', 'hqyldycgytadqeoyxetb']
+        test_value = ['vqhwbrihpdavvsiwrovq']
         self.instance.affects_stop_point_refs = test_value
         self.assertEqual(self.instance.affects_stop_point_refs, test_value)
     
@@ -147,19 +147,10 @@ class Test_PtSituationElement(unittest.TestCase):
         """
         Test validity_periods property
         """
-        test_value = [None, None, None, None]
+        test_value = [None]
         self.instance.validity_periods = test_value
         self.assertEqual(self.instance.validity_periods, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = PtSituationElement.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

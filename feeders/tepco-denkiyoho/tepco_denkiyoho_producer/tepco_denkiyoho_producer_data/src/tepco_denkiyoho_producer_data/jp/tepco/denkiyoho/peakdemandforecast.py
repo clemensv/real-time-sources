@@ -104,6 +104,8 @@ class PeakDemandForecast:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -172,13 +174,13 @@ class PeakDemandForecast:
         """
         return cls(
             date=datetime.date.today(),
-            time='ovuecilovnyhufrpidyi',
-            peak_demand_forecast_mw=float(86.78209372175262),
-            peak_demand_forecast_jp_unit_value=int(26),
-            peak_time_slot='wygozcshpulrybprmzqj',
+            time='xelcquvdvpnyjhnrhawk',
+            peak_demand_forecast_mw=float(43.153422346112016),
+            peak_demand_forecast_jp_unit_value=int(18),
+            peak_time_slot='rrsahwvbnymboincaqbb',
             update_datetime=datetime.datetime.now(datetime.timezone.utc),
             update_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            area_code='xdjhqipcrpbmwajtldem',
-            area_name_jp='eklhobqvhqtcimulszdz',
-            area_name_en='vkkhhjoujhyhkcuuhmgj'
+            area_code='uptiihtpstwpcmguubkv',
+            area_name_jp='euxjnmpxselnnlnbquib',
+            area_name_en='dqriqbeoxzrzuqpjdulv'
         )

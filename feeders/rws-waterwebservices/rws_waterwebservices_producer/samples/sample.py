@@ -34,11 +34,12 @@ from confluent_kafka import Producer as KafkaProducer
 
 from rws_waterwebservices_producer_kafka_producer.producer import NLRWSWaterwebservicesEventProducer
 from rws_waterwebservices_producer_kafka_producer.producer import NLRWSWaterwebservicesMqttEventProducer
+from rws_waterwebservices_producer_kafka_producer.producer import NLRWSWaterwebservicesAmqpEventProducer
 
 # imports for the data classes for each event
 
-from rws_waterwebservices_producer_data.station import Station
-from rws_waterwebservices_producer_data.waterlevelobservation import WaterLevelObservation
+from rws_waterwebservices_producer_data import Station
+from rws_waterwebservices_producer_data import WaterLevelObservation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -97,12 +98,36 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'NL.RWS.Waterwebservices.mqtt.WaterLevelObservation' event to Kafka topic.
     await nlrwswaterwebservices_mqtt_event_producer.send_nl_rws_waterwebservices_mqtt_water_level_observation(_station_code = 'TODO: replace me', data = _water_level_observation)
     print(f"Sent 'NL.RWS.Waterwebservices.mqtt.WaterLevelObservation' event: {_water_level_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        nlrwswaterwebservices_amqp_event_producer = NLRWSWaterwebservicesAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        nlrwswaterwebservices_amqp_event_producer = NLRWSWaterwebservicesAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- NL.RWS.Waterwebservices.amqp.Station ----
+    # TODO: Supply event data for the NL.RWS.Waterwebservices.amqp.Station event
+    _station = Station()
+
+    # sends the 'NL.RWS.Waterwebservices.amqp.Station' event to Kafka topic.
+    await nlrwswaterwebservices_amqp_event_producer.send_nl_rws_waterwebservices_amqp_station(_station_code = 'TODO: replace me', data = _station)
+    print(f"Sent 'NL.RWS.Waterwebservices.amqp.Station' event: {_station.to_json()}")
+
+    # ---- NL.RWS.Waterwebservices.amqp.WaterLevelObservation ----
+    # TODO: Supply event data for the NL.RWS.Waterwebservices.amqp.WaterLevelObservation event
+    _water_level_observation = WaterLevelObservation()
+
+    # sends the 'NL.RWS.Waterwebservices.amqp.WaterLevelObservation' event to Kafka topic.
+    await nlrwswaterwebservices_amqp_event_producer.send_nl_rws_waterwebservices_amqp_water_level_observation(_station_code = 'TODO: replace me', data = _water_level_observation)
+    print(f"Sent 'NL.RWS.Waterwebservices.amqp.WaterLevelObservation' event: {_water_level_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

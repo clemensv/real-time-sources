@@ -94,6 +94,8 @@ class TrafficFlowReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,9 +163,9 @@ class TrafficFlowReading:
             An instance of the dataclass.
         """
         return cls(
-            flow_data_id='cqmeecjurveprdzxrabt',
-            station_name='cgdtvqrdzrepvpooehqo',
+            flow_data_id='yacpjzndlwqepjzgnsvo',
+            station_name='xrqpnloifdiwtlrruqyx',
             region=RegionEnum.Eastern,
             flow_reading=FlowReadingenum.Unknown,
-            reading_time='ndardbjtoxfgooohruar'
+            reading_time='qkyjopleyivmzgzqeuuy'
         )

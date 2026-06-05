@@ -33,11 +33,13 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from king_county_marine_producer_kafka_producer.producer import USWAKingCountyMarineEventProducer
+from king_county_marine_producer_kafka_producer.producer import USWAKingCountyMarineMqttEventProducer
+from king_county_marine_producer_kafka_producer.producer import USWAKingCountyMarineAmqpEventProducer
 
 # imports for the data classes for each event
 
-from king_county_marine_producer_data.station import Station
-from king_county_marine_producer_data.waterqualityreading import WaterQualityReading
+from king_county_marine_producer_data import Station
+from king_county_marine_producer_data import WaterQualityReading
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,12 +74,60 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'US.WA.KingCounty.Marine.WaterQualityReading' event to Kafka topic.
     await uswaking_county_marine_event_producer.send_us_wa_king_county_marine_water_quality_reading(_station_id = 'TODO: replace me', data = _water_quality_reading)
     print(f"Sent 'US.WA.KingCounty.Marine.WaterQualityReading' event: {_water_quality_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uswaking_county_marine_mqtt_event_producer = USWAKingCountyMarineMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uswaking_county_marine_mqtt_event_producer = USWAKingCountyMarineMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- US.WA.KingCounty.Marine.mqtt.Station ----
+    # TODO: Supply event data for the US.WA.KingCounty.Marine.mqtt.Station event
+    _station = Station()
+
+    # sends the 'US.WA.KingCounty.Marine.mqtt.Station' event to Kafka topic.
+    await uswaking_county_marine_mqtt_event_producer.send_us_wa_king_county_marine_mqtt_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'US.WA.KingCounty.Marine.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- US.WA.KingCounty.Marine.mqtt.WaterQualityReading ----
+    # TODO: Supply event data for the US.WA.KingCounty.Marine.mqtt.WaterQualityReading event
+    _water_quality_reading = WaterQualityReading()
+
+    # sends the 'US.WA.KingCounty.Marine.mqtt.WaterQualityReading' event to Kafka topic.
+    await uswaking_county_marine_mqtt_event_producer.send_us_wa_king_county_marine_mqtt_water_quality_reading(_station_id = 'TODO: replace me', data = _water_quality_reading)
+    print(f"Sent 'US.WA.KingCounty.Marine.mqtt.WaterQualityReading' event: {_water_quality_reading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uswaking_county_marine_amqp_event_producer = USWAKingCountyMarineAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uswaking_county_marine_amqp_event_producer = USWAKingCountyMarineAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- US.WA.KingCounty.Marine.amqp.Station ----
+    # TODO: Supply event data for the US.WA.KingCounty.Marine.amqp.Station event
+    _station = Station()
+
+    # sends the 'US.WA.KingCounty.Marine.amqp.Station' event to Kafka topic.
+    await uswaking_county_marine_amqp_event_producer.send_us_wa_king_county_marine_amqp_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'US.WA.KingCounty.Marine.amqp.Station' event: {_station.to_json()}")
+
+    # ---- US.WA.KingCounty.Marine.amqp.WaterQualityReading ----
+    # TODO: Supply event data for the US.WA.KingCounty.Marine.amqp.WaterQualityReading event
+    _water_quality_reading = WaterQualityReading()
+
+    # sends the 'US.WA.KingCounty.Marine.amqp.WaterQualityReading' event to Kafka topic.
+    await uswaking_county_marine_amqp_event_producer.send_us_wa_king_county_marine_amqp_water_quality_reading(_station_id = 'TODO: replace me', data = _water_quality_reading)
+    print(f"Sent 'US.WA.KingCounty.Marine.amqp.WaterQualityReading' event: {_water_quality_reading.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

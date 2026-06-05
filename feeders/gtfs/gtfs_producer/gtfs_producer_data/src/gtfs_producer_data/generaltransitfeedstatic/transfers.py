@@ -90,6 +90,8 @@ class Transfers:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class Transfers:
             An instance of the dataclass.
         """
         return cls(
-            fromStopId='zvmpaeaabieqiahqqebn',
-            toStopId='fppiagskxvqrgcrmbesg',
-            transferType=int(76),
-            minTransferTime=int(38)
+            fromStopId='usyhoyoltjxzwqqoqeqz',
+            toStopId='snzpaadahrcozmxsaiaq',
+            transferType=int(44),
+            minTransferTime=int(33)
         )

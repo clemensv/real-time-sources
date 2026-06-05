@@ -5,6 +5,7 @@
 Tests for cdec_reservoirs_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../cdec_reservoirs_amqp_producer_data/src')))
@@ -25,7 +27,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from cdec_reservoirs_amqp_producer_amqp_producer import *
 from cdec_reservoirs_amqp_producer_data import ReservoirReading
-from test_cdec_reservoirs_amqp_producer_data_reservoirreading import Test_ReservoirReading
+from test_reservoirreading import Test_ReservoirReading
 
 
 
@@ -231,6 +233,45 @@ class TestGovCaWaterCdecAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(GovCaWaterCdecAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_reservoir_reading(self, artemis_container):
         """Send and receive a ReservoirReading message via ActiveMQ Artemis."""
@@ -260,6 +301,7 @@ class TestGovCaWaterCdecAmqpProducer:
                     _station_id="value",
                     _sensor_num="value",
                     _basin="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -267,6 +309,7 @@ class TestGovCaWaterCdecAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -290,6 +333,43 @@ class TestGovCaWaterCdecAmqpProducer:
                 assert received.subject == "{station_id}/{sensor_num}".format(station_id="value", sensor_num="value")
                 assert properties.get('basin') == "{basin}".format(basin="value")
                 assert properties.get('sensor_num') == "{sensor_num}".format(sensor_num="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}/{sensor_num}".format(station_id="value", sensor_num="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_reservoir_reading_single_fresh_connection(self, artemis_container):
+        """Send exactly one ReservoirReading message on a fresh producer connection."""
+        payload = Test_ReservoirReading.create_instance()
+
+        producer = GovCaWaterCdecAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_reservoir_reading(
+                data=payload,
+                _feedurl="value",
+                _station_id="value",
+                _sensor_num="value",
+                _basin="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'gov.ca.water.cdec.amqp.ReservoirReading'
+        assert received.body is not None
+        assert received.subject == "{station_id}/{sensor_num}".format(station_id="value", sensor_num="value")
+        assert properties.get('basin') == "{basin}".format(basin="value")
+        assert properties.get('sensor_num') == "{sensor_num}".format(sensor_num="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}/{sensor_num}".format(station_id="value", sensor_num="value"))[:128]
 

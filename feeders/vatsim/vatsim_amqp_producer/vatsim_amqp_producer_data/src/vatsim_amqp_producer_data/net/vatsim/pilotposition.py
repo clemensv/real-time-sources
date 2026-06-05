@@ -116,6 +116,8 @@ class PilotPosition:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -183,21 +185,21 @@ class PilotPosition:
             An instance of the dataclass.
         """
         return cls(
-            cid=int(91),
-            callsign='uobjixpufnpropjfgtxe',
-            latitude=float(88.1717938147432),
-            longitude=float(27.476969096438697),
-            altitude=int(45),
-            groundspeed=int(50),
-            heading=int(55),
-            transponder='dunpcjzmeclxqafrrmbk',
-            qnh_mb=int(30),
-            flight_rules='mhzeuaxfdmxvgpgpnylq',
-            aircraft_short='zxxlsmlllslnzodiabsg',
-            departure='vbumryyqkhpvlddrkrsx',
-            arrival='fjxvwoysineavsfvvrpv',
-            route='lvajitwtnrzkvrqjcjxy',
-            cruise_altitude='uykgbjffpdumgegysqzk',
-            pilot_rating=int(13),
-            last_updated='rogygrnfdedjbkvtmabw'
+            cid=int(87),
+            callsign='kqcalumuamlsrmnxztgl',
+            latitude=float(99.12334630214126),
+            longitude=float(31.025264187182),
+            altitude=int(89),
+            groundspeed=int(6),
+            heading=int(50),
+            transponder='kjyvipbajghdhdrumzko',
+            qnh_mb=int(16),
+            flight_rules='yckaabvqagobcdabfolk',
+            aircraft_short='nzfiigqgtdkkdbqpstfz',
+            departure='tubqzhysekdkiekjcqsr',
+            arrival='izbjfpkhlgjrwyrzqbfs',
+            route='exwkyjiyicpjlsyennou',
+            cruise_altitude='iucfkmbxuzlsfvervjed',
+            pilot_rating=int(43),
+            last_updated='epmzbhiwawqxcazpnsaf'
         )

@@ -34,7 +34,7 @@ class SpotPrice:
     country: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
     bidding_zone: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bidding_zone"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    unix_seconds: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unix_seconds"))
+    unix_seconds: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unix_seconds", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     price_eur_per_mwh: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="price_eur_per_mwh"))
     unit: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unit"))
 
@@ -49,6 +49,8 @@ class SpotPrice:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'unix_seconds' in data and isinstance(data['unix_seconds'], str):
+            data['unix_seconds'] = int(data['unix_seconds'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -59,6 +61,8 @@ class SpotPrice:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'unix_seconds' in asdict_result and asdict_result['unix_seconds'] is not None:
+            asdict_result['unix_seconds'] = str(asdict_result['unix_seconds'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -96,6 +100,8 @@ class SpotPrice:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,10 +169,10 @@ class SpotPrice:
             An instance of the dataclass.
         """
         return cls(
-            country='mxgrjqshgmputskczyrq',
-            bidding_zone='tzitgjbvwmbkopkmskqe',
+            country='vvptmypayicwyqvwowch',
+            bidding_zone='oqjvdcbtiwfydojgsaxp',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(77),
-            price_eur_per_mwh=float(45.889279627455515),
-            unit='krcogutscmzmgtxvjvrl'
+            unix_seconds=int(10),
+            price_eur_per_mwh=float(95.55024816906177),
+            unit='hqmqpfwnbovvneqpykkg'
         )

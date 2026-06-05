@@ -28,9 +28,9 @@ class Test_LKI(unittest.TestCase):
         Create instance of LKI for testing
         """
         instance = LKI(
-            station_number='dvihwwbcmrijwvtbtgfo',
-            value=int(32),
-            timestamp_measured='upyesnnbboamlzsvslzw'
+            station_number='ooaqkykmofyexnfnqclw',
+            value=int(96),
+            timestamp_measured='ltpnokhyqgpqcywzhxpd'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_LKI(unittest.TestCase):
         """
         Test station_number property
         """
-        test_value = 'dvihwwbcmrijwvtbtgfo'
+        test_value = 'ooaqkykmofyexnfnqclw'
         self.instance.station_number = test_value
         self.assertEqual(self.instance.station_number, test_value)
     
@@ -47,7 +47,7 @@ class Test_LKI(unittest.TestCase):
         """
         Test value property
         """
-        test_value = int(32)
+        test_value = int(96)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -55,19 +55,10 @@ class Test_LKI(unittest.TestCase):
         """
         Test timestamp_measured property
         """
-        test_value = 'upyesnnbboamlzsvslzw'
+        test_value = 'ltpnokhyqgpqcywzhxpd'
         self.instance.timestamp_measured = test_value
         self.assertEqual(self.instance.timestamp_measured, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = LKI.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

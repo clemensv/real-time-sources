@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from nepal_bipad_hydrology_producer_kafka_producer.producer import NpGovBipadHydrologyEventProducer
 from nepal_bipad_hydrology_producer_data import RiverStation
-from test_nepal_bipad_hydrology_producer_data_riverstation import Test_RiverStation
+from test_riverstation import Test_RiverStation
 from nepal_bipad_hydrology_producer_data import WaterLevelReading
-from test_nepal_bipad_hydrology_producer_data_waterlevelreading import Test_WaterLevelReading
+from test_waterlevelreading import Test_WaterLevelReading
 from nepal_bipad_hydrology_producer_kafka_producer.producer import NpGovBipadHydrologyMqttEventProducer
 from nepal_bipad_hydrology_producer_kafka_producer.producer import NpGovBipadHydrologyAmqpEventProducer
 
@@ -107,7 +107,8 @@ def test_np_gov_bipad_hydrology_npgovbipadhydrologyriverstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_np_gov_bipad_hydrology_river_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_np_gov_bipad_hydrology_river_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_np_gov_bipad_hydrology_npgovbipadhydrologywaterlevelreading(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_np_gov_bipad_hydrology_water_level_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_np_gov_bipad_hydrology_water_level_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_np_gov_bipad_hydrology_mqtt_npgovbipadhydrologymqttriverstation(kafka_e
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_np_gov_bipad_hydrology_mqtt_river_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_np_gov_bipad_hydrology_mqtt_river_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_np_gov_bipad_hydrology_mqtt_npgovbipadhydrologymqttwaterlevelreading(ka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_np_gov_bipad_hydrology_mqtt_water_level_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_np_gov_bipad_hydrology_mqtt_water_level_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_np_gov_bipad_hydrology_amqp_npgovbipadhydrologyamqpriverstation(kafka_e
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_np_gov_bipad_hydrology_amqp_river_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_np_gov_bipad_hydrology_amqp_river_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_np_gov_bipad_hydrology_amqp_npgovbipadhydrologyamqpwaterlevelreading(ka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_np_gov_bipad_hydrology_amqp_water_level_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_np_gov_bipad_hydrology_amqp_water_level_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

@@ -98,6 +98,8 @@ class BicycleCount:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,11 +167,11 @@ class BicycleCount:
             An instance of the dataclass.
         """
         return cls(
-            counter_id='orpefptogcqrrdkstnag',
-            counter_name='wpnlpkpvfhjzsapzfzbp',
-            count=int(87),
+            counter_id='oflsngprgtvkrobjjbrd',
+            counter_name='kdomjlfjzxnaahuxzfqg',
+            count=int(72),
             date=datetime.datetime.now(datetime.timezone.utc),
-            longitude=float(91.94550018691938),
-            latitude=float(26.719215032182408),
-            ce_id='gklcekpmtcyvdlmehkkr'
+            longitude=float(32.3787531288889),
+            latitude=float(61.00438416333533),
+            ce_id='bdnptterwjspbzcsifwm'
         )

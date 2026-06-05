@@ -98,6 +98,8 @@ class SnowObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,11 +167,11 @@ class SnowObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_triplet='oolzlqwdagwmmnncitrw',
+            station_triplet='yazznxovfqyhivxzhkpl',
             date_time=datetime.datetime.now(datetime.timezone.utc),
-            snow_water_equivalent=float(30.537273287538536),
-            snow_depth=float(65.91576316751951),
-            precipitation=float(11.429539586478343),
-            air_temperature=float(15.542660738002612),
-            state='drhkskeefddubldrpryh'
+            snow_water_equivalent=float(59.23465277389495),
+            snow_depth=float(24.902329016089052),
+            precipitation=float(32.51648177102705),
+            air_temperature=float(97.06300189660635),
+            state='xegbzxwhihydzwtcszyn'
         )

@@ -29,13 +29,13 @@ class Test_RoadStatus(unittest.TestCase):
         Create instance of RoadStatus for testing
         """
         instance = RoadStatus(
-            road_id='pyavyduqfuyeddiiyxei',
-            display_name='zqivdodrjlsauukqgksd',
-            status_severity='dllouypeshvyaebqawre',
-            status_severity_description='ygmxjkoemrrptlzdgbri',
-            bounds='khwsqbqbgacvgvczbvlc',
-            envelope='yvkuslnlcadynqsalxkw',
-            url='ooromjlvbbwbdptqmyjh',
+            road_id='qvvqoeydmgtxhgeiyyuw',
+            display_name='owhcnnptywqlcjbooffo',
+            status_severity='kwseimjjtzdtkbmnesgd',
+            status_severity_description='fnngkywrkxmuddxzwact',
+            bounds='ykozrzwsyyhtgqasvvxc',
+            envelope='lvfitwfxckythcnbdxkj',
+            url='ipanszzlcvkjegpuhuss',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
             status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )
@@ -46,7 +46,7 @@ class Test_RoadStatus(unittest.TestCase):
         """
         Test road_id property
         """
-        test_value = 'pyavyduqfuyeddiiyxei'
+        test_value = 'qvvqoeydmgtxhgeiyyuw'
         self.instance.road_id = test_value
         self.assertEqual(self.instance.road_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_RoadStatus(unittest.TestCase):
         """
         Test display_name property
         """
-        test_value = 'zqivdodrjlsauukqgksd'
+        test_value = 'owhcnnptywqlcjbooffo'
         self.instance.display_name = test_value
         self.assertEqual(self.instance.display_name, test_value)
     
@@ -62,7 +62,7 @@ class Test_RoadStatus(unittest.TestCase):
         """
         Test status_severity property
         """
-        test_value = 'dllouypeshvyaebqawre'
+        test_value = 'kwseimjjtzdtkbmnesgd'
         self.instance.status_severity = test_value
         self.assertEqual(self.instance.status_severity, test_value)
     
@@ -70,7 +70,7 @@ class Test_RoadStatus(unittest.TestCase):
         """
         Test status_severity_description property
         """
-        test_value = 'ygmxjkoemrrptlzdgbri'
+        test_value = 'fnngkywrkxmuddxzwact'
         self.instance.status_severity_description = test_value
         self.assertEqual(self.instance.status_severity_description, test_value)
     
@@ -78,7 +78,7 @@ class Test_RoadStatus(unittest.TestCase):
         """
         Test bounds property
         """
-        test_value = 'khwsqbqbgacvgvczbvlc'
+        test_value = 'ykozrzwsyyhtgqasvvxc'
         self.instance.bounds = test_value
         self.assertEqual(self.instance.bounds, test_value)
     
@@ -86,7 +86,7 @@ class Test_RoadStatus(unittest.TestCase):
         """
         Test envelope property
         """
-        test_value = 'yvkuslnlcadynqsalxkw'
+        test_value = 'lvfitwfxckythcnbdxkj'
         self.instance.envelope = test_value
         self.assertEqual(self.instance.envelope, test_value)
     
@@ -94,7 +94,7 @@ class Test_RoadStatus(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'ooromjlvbbwbdptqmyjh'
+        test_value = 'ipanszzlcvkjegpuhuss'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     

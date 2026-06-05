@@ -98,6 +98,8 @@ class Intensity:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,9 +169,9 @@ class Intensity:
         return cls(
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            forecast=int(1),
-            actual=int(21),
-            index='gckxeunuoyupoyfnocom',
-            region='icrzlojuituyupxmytun',
-            ce_id='xgzxoekrhgujwdwsaagb'
+            forecast=int(32),
+            actual=int(2),
+            index='bjamazeabtlnjbiuzkkr',
+            region='jljodxuibccbxxedomdq',
+            ce_id='gyjrqmmmznqdsddrczlw'
         )

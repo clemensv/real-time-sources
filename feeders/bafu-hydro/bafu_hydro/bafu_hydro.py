@@ -10,8 +10,8 @@ import requests
 from datetime import datetime, timezone
 from confluent_kafka import Producer
 
-from bafu_hydro_producer_data.ch.bafu.hydrology.station import Station
-from bafu_hydro_producer_data.ch.bafu.hydrology.waterlevelobservation import WaterLevelObservation
+from bafu_hydro_producer_data import Station
+from bafu_hydro_producer_data import WaterLevelObservation
 from bafu_hydro_producer_kafka_producer.producer import CHBAFUHydrologyEventProducer
 
 logger = logging.getLogger(__name__)

@@ -28,11 +28,11 @@ class Test_Salinity(unittest.TestCase):
         Create instance of Salinity for testing
         """
         instance = Salinity(
-            station_id='tlboxqyouzpnzihjhhuj',
-            timestamp='ljwomjjjrsfgqkpdqxvy',
-            salinity=float(64.91876446378096),
-            grams_per_kg=float(0.5815611093438311),
-            region='rehgqmndgybucvoospvx'
+            station_id='imlhrmygvsqmukxmktrb',
+            timestamp='hrijxarqpujthaxmtetv',
+            salinity=float(31.284601192417384),
+            grams_per_kg=float(52.89082348189764),
+            region='lpopbhtbncnkgxkpmbtr'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'tlboxqyouzpnzihjhhuj'
+        test_value = 'imlhrmygvsqmukxmktrb'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'ljwomjjjrsfgqkpdqxvy'
+        test_value = 'hrijxarqpujthaxmtetv'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -57,7 +57,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test salinity property
         """
-        test_value = float(64.91876446378096)
+        test_value = float(31.284601192417384)
         self.instance.salinity = test_value
         self.assertEqual(self.instance.salinity, test_value)
     
@@ -65,7 +65,7 @@ class Test_Salinity(unittest.TestCase):
         """
         Test grams_per_kg property
         """
-        test_value = float(0.5815611093438311)
+        test_value = float(52.89082348189764)
         self.instance.grams_per_kg = test_value
         self.assertEqual(self.instance.grams_per_kg, test_value)
     
@@ -73,19 +73,10 @@ class Test_Salinity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'rehgqmndgybucvoospvx'
+        test_value = 'lpopbhtbncnkgxkpmbtr'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Salinity.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

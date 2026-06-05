@@ -12,12 +12,12 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from meteoalarm_producer_data.msgtypeenum import MsgTypeenum
 from meteoalarm_producer_data.categoryenum import CategoryEnum
 from meteoalarm_producer_data.urgencyenum import UrgencyEnum
 from meteoalarm_producer_data.scopeenum import ScopeEnum
-from meteoalarm_producer_data.certaintyenum import CertaintyEnum
+from meteoalarm_producer_data.msgtypeenum import MsgTypeenum
 from meteoalarm_producer_data.severityenum import SeverityEnum
+from meteoalarm_producer_data.certaintyenum import CertaintyEnum
 from meteoalarm_producer_data.statusenum import StatusEnum
 import datetime
 
@@ -26,7 +26,7 @@ import datetime
 @dataclass
 class WeatherWarning:
     """
-    A severe weather warning from the EUMETNET Meteoalarm system. Contains CAP-structured alert data with awareness level and type, geographic area with EMMA/NUTS geocodes, and multilingual info blocks.
+    A severe weather warning from the EUMETNET Meteoalarm system, aggregating warnings from 30+ European national meteorological services. Each warning follows the CAP (Common Alerting Protocol) structure with awareness levels and hazard types.
     
     Attributes:
         identifier (str)
@@ -143,6 +143,8 @@ class WeatherWarning:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -210,30 +212,30 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            identifier='jcseyfrokqmmmotvqcac',
-            sender='pamiynplxlshsvdukjos',
+            identifier='jtupcrgydpazyahiblis',
+            sender='euxicpbuijokullckcpy',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
             scope=ScopeEnum.Public,
-            country='rfxguxjeugezntzlkwft',
-            event='vgscwrddhfxkpvgnrylk',
+            country='vqqcukpamfjgxdxigvos',
+            event='bgborlokfsajnfopgixc',
             category=CategoryEnum.Met,
             severity=SeverityEnum.Extreme,
             urgency=UrgencyEnum.Immediate,
             certainty=CertaintyEnum.Observed,
-            headline='djetvtjklfuwrhrxpsto',
-            description='whgnjwqnlqvkuilakxew',
-            instruction='ssqrbsbrnyzaivjmnpho',
+            headline='wzbkalmuznknlolpaypc',
+            description='usxwdpqdibjmqivyvzwa',
+            instruction='uohojkhfhpozzlaazycb',
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
-            web='fapxhttuddwwpsngmpnd',
-            contact='jmpcgiqzakmdpkgurdvf',
-            awareness_level='fucadwszoyzusdanmgxw',
-            awareness_type='nutybjeigshssdzrpznf',
-            area_desc='qqzazmtnfbyrcdspcdcz',
-            geocodes='mzukrkpcjatyopaxjhqq',
-            language='auotomzgkcwzfsmeulgg',
-            awareness_type_raw='pvjpszmmufjuztyxbacq'
+            web='crmkzqulioesagsluvkf',
+            contact='aqgzbbonmpvmvpfbbssj',
+            awareness_level='feuxaiofqnbbqnweodvm',
+            awareness_type='ombdhlndnpkommlkgybj',
+            area_desc='oncwhxucsbmhwcqnmyza',
+            geocodes='lqpsmwvglxuyajjvpsal',
+            language='owriwftvuulltrrccqtu',
+            awareness_type_raw='qquczutsybiexozyxlus'
         )

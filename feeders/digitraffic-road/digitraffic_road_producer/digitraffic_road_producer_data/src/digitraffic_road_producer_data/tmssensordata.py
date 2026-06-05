@@ -17,7 +17,7 @@ import json
 @dataclass
 class TmsSensorData:
     """
-    Traffic Measurement System (TMS) sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single computational sensor measurement at a TMS station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic tms-v2/{stationId}/{sensorId}. TMS stations measure vehicle counts (passings) and average speeds aggregated over rolling or fixed time windows. Over 500 stations across the Finnish road network report data every minute. See https://www.digitraffic.fi/en/road-traffic/ and the TMS documentation at https://www.digitraffic.fi/en/road-traffic/lam/ for full sensor descriptions.
+    A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
     
     Attributes:
         station_id (int)
@@ -94,6 +94,8 @@ class TmsSensorData:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class TmsSensorData:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(46),
-            sensor_id=int(9),
-            value=float(93.22125726948151),
-            time=int(10),
-            start=int(22),
-            end=int(76)
+            station_id=int(48),
+            sensor_id=int(68),
+            value=float(62.608744506878566),
+            time=int(93),
+            start=int(74),
+            end=int(17)
         )

@@ -28,9 +28,9 @@ class Test_UnnamedClass(unittest.TestCase):
         Create instance of UnnamedClass for testing
         """
         instance = UnnamedClass(
-            self_='hrxxkpagtxlrgenatbdg',
-            region='fyxytgffpblyoifyeoht',
-            station_id='kupwqzqurwqnfauzppjy'
+            self_='bhtygboyswpcqaneqqan',
+            region='wychbbpdddlysfmlswwa',
+            station_id='tdvtvaxaljmeyabaldha'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'hrxxkpagtxlrgenatbdg'
+        test_value = 'bhtygboyswpcqaneqqan'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     
@@ -47,7 +47,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'fyxytgffpblyoifyeoht'
+        test_value = 'wychbbpdddlysfmlswwa'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -55,19 +55,10 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'kupwqzqurwqnfauzppjy'
+        test_value = 'tdvtvaxaljmeyabaldha'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = UnnamedClass.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

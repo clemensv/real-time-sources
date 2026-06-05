@@ -12,8 +12,6 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-import avro.schema
-import avro.io
 import datetime
 
 
@@ -30,10 +28,6 @@ class Reading:
         value (float)
         river (typing.Optional[str])
     """
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"Reading\", \"doc\": \"Payload record for reading events in the UK Environment Agency Flood Monitoring source.\", \"fields\": [{\"name\": \"station_reference\", \"type\": \"string\", \"doc\": \"Provider-supplied station reference value for this record.\"}, {\"name\": \"date_time\", \"type\": {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}, \"doc\": \"Time associated with the date time value.\"}, {\"name\": \"measure\", \"type\": \"string\", \"doc\": \"Provider-supplied measure value for this record.\"}, {\"name\": \"value\", \"type\": \"double\", \"doc\": \"Measured value reported by the upstream provider.\"}, {\"name\": \"river\", \"type\": [\"null\", \"string\"], \"doc\": \"Stable routing axis used by MQTT and AMQP transport templates for uk-ea-flood-monitoring.\", \"default\": null}]}"
-    )
     
     
     station_reference: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_reference"))
@@ -54,35 +48,6 @@ class Reading:
             The dataclass representation of the dataclass.
         """
         return cls(**data)
-    @classmethod
-    def from_avro_dict(cls, data: dict) -> 'Reading':
-        """
-        Converts a dictionary from Avro deserialization to a dataclass instance.
-        Handles conversion of string representations back to Python types for
-        extended logical types.
-        
-        Args:
-            data: The dictionary from Avro deserialization.
-        
-        Returns:
-            The dataclass representation.
-        """
-        # Convert string values back to Python types for Avro string-based logical types
-        converted = data.copy()
-        if 'station_reference' in converted and converted['station_reference'] is not None:
-            value = converted['station_reference']
-        if 'date_time' in converted and converted['date_time'] is not None:
-            value = converted['date_time']
-            if isinstance(value, str):
-                converted['date_time'] = datetime.datetime.fromisoformat(value)
-        if 'measure' in converted and converted['measure'] is not None:
-            value = converted['measure']
-        if 'value' in converted and converted['value'] is not None:
-            value = converted['value']
-        if 'river' in converted and converted['river'] is not None:
-            value = converted['river']
-        
-        return cls(**converted)
 
     def to_serializer_dict(self) -> dict:
         """
@@ -106,26 +71,6 @@ class Reading:
             return k[:-1] if k.endswith('_') else k
         return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
 
-    def to_avro_dict(self) -> dict:
-        """
-        Converts the dataclass to a dictionary suitable for Avro serialization.
-        Handles conversion of Python types to Avro-compatible string representations
-        for extended logical types.
-
-        Returns:
-            The dictionary representation suitable for Avro serialization.
-        """
-        result = self.to_serializer_dict()
-        converted = result.copy()
-        
-        # Convert specific fields based on their source types
-        if 'date_time' in converted and converted['date_time'] is not None:
-            value = converted['date_time']
-            if isinstance(value, datetime.datetime):
-                converted['date_time'] = value.isoformat()
-        
-        return converted
-
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
@@ -134,8 +79,6 @@ class Reading:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
                     'application/json': Encodes the data to JSON format.
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
@@ -147,17 +90,12 @@ class Reading:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            # Convert to Avro binary format using the embedded schema
-            writer = avro.io.DatumWriter(self.AvroType)
-            with io.BytesIO() as stream:
-                encoder = avro.io.BinaryEncoder(stream)
-                writer.write(self.to_avro_dict(), encoder)
-                result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -183,8 +121,6 @@ class Reading:
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
-                    'avro/binary': Attempts to decode the data from Avro binary format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
         Returns:
@@ -209,16 +145,6 @@ class Reading:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            if isinstance(data, bytes):
-                # Decode from Avro binary format using the embedded schema
-                reader = avro.io.DatumReader(cls.AvroType)
-                with io.BytesIO(data) as stream:
-                    decoder = avro.io.BinaryDecoder(stream)
-                    _record = reader.read(decoder)
-                    return Reading.from_avro_dict(_record)
-            else:
-                raise NotImplementedError('Data is not of a supported type for Avro deserialization')
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -237,9 +163,9 @@ class Reading:
             An instance of the dataclass.
         """
         return cls(
-            station_reference='ucakjgogqfinlhfygzxx',
+            station_reference='hpbvmuhgkibrefoyzyzo',
             date_time=datetime.datetime.now(datetime.timezone.utc),
-            measure='wvfhxqwrfmopjwjfftpx',
-            value=float(60.44744259800721),
-            river='jevgdulejrbtefwtmlcw'
+            measure='sbmovaqedvbtcwsmeech',
+            value=float(78.15013748102498),
+            river='evbrjifublsxvlfkuylz'
         )

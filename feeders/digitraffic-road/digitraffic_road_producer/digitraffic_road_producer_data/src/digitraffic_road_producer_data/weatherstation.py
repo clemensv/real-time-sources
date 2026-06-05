@@ -17,7 +17,7 @@ import json
 @dataclass
 class WeatherStation:
     """
-    Road weather station metadata from the Finnish national road network operated by Fintraffic. Over 350 road weather stations measure atmospheric and road surface conditions. Station metadata includes geographic location, road address, municipality, sensor list, collection parameters, and administrative details. This reference data contextualizes the real-time WeatherSensorData telemetry events and is fetched from the Digitraffic REST API at https://tie.digitraffic.fi/api/weather/v1/stations. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.
+    A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
     
     Attributes:
         station_id (int)
@@ -138,6 +138,8 @@ class WeatherStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -205,32 +207,32 @@ class WeatherStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(35),
-            name='ihficlkuolbzdtubrfkr',
-            names_fi='cpdkbznnylhigmnpyspq',
-            names_sv='xxrbcwtoebiuvdjcrcov',
-            names_en='joszvxjbibjttlvbusfo',
-            longitude=float(22.36188932627188),
-            latitude=float(75.7689500886018),
-            altitude=float(85.71589562186816),
-            municipality='duoloywyozscdsezdawa',
-            municipality_code=int(6),
-            province='ozxpmhuiyegvypzrrlfn',
-            province_code=int(56),
-            road_number=int(69),
-            road_section=int(1),
-            distance_from_section_start=int(88),
-            carriageway='grsbdcabeznvkgvoxhlc',
-            side='tjomvvdhaqawhwacecit',
-            contract_area='hvppggxusdfsrjmsdatm',
-            contract_area_code=int(57),
-            station_type='efkwxhbabcqwkxcmioic',
-            master=True,
-            collection_status='cybofqmnxufifiunykdz',
-            collection_interval=int(49),
-            state='mlbujtwdsdskvobhsqde',
-            start_time='xoxpfvpbcnzmmemciczp',
-            livi_id='odeiuktkxiypnvdsvpzn',
-            sensors=[int(23), int(90)],
-            data_updated_time='teqwrnbkdrpftvpptftk'
+            station_id=int(78),
+            name='dbcsvmeidpsmnssrtoqi',
+            names_fi='vjneyzcuqmsclvvadbxg',
+            names_sv='fsqogrvuuilvfrgpltwe',
+            names_en='ozzheacmsboowzqedzxo',
+            longitude=float(99.51189586662699),
+            latitude=float(87.44334418390378),
+            altitude=float(13.603522957088543),
+            municipality='iguudymcogjcmiuaoqsf',
+            municipality_code=int(38),
+            province='vrbpujnbphcfkiecnqul',
+            province_code=int(80),
+            road_number=int(21),
+            road_section=int(33),
+            distance_from_section_start=int(65),
+            carriageway='hxcldezevshppijwwapc',
+            side='vwfllwxxtvaouajdqkgl',
+            contract_area='lyltjaqgxvywuzaovffx',
+            contract_area_code=int(89),
+            station_type='evewgehkswpqcbseychn',
+            master=False,
+            collection_status='szshtupcxdbxmuzchxsd',
+            collection_interval=int(72),
+            state='xbdnfxfcuyiupuidkicr',
+            start_time='ldojsmdekfwjnllbgdmx',
+            livi_id='hhigafgikcqgpbjsryiu',
+            sensors=[int(71), int(8), int(37)],
+            data_updated_time='dgrikboivklmosowneer'
         )

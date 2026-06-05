@@ -131,12 +131,12 @@ producer = DkDmiMetObsAmqpProducer(
 # Send a message
 
 producer.send_station(
-    data=object(...),
+    data=MetObsStation(...),
     content_type="application/json"
 )
 
 producer.send_observation(
-    data=object(...),
+    data=MetObsObservation(...),
     content_type="application/json"
 )
 
@@ -154,15 +154,23 @@ The producer constructor accepts:
 - `port` (int): AMQP broker port (default: 5672, for TLS typically 5671)
 - `username` (Optional[str]): Username for SASL authentication
 - `password` (Optional[str]): Password for SASL authentication
+- `content_mode` (Literal['structured', 'binary']): CloudEvents encoding mode (default: 'structured')
+  - **structured**: Entire CloudEvent as JSON in message body
+  - **binary**: Event data in body, CloudEvents attributes in AMQP application properties
+- `format_type` (str): Content type for structured mode (default: 'application/json')
 
 #### Available Methods
 
 
 
 ##### `send_station()`
+Reference data for a DMI meteorological observation station. Emitted at feeder startup and refreshed daily. Stations
+cover Denmark, Greenland (DNK/GRL) and the Faroe Islands (FRO).
 
 **Parameters:**
-- `data` (object): The message data object
+- `data` (MetObsStation): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_station_batch()`
@@ -170,15 +178,22 @@ The producer constructor accepts:
 Send multiple Station messages in sequence.
 
 **Parameters:**
-- `data_array` (List[object]): Array of message data objects
+- `data_array` (List[MetObsStation]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data
 
 
 
 ##### `send_observation()`
+A single meteorological observation value reported by a station for one parameter at a specific observed time. Cadence
+depends on parameter (10-minute or hourly).
 
 **Parameters:**
-- `data` (object): The message data object
+- `data` (MetObsObservation): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
+- `_parameter_id` (str): Value for placeholder parameter_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_observation_batch()`
@@ -186,7 +201,10 @@ Send multiple Station messages in sequence.
 Send multiple Observation messages in sequence.
 
 **Parameters:**
-- `data_array` (List[object]): Array of message data objects
+- `data_array` (List[MetObsObservation]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
+- `_parameter_id` (str): Value for placeholder parameter_id in attribute subject
 - `content_type` (str): Content type of the message data
 
 
@@ -213,22 +231,22 @@ producer = DkDmiOceanObsAmqpProducer(
 # Send a message
 
 producer.send_station(
-    data=object(...),
+    data=OceanStation(...),
     content_type="application/json"
 )
 
 producer.send_tidewater_station(
-    data=object(...),
+    data=TidewaterStation(...),
     content_type="application/json"
 )
 
 producer.send_observation(
-    data=object(...),
+    data=OceanObservation(...),
     content_type="application/json"
 )
 
 producer.send_tidewater_prediction(
-    data=object(...),
+    data=TidewaterPrediction(...),
     content_type="application/json"
 )
 
@@ -246,15 +264,23 @@ The producer constructor accepts:
 - `port` (int): AMQP broker port (default: 5672, for TLS typically 5671)
 - `username` (Optional[str]): Username for SASL authentication
 - `password` (Optional[str]): Password for SASL authentication
+- `content_mode` (Literal['structured', 'binary']): CloudEvents encoding mode (default: 'structured')
+  - **structured**: Entire CloudEvent as JSON in message body
+  - **binary**: Event data in body, CloudEvents attributes in AMQP application properties
+- `format_type` (str): Content type for structured mode (default: 'application/json')
 
 #### Available Methods
 
 
 
 ##### `send_station()`
+Reference data for an oceanographic observation station (tide gauge or other coastal sensor). Owners include DMI and
+Kystdirektoratet (Danish Coastal Authority).
 
 **Parameters:**
-- `data` (object): The message data object
+- `data` (OceanStation): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_station_batch()`
@@ -262,15 +288,21 @@ The producer constructor accepts:
 Send multiple Station messages in sequence.
 
 **Parameters:**
-- `data_array` (List[object]): Array of message data objects
+- `data_array` (List[OceanStation]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data
 
 
 
 ##### `send_tidewater_station()`
+Reference data for a station/grid-point at which DMI publishes tidewater (sea-level) predictions. The set partially
+overlaps physical tide gauges but also includes prediction-only grid points (e.g. Faroes).
 
 **Parameters:**
-- `data` (object): The message data object
+- `data` (TidewaterStation): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_tidewater_station_batch()`
@@ -278,15 +310,23 @@ Send multiple Station messages in sequence.
 Send multiple TidewaterStation messages in sequence.
 
 **Parameters:**
-- `data_array` (List[object]): Array of message data objects
+- `data_array` (List[TidewaterStation]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data
 
 
 
 ##### `send_observation()`
+A single oceanographic observation. Parameters are sealev_dvr (sea level vs DVR90 datum, cm), sealev_ln (sea level vs
+local zero, cm), sea_reg (registered sea level by Kystdirektoratet, cm), and tw (water temperature, deg C). 10-minute
+cadence.
 
 **Parameters:**
-- `data` (object): The message data object
+- `data` (OceanObservation): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
+- `_parameter_id` (str): Value for placeholder parameter_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_observation_batch()`
@@ -294,15 +334,22 @@ Send multiple TidewaterStation messages in sequence.
 Send multiple Observation messages in sequence.
 
 **Parameters:**
-- `data_array` (List[object]): Array of message data objects
+- `data_array` (List[OceanObservation]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
+- `_parameter_id` (str): Value for placeholder parameter_id in attribute subject
 - `content_type` (str): Content type of the message data
 
 
 
 ##### `send_tidewater_prediction()`
+A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. predictionType is typically
+'10minutes'; predictions are issued forward ~30 days.
 
 **Parameters:**
-- `data` (object): The message data object
+- `data` (TidewaterPrediction): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_tidewater_prediction_batch()`
@@ -310,7 +357,9 @@ Send multiple Observation messages in sequence.
 Send multiple TidewaterPrediction messages in sequence.
 
 **Parameters:**
-- `data_array` (List[object]): Array of message data objects
+- `data_array` (List[TidewaterPrediction]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data
 
 
@@ -337,12 +386,12 @@ producer = DkDmiLightningAmqpProducer(
 # Send a message
 
 producer.send_sensor(
-    data=object(...),
+    data=LightningSensor(...),
     content_type="application/json"
 )
 
 producer.send_strike(
-    data=object(...),
+    data=LightningStrike(...),
     content_type="application/json"
 )
 
@@ -360,15 +409,23 @@ The producer constructor accepts:
 - `port` (int): AMQP broker port (default: 5672, for TLS typically 5671)
 - `username` (Optional[str]): Username for SASL authentication
 - `password` (Optional[str]): Password for SASL authentication
+- `content_mode` (Literal['structured', 'binary']): CloudEvents encoding mode (default: 'structured')
+  - **structured**: Entire CloudEvent as JSON in message body
+  - **binary**: Event data in body, CloudEvents attributes in AMQP application properties
+- `format_type` (str): Content type for structured mode (default: 'application/json')
 
 #### Available Methods
 
 
 
 ##### `send_sensor()`
+Reference data for one of DMI's lightning detection sensors. Six DMI-owned sensors cover Denmark; third-party sensor IDs
+that appear in observation.sensors are not catalogued here.
 
 **Parameters:**
-- `data` (object): The message data object
+- `data` (LightningSensor): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_sensor_id` (str): Value for placeholder sensor_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_sensor_batch()`
@@ -376,15 +433,21 @@ The producer constructor accepts:
 Send multiple Sensor messages in sequence.
 
 **Parameters:**
-- `data_array` (List[object]): Array of message data objects
+- `data_array` (List[LightningSensor]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_sensor_id` (str): Value for placeholder sensor_id in attribute subject
 - `content_type` (str): Content type of the message data
 
 
 
 ##### `send_strike()`
+A single triangulated lightning strike. Type 0 = cloud-to-ground negative, 1 = cloud-to-ground positive, 2 = cloud-to-
+cloud. amp is signed peak current in kA. observed timestamps have microsecond precision.
 
 **Parameters:**
-- `data` (object): The message data object
+- `data` (LightningStrike): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_strike_id` (str): Value for placeholder strike_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_strike_batch()`
@@ -392,7 +455,9 @@ Send multiple Sensor messages in sequence.
 Send multiple Strike messages in sequence.
 
 **Parameters:**
-- `data_array` (List[object]): Array of message data objects
+- `data_array` (List[LightningStrike]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_strike_id` (str): Value for placeholder strike_id in attribute subject
 - `content_type` (str): Content type of the message data
 
 
@@ -428,7 +493,7 @@ class BatchProducer:
         self.producer = producer
         self.semaphore = asyncio.Semaphore(max_concurrency)
 
-    async def send_batch_async(self, data_array: List[object]):
+    async def send_batch_async(self, data_array: List[MetObsStation]):
         """Send multiple messages with concurrency control."""
         async def send_one(data):
             async with self.semaphore:
@@ -444,7 +509,7 @@ class BatchProducer:
 producer = DkDmiMetObsAmqpProducer(host="localhost", address="my-queue")
 batch_producer = BatchProducer(producer, max_concurrency=20)
 
-data_list = [object(...) for _ in range(100)]
+data_list = [MetObsStation(...) for _ in range(100)]
 asyncio.run(batch_producer.send_batch_async(data_list))
 ```
 
@@ -454,7 +519,7 @@ class BatchProducer:
         self.producer = producer
         self.semaphore = asyncio.Semaphore(max_concurrency)
 
-    async def send_batch_async(self, data_array: List[object]):
+    async def send_batch_async(self, data_array: List[OceanStation]):
         """Send multiple messages with concurrency control."""
         async def send_one(data):
             async with self.semaphore:
@@ -470,7 +535,7 @@ class BatchProducer:
 producer = DkDmiOceanObsAmqpProducer(host="localhost", address="my-queue")
 batch_producer = BatchProducer(producer, max_concurrency=20)
 
-data_list = [object(...) for _ in range(100)]
+data_list = [OceanStation(...) for _ in range(100)]
 asyncio.run(batch_producer.send_batch_async(data_list))
 ```
 
@@ -480,7 +545,7 @@ class BatchProducer:
         self.producer = producer
         self.semaphore = asyncio.Semaphore(max_concurrency)
 
-    async def send_batch_async(self, data_array: List[object]):
+    async def send_batch_async(self, data_array: List[LightningSensor]):
         """Send multiple messages with concurrency control."""
         async def send_one(data):
             async with self.semaphore:
@@ -496,7 +561,7 @@ class BatchProducer:
 producer = DkDmiLightningAmqpProducer(host="localhost", address="my-queue")
 batch_producer = BatchProducer(producer, max_concurrency=20)
 
-data_list = [object(...) for _ in range(100)]
+data_list = [LightningSensor(...) for _ in range(100)]
 asyncio.run(batch_producer.send_batch_async(data_list))
 ```
 
@@ -628,7 +693,7 @@ class ResilientProducer:
             **self.kwargs
         )
 
-    def send_with_retry(self, data: object, max_retries: int = 3):
+    def send_with_retry(self, data: MetObsStation, max_retries: int = 3):
         """Send message with automatic retry on connection failure."""
         for attempt in range(max_retries):
             try:
@@ -668,7 +733,7 @@ class ResilientProducer:
             **self.kwargs
         )
 
-    def send_with_retry(self, data: object, max_retries: int = 3):
+    def send_with_retry(self, data: OceanStation, max_retries: int = 3):
         """Send message with automatic retry on connection failure."""
         for attempt in range(max_retries):
             try:
@@ -708,7 +773,7 @@ class ResilientProducer:
             **self.kwargs
         )
 
-    def send_with_retry(self, data: object, max_retries: int = 3):
+    def send_with_retry(self, data: LightningSensor, max_retries: int = 3):
         """Send message with automatic retry on connection failure."""
         for attempt in range(max_retries):
             try:
@@ -734,7 +799,43 @@ Add extension attributes to CloudEvents:
 ```python
 
 
+producer = DkDmiMetObsAmqpProducer(host="localhost", address="my-queue")
 
+# CloudEvents extension attributes can be added via metadata
+producer.send_station(
+    data=data,
+    _tenant="contoso",           # Custom extension attribute
+    _deviceid="device-001",      # Custom extension attribute
+    _region="us-west-2",         # Custom extension attribute
+    _priority="high",            # Custom extension attribute
+    content_type="application/json"
+)
+
+
+producer = DkDmiOceanObsAmqpProducer(host="localhost", address="my-queue")
+
+# CloudEvents extension attributes can be added via metadata
+producer.send_station(
+    data=data,
+    _tenant="contoso",           # Custom extension attribute
+    _deviceid="device-001",      # Custom extension attribute
+    _region="us-west-2",         # Custom extension attribute
+    _priority="high",            # Custom extension attribute
+    content_type="application/json"
+)
+
+
+producer = DkDmiLightningAmqpProducer(host="localhost", address="my-queue")
+
+# CloudEvents extension attributes can be added via metadata
+producer.send_sensor(
+    data=data,
+    _tenant="contoso",           # Custom extension attribute
+    _deviceid="device-001",      # Custom extension attribute
+    _region="us-west-2",         # Custom extension attribute
+    _priority="high",            # Custom extension attribute
+    content_type="application/json"
+)
 
 ```
 
@@ -764,7 +865,7 @@ from typing import Any
 
 def send_with_retry(
     producer: DkDmiMetObsAmqpProducer,
-    data: object,
+    data: MetObsStation,
     max_retries: int = 5,
     initial_delay: float = 1.0,
     max_delay: float = 60.0
@@ -797,7 +898,7 @@ def send_with_retry(
 
 def send_with_retry(
     producer: DkDmiOceanObsAmqpProducer,
-    data: object,
+    data: OceanStation,
     max_retries: int = 5,
     initial_delay: float = 1.0,
     max_delay: float = 60.0
@@ -830,7 +931,7 @@ def send_with_retry(
 
 def send_with_retry(
     producer: DkDmiLightningAmqpProducer,
-    data: object,
+    data: LightningSensor,
     max_retries: int = 5,
     initial_delay: float = 1.0,
     max_delay: float = 60.0
@@ -879,7 +980,7 @@ class CircuitBreakerProducer:
         self.last_failure_time = None
         self.is_open = False
 
-    def send(self, data: object):
+    def send(self, data: MetObsStation):
         """Send message with circuit breaker protection."""
         # Check if circuit breaker is open
         if self.is_open:
@@ -913,7 +1014,7 @@ class CircuitBreakerProducer:
         self.last_failure_time = None
         self.is_open = False
 
-    def send(self, data: object):
+    def send(self, data: OceanStation):
         """Send message with circuit breaker protection."""
         # Check if circuit breaker is open
         if self.is_open:
@@ -947,7 +1048,7 @@ class CircuitBreakerProducer:
         self.last_failure_time = None
         self.is_open = False
 
-    def send(self, data: object):
+    def send(self, data: LightningSensor):
         """Send message with circuit breaker protection."""
         # Check if circuit breaker is open
         if self.is_open:

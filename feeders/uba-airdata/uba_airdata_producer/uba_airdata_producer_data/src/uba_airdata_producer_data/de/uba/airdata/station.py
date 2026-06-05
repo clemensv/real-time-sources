@@ -118,6 +118,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -185,22 +187,22 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(55),
-            station_code='zdewlaernchhvwscbuqw',
-            station_name='djposyprfbadrvedvcxe',
-            station_city='mghpjahgublrgydmtfen',
-            station_synonym='rionruwfiilvdemoqgnw',
-            active_from='zxkkccjyqfspzgrznxub',
-            active_to='jpytrhscdveofgdknerv',
-            longitude=float(17.825724598425197),
-            latitude=float(29.47291004499224),
-            network_id=int(48),
-            network_code='ttpvgefkufyrwtqcgrzl',
-            network_name='nbgsfhhtshkdskwmcchx',
-            setting_name='vgzftfcpnqajcifquwjl',
-            setting_short='uzaujtokgennnraksixy',
-            type_name='xedjeihudtvrvjsrcwyc',
-            street='vopzlmgmknypteuonyym',
-            street_nr='oykeerrkmgkehmhdyrln',
-            zip_code='gmntvtcwesthdveyxsdq'
+            station_id=int(30),
+            station_code='vfnftkdllqjwwpqkbfzx',
+            station_name='vulnbdjnenufbhlcqfgb',
+            station_city='plelvdgobrdtjzcnlqxv',
+            station_synonym='npunuuqgkxsbiahhumye',
+            active_from='kpkkesyshvzdqgbsfjhf',
+            active_to='bzokliwvvbsmusporqau',
+            longitude=float(72.66714333305863),
+            latitude=float(68.57648893445189),
+            network_id=int(41),
+            network_code='zrqivskvdrkldlawrbry',
+            network_name='aoxzdqcedluurzjbouzk',
+            setting_name='eekhxmmwgdtxlixkjzmt',
+            setting_short='ptzgwpabhsidgqvyhzht',
+            type_name='epxkzkotvultwqusfboe',
+            street='evapqbhcfhrkofjoahtu',
+            street_nr='zyutuvnldyvvqmcbpklq',
+            zip_code='ckybsbvbxooundwntlzv'
         )

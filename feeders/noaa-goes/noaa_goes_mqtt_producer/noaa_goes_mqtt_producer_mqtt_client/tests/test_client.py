@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,17 +17,17 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import noaa_goes_mqtt_producer_data
 from noaa_goes_mqtt_producer_data import GoesXrayFlux
-from test_noaa_goes_mqtt_producer_data_goesxrayflux import Test_GoesXrayFlux
+from test_goesxrayflux import Test_GoesXrayFlux
 from noaa_goes_mqtt_producer_data import GoesProtonFlux
-from test_noaa_goes_mqtt_producer_data_goesprotonflux import Test_GoesProtonFlux
+from test_goesprotonflux import Test_GoesProtonFlux
 from noaa_goes_mqtt_producer_data import GoesElectronFlux
-from test_noaa_goes_mqtt_producer_data_goeselectronflux import Test_GoesElectronFlux
+from test_goeselectronflux import Test_GoesElectronFlux
 from noaa_goes_mqtt_producer_data import GoesMagnetometer
-from test_noaa_goes_mqtt_producer_data_goesmagnetometer import Test_GoesMagnetometer
+from test_goesmagnetometer import Test_GoesMagnetometer
 from noaa_goes_mqtt_producer_data import SpaceWeatherAlert
-from test_noaa_goes_mqtt_producer_data_spaceweatheralert import Test_SpaceWeatherAlert
+from test_spaceweatheralert import Test_SpaceWeatherAlert
 from noaa_goes_mqtt_producer_data import XrayFlare
-from test_noaa_goes_mqtt_producer_data_xrayflare import Test_XrayFlare
+from test_xrayflare import Test_XrayFlare
 from noaa_goes_mqtt_producer_mqtt_client import MicrosoftOpenDataUSNOAASWPCGOESMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -101,6 +102,7 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
             satellite=f"test_satellite_{i}",
             energy=f"test_energy_{i}",
             time_tag=f"test_time_tag_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -168,6 +170,7 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
             satellite=f"test_satellite_{i}",
             energy=f"test_energy_{i}",
             time_tag=f"test_time_tag_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -235,6 +238,7 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
             satellite=f"test_satellite_{i}",
             energy=f"test_energy_{i}",
             time_tag=f"test_time_tag_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -301,6 +305,7 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
             topic=test_topic,
             satellite=f"test_satellite_{i}",
             time_tag=f"test_time_tag_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -366,6 +371,7 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
         await publisher_client.publish_microsoft_open_data_us_noaa_swpc_space_weather_alert_mqtt(
             topic=test_topic,
             product_id=f"test_product_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -432,6 +438,7 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
             topic=test_topic,
             satellite=f"test_satellite_{i}",
             begin_time=f"test_begin_time_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

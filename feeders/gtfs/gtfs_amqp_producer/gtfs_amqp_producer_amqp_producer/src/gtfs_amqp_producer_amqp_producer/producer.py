@@ -14,15 +14,62 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
 from datetime import datetime, timezone
 from urllib.parse import quote_plus
 from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -514,9 +561,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -579,6 +624,32 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -649,6 +720,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         data: VehiclePosition,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedRealTime.Vehicle.VehiclePosition.amqp` message
@@ -656,6 +728,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (VehiclePosition): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -670,6 +743,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -724,12 +798,13 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[VehiclePosition],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedRealTime.Vehicle.VehiclePosition.amqp` messages
@@ -738,6 +813,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
             data_array (typing.List[VehiclePosition]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -745,6 +821,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -752,6 +829,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         data: TripUpdate,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedRealTime.Trip.TripUpdate.amqp` message
@@ -759,6 +837,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (TripUpdate): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -773,6 +852,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -827,12 +907,13 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[TripUpdate],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedRealTime.Trip.TripUpdate.amqp` messages
@@ -841,6 +922,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
             data_array (typing.List[TripUpdate]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -848,6 +930,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -855,6 +938,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         data: Alert,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedRealTime.Alert.Alert.amqp` message
@@ -862,6 +946,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Alert): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -876,6 +961,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -930,12 +1016,13 @@ class GeneralTransitFeedRealTimeAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Alert],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedRealTime.Alert.Alert.amqp` messages
@@ -944,6 +1031,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
             data_array (typing.List[Alert]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -951,6 +1039,7 @@ class GeneralTransitFeedRealTimeAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1070,9 +1159,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -1135,6 +1222,32 @@ class GeneralTransitFeedStaticAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -1205,6 +1318,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Agency,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Agency.amqp` message
@@ -1212,6 +1326,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Agency): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1226,6 +1341,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1280,12 +1396,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Agency],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Agency.amqp` messages
@@ -1294,6 +1411,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Agency]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1301,6 +1419,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1308,6 +1427,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Areas,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Areas.amqp` message
@@ -1315,6 +1435,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Areas): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1329,6 +1450,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1383,12 +1505,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Areas],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Areas.amqp` messages
@@ -1397,6 +1520,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Areas]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1404,6 +1528,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1411,6 +1536,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Attributions,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Attributions.amqp` message
@@ -1418,6 +1544,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Attributions): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1432,6 +1559,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1486,12 +1614,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Attributions],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Attributions.amqp` messages
@@ -1500,6 +1629,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Attributions]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1507,6 +1637,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1514,6 +1645,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: BookingRules,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeed.BookingRules.amqp` message
@@ -1521,6 +1653,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (BookingRules): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1535,6 +1668,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1589,12 +1723,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[BookingRules],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeed.BookingRules.amqp` messages
@@ -1603,6 +1738,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[BookingRules]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1610,6 +1746,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1617,6 +1754,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: FareAttributes,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.FareAttributes.amqp` message
@@ -1624,6 +1762,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (FareAttributes): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1638,6 +1777,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1692,12 +1832,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[FareAttributes],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.FareAttributes.amqp` messages
@@ -1706,6 +1847,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[FareAttributes]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1713,6 +1855,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1720,6 +1863,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: FareLegRules,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.FareLegRules.amqp` message
@@ -1727,6 +1871,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (FareLegRules): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1741,6 +1886,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1795,12 +1941,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[FareLegRules],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.FareLegRules.amqp` messages
@@ -1809,6 +1956,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[FareLegRules]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1816,6 +1964,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1823,6 +1972,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: FareMedia,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.FareMedia.amqp` message
@@ -1830,6 +1980,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (FareMedia): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1844,6 +1995,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1898,12 +2050,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[FareMedia],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.FareMedia.amqp` messages
@@ -1912,6 +2065,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[FareMedia]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1919,6 +2073,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1926,6 +2081,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: FareProducts,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.FareProducts.amqp` message
@@ -1933,6 +2089,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (FareProducts): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1947,6 +2104,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2001,12 +2159,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[FareProducts],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.FareProducts.amqp` messages
@@ -2015,6 +2174,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[FareProducts]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2022,6 +2182,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2029,6 +2190,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: FareRules,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.FareRules.amqp` message
@@ -2036,6 +2198,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (FareRules): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2050,6 +2213,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2104,12 +2268,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[FareRules],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.FareRules.amqp` messages
@@ -2118,6 +2283,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[FareRules]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2125,6 +2291,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2132,6 +2299,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: FareTransferRules,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.FareTransferRules.amqp` message
@@ -2139,6 +2307,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (FareTransferRules): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2153,6 +2322,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2207,12 +2377,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[FareTransferRules],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.FareTransferRules.amqp` messages
@@ -2221,6 +2392,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[FareTransferRules]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2228,6 +2400,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2235,6 +2408,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: FeedInfo,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.FeedInfo.amqp` message
@@ -2242,6 +2416,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (FeedInfo): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2256,6 +2431,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2310,12 +2486,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[FeedInfo],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.FeedInfo.amqp` messages
@@ -2324,6 +2501,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[FeedInfo]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2331,6 +2509,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2338,6 +2517,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Frequencies,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Frequencies.amqp` message
@@ -2345,6 +2525,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Frequencies): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2359,6 +2540,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2413,12 +2595,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Frequencies],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Frequencies.amqp` messages
@@ -2427,6 +2610,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Frequencies]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2434,6 +2618,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2441,6 +2626,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Levels,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Levels.amqp` message
@@ -2448,6 +2634,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Levels): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2462,6 +2649,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2516,12 +2704,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Levels],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Levels.amqp` messages
@@ -2530,6 +2719,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Levels]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2537,6 +2727,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2544,6 +2735,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: LocationGeoJson,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.LocationGeoJson.amqp` message
@@ -2551,6 +2743,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (LocationGeoJson): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2565,6 +2758,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2619,12 +2813,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[LocationGeoJson],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.LocationGeoJson.amqp` messages
@@ -2633,6 +2828,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[LocationGeoJson]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2640,6 +2836,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2647,6 +2844,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: LocationGroups,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.LocationGroups.amqp` message
@@ -2654,6 +2852,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (LocationGroups): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2668,6 +2867,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2722,12 +2922,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[LocationGroups],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.LocationGroups.amqp` messages
@@ -2736,6 +2937,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[LocationGroups]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2743,6 +2945,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2750,6 +2953,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: LocationGroupStores,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.LocationGroupStores.amqp` message
@@ -2757,6 +2961,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (LocationGroupStores): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2771,6 +2976,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2825,12 +3031,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[LocationGroupStores],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.LocationGroupStores.amqp` messages
@@ -2839,6 +3046,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[LocationGroupStores]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2846,6 +3054,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2853,6 +3062,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Networks,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Networks.amqp` message
@@ -2860,6 +3070,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Networks): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2874,6 +3085,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2928,12 +3140,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Networks],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Networks.amqp` messages
@@ -2942,6 +3155,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Networks]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2949,6 +3163,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2956,6 +3171,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Pathways,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Pathways.amqp` message
@@ -2963,6 +3179,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Pathways): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2977,6 +3194,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3031,12 +3249,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Pathways],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Pathways.amqp` messages
@@ -3045,6 +3264,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Pathways]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3052,6 +3272,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -3059,6 +3280,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: RouteNetworks,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.RouteNetworks.amqp` message
@@ -3066,6 +3288,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RouteNetworks): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3080,6 +3303,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3134,12 +3358,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[RouteNetworks],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.RouteNetworks.amqp` messages
@@ -3148,6 +3373,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[RouteNetworks]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3155,6 +3381,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -3162,6 +3389,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Routes,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Routes.amqp` message
@@ -3169,6 +3397,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Routes): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3183,6 +3412,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3237,12 +3467,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Routes],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Routes.amqp` messages
@@ -3251,6 +3482,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Routes]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3258,6 +3490,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -3265,6 +3498,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Shapes,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Shapes.amqp` message
@@ -3272,6 +3506,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Shapes): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3286,6 +3521,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3340,12 +3576,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Shapes],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Shapes.amqp` messages
@@ -3354,6 +3591,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Shapes]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3361,6 +3599,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -3368,6 +3607,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: StopAreas,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.StopAreas.amqp` message
@@ -3375,6 +3615,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (StopAreas): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3389,6 +3630,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3443,12 +3685,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[StopAreas],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.StopAreas.amqp` messages
@@ -3457,6 +3700,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[StopAreas]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3464,6 +3708,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -3471,6 +3716,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Stops,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Stops.amqp` message
@@ -3478,6 +3724,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Stops): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3492,6 +3739,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3546,12 +3794,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Stops],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Stops.amqp` messages
@@ -3560,6 +3809,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Stops]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3567,6 +3817,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -3574,6 +3825,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: StopTimes,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.StopTimes.amqp` message
@@ -3581,6 +3833,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (StopTimes): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3595,6 +3848,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3649,12 +3903,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[StopTimes],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.StopTimes.amqp` messages
@@ -3663,6 +3918,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[StopTimes]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3670,6 +3926,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -3677,6 +3934,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Timeframes,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Timeframes.amqp` message
@@ -3684,6 +3942,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Timeframes): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3698,6 +3957,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3752,12 +4012,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Timeframes],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Timeframes.amqp` messages
@@ -3766,6 +4027,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Timeframes]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3773,6 +4035,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -3780,6 +4043,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Transfers,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Transfers.amqp` message
@@ -3787,6 +4051,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Transfers): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3801,6 +4066,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3855,12 +4121,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Transfers],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Transfers.amqp` messages
@@ -3869,6 +4136,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Transfers]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3876,6 +4144,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -3883,6 +4152,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Translations,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Translations.amqp` message
@@ -3890,6 +4160,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Translations): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3904,6 +4175,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3958,12 +4230,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Translations],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Translations.amqp` messages
@@ -3972,6 +4245,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Translations]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3979,6 +4253,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -3986,6 +4261,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         data: Trips,
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `GeneralTransitFeedStatic.Trips.amqp` message
@@ -3993,6 +4269,7 @@ class GeneralTransitFeedStaticAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Trips): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -4007,6 +4284,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             "subject":
             "{agencyid}".format(agencyid=_agencyid),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -4061,12 +4339,13 @@ class GeneralTransitFeedStaticAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[Trips],
         _feedurl: str,
         _agencyid: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `GeneralTransitFeedStatic.Trips.amqp` messages
@@ -4075,6 +4354,7 @@ class GeneralTransitFeedStaticAmqpProducer:
             data_array (typing.List[Trips]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _agencyid (str): Value for placeholder agencyid in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -4082,6 +4362,7 @@ class GeneralTransitFeedStaticAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _agencyid=_agencyid,
+                _time=_time,
                 content_type=content_type)
     
     

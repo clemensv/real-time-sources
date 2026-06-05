@@ -21,7 +21,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 4. [Generated Producer Classes](#generated-producer-classes)    NetVatsimStatusEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    NetVatsimMqttEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    NetVatsimMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NetVatsimAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -57,6 +59,10 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - NetVatsimMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NetVatsimAmqpProducersolution for event-driven applications.
 
 
 
@@ -315,6 +321,43 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 net_vatsim_mqtt_dispatcher.net_vatsim_pilot_position_async = net_vatsim_pilot_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimAmqpProducer- `data`: The event data of type `vatsim_producer_data.PilotPosition`.
+
+
+
+Producer for `net.vatsim.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_pilot_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PilotPosition) -> None:
+
+```python    # Process the event data
+
+NetVatsimAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_amqp_dispatcher.net_vatsim_pilot_position_async = net_vatsim_pilot_position_event
 
 **Parameters:**```
 
@@ -696,6 +739,44 @@ net_vatsim_mqtt_dispatcher.net_vatsim_controller_position_async = net_vatsim_con
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimAmqpProducer- `data`: The event data of type `vatsim_producer_data.ControllerPosition`.
+
+
+
+Producer for `net.vatsim.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_controller_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ControllerPosition) -> None:
+
+```python    # Process the event data
+
+NetVatsimAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_amqp_dispatcher.net_vatsim_controller_position_async = net_vatsim_controller_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1063,6 +1144,43 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 net_vatsim_mqtt_dispatcher.net_vatsim_network_status_async = net_vatsim_network_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimAmqpProducer- `data`: The event data of type `vatsim_producer_data.NetworkStatus`.
+
+
+
+Producer for `net.vatsim.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_network_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data: NetworkStatus) -> None:
+
+```python    # Process the event data
+
+NetVatsimAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_amqp_dispatcher.net_vatsim_network_status_async = net_vatsim_network_status_event
 
 **Parameters:**```
 
@@ -1444,6 +1562,44 @@ net_vatsim_mqtt_dispatcher.net_vatsim_mqtt_pilot_position_async = net_vatsim_mqt
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimAmqpProducer- `data`: The event data of type `vatsim_producer_data.PilotPosition`.
+
+
+
+Producer for `net.vatsim.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_mqtt_pilot_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PilotPosition) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_amqp_dispatcher.net_vatsim_mqtt_pilot_position_async = net_vatsim_mqtt_pilot_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1622,6 +1778,44 @@ net_vatsim_mqtt_dispatcher.net_vatsim_mqtt_controller_position_async = net_vatsi
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimAmqpProducer- `data`: The event data of type `vatsim_producer_data.ControllerPosition`.
+
+
+
+Producer for `net.vatsim.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_mqtt_controller_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ControllerPosition) -> None:
+
+```python    # Process the event data
+
+NetVatsimAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_amqp_dispatcher.net_vatsim_mqtt_controller_position_async = net_vatsim_mqtt_controller_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1795,6 +1989,44 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 net_vatsim_mqtt_dispatcher.net_vatsim_mqtt_facility_status_async = net_vatsim_mqtt_facility_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimAmqpProducer- `data`: The event data of type `vatsim_producer_data.NetworkStatus`.
+
+
+
+Producer for `net.vatsim.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_mqtt_facility_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data: NetworkStatus) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_amqp_dispatcher.net_vatsim_mqtt_facility_status_async = net_vatsim_mqtt_facility_status_event
 
 **Parameters:**```
 
@@ -2103,6 +2335,1060 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_net_vatsim_mqtt_facility_status_batch(```
+
+    messages=[
+
+        NetworkStatus(...),Initializes the runner with a Kafka consumer.
+
+        NetworkStatus(...),
+
+        NetworkStatus(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NetVatsimAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NetVatsimAmqpEventDispatcher` handles events for the net.vatsim.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from vatsim_producer import NetVatsimPilotsProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NetVatsimPilotsProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_net_vatsim_pilot_position(```python
+
+    data=PilotPosition(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NetVatsimAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NetVatsimPilotsProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `net_vatsim_amqp_pilot_position_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'net_vatsim_amqp_pilot_position_async:  Callable[[ConsumerRecord, CloudEvent,
+PilotPosition], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `net.vatsim.amqp.PilotPosition`: Current position, flight plan summary, and state of a
+pilot connected to the VATSIM virtual aviation network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimPilotsProducer- `data`: The event data of type `vatsim_producer_data.PilotPosition`.
+
+
+
+Producer for `net.vatsim.pilots` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_pilot_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PilotPosition) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimPilotsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_pilots_dispatcher.net_vatsim_amqp_pilot_position_async = net_vatsim_amqp_pilot_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimControllersProducer- `data`: The event data of type `vatsim_producer_data.PilotPosition`.
+
+
+
+Producer for `net.vatsim.controllers` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_pilot_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PilotPosition) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimControllersProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_controllers_dispatcher.net_vatsim_amqp_pilot_position_async = net_vatsim_amqp_pilot_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimStatusProducer- `data`: The event data of type `vatsim_producer_data.PilotPosition`.
+
+
+
+Producer for `net.vatsim.status` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_pilot_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PilotPosition) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimStatusProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_status_dispatcher.net_vatsim_amqp_pilot_position_async = net_vatsim_amqp_pilot_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimMqttProducer- `data`: The event data of type `vatsim_producer_data.PilotPosition`.
+
+
+
+Producer for `net.vatsim.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_pilot_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PilotPosition) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_mqtt_dispatcher.net_vatsim_amqp_pilot_position_async = net_vatsim_amqp_pilot_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimAmqpProducer- `data`: The event data of type `vatsim_producer_data.PilotPosition`.
+
+
+
+Producer for `net.vatsim.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_pilot_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PilotPosition) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_amqp_dispatcher.net_vatsim_amqp_pilot_position_async = net_vatsim_amqp_pilot_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `net_vatsim_amqp_controller_position_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'net_vatsim_amqp_controller_position_async:  Callable[[ConsumerRecord, CloudEvent,
+ControllerPosition], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `net.vatsim.amqp.ControllerPosition`: Current state and frequency of an air traffic
+controller connected to the VATSIM virtual aviation network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimPilotsProducer- `data`: The event data of type `vatsim_producer_data.ControllerPosition`.
+
+
+
+Producer for `net.vatsim.pilots` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_controller_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ControllerPosition) -> None:
+
+```python    # Process the event data
+
+NetVatsimPilotsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_pilots_dispatcher.net_vatsim_amqp_controller_position_async = net_vatsim_amqp_controller_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimControllersProducer- `data`: The event data of type `vatsim_producer_data.ControllerPosition`.
+
+
+
+Producer for `net.vatsim.controllers` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_controller_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ControllerPosition) -> None:
+
+```python    # Process the event data
+
+NetVatsimControllersProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_controllers_dispatcher.net_vatsim_amqp_controller_position_async = net_vatsim_amqp_controller_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimStatusProducer- `data`: The event data of type `vatsim_producer_data.ControllerPosition`.
+
+
+
+Producer for `net.vatsim.status` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_controller_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ControllerPosition) -> None:
+
+```python    # Process the event data
+
+NetVatsimStatusProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_status_dispatcher.net_vatsim_amqp_controller_position_async = net_vatsim_amqp_controller_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimMqttProducer- `data`: The event data of type `vatsim_producer_data.ControllerPosition`.
+
+
+
+Producer for `net.vatsim.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_controller_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ControllerPosition) -> None:
+
+```python    # Process the event data
+
+NetVatsimMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_mqtt_dispatcher.net_vatsim_amqp_controller_position_async = net_vatsim_amqp_controller_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimAmqpProducer- `data`: The event data of type `vatsim_producer_data.ControllerPosition`.
+
+
+
+Producer for `net.vatsim.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_controller_position_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ControllerPosition) -> None:
+
+```python    # Process the event data
+
+NetVatsimAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_amqp_dispatcher.net_vatsim_amqp_controller_position_async = net_vatsim_amqp_controller_position_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `net_vatsim_amqp_facility_status_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'net_vatsim_amqp_facility_status_async:  Callable[[ConsumerRecord, CloudEvent,
+NetworkStatus], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `net.vatsim.amqp.FacilityStatus`: Aggregate network status snapshot from the VATSIM data
+feed, emitted once per poll cycle.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimPilotsProducer- `data`: The event data of type `vatsim_producer_data.NetworkStatus`.
+
+
+
+Producer for `net.vatsim.pilots` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_facility_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data: NetworkStatus) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimPilotsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_pilots_dispatcher.net_vatsim_amqp_facility_status_async = net_vatsim_amqp_facility_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimControllersProducer- `data`: The event data of type `vatsim_producer_data.NetworkStatus`.
+
+
+
+Producer for `net.vatsim.controllers` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_facility_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data: NetworkStatus) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimControllersProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_controllers_dispatcher.net_vatsim_amqp_facility_status_async = net_vatsim_amqp_facility_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimStatusProducer- `data`: The event data of type `vatsim_producer_data.NetworkStatus`.
+
+
+
+Producer for `net.vatsim.status` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_facility_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data: NetworkStatus) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimStatusProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_status_dispatcher.net_vatsim_amqp_facility_status_async = net_vatsim_amqp_facility_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimMqttProducer- `data`: The event data of type `vatsim_producer_data.NetworkStatus`.
+
+
+
+Producer for `net.vatsim.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_facility_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data: NetworkStatus) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_mqtt_dispatcher.net_vatsim_amqp_facility_status_async = net_vatsim_amqp_facility_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NetVatsimAmqpProducer- `data`: The event data of type `vatsim_producer_data.NetworkStatus`.
+
+
+
+Producer for `net.vatsim.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def net_vatsim_amqp_facility_status_event(record: ConsumerRecord, cloud_event: CloudEvent, data: NetworkStatus) ->
+None:
+
+```python    # Process the event data
+
+NetVatsimAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+net_vatsim_amqp_dispatcher.net_vatsim_amqp_facility_status_async = net_vatsim_amqp_facility_status_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_net_vatsim_amqp_pilot_position`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_net_vatsim_amqp_pilot_position(
+
+    self,##### `_process_event`
+
+    data: PilotPosition,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `net.vatsim.amqp.PilotPosition` message. Current position, flight plan summary, and state of a pilot
+connected to the VATSIM virtual aviation network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PilotPosition`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_net_vatsim_amqp_pilot_position(
+
+    data=PilotPosition(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `net.vatsim.amqp.PilotPosition` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_net_vatsim_amqp_pilot_position_batch(```
+
+    messages=[
+
+        PilotPosition(...),Initializes the runner with a Kafka consumer.
+
+        PilotPosition(...),
+
+        PilotPosition(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_net_vatsim_amqp_controller_position`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_net_vatsim_amqp_controller_position(
+
+    self,##### `_process_event`
+
+    data: ControllerPosition,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `net.vatsim.amqp.ControllerPosition` message. Current state and frequency of an air traffic controller
+connected to the VATSIM virtual aviation network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ControllerPosition`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_net_vatsim_amqp_controller_position(
+
+    data=ControllerPosition(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `net.vatsim.amqp.ControllerPosition` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_net_vatsim_amqp_controller_position_batch(```
+
+    messages=[
+
+        ControllerPosition(...),Initializes the runner with a Kafka consumer.
+
+        ControllerPosition(...),
+
+        ControllerPosition(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_net_vatsim_amqp_facility_status`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_net_vatsim_amqp_facility_status(
+
+    self,##### `_process_event`
+
+    data: NetworkStatus,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `net.vatsim.amqp.FacilityStatus` message. Aggregate network status snapshot from the VATSIM data feed,
+emitted once per poll cycle.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `NetworkStatus`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_net_vatsim_amqp_facility_status(
+
+    data=NetworkStatus(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `net.vatsim.amqp.FacilityStatus` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_net_vatsim_amqp_facility_status_batch(```
 
     messages=[
 

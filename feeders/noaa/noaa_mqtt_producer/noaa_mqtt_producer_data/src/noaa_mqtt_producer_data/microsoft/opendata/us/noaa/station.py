@@ -153,6 +153,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -222,9 +224,9 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            tidal=True,
+            tidal=False,
             greatlakes=True,
-            shefcode='kctrhivrgxuprdxhfcpb',
+            shefcode='pkshcbjtnsdikmsbmzcz',
             details=None,
             sensors=None,
             floodlevels=None,
@@ -234,26 +236,26 @@ class Station:
             benchmarks=None,
             tidePredOffsets=None,
             ofsMapOffsets=None,
-            state='gzigftiiynlnykrgznja',
-            timezone='tkaotwtseormoytvhbai',
-            timezonecorr=int(35),
-            observedst=False,
-            stormsurge=False,
+            state='uqrdmdrqidlhxifqtrli',
+            timezone='aelaiydfueoknptdvhdr',
+            timezonecorr=int(32),
+            observedst=True,
+            stormsurge=True,
             nearby=None,
             forecast=True,
             outlook=False,
             HTFhistorical=False,
             nonNavigational=False,
-            station_id='pfmpwwqmjyqixssginqz',
-            name='ybpcyglopiilluqgxvyx',
-            lat=float(37.39131916634485),
-            lng=float(35.95579911870688),
-            affiliations='xutiwdboiwghznodjdva',
-            portscode='xihyxbqtzlcmkqrvhljj',
+            station_id='tbnraqmnrvqihzfozlip',
+            name='euohjtzkynbtccrlcfti',
+            lat=float(96.74994808849416),
+            lng=float(16.54348750288944),
+            affiliations='bcbjtjzffxjmhvcvkasw',
+            portscode='nfkyodeothanexpfnpoy',
             products=None,
             disclaimers=None,
             notices=None,
-            self_='rynspkbkalddkozxjhbb',
-            expand='hvhurauttghxejzxjcxy',
-            tideType='flfnemdrokjcqywogjlx'
+            self_='pavhqdssehrxwjhvjbug',
+            expand='ggcjnudfpyqaycdsezfj',
+            tideType='gdzvwxddtyotrlkahoan'
         )

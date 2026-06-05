@@ -92,6 +92,8 @@ class Message:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class Message:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='pbhhmhvgquozkhezlzlq',
-            route_tag='xfygmcfgximrxtvlogmp',
-            stop_or_vehicle_id='gpbfvajwafaxhxdmnqzp',
-            event_type='dnepnibeukapzmozrfqb',
-            message='diuhkwpmxznuigamfvwg'
+            agency_id='sqjwnqzkmnecvfdzrwsk',
+            route_tag='cgwpeghhtqdxkrmtxegr',
+            stop_or_vehicle_id='pzuhzfomatcdcvtoscum',
+            event_type='awbpfyxzyfxmpzzdbscs',
+            message='mfvhrjqgjbukuwwfjsln'
         )

@@ -1,0 +1,135 @@
+"""
+Test case for Port
+"""
+
+import os
+import sys
+import unittest
+
+sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
+
+from cbp_border_wait_producer_data.gov.cbp.borderwait.port import Port
+from cbp_border_wait_producer_data.gov.cbp.borderwait.borderslugenum import BorderSlugenum
+
+
+class Test_Port(unittest.TestCase):
+    """
+    Test case for Port
+    """
+
+    def setUp(self):
+        """
+        Set up test case
+        """
+        self.instance = Test_Port.create_instance()
+
+    @staticmethod
+    def create_instance():
+        """
+        Create instance of Port for testing
+        """
+        instance = Port(
+            port_number='qnzgqxibriqevmcmnuds',
+            port_name='qetdlzyarpxnmowfcnnx',
+            border='txpswedwuejlhzazfgas',
+            crossing_name='jpqkglgkbwvektpacjyh',
+            hours='wuscefkecmcddzwlbyvs',
+            passenger_vehicle_max_lanes=int(57),
+            commercial_vehicle_max_lanes=int(70),
+            pedestrian_max_lanes=int(55),
+            border_slug=BorderSlugenum.canadian_border
+        )
+        return instance
+
+    
+    def test_port_number_property(self):
+        """
+        Test port_number property
+        """
+        test_value = 'qnzgqxibriqevmcmnuds'
+        self.instance.port_number = test_value
+        self.assertEqual(self.instance.port_number, test_value)
+    
+    def test_port_name_property(self):
+        """
+        Test port_name property
+        """
+        test_value = 'qetdlzyarpxnmowfcnnx'
+        self.instance.port_name = test_value
+        self.assertEqual(self.instance.port_name, test_value)
+    
+    def test_border_property(self):
+        """
+        Test border property
+        """
+        test_value = 'txpswedwuejlhzazfgas'
+        self.instance.border = test_value
+        self.assertEqual(self.instance.border, test_value)
+    
+    def test_crossing_name_property(self):
+        """
+        Test crossing_name property
+        """
+        test_value = 'jpqkglgkbwvektpacjyh'
+        self.instance.crossing_name = test_value
+        self.assertEqual(self.instance.crossing_name, test_value)
+    
+    def test_hours_property(self):
+        """
+        Test hours property
+        """
+        test_value = 'wuscefkecmcddzwlbyvs'
+        self.instance.hours = test_value
+        self.assertEqual(self.instance.hours, test_value)
+    
+    def test_passenger_vehicle_max_lanes_property(self):
+        """
+        Test passenger_vehicle_max_lanes property
+        """
+        test_value = int(57)
+        self.instance.passenger_vehicle_max_lanes = test_value
+        self.assertEqual(self.instance.passenger_vehicle_max_lanes, test_value)
+    
+    def test_commercial_vehicle_max_lanes_property(self):
+        """
+        Test commercial_vehicle_max_lanes property
+        """
+        test_value = int(70)
+        self.instance.commercial_vehicle_max_lanes = test_value
+        self.assertEqual(self.instance.commercial_vehicle_max_lanes, test_value)
+    
+    def test_pedestrian_max_lanes_property(self):
+        """
+        Test pedestrian_max_lanes property
+        """
+        test_value = int(55)
+        self.instance.pedestrian_max_lanes = test_value
+        self.assertEqual(self.instance.pedestrian_max_lanes, test_value)
+    
+    def test_border_slug_property(self):
+        """
+        Test border_slug property
+        """
+        test_value = BorderSlugenum.canadian_border
+        self.instance.border_slug = test_value
+        self.assertEqual(self.instance.border_slug, test_value)
+    
+    def test_to_byte_array_json(self):
+        """
+        Test to_byte_array method with json media type
+        """
+        media_type = "application/json"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = Port.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = Port.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

@@ -94,6 +94,8 @@ class ExtremeTemperature10Min:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class ExtremeTemperature10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='mvqbadyhtglughiusirh',
-            timestamp='oerjsxxzwomknwqxzkln',
-            quality_level=int(29),
-            air_temperature_maximum_2m=float(74.08344413161765),
-            air_temperature_minimum_5cm=float(20.030387691241803),
-            state='rrxpwzgvsbnziuvlfjrd'
+            station_id='jhyvadmjmkqjkpetyvny',
+            timestamp='rbhlfzgvpmdfmltcvgel',
+            quality_level=int(45),
+            air_temperature_maximum_2m=float(22.61430662260173),
+            air_temperature_minimum_5cm=float(30.683106376531654),
+            state='alwbcobcqefdbvmtptbh'
         )

@@ -20,11 +20,11 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from nws_forecasts_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANWSForecastsEventProducer
 from nws_forecasts_producer_data import ForecastZone
-from test_nws_forecasts_producer_data_forecastzone import Test_ForecastZone
+from test_forecastzone import Test_ForecastZone
 from nws_forecasts_producer_data import LandZoneForecast
-from test_nws_forecasts_producer_data_landzoneforecast import Test_LandZoneForecast
+from test_landzoneforecast import Test_LandZoneForecast
 from nws_forecasts_producer_data import MarineZoneForecast
-from test_nws_forecasts_producer_data_marinezoneforecast import Test_MarineZoneForecast
+from test_marinezoneforecast import Test_MarineZoneForecast
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -107,7 +107,8 @@ def test_microsoft_opendata_us_noaa_nws_forecasts_microsoftopendatausnoaanwsfore
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_nws_forecast_zone(_zone_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_nws_forecast_zone(_zone_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_microsoft_opendata_us_noaa_nws_forecasts_microsoftopendatausnoaanwsland
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_nws_land_zone_forecast(_zone_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_nws_land_zone_forecast(_zone_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_microsoft_opendata_us_noaa_nws_forecasts_microsoftopendatausnoaanwsmari
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_nws_marine_zone_forecast(_zone_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_nws_marine_zone_forecast(_zone_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

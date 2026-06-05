@@ -310,7 +310,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_roadwork_appeared_batch()`
@@ -320,7 +319,6 @@ Send multiple RoadworkAppeared messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -332,7 +330,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_roadwork_updated_batch()`
@@ -342,7 +339,6 @@ Send multiple RoadworkUpdated messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -354,7 +350,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_roadwork_resolved_batch()`
@@ -364,7 +359,6 @@ Send multiple RoadworkResolved messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -376,7 +370,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_short_term_roadwork_appeared_batch()`
@@ -386,7 +379,6 @@ Send multiple ShortTermRoadworkAppeared messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -398,7 +390,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_short_term_roadwork_updated_batch()`
@@ -408,7 +399,6 @@ Send multiple ShortTermRoadworkUpdated messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -420,7 +410,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_short_term_roadwork_resolved_batch()`
@@ -430,7 +419,6 @@ Send multiple ShortTermRoadworkResolved messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -442,7 +430,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_closure_appeared_batch()`
@@ -452,7 +439,6 @@ Send multiple ClosureAppeared messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -464,7 +450,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_closure_updated_batch()`
@@ -474,7 +459,6 @@ Send multiple ClosureUpdated messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -486,7 +470,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_closure_resolved_batch()`
@@ -496,7 +479,6 @@ Send multiple ClosureResolved messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -508,7 +490,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_entry_exit_closure_appeared_batch()`
@@ -518,7 +499,6 @@ Send multiple EntryExitClosureAppeared messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -530,7 +510,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_entry_exit_closure_updated_batch()`
@@ -540,7 +519,6 @@ Send multiple EntryExitClosureUpdated messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -552,7 +530,6 @@ closure, roadwork, or service alert affecting the covered network.
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_entry_exit_closure_resolved_batch()`
@@ -562,7 +539,6 @@ Send multiple EntryExitClosureResolved messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -574,7 +550,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (WarningEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_warning_appeared_batch()`
@@ -584,7 +559,6 @@ Send multiple WarningAppeared messages in sequence.
 **Parameters:**
 - `data_array` (List[WarningEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -596,7 +570,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (WarningEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_warning_updated_batch()`
@@ -606,7 +579,6 @@ Send multiple WarningUpdated messages in sequence.
 **Parameters:**
 - `data_array` (List[WarningEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -618,7 +590,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (WarningEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_warning_resolved_batch()`
@@ -628,7 +599,6 @@ Send multiple WarningResolved messages in sequence.
 **Parameters:**
 - `data_array` (List[WarningEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -640,7 +610,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_weight_limit35_restriction_appeared_batch()`
@@ -650,7 +619,6 @@ Send multiple WeightLimit35RestrictionAppeared messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -662,7 +630,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_weight_limit35_restriction_updated_batch()`
@@ -672,7 +639,6 @@ Send multiple WeightLimit35RestrictionUpdated messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -684,7 +650,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (RoadEvent): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_weight_limit35_restriction_resolved_batch()`
@@ -694,7 +659,6 @@ Send multiple WeightLimit35RestrictionResolved messages in sequence.
 **Parameters:**
 - `data_array` (List[RoadEvent]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -706,7 +670,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (Webcam): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_webcam_appeared_batch()`
@@ -716,7 +679,6 @@ Send multiple WebcamAppeared messages in sequence.
 **Parameters:**
 - `data_array` (List[Webcam]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -728,7 +690,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (Webcam): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_webcam_updated_batch()`
@@ -738,7 +699,6 @@ Send multiple WebcamUpdated messages in sequence.
 **Parameters:**
 - `data_array` (List[Webcam]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -750,7 +710,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (Webcam): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_webcam_resolved_batch()`
@@ -760,7 +719,6 @@ Send multiple WebcamResolved messages in sequence.
 **Parameters:**
 - `data_array` (List[Webcam]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -772,7 +730,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (ParkingLorry): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_parking_lorry_appeared_batch()`
@@ -782,7 +739,6 @@ Send multiple ParkingLorryAppeared messages in sequence.
 **Parameters:**
 - `data_array` (List[ParkingLorry]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -794,7 +750,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (ParkingLorry): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_parking_lorry_updated_batch()`
@@ -804,7 +759,6 @@ Send multiple ParkingLorryUpdated messages in sequence.
 **Parameters:**
 - `data_array` (List[ParkingLorry]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -816,7 +770,6 @@ travel information for German motorway segments, roadworks, closures, and traffi
 **Parameters:**
 - `data` (ParkingLorry): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_parking_lorry_resolved_batch()`
@@ -826,7 +779,6 @@ Send multiple ParkingLorryResolved messages in sequence.
 **Parameters:**
 - `data_array` (List[ParkingLorry]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -838,7 +790,6 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 **Parameters:**
 - `data` (ChargingStation): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_electric_charging_station_appeared_batch()`
@@ -848,7 +799,6 @@ Send multiple ElectricChargingStationAppeared messages in sequence.
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -860,7 +810,6 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 **Parameters:**
 - `data` (ChargingStation): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_electric_charging_station_updated_batch()`
@@ -870,7 +819,6 @@ Send multiple ElectricChargingStationUpdated messages in sequence.
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -882,7 +830,6 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 **Parameters:**
 - `data` (ChargingStation): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_electric_charging_station_resolved_batch()`
@@ -892,7 +839,6 @@ Send multiple ElectricChargingStationResolved messages in sequence.
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -904,7 +850,6 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 **Parameters:**
 - `data` (ChargingStation): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_strong_electric_charging_station_appeared_batch()`
@@ -914,7 +859,6 @@ Send multiple StrongElectricChargingStationAppeared messages in sequence.
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -926,7 +870,6 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 **Parameters:**
 - `data` (ChargingStation): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_strong_electric_charging_station_updated_batch()`
@@ -936,7 +879,6 @@ Send multiple StrongElectricChargingStationUpdated messages in sequence.
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 
@@ -948,7 +890,6 @@ resource. It gives consumers stable identifiers and labels needed to interpret r
 **Parameters:**
 - `data` (ChargingStation): The message data object
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_strong_electric_charging_station_resolved_batch()`
@@ -958,7 +899,6 @@ Send multiple StrongElectricChargingStationResolved messages in sequence.
 **Parameters:**
 - `data_array` (List[ChargingStation]): Array of message data objects
 - `_identifier` (str): Value for placeholder identifier in attribute subject
-- `_event_time` (str): Value for placeholder event_time in attribute time
 - `content_type` (str): Content type of the message data
 
 

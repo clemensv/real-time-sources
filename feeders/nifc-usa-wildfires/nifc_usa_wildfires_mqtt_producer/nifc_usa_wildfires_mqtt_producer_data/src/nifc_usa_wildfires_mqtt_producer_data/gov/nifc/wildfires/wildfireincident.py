@@ -144,6 +144,8 @@ class WildfireIncident:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -211,35 +213,35 @@ class WildfireIncident:
             An instance of the dataclass.
         """
         return cls(
-            irwin_id='bxzgzkfudxiiwujjjkwq',
-            incident_name='vuzrgpxujldsvrouhhai',
-            unique_fire_identifier='zurpzxoohbnmjfddylbp',
-            incident_type_category='wayaepteggxmuhawefjp',
-            incident_type_kind='ipotuhpsmpegvygrmadv',
-            fire_discovery_datetime='izgrejafznxqdqitnmob',
-            daily_acres=float(99.00928156603177),
-            calculated_acres=float(16.764253370262328),
-            discovery_acres=float(1.5870831313622102),
-            percent_contained=float(73.15190636773022),
-            poo_state='cgrjrtmtnkxmqbjozqey',
-            poo_county='biyydflsceugqzawixut',
-            latitude=float(43.18711758951239),
-            longitude=float(32.96505480443699),
-            fire_cause='ooqdjqufmnmkonchuzfa',
-            fire_cause_general='tgsjfgqkmzdvhwopgech',
-            gacc='jrxpbleneoskyvhirvrj',
-            total_incident_personnel=int(87),
-            incident_management_organization='cxfsfnomqxnqfasfydgh',
-            fire_mgmt_complexity='fqbwtfpymldceymhkash',
-            residences_destroyed=int(15),
-            other_structures_destroyed=int(7),
-            injuries=int(13),
-            fatalities=int(50),
-            containment_datetime='qufmhclevrrntdispmff',
-            control_datetime='vdooeslysgzolzuxknut',
-            fire_out_datetime='efpdrdtzksskmrftfnqa',
-            final_acres=float(21.483829983086476),
-            modified_on_datetime='lgvivphtocgrlhmyhfvb',
-            state='vjsobwiyudjmbcrjmuwu',
-            status='aasncvcmqudgzqpuiuqb'
+            irwin_id='qhvfwaotlzpstfrdetog',
+            incident_name='snobhyuwoyxxxvqketul',
+            unique_fire_identifier='qynuhosbgujqgrnqzilm',
+            incident_type_category='ufvtykestibolwklhlmz',
+            incident_type_kind='shqftmruyjmoinscwgfd',
+            fire_discovery_datetime='osojzrzwodkpqktafnyq',
+            daily_acres=float(48.08624834913525),
+            calculated_acres=float(91.84629953817667),
+            discovery_acres=float(94.95637404719704),
+            percent_contained=float(45.18828509235643),
+            poo_state='jfukdsspooykftywrpwn',
+            poo_county='whazkoailwxlwtswvxll',
+            latitude=float(28.17054731604427),
+            longitude=float(49.42671526136731),
+            fire_cause='lytgwunqnmkzexsmnwrv',
+            fire_cause_general='xsrnbknwytazfdsskfkd',
+            gacc='hkrkkdcldhtcdcjdvdae',
+            total_incident_personnel=int(98),
+            incident_management_organization='fhayvgeptljkeaexvxoz',
+            fire_mgmt_complexity='nzjxjpzjnipwdfbpykxa',
+            residences_destroyed=int(12),
+            other_structures_destroyed=int(76),
+            injuries=int(5),
+            fatalities=int(35),
+            containment_datetime='sromocwtbmrwrxruefgb',
+            control_datetime='phlcqgpyzezuyntcafra',
+            fire_out_datetime='gzikllbrnfrsgehtefgc',
+            final_acres=float(73.18708891854659),
+            modified_on_datetime='rcgfopdwkqdfnlsbbzsw',
+            state='bpawiglimzwxdvqpoktp',
+            status='xlxnmbaxqfeogfpkyams'
         )

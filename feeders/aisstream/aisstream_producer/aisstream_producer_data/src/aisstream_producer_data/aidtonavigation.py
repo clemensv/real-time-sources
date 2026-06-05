@@ -109,6 +109,8 @@ class AidToNavigation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -176,17 +178,17 @@ class AidToNavigation:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='veyqvjukyekhkpfkfzdx',
-            flag='oqqsyyocsyptihaappiu',
-            ship_type='vkmrougaqlqpphilbvrj',
-            geohash5='qjgyclbfppijieyxrqwt',
+            mmsi='zipcvsecsdwmlmbxrlbt',
+            flag='dwcwdkrqzuqratosqgnm',
+            ship_type='wgcigurmmvdzqkutartc',
+            geohash5='edjbolptcoyrggvuvarf',
             msg_type=MsgTypeenum.position_report,
-            user_id=int(78),
-            name='pduojwfearozvrziypei',
-            type=int(24),
-            latitude=float(70.79528232605668),
-            longitude=float(6.616877679051115),
+            user_id=int(15),
+            name='vqenvodysmlfkobflfzf',
+            type=int(1),
+            latitude=float(74.46751117976603),
+            longitude=float(2.778057140896506),
             off_position=False,
-            virtual_atoN=True,
-            message_id=int(39)
+            virtual_atoN=False,
+            message_id=int(98)
         )

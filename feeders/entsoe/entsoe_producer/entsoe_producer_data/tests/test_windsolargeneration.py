@@ -28,13 +28,13 @@ class Test_WindSolarGeneration(unittest.TestCase):
         Create instance of WindSolarGeneration for testing
         """
         instance = WindSolarGeneration(
-            inDomain='imbeenfhsmhznuawpcyz',
-            psrType='bjbspaywbrzulcwdbvdp',
-            quantity=float(80.1708497387234),
-            resolution='dcmkmidzhqxquvgownsj',
-            businessType='ouocnyuhsmswxxlkamsl',
-            documentType='wjnyniwmcwjoarvqvgop',
-            unitName='sadqypegbopozcjztpyk'
+            inDomain='pcuaptsimzmofqjythhn',
+            psrType='wvnvrcosldhkvrkfqwuk',
+            quantity=float(73.24831224319122),
+            resolution='kwohfluirtwuarmqdynq',
+            businessType='ltblwisqhpvrljhragep',
+            documentType='lxiozkqqkkilidsoajmb',
+            unitName='ktmgpxhmvgziybxkwrmj'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'imbeenfhsmhznuawpcyz'
+        test_value = 'pcuaptsimzmofqjythhn'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -51,7 +51,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test psrType property
         """
-        test_value = 'bjbspaywbrzulcwdbvdp'
+        test_value = 'wvnvrcosldhkvrkfqwuk'
         self.instance.psrType = test_value
         self.assertEqual(self.instance.psrType, test_value)
     
@@ -59,7 +59,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(80.1708497387234)
+        test_value = float(73.24831224319122)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -67,7 +67,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'dcmkmidzhqxquvgownsj'
+        test_value = 'kwohfluirtwuarmqdynq'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -75,7 +75,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test businessType property
         """
-        test_value = 'ouocnyuhsmswxxlkamsl'
+        test_value = 'ltblwisqhpvrljhragep'
         self.instance.businessType = test_value
         self.assertEqual(self.instance.businessType, test_value)
     
@@ -83,7 +83,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'wjnyniwmcwjoarvqvgop'
+        test_value = 'lxiozkqqkkilidsoajmb'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -91,19 +91,10 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'sadqypegbopozcjztpyk'
+        test_value = 'ktmgpxhmvgziybxkwrmj'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = WindSolarGeneration.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

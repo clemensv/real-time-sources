@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from dwd_pollenflug_producer_kafka_producer.producer import DEDWDPollenflugEventProducer
 from dwd_pollenflug_producer_data import Region
-from test_dwd_pollenflug_producer_data_region import Test_Region
+from test_region import Test_Region
 from dwd_pollenflug_producer_data import PollenForecast
-from test_dwd_pollenflug_producer_data_pollenforecast import Test_PollenForecast
+from test_pollenforecast import Test_PollenForecast
 from dwd_pollenflug_producer_kafka_producer.producer import DEDWDPollenflugMqttEventProducer
 from dwd_pollenflug_producer_kafka_producer.producer import DEDWDPollenflugAmqpEventProducer
 
@@ -107,7 +107,8 @@ def test_de_dwd_pollenflug_dedwdpollenflugregion(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_dwd_pollenflug_region(_region_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_dwd_pollenflug_region(_region_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_de_dwd_pollenflug_dedwdpollenflugpollenforecast(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_dwd_pollenflug_pollen_forecast(_region_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_dwd_pollenflug_pollen_forecast(_region_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_de_dwd_pollenflug_mqtt_dedwdpollenflugmqttregion(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_dwd_pollenflug_mqtt_region(_region_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_dwd_pollenflug_mqtt_region(_region_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_de_dwd_pollenflug_mqtt_dedwdpollenflugmqttpollenforecast(kafka_emulator
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_dwd_pollenflug_mqtt_pollen_forecast(_region_id = f'test_{i}', _pollen_type = f'test_{i}', data = event_data)
+        producer_instance.send_de_dwd_pollenflug_mqtt_pollen_forecast(_region_id = f'test_{i}', _pollen_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_de_dwd_pollenflug_amqp_dedwdpollenflugamqpregion(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_dwd_pollenflug_amqp_region(_region_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_dwd_pollenflug_amqp_region(_region_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_de_dwd_pollenflug_amqp_dedwdpollenflugamqppollenforecast(kafka_emulator
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_dwd_pollenflug_amqp_pollen_forecast(_region_id = f'test_{i}', _pollen_type = f'test_{i}', data = event_data)
+        producer_instance.send_de_dwd_pollenflug_amqp_pollen_forecast(_region_id = f'test_{i}', _pollen_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

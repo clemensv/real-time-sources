@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import uk_ea_flood_monitoring_mqtt_producer_data
 from uk_ea_flood_monitoring_mqtt_producer_data import Station
-from test_uk_ea_flood_monitoring_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from uk_ea_flood_monitoring_mqtt_producer_data import Reading
-from test_uk_ea_flood_monitoring_mqtt_producer_data_reading import Test_Reading
+from test_reading import Test_Reading
 from uk_ea_flood_monitoring_mqtt_producer_mqtt_client import UKGovEnvironmentEAFloodMonitoringMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_uk_gov_environment_ea_floodmonitoring_mqtt_uk_gov_environment_ea_
         await publisher_client.publish_uk_gov_environment_ea_flood_monitoring_mqtt_station(
             topic=test_topic,
             station_reference=f"test_station_reference_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -156,6 +158,7 @@ async def test_uk_gov_environment_ea_floodmonitoring_mqtt_uk_gov_environment_ea_
         await publisher_client.publish_uk_gov_environment_ea_flood_monitoring_mqtt_reading(
             topic=test_topic,
             station_reference=f"test_station_reference_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

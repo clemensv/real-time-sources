@@ -45,7 +45,7 @@ class IconD2ForecastFile:
     level_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level_type"))
     level: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="level"))
     modified: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="modified"))
-    size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes"))
+    size_bytes: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_bytes", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     variable: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="variable"))
     file_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="file_id"))
@@ -61,6 +61,8 @@ class IconD2ForecastFile:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'size_bytes' in data and isinstance(data['size_bytes'], str):
+            data['size_bytes'] = int(data['size_bytes'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -71,6 +73,8 @@ class IconD2ForecastFile:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'size_bytes' in asdict_result and asdict_result['size_bytes'] is not None:
+            asdict_result['size_bytes'] = str(asdict_result['size_bytes'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -108,6 +112,8 @@ class IconD2ForecastFile:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -175,17 +181,17 @@ class IconD2ForecastFile:
             An instance of the dataclass.
         """
         return cls(
-            file_url='dbiblstjywjioniwcptj',
-            model='nbnmmptphtyudlurriub',
-            file_name='ojwybytfkhxcstosprfv',
-            run='sctejqzmqpdntvxnpdky',
-            forecast_hour=int(14),
-            parameter='wvoceckmlthrymqgqliu',
-            level_type='rzonlfmceqlgvmrawhwp',
-            level='uezxawhlnyiljbzxfrnd',
-            modified='poiehosforrncrfozppj',
-            size_bytes=int(64),
-            state='scboofczqgqukszbqoit',
-            variable='jorvhumsuhxwcjuyawhp',
-            file_id='msyfvfpzrmurfrxrkifp'
+            file_url='kjowwdocxxlqvkfxbuve',
+            model='hlspreropuzpazhvvivy',
+            file_name='zxvkdxyfyqpftuzzvqfh',
+            run='kncrgcycgjueujfxzpyp',
+            forecast_hour=int(98),
+            parameter='nilhybefzyqcixehcfff',
+            level_type='psayqxwtsfgrxsqiwixc',
+            level='zmdopyhxfiflanmlbgsw',
+            modified='sgnvzhjspuufsacmyifk',
+            size_bytes=int(21),
+            state='ywuxbbakqvnfhkjcfquj',
+            variable='eirmfflmdnerairbpfxh',
+            file_id='oolyzopobhtnrdldeflg'
         )

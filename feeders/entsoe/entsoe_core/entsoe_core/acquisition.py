@@ -26,21 +26,187 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
 BASE_URL = "https://web-api.tp.entsoe.eu/api"
 
 DEFAULT_DOMAINS = [
-    "10YDE-AT-LU---Q", "10YFR-RTE------C", "10YNL----------L",
+    "10YDE-AT-LU---Q", "10Y1001A1001A82H", "10YFR-RTE------C", "10YNL----------L",
     "10YES-REE------0", "10Y1001A1001A83F",
 ]
 DEFAULT_DOCUMENT_TYPES = ["A75", "A44", "A65", "A69", "A70", "A71", "A72", "A73", "A74", "A68", "A11"]
 DEFAULT_CROSS_BORDER_PAIRS = [
-    ("10YFR-RTE------C", "10YES-REE------0"), ("10YES-REE------0", "10YFR-RTE------C"),
-    ("10YFR-RTE------C", "10Y1001A1001A83F"), ("10Y1001A1001A83F", "10YFR-RTE------C"),
-    ("10Y1001A1001A83F", "10YNL----------L"), ("10YNL----------L", "10Y1001A1001A83F"),
-    ("10YFR-RTE------C", "10YGB----------A"), ("10YGB----------A", "10YFR-RTE------C"),
-    ("10YNL----------L", "10YGB----------A"), ("10YGB----------A", "10YNL----------L"),
-    ("10Y1001A1001A83F", "10YDK-1--------W"), ("10YDK-1--------W", "10Y1001A1001A83F"),
-    ("10Y1001A1001A83F", "10YPL-AREA-----S"), ("10YPL-AREA-----S", "10Y1001A1001A83F"),
-    ("10Y1001A1001A83F", "10YCH-SWISSGRIDZ"), ("10YCH-SWISSGRIDZ", "10Y1001A1001A83F"),
-    ("10Y1001A1001A83F", "10YAT-APG------L"), ("10YAT-APG------L", "10Y1001A1001A83F"),
-    ("10Y1001A1001A83F", "10YCZ-CEPS-----N"), ("10YCZ-CEPS-----N", "10Y1001A1001A83F"),
+    ("10YAL-KESH-----5", "10YGR-HTSO-----Y"),
+    ("10YGR-HTSO-----Y", "10YAL-KESH-----5"),
+    ("10YAL-KESH-----5", "10YCS-CG-TSO---S"),
+    ("10YCS-CG-TSO---S", "10YAL-KESH-----5"),
+    ("10YAL-KESH-----5", "10Y1001C--00100H"),
+    ("10Y1001C--00100H", "10YAL-KESH-----5"),
+    ("10YAT-APG------L", "10YCH-SWISSGRIDZ"),
+    ("10YCH-SWISSGRIDZ", "10YAT-APG------L"),
+    ("10YAT-APG------L", "10YCZ-CEPS-----N"),
+    ("10YCZ-CEPS-----N", "10YAT-APG------L"),
+    ("10YAT-APG------L", "10Y1001A1001A83F"),
+    ("10Y1001A1001A83F", "10YAT-APG------L"),
+    ("10YAT-APG------L", "10YHU-MAVIR----U"),
+    ("10YHU-MAVIR----U", "10YAT-APG------L"),
+    ("10YAT-APG------L", "10Y1001A1001A73I"),
+    ("10Y1001A1001A73I", "10YAT-APG------L"),
+    ("10YAT-APG------L", "10YSI-ELES-----O"),
+    ("10YSI-ELES-----O", "10YAT-APG------L"),
+    ("10YBA-JPCC-----D", "10YHR-HEP------M"),
+    ("10YHR-HEP------M", "10YBA-JPCC-----D"),
+    ("10YBA-JPCC-----D", "10YCS-CG-TSO---S"),
+    ("10YCS-CG-TSO---S", "10YBA-JPCC-----D"),
+    ("10YBA-JPCC-----D", "10YCS-SERBIATSOV"),
+    ("10YCS-SERBIATSOV", "10YBA-JPCC-----D"),
+    ("10YBE----------2", "10Y1001A1001A83F"),
+    ("10Y1001A1001A83F", "10YBE----------2"),
+    ("10YBE----------2", "10YFR-RTE------C"),
+    ("10YFR-RTE------C", "10YBE----------2"),
+    ("10YBE----------2", "10YGB----------A"),
+    ("10YGB----------A", "10YBE----------2"),
+    ("10YBE----------2", "10YNL----------L"),
+    ("10YNL----------L", "10YBE----------2"),
+    ("10YCA-BULGARIA-R", "10YGR-HTSO-----Y"),
+    ("10YGR-HTSO-----Y", "10YCA-BULGARIA-R"),
+    ("10YCA-BULGARIA-R", "10YMK-MEPSO----8"),
+    ("10YMK-MEPSO----8", "10YCA-BULGARIA-R"),
+    ("10YCA-BULGARIA-R", "10YRO-TEL------P"),
+    ("10YRO-TEL------P", "10YCA-BULGARIA-R"),
+    ("10YCA-BULGARIA-R", "10YCS-SERBIATSOV"),
+    ("10YCS-SERBIATSOV", "10YCA-BULGARIA-R"),
+    ("10YCA-BULGARIA-R", "10YTR-TEIAS----W"),
+    ("10YTR-TEIAS----W", "10YCA-BULGARIA-R"),
+    ("10YCH-SWISSGRIDZ", "10Y1001A1001A83F"),
+    ("10Y1001A1001A83F", "10YCH-SWISSGRIDZ"),
+    ("10YCH-SWISSGRIDZ", "10YFR-RTE------C"),
+    ("10YFR-RTE------C", "10YCH-SWISSGRIDZ"),
+    ("10YCH-SWISSGRIDZ", "10Y1001A1001A73I"),
+    ("10Y1001A1001A73I", "10YCH-SWISSGRIDZ"),
+    ("10YCZ-CEPS-----N", "10Y1001A1001A83F"),
+    ("10Y1001A1001A83F", "10YCZ-CEPS-----N"),
+    ("10YCZ-CEPS-----N", "10YPL-AREA-----S"),
+    ("10YPL-AREA-----S", "10YCZ-CEPS-----N"),
+    ("10YCZ-CEPS-----N", "10YSK-SEPS-----K"),
+    ("10YSK-SEPS-----K", "10YCZ-CEPS-----N"),
+    ("10Y1001A1001A83F", "10YFR-RTE------C"),
+    ("10YFR-RTE------C", "10Y1001A1001A83F"),
+    ("10Y1001A1001A83F", "10YNL----------L"),
+    ("10YNL----------L", "10Y1001A1001A83F"),
+    ("10Y1001A1001A83F", "10YPL-AREA-----S"),
+    ("10YPL-AREA-----S", "10Y1001A1001A83F"),
+    ("10YDK-1--------W", "10YDK-2--------M"),
+    ("10YDK-2--------M", "10YDK-1--------W"),
+    ("10YDK-1--------W", "10YGB----------A"),
+    ("10YGB----------A", "10YDK-1--------W"),
+    ("10YDK-1--------W", "10YNL----------L"),
+    ("10YNL----------L", "10YDK-1--------W"),
+    ("10YDK-1--------W", "10YNO-2--------T"),
+    ("10YNO-2--------T", "10YDK-1--------W"),
+    ("10YDK-1--------W", "10Y1001A1001A46L"),
+    ("10Y1001A1001A46L", "10YDK-1--------W"),
+    ("10YDK-2--------M", "10Y1001A1001A47J"),
+    ("10Y1001A1001A47J", "10YDK-2--------M"),
+    ("10Y1001A1001A39I", "10YFI-1--------U"),
+    ("10YFI-1--------U", "10Y1001A1001A39I"),
+    ("10Y1001A1001A39I", "10YLV-1001A00074"),
+    ("10YLV-1001A00074", "10Y1001A1001A39I"),
+    ("10YES-REE------0", "10YFR-RTE------C"),
+    ("10YFR-RTE------C", "10YES-REE------0"),
+    ("10YES-REE------0", "10YPT-REN------W"),
+    ("10YPT-REN------W", "10YES-REE------0"),
+    ("10YFI-1--------U", "10YNO-4--------9"),
+    ("10YNO-4--------9", "10YFI-1--------U"),
+    ("10YFI-1--------U", "10Y1001A1001A44P"),
+    ("10Y1001A1001A44P", "10YFI-1--------U"),
+    ("10YFI-1--------U", "10Y1001A1001A46L"),
+    ("10Y1001A1001A46L", "10YFI-1--------U"),
+    ("10YFR-RTE------C", "10YGB----------A"),
+    ("10YGB----------A", "10YFR-RTE------C"),
+    ("10YFR-RTE------C", "10Y1001A1001A73I"),
+    ("10Y1001A1001A73I", "10YFR-RTE------C"),
+    ("10YGB----------A", "10YNL----------L"),
+    ("10YNL----------L", "10YGB----------A"),
+    ("10YGB----------A", "10YNO-2--------T"),
+    ("10YNO-2--------T", "10YGB----------A"),
+    ("10YGR-HTSO-----Y", "10YMK-MEPSO----8"),
+    ("10YMK-MEPSO----8", "10YGR-HTSO-----Y"),
+    ("10YGR-HTSO-----Y", "10YTR-TEIAS----W"),
+    ("10YTR-TEIAS----W", "10YGR-HTSO-----Y"),
+    ("10YHR-HEP------M", "10YHU-MAVIR----U"),
+    ("10YHU-MAVIR----U", "10YHR-HEP------M"),
+    ("10YHR-HEP------M", "10YCS-SERBIATSOV"),
+    ("10YCS-SERBIATSOV", "10YHR-HEP------M"),
+    ("10YHR-HEP------M", "10YSI-ELES-----O"),
+    ("10YSI-ELES-----O", "10YHR-HEP------M"),
+    ("10YHU-MAVIR----U", "10YRO-TEL------P"),
+    ("10YRO-TEL------P", "10YHU-MAVIR----U"),
+    ("10YHU-MAVIR----U", "10YCS-SERBIATSOV"),
+    ("10YCS-SERBIATSOV", "10YHU-MAVIR----U"),
+    ("10YHU-MAVIR----U", "10YSI-ELES-----O"),
+    ("10YSI-ELES-----O", "10YHU-MAVIR----U"),
+    ("10YHU-MAVIR----U", "10YSK-SEPS-----K"),
+    ("10YSK-SEPS-----K", "10YHU-MAVIR----U"),
+    ("10YHU-MAVIR----U", "10Y1001C--00003F"),
+    ("10Y1001C--00003F", "10YHU-MAVIR----U"),
+    ("10Y1001A1001A73I", "10YSI-ELES-----O"),
+    ("10YSI-ELES-----O", "10Y1001A1001A73I"),
+    ("10YLT-1001A0008Q", "10YLV-1001A00074"),
+    ("10YLV-1001A00074", "10YLT-1001A0008Q"),
+    ("10YLT-1001A0008Q", "10YPL-AREA-----S"),
+    ("10YPL-AREA-----S", "10YLT-1001A0008Q"),
+    ("10Y1001A1001A990", "10YRO-TEL------P"),
+    ("10YRO-TEL------P", "10Y1001A1001A990"),
+    ("10Y1001A1001A990", "10Y1001C--00003F"),
+    ("10Y1001C--00003F", "10Y1001A1001A990"),
+    ("10YCS-CG-TSO---S", "10YCS-SERBIATSOV"),
+    ("10YCS-SERBIATSOV", "10YCS-CG-TSO---S"),
+    ("10YCS-CG-TSO---S", "10Y1001C--00100H"),
+    ("10Y1001C--00100H", "10YCS-CG-TSO---S"),
+    ("10YMK-MEPSO----8", "10YCS-SERBIATSOV"),
+    ("10YCS-SERBIATSOV", "10YMK-MEPSO----8"),
+    ("10YMK-MEPSO----8", "10Y1001C--00100H"),
+    ("10Y1001C--00100H", "10YMK-MEPSO----8"),
+    ("10YNL----------L", "10YNO-2--------T"),
+    ("10YNO-2--------T", "10YNL----------L"),
+    ("10YNO-1--------2", "10YNO-2--------T"),
+    ("10YNO-2--------T", "10YNO-1--------2"),
+    ("10YNO-1--------2", "10YNO-3--------J"),
+    ("10YNO-3--------J", "10YNO-1--------2"),
+    ("10YNO-1--------2", "10Y1001A1001A48H"),
+    ("10Y1001A1001A48H", "10YNO-1--------2"),
+    ("10YNO-1--------2", "10Y1001A1001A46L"),
+    ("10Y1001A1001A46L", "10YNO-1--------2"),
+    ("10YNO-2--------T", "10Y1001A1001A48H"),
+    ("10Y1001A1001A48H", "10YNO-2--------T"),
+    ("10YNO-3--------J", "10YNO-4--------9"),
+    ("10YNO-4--------9", "10YNO-3--------J"),
+    ("10YNO-3--------J", "10Y1001A1001A48H"),
+    ("10Y1001A1001A48H", "10YNO-3--------J"),
+    ("10YNO-3--------J", "10Y1001A1001A45N"),
+    ("10Y1001A1001A45N", "10YNO-3--------J"),
+    ("10YNO-4--------9", "10Y1001A1001A44P"),
+    ("10Y1001A1001A44P", "10YNO-4--------9"),
+    ("10YNO-4--------9", "10Y1001A1001A45N"),
+    ("10Y1001A1001A45N", "10YNO-4--------9"),
+    ("10YPL-AREA-----S", "10Y1001A1001A47J"),
+    ("10Y1001A1001A47J", "10YPL-AREA-----S"),
+    ("10YPL-AREA-----S", "10YSK-SEPS-----K"),
+    ("10YSK-SEPS-----K", "10YPL-AREA-----S"),
+    ("10YPL-AREA-----S", "10Y1001C--00003F"),
+    ("10Y1001C--00003F", "10YPL-AREA-----S"),
+    ("10YRO-TEL------P", "10YCS-SERBIATSOV"),
+    ("10YCS-SERBIATSOV", "10YRO-TEL------P"),
+    ("10YRO-TEL------P", "10Y1001C--00003F"),
+    ("10Y1001C--00003F", "10YRO-TEL------P"),
+    ("10YCS-SERBIATSOV", "10Y1001C--00100H"),
+    ("10Y1001C--00100H", "10YCS-SERBIATSOV"),
+    ("10YSK-SEPS-----K", "10Y1001C--00003F"),
+    ("10Y1001C--00003F", "10YSK-SEPS-----K"),
+    ("10Y1001A1001A82H", "10YDK-1--------W"),
+    ("10YDK-1--------W", "10Y1001A1001A82H"),
+    ("10Y1001A1001A82H", "10YDK-2--------M"),
+    ("10YDK-2--------M", "10Y1001A1001A82H"),
+    ("10Y1001A1001A82H", "10Y1001A1001A47J"),
+    ("10Y1001A1001A47J", "10Y1001A1001A82H"),
+    ("10YGB----------A", "10YIE-1001A00010"),
+    ("10YIE-1001A00010", "10YGB----------A"),
 ]
 DOC_TYPE_NAMES = {
     "A75": "ActualGenerationPerType", "A44": "DayAheadPrices", "A65": "ActualTotalLoad",
@@ -101,23 +267,42 @@ class PointPublisher(Protocol):
 
 
 class EntsoeAPI:
-    def __init__(self, security_token: str, base_url: str = BASE_URL):
+    def __init__(self, security_token: str, base_url: str = BASE_URL,
+                 request_delay: float = 0.25, max_retries: int = 3):
         self.security_token = security_token
         self.base_url = base_url
+        # ENTSO-E enforces ~400 requests/minute per token. With the expanded
+        # cross-border catalog a single cycle issues well over a hundred calls,
+        # so pace requests and back off on throttling responses.
+        self.request_delay = request_delay
+        self.max_retries = max_retries
 
     def query(self, document_type: str, domain: str, period_start: datetime, period_end: datetime,
               out_domain: Optional[str] = None) -> Optional[str]:
         url = build_api_url(self.base_url, self.security_token, document_type, domain, period_start, period_end, out_domain=out_domain)
-        try:
-            response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=60)
-            if response.status_code == 400:
-                logger.debug("No data for %s/%s", document_type, domain)
+        for attempt in range(self.max_retries):
+            try:
+                response = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=60)
+                if response.status_code == 400:
+                    logger.debug("No data for %s/%s", document_type, domain)
+                    return None
+                if response.status_code in (429, 503):
+                    retry_after = response.headers.get("Retry-After")
+                    wait = float(retry_after) if retry_after and retry_after.isdigit() else 2.0 * (2 ** attempt)
+                    logger.warning("Throttled (%s) for %s/%s; backing off %.1fs (attempt %d/%d)",
+                                   response.status_code, document_type, domain, wait, attempt + 1, self.max_retries)
+                    time.sleep(wait)
+                    continue
+                response.raise_for_status()
+                return response.text
+            except requests.RequestException as err:
+                logger.error("API request failed for %s/%s: %s", document_type, domain, err)
                 return None
-            response.raise_for_status()
-            return response.text
-        except requests.RequestException as err:
-            logger.error("API request failed for %s/%s: %s", document_type, domain, err)
-            return None
+            finally:
+                if self.request_delay:
+                    time.sleep(self.request_delay)
+        logger.error("Giving up on %s/%s after %d throttled attempts", document_type, domain, self.max_retries)
+        return None
 
 
 class EntsoePoller:

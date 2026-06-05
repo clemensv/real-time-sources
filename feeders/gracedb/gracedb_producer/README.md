@@ -17,7 +17,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - OrgLigoGracedbEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    OrgLigoGracedbMqttEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    OrgLigoGracedbMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    OrgLigoGracedbAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +47,10 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - OrgLigoGracedbMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- OrgLigoGracedbAmqpProducersolution for event-driven applications.
 
 
 
@@ -230,6 +236,43 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 org_ligo_gracedb_mqtt_dispatcher.org_ligo_gracedb_superevent_async = org_ligo_gracedb_superevent_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### OrgLigoGracedbAmqpProducer- `data`: The event data of type `gracedb_producer_data.Superevent`.
+
+
+
+Producer for `org.ligo.gracedb.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def org_ligo_gracedb_superevent_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Superevent) -> None:
+
+```python    # Process the event data
+
+OrgLigoGracedbAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+org_ligo_gracedb_amqp_dispatcher.org_ligo_gracedb_superevent_async = org_ligo_gracedb_superevent_event
 
 **Parameters:**```
 
@@ -537,6 +580,44 @@ org_ligo_gracedb_mqtt_dispatcher.org_ligo_gracedb_mqtt_superevent_async = org_li
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### OrgLigoGracedbAmqpProducer- `data`: The event data of type `gracedb_producer_data.Superevent`.
+
+
+
+Producer for `org.ligo.gracedb.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def org_ligo_gracedb_mqtt_superevent_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Superevent) ->
+None:
+
+```python    # Process the event data
+
+OrgLigoGracedbAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+org_ligo_gracedb_amqp_dispatcher.org_ligo_gracedb_mqtt_superevent_async = org_ligo_gracedb_mqtt_superevent_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -633,6 +714,346 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_org_ligo_gracedb_mqtt_superevent_batch(```
+
+    messages=[
+
+        Superevent(...),Initializes the runner with a Kafka consumer.
+
+        Superevent(...),
+
+        Superevent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### OrgLigoGracedbAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`OrgLigoGracedbAmqpEventDispatcher` handles events for the org.ligo.gracedb.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from gracedb-producer import OrgLigoGracedbProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = OrgLigoGracedbProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_org_ligo_gracedb_superevent(```python
+
+    data=Superevent(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The OrgLigoGracedbAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = OrgLigoGracedbProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `org_ligo_gracedb_amqp_superevent_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'org_ligo_gracedb_amqp_superevent_async:  Callable[[ConsumerRecord, CloudEvent,
+Superevent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `org.ligo.gracedb.amqp.Superevent`: A gravitational wave candidate superevent from the
+LIGO/Virgo/KAGRA collaboration, published via GraceDB. A superevent aggregates one or more pipeline detections into a
+single candidate and carries significance, classification, and alert-lifecycle metadata.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### OrgLigoGracedbProducer- `data`: The event data of type `gracedb_producer_data.Superevent`.
+
+
+
+Producer for `org.ligo.gracedb` message group.Example:
+
+
+
+#### Constructor```python
+
+async def org_ligo_gracedb_amqp_superevent_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Superevent) ->
+None:
+
+```python    # Process the event data
+
+OrgLigoGracedbProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+org_ligo_gracedb_dispatcher.org_ligo_gracedb_amqp_superevent_async = org_ligo_gracedb_amqp_superevent_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### OrgLigoGracedbMqttProducer- `data`: The event data of type `gracedb_producer_data.Superevent`.
+
+
+
+Producer for `org.ligo.gracedb.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def org_ligo_gracedb_amqp_superevent_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Superevent) ->
+None:
+
+```python    # Process the event data
+
+OrgLigoGracedbMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+org_ligo_gracedb_mqtt_dispatcher.org_ligo_gracedb_amqp_superevent_async = org_ligo_gracedb_amqp_superevent_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### OrgLigoGracedbAmqpProducer- `data`: The event data of type `gracedb_producer_data.Superevent`.
+
+
+
+Producer for `org.ligo.gracedb.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def org_ligo_gracedb_amqp_superevent_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Superevent) ->
+None:
+
+```python    # Process the event data
+
+OrgLigoGracedbAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+org_ligo_gracedb_amqp_dispatcher.org_ligo_gracedb_amqp_superevent_async = org_ligo_gracedb_amqp_superevent_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_org_ligo_gracedb_amqp_superevent`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_org_ligo_gracedb_amqp_superevent(
+
+    self,##### `_process_event`
+
+    data: Superevent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `org.ligo.gracedb.amqp.Superevent` message. A gravitational wave candidate superevent from the
+LIGO/Virgo/KAGRA collaboration, published via GraceDB. A superevent aggregates one or more pipeline detections into a
+single candidate and carries significance, classification, and alert-lifecycle metadata.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Superevent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_org_ligo_gracedb_amqp_superevent(
+
+    data=Superevent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `org.ligo.gracedb.amqp.Superevent` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_org_ligo_gracedb_amqp_superevent_batch(```
 
     messages=[
 

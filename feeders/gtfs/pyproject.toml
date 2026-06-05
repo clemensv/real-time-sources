@@ -10,22 +10,22 @@ packages = [{include = "gtfs_rt_bridge", from = "gtfs_rt_bridge/src"}]
 python = "<4.0,>=3.10"
 gtfs-rt-producer-data = {path = "gtfs_rt_producer/gtfs_rt_producer_data"}
 gtfs-rt-producer-kafka-producer = {path = "gtfs_rt_producer/gtfs_rt_producer_kafka_producer"}
-confluent-kafka = ">=2.5.3"
-cloudevents = ">=1.11.0,<2.0.0"
+confluent-kafka = ">=2.14.2"
+cloudevents = ">=1.12.1,<2.0.0"
 avro = "^1.12.1"
 gtfs-realtime-bindings = ">=1.0.0"
-requests = ">=2.32.3"
+requests = ">=2.34.2"
 dataclasses = ">=0.6"
 dataclasses-json = ">=0.6.7"
 
 [tool.poetry.dev-dependencies]
 pytest = ">=9.0.3"
-pytest-cov = ">=6.0.0"
+pytest-cov = ">=7.1.0"
 requests-mock = ">=1.12.1"
 flake8 = ">=7.1.1"
 pylint = ">=3.2.7"
 mypy = ">=1.20.2"
-testcontainers = ">=4.8.1"
+testcontainers = ">=4.14.2"
 pytest-asyncio = ">=0.24.0"
 
 [tool.poetry.scripts]

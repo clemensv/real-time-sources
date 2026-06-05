@@ -35,7 +35,7 @@ class FareTransferRules:
     transferCount: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="transferCount"))
     fromLegGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="fromLegGroupId"))
     toLegGroupId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="toLegGroupId"))
-    duration: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="duration"))
+    duration: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="duration", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     durationType: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="durationType"))
 
     @classmethod
@@ -49,6 +49,8 @@ class FareTransferRules:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'duration' in data and isinstance(data['duration'], str):
+            data['duration'] = int(data['duration'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -59,6 +61,8 @@ class FareTransferRules:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'duration' in asdict_result and asdict_result['duration'] is not None:
+            asdict_result['duration'] = str(asdict_result['duration'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -96,6 +100,8 @@ class FareTransferRules:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +169,11 @@ class FareTransferRules:
             An instance of the dataclass.
         """
         return cls(
-            fareTransferRuleId='yipvsppaenwtoxnwluux',
-            fareProductId='mlchfujremvshzjhphcz',
-            transferCount=int(88),
-            fromLegGroupId='bxhnhwxgyjuvxlexkprs',
-            toLegGroupId='pnqqcvvuefmbpxgehtok',
-            duration=int(17),
-            durationType='pwmbfqxnofktilnndnoi'
+            fareTransferRuleId='ivpqvsfxrretcrgvylfw',
+            fareProductId='uuilycowawekvzbwzckv',
+            transferCount=int(96),
+            fromLegGroupId='tkblagxzgtvcxizreyog',
+            toLegGroupId='dwbncfdxtycwvyqvtoun',
+            duration=int(54),
+            durationType='xdmxcnixeebaqtnnipat'
         )

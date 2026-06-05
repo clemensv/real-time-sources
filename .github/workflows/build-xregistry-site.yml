@@ -31,7 +31,7 @@ jobs:
     steps:
       # ── 1. Checkout main ─────────────────────────────────────────────────
       - name: Checkout main
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: main
           path: main
@@ -126,7 +126,7 @@ jobs:
 
       # ── 10. Push to ghpages ──────────────────────────────────────────────
       - name: Checkout ghpages
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ghpages
           path: ghpages

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import billetto_mqtt_producer_data
 from billetto_mqtt_producer_data import Event
-from test_billetto_mqtt_producer_data_event import Test_Event
+from test_event import Test_Event
 from billetto_mqtt_producer_mqtt_client import BillettoEventsMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -89,7 +90,7 @@ async def test_billetto_events_mqtt_billetto_events_mqtt_event_py(mosquitto_brok
         await publisher_client.publish_billetto_events_mqtt_event(
             topic=test_topic,
             event_id=f"test_event_id_{i}",
-            startdate=f"test_startdate_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

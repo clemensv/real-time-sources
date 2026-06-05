@@ -1,10 +1,10 @@
-from .msgtypeenum import MsgTypeenum
-from .shipstatic import ShipStatic
-from .aidtonavigation import AidToNavigation
 from .staticvoyagedata import StaticVoyageData
-from .positionreportclassa import PositionReportClassA
-from .positionreport import PositionReport
-from .positionreportclassb import PositionReportClassB
+from .msgtypeenum import MsgTypeenum
+from .aidtonavigation import AidToNavigation
 from .staticdataclassb import StaticDataClassB
+from .positionreportclassb import PositionReportClassB
+from .positionreportclassa import PositionReportClassA
+from .shipstatic import ShipStatic
+from .positionreport import PositionReport
 
-__all__ = ["MsgTypeenum", "ShipStatic", "AidToNavigation", "StaticVoyageData", "PositionReportClassA", "PositionReport", "PositionReportClassB", "StaticDataClassB"]
+__all__ = ["StaticVoyageData", "MsgTypeenum", "AidToNavigation", "StaticDataClassB", "PositionReportClassB", "PositionReportClassA", "ShipStatic", "PositionReport"]

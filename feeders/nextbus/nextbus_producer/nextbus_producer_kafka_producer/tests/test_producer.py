@@ -20,13 +20,13 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from nextbus_producer_kafka_producer.producer import NextbusKafkaEventProducer
 from nextbus_producer_data import VehiclePosition
-from test_nextbus_producer_data_vehicleposition import Test_VehiclePosition
+from test_vehicleposition import Test_VehiclePosition
 from nextbus_producer_data import RouteConfig
-from test_nextbus_producer_data_routeconfig import Test_RouteConfig
+from test_routeconfig import Test_RouteConfig
 from nextbus_producer_data import Schedule
-from test_nextbus_producer_data_schedule import Test_Schedule
+from test_schedule import Test_Schedule
 from nextbus_producer_data import Message
-from test_nextbus_producer_data_message import Test_Message
+from test_message import Test_Message
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -109,7 +109,8 @@ def test_nextbus_kafka_nextbuskafkavehicleposition(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nextbus_kafka_vehicle_position(_agency_id = f'test_{i}', _route_tag = f'test_{i}', _vehicle_id = f'test_{i}', data = event_data)
+        producer_instance.send_nextbus_kafka_vehicle_position(_agency_id = f'test_{i}', _route_tag = f'test_{i}', _vehicle_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -172,7 +173,8 @@ def test_nextbus_kafka_nextbuskafkarouteconfig(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nextbus_kafka_route_config(_agency_id = f'test_{i}', _route_tag = f'test_{i}', _stop_or_vehicle_id = f'test_{i}', data = event_data)
+        producer_instance.send_nextbus_kafka_route_config(_agency_id = f'test_{i}', _route_tag = f'test_{i}', _stop_or_vehicle_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -235,7 +237,8 @@ def test_nextbus_kafka_nextbuskafkaschedule(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nextbus_kafka_schedule(_agency_id = f'test_{i}', _route_tag = f'test_{i}', _stop_or_vehicle_id = f'test_{i}', data = event_data)
+        producer_instance.send_nextbus_kafka_schedule(_agency_id = f'test_{i}', _route_tag = f'test_{i}', _stop_or_vehicle_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -298,7 +301,8 @@ def test_nextbus_kafka_nextbuskafkamessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nextbus_kafka_message(_agency_id = f'test_{i}', _route_tag = f'test_{i}', _stop_or_vehicle_id = f'test_{i}', data = event_data)
+        producer_instance.send_nextbus_kafka_message(_agency_id = f'test_{i}', _route_tag = f'test_{i}', _stop_or_vehicle_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

@@ -254,7 +254,7 @@
             "1.0": {
               "format": "JsonStructure/draft-02",
               "schema": {
-                "$id": "gov.usgs.waterservices.wq.MonitoringSite",
+                "$id": "https://waterservices.usgs.gov/schemas/wq/MonitoringSite",
                 "type": "object",
                 "name": "MonitoringSite",
                 "description": "USGS water quality monitoring site. Describes a physical surface-water or groundwater monitoring location equipped with continuous water quality sensors. Site metadata is extracted from the WaterML 2.0 JSON response sourceInfo block returned by the USGS Instantaneous Values Service.",
@@ -325,7 +325,7 @@
             "1.0": {
               "format": "JsonStructure/draft-02",
               "schema": {
-                "$id": "gov.usgs.waterservices.wq.WaterQualityReading",
+                "$id": "https://waterservices.usgs.gov/schemas/wq/WaterQualityReading",
                 "type": "object",
                 "name": "WaterQualityReading",
                 "description": "A single water quality observation from a USGS continuous monitoring sensor. The USGS Instantaneous Values Service returns time series of sensor readings in WaterML 2.0 JSON format. Each reading represents one measurement at a specific date_time for one parameter at one site.",

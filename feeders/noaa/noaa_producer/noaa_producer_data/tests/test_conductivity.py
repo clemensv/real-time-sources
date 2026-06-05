@@ -28,13 +28,13 @@ class Test_Conductivity(unittest.TestCase):
         Create instance of Conductivity for testing
         """
         instance = Conductivity(
-            station_id='jutvvivuwhnxicwalqmz',
-            timestamp='kdrwqhssgkgnnsivgkoi',
-            value=float(38.14198807778958),
+            station_id='vhyfsyesveukhpicbxgl',
+            timestamp='mtmvfpdlmrlxxopytago',
+            value=float(54.84623808485439),
             max_conductivity_exceeded=True,
             min_conductivity_exceeded=True,
             rate_of_change_exceeded=True,
-            region='tlcnxizgkibpocbyvhcz'
+            region='hazsipqksdubhkhhucnq'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'jutvvivuwhnxicwalqmz'
+        test_value = 'vhyfsyesveukhpicbxgl'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'kdrwqhssgkgnnsivgkoi'
+        test_value = 'mtmvfpdlmrlxxopytago'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(38.14198807778958)
+        test_value = float(54.84623808485439)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -91,19 +91,10 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'tlcnxizgkibpocbyvhcz'
+        test_value = 'hazsipqksdubhkhhucnq'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Conductivity.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

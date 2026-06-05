@@ -125,6 +125,8 @@ class ExtendedClassBPositionReport:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -192,25 +194,25 @@ class ExtendedClassBPositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(3),
-            RepeatIndicator=int(87),
-            UserID=int(46),
+            MessageID=int(100),
+            RepeatIndicator=int(27),
+            UserID=int(60),
             Valid=False,
-            Spare1=int(67),
-            Sog=float(49.14683957718301),
-            PositionAccuracy=True,
-            Longitude=float(96.84369760736708),
-            Latitude=float(37.91590017712691),
-            Cog=float(13.885778316055376),
-            TrueHeading=int(83),
-            Timestamp=int(22),
-            Spare2=int(51),
-            Name='pquxvtzmvjfhyvhlrgpc',
-            Type=int(68),
+            Spare1=int(50),
+            Sog=float(42.96097558634128),
+            PositionAccuracy=False,
+            Longitude=float(60.26392492188186),
+            Latitude=float(6.829610185816149),
+            Cog=float(80.83420953830432),
+            TrueHeading=int(77),
+            Timestamp=int(68),
+            Spare2=int(34),
+            Name='jtrxlekssrrwikrblyfx',
+            Type=int(20),
             Dimension=None,
-            FixType=int(82),
+            FixType=int(6),
             Raim=True,
             Dte=True,
             AssignedMode=False,
-            Spare3=int(57)
+            Spare3=int(48)
         )

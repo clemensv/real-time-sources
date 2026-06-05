@@ -7,7 +7,16 @@ name = "seattle-street-closures-amqp"
 version = "0.1.0"
 description = "AMQP companion feeder for Seattle Street Closures"
 requires-python = ">=3.10"
-dependencies = ["python-qpid-proton>=0.40.0"]
+dependencies = [
+    "python-qpid-proton>=0.40.0",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "avro>=1.11.3",
+    "azure-identity>=1.17.0",
+    "azure-core>=1.30.0",
+    "confluent-kafka>=2.5.3",
+    "requests>=2.32.3",
+]
 
 [project.scripts]
 seattle-street-closures-amqp = "seattle_street_closures_amqp.app:main"

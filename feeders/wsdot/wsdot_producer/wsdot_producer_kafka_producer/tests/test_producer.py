@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from wsdot_producer_kafka_producer.producer import UsWaWsdotTrafficEventProducer
 from wsdot_producer_data import TrafficFlowStation
-from test_wsdot_producer_data_trafficflowstation import Test_TrafficFlowStation
+from test_trafficflowstation import Test_TrafficFlowStation
 from wsdot_producer_data import TrafficFlowReading
-from test_wsdot_producer_data_trafficflowreading import Test_TrafficFlowReading
+from test_trafficflowreading import Test_TrafficFlowReading
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -105,7 +105,8 @@ def test_us_wa_wsdot_traffic_uswawsdottraffictrafficflowstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_us_wa_wsdot_traffic_traffic_flow_station(_feedurl = f'test_{i}', _flow_data_id = f'test_{i}', data = event_data)
+        producer_instance.send_us_wa_wsdot_traffic_traffic_flow_station(_feedurl = f'test_{i}', _flow_data_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -168,7 +169,8 @@ def test_us_wa_wsdot_traffic_uswawsdottraffictrafficflowreading(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_us_wa_wsdot_traffic_traffic_flow_reading(_feedurl = f'test_{i}', _flow_data_id = f'test_{i}', data = event_data)
+        producer_instance.send_us_wa_wsdot_traffic_traffic_flow_reading(_feedurl = f'test_{i}', _flow_data_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

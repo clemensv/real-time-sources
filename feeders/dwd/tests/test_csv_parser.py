@@ -76,6 +76,15 @@ class TestMapRow:
         assert mapped["station_id"] == "73"
         assert mapped["precipitation_height"] == pytest.approx(0.2)
 
+    def test_precipitation_indicator_is_int(self):
+        # RWS_IND_10 is a categorical int code; the contract declares int32,
+        # so map_row must coerce the float-parsed value to a Python int.
+        rows = parse_dwd_csv(SAMPLE_CSV_PRECIP)
+        mapped = map_row(rows[1], "precipitation")
+        assert mapped["precipitation_indicator"] == 1
+        assert isinstance(mapped["precipitation_indicator"], int)
+        assert not isinstance(mapped["precipitation_indicator"], bool)
+
     def test_wind_mapping(self):
         rows = parse_dwd_csv(SAMPLE_CSV_WIND)
         mapped = map_row(rows[0], "wind")

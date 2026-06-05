@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import snotel_mqtt_producer_data
 from snotel_mqtt_producer_data import Station
-from test_snotel_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from snotel_mqtt_producer_data import SnowObservation
-from test_snotel_mqtt_producer_data_snowobservation import Test_SnowObservation
+from test_snowobservation import Test_SnowObservation
 from snotel_mqtt_producer_mqtt_client import GovUsdaNrcsSnotelMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_gov_usda_nrcs_snotel_mqtt_gov_usda_nrcs_snotel_mqtt_station_py(mo
         await publisher_client.publish_gov_usda_nrcs_snotel_mqtt_station(
             topic=test_topic,
             station_triplet=f"test_station_triplet_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -156,6 +158,7 @@ async def test_gov_usda_nrcs_snotel_mqtt_gov_usda_nrcs_snotel_mqtt_snow_observat
         await publisher_client.publish_gov_usda_nrcs_snotel_mqtt_snow_observation(
             topic=test_topic,
             station_triplet=f"test_station_triplet_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

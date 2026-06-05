@@ -90,6 +90,8 @@ class Station1Msg2:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class Station1Msg2:
             An instance of the dataclass.
         """
         return cls(
-            Valid=False,
-            Spare=int(17),
-            MessageID=int(56),
-            SlotOffset=int(90)
+            Valid=True,
+            Spare=int(7),
+            MessageID=int(3),
+            SlotOffset=int(21)
         )

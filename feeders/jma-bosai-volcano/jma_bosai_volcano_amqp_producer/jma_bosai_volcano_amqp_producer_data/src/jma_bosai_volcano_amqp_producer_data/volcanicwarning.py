@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_volcano_amqp_producer_data.alertlevelcodeenum import AlertLevelCodeenum
 from jma_bosai_volcano_amqp_producer_data.eventenum import EventEnum
+from jma_bosai_volcano_amqp_producer_data.alertlevelcodeenum import AlertLevelCodeenum
 from jma_bosai_volcano_amqp_producer_data.conditionenum import ConditionEnum
 import datetime
 
@@ -111,6 +111,8 @@ class VolcanicWarning:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -178,16 +180,16 @@ class VolcanicWarning:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='ngcwaysfaihfvjvigajf',
-            event_id='vjrgivheyujzrgiteqbi',
+            volcano_code='mjjvanaqhjcuywrqrdhc',
+            event_id='vzpogxxjrmseutjvdqss',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             alert_level_code=AlertLevelCodeenum.CODE_02,
-            alert_level_name='shprvmxmunlpwepshbwo',
-            previous_level_code='hidkdpgxqrekvginqdxi',
+            alert_level_name='nvmogczxopwbapdefxhy',
+            previous_level_code='onwfmamkjapqkihywwmp',
             condition=ConditionEnum.ISSUED,
-            info_type_jp='ppfphtukgixidmyblbxg',
-            area_codes=['rpsvmwijppkxjwzybxlv'],
-            prefecture='qbugsrpvycqybrfokrit',
+            info_type_jp='jlojmwcdxksnwjnfiiqp',
+            area_codes=['vjzjcqmuybpsbbviofhk'],
+            prefecture='pvrsneygulidmqeptesk',
             event=EventEnum.warning
         )

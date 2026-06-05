@@ -28,20 +28,20 @@ class Test_RiverStation(unittest.TestCase):
         Create instance of RiverStation for testing
         """
         instance = RiverStation(
-            station_id='pwalcrszabltceuyetio',
-            title='uetxmuxuigtarggqamaw',
-            basin='njtwkpbytynlodasidwr',
-            latitude=float(64.42748963224473),
-            longitude=float(37.13790178758602),
-            elevation=int(64),
-            danger_level=float(13.150913122372055),
-            warning_level=float(89.88361485853635),
-            description='rogasfhuprgzvddybdfy',
-            data_source='kbvauudrfygggdnbvjpc',
-            province=int(5),
-            district=int(55),
-            municipality=int(62),
-            ward=int(70)
+            station_id='licjvaqyccigxkfgtjto',
+            title='jfkoxoairefjstjrxwto',
+            basin='bpeukoadhfvhbjurgowo',
+            latitude=float(18.799808165365107),
+            longitude=float(49.918033535996884),
+            elevation=int(30),
+            danger_level=float(21.960658012604426),
+            warning_level=float(18.500150402219283),
+            description='pydyumtckvoscddsukes',
+            data_source='wrsbaubjqqvijylesffs',
+            province=int(35),
+            district=int(99),
+            municipality=int(69),
+            ward=int(47)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'pwalcrszabltceuyetio'
+        test_value = 'licjvaqyccigxkfgtjto'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'uetxmuxuigtarggqamaw'
+        test_value = 'jfkoxoairefjstjrxwto'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -66,7 +66,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test basin property
         """
-        test_value = 'njtwkpbytynlodasidwr'
+        test_value = 'bpeukoadhfvhbjurgowo'
         self.instance.basin = test_value
         self.assertEqual(self.instance.basin, test_value)
     
@@ -74,7 +74,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(64.42748963224473)
+        test_value = float(18.799808165365107)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -82,7 +82,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(37.13790178758602)
+        test_value = float(49.918033535996884)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -90,7 +90,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test elevation property
         """
-        test_value = int(64)
+        test_value = int(30)
         self.instance.elevation = test_value
         self.assertEqual(self.instance.elevation, test_value)
     
@@ -98,7 +98,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test danger_level property
         """
-        test_value = float(13.150913122372055)
+        test_value = float(21.960658012604426)
         self.instance.danger_level = test_value
         self.assertEqual(self.instance.danger_level, test_value)
     
@@ -106,7 +106,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test warning_level property
         """
-        test_value = float(89.88361485853635)
+        test_value = float(18.500150402219283)
         self.instance.warning_level = test_value
         self.assertEqual(self.instance.warning_level, test_value)
     
@@ -114,7 +114,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'rogasfhuprgzvddybdfy'
+        test_value = 'pydyumtckvoscddsukes'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -122,7 +122,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test data_source property
         """
-        test_value = 'kbvauudrfygggdnbvjpc'
+        test_value = 'wrsbaubjqqvijylesffs'
         self.instance.data_source = test_value
         self.assertEqual(self.instance.data_source, test_value)
     
@@ -130,7 +130,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test province property
         """
-        test_value = int(5)
+        test_value = int(35)
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -138,7 +138,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test district property
         """
-        test_value = int(55)
+        test_value = int(99)
         self.instance.district = test_value
         self.assertEqual(self.instance.district, test_value)
     
@@ -146,7 +146,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test municipality property
         """
-        test_value = int(62)
+        test_value = int(69)
         self.instance.municipality = test_value
         self.assertEqual(self.instance.municipality, test_value)
     
@@ -154,19 +154,10 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test ward property
         """
-        test_value = int(70)
+        test_value = int(47)
         self.instance.ward = test_value
         self.assertEqual(self.instance.ward, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = RiverStation.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

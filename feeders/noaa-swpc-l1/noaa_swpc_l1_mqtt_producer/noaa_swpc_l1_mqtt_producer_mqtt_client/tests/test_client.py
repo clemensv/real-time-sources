@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import noaa_swpc_l1_mqtt_producer_data
 from noaa_swpc_l1_mqtt_producer_data import PropagatedSolarWind
-from test_noaa_swpc_l1_mqtt_producer_data_propagatedsolarwind import Test_PropagatedSolarWind
+from test_propagatedsolarwind import Test_PropagatedSolarWind
 from noaa_swpc_l1_mqtt_producer_mqtt_client import GovNoaaSwpcL1MqttMqttClient
 
 @pytest_asyncio.fixture
@@ -90,7 +91,7 @@ async def test_gov_noaa_swpc_l1_mqtt_gov_noaa_swpc_l1_mqtt_propagated_solar_wind
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             spacecraft=f"test_spacecraft_{i}",
-            time_tag=f"test_time_tag_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

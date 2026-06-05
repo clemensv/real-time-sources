@@ -14,7 +14,7 @@ python = ">=3.10,<4.0"
 requests = ">=2.32.3"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
-avro = ">=1.11.3"
+avro = ">=1.12.1"
 paho-mqtt = ">=2.1.0"
 jma_bosai_amedas = { path = ".." }
 jma_bosai_amedas_mqtt_producer_data = { path = "../jma_bosai_amedas_mqtt_producer/jma_bosai_amedas_mqtt_producer_data" }

@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from digitraffic_maritime_producer_data.portarea import PortArea
 from digitraffic_maritime_producer_data.berth import Berth
+from digitraffic_maritime_producer_data.portarea import PortArea
 import datetime
 
 
@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class PortLocation:
     """
-    Reference record from Digitraffic's Port Call ports API. Each event represents one SafeSeaNet port location keyed by UN/LOCODE together with its point geometry, port-area definitions, and berth catalog from the same upstream snapshot.
+    A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
     
     Attributes:
         locode (str)
@@ -102,6 +102,8 @@ class PortLocation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,12 +171,12 @@ class PortLocation:
             An instance of the dataclass.
         """
         return cls(
-            locode='uxikuqprpxqiunyaejus',
+            locode='vmbiptmuwvrptpqausux',
             data_updated_time=datetime.datetime.now(datetime.timezone.utc),
-            location_name='qnkazjzvcvzzbxvggsmx',
-            country='wbniyutiluqlbzkjappi',
-            longitude=float(39.54394184743767),
-            latitude=float(62.49799126211494),
-            port_areas=[None, None],
+            location_name='rqrdiuahufetwfziiqan',
+            country='totxsiyasivbgaptzzom',
+            longitude=float(76.06512739561408),
+            latitude=float(29.269884810044523),
+            port_areas=[None, None, None, None],
             berths=[None, None, None, None, None]
         )

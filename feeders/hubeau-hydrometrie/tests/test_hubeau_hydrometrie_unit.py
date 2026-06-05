@@ -77,7 +77,7 @@ class TestConnectionStringParsing:
 @pytest.mark.unit
 class TestDataClasses:
     def test_station_creation(self):
-        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
+        from hubeau_hydrometrie_producer_data import Station
         s = Station(
             code_station="A694102004",
             libelle_station="Test Station",
@@ -94,7 +94,7 @@ class TestDataClasses:
         assert s.en_service is True
 
     def test_station_json_roundtrip(self):
-        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
+        from hubeau_hydrometrie_producer_data import Station
         s = Station(
             code_station="TEST01", libelle_station="Test", code_site="SITE01",
             longitude_station=2.0, latitude_station=48.0, libelle_cours_eau="Seine",
@@ -106,7 +106,7 @@ class TestDataClasses:
         assert s2.code_station == "TEST01"
 
     def test_observation_creation(self):
-        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
+        from hubeau_hydrometrie_producer_data import Observation
         o = Observation(
             code_station="A694102004",
             date_obs="2024-06-15T12:00:00Z",
@@ -119,7 +119,7 @@ class TestDataClasses:
         assert o.grandeur_hydro == "H"
 
     def test_observation_json_roundtrip(self):
-        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
+        from hubeau_hydrometrie_producer_data import Observation
         o = Observation(
             code_station="TEST01", date_obs="2024-01-01T00:00:00Z",
             resultat_obs=500.0, grandeur_hydro="Q",

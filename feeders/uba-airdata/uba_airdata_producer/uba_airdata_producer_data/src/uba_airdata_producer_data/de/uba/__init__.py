@@ -1,3 +1,3 @@
-from .airdata import Station, Measure, Component
+from .airdata import Component, Station, Measure
 
-__all__ = ["Station", "Measure", "Component"]
+__all__ = ["Component", "Station", "Measure"]

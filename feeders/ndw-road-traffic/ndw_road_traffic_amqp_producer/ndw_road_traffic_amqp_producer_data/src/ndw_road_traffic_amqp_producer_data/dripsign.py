@@ -96,6 +96,8 @@ class DripSign:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class DripSign:
             An instance of the dataclass.
         """
         return cls(
-            vms_controller_id='mxjzilnonveguurrgmwa',
-            vms_index='oeftlkaffjktiluqteqt',
-            vms_type='ouyplamenbnqzjpdjvmo',
-            latitude=float(21.809424219955876),
-            longitude=float(26.25073600331519),
-            road_name='phgcielafjvbxzxqmgmt',
-            description='cczaifxtwncyvjlnewdu'
+            vms_controller_id='bmmdrngaqemgfmkuehid',
+            vms_index='bzphbjtinaoshruhdzae',
+            vms_type='ezjnrqkvbkztxvvdbiul',
+            latitude=float(9.546609624446312),
+            longitude=float(71.00815000269657),
+            road_name='xftllcojkwduevgdotzu',
+            description='ntrlfimnbkrehytywupm'
         )

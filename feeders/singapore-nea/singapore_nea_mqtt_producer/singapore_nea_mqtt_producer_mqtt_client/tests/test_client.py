@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,15 +17,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import singapore_nea_mqtt_producer_data
 from singapore_nea_mqtt_producer_data import Station
-from test_singapore_nea_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from singapore_nea_mqtt_producer_data import WeatherObservation
-from test_singapore_nea_mqtt_producer_data_weatherobservation import Test_WeatherObservation
+from test_weatherobservation import Test_WeatherObservation
 from singapore_nea_mqtt_producer_data import Region
-from test_singapore_nea_mqtt_producer_data_region import Test_Region
+from test_region import Test_Region
 from singapore_nea_mqtt_producer_data import PSIReading
-from test_singapore_nea_mqtt_producer_data_psireading import Test_PSIReading
+from test_psireading import Test_PSIReading
 from singapore_nea_mqtt_producer_data import PM25Reading
-from test_singapore_nea_mqtt_producer_data_pm25reading import Test_PM25Reading
+from test_pm25reading import Test_PM25Reading
 from singapore_nea_mqtt_producer_mqtt_client import SGGovNEAWeatherMqttMqttClient
 from singapore_nea_mqtt_producer_mqtt_client import SGGovNEAAirQualityMqttMqttClient
 
@@ -98,6 +99,7 @@ async def test_sg_gov_nea_weather_mqtt_sg_gov_nea_weather_station_mqtt_py(mosqui
         await publisher_client.publish_sg_gov_nea_weather_station_mqtt(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -163,6 +165,7 @@ async def test_sg_gov_nea_weather_mqtt_sg_gov_nea_weather_weather_observation_mq
         await publisher_client.publish_sg_gov_nea_weather_weather_observation_mqtt(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -231,6 +234,7 @@ async def test_sg_gov_nea_airquality_mqtt_sg_gov_nea_air_quality_region_mqtt_py(
         await publisher_client.publish_sg_gov_nea_air_quality_region_mqtt(
             topic=test_topic,
             region=f"test_region_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -296,6 +300,7 @@ async def test_sg_gov_nea_airquality_mqtt_sg_gov_nea_air_quality_psireading_mqtt
         await publisher_client.publish_sg_gov_nea_air_quality_psireading_mqtt(
             topic=test_topic,
             region=f"test_region_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -361,6 +366,7 @@ async def test_sg_gov_nea_airquality_mqtt_sg_gov_nea_air_quality_pm25_reading_mq
         await publisher_client.publish_sg_gov_nea_air_quality_pm25_reading_mqtt(
             topic=test_topic,
             region=f"test_region_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

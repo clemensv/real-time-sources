@@ -146,6 +146,8 @@ class Event:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -213,36 +215,36 @@ class Event:
             An instance of the dataclass.
         """
         return cls(
-            event_id='rbvtwzgnnsgdxiypbhfm',
-            name='dwqmpjswduhdoelntblf',
-            type='wumimpvrpwuodbpjodeg',
-            url='dnyxfkxuwofpkrbeqfdx',
-            locale='aekhzyvlgnjnpmppiklq',
-            start_date='bozjwfcsykrwdvzhxlsp',
-            start_time='osnuhfomprzqioazdrhl',
-            start_datetime_local='yxaaifyligjafsvkictz',
-            start_datetime_utc='jxqwqcsfaujlrrnmllsg',
-            status='xwhknehldeqhlupilqnu',
-            segment_id='wwgokbjavphgirponcmn',
-            segment_name='tezletevdqstlmidlbbp',
-            genre_id='exkhevoxxchipvbchkqi',
-            genre_name='coaaagdluugjhljnqkay',
-            subgenre_id='rwyoxznhclburqhqbvgd',
-            subgenre_name='wywhryxwwyisbytuhfmf',
-            venue_id='hsdqbvdolioajdldkgyh',
-            venue_name='dudwbgdxthjeviryqcyi',
-            venue_city='babxvrlsiuqgpgltgada',
-            venue_state_code='fjrphoysmtqqhcpthenk',
-            venue_country_code='uobkyjjjkbvidklrndtp',
-            venue_latitude=float(60.4923036000067),
-            venue_longitude=float(36.37042892515373),
-            price_min=float(99.38516580507662),
-            price_max=float(79.59084807684812),
-            currency='vjhcznpxvyapmyyqllko',
-            attraction_ids='cuiiqddkptvezkjycgwh',
-            attraction_names='excluavysvldfbnsgfgd',
-            onsale_start_datetime='citkfleoeonbowpxiqbr',
-            onsale_end_datetime='famcezadkcvuhxlcznwn',
-            info='jwfmtmnxjqcjvzhxdyng',
-            please_note='jksimzsvahbsrljorkxf'
+            event_id='gjaefdyuhzzetxwpwzle',
+            name='zxmnantwpgekuvjokkfs',
+            type='mbgheqgfaxhxxcoitwrx',
+            url='bkukazpzrclqqukiccoz',
+            locale='hvbhcuyeoidfmwlilzzk',
+            start_date='hnycxujrjdbahiguvhmw',
+            start_time='mlhhaowebvkaggbobsei',
+            start_datetime_local='psvedelcvnhhthhvcbls',
+            start_datetime_utc='fdvlfaukghnglavtfrfh',
+            status='elwnqyztcwypvfzjpotg',
+            segment_id='naovrdipfvacsiigxvar',
+            segment_name='tubszbjrjfelsoquxecf',
+            genre_id='sbaajbyjmnsatqxyudhw',
+            genre_name='cdlcogaqenehceywrveq',
+            subgenre_id='swztaspebpkeljvbqbfr',
+            subgenre_name='zbeczwpwwwppwrbhyiis',
+            venue_id='axpcthztufnyfczjaavd',
+            venue_name='ujxnueyititrukhoxcjt',
+            venue_city='vysskuvceycdhqzqvzqm',
+            venue_state_code='qamsygmqybosrmmvinck',
+            venue_country_code='fquocxzjljlhdmvbpzgh',
+            venue_latitude=float(85.44220569193915),
+            venue_longitude=float(4.498146211153042),
+            price_min=float(81.46900818749091),
+            price_max=float(62.243521825081274),
+            currency='jxkevqwnklbrebtedyka',
+            attraction_ids='aacyzrxsskdsurbdfdjp',
+            attraction_names='ljrtnoxtywszrjyjzwyy',
+            onsale_start_datetime='sysyutbatnkxtywllsjs',
+            onsale_end_datetime='qhbbxnwubfqzlbfnqias',
+            info='mnikzdxjzbewioppbpzz',
+            please_note='awdfulbturofupccwaec'
         )

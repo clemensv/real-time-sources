@@ -1,18 +1,16 @@
 """ SiteTimeseries dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -20,30 +18,21 @@ import avro.io
 class SiteTimeseries:
     """
     USGS site timeseries metadata.
+    
     Attributes:
-        agency_cd (str): Agency code.
-        site_no (str): USGS site number.
-        parameter_cd (str): Parameter code.
-        timeseries_cd (str): Timeseries code.
-        description (str): Description."""
+        agency_cd (str)
+        site_no (str)
+        parameter_cd (str)
+        timeseries_cd (str)
+        description (str)
+    """
+    
     
     agency_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agency_cd"))
     site_no: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="site_no"))
     parameter_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="parameter_cd"))
     timeseries_cd: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timeseries_cd"))
     description: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"SiteTimeseries\", \"doc\": \"USGS site timeseries metadata.\", \"namespace\": \"USGS.Sites\", \"fields\": [{\"name\": \"agency_cd\", \"doc\": \"Agency code.\", \"type\": \"string\"}, {\"name\": \"site_no\", \"doc\": \"USGS site number.\", \"type\": \"string\"}, {\"name\": \"parameter_cd\", \"doc\": \"Parameter code.\", \"type\": \"string\"}, {\"name\": \"timeseries_cd\", \"doc\": \"Timeseries code.\", \"type\": \"string\"}, {\"name\": \"description\", \"doc\": \"Description.\", \"type\": \"string\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.agency_cd=str(self.agency_cd)
-        self.site_no=str(self.site_no)
-        self.parameter_cd=str(self.parameter_cd)
-        self.timeseries_cd=str(self.timeseries_cd)
-        self.description=str(self.description)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'SiteTimeseries':
@@ -54,7 +43,7 @@ class SiteTimeseries:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -73,7 +62,7 @@ class SiteTimeseries:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -87,8 +76,6 @@ class SiteTimeseries:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -101,16 +88,12 @@ class SiteTimeseries:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -135,10 +118,6 @@ class SiteTimeseries:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -164,18 +143,6 @@ class SiteTimeseries:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return SiteTimeseries.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -183,5 +150,20 @@ class SiteTimeseries:
                 return SiteTimeseries.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'SiteTimeseries':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            agency_cd='eixdlektgkqxchztigff',
+            site_no='jzeelnpcpcbiilquvilb',
+            parameter_cd='uasoflkhkjqemiwtulfb',
+            timeseries_cd='ywiwrnuwtdymuslslbxe',
+            description='qsgydxrcuhngokvluvvb'
+        )

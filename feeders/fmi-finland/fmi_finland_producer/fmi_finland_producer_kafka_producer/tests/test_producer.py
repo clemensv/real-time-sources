@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from fmi_finland_producer_kafka_producer.producer import FiFmiOpendataAirqualityEventProducer
 from fmi_finland_producer_data import Station
-from test_fmi_finland_producer_data_station import Test_Station
+from test_station import Test_Station
 from fmi_finland_producer_data import Observation
-from test_fmi_finland_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from fmi_finland_producer_kafka_producer.producer import FiFmiOpendataAirqualityMqttEventProducer
 from fmi_finland_producer_kafka_producer.producer import FiFmiOpendataAirqualityAmqpEventProducer
 
@@ -107,7 +107,8 @@ def test_fi_fmi_opendata_airquality_fifmiopendataairqualitystation(kafka_emulato
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fi_fmi_opendata_airquality_station(_fmisid = f'test_{i}', data = event_data)
+        producer_instance.send_fi_fmi_opendata_airquality_station(_fmisid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_fi_fmi_opendata_airquality_fifmiopendataairqualityobservation(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fi_fmi_opendata_airquality_observation(_fmisid = f'test_{i}', data = event_data)
+        producer_instance.send_fi_fmi_opendata_airquality_observation(_fmisid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_fi_fmi_opendata_airquality_mqtt_fifmiopendataairqualitymqttstation(kafk
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fi_fmi_opendata_airquality_mqtt_station(_fmisid = f'test_{i}', data = event_data)
+        producer_instance.send_fi_fmi_opendata_airquality_mqtt_station(_fmisid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_fi_fmi_opendata_airquality_mqtt_fifmiopendataairqualitymqttobservation(
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fi_fmi_opendata_airquality_mqtt_observation(_fmisid = f'test_{i}', data = event_data)
+        producer_instance.send_fi_fmi_opendata_airquality_mqtt_observation(_fmisid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_fi_fmi_opendata_airquality_amqp_fifmiopendataairqualityamqpstation(kafk
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fi_fmi_opendata_airquality_amqp_station(_fmisid = f'test_{i}', data = event_data)
+        producer_instance.send_fi_fmi_opendata_airquality_amqp_station(_fmisid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_fi_fmi_opendata_airquality_amqp_fifmiopendataairqualityamqpobservation(
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fi_fmi_opendata_airquality_amqp_observation(_fmisid = f'test_{i}', data = event_data)
+        producer_instance.send_fi_fmi_opendata_airquality_amqp_observation(_fmisid = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import cdec_reservoirs_mqtt_producer_data
 from cdec_reservoirs_mqtt_producer_data import ReservoirReading
-from test_cdec_reservoirs_mqtt_producer_data_reservoirreading import Test_ReservoirReading
+from test_reservoirreading import Test_ReservoirReading
 from cdec_reservoirs_mqtt_producer_mqtt_client import GovCaWaterCdecMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_gov_ca_water_cdec_mqtt_gov_ca_water_cdec_mqtt_reservoir_reading_p
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
             sensor_num=f"test_sensor_num_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

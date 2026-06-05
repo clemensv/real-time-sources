@@ -96,6 +96,8 @@ class Humidity:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class Humidity:
             An instance of the dataclass.
         """
         return cls(
-            station_id='tkmdworuqdgzmpqilkzx',
-            timestamp='nqaohygzbrevzhaiifwx',
-            value=float(53.51673476121873),
-            max_humidity_exceeded=False,
+            station_id='oqpromfdibegfpgwjape',
+            timestamp='aefflrbunodqjtaudfqu',
+            value=float(16.530649538530884),
+            max_humidity_exceeded=True,
             min_humidity_exceeded=True,
             rate_of_change_exceeded=True,
-            region='cmtqfbckklgubourcxzw'
+            region='bxwhgzhmwpswlsslzqdj'
         )

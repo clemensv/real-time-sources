@@ -93,6 +93,8 @@ class StationBoard:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -160,9 +162,9 @@ class StationBoard:
             An instance of the dataclass.
         """
         return cls(
-            station_id='zcmzexypszrnzhpcopte',
-            station_name='eebdlzbydrkvtplmxias',
-            retrieved_at='ywffvodgophwjpxpvsqx',
-            departure_count=int(19),
-            departures=[None]
+            station_id='flqqtwvotdxiomgumclf',
+            station_name='stqrhsoigluwxkpiyves',
+            retrieved_at='oizjjajrclrljbisqkxw',
+            departure_count=int(3),
+            departures=[None, None, None, None, None]
         )

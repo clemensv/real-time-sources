@@ -16,6 +16,16 @@
 //                               projected to a GeoJSON Point `geometry` column
 //                               plus OSINT attributes (FRP, confidence, day/
 //                               night, satellite, source) for the symbol layer.
+//   FireFootprints(...)       - same detection set projected as GeoJSON Polygon
+//                               pixel footprints (scan x track rectangle) for the
+//                               high-zoom fill layer showing true pixel extent.
+//   FireGrid(...)             - detections aggregated onto a fixed lat/lon grid
+//                               (default 0.1 deg, the ICON-D2 tile size) and
+//                               emitted as one square GeoJSON Polygon tile per
+//                               populated cell, coloured by peak FRP. Bounded by
+//                               grid resolution, so it never approaches the live
+//                               map layer's 20 MB result cap (the DWD tile
+//                               pattern).
 //   FireHeat(...)             - same detection set projected for the heatmap
 //                               layer with an FRP-derived `weight` column.
 //   FireHotspots(...)         - detections aggregated onto a coarse grid for a
@@ -66,8 +76,59 @@
               daynight, satellite, instrument, source, acq_datetime, fill_color, radius, label
 }
 
-.create-or-alter function with (docstring="Recent FIRMS detections projected for the Fabric Map heatmap layer with an FRP-derived weight (0..1).", folder="nasa-firms/map") FireHeat(lookback:timespan = 24h) {
+.create-or-alter function with (docstring="Recent FIRMS detections as GeoJSON Polygon footprints for the Fabric Map fill layer. Each detection is a satellite pixel whose true ground footprint is a rectangle of scan (along-scan, km) by track (along-track, km) centred on the lat/lon centroid; this projects that rectangle as a closed GeoJSON Polygon (axis-aligned approximation, ignoring satellite heading) so high-zoom views show the real pixel extent rather than a point. lookback is an ingestion-time window (default 24h); min_confidence filters to low/nominal/high ordinal (0 = all).", folder="nasa-firms/map") FireFootprints(lookback:timespan = 24h, min_confidence:int = 0) {
     ['NASA.FIRMS.FireDetection']
+    | where ___time > ago(lookback)
+    | where ConfidenceRank(confidence_level) >= min_confidence
+    | extend _scan = coalesce(scan, 0.375), _track = coalesce(track, 0.375)
+    // half-extents in degrees: 1 deg lat ~= 110.574 km; 1 deg lon ~= 111.320 km * cos(lat)
+    | extend dlat = (_track / 2.0) / 110.574
+    | extend dlon = (_scan / 2.0) / (111.320 * cos(radians(latitude)))
+    // round corners to 5 dp (~1 m) to keep the GeoJSON polygon payload small
+    | extend w = round(longitude - dlon, 5), e = round(longitude + dlon, 5),
+             s = round(latitude - dlat, 5), n = round(latitude + dlat, 5)
+    | extend geometry = bag_pack("type", "Polygon", "coordinates", pack_array(pack_array(
+        pack_array(w, s), pack_array(e, s), pack_array(e, n), pack_array(w, n), pack_array(w, s))))
+    | extend fill_color = FireColor(frp)
+    | extend label = strcat(toupper(tostring(instrument)), "  ", tostring(round(frp, 1)), " MW  ", confidence_level)
+    | project geometry, latitude, longitude, scan, track, frp, brightness, confidence_level,
+              daynight, satellite, instrument, source, acq_datetime, fill_color, label
+}
+
+.create-or-alter function with (docstring="Recent FIRMS detections aggregated onto a fixed lat/lon grid (default 0.1 deg, matching the ICON-D2 tile size) and projected as square GeoJSON Polygon tiles for the Fabric Map fill layer. Each populated cell becomes one tile coloured by peak FRP and carrying the full per-cell OSINT summary (peak/total FRP, max brightness, detection count, confidence breakdown, day/night split, contributing instruments / satellites / sources, first & last seen) so the tiles are the single all-zoom fire layer and no separate per-detection point layer is needed. The rendered row count is bounded by grid resolution (not detection count) so it never approaches the 20 MB live-layer cap. lookback is an ingestion-time window (default 24h); cell is the grid size in degrees.", folder="nasa-firms/map") FireGrid(lookback:timespan = 24h, cell:real = 0.1) {
+    let HALF = cell / 2.0;
+    ['NASA.FIRMS.FireDetection']
+    | where ___time > ago(lookback)
+    | extend gi = floor(longitude / cell, 1), gj = floor(latitude / cell, 1)
+    | summarize detections = count(), frp_max = max(frp), frp_total = sum(coalesce(frp, 0.0)),
+                brightness_max = max(brightness),
+                high_conf = countif(confidence_level == "high"),
+                nominal_conf = countif(confidence_level == "nominal"),
+                low_conf = countif(confidence_level == "low"),
+                day_count = countif(daynight == "D"),
+                night_count = countif(daynight == "N"),
+                instruments_set = make_set(instrument, 10),
+                satellites_set = make_set(satellite, 10),
+                sources_set = make_set(source, 10),
+                first_seen = min(acq_datetime), last_seen = max(acq_datetime) by gi, gj
+    | extend clon = gi * cell + HALF, clat = gj * cell + HALF
+    | extend w = round(clon - HALF, 5), e = round(clon + HALF, 5), s = round(clat - HALF, 5), n = round(clat + HALF, 5)
+    | extend geometry = bag_pack("type", "Polygon", "coordinates", pack_array(pack_array(
+        pack_array(w, s), pack_array(e, s), pack_array(e, n), pack_array(w, n), pack_array(w, s))))
+    | extend frp_disp = round(coalesce(frp_max, 0.0), 1)
+    | extend instruments = strcat_array(instruments_set, ", "),
+             satellites = strcat_array(satellites_set, ", "),
+             sources = strcat_array(sources_set, ", ")
+    | extend daynight = case(day_count > 0 and night_count > 0, "day + night",
+                             night_count > 0, "night", "day")
+    | extend label = strcat(tostring(frp_disp), " MW  (", tostring(detections), " det)")
+    | project geometry, frp_max = frp_disp, frp_total = round(frp_total, 0),
+              brightness_max = round(coalesce(brightness_max, 0.0), 1), detections,
+              high_conf, nominal_conf, low_conf, day_count, night_count, daynight,
+              instruments, satellites, sources, first_seen, last_seen, label
+}
+
+.create-or-alter function with (docstring="Recent FIRMS detections projected for the Fabric Map heatmap layer with an FRP-derived weight (0..1).", folder="nasa-firms/map") FireHeat(lookback:timespan = 24h) {    ['NASA.FIRMS.FireDetection']
     | where ___time > ago(lookback)
     | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(longitude, latitude))
     | extend weight = todouble(min_of(1.0, (coalesce(frp, 1.0) / 200.0) + 0.1))
@@ -84,8 +145,19 @@
               by glat, glon
     | extend geometry = bag_pack("type", "Point", "coordinates", pack_array(glon, glat))
     | extend fill_color = FireColor(total_frp / 5.0)
+    // Human-readable total-FRP band for the map legend. Thresholds are
+    // FireColor()'s breakpoints x5, because the colour above is keyed on
+    // total_frp/5.0 -- so band and colour always agree on the same cell.
+    | extend frp_band = case(
+        total_frp < 25,    "< 25 MW",
+        total_frp < 100,   "25-100 MW",
+        total_frp < 250,   "100-250 MW",
+        total_frp < 500,   "250-500 MW",
+        total_frp < 1500,  "500-1500 MW",
+        total_frp < 5000,  "1500-5000 MW",
+        ">= 5000 MW")
     | extend label = strcat(tostring(detections), " fires  ", tostring(round(total_frp, 0)), " MW")
-    | project geometry, glat, glon, detections, total_frp, max_frp, high_conf, fill_color, label
+    | project geometry, glat, glon, detections, total_frp, max_frp, high_conf, fill_color, frp_band, label
 }
 
 // ===========================================================================

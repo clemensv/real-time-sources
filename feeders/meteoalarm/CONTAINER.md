@@ -131,6 +131,7 @@ docker run --rm \
 | `MQTT_CONTENT_MODE` | CloudEvents content mode, `binary` by default. Keep `binary` for MQTT 5 user-property metadata. |
 | `POLLING_INTERVAL` | Source polling interval in seconds, when supported by the feeder. |
 | `STATE_FILE` | Optional path for source dedupe/checkpoint state, when the feeder maintains local state. |
+| `METEOALARM_MQTT_STATE_FILE` | Feeder-prefixed path to the persisted MQTT publish/dedupe state file used by the MQTT variant. Surfaced by the MQTT and Event Grid MQTT ARM templates. |
 | topic prefix | Fixed by the xRegistry contract, not an environment variable. Root: `alerts/intl/meteoalarm/meteoalarm`. |
 | retain default | Per message in xRegistry; see the topic table below. |
 | QoS default | Per message in xRegistry; MQTT messages in this source use QoS 1 unless noted otherwise. |

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import nepal_bipad_hydrology_mqtt_producer_data
 from nepal_bipad_hydrology_mqtt_producer_data import RiverStation
-from test_nepal_bipad_hydrology_mqtt_producer_data_riverstation import Test_RiverStation
+from test_riverstation import Test_RiverStation
 from nepal_bipad_hydrology_mqtt_producer_data import WaterLevelReading
-from test_nepal_bipad_hydrology_mqtt_producer_data_waterlevelreading import Test_WaterLevelReading
+from test_waterlevelreading import Test_WaterLevelReading
 from nepal_bipad_hydrology_mqtt_producer_mqtt_client import NpGovBipadHydrologyMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -92,6 +93,7 @@ async def test_np_gov_bipad_hydrology_mqtt_np_gov_bipad_hydrology_mqtt_river_sta
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -158,6 +160,7 @@ async def test_np_gov_bipad_hydrology_mqtt_np_gov_bipad_hydrology_mqtt_water_lev
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

@@ -5,6 +5,7 @@
 Tests for wsdot_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../wsdot_amqp_producer_data/src')))
@@ -25,25 +27,25 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from wsdot_amqp_producer_amqp_producer import *
 from wsdot_amqp_producer_data import TrafficFlowStation
-from test_wsdot_amqp_producer_data_trafficflowstation import Test_TrafficFlowStation
+from test_trafficflowstation import Test_TrafficFlowStation
 from wsdot_amqp_producer_data import TrafficFlowReading
-from test_wsdot_amqp_producer_data_trafficflowreading import Test_TrafficFlowReading
+from test_trafficflowreading import Test_TrafficFlowReading
 from wsdot_amqp_producer_data import TravelTimeRoute
-from test_wsdot_amqp_producer_data_traveltimeroute import Test_TravelTimeRoute
+from test_traveltimeroute import Test_TravelTimeRoute
 from wsdot_amqp_producer_data import MountainPassCondition
-from test_wsdot_amqp_producer_data_mountainpasscondition import Test_MountainPassCondition
+from test_mountainpasscondition import Test_MountainPassCondition
 from wsdot_amqp_producer_data import WeatherStation
-from test_wsdot_amqp_producer_data_weatherstation import Test_WeatherStation
+from test_weatherstation import Test_WeatherStation
 from wsdot_amqp_producer_data import WeatherReading
-from test_wsdot_amqp_producer_data_weatherreading import Test_WeatherReading
+from test_weatherreading import Test_WeatherReading
 from wsdot_amqp_producer_data import TollRate
-from test_wsdot_amqp_producer_data_tollrate import Test_TollRate
+from test_tollrate import Test_TollRate
 from wsdot_amqp_producer_data import CommercialVehicleRestriction
-from test_wsdot_amqp_producer_data_commercialvehiclerestriction import Test_CommercialVehicleRestriction
+from test_commercialvehiclerestriction import Test_CommercialVehicleRestriction
 from wsdot_amqp_producer_data import BorderCrossing
-from test_wsdot_amqp_producer_data_bordercrossing import Test_BorderCrossing
+from test_bordercrossing import Test_BorderCrossing
 from wsdot_amqp_producer_data import VesselLocation
-from test_wsdot_amqp_producer_data_vessellocation import Test_VesselLocation
+from test_vessellocation import Test_VesselLocation
 
 
 
@@ -249,6 +251,45 @@ class TestUsWaWsdotTrafficAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UsWaWsdotTrafficAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -276,6 +317,7 @@ class TestUsWaWsdotTrafficAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _flow_data_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -283,6 +325,7 @@ class TestUsWaWsdotTrafficAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -304,8 +347,41 @@ class TestUsWaWsdotTrafficAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{flow_data_id}".format(flow_data_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{flow_data_id}".format(flow_data_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_TrafficFlowStation.create_instance()
+
+        producer = UsWaWsdotTrafficAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _flow_data_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'us.wa.wsdot.traffic.TrafficFlowStation.amqp'
+        assert received.body is not None
+        assert received.subject == "{flow_data_id}".format(flow_data_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{flow_data_id}".format(flow_data_id="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -333,6 +409,7 @@ class TestUsWaWsdotTrafficAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _flow_data_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -340,6 +417,7 @@ class TestUsWaWsdotTrafficAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -361,8 +439,41 @@ class TestUsWaWsdotTrafficAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{flow_data_id}".format(flow_data_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{flow_data_id}".format(flow_data_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_TrafficFlowReading.create_instance()
+
+        producer = UsWaWsdotTrafficAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _flow_data_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'us.wa.wsdot.traffic.TrafficFlowReading.amqp'
+        assert received.body is not None
+        assert received.subject == "{flow_data_id}".format(flow_data_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{flow_data_id}".format(flow_data_id="value"))[:128]
 
 
 
@@ -384,6 +495,45 @@ class TestUsWaWsdotTraveltimesAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UsWaWsdotTraveltimesAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -411,6 +561,7 @@ class TestUsWaWsdotTraveltimesAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _travel_time_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -418,6 +569,7 @@ class TestUsWaWsdotTraveltimesAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -439,8 +591,41 @@ class TestUsWaWsdotTraveltimesAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{travel_time_id}".format(travel_time_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{travel_time_id}".format(travel_time_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_TravelTimeRoute.create_instance()
+
+        producer = UsWaWsdotTraveltimesAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _travel_time_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'us.wa.wsdot.traveltimes.TravelTimeRoute.amqp'
+        assert received.body is not None
+        assert received.subject == "{travel_time_id}".format(travel_time_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{travel_time_id}".format(travel_time_id="value"))[:128]
 
 
 
@@ -462,6 +647,45 @@ class TestUsWaWsdotMountainpassAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UsWaWsdotMountainpassAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -489,6 +713,7 @@ class TestUsWaWsdotMountainpassAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _mountain_pass_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -496,6 +721,7 @@ class TestUsWaWsdotMountainpassAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -517,8 +743,41 @@ class TestUsWaWsdotMountainpassAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{mountain_pass_id}".format(mountain_pass_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{mountain_pass_id}".format(mountain_pass_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_MountainPassCondition.create_instance()
+
+        producer = UsWaWsdotMountainpassAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _mountain_pass_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'us.wa.wsdot.mountainpass.MountainPassCondition.amqp'
+        assert received.body is not None
+        assert received.subject == "{mountain_pass_id}".format(mountain_pass_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{mountain_pass_id}".format(mountain_pass_id="value"))[:128]
 
 
 
@@ -540,6 +799,45 @@ class TestUsWaWsdotWeatherAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UsWaWsdotWeatherAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -567,6 +865,7 @@ class TestUsWaWsdotWeatherAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _station_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -574,6 +873,7 @@ class TestUsWaWsdotWeatherAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -595,8 +895,41 @@ class TestUsWaWsdotWeatherAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_WeatherStation.create_instance()
+
+        producer = UsWaWsdotWeatherAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _station_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'us.wa.wsdot.weather.WeatherStation.amqp'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -624,6 +957,7 @@ class TestUsWaWsdotWeatherAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _station_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -631,6 +965,7 @@ class TestUsWaWsdotWeatherAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -652,8 +987,41 @@ class TestUsWaWsdotWeatherAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_WeatherReading.create_instance()
+
+        producer = UsWaWsdotWeatherAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _station_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'us.wa.wsdot.weather.WeatherReading.amqp'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
 
 
 
@@ -675,6 +1043,45 @@ class TestUsWaWsdotTollsAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UsWaWsdotTollsAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -702,6 +1109,7 @@ class TestUsWaWsdotTollsAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _trip_name="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -709,6 +1117,7 @@ class TestUsWaWsdotTollsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -730,8 +1139,41 @@ class TestUsWaWsdotTollsAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{trip_name}".format(trip_name="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{trip_name}".format(trip_name="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_TollRate.create_instance()
+
+        producer = UsWaWsdotTollsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _trip_name="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'us.wa.wsdot.tolls.TollRate.amqp'
+        assert received.body is not None
+        assert received.subject == "{trip_name}".format(trip_name="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{trip_name}".format(trip_name="value"))[:128]
 
 
 
@@ -753,6 +1195,45 @@ class TestUsWaWsdotCvrestrictionsAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UsWaWsdotCvrestrictionsAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -781,6 +1262,7 @@ class TestUsWaWsdotCvrestrictionsAmqpProducer:
                     _feedurl="value",
                     _state_route_id="value",
                     _bridge_number="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -788,6 +1270,7 @@ class TestUsWaWsdotCvrestrictionsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -809,8 +1292,42 @@ class TestUsWaWsdotCvrestrictionsAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{state_route_id}/{bridge_number}".format(state_route_id="value", bridge_number="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{state_route_id}/{bridge_number}".format(state_route_id="value", bridge_number="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_CommercialVehicleRestriction.create_instance()
+
+        producer = UsWaWsdotCvrestrictionsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _state_route_id="value",
+                _bridge_number="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp'
+        assert received.body is not None
+        assert received.subject == "{state_route_id}/{bridge_number}".format(state_route_id="value", bridge_number="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{state_route_id}/{bridge_number}".format(state_route_id="value", bridge_number="value"))[:128]
 
 
 
@@ -832,6 +1349,45 @@ class TestUsWaWsdotBorderAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UsWaWsdotBorderAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -859,6 +1415,7 @@ class TestUsWaWsdotBorderAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _crossing_name="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -866,6 +1423,7 @@ class TestUsWaWsdotBorderAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -887,8 +1445,41 @@ class TestUsWaWsdotBorderAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{crossing_name}".format(crossing_name="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{crossing_name}".format(crossing_name="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_BorderCrossing.create_instance()
+
+        producer = UsWaWsdotBorderAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _crossing_name="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'us.wa.wsdot.border.BorderCrossing.amqp'
+        assert received.body is not None
+        assert received.subject == "{crossing_name}".format(crossing_name="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{crossing_name}".format(crossing_name="value"))[:128]
 
 
 
@@ -910,6 +1501,45 @@ class TestUsWaWsdotFerriesAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UsWaWsdotFerriesAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -937,6 +1567,7 @@ class TestUsWaWsdotFerriesAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _vessel_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -944,6 +1575,7 @@ class TestUsWaWsdotFerriesAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -965,6 +1597,39 @@ class TestUsWaWsdotFerriesAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{vessel_id}".format(vessel_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{vessel_id}".format(vessel_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_VesselLocation.create_instance()
+
+        producer = UsWaWsdotFerriesAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _feedurl="value",
+                _vessel_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'us.wa.wsdot.ferries.VesselLocation.amqp'
+        assert received.body is not None
+        assert received.subject == "{vessel_id}".format(vessel_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{vessel_id}".format(vessel_id="value"))[:128]
 

@@ -28,13 +28,13 @@ class Test_ControllerPosition(unittest.TestCase):
         Create instance of ControllerPosition for testing
         """
         instance = ControllerPosition(
-            cid=int(55),
-            callsign='fikzjsjchwbofdbccegk',
-            frequency='bsuhvqxpamlftsxgfbbf',
-            facility=int(47),
-            rating=int(43),
-            text_atis='wicvvjgshbfhzjsaylsf',
-            last_updated='cpxjcuizgqgyesdxfcxa'
+            cid=int(71),
+            callsign='gbcjfrvueddtnpudbpse',
+            frequency='yavfdxrypyqpzxfasciu',
+            facility=int(40),
+            rating=int(18),
+            text_atis='ilodwsbwshrwuttidgrc',
+            last_updated='arkigkhjkytjkfdafywj'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = int(55)
+        test_value = int(71)
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -51,7 +51,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test callsign property
         """
-        test_value = 'fikzjsjchwbofdbccegk'
+        test_value = 'gbcjfrvueddtnpudbpse'
         self.instance.callsign = test_value
         self.assertEqual(self.instance.callsign, test_value)
     
@@ -59,7 +59,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test frequency property
         """
-        test_value = 'bsuhvqxpamlftsxgfbbf'
+        test_value = 'yavfdxrypyqpzxfasciu'
         self.instance.frequency = test_value
         self.assertEqual(self.instance.frequency, test_value)
     
@@ -67,7 +67,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test facility property
         """
-        test_value = int(47)
+        test_value = int(40)
         self.instance.facility = test_value
         self.assertEqual(self.instance.facility, test_value)
     
@@ -75,7 +75,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test rating property
         """
-        test_value = int(43)
+        test_value = int(18)
         self.instance.rating = test_value
         self.assertEqual(self.instance.rating, test_value)
     
@@ -83,7 +83,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test text_atis property
         """
-        test_value = 'wicvvjgshbfhzjsaylsf'
+        test_value = 'ilodwsbwshrwuttidgrc'
         self.instance.text_atis = test_value
         self.assertEqual(self.instance.text_atis, test_value)
     
@@ -91,19 +91,10 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test last_updated property
         """
-        test_value = 'cpxjcuizgqgyesdxfcxa'
+        test_value = 'arkigkhjkytjkfdafywj'
         self.instance.last_updated = test_value
         self.assertEqual(self.instance.last_updated, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = ControllerPosition.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

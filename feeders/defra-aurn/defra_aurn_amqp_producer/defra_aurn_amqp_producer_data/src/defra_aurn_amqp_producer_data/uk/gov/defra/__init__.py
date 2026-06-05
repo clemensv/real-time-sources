@@ -1,3 +1,3 @@
-from .aurn import Station, Timeseries, Observation
+from .aurn import Timeseries, Station, Observation
 
-__all__ = ["Station", "Timeseries", "Observation"]
+__all__ = ["Timeseries", "Station", "Observation"]

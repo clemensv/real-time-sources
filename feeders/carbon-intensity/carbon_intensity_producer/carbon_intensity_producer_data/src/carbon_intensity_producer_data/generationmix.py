@@ -112,6 +112,8 @@ class GenerationMix:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -181,16 +183,16 @@ class GenerationMix:
         return cls(
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            biomass_pct=float(53.27921957075665),
-            coal_pct=float(91.17646445687274),
-            gas_pct=float(17.782359973529115),
-            hydro_pct=float(97.9633387546917),
-            imports_pct=float(39.48848974791995),
-            nuclear_pct=float(17.14762789059031),
-            oil_pct=float(87.47183302941714),
-            other_pct=float(98.91094833314264),
-            solar_pct=float(57.05245486297672),
-            wind_pct=float(44.574062634671975),
-            region='slkzxbhbilmrqnzeproz',
-            ce_id='kszqfwblumaqxttxnwwv'
+            biomass_pct=float(7.913666078070769),
+            coal_pct=float(81.01185478525356),
+            gas_pct=float(83.12884894408937),
+            hydro_pct=float(67.51440216133992),
+            imports_pct=float(41.50809692677049),
+            nuclear_pct=float(2.912235703986399),
+            oil_pct=float(25.359561209287563),
+            other_pct=float(78.72874509631743),
+            solar_pct=float(30.594401774228007),
+            wind_pct=float(43.25686289327933),
+            region='nnmarndonbwffcquxmql',
+            ce_id='ynkqsqolxdamskzfqdbu'
         )

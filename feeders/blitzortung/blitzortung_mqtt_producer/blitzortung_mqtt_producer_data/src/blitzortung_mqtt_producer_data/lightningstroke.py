@@ -39,7 +39,7 @@ class LightningStroke:
     source_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_id"))
     stroke_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stroke_id"))
     event_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_time"))
-    event_timestamp_ms: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_timestamp_ms"))
+    event_timestamp_ms: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_timestamp_ms", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     server_id: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="server_id"))
@@ -60,6 +60,8 @@ class LightningStroke:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'event_timestamp_ms' in data and isinstance(data['event_timestamp_ms'], str):
+            data['event_timestamp_ms'] = int(data['event_timestamp_ms'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -70,6 +72,8 @@ class LightningStroke:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'event_timestamp_ms' in asdict_result and asdict_result['event_timestamp_ms'] is not None:
+            asdict_result['event_timestamp_ms'] = str(asdict_result['event_timestamp_ms'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -107,6 +111,8 @@ class LightningStroke:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -174,16 +180,16 @@ class LightningStroke:
             An instance of the dataclass.
         """
         return cls(
-            source_id=int(4),
-            stroke_id='vmsdqrnhhljrjbbgeebe',
-            event_time='vabefrrywfdnqkatzvhd',
-            event_timestamp_ms=int(28),
-            latitude=float(73.29927303250952),
-            longitude=float(95.65145006380237),
-            server_id=int(67),
-            server_delay_ms=int(89),
-            accuracy_diameter_m=float(47.115816025266945),
+            source_id=int(49),
+            stroke_id='fvouonbudplzlaajynuw',
+            event_time='yrvwacyaddfrunxczmtq',
+            event_timestamp_ms=int(16),
+            latitude=float(1.3602767681774153),
+            longitude=float(11.346487834774566),
+            server_id=int(46),
+            server_delay_ms=int(18),
+            accuracy_diameter_m=float(28.182689303402107),
             detector_participations=[None],
-            geohash5='osufzbtekwhmdetfghlz',
-            geohash7='fieszumzfewvdocbasvw'
+            geohash5='abnndwigwmnwdumsvrdj',
+            geohash7='rxhoxqvubbcmdkmmaxnj'
         )

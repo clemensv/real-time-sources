@@ -98,6 +98,8 @@ class TrafficReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,11 +167,11 @@ class TrafficReading:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='ftaljfqojsphlfvzcpxf',
-            intensity=int(95),
-            occupancy=int(71),
-            load=int(49),
-            service_level=int(20),
-            error_flag='gvdpwjqkjqfevkdnznhe',
+            sensor_id='cdniicblopklysrcqutm',
+            intensity=int(89),
+            occupancy=int(93),
+            load=int(72),
+            service_level=int(79),
+            error_flag='pbckttglngemoskllebv',
             timestamp=datetime.datetime.now(datetime.timezone.utc)
         )

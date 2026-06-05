@@ -96,6 +96,8 @@ class MsiSign:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class MsiSign:
             An instance of the dataclass.
         """
         return cls(
-            sign_id='yujieetnstbejlliduis',
-            sign_type='wkxunpgfhppobobrkypk',
-            latitude=float(78.17908677458463),
-            longitude=float(62.63605083572149),
-            road_name='tazrmbyscxljwvtweglm',
-            lane='cuwnhmtilheeftvmpubc',
-            description='cnpjmkixitmnftciukqf'
+            sign_id='jbywlrsiqmbdkizpnvsx',
+            sign_type='atilrwunnslgzmzydail',
+            latitude=float(82.01995607863759),
+            longitude=float(44.51999611424864),
+            road_name='kfpamancelzfgyetsrxn',
+            lane='jqoviemdejlwsmoaduqm',
+            description='weyirjefnaqtpxqdycyb'
         )

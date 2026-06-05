@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from nasa_firms_producer_kafka_producer.producer import NASAFIRMSEventProducer
 from nasa_firms_producer_data import FireDetection
-from test_nasa_firms_producer_data_firedetection import Test_FireDetection
+from test_firedetection import Test_FireDetection
 from nasa_firms_producer_data import DataAvailability
-from test_nasa_firms_producer_data_dataavailability import Test_DataAvailability
+from test_dataavailability import Test_DataAvailability
 from nasa_firms_producer_kafka_producer.producer import NASAFIRMSMqttEventProducer
 from nasa_firms_producer_kafka_producer.producer import NASAFIRMSAmqpEventProducer
 

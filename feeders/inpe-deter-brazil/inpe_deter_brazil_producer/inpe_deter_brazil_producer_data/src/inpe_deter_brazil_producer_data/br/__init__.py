@@ -1,3 +1,3 @@
-from .inpe import DeforestationAlert
+from .inpe import BiomeEnum, ClassSlugenum, DeforestationAlert
 
-__all__ = ["DeforestationAlert"]
+__all__ = ["BiomeEnum", "ClassSlugenum", "DeforestationAlert"]

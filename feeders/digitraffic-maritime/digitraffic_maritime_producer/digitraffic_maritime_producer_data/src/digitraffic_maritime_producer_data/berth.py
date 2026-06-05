@@ -17,7 +17,7 @@ import json
 @dataclass
 class Berth:
     """
-    Berth
+    A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels.
     
     Attributes:
         port_area_code (str)
@@ -88,6 +88,8 @@ class Berth:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -155,7 +157,7 @@ class Berth:
             An instance of the dataclass.
         """
         return cls(
-            port_area_code='vxzbqorwchyjwgxsbgpj',
-            berth_code='ewawbkgseeafiteywixf',
-            berth_name='jfcilklfsnvdntclgkoz'
+            port_area_code='ccjpglkwdqcgkxiejusq',
+            berth_code='dhuwwxuaecsmyaqkhkfh',
+            berth_name='hqiqcixndptkeggzmkea'
         )

@@ -1,12 +1,58 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
 import json
+import re
 import uuid
 import typing
-from datetime import datetime
+from datetime import datetime, timezone
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 from noaa_producer_data import WaterLevel
 from noaa_producer_data import Predictions
 from noaa_producer_data import AirPressure
@@ -52,7 +98,15 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_microsoft_open_data_us_noaa_water_level(self,_station_id : str, data: WaterLevel, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterLevel], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_microsoft_open_data_us_noaa_water_level(self,_station_id : str, data: WaterLevel, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterLevel], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.WaterLevel' event to the Kafka topic
 
@@ -60,6 +114,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WaterLevel): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WaterLevel], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -71,6 +126,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -78,13 +134,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_predictions(self,_station_id : str, data: Predictions, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Predictions], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_predictions(self,_station_id : str, data: Predictions, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Predictions], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.Predictions' event to the Kafka topic
 
@@ -92,6 +148,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Predictions): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Predictions], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -103,6 +160,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -110,13 +168,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_air_pressure(self,_station_id : str, data: AirPressure, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirPressure], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_air_pressure(self,_station_id : str, data: AirPressure, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirPressure], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.AirPressure' event to the Kafka topic
 
@@ -124,6 +182,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (AirPressure): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, AirPressure], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -135,6 +194,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -142,13 +202,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_air_temperature(self,_station_id : str, data: AirTemperature, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirTemperature], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_air_temperature(self,_station_id : str, data: AirTemperature, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirTemperature], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.AirTemperature' event to the Kafka topic
 
@@ -156,6 +216,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (AirTemperature): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, AirTemperature], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -167,6 +228,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -174,13 +236,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_water_temperature(self,_station_id : str, data: WaterTemperature, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterTemperature], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_water_temperature(self,_station_id : str, data: WaterTemperature, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterTemperature], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.WaterTemperature' event to the Kafka topic
 
@@ -188,6 +250,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WaterTemperature): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WaterTemperature], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -199,6 +262,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -206,13 +270,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_wind(self,_station_id : str, data: Wind, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Wind], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_wind(self,_station_id : str, data: Wind, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Wind], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.Wind' event to the Kafka topic
 
@@ -220,6 +284,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Wind): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Wind], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -231,6 +296,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -238,13 +304,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_humidity(self,_station_id : str, data: Humidity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Humidity], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_humidity(self,_station_id : str, data: Humidity, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Humidity], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.Humidity' event to the Kafka topic
 
@@ -252,6 +318,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Humidity): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Humidity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -263,6 +330,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -270,13 +338,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_conductivity(self,_station_id : str, data: Conductivity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Conductivity], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_conductivity(self,_station_id : str, data: Conductivity, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Conductivity], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.Conductivity' event to the Kafka topic
 
@@ -284,6 +352,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Conductivity): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Conductivity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -295,6 +364,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -302,13 +372,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_salinity(self,_station_id : str, data: Salinity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Salinity], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_salinity(self,_station_id : str, data: Salinity, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Salinity], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.Salinity' event to the Kafka topic
 
@@ -316,6 +386,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Salinity): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Salinity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -327,6 +398,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -334,13 +406,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_station(self,_station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_station(self,_station_id : str, data: Station, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.Station' event to the Kafka topic
 
@@ -348,6 +420,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -359,6 +432,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -366,23 +440,23 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_visibility(self,_datacontenttype: str, _time: str, _dataschema: str, _station_id : str, data: Visibility, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Visibility], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_visibility(self,_datacontenttype: str, _dataschema: str, _station_id : str, data: Visibility, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Visibility], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.Visibility' event to the Kafka topic
 
         Args:
             _datacontenttype(str) : CloudEvents attribute 'datacontenttype'
-            _time(str) : CloudEvents attribute 'time'
             _dataschema(str) : CloudEvents attribute 'dataschema'
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Visibility): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Visibility], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -393,10 +467,11 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "source":"https://api.tidesandcurrents.noaa.gov",
              "datacontenttype":_datacontenttype,
              "subject":"{station_id}".format(station_id = _station_id),
-             "time":_time,
+             "time":None,
              "dataschema":_dataschema
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -404,13 +479,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_currents(self,_station_id : str, data: Currents, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Currents], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_currents(self,_station_id : str, data: Currents, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Currents], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.Currents' event to the Kafka topic
 
@@ -418,6 +493,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Currents): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Currents], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -429,6 +505,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -436,13 +513,13 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_current_predictions(self,_station_id : str, data: CurrentPredictions, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentPredictions], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_current_predictions(self,_station_id : str, data: CurrentPredictions, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentPredictions], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.CurrentPredictions' event to the Kafka topic
 
@@ -450,6 +527,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (CurrentPredictions): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, CurrentPredictions], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -461,6 +539,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -468,7 +547,7 @@ class MicrosoftOpenDataUSNOAAEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -556,7 +635,15 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_microsoft_open_data_us_noaa_mqtt_water_level(self,_station_id : str, data: WaterLevel, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterLevel], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_microsoft_open_data_us_noaa_mqtt_water_level(self,_station_id : str, data: WaterLevel, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterLevel], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.WaterLevel' event to the Kafka topic
 
@@ -564,6 +651,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WaterLevel): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WaterLevel], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -574,6 +662,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -581,13 +670,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_predictions(self,_station_id : str, data: Predictions, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Predictions], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_predictions(self,_station_id : str, data: Predictions, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Predictions], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.Predictions' event to the Kafka topic
 
@@ -595,6 +684,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Predictions): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Predictions], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -605,6 +695,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -612,13 +703,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_air_pressure(self,_station_id : str, data: AirPressure, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirPressure], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_air_pressure(self,_station_id : str, data: AirPressure, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirPressure], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.AirPressure' event to the Kafka topic
 
@@ -626,6 +717,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (AirPressure): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, AirPressure], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -636,6 +728,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -643,13 +736,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_air_temperature(self,_station_id : str, data: AirTemperature, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirTemperature], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_air_temperature(self,_station_id : str, data: AirTemperature, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirTemperature], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.AirTemperature' event to the Kafka topic
 
@@ -657,6 +750,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (AirTemperature): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, AirTemperature], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -667,6 +761,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -674,13 +769,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_water_temperature(self,_station_id : str, data: WaterTemperature, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterTemperature], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_water_temperature(self,_station_id : str, data: WaterTemperature, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterTemperature], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.WaterTemperature' event to the Kafka topic
 
@@ -688,6 +783,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WaterTemperature): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WaterTemperature], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -698,6 +794,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -705,13 +802,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_wind(self,_station_id : str, data: Wind, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Wind], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_wind(self,_station_id : str, data: Wind, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Wind], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.Wind' event to the Kafka topic
 
@@ -719,6 +816,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Wind): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Wind], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -729,6 +827,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -736,13 +835,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_humidity(self,_station_id : str, data: Humidity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Humidity], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_humidity(self,_station_id : str, data: Humidity, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Humidity], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.Humidity' event to the Kafka topic
 
@@ -750,6 +849,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Humidity): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Humidity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -760,6 +860,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -767,13 +868,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_conductivity(self,_station_id : str, data: Conductivity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Conductivity], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_conductivity(self,_station_id : str, data: Conductivity, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Conductivity], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.Conductivity' event to the Kafka topic
 
@@ -781,6 +882,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Conductivity): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Conductivity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -791,6 +893,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -798,13 +901,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_salinity(self,_station_id : str, data: Salinity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Salinity], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_salinity(self,_station_id : str, data: Salinity, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Salinity], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.Salinity' event to the Kafka topic
 
@@ -812,6 +915,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Salinity): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Salinity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -822,6 +926,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -829,13 +934,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_station(self,_station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_station(self,_station_id : str, data: Station, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.Station' event to the Kafka topic
 
@@ -843,6 +948,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -853,6 +959,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -860,23 +967,23 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_visibility(self,_datacontenttype: str, _time: str, _dataschema: str, _station_id : str, data: Visibility, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Visibility], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_visibility(self,_datacontenttype: str, _dataschema: str, _station_id : str, data: Visibility, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Visibility], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.Visibility' event to the Kafka topic
 
         Args:
             _datacontenttype(str) : CloudEvents attribute 'datacontenttype'
-            _time(str) : CloudEvents attribute 'time'
             _dataschema(str) : CloudEvents attribute 'dataschema'
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Visibility): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Visibility], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -886,10 +993,11 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "source":"https://api.tidesandcurrents.noaa.gov",
              "datacontenttype":_datacontenttype,
              "subject":"{station_id}".format(station_id = _station_id),
-             "time":_time,
+             "time":None,
              "dataschema":_dataschema
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -897,13 +1005,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_currents(self,_station_id : str, data: Currents, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Currents], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_currents(self,_station_id : str, data: Currents, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Currents], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.Currents' event to the Kafka topic
 
@@ -911,6 +1019,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Currents): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Currents], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -921,6 +1030,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -928,13 +1038,13 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_mqtt_current_predictions(self,_station_id : str, data: CurrentPredictions, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentPredictions], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_mqtt_current_predictions(self,_station_id : str, data: CurrentPredictions, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentPredictions], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.mqtt.CurrentPredictions' event to the Kafka topic
 
@@ -942,6 +1052,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (CurrentPredictions): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, CurrentPredictions], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -952,6 +1063,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -959,7 +1071,7 @@ class MicrosoftOpenDataUSNOAAMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -1047,7 +1159,15 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_microsoft_open_data_us_noaa_amqp_water_level(self,_station_id : str, data: WaterLevel, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterLevel], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_microsoft_open_data_us_noaa_amqp_water_level(self,_station_id : str, data: WaterLevel, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterLevel], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.WaterLevel' event to the Kafka topic
 
@@ -1055,6 +1175,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WaterLevel): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WaterLevel], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1065,6 +1186,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1072,13 +1194,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_predictions(self,_station_id : str, data: Predictions, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Predictions], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_predictions(self,_station_id : str, data: Predictions, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Predictions], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.Predictions' event to the Kafka topic
 
@@ -1086,6 +1208,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Predictions): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Predictions], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1096,6 +1219,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1103,13 +1227,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_air_pressure(self,_station_id : str, data: AirPressure, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirPressure], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_air_pressure(self,_station_id : str, data: AirPressure, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirPressure], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.AirPressure' event to the Kafka topic
 
@@ -1117,6 +1241,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (AirPressure): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, AirPressure], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1127,6 +1252,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1134,13 +1260,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_air_temperature(self,_station_id : str, data: AirTemperature, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirTemperature], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_air_temperature(self,_station_id : str, data: AirTemperature, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, AirTemperature], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.AirTemperature' event to the Kafka topic
 
@@ -1148,6 +1274,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (AirTemperature): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, AirTemperature], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1158,6 +1285,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1165,13 +1293,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_water_temperature(self,_station_id : str, data: WaterTemperature, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterTemperature], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_water_temperature(self,_station_id : str, data: WaterTemperature, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WaterTemperature], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.WaterTemperature' event to the Kafka topic
 
@@ -1179,6 +1307,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WaterTemperature): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WaterTemperature], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1189,6 +1318,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1196,13 +1326,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_wind(self,_station_id : str, data: Wind, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Wind], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_wind(self,_station_id : str, data: Wind, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Wind], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.Wind' event to the Kafka topic
 
@@ -1210,6 +1340,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Wind): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Wind], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1220,6 +1351,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1227,13 +1359,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_humidity(self,_station_id : str, data: Humidity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Humidity], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_humidity(self,_station_id : str, data: Humidity, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Humidity], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.Humidity' event to the Kafka topic
 
@@ -1241,6 +1373,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Humidity): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Humidity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1251,6 +1384,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1258,13 +1392,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_conductivity(self,_station_id : str, data: Conductivity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Conductivity], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_conductivity(self,_station_id : str, data: Conductivity, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Conductivity], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.Conductivity' event to the Kafka topic
 
@@ -1272,6 +1406,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Conductivity): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Conductivity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1282,6 +1417,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1289,13 +1425,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_salinity(self,_station_id : str, data: Salinity, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Salinity], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_salinity(self,_station_id : str, data: Salinity, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Salinity], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.Salinity' event to the Kafka topic
 
@@ -1303,6 +1439,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Salinity): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Salinity], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1313,6 +1450,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1320,13 +1458,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_station(self,_station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_station(self,_station_id : str, data: Station, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.Station' event to the Kafka topic
 
@@ -1334,6 +1472,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1344,6 +1483,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1351,23 +1491,23 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_visibility(self,_datacontenttype: str, _time: str, _dataschema: str, _station_id : str, data: Visibility, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Visibility], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_visibility(self,_datacontenttype: str, _dataschema: str, _station_id : str, data: Visibility, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Visibility], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.Visibility' event to the Kafka topic
 
         Args:
             _datacontenttype(str) : CloudEvents attribute 'datacontenttype'
-            _time(str) : CloudEvents attribute 'time'
             _dataschema(str) : CloudEvents attribute 'dataschema'
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Visibility): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Visibility], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1377,10 +1517,11 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "source":"https://api.tidesandcurrents.noaa.gov",
              "datacontenttype":_datacontenttype,
              "subject":"{station_id}".format(station_id = _station_id),
-             "time":_time,
+             "time":None,
              "dataschema":_dataschema
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1388,13 +1529,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_currents(self,_station_id : str, data: Currents, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Currents], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_currents(self,_station_id : str, data: Currents, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Currents], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.Currents' event to the Kafka topic
 
@@ -1402,6 +1543,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Currents): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Currents], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1412,6 +1554,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1419,13 +1562,13 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_microsoft_open_data_us_noaa_amqp_current_predictions(self,_station_id : str, data: CurrentPredictions, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentPredictions], str]=None) -> None:
+    def send_microsoft_open_data_us_noaa_amqp_current_predictions(self,_station_id : str, data: CurrentPredictions, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CurrentPredictions], str]=None) -> None:
         """
         Sends the 'Microsoft.OpenData.US.NOAA.amqp.CurrentPredictions' event to the Kafka topic
 
@@ -1433,6 +1576,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (CurrentPredictions): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, CurrentPredictions], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1443,6 +1587,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1450,7 +1595,7 @@ class MicrosoftOpenDataUSNOAAAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()

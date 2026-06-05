@@ -47,19 +47,19 @@ from ndw_road_traffic_producer_kafka_producer.producer import NLNDWSituationsAmq
 
 # imports for the data classes for each event
 
-from ndw_road_traffic_producer_data.pointmeasurementsite import PointMeasurementSite
-from ndw_road_traffic_producer_data.routemeasurementsite import RouteMeasurementSite
-from ndw_road_traffic_producer_data.trafficobservation import TrafficObservation
-from ndw_road_traffic_producer_data.traveltimeobservation import TravelTimeObservation
-from ndw_road_traffic_producer_data.dripsign import DripSign
-from ndw_road_traffic_producer_data.dripdisplaystate import DripDisplayState
-from ndw_road_traffic_producer_data.msisign import MsiSign
-from ndw_road_traffic_producer_data.msidisplaystate import MsiDisplayState
-from ndw_road_traffic_producer_data.roadwork import Roadwork
-from ndw_road_traffic_producer_data.bridgeopening import BridgeOpening
-from ndw_road_traffic_producer_data.temporaryclosure import TemporaryClosure
-from ndw_road_traffic_producer_data.temporaryspeedlimit import TemporarySpeedLimit
-from ndw_road_traffic_producer_data.safetyrelatedmessage import SafetyRelatedMessage
+from ndw_road_traffic_producer_data import PointMeasurementSite
+from ndw_road_traffic_producer_data import RouteMeasurementSite
+from ndw_road_traffic_producer_data import TrafficObservation
+from ndw_road_traffic_producer_data import TravelTimeObservation
+from ndw_road_traffic_producer_data import DripSign
+from ndw_road_traffic_producer_data import DripDisplayState
+from ndw_road_traffic_producer_data import MsiSign
+from ndw_road_traffic_producer_data import MsiDisplayState
+from ndw_road_traffic_producer_data import Roadwork
+from ndw_road_traffic_producer_data import BridgeOpening
+from ndw_road_traffic_producer_data import TemporaryClosure
+from ndw_road_traffic_producer_data import TemporarySpeedLimit
+from ndw_road_traffic_producer_data import SafetyRelatedMessage
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -483,7 +483,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

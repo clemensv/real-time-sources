@@ -112,6 +112,8 @@ class PortCallAreaDetail:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -179,18 +181,18 @@ class PortCallAreaDetail:
             An instance of the dataclass.
         """
         return cls(
-            port_area_code='lmsgetiofesstabumeay',
-            port_area_name='qgowmjeckfmrpburoisp',
-            berth_code='nslismndsfmqahmbuuti',
-            berth_name='pyqldadrfqxuknqgxrsb',
+            port_area_code='hzcmuftzgfllcnlszqnl',
+            port_area_name='xgmtbnizdfclvqkvjgdj',
+            berth_code='amoggnbnbuvphmcoeaqh',
+            berth_name='nhgzskorihhjnzyiwsbf',
             eta=datetime.datetime.now(datetime.timezone.utc),
-            eta_source='tvesxytaoahxydspdbjh',
+            eta_source='fuljuefuwnmhzantewpe',
             etd=datetime.datetime.now(datetime.timezone.utc),
-            etd_source='wiongodogsymnrwamwip',
+            etd_source='nemoxpjnfnjqvjipmzpj',
             ata=datetime.datetime.now(datetime.timezone.utc),
-            ata_source='jspyhjfcogmuijzcmszt',
+            ata_source='isuptmavdkzfendtkoqc',
             atd=datetime.datetime.now(datetime.timezone.utc),
-            atd_source='iioyrpsawykokujgdbjr',
-            arrival_draught=float(2.226532602703668),
-            departure_draught=float(89.16483520808885)
+            atd_source='iwiiullznadlldqyoqwu',
+            arrival_draught=float(76.97493258155716),
+            departure_draught=float(69.47577797427321)
         )

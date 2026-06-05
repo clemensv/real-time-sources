@@ -100,6 +100,8 @@ class DoseRateMeasurement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class DoseRateMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='eafrxhjwmgwqgesrcdiu',
-            state='egrmhihqdxrlewhsuibv',
-            start_measure='esxkdyalfhuetuvyxvjz',
-            end_measure='wwnizfsbieeudeeyeywg',
-            value=float(38.519546619522835),
-            value_cosmic=float(42.75577415358166),
-            value_terrestrial=float(88.08235898273202),
-            validated=int(65),
-            nuclide='lkvqtwtzhqtetsyvazhu'
+            station_id='eikihdbemletegurldei',
+            state='ybekvmmnnqhngqdpefup',
+            start_measure='wseqngpzqaqcxvqqdate',
+            end_measure='mxsqrnnkprbgqoqhtrgd',
+            value=float(29.766632401946126),
+            value_cosmic=float(18.385615326189576),
+            value_terrestrial=float(21.631055052815828),
+            validated=int(96),
+            nuclide='ngyjlpvjlkxzbdmkoufn'
         )

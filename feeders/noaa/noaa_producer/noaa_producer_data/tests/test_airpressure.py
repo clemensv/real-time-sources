@@ -28,13 +28,13 @@ class Test_AirPressure(unittest.TestCase):
         Create instance of AirPressure for testing
         """
         instance = AirPressure(
-            station_id='shoqqcjxufiexdjojskf',
-            timestamp='ixcxxfrvhkynxrfldvaa',
-            value=float(79.76298643164877),
-            max_pressure_exceeded=False,
+            station_id='drjpgzknkwlwvmvsvlbo',
+            timestamp='mrukdatderktvyxikdug',
+            value=float(72.55871878310087),
+            max_pressure_exceeded=True,
             min_pressure_exceeded=False,
-            rate_of_change_exceeded=False,
-            region='qqqzecknnjaucktnzptl'
+            rate_of_change_exceeded=True,
+            region='vjykpzlgbrfuvkmguiit'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_AirPressure(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'shoqqcjxufiexdjojskf'
+        test_value = 'drjpgzknkwlwvmvsvlbo'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_AirPressure(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'ixcxxfrvhkynxrfldvaa'
+        test_value = 'mrukdatderktvyxikdug'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_AirPressure(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(79.76298643164877)
+        test_value = float(72.55871878310087)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_AirPressure(unittest.TestCase):
         """
         Test max_pressure_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.max_pressure_exceeded = test_value
         self.assertEqual(self.instance.max_pressure_exceeded, test_value)
     
@@ -83,7 +83,7 @@ class Test_AirPressure(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     
@@ -91,19 +91,10 @@ class Test_AirPressure(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'qqqzecknnjaucktnzptl'
+        test_value = 'vjykpzlgbrfuvkmguiit'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = AirPressure.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

@@ -138,6 +138,8 @@ class WeatherStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -205,32 +207,32 @@ class WeatherStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(41),
-            name='hlebemsardmmyxestxjw',
-            names_fi='vaqmclwaksfzvbuqaofr',
-            names_sv='dqvfpigyuycldgfxmllo',
-            names_en='aujozbnmwatvppnsvgnl',
-            longitude=float(35.85547979823539),
-            latitude=float(68.93428114608388),
-            altitude=float(12.127802218199735),
-            municipality='znlexnckmlyfadwlzeah',
-            municipality_code=int(0),
-            province='ftjjjyuszekjoneumymh',
-            province_code=int(58),
-            road_number=int(89),
-            road_section=int(42),
-            distance_from_section_start=int(73),
-            carriageway='wzjhlsnortzsvjpazknx',
-            side='wvydxxmtaazebuxgtgef',
-            contract_area='mkaaklouajyvbdxhmfus',
-            contract_area_code=int(47),
-            station_type='pqienbwgsfyjaaxrkmbt',
-            master=True,
-            collection_status='hfrcrqnrsoxnecapswjg',
-            collection_interval=int(31),
-            state='ppxxsubkmmtuyfvndody',
-            start_time='lfvadylvklpekoikyzil',
-            livi_id='lbarbdvxewtyxyywysrb',
-            sensors=[int(38), int(86), int(74), int(22)],
-            data_updated_time='salnafexbwefksszaqhf'
+            station_id=int(13),
+            name='uwqdchapggusjxkiyntz',
+            names_fi='wkgtvynkhgzqurkrvnkp',
+            names_sv='rfpcroayimecistqrqbp',
+            names_en='grlnfacsipctgtjxgxqc',
+            longitude=float(16.970804006744988),
+            latitude=float(62.33739995017791),
+            altitude=float(24.682722449860627),
+            municipality='kfwbypqxtysqppabjddj',
+            municipality_code=int(15),
+            province='ztpmqwzmneyiygabtgqd',
+            province_code=int(3),
+            road_number=int(98),
+            road_section=int(56),
+            distance_from_section_start=int(76),
+            carriageway='unmtnkrqtllyjoumvfjx',
+            side='vbtpjuwdboiuvlitrhpq',
+            contract_area='ziihjbvurimpebwyjiso',
+            contract_area_code=int(13),
+            station_type='ocrfuxxccqifpzzclkgp',
+            master=False,
+            collection_status='regchlqgdojutbhlmlph',
+            collection_interval=int(0),
+            state='toqfywymvwfmskpihhnj',
+            start_time='kfjdkzhpmlwfauehaxpc',
+            livi_id='ehwfuqzxhovfvuicwuqu',
+            sensors=[int(54), int(40), int(12), int(68)],
+            data_updated_time='lcagerblafnmmdwmowbi'
         )

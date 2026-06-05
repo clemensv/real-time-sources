@@ -34,16 +34,17 @@ from confluent_kafka import Producer as KafkaProducer
 
 from kystverket_ais_producer_kafka_producer.producer import NOKystverketAISEventProducer
 from kystverket_ais_producer_kafka_producer.producer import NOKystverketAISMqttEventProducer
+from kystverket_ais_producer_kafka_producer.producer import NOKystverketAISAmqpEventProducer
 
 # imports for the data classes for each event
 
-from kystverket_ais_producer_data.positionreportclassa import PositionReportClassA
-from kystverket_ais_producer_data.staticvoyagedata import StaticVoyageData
-from kystverket_ais_producer_data.positionreportclassb import PositionReportClassB
-from kystverket_ais_producer_data.staticdataclassb import StaticDataClassB
-from kystverket_ais_producer_data.aidtonavigation import AidToNavigation
-from kystverket_ais_producer_data.positionreport import PositionReport
-from kystverket_ais_producer_data.shipstatic import ShipStatic
+from kystverket_ais_producer_data import PositionReportClassA
+from kystverket_ais_producer_data import StaticVoyageData
+from kystverket_ais_producer_data import PositionReportClassB
+from kystverket_ais_producer_data import StaticDataClassB
+from kystverket_ais_producer_data import AidToNavigation
+from kystverket_ais_producer_data import PositionReport
+from kystverket_ais_producer_data import ShipStatic
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -150,12 +151,44 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'NO.Kystverket.AIS.mqtt.AidToNavigation' event to Kafka topic.
     await nokystverket_aismqtt_event_producer.send_no_kystverket_ais_mqtt_aid_to_navigation(_mmsi = 'TODO: replace me', data = _aid_to_navigation)
     print(f"Sent 'NO.Kystverket.AIS.mqtt.AidToNavigation' event: {_aid_to_navigation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        nokystverket_aisamqp_event_producer = NOKystverketAISAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        nokystverket_aisamqp_event_producer = NOKystverketAISAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- NO.Kystverket.AIS.amqp.PositionReport ----
+    # TODO: Supply event data for the NO.Kystverket.AIS.amqp.PositionReport event
+    _position_report = PositionReport()
+
+    # sends the 'NO.Kystverket.AIS.amqp.PositionReport' event to Kafka topic.
+    await nokystverket_aisamqp_event_producer.send_no_kystverket_ais_amqp_position_report(_mmsi = 'TODO: replace me', data = _position_report)
+    print(f"Sent 'NO.Kystverket.AIS.amqp.PositionReport' event: {_position_report.to_json()}")
+
+    # ---- NO.Kystverket.AIS.amqp.ShipStatic ----
+    # TODO: Supply event data for the NO.Kystverket.AIS.amqp.ShipStatic event
+    _ship_static = ShipStatic()
+
+    # sends the 'NO.Kystverket.AIS.amqp.ShipStatic' event to Kafka topic.
+    await nokystverket_aisamqp_event_producer.send_no_kystverket_ais_amqp_ship_static(_mmsi = 'TODO: replace me', data = _ship_static)
+    print(f"Sent 'NO.Kystverket.AIS.amqp.ShipStatic' event: {_ship_static.to_json()}")
+
+    # ---- NO.Kystverket.AIS.amqp.AidToNavigation ----
+    # TODO: Supply event data for the NO.Kystverket.AIS.amqp.AidToNavigation event
+    _aid_to_navigation = AidToNavigation()
+
+    # sends the 'NO.Kystverket.AIS.amqp.AidToNavigation' event to Kafka topic.
+    await nokystverket_aisamqp_event_producer.send_no_kystverket_ais_amqp_aid_to_navigation(_mmsi = 'TODO: replace me', data = _aid_to_navigation)
+    print(f"Sent 'NO.Kystverket.AIS.amqp.AidToNavigation' event: {_aid_to_navigation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

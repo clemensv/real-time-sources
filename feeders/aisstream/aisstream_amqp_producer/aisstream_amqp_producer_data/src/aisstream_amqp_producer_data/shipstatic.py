@@ -119,6 +119,8 @@ class ShipStatic:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -186,22 +188,22 @@ class ShipStatic:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='uhecjojpbxllsjobtmxa',
-            flag='xwnaicthckknqbrwmbtb',
-            ship_type='hzytposlwxfbhyyrqsqi',
-            geohash5='ubjawlbycyxdkaewccbe',
+            mmsi='zddwwbrzqowjxrtruqia',
+            flag='yrxjpsmqegvvolaylsru',
+            ship_type='tyjmgtgavnctsnbjrwam',
+            geohash5='rdktadnlploutrnofgnj',
             msg_type=MsgTypeenum.position_report,
-            user_id=int(71),
-            name='tymlmrtfrnuwzargwmwn',
-            call_sign='bbqssyqwmpieyozqyakz',
-            imo_number=int(7),
-            ship_type_code=int(94),
-            destination='ufoxnovvxyjgyzrzcpix',
-            eta='nyntwnvpmroxqtcolnhi',
-            draught=float(65.78079593296943),
-            dim_to_bow=int(16),
-            dim_to_stern=int(81),
-            dim_to_port=int(47),
-            dim_to_starboard=int(2),
-            message_id=int(13)
+            user_id=int(79),
+            name='hghrllfmepzbvolutzyo',
+            call_sign='nqoovjfsagkwqzwdlnjp',
+            imo_number=int(1),
+            ship_type_code=int(74),
+            destination='rzvvgqcfdvzegvnyokcb',
+            eta='ukwhhjgtsqboyubdqnio',
+            draught=float(80.49629100549164),
+            dim_to_bow=int(21),
+            dim_to_stern=int(95),
+            dim_to_port=int(46),
+            dim_to_starboard=int(57),
+            message_id=int(50)
         )

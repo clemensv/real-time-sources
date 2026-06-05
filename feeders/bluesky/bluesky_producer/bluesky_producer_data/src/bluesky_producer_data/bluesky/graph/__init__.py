@@ -1,4 +1,4 @@
-from .block import Block
 from .follow import Follow
+from .block import Block
 
-__all__ = ["Block", "Follow"]
+__all__ = ["Follow", "Block"]

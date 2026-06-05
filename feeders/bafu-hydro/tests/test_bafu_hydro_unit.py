@@ -17,8 +17,8 @@ from bafu_hydro.bafu_hydro import (
     PAR_FLOW,
     PAR_TEMPERATURE,
 )
-from bafu_hydro_producer_data.ch.bafu.hydrology.station import Station
-from bafu_hydro_producer_data.ch.bafu.hydrology.waterlevelobservation import WaterLevelObservation
+from bafu_hydro_producer_data import Station
+from bafu_hydro_producer_data import WaterLevelObservation
 from bafu_hydro_producer_kafka_producer.producer import CHBAFUHydrologyEventProducer
 
 

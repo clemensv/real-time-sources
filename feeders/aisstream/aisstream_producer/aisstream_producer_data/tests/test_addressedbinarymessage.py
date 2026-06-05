@@ -29,16 +29,16 @@ class Test_AddressedBinaryMessage(unittest.TestCase):
         Create instance of AddressedBinaryMessage for testing
         """
         instance = AddressedBinaryMessage(
-            MessageID=int(96),
-            RepeatIndicator=int(89),
-            UserID=int(9),
+            MessageID=int(51),
+            RepeatIndicator=int(0),
+            UserID=int(51),
             Valid=False,
-            Sequenceinteger=int(47),
-            DestinationID=int(61),
-            Retransmission=False,
-            Spare=False,
+            Sequenceinteger=int(2),
+            DestinationID=int(78),
+            Retransmission=True,
+            Spare=True,
             ApplicationID=None,
-            BinaryData='yozsaxqwqekqhpvbwxqi'
+            BinaryData='qbnphfxnitxqfdlfgfnf'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_AddressedBinaryMessage(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(96)
+        test_value = int(51)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -55,7 +55,7 @@ class Test_AddressedBinaryMessage(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(89)
+        test_value = int(0)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -63,7 +63,7 @@ class Test_AddressedBinaryMessage(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(9)
+        test_value = int(51)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -79,7 +79,7 @@ class Test_AddressedBinaryMessage(unittest.TestCase):
         """
         Test Sequenceinteger property
         """
-        test_value = int(47)
+        test_value = int(2)
         self.instance.Sequenceinteger = test_value
         self.assertEqual(self.instance.Sequenceinteger, test_value)
     
@@ -87,7 +87,7 @@ class Test_AddressedBinaryMessage(unittest.TestCase):
         """
         Test DestinationID property
         """
-        test_value = int(61)
+        test_value = int(78)
         self.instance.DestinationID = test_value
         self.assertEqual(self.instance.DestinationID, test_value)
     
@@ -95,7 +95,7 @@ class Test_AddressedBinaryMessage(unittest.TestCase):
         """
         Test Retransmission property
         """
-        test_value = False
+        test_value = True
         self.instance.Retransmission = test_value
         self.assertEqual(self.instance.Retransmission, test_value)
     
@@ -103,7 +103,7 @@ class Test_AddressedBinaryMessage(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = False
+        test_value = True
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -119,7 +119,7 @@ class Test_AddressedBinaryMessage(unittest.TestCase):
         """
         Test BinaryData property
         """
-        test_value = 'yozsaxqwqekqhpvbwxqi'
+        test_value = 'qbnphfxnitxqfdlfgfnf'
         self.instance.BinaryData = test_value
         self.assertEqual(self.instance.BinaryData, test_value)
     

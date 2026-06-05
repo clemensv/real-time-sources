@@ -4,6 +4,7 @@ import re
 import typing
 from typing import Callable, Awaitable, Optional, Dict, List
 import asyncio
+from datetime import datetime, timezone
 import paho.mqtt.client as mqtt
 try:
     # paho-mqtt 2.x exposes MQTT5 Properties for the PUBLISH packet type.
@@ -27,6 +28,51 @@ from dmi_mqtt_producer_data import TidewaterPrediction
 
 # URI template regex pattern
 _URI_TEMPLATE_PATTERN = re.compile(r'\{([A-Za-z0-9_]+)\}')
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 
 def _topic_to_mqtt_wildcard(topic: str) -> str:
@@ -191,8 +237,8 @@ def get_default_topic_mappings_dk_dmi_metobs_mqtt() -> Dict[str, str]:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "dk.dmi.metObs.mqtt.Station": "dk.dmi.metObs.mqtt.Station",
-        "dk.dmi.metObs.mqtt.Observation": "dk.dmi.metObs.mqtt.Observation",
+        "dk.dmi.metObs.mqtt.Station": "weather/dk/dmi/met-obs/{station_id}/info",
+        "dk.dmi.metObs.mqtt.Observation": "weather/dk/dmi/met-obs/{station_id}/{parameter_id}",
     }
 
 
@@ -367,6 +413,7 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'dk.dmi.metObs.mqtt.Station' event to an MQTT topic.
@@ -376,13 +423,14 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
             feedurl: URI template variable for 'feedurl'
             station_id: URI template variable for 'station_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'dk.dmi.metObs.mqtt.Station'
+            topic: Optional topic override. If not provided, uses default topic 'weather/dk/dmi/met-obs/{station_id}/info'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "dk.dmi.metObs.mqtt.Station"
+        target_topic = topic if topic is not None else "weather/dk/dmi/met-obs/{station_id}/info"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
@@ -396,7 +444,15 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
         _effective_qos = 1 if qos is None else qos
@@ -417,6 +473,15 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
             if mqtt5_props is not None:
                 publish_kwargs["properties"] = mqtt5_props
 
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
         self.client.publish(target_topic, payload, **publish_kwargs)
 
     
@@ -428,6 +493,7 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'dk.dmi.metObs.mqtt.Observation' event to an MQTT topic.
@@ -438,13 +504,14 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
             station_id: URI template variable for 'station_id'
             parameter_id: URI template variable for 'parameter_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'dk.dmi.metObs.mqtt.Observation'
+            topic: Optional topic override. If not provided, uses default topic 'weather/dk/dmi/met-obs/{station_id}/{parameter_id}'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "dk.dmi.metObs.mqtt.Observation"
+        target_topic = topic if topic is not None else "weather/dk/dmi/met-obs/{station_id}/{parameter_id}"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
@@ -459,7 +526,15 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
              "subject":"{station_id}/{parameter_id}".format(station_id = station_id,parameter_id = parameter_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
         _effective_qos = 1 if qos is None else qos
@@ -480,6 +555,15 @@ class DkDmiMetObsMqttMqttClient(_ClientBase):
             if mqtt5_props is not None:
                 publish_kwargs["properties"] = mqtt5_props
 
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
         self.client.publish(target_topic, payload, **publish_kwargs)
 
     
@@ -493,10 +577,10 @@ def get_default_topic_mappings_dk_dmi_oceanobs_mqtt() -> Dict[str, str]:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "dk.dmi.oceanObs.mqtt.Station": "dk.dmi.oceanObs.mqtt.Station",
-        "dk.dmi.oceanObs.mqtt.TidewaterStation": "dk.dmi.oceanObs.mqtt.TidewaterStation",
-        "dk.dmi.oceanObs.mqtt.Observation": "dk.dmi.oceanObs.mqtt.Observation",
-        "dk.dmi.oceanObs.mqtt.TidewaterPrediction": "dk.dmi.oceanObs.mqtt.TidewaterPrediction",
+        "dk.dmi.oceanObs.mqtt.Station": "ocean/dk/dmi/ocean-obs/{station_id}/info",
+        "dk.dmi.oceanObs.mqtt.TidewaterStation": "ocean/dk/dmi/tidewater/{station_id}/info",
+        "dk.dmi.oceanObs.mqtt.Observation": "ocean/dk/dmi/ocean-obs/{station_id}/{parameter_id}",
+        "dk.dmi.oceanObs.mqtt.TidewaterPrediction": "ocean/dk/dmi/tidewater/{station_id}/prediction",
     }
 
 
@@ -699,6 +783,7 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'dk.dmi.oceanObs.mqtt.Station' event to an MQTT topic.
@@ -708,13 +793,14 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             feedurl: URI template variable for 'feedurl'
             station_id: URI template variable for 'station_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'dk.dmi.oceanObs.mqtt.Station'
+            topic: Optional topic override. If not provided, uses default topic 'ocean/dk/dmi/ocean-obs/{station_id}/info'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "dk.dmi.oceanObs.mqtt.Station"
+        target_topic = topic if topic is not None else "ocean/dk/dmi/ocean-obs/{station_id}/info"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
@@ -728,7 +814,15 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
         _effective_qos = 1 if qos is None else qos
@@ -749,6 +843,15 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             if mqtt5_props is not None:
                 publish_kwargs["properties"] = mqtt5_props
 
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
         self.client.publish(target_topic, payload, **publish_kwargs)
 
     
@@ -759,6 +862,7 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'dk.dmi.oceanObs.mqtt.TidewaterStation' event to an MQTT topic.
@@ -768,13 +872,14 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             feedurl: URI template variable for 'feedurl'
             station_id: URI template variable for 'station_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'dk.dmi.oceanObs.mqtt.TidewaterStation'
+            topic: Optional topic override. If not provided, uses default topic 'ocean/dk/dmi/tidewater/{station_id}/info'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "dk.dmi.oceanObs.mqtt.TidewaterStation"
+        target_topic = topic if topic is not None else "ocean/dk/dmi/tidewater/{station_id}/info"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
@@ -788,7 +893,15 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
         _effective_qos = 1 if qos is None else qos
@@ -809,6 +922,15 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             if mqtt5_props is not None:
                 publish_kwargs["properties"] = mqtt5_props
 
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
         self.client.publish(target_topic, payload, **publish_kwargs)
 
     
@@ -820,6 +942,7 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'dk.dmi.oceanObs.mqtt.Observation' event to an MQTT topic.
@@ -830,13 +953,14 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             station_id: URI template variable for 'station_id'
             parameter_id: URI template variable for 'parameter_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'dk.dmi.oceanObs.mqtt.Observation'
+            topic: Optional topic override. If not provided, uses default topic 'ocean/dk/dmi/ocean-obs/{station_id}/{parameter_id}'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "dk.dmi.oceanObs.mqtt.Observation"
+        target_topic = topic if topic is not None else "ocean/dk/dmi/ocean-obs/{station_id}/{parameter_id}"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
@@ -851,7 +975,15 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
              "subject":"{station_id}/{parameter_id}".format(station_id = station_id,parameter_id = parameter_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
         _effective_qos = 1 if qos is None else qos
@@ -872,6 +1004,15 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             if mqtt5_props is not None:
                 publish_kwargs["properties"] = mqtt5_props
 
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
         self.client.publish(target_topic, payload, **publish_kwargs)
 
     
@@ -882,6 +1023,7 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'dk.dmi.oceanObs.mqtt.TidewaterPrediction' event to an MQTT topic.
@@ -891,13 +1033,14 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             feedurl: URI template variable for 'feedurl'
             station_id: URI template variable for 'station_id'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'dk.dmi.oceanObs.mqtt.TidewaterPrediction'
+            topic: Optional topic override. If not provided, uses default topic 'ocean/dk/dmi/tidewater/{station_id}/prediction'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "dk.dmi.oceanObs.mqtt.TidewaterPrediction"
+        target_topic = topic if topic is not None else "ocean/dk/dmi/tidewater/{station_id}/prediction"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
@@ -911,7 +1054,15 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
         event = CloudEvent(attributes, byte_data)
 
         _effective_qos = 1 if qos is None else qos
@@ -931,6 +1082,15 @@ class DkDmiOceanObsMqttMqttClient(_ClientBase):
             mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
             if mqtt5_props is not None:
                 publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
 
         self.client.publish(target_topic, payload, **publish_kwargs)
 

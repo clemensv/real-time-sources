@@ -37,16 +37,18 @@ from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadM
 from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadMaintenanceEventProducer
 from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadStationsEventProducer
 from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadMaintenanceTasksEventProducer
+from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadMqttEventProducer
+from digitraffic_road_producer_kafka_producer.producer import FiDigitrafficRoadAmqpEventProducer
 
 # imports for the data classes for each event
 
-from digitraffic_road_producer_data.tmssensordata import TmsSensorData
-from digitraffic_road_producer_data.weathersensordata import WeatherSensorData
-from digitraffic_road_producer_data.trafficmessage import TrafficMessage
-from digitraffic_road_producer_data.maintenancetracking import MaintenanceTracking
-from digitraffic_road_producer_data.tmsstation import TmsStation
-from digitraffic_road_producer_data.weatherstation import WeatherStation
-from digitraffic_road_producer_data.maintenancetasktype import MaintenanceTaskType
+from digitraffic_road_producer_data import TmsSensorData
+from digitraffic_road_producer_data import WeatherSensorData
+from digitraffic_road_producer_data import TrafficMessage
+from digitraffic_road_producer_data import MaintenanceTracking
+from digitraffic_road_producer_data import TmsStation
+from digitraffic_road_producer_data import WeatherStation
+from digitraffic_road_producer_data import MaintenanceTaskType
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -177,12 +179,188 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType' event to Kafka topic.
     await fi_digitraffic_road_maintenance_tasks_event_producer.send_fi_digitraffic_road_maintenance_tasks_maintenance_task_type(_task_id = 'TODO: replace me', data = _maintenance_task_type)
     print(f"Sent 'fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType' event: {_maintenance_task_type.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fi_digitraffic_road_mqtt_event_producer = FiDigitrafficRoadMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fi_digitraffic_road_mqtt_event_producer = FiDigitrafficRoadMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fi.digitraffic.road.mqtt.TmsSensorData ----
+    # TODO: Supply event data for the fi.digitraffic.road.mqtt.TmsSensorData event
+    _tms_sensor_data = TmsSensorData()
+
+    # sends the 'fi.digitraffic.road.mqtt.TmsSensorData' event to Kafka topic.
+    await fi_digitraffic_road_mqtt_event_producer.send_fi_digitraffic_road_mqtt_tms_sensor_data(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _tms_sensor_data)
+    print(f"Sent 'fi.digitraffic.road.mqtt.TmsSensorData' event: {_tms_sensor_data.to_json()}")
+
+    # ---- fi.digitraffic.road.mqtt.WeatherSensorData ----
+    # TODO: Supply event data for the fi.digitraffic.road.mqtt.WeatherSensorData event
+    _weather_sensor_data = WeatherSensorData()
+
+    # sends the 'fi.digitraffic.road.mqtt.WeatherSensorData' event to Kafka topic.
+    await fi_digitraffic_road_mqtt_event_producer.send_fi_digitraffic_road_mqtt_weather_sensor_data(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _weather_sensor_data)
+    print(f"Sent 'fi.digitraffic.road.mqtt.WeatherSensorData' event: {_weather_sensor_data.to_json()}")
+
+    # ---- fi.digitraffic.road.mqtt.TrafficAnnouncement ----
+    # TODO: Supply event data for the fi.digitraffic.road.mqtt.TrafficAnnouncement event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.mqtt.TrafficAnnouncement' event to Kafka topic.
+    await fi_digitraffic_road_mqtt_event_producer.send_fi_digitraffic_road_mqtt_traffic_announcement(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.mqtt.TrafficAnnouncement' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.mqtt.RoadWork ----
+    # TODO: Supply event data for the fi.digitraffic.road.mqtt.RoadWork event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.mqtt.RoadWork' event to Kafka topic.
+    await fi_digitraffic_road_mqtt_event_producer.send_fi_digitraffic_road_mqtt_road_work(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.mqtt.RoadWork' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.mqtt.WeightRestriction ----
+    # TODO: Supply event data for the fi.digitraffic.road.mqtt.WeightRestriction event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.mqtt.WeightRestriction' event to Kafka topic.
+    await fi_digitraffic_road_mqtt_event_producer.send_fi_digitraffic_road_mqtt_weight_restriction(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.mqtt.WeightRestriction' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.mqtt.ExemptedTransport ----
+    # TODO: Supply event data for the fi.digitraffic.road.mqtt.ExemptedTransport event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.mqtt.ExemptedTransport' event to Kafka topic.
+    await fi_digitraffic_road_mqtt_event_producer.send_fi_digitraffic_road_mqtt_exempted_transport(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.mqtt.ExemptedTransport' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.mqtt.MaintenanceTracking ----
+    # TODO: Supply event data for the fi.digitraffic.road.mqtt.MaintenanceTracking event
+    _maintenance_tracking = MaintenanceTracking()
+
+    # sends the 'fi.digitraffic.road.mqtt.MaintenanceTracking' event to Kafka topic.
+    await fi_digitraffic_road_mqtt_event_producer.send_fi_digitraffic_road_mqtt_maintenance_tracking(_domain = 'TODO: replace me', data = _maintenance_tracking)
+    print(f"Sent 'fi.digitraffic.road.mqtt.MaintenanceTracking' event: {_maintenance_tracking.to_json()}")
+
+    # ---- fi.digitraffic.road.mqtt.TmsStation ----
+    # TODO: Supply event data for the fi.digitraffic.road.mqtt.TmsStation event
+    _tms_station = TmsStation()
+
+    # sends the 'fi.digitraffic.road.mqtt.TmsStation' event to Kafka topic.
+    await fi_digitraffic_road_mqtt_event_producer.send_fi_digitraffic_road_mqtt_tms_station(_station_id = 'TODO: replace me', data = _tms_station)
+    print(f"Sent 'fi.digitraffic.road.mqtt.TmsStation' event: {_tms_station.to_json()}")
+
+    # ---- fi.digitraffic.road.mqtt.WeatherStation ----
+    # TODO: Supply event data for the fi.digitraffic.road.mqtt.WeatherStation event
+    _weather_station = WeatherStation()
+
+    # sends the 'fi.digitraffic.road.mqtt.WeatherStation' event to Kafka topic.
+    await fi_digitraffic_road_mqtt_event_producer.send_fi_digitraffic_road_mqtt_weather_station(_station_id = 'TODO: replace me', data = _weather_station)
+    print(f"Sent 'fi.digitraffic.road.mqtt.WeatherStation' event: {_weather_station.to_json()}")
+
+    # ---- fi.digitraffic.road.mqtt.MaintenanceTaskType ----
+    # TODO: Supply event data for the fi.digitraffic.road.mqtt.MaintenanceTaskType event
+    _maintenance_task_type = MaintenanceTaskType()
+
+    # sends the 'fi.digitraffic.road.mqtt.MaintenanceTaskType' event to Kafka topic.
+    await fi_digitraffic_road_mqtt_event_producer.send_fi_digitraffic_road_mqtt_maintenance_task_type(_task_id = 'TODO: replace me', data = _maintenance_task_type)
+    print(f"Sent 'fi.digitraffic.road.mqtt.MaintenanceTaskType' event: {_maintenance_task_type.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        fi_digitraffic_road_amqp_event_producer = FiDigitrafficRoadAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        fi_digitraffic_road_amqp_event_producer = FiDigitrafficRoadAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- fi.digitraffic.road.amqp.TmsSensorData ----
+    # TODO: Supply event data for the fi.digitraffic.road.amqp.TmsSensorData event
+    _tms_sensor_data = TmsSensorData()
+
+    # sends the 'fi.digitraffic.road.amqp.TmsSensorData' event to Kafka topic.
+    await fi_digitraffic_road_amqp_event_producer.send_fi_digitraffic_road_amqp_tms_sensor_data(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _tms_sensor_data)
+    print(f"Sent 'fi.digitraffic.road.amqp.TmsSensorData' event: {_tms_sensor_data.to_json()}")
+
+    # ---- fi.digitraffic.road.amqp.WeatherSensorData ----
+    # TODO: Supply event data for the fi.digitraffic.road.amqp.WeatherSensorData event
+    _weather_sensor_data = WeatherSensorData()
+
+    # sends the 'fi.digitraffic.road.amqp.WeatherSensorData' event to Kafka topic.
+    await fi_digitraffic_road_amqp_event_producer.send_fi_digitraffic_road_amqp_weather_sensor_data(_station_id = 'TODO: replace me', _sensor_id = 'TODO: replace me', data = _weather_sensor_data)
+    print(f"Sent 'fi.digitraffic.road.amqp.WeatherSensorData' event: {_weather_sensor_data.to_json()}")
+
+    # ---- fi.digitraffic.road.amqp.TrafficAnnouncement ----
+    # TODO: Supply event data for the fi.digitraffic.road.amqp.TrafficAnnouncement event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.amqp.TrafficAnnouncement' event to Kafka topic.
+    await fi_digitraffic_road_amqp_event_producer.send_fi_digitraffic_road_amqp_traffic_announcement(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.amqp.TrafficAnnouncement' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.amqp.RoadWork ----
+    # TODO: Supply event data for the fi.digitraffic.road.amqp.RoadWork event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.amqp.RoadWork' event to Kafka topic.
+    await fi_digitraffic_road_amqp_event_producer.send_fi_digitraffic_road_amqp_road_work(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.amqp.RoadWork' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.amqp.WeightRestriction ----
+    # TODO: Supply event data for the fi.digitraffic.road.amqp.WeightRestriction event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.amqp.WeightRestriction' event to Kafka topic.
+    await fi_digitraffic_road_amqp_event_producer.send_fi_digitraffic_road_amqp_weight_restriction(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.amqp.WeightRestriction' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.amqp.ExemptedTransport ----
+    # TODO: Supply event data for the fi.digitraffic.road.amqp.ExemptedTransport event
+    _traffic_message = TrafficMessage()
+
+    # sends the 'fi.digitraffic.road.amqp.ExemptedTransport' event to Kafka topic.
+    await fi_digitraffic_road_amqp_event_producer.send_fi_digitraffic_road_amqp_exempted_transport(_situation_id = 'TODO: replace me', data = _traffic_message)
+    print(f"Sent 'fi.digitraffic.road.amqp.ExemptedTransport' event: {_traffic_message.to_json()}")
+
+    # ---- fi.digitraffic.road.amqp.MaintenanceTracking ----
+    # TODO: Supply event data for the fi.digitraffic.road.amqp.MaintenanceTracking event
+    _maintenance_tracking = MaintenanceTracking()
+
+    # sends the 'fi.digitraffic.road.amqp.MaintenanceTracking' event to Kafka topic.
+    await fi_digitraffic_road_amqp_event_producer.send_fi_digitraffic_road_amqp_maintenance_tracking(_domain = 'TODO: replace me', data = _maintenance_tracking)
+    print(f"Sent 'fi.digitraffic.road.amqp.MaintenanceTracking' event: {_maintenance_tracking.to_json()}")
+
+    # ---- fi.digitraffic.road.amqp.TmsStation ----
+    # TODO: Supply event data for the fi.digitraffic.road.amqp.TmsStation event
+    _tms_station = TmsStation()
+
+    # sends the 'fi.digitraffic.road.amqp.TmsStation' event to Kafka topic.
+    await fi_digitraffic_road_amqp_event_producer.send_fi_digitraffic_road_amqp_tms_station(_station_id = 'TODO: replace me', data = _tms_station)
+    print(f"Sent 'fi.digitraffic.road.amqp.TmsStation' event: {_tms_station.to_json()}")
+
+    # ---- fi.digitraffic.road.amqp.WeatherStation ----
+    # TODO: Supply event data for the fi.digitraffic.road.amqp.WeatherStation event
+    _weather_station = WeatherStation()
+
+    # sends the 'fi.digitraffic.road.amqp.WeatherStation' event to Kafka topic.
+    await fi_digitraffic_road_amqp_event_producer.send_fi_digitraffic_road_amqp_weather_station(_station_id = 'TODO: replace me', data = _weather_station)
+    print(f"Sent 'fi.digitraffic.road.amqp.WeatherStation' event: {_weather_station.to_json()}")
+
+    # ---- fi.digitraffic.road.amqp.MaintenanceTaskType ----
+    # TODO: Supply event data for the fi.digitraffic.road.amqp.MaintenanceTaskType event
+    _maintenance_task_type = MaintenanceTaskType()
+
+    # sends the 'fi.digitraffic.road.amqp.MaintenanceTaskType' event to Kafka topic.
+    await fi_digitraffic_road_amqp_event_producer.send_fi_digitraffic_road_amqp_maintenance_task_type(_task_id = 'TODO: replace me', data = _maintenance_task_type)
+    print(f"Sent 'fi.digitraffic.road.amqp.MaintenanceTaskType' event: {_maintenance_task_type.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

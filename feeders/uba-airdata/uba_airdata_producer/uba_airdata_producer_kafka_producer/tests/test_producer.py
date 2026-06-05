@@ -20,12 +20,12 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataEventProducer
 from uba_airdata_producer_data import Station
-from test_uba_airdata_producer_data_station import Test_Station
+from test_station import Test_Station
 from uba_airdata_producer_data import Measure
-from test_uba_airdata_producer_data_measure import Test_Measure
+from test_measure import Test_Measure
 from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataComponentsEventProducer
 from uba_airdata_producer_data import Component
-from test_uba_airdata_producer_data_component import Test_Component
+from test_component import Test_Component
 from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataMqttEventProducer
 from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataAmqpEventProducer
 from uba_airdata_producer_kafka_producer.producer import DeUbaAirdataComponentsMqttEventProducer
@@ -112,7 +112,8 @@ def test_de_uba_airdata_deubaairdatastation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_uba_airdata_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_uba_airdata_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -175,7 +176,8 @@ def test_de_uba_airdata_deubaairdatameasure(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_uba_airdata_measure(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_uba_airdata_measure(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -238,7 +240,8 @@ def test_de_uba_airdata_components_deubaairdatacomponentscomponent(kafka_emulato
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_uba_airdata_components_component(_feedurl = f'test_{i}', _component_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_uba_airdata_components_component(_feedurl = f'test_{i}', _component_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -301,7 +304,8 @@ def test_de_uba_airdata_mqtt_deubaairdatamqttstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_uba_airdata_mqtt_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_uba_airdata_mqtt_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -362,7 +366,8 @@ def test_de_uba_airdata_mqtt_deubaairdatamqttmeasure(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_uba_airdata_mqtt_measure(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_uba_airdata_mqtt_measure(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -423,7 +428,8 @@ def test_de_uba_airdata_amqp_deubaairdataamqpstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_uba_airdata_amqp_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_uba_airdata_amqp_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -484,7 +490,8 @@ def test_de_uba_airdata_amqp_deubaairdataamqpmeasure(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_uba_airdata_amqp_measure(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_uba_airdata_amqp_measure(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -545,7 +552,8 @@ def test_de_uba_airdata_components_mqtt_deubaairdatacomponentsmqttcomponent(kafk
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_uba_airdata_components_mqtt_component(_feedurl = f'test_{i}', _component_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_uba_airdata_components_mqtt_component(_feedurl = f'test_{i}', _component_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -606,7 +614,8 @@ def test_de_uba_airdata_components_amqp_deubaairdatacomponentsamqpcomponent(kafk
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_uba_airdata_components_amqp_component(_feedurl = f'test_{i}', _component_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_uba_airdata_components_amqp_component(_feedurl = f'test_{i}', _component_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

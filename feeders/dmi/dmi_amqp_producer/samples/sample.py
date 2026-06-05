@@ -28,8 +28,8 @@ def main():
         
         # Send Station message
         print("Sending Station message...")
-        # TODO: Create a object instance with actual data
-        # data = object(...)
+        # TODO: Create a MetObsStation instance with actual data
+        # data = MetObsStation(...)
         # producer.send_station(
         #     data=data,
         #     content_type="application/json"
@@ -40,8 +40,8 @@ def main():
         
         # Send Observation message
         print("Sending Observation message...")
-        # TODO: Create a object instance with actual data
-        # data = object(...)
+        # TODO: Create a MetObsObservation instance with actual data
+        # data = MetObsObservation(...)
         # producer.send_observation(
         #     data=data,
         #     content_type="application/json"
@@ -78,8 +78,8 @@ def main():
         
         # Send Station message
         print("Sending Station message...")
-        # TODO: Create a object instance with actual data
-        # data = object(...)
+        # TODO: Create a OceanStation instance with actual data
+        # data = OceanStation(...)
         # producer.send_station(
         #     data=data,
         #     content_type="application/json"
@@ -90,8 +90,8 @@ def main():
         
         # Send TidewaterStation message
         print("Sending TidewaterStation message...")
-        # TODO: Create a object instance with actual data
-        # data = object(...)
+        # TODO: Create a TidewaterStation instance with actual data
+        # data = TidewaterStation(...)
         # producer.send_tidewater_station(
         #     data=data,
         #     content_type="application/json"
@@ -102,8 +102,8 @@ def main():
         
         # Send Observation message
         print("Sending Observation message...")
-        # TODO: Create a object instance with actual data
-        # data = object(...)
+        # TODO: Create a OceanObservation instance with actual data
+        # data = OceanObservation(...)
         # producer.send_observation(
         #     data=data,
         #     content_type="application/json"
@@ -114,8 +114,8 @@ def main():
         
         # Send TidewaterPrediction message
         print("Sending TidewaterPrediction message...")
-        # TODO: Create a object instance with actual data
-        # data = object(...)
+        # TODO: Create a TidewaterPrediction instance with actual data
+        # data = TidewaterPrediction(...)
         # producer.send_tidewater_prediction(
         #     data=data,
         #     content_type="application/json"
@@ -152,8 +152,8 @@ def main():
         
         # Send Sensor message
         print("Sending Sensor message...")
-        # TODO: Create a object instance with actual data
-        # data = object(...)
+        # TODO: Create a LightningSensor instance with actual data
+        # data = LightningSensor(...)
         # producer.send_sensor(
         #     data=data,
         #     content_type="application/json"
@@ -164,8 +164,8 @@ def main():
         
         # Send Strike message
         print("Sending Strike message...")
-        # TODO: Create a object instance with actual data
-        # data = object(...)
+        # TODO: Create a LightningStrike instance with actual data
+        # data = LightningStrike(...)
         # producer.send_strike(
         #     data=data,
         #     content_type="application/json"

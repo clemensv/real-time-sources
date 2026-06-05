@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 from gtfs_producer_data.generaltransitfeedstatic.calendar import Calendar
+from gtfs_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -92,6 +92,8 @@ class Timeframes:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,8 +161,8 @@ class Timeframes:
             An instance of the dataclass.
         """
         return cls(
-            timeframeGroupId='lqcmjopizrwmzjaaggrh',
-            startTime='zsrdxzirywpxyhmgbtcb',
-            endTime='zfzgokhcutewufqxcpnq',
+            timeframeGroupId='amtegnngxxyqsqwqdcpm',
+            startTime='wawcjpsegznhaavosssn',
+            endTime='kvopumwqznodfibvsttw',
             serviceDates=None
         )

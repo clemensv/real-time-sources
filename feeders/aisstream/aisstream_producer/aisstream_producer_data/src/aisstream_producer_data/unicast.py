@@ -90,6 +90,8 @@ class Unicast:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class Unicast:
             An instance of the dataclass.
         """
         return cls(
-            AddressStation1=int(9),
-            Spare2=int(61),
-            AddressStation2=int(99),
-            Spare3=int(0)
+            AddressStation1=int(62),
+            Spare2=int(52),
+            AddressStation2=int(62),
+            Spare3=int(60)
         )

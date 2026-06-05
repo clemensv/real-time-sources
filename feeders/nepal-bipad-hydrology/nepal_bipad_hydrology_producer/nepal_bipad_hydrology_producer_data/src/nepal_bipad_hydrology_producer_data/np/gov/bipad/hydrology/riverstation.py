@@ -1,18 +1,16 @@
 """ RiverStation dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -20,21 +18,24 @@ import avro.io
 class RiverStation:
     """
     Reference data for a BIPAD river monitoring station in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.
+    
     Attributes:
-        station_id (str): Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility.
-        title (str): Human-readable name of the river station, typically in the format 'River at Location'.
-        basin (str): Name of the river basin the station belongs to.
-        latitude (float): Latitude coordinate of the station in WGS84 decimal degrees.
-        longitude (float): Longitude coordinate of the station in WGS84 decimal degrees.
-        elevation (typing.Optional[int]): Elevation of the station in meters above sea level. Null when not available.
-        danger_level (typing.Optional[float]): Configured danger water level threshold in meters. Null when not configured.
-        warning_level (typing.Optional[float]): Configured warning water level threshold in meters. Null when not configured.
-        description (typing.Optional[str]): Free-text description of the station. Null when not provided.
-        data_source (str): Origin system providing the station data, typically 'hydrology.gov.np'.
-        province (typing.Optional[int]): Nepal province administrative code. Null when not assigned.
-        district (typing.Optional[int]): Nepal district administrative code. Null when not assigned.
-        municipality (typing.Optional[int]): Nepal municipality administrative code. Null when not assigned.
-        ward (typing.Optional[int]): Nepal ward-level administrative code. Null when not assigned."""
+        station_id (str)
+        title (str)
+        basin (str)
+        latitude (float)
+        longitude (float)
+        elevation (typing.Optional[int])
+        danger_level (typing.Optional[float])
+        warning_level (typing.Optional[float])
+        description (typing.Optional[str])
+        data_source (str)
+        province (typing.Optional[int])
+        district (typing.Optional[int])
+        municipality (typing.Optional[int])
+        ward (typing.Optional[int])
+    """
+    
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     title: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
@@ -50,27 +51,6 @@ class RiverStation:
     district: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="district"))
     municipality: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="municipality"))
     ward: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ward"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"RiverStation\", \"namespace\": \"np.gov.bipad.hydrology\", \"doc\": \"Reference data for a BIPAD river monitoring station in Nepal, including location, river basin, administrative boundaries, and configured danger/warning thresholds.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Unique integer identifier of the river station assigned by the BIPAD portal, transmitted as a string for key compatibility.\"}, {\"name\": \"title\", \"type\": \"string\", \"doc\": \"Human-readable name of the river station, typically in the format 'River at Location'.\"}, {\"name\": \"basin\", \"type\": \"string\", \"doc\": \"Name of the river basin the station belongs to.\"}, {\"name\": \"latitude\", \"type\": \"double\", \"doc\": \"Latitude coordinate of the station in WGS84 decimal degrees.\"}, {\"name\": \"longitude\", \"type\": \"double\", \"doc\": \"Longitude coordinate of the station in WGS84 decimal degrees.\"}, {\"name\": \"elevation\", \"type\": [\"null\", \"int\"], \"doc\": \"Elevation of the station in meters above sea level. Null when not available.\", \"default\": null}, {\"name\": \"danger_level\", \"type\": [\"null\", \"double\"], \"doc\": \"Configured danger water level threshold in meters. Null when not configured.\", \"default\": null}, {\"name\": \"warning_level\", \"type\": [\"null\", \"double\"], \"doc\": \"Configured warning water level threshold in meters. Null when not configured.\", \"default\": null}, {\"name\": \"description\", \"type\": [\"null\", \"string\"], \"doc\": \"Free-text description of the station. Null when not provided.\", \"default\": null}, {\"name\": \"data_source\", \"type\": \"string\", \"doc\": \"Origin system providing the station data, typically 'hydrology.gov.np'.\"}, {\"name\": \"province\", \"type\": [\"null\", \"int\"], \"doc\": \"Nepal province administrative code. Null when not assigned.\", \"default\": null}, {\"name\": \"district\", \"type\": [\"null\", \"int\"], \"doc\": \"Nepal district administrative code. Null when not assigned.\", \"default\": null}, {\"name\": \"municipality\", \"type\": [\"null\", \"int\"], \"doc\": \"Nepal municipality administrative code. Null when not assigned.\", \"default\": null}, {\"name\": \"ward\", \"type\": [\"null\", \"int\"], \"doc\": \"Nepal ward-level administrative code. Null when not assigned.\", \"default\": null}], \"description\": \"Reference details for one monitoring station or site in the Nepal BIPAD River Monitoring source.\"}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_id=str(self.station_id)
-        self.title=str(self.title)
-        self.basin=str(self.basin)
-        self.latitude=float(self.latitude)
-        self.longitude=float(self.longitude)
-        self.elevation=int(self.elevation) if self.elevation else None
-        self.danger_level=float(self.danger_level) if self.danger_level else None
-        self.warning_level=float(self.warning_level) if self.warning_level else None
-        self.description=str(self.description) if self.description else None
-        self.data_source=str(self.data_source)
-        self.province=int(self.province) if self.province else None
-        self.district=int(self.district) if self.district else None
-        self.municipality=int(self.municipality) if self.municipality else None
-        self.ward=int(self.ward) if self.ward else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'RiverStation':
@@ -81,7 +61,7 @@ class RiverStation:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -100,7 +80,7 @@ class RiverStation:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -114,8 +94,6 @@ class RiverStation:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -128,16 +106,12 @@ class RiverStation:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -162,10 +136,6 @@ class RiverStation:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -191,18 +161,6 @@ class RiverStation:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return RiverStation.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -210,5 +168,29 @@ class RiverStation:
                 return RiverStation.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'RiverStation':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            station_id='licjvaqyccigxkfgtjto',
+            title='jfkoxoairefjstjrxwto',
+            basin='bpeukoadhfvhbjurgowo',
+            latitude=float(18.799808165365107),
+            longitude=float(49.918033535996884),
+            elevation=int(30),
+            danger_level=float(21.960658012604426),
+            warning_level=float(18.500150402219283),
+            description='pydyumtckvoscddsukes',
+            data_source='wrsbaubjqqvijylesffs',
+            province=int(35),
+            district=int(99),
+            municipality=int(69),
+            ward=int(47)
+        )

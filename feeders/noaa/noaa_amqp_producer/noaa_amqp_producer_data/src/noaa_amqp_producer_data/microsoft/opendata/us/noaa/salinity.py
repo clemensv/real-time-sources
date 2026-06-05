@@ -92,6 +92,8 @@ class Salinity:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class Salinity:
             An instance of the dataclass.
         """
         return cls(
-            station_id='apzwysatkrzwllczefri',
-            timestamp='qkjipxvtgmrchnbinjfj',
-            salinity=float(45.39453817148414),
-            grams_per_kg=float(74.85618271195919),
-            region='rvapvdjdhwfqbyywzvvq'
+            station_id='cdlhfbaxutblokhcgozc',
+            timestamp='kpjshxvktqnubjemxvkx',
+            salinity=float(51.86937038768797),
+            grams_per_kg=float(49.17607295949572),
+            region='pszppqhpcaumvhgzisud'
         )

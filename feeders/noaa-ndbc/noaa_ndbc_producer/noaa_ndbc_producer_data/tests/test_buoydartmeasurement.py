@@ -29,11 +29,11 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         Create instance of BuoyDartMeasurement for testing
         """
         instance = BuoyDartMeasurement(
-            station_id='uafweavhdxrnmesfijgh',
+            station_id='distzmyzwchlffyysjgf',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            measurement_type_code=int(44),
-            water_column_height=float(66.45909837155956),
-            region='upemlgbxmqgdcpzjvjjm'
+            measurement_type_code=int(31),
+            water_column_height=float(11.889435667580218),
+            region='tuexbqaoxdaqjirswexa'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'uafweavhdxrnmesfijgh'
+        test_value = 'distzmyzwchlffyysjgf'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test measurement_type_code property
         """
-        test_value = int(44)
+        test_value = int(31)
         self.instance.measurement_type_code = test_value
         self.assertEqual(self.instance.measurement_type_code, test_value)
     
@@ -66,7 +66,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test water_column_height property
         """
-        test_value = float(66.45909837155956)
+        test_value = float(11.889435667580218)
         self.instance.water_column_height = test_value
         self.assertEqual(self.instance.water_column_height, test_value)
     
@@ -74,19 +74,10 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'upemlgbxmqgdcpzjvjjm'
+        test_value = 'tuexbqaoxdaqjirswexa'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = BuoyDartMeasurement.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

@@ -33,11 +33,15 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadCorridorsEventProducer
+from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadDisruptionsEventProducer
+from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadMqttEventProducer
+from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadAmqpEventProducer
 
 # imports for the data classes for each event
 
-from tfl_road_traffic_producer_data.roadcorridor import RoadCorridor
-from tfl_road_traffic_producer_data.roadstatus import RoadStatus
+from tfl_road_traffic_producer_data import RoadCorridor
+from tfl_road_traffic_producer_data import RoadStatus
+from tfl_road_traffic_producer_data import RoadDisruption
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,12 +76,172 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'uk.gov.tfl.road.RoadStatus' event to Kafka topic.
     await uk_gov_tfl_road_corridors_event_producer.send_uk_gov_tfl_road_road_status(_road_id = 'TODO: replace me', data = _road_status)
     print(f"Sent 'uk.gov.tfl.road.RoadStatus' event: {_road_status.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_gov_tfl_road_disruptions_event_producer = UkGovTflRoadDisruptionsEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_gov_tfl_road_disruptions_event_producer = UkGovTflRoadDisruptionsEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.gov.tfl.road.RoadDisruption ----
+    # TODO: Supply event data for the uk.gov.tfl.road.RoadDisruption event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.RoadDisruption' event to Kafka topic.
+    await uk_gov_tfl_road_disruptions_event_producer.send_uk_gov_tfl_road_road_disruption(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.RoadDisruption' event: {_road_disruption.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_gov_tfl_road_mqtt_event_producer = UkGovTflRoadMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_gov_tfl_road_mqtt_event_producer = UkGovTflRoadMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.gov.tfl.road.mqtt.RoadCorridor ----
+    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadCorridor event
+    _road_corridor = RoadCorridor()
+
+    # sends the 'uk.gov.tfl.road.mqtt.RoadCorridor' event to Kafka topic.
+    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_road_corridor(_road_id = 'TODO: replace me', data = _road_corridor)
+    print(f"Sent 'uk.gov.tfl.road.mqtt.RoadCorridor' event: {_road_corridor.to_json()}")
+
+    # ---- uk.gov.tfl.road.mqtt.RoadStatus ----
+    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadStatus event
+    _road_status = RoadStatus()
+
+    # sends the 'uk.gov.tfl.road.mqtt.RoadStatus' event to Kafka topic.
+    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_road_status(_road_id = 'TODO: replace me', data = _road_status)
+    print(f"Sent 'uk.gov.tfl.road.mqtt.RoadStatus' event: {_road_status.to_json()}")
+
+    # ---- uk.gov.tfl.road.mqtt.RoadDisruptionSerious ----
+    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadDisruptionSerious event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.mqtt.RoadDisruptionSerious' event to Kafka topic.
+    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_road_disruption_serious(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.mqtt.RoadDisruptionSerious' event: {_road_disruption.to_json()}")
+
+    # ---- uk.gov.tfl.road.mqtt.RoadDisruptionSevere ----
+    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadDisruptionSevere event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.mqtt.RoadDisruptionSevere' event to Kafka topic.
+    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_road_disruption_severe(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.mqtt.RoadDisruptionSevere' event: {_road_disruption.to_json()}")
+
+    # ---- uk.gov.tfl.road.mqtt.RoadDisruptionModerate ----
+    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadDisruptionModerate event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.mqtt.RoadDisruptionModerate' event to Kafka topic.
+    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_road_disruption_moderate(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.mqtt.RoadDisruptionModerate' event: {_road_disruption.to_json()}")
+
+    # ---- uk.gov.tfl.road.mqtt.RoadDisruptionMinor ----
+    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadDisruptionMinor event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.mqtt.RoadDisruptionMinor' event to Kafka topic.
+    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_road_disruption_minor(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.mqtt.RoadDisruptionMinor' event: {_road_disruption.to_json()}")
+
+    # ---- uk.gov.tfl.road.mqtt.RoadDisruptionInformation ----
+    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadDisruptionInformation event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.mqtt.RoadDisruptionInformation' event to Kafka topic.
+    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_road_disruption_information(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.mqtt.RoadDisruptionInformation' event: {_road_disruption.to_json()}")
+
+    # ---- uk.gov.tfl.road.mqtt.RoadDisruptionClosure ----
+    # TODO: Supply event data for the uk.gov.tfl.road.mqtt.RoadDisruptionClosure event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.mqtt.RoadDisruptionClosure' event to Kafka topic.
+    await uk_gov_tfl_road_mqtt_event_producer.send_uk_gov_tfl_road_mqtt_road_disruption_closure(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.mqtt.RoadDisruptionClosure' event: {_road_disruption.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_gov_tfl_road_amqp_event_producer = UkGovTflRoadAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_gov_tfl_road_amqp_event_producer = UkGovTflRoadAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.gov.tfl.road.amqp.RoadCorridor ----
+    # TODO: Supply event data for the uk.gov.tfl.road.amqp.RoadCorridor event
+    _road_corridor = RoadCorridor()
+
+    # sends the 'uk.gov.tfl.road.amqp.RoadCorridor' event to Kafka topic.
+    await uk_gov_tfl_road_amqp_event_producer.send_uk_gov_tfl_road_amqp_road_corridor(_road_id = 'TODO: replace me', data = _road_corridor)
+    print(f"Sent 'uk.gov.tfl.road.amqp.RoadCorridor' event: {_road_corridor.to_json()}")
+
+    # ---- uk.gov.tfl.road.amqp.RoadStatus ----
+    # TODO: Supply event data for the uk.gov.tfl.road.amqp.RoadStatus event
+    _road_status = RoadStatus()
+
+    # sends the 'uk.gov.tfl.road.amqp.RoadStatus' event to Kafka topic.
+    await uk_gov_tfl_road_amqp_event_producer.send_uk_gov_tfl_road_amqp_road_status(_road_id = 'TODO: replace me', data = _road_status)
+    print(f"Sent 'uk.gov.tfl.road.amqp.RoadStatus' event: {_road_status.to_json()}")
+
+    # ---- uk.gov.tfl.road.amqp.RoadDisruptionSerious ----
+    # TODO: Supply event data for the uk.gov.tfl.road.amqp.RoadDisruptionSerious event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.amqp.RoadDisruptionSerious' event to Kafka topic.
+    await uk_gov_tfl_road_amqp_event_producer.send_uk_gov_tfl_road_amqp_road_disruption_serious(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.amqp.RoadDisruptionSerious' event: {_road_disruption.to_json()}")
+
+    # ---- uk.gov.tfl.road.amqp.RoadDisruptionSevere ----
+    # TODO: Supply event data for the uk.gov.tfl.road.amqp.RoadDisruptionSevere event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.amqp.RoadDisruptionSevere' event to Kafka topic.
+    await uk_gov_tfl_road_amqp_event_producer.send_uk_gov_tfl_road_amqp_road_disruption_severe(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.amqp.RoadDisruptionSevere' event: {_road_disruption.to_json()}")
+
+    # ---- uk.gov.tfl.road.amqp.RoadDisruptionModerate ----
+    # TODO: Supply event data for the uk.gov.tfl.road.amqp.RoadDisruptionModerate event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.amqp.RoadDisruptionModerate' event to Kafka topic.
+    await uk_gov_tfl_road_amqp_event_producer.send_uk_gov_tfl_road_amqp_road_disruption_moderate(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.amqp.RoadDisruptionModerate' event: {_road_disruption.to_json()}")
+
+    # ---- uk.gov.tfl.road.amqp.RoadDisruptionMinor ----
+    # TODO: Supply event data for the uk.gov.tfl.road.amqp.RoadDisruptionMinor event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.amqp.RoadDisruptionMinor' event to Kafka topic.
+    await uk_gov_tfl_road_amqp_event_producer.send_uk_gov_tfl_road_amqp_road_disruption_minor(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.amqp.RoadDisruptionMinor' event: {_road_disruption.to_json()}")
+
+    # ---- uk.gov.tfl.road.amqp.RoadDisruptionInformation ----
+    # TODO: Supply event data for the uk.gov.tfl.road.amqp.RoadDisruptionInformation event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.amqp.RoadDisruptionInformation' event to Kafka topic.
+    await uk_gov_tfl_road_amqp_event_producer.send_uk_gov_tfl_road_amqp_road_disruption_information(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.amqp.RoadDisruptionInformation' event: {_road_disruption.to_json()}")
+
+    # ---- uk.gov.tfl.road.amqp.RoadDisruptionClosure ----
+    # TODO: Supply event data for the uk.gov.tfl.road.amqp.RoadDisruptionClosure event
+    _road_disruption = RoadDisruption()
+
+    # sends the 'uk.gov.tfl.road.amqp.RoadDisruptionClosure' event to Kafka topic.
+    await uk_gov_tfl_road_amqp_event_producer.send_uk_gov_tfl_road_amqp_road_disruption_closure(_road_id = 'TODO: replace me', _severity = 'TODO: replace me', _disruption_id = 'TODO: replace me', data = _road_disruption)
+    print(f"Sent 'uk.gov.tfl.road.amqp.RoadDisruptionClosure' event: {_road_disruption.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

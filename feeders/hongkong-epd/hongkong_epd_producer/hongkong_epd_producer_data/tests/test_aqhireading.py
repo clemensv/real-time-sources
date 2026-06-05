@@ -29,12 +29,13 @@ class Test_AQHIReading(unittest.TestCase):
         Create instance of AQHIReading for testing
         """
         instance = AQHIReading(
-            station_id='nooctpphvvonjqhuuufa',
-            station_name='nemmudkjkifictwhlgrw',
-            station_type='jkilyzbnzsbfcgcaqsws',
+            station_id='chzeezbqxrubfcmqsxep',
+            station_name='ksxqmtvakcefkvtdxggs',
+            station_type='yunpwnflypbixwlmhzuw',
+            district='koaltgiugupnkpccgwbc',
             reading_time=datetime.datetime.now(datetime.timezone.utc),
-            aqhi=int(28),
-            health_risk_category='wqffgzsgbofldcdpsgnj'
+            aqhi=int(32),
+            health_risk_category='hdsxzmaguykswdmkzrmj'
         )
         return instance
 
@@ -43,7 +44,7 @@ class Test_AQHIReading(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'nooctpphvvonjqhuuufa'
+        test_value = 'chzeezbqxrubfcmqsxep'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +52,7 @@ class Test_AQHIReading(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'nemmudkjkifictwhlgrw'
+        test_value = 'ksxqmtvakcefkvtdxggs'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -59,9 +60,17 @@ class Test_AQHIReading(unittest.TestCase):
         """
         Test station_type property
         """
-        test_value = 'jkilyzbnzsbfcgcaqsws'
+        test_value = 'yunpwnflypbixwlmhzuw'
         self.instance.station_type = test_value
         self.assertEqual(self.instance.station_type, test_value)
+    
+    def test_district_property(self):
+        """
+        Test district property
+        """
+        test_value = 'koaltgiugupnkpccgwbc'
+        self.instance.district = test_value
+        self.assertEqual(self.instance.district, test_value)
     
     def test_reading_time_property(self):
         """
@@ -75,7 +84,7 @@ class Test_AQHIReading(unittest.TestCase):
         """
         Test aqhi property
         """
-        test_value = int(28)
+        test_value = int(32)
         self.instance.aqhi = test_value
         self.assertEqual(self.instance.aqhi, test_value)
     
@@ -83,7 +92,7 @@ class Test_AQHIReading(unittest.TestCase):
         """
         Test health_risk_category property
         """
-        test_value = 'wqffgzsgbofldcdpsgnj'
+        test_value = 'hdsxzmaguykswdmkzrmj'
         self.instance.health_risk_category = test_value
         self.assertEqual(self.instance.health_risk_category, test_value)
     

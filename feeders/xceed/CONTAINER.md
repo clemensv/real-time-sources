@@ -91,6 +91,7 @@ docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/xce
 | `EVENT_REFRESH_INTERVAL` | Core configuration for this image variant. |
 | `EVENT_WINDOW_SIZE` | Core configuration for this image variant. |
 | `EVENT_PAGE_SIZE` | Core configuration for this image variant. |
+| `XCEED_STATE_FILE` | Container path for persistent feeder state. Set by the `azure-template*.json` deployments to `/mnt/bridge-state/xceed_state.json` on the mounted Azure Files share so state survives container restarts. |
 
 ### MQTT image (`ghcr.io/clemensv/real-time-sources-xceed-mqtt:latest`)
 

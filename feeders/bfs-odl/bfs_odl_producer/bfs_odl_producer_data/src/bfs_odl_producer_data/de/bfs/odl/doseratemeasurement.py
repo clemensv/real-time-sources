@@ -21,6 +21,7 @@ class DoseRateMeasurement:
     
     Attributes:
         station_id (str)
+        state (str)
         start_measure (str)
         end_measure (str)
         value (typing.Optional[float])
@@ -28,11 +29,11 @@ class DoseRateMeasurement:
         value_terrestrial (typing.Optional[float])
         validated (int)
         nuclide (str)
-        canton (str)
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     start_measure: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_measure"))
     end_measure: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end_measure"))
     value: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
@@ -40,7 +41,6 @@ class DoseRateMeasurement:
     value_terrestrial: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value_terrestrial"))
     validated: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="validated"))
     nuclide: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="nuclide"))
-    canton: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="canton"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'DoseRateMeasurement':
@@ -100,6 +100,8 @@ class DoseRateMeasurement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class DoseRateMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='dfggkryonnwvjbasdgfw',
-            start_measure='tdagqtghxwxhqjtjqnlp',
-            end_measure='kjsuozxedncywtvnjcvk',
-            value=float(84.8974453337415),
-            value_cosmic=float(98.341472964917),
-            value_terrestrial=float(16.86751796387793),
-            validated=int(36),
-            nuclide='ncqhwhpnetbskhtuiswv',
-            canton='qsgxxewadtzjajqfmgbx'
+            station_id='zxqxogtcbuknyplnbbgr',
+            state='diitxcryhhjmxapkzndl',
+            start_measure='umortilwhxlklaygnjzk',
+            end_measure='ndehilvjuchboacdicfo',
+            value=float(28.714189452246053),
+            value_cosmic=float(0.15446804693075578),
+            value_terrestrial=float(97.16919188354173),
+            validated=int(81),
+            nuclide='vqkfqwhzgfqkvcadojub'
         )

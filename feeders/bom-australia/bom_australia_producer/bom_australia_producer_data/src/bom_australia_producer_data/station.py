@@ -96,6 +96,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_wmo='zsddkentlpofveacthoo',
-            name='vbtjivkvnmuokanvlpdi',
-            product_id='lcgrctuqezknigxqbyto',
-            state='mirmajixzybtasutyhux',
-            time_zone='wkxwoypnphvldhgwlojo',
-            latitude=float(93.76210363303538),
-            longitude=float(45.54149515763493)
+            station_wmo='bwfrhkrgijhaynbkjndx',
+            name='fqftstgajwdpcurcfyln',
+            product_id='ilpbgzihncgfeltkervb',
+            state='dnijiskpxqtzbzbyysfv',
+            time_zone='zroxxopkzhggvcfpwerh',
+            latitude=float(4.399254481487381),
+            longitude=float(38.89434809778768)
         )

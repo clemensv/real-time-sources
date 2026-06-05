@@ -117,6 +117,8 @@ class PositionReport:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -184,21 +186,21 @@ class PositionReport:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='rozsjwermajimqvmuilb',
-            flag='xqniqmhbentpvcpwztxc',
-            ship_type='xprhcevyprjohlttjsdn',
-            geohash5='eimmjznhtzlcfrwvrrct',
+            mmsi='mzxfdphxhbqckndpjgoj',
+            flag='rculvnjaxikjcplfxmhy',
+            ship_type='kzrfhghfamionqqiahxv',
+            geohash5='wktzwpylmigdscwidnqu',
             msg_type=MsgTypeenum.position_report,
-            user_id=int(38),
-            latitude=float(85.36370969764076),
-            longitude=float(17.178817025082893),
-            sog=float(36.04159478762368),
-            cog=float(49.70055887470903),
-            true_heading=int(56),
-            navigational_status=int(95),
-            rate_of_turn=int(38),
+            user_id=int(74),
+            latitude=float(59.324212227390696),
+            longitude=float(28.09201692273121),
+            sog=float(14.711414441801839),
+            cog=float(84.53478206323473),
+            true_heading=int(4),
+            navigational_status=int(74),
+            rate_of_turn=int(70),
             position_accuracy=False,
-            timestamp=int(4),
+            timestamp=int(74),
             raim=False,
-            message_id=int(15)
+            message_id=int(31)
         )

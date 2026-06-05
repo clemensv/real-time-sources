@@ -11,9 +11,9 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from jma_bosai_warning_producer_data.officetypeenum import OfficeTypeenum
 from jma_bosai_warning_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_producer_data.eventenum import EventEnum
-from jma_bosai_warning_producer_data.officetypeenum import OfficeTypeenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -103,6 +103,8 @@ class Office:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -170,13 +172,13 @@ class Office:
             An instance of the dataclass.
         """
         return cls(
-            office_code='irzwgsbjovxvyglrncwb',
-            area_code='hpseqseuzunhyfqxsqgm',
-            name_jp='pwqymmjxofyxkybhylop',
-            name_en='ovjttshnwxuldqnhaznh',
-            parent_office_code='pzfqstebhoiudookkppg',
+            office_code='bweocwfgyuwcwhbgvzsz',
+            area_code='nogbukgiaoqfnmfdabyt',
+            name_jp='pahyurvgmcvxvkgpiuzg',
+            name_en='nfsmvbvpzjkkgyurkdlh',
+            parent_office_code='nhriwpqtygflivweffts',
             office_type=OfficeTypeenum.PREFECTURE,
-            prefecture='miyfaamktyafxwcnmdch',
-            severity=SeverityEnum.info,
+            prefecture='nrpgfwilpxtgavrimche',
+            severity=SeverityEnum.advisory,
             event=EventEnum.info
         )

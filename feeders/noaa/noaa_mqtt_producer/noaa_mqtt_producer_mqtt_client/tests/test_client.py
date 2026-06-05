@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,31 +17,31 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import noaa_mqtt_producer_data
 from noaa_mqtt_producer_data import WaterLevel
-from test_noaa_mqtt_producer_data_waterlevel import Test_WaterLevel
+from test_waterlevel import Test_WaterLevel
 from noaa_mqtt_producer_data import Predictions
-from test_noaa_mqtt_producer_data_predictions import Test_Predictions
+from test_predictions import Test_Predictions
 from noaa_mqtt_producer_data import AirPressure
-from test_noaa_mqtt_producer_data_airpressure import Test_AirPressure
+from test_airpressure import Test_AirPressure
 from noaa_mqtt_producer_data import AirTemperature
-from test_noaa_mqtt_producer_data_airtemperature import Test_AirTemperature
+from test_airtemperature import Test_AirTemperature
 from noaa_mqtt_producer_data import WaterTemperature
-from test_noaa_mqtt_producer_data_watertemperature import Test_WaterTemperature
+from test_watertemperature import Test_WaterTemperature
 from noaa_mqtt_producer_data import Wind
-from test_noaa_mqtt_producer_data_wind import Test_Wind
+from test_wind import Test_Wind
 from noaa_mqtt_producer_data import Humidity
-from test_noaa_mqtt_producer_data_humidity import Test_Humidity
+from test_humidity import Test_Humidity
 from noaa_mqtt_producer_data import Conductivity
-from test_noaa_mqtt_producer_data_conductivity import Test_Conductivity
+from test_conductivity import Test_Conductivity
 from noaa_mqtt_producer_data import Salinity
-from test_noaa_mqtt_producer_data_salinity import Test_Salinity
+from test_salinity import Test_Salinity
 from noaa_mqtt_producer_data import Station
-from test_noaa_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from noaa_mqtt_producer_data import Visibility
-from test_noaa_mqtt_producer_data_visibility import Test_Visibility
+from test_visibility import Test_Visibility
 from noaa_mqtt_producer_data import Currents
-from test_noaa_mqtt_producer_data_currents import Test_Currents
+from test_currents import Test_Currents
 from noaa_mqtt_producer_data import CurrentPredictions
-from test_noaa_mqtt_producer_data_currentpredictions import Test_CurrentPredictions
+from test_currentpredictions import Test_CurrentPredictions
 from noaa_mqtt_producer_mqtt_client import MicrosoftOpenDataUSNOAAMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -113,6 +114,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_water_level(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -178,6 +180,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_predictions(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -243,6 +246,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_air_pressure(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -308,6 +312,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_air_temperature(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -373,6 +378,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_water_temperature(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -438,6 +444,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_wind(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -503,6 +510,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_humidity(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -568,6 +576,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_conductivity(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -633,6 +642,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_salinity(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -698,6 +708,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_station(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -764,8 +775,8 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
             topic=test_topic,
             _datacontenttype=f"test_datacontenttype_{i}",
             station_id=f"test_station_id_{i}",
-            _time=f"test_time_{i}",
             _dataschema=f"test_dataschema_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -831,6 +842,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_currents(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -896,6 +908,7 @@ async def test_microsoft_opendata_us_noaa_mqtt_microsoft_open_data_us_noaa_mqtt_
         await publisher_client.publish_microsoft_open_data_us_noaa_mqtt_current_predictions(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

@@ -105,6 +105,8 @@ class MarineZoneForecast:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -172,15 +174,15 @@ class MarineZoneForecast:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='hgpglmeckszggaqmenqf',
-            zone_name='xyklpfxfhpfajlbwewcl',
-            product_title='sqrathhgfdkvdcrxvflv',
-            office_name='nhqttzgooppjfdzazcgr',
-            issued_at_text='kalmdefzcjipzmyypqsm',
-            expires_text='itwagzfcbabvhdfnpmeh',
-            wmo_header='fghcimemskaqyoclfowj',
-            bulletin_awips_id='jhmqkgrrxgidllpzkfnr',
-            synopsis='jflzliesgcbukgbotrzy',
-            periods=[None, None, None],
-            bulletin_text='cqiundsrybpgzplqytfe'
+            zone_id='bftctgewcosoigsosqhz',
+            zone_name='mdwmgdtdttpfsbyoapry',
+            product_title='nczylmzvyxiimmaivjss',
+            office_name='txppqpvliqnvlzovkhkd',
+            issued_at_text='lmvhpfwlgygsefdgwxba',
+            expires_text='soevqcczvipolavomlpq',
+            wmo_header='ebrejnqzqvduuzfrmcoe',
+            bulletin_awips_id='lwcjcyhkqsjtnpkwyfkb',
+            synopsis='frzvacikdfjrupqkbwir',
+            periods=[None, None, None, None, None],
+            bulletin_text='tvpagjoyerqwuulkrtsi'
         )

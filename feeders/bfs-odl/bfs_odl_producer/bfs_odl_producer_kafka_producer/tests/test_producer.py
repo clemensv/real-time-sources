@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from bfs_odl_producer_kafka_producer.producer import DeBfsOdlEventProducer
 from bfs_odl_producer_data import Station
-from test_bfs_odl_producer_data_station import Test_Station
+from test_station import Test_Station
 from bfs_odl_producer_data import DoseRateMeasurement
-from test_bfs_odl_producer_data_doseratemeasurement import Test_DoseRateMeasurement
+from test_doseratemeasurement import Test_DoseRateMeasurement
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -105,7 +105,8 @@ def test_de_bfs_odl_debfsodlstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_bfs_odl_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_bfs_odl_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -168,7 +169,8 @@ def test_de_bfs_odl_debfsodldoseratemeasurement(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_de_bfs_odl_dose_rate_measurement(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_de_bfs_odl_dose_rate_measurement(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import fienta_mqtt_producer_data
 from fienta_mqtt_producer_data import Event
-from test_fienta_mqtt_producer_data_event import Test_Event
+from test_event import Test_Event
 from fienta_mqtt_producer_data import EventSaleStatus
-from test_fienta_mqtt_producer_data_eventsalestatus import Test_EventSaleStatus
+from test_eventsalestatus import Test_EventSaleStatus
 from fienta_mqtt_producer_mqtt_client import ComFientaMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_com_fienta_mqtt_com_fienta_mqtt_event_py(mosquitto_broker):
         await publisher_client.publish_com_fienta_mqtt_event(
             topic=test_topic,
             event_id=f"test_event_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -156,6 +158,7 @@ async def test_com_fienta_mqtt_com_fienta_mqtt_event_sale_status_py(mosquitto_br
         await publisher_client.publish_com_fienta_mqtt_event_sale_status(
             topic=test_topic,
             event_id=f"test_event_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

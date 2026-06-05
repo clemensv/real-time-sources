@@ -92,6 +92,8 @@ class Observation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,8 +161,8 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            timeseries_id='cpermnrphpclqmanephf',
+            timeseries_id='mivpxanjluwbxfoicbui',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(95.52253530550858),
-            uom='stwtuwbmjfwvfkflwupq'
+            value=float(26.530865899865606),
+            uom='vzqbjxfkfarawqvhzaqz'
         )

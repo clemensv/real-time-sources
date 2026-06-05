@@ -109,6 +109,8 @@ class MultiSlotBinaryMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -176,17 +178,17 @@ class MultiSlotBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(28),
-            RepeatIndicator=int(40),
-            UserID=int(71),
-            Valid=False,
-            DestinationIDValid=False,
+            MessageID=int(45),
+            RepeatIndicator=int(53),
+            UserID=int(24),
+            Valid=True,
+            DestinationIDValid=True,
             ApplicationIDValid=True,
-            DestinationID=int(28),
-            Spare1=int(27),
+            DestinationID=int(85),
+            Spare1=int(73),
             ApplicationID=None,
-            Payload='xuthfhslqkvtqnkwaepw',
-            Spare2=int(42),
-            CommunicationStateIsItdma=True,
-            CommunicationState=int(94)
+            Payload='uxcpjyiuyjpqadkqcowr',
+            Spare2=int(18),
+            CommunicationStateIsItdma=False,
+            CommunicationState=int(8)
         )

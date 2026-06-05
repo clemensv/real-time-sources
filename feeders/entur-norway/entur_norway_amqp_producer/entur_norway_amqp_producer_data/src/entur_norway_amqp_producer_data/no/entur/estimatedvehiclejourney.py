@@ -119,6 +119,8 @@ class EstimatedVehicleJourney:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -186,21 +188,21 @@ class EstimatedVehicleJourney:
             An instance of the dataclass.
         """
         return cls(
-            service_journey_id='fzlptcxaripyovylezcy',
-            operating_day='fkkasggmekpqoijdgspz',
-            line_ref='icryuhlhtvfzfhnvvgsq',
-            operator_ref='ivthmfrynedtcbccbutt',
-            direction_ref='spebxupobaarairbfzpr',
-            vehicle_mode='mzlaazvmzmtbslvdarhw',
-            published_line_name='cjdvbibdfnxclqpctogh',
-            route_ref='xzvkliotczjkshuyagkt',
-            origin_name='udvbcqpkhrfdtfjaigyt',
-            destination_name='okzfieeuefkzzfwptnim',
-            is_cancellation=True,
+            service_journey_id='cvoajonpfjpbfcaiwrry',
+            operating_day='yrxbpjwuvmcgveheyrkz',
+            line_ref='mzapiqmbkridpeywahfb',
+            operator_ref='cufmvgoaeqyjuvsoikfv',
+            direction_ref='ytlvlferuwgqbvvyfayl',
+            vehicle_mode='krpkcardooixfpbtjonn',
+            published_line_name='yjqpxmofqpiwehnufsuz',
+            route_ref='svldjzqlhkbodxtgmfwu',
+            origin_name='algwdbtwyzfjdqsyjlma',
+            destination_name='ggroskhpefuqgpqziffb',
+            is_cancellation=False,
             is_extra_journey=True,
             is_complete_stop_sequence=True,
-            monitored=False,
-            data_source='cdpgaipkzyemyfhhmnih',
+            monitored=True,
+            data_source='jgxyaayxrwxofjizqifv',
             recorded_at_time=datetime.datetime.now(datetime.timezone.utc),
-            estimated_calls=[None, None, None, None, None]
+            estimated_calls=[None, None]
         )

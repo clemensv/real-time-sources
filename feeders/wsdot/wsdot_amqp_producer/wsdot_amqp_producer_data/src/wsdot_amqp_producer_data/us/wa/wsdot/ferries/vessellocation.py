@@ -124,6 +124,8 @@ class VesselLocation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -191,25 +193,25 @@ class VesselLocation:
             An instance of the dataclass.
         """
         return cls(
-            vessel_id='oxqympriilgeovkrmsdi',
-            vessel_name='seohibhlffzmtvzpbxda',
-            mmsi=int(1),
+            vessel_id='idjhpubswezwwxeqmuvl',
+            vessel_name='kpmeqdddcllphzsoucsl',
+            mmsi=int(82),
             in_service=False,
-            at_dock=False,
-            latitude=float(60.06454460110723),
-            longitude=float(63.27577833603662),
-            speed=float(29.285115332082345),
-            heading=int(45),
-            departing_terminal_id=int(22),
-            departing_terminal_name='enfkleposwavyduoospo',
-            departing_terminal_abbrev='vtixqokqpxiyjplicvem',
-            arriving_terminal_id=int(73),
-            arriving_terminal_name='rcemkyhvbvobdbgzrlfe',
-            arriving_terminal_abbrev='yqeynbupksngznfynzdb',
-            scheduled_departure='nrsisqhokvbazahydozq',
-            left_dock='hyuuzmtsxoarypjylsah',
-            eta='jeszfcxvkoidxzkjfqtp',
-            eta_basis='wbkehhvunuqrqqtsfwee',
-            route_abbreviation='wervmfukdwmzikwglhsx',
-            timestamp='ezklliurfgtayeuhmihr'
+            at_dock=True,
+            latitude=float(46.309492039808084),
+            longitude=float(2.7634451571707963),
+            speed=float(94.23073082030213),
+            heading=int(79),
+            departing_terminal_id=int(82),
+            departing_terminal_name='rqbcghlzoxytazlrrrlm',
+            departing_terminal_abbrev='imexpwaiwgyexpgiuwkv',
+            arriving_terminal_id=int(6),
+            arriving_terminal_name='wfrlxdlvbmgklxwkqjpi',
+            arriving_terminal_abbrev='mbydwvqcqdxewdsjmiyz',
+            scheduled_departure='dsfntbmbgdskgwvemhvx',
+            left_dock='uznxdwcrgsbraseavokt',
+            eta='ukpweeslxibwaouymiax',
+            eta_basis='dzfmivjvwtugtqnjwuth',
+            route_abbreviation='rrbjovkfeedgcnxesxrb',
+            timestamp='jsuogpuwmjhxyxnrolge'
         )

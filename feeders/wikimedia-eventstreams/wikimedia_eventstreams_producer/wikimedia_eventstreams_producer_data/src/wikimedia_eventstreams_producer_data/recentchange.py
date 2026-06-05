@@ -141,6 +141,8 @@ class RecentChange:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -208,33 +210,33 @@ class RecentChange:
             An instance of the dataclass.
         """
         return cls(
-            event_id='tbgbfizdakeojubcvrcb',
-            event_time='gvtdqrprsvumyymgkdvn',
-            schema_uri='pcefilajtuoduspxevwx',
+            event_id='ppeiecuitfwfzyavupvq',
+            event_time='bhszpvagzgjkfhbkkutz',
+            schema_uri='holxdwyuvdnjopcyjxhn',
             meta=None,
-            id='srjsrjuiqdqkolljvnbr',
-            type='odfhvzokvgvjntuguwze',
-            namespace_id=int(46),
-            title='qqgtjccwxuucfsxydhrn',
-            title_url='khuglywxviufagvwbmrq',
-            comment='evndmdmweilxjzqwkasi',
-            timestamp=int(59),
-            user='qnnuopwagqifqpvkssji',
-            bot=True,
-            minor=False,
-            patrolled=False,
+            id='yrrymkdkfpocknmipixw',
+            type='ruvmxiswetohzmcrvngz',
+            namespace_id=int(38),
+            title='lvfwnsyphmteojdrohjw',
+            title_url='ylibkqqfwsoshsrvlsbn',
+            comment='dcuajdghvaauwafpdfsm',
+            timestamp=int(2),
+            user='rozlfptxugkdvkyswfni',
+            bot=False,
+            minor=True,
+            patrolled=True,
             length=None,
             revision=None,
-            server_url='ivxlybudimaoappbuoua',
-            server_name='owihvydaqvufsyuweaps',
-            server_script_path='prbkmehhhdqyyurgnkvj',
-            wiki='mgvrbotmimnxzwwlirxt',
-            namespace='ndruwqwnbrpieheepaix',
-            parsedcomment='lbpoltycqnlkzozvweri',
-            notify_url='xzfpzcjcbaxdppbuwics',
-            log_type='loqczxdtfanyutxxmbzp',
-            log_action='aexckkxrvsqwzvmcdzdk',
-            log_action_comment='sdnqdffpobfwthecjtka',
-            log_id='gqcbfhtnsatquqlugzie',
-            log_params_json='ouusdkrncafgbwcfwjaz'
+            server_url='uwvonyxyjlougrxkzmby',
+            server_name='ylmxqlixsjzpxtgbsuyw',
+            server_script_path='fjymcofhhgdsrsyxiipv',
+            wiki='swhhnvyufbrlxqlhytto',
+            namespace='tmufdgcdjeihdavbeepn',
+            parsedcomment='pcumcmpjxnsnyhtjxclr',
+            notify_url='dfkxakivaoaadrqnittn',
+            log_type='hexjwvklrtibgojfmxli',
+            log_action='ghcmjfewfshpxqqwzzdl',
+            log_action_comment='usnwbebgrfcvascohgjj',
+            log_id='qffkmouqyjjsjfbjitis',
+            log_params_json='bqdpjgzsnkyaoolswhoo'
         )

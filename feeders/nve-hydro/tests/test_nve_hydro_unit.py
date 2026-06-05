@@ -18,8 +18,8 @@ from nve_hydro.nve_hydro import (
     PARAM_STAGE,
     PARAM_DISCHARGE,
 )
-from nve_hydro_producer_data.no.nve.hydrology.station import Station
-from nve_hydro_producer_data.no.nve.hydrology.waterlevelobservation import WaterLevelObservation
+from nve_hydro_producer_data import Station
+from nve_hydro_producer_data import WaterLevelObservation
 from nve_hydro_producer_kafka_producer.producer import NONVEHydrologyEventProducer
 
 
@@ -290,6 +290,7 @@ class TestDataClasses:
     def test_observation_roundtrip(self):
         obs = WaterLevelObservation(
             station_id="2.11.0",
+            river_name="Vosso",
             water_level=1.45,
             water_level_unit="m",
             water_level_timestamp="2023-11-14T13:00:00Z",
@@ -299,6 +300,7 @@ class TestDataClasses:
         )
         assert obs.station_id == "2.11.0"
         data = json.loads(obs.to_json())
+        assert data["river_name"] == "Vosso"
         assert data["water_level"] == 1.45
         assert data["discharge"] == 45.6
 
@@ -318,21 +320,23 @@ class TestSendStations:
         mock_gs.return_value = [SAMPLE_STATION_1, SAMPLE_STATION_2]
         api = NVEHydroAPI("key")
         prod = self._mock_producer()
-        station_params = send_stations(api, prod)
+        station_params, station_river = send_stations(api, prod)
         assert prod.send_no_nve_hydrology_station.call_count == 2
         prod.producer.flush.assert_called_once()
         assert PARAM_STAGE in station_params["2.11.0"]
         assert PARAM_DISCHARGE in station_params["2.11.0"]
         assert PARAM_STAGE in station_params["12.193.0"]
         assert PARAM_DISCHARGE not in station_params["12.193.0"]
+        assert station_river == {"2.11.0": "Vosso", "12.193.0": "Nidelva"}
 
     @patch.object(NVEHydroAPI, "get_stations")
     def test_skips_station_without_id(self, mock_gs):
         mock_gs.return_value = [{"stationName": "No ID station", "seriesList": []}]
         api = NVEHydroAPI("key")
         prod = self._mock_producer()
-        result = send_stations(api, prod)
-        assert result == {}
+        station_params, station_river = send_stations(api, prod)
+        assert station_params == {}
+        assert station_river == {}
         prod.send_no_nve_hydrology_station.assert_not_called()
 
     @patch.object(NVEHydroAPI, "get_stations")
@@ -340,8 +344,9 @@ class TestSendStations:
         mock_gs.return_value = []
         api = NVEHydroAPI("key")
         prod = self._mock_producer()
-        result = send_stations(api, prod)
-        assert result == {}
+        station_params, station_river = send_stations(api, prod)
+        assert station_params == {}
+        assert station_river == {}
 
 
 # ---------------------------------------------------------------------------
@@ -367,8 +372,9 @@ class TestFeedObservations:
         api = NVEHydroAPI("key")
         prod = self._mock_producer()
         station_params = {"2.11.0": [PARAM_STAGE, PARAM_DISCHARGE]}
+        station_river = {"2.11.0": "Vosso"}
         previous = {}
-        count = feed_observations(api, prod, station_params, previous)
+        count = feed_observations(api, prod, station_params, station_river, previous)
         assert count == 1
         prod.send_no_nve_hydrology_water_level_observation.assert_called_once()
         prod.producer.flush.assert_called()
@@ -381,11 +387,12 @@ class TestFeedObservations:
         api = NVEHydroAPI("key")
         prod = self._mock_producer()
         station_params = {"2.11.0": [PARAM_STAGE]}
+        station_river = {"2.11.0": "Vosso"}
         previous = {}
-        feed_observations(api, prod, station_params, previous)
+        feed_observations(api, prod, station_params, station_river, previous)
         prod.reset_mock()
         prod.producer = MagicMock()
-        count = feed_observations(api, prod, station_params, previous)
+        count = feed_observations(api, prod, station_params, station_river, previous)
         assert count == 0
 
     @patch.object(NVEHydroAPI, "get_observations")
@@ -393,7 +400,7 @@ class TestFeedObservations:
         mock_obs.return_value = []
         api = NVEHydroAPI("key")
         prod = self._mock_producer()
-        count = feed_observations(api, prod, {"2.11.0": [PARAM_STAGE]}, {})
+        count = feed_observations(api, prod, {"2.11.0": [PARAM_STAGE]}, {"2.11.0": "Vosso"}, {})
         assert count == 0
 
 
@@ -419,6 +426,7 @@ class TestProducerClient:
         prod = NONVEHydrologyEventProducer(mock_kafka, "nve-topic")
         obs = WaterLevelObservation(
             station_id="2.11.0",
+            river_name="Vosso",
             water_level=1.45, water_level_unit="m",
             water_level_timestamp="2023-11-14T13:00:00Z",
             discharge=None, discharge_unit="m3/s", discharge_timestamp="",

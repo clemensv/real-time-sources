@@ -1,12 +1,58 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
 import json
+import re
 import uuid
 import typing
-from datetime import datetime
+from datetime import datetime, timezone
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 from tokyo_docomo_bikeshare_producer_data import BikeshareSystem
 from tokyo_docomo_bikeshare_producer_data import BikeshareStation
 from tokyo_docomo_bikeshare_producer_data import BikeshareStationStatus
@@ -42,7 +88,15 @@ class JPODPTDocomoBikeshareSystemEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_jp_odpt_docomo_bikeshare_bikeshare_system(self,_system_id : str, data: BikeshareSystem, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareSystem], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_jp_odpt_docomo_bikeshare_bikeshare_system(self,_system_id : str, data: BikeshareSystem, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareSystem], str]=None) -> None:
         """
         Sends the 'JP.ODPT.DocomoBikeshare.BikeshareSystem' event to the Kafka topic
 
@@ -50,6 +104,7 @@ class JPODPTDocomoBikeshareSystemEventProducer:
             _system_id(str):  Value for placeholder system_id in attribute subject
             data: (BikeshareSystem): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, BikeshareSystem], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{system_id}'
@@ -61,6 +116,7 @@ class JPODPTDocomoBikeshareSystemEventProducer:
              "subject":"{system_id}".format(system_id = _system_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -68,7 +124,7 @@ class JPODPTDocomoBikeshareSystemEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -156,7 +212,15 @@ class JPODPTDocomoBikeshareStationsEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_jp_odpt_docomo_bikeshare_bikeshare_station(self,_system_id : str, _station_id : str, data: BikeshareStation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStation], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_jp_odpt_docomo_bikeshare_bikeshare_station(self,_system_id : str, _station_id : str, data: BikeshareStation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStation], str]=None) -> None:
         """
         Sends the 'JP.ODPT.DocomoBikeshare.BikeshareStation' event to the Kafka topic
 
@@ -165,6 +229,7 @@ class JPODPTDocomoBikeshareStationsEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (BikeshareStation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, BikeshareStation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{system_id}/{station_id}'
@@ -176,6 +241,7 @@ class JPODPTDocomoBikeshareStationsEventProducer:
              "subject":"{system_id}/{station_id}".format(system_id = _system_id,station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -183,13 +249,13 @@ class JPODPTDocomoBikeshareStationsEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_jp_odpt_docomo_bikeshare_bikeshare_station_status(self,_system_id : str, _station_id : str, data: BikeshareStationStatus, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStationStatus], str]=None) -> None:
+    def send_jp_odpt_docomo_bikeshare_bikeshare_station_status(self,_system_id : str, _station_id : str, data: BikeshareStationStatus, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStationStatus], str]=None) -> None:
         """
         Sends the 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus' event to the Kafka topic
 
@@ -198,6 +264,7 @@ class JPODPTDocomoBikeshareStationsEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (BikeshareStationStatus): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, BikeshareStationStatus], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{system_id}/{station_id}'
@@ -209,6 +276,7 @@ class JPODPTDocomoBikeshareStationsEventProducer:
              "subject":"{system_id}/{station_id}".format(system_id = _system_id,station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -216,7 +284,7 @@ class JPODPTDocomoBikeshareStationsEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -304,7 +372,15 @@ class JPODPTDocomoBikeshareSystemMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_jp_odpt_docomo_bikeshare_bikeshare_system_mqtt(self,_system_id : str, data: BikeshareSystem, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareSystem], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_jp_odpt_docomo_bikeshare_bikeshare_system_mqtt(self,_system_id : str, data: BikeshareSystem, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareSystem], str]=None) -> None:
         """
         Sends the 'JP.ODPT.DocomoBikeshare.BikeshareSystem.mqtt' event to the Kafka topic
 
@@ -312,6 +388,7 @@ class JPODPTDocomoBikeshareSystemMqttEventProducer:
             _system_id(str):  Value for placeholder system_id in attribute subject
             data: (BikeshareSystem): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, BikeshareSystem], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -322,6 +399,7 @@ class JPODPTDocomoBikeshareSystemMqttEventProducer:
              "subject":"{system_id}".format(system_id = _system_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -329,7 +407,7 @@ class JPODPTDocomoBikeshareSystemMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -417,7 +495,15 @@ class JPODPTDocomoBikeshareStationsMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_jp_odpt_docomo_bikeshare_bikeshare_station_mqtt(self,_system_id : str, _station_id : str, data: BikeshareStation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStation], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_jp_odpt_docomo_bikeshare_bikeshare_station_mqtt(self,_system_id : str, _station_id : str, data: BikeshareStation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStation], str]=None) -> None:
         """
         Sends the 'JP.ODPT.DocomoBikeshare.BikeshareStation.mqtt' event to the Kafka topic
 
@@ -426,6 +512,7 @@ class JPODPTDocomoBikeshareStationsMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (BikeshareStation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, BikeshareStation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -436,6 +523,7 @@ class JPODPTDocomoBikeshareStationsMqttEventProducer:
              "subject":"{system_id}/{station_id}".format(system_id = _system_id,station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -443,13 +531,13 @@ class JPODPTDocomoBikeshareStationsMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt(self,_system_id : str, _station_id : str, data: BikeshareStationStatus, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStationStatus], str]=None) -> None:
+    def send_jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt(self,_system_id : str, _station_id : str, data: BikeshareStationStatus, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStationStatus], str]=None) -> None:
         """
         Sends the 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus.mqtt' event to the Kafka topic
 
@@ -458,6 +546,7 @@ class JPODPTDocomoBikeshareStationsMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (BikeshareStationStatus): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, BikeshareStationStatus], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -468,6 +557,7 @@ class JPODPTDocomoBikeshareStationsMqttEventProducer:
              "subject":"{system_id}/{station_id}".format(system_id = _system_id,station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -475,7 +565,7 @@ class JPODPTDocomoBikeshareStationsMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -563,7 +653,15 @@ class JPODPTDocomoBikeshareSystemAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_jp_odpt_docomo_bikeshare_bikeshare_system_amqp(self,_system_id : str, data: BikeshareSystem, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareSystem], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_jp_odpt_docomo_bikeshare_bikeshare_system_amqp(self,_system_id : str, data: BikeshareSystem, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareSystem], str]=None) -> None:
         """
         Sends the 'JP.ODPT.DocomoBikeshare.BikeshareSystem.amqp' event to the Kafka topic
 
@@ -571,6 +669,7 @@ class JPODPTDocomoBikeshareSystemAmqpEventProducer:
             _system_id(str):  Value for placeholder system_id in attribute subject
             data: (BikeshareSystem): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, BikeshareSystem], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -581,6 +680,7 @@ class JPODPTDocomoBikeshareSystemAmqpEventProducer:
              "subject":"{system_id}".format(system_id = _system_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -588,7 +688,7 @@ class JPODPTDocomoBikeshareSystemAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -676,7 +776,15 @@ class JPODPTDocomoBikeshareStationsAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_jp_odpt_docomo_bikeshare_bikeshare_station_amqp(self,_system_id : str, _station_id : str, data: BikeshareStation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStation], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_jp_odpt_docomo_bikeshare_bikeshare_station_amqp(self,_system_id : str, _station_id : str, data: BikeshareStation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStation], str]=None) -> None:
         """
         Sends the 'JP.ODPT.DocomoBikeshare.BikeshareStation.amqp' event to the Kafka topic
 
@@ -685,6 +793,7 @@ class JPODPTDocomoBikeshareStationsAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (BikeshareStation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, BikeshareStation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -695,6 +804,7 @@ class JPODPTDocomoBikeshareStationsAmqpEventProducer:
              "subject":"{system_id}/{station_id}".format(system_id = _system_id,station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -702,13 +812,13 @@ class JPODPTDocomoBikeshareStationsAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp(self,_system_id : str, _station_id : str, data: BikeshareStationStatus, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStationStatus], str]=None) -> None:
+    def send_jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp(self,_system_id : str, _station_id : str, data: BikeshareStationStatus, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BikeshareStationStatus], str]=None) -> None:
         """
         Sends the 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus.amqp' event to the Kafka topic
 
@@ -717,6 +827,7 @@ class JPODPTDocomoBikeshareStationsAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (BikeshareStationStatus): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, BikeshareStationStatus], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -727,6 +838,7 @@ class JPODPTDocomoBikeshareStationsAmqpEventProducer:
              "subject":"{system_id}/{station_id}".format(system_id = _system_id,station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -734,7 +846,7 @@ class JPODPTDocomoBikeshareStationsAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()

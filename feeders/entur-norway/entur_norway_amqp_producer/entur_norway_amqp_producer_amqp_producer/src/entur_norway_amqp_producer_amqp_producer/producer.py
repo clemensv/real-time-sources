@@ -14,14 +14,62 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
+from datetime import datetime, timezone
 from urllib.parse import quote_plus
-from proton import Message
+from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -36,7 +84,7 @@ import hmac
 import logging
 import time as _cbs_time
 from urllib.parse import quote
-from proton import Endpoint, symbol
+from proton import Endpoint
 from proton.handlers import MessagingHandler
 from proton.reactor import Container, AtLeastOnce
 
@@ -485,9 +533,7 @@ class NoEnturAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -550,6 +596,32 @@ class NoEnturAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -575,6 +647,23 @@ class NoEnturAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -605,6 +694,7 @@ class NoEnturAmqpProducer:
         _service_journey_id: str,
         _operator_ref: str,
         _line_ref: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `no.entur.amqp.EstimatedVehicleJourney` message
@@ -615,6 +705,7 @@ class NoEnturAmqpProducer:
             _service_journey_id (str): Value for placeholder service_journey_id in attribute subject
             _operator_ref (str): Value for AMQP protocol option placeholder operator_ref
             _line_ref (str): Value for AMQP protocol option placeholder line_ref
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (EstimatedVehicleJourney): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -627,6 +718,7 @@ class NoEnturAmqpProducer:
             "subject":
             "journeys/{operating_day}/{service_journey_id}".format(operating_day=_operating_day, service_journey_id=_service_journey_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -656,6 +748,9 @@ class NoEnturAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "journeys/{operating_day}/{service_journey_id}".format(operating_day=_operating_day, service_journey_id=_service_journey_id)
 
@@ -668,12 +763,21 @@ class NoEnturAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "journeys/{operating_day}/{service_journey_id}".format(operating_day=_operating_day, service_journey_id=_service_journey_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_estimated_vehicle_journey_batch(self,
         data_array: typing.List[EstimatedVehicleJourney],
@@ -681,6 +785,7 @@ class NoEnturAmqpProducer:
         _service_journey_id: str,
         _operator_ref: str,
         _line_ref: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `no.entur.amqp.EstimatedVehicleJourney` messages
@@ -689,6 +794,7 @@ class NoEnturAmqpProducer:
             data_array (typing.List[EstimatedVehicleJourney]): Array of message data objects
             _operating_day (str): Value for placeholder operating_day in attribute subject
             _service_journey_id (str): Value for placeholder service_journey_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _operator_ref (str): Value for AMQP protocol option placeholder operator_ref
             _line_ref (str): Value for AMQP protocol option placeholder line_ref
             content_type (str): The content type of the message data
@@ -698,6 +804,7 @@ class NoEnturAmqpProducer:
                 data=data,
                 _operating_day=_operating_day,
                 _service_journey_id=_service_journey_id,
+                _time=_time,
                 _operator_ref=_operator_ref,
                 _line_ref=_line_ref,
                 content_type=content_type)
@@ -709,6 +816,7 @@ class NoEnturAmqpProducer:
         _service_journey_id: str,
         _operator_ref: str,
         _line_ref: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `no.entur.amqp.MonitoredVehicleJourney` message
@@ -719,6 +827,7 @@ class NoEnturAmqpProducer:
             _service_journey_id (str): Value for placeholder service_journey_id in attribute subject
             _operator_ref (str): Value for AMQP protocol option placeholder operator_ref
             _line_ref (str): Value for AMQP protocol option placeholder line_ref
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (MonitoredVehicleJourney): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -731,6 +840,7 @@ class NoEnturAmqpProducer:
             "subject":
             "journeys/{operating_day}/{service_journey_id}".format(operating_day=_operating_day, service_journey_id=_service_journey_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -760,6 +870,9 @@ class NoEnturAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "journeys/{operating_day}/{service_journey_id}".format(operating_day=_operating_day, service_journey_id=_service_journey_id)
 
@@ -772,12 +885,21 @@ class NoEnturAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "journeys/{operating_day}/{service_journey_id}".format(operating_day=_operating_day, service_journey_id=_service_journey_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_monitored_vehicle_journey_batch(self,
         data_array: typing.List[MonitoredVehicleJourney],
@@ -785,6 +907,7 @@ class NoEnturAmqpProducer:
         _service_journey_id: str,
         _operator_ref: str,
         _line_ref: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `no.entur.amqp.MonitoredVehicleJourney` messages
@@ -793,6 +916,7 @@ class NoEnturAmqpProducer:
             data_array (typing.List[MonitoredVehicleJourney]): Array of message data objects
             _operating_day (str): Value for placeholder operating_day in attribute subject
             _service_journey_id (str): Value for placeholder service_journey_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _operator_ref (str): Value for AMQP protocol option placeholder operator_ref
             _line_ref (str): Value for AMQP protocol option placeholder line_ref
             content_type (str): The content type of the message data
@@ -802,6 +926,7 @@ class NoEnturAmqpProducer:
                 data=data,
                 _operating_day=_operating_day,
                 _service_journey_id=_service_journey_id,
+                _time=_time,
                 _operator_ref=_operator_ref,
                 _line_ref=_line_ref,
                 content_type=content_type)
@@ -811,6 +936,7 @@ class NoEnturAmqpProducer:
         data: PtSituationElement,
         _situation_number: str,
         _severity: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `no.entur.amqp.PtSituationElement` message
@@ -819,6 +945,7 @@ class NoEnturAmqpProducer:
         Args:
             _situation_number (str): Value for placeholder situation_number in attribute subject
             _severity (str): Value for AMQP protocol option placeholder severity
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (PtSituationElement): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -831,6 +958,7 @@ class NoEnturAmqpProducer:
             "subject":
             "situations/{situation_number}".format(situation_number=_situation_number),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -860,6 +988,9 @@ class NoEnturAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "situations/{situation_number}".format(situation_number=_situation_number)
 
@@ -870,17 +1001,27 @@ class NoEnturAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "situations/{situation_number}".format(situation_number=_situation_number)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_pt_situation_element_batch(self,
         data_array: typing.List[PtSituationElement],
         _situation_number: str,
         _severity: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `no.entur.amqp.PtSituationElement` messages
@@ -888,6 +1029,7 @@ class NoEnturAmqpProducer:
         Args:
             data_array (typing.List[PtSituationElement]): Array of message data objects
             _situation_number (str): Value for placeholder situation_number in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _severity (str): Value for AMQP protocol option placeholder severity
             content_type (str): The content type of the message data
         """
@@ -895,6 +1037,7 @@ class NoEnturAmqpProducer:
             self.send_pt_situation_element(
                 data=data,
                 _situation_number=_situation_number,
+                _time=_time,
                 _severity=_severity,
                 content_type=content_type)
     

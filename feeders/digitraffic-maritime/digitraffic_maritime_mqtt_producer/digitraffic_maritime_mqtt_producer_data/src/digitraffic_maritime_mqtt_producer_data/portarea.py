@@ -90,6 +90,8 @@ class PortArea:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class PortArea:
             An instance of the dataclass.
         """
         return cls(
-            port_area_code='qrirstdxzdnbrtfvblgb',
-            port_area_name='gggvdqaazemphugvncml',
-            longitude=float(37.52743672867069),
-            latitude=float(67.50034918656091)
+            port_area_code='wdknwvogiegnuvlewjwi',
+            port_area_name='zffdmkstrxvkeswapgti',
+            longitude=float(46.752146025470154),
+            latitude=float(34.44336301010682)
         )

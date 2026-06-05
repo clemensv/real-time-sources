@@ -27,15 +27,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from ticketmaster_amqp_producer_amqp_producer import *
 from ticketmaster_amqp_producer_data import Event
-from test_ticketmaster_amqp_producer_data_event import Test_Event
+from test_event import Test_Event
 from ticketmaster_amqp_producer_data import Venue
-from test_ticketmaster_amqp_producer_data_venue import Test_Venue
+from test_venue import Test_Venue
 from ticketmaster_amqp_producer_data import Attraction
-from test_ticketmaster_amqp_producer_data_attraction import Test_Attraction
+from test_attraction import Test_Attraction
 from ticketmaster_amqp_producer_data import Classification
-from test_ticketmaster_amqp_producer_data_classification import Test_Classification
+from test_classification import Test_Classification
 from ticketmaster_amqp_producer_data import Info
-from test_ticketmaster_amqp_producer_data_info import Test_Info
+from test_info import Test_Info
 
 
 

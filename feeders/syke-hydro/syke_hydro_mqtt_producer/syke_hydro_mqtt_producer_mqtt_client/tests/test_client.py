@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import syke_hydro_mqtt_producer_data
 from syke_hydro_mqtt_producer_data import Station
-from test_syke_hydro_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from syke_hydro_mqtt_producer_data import WaterLevelObservation
-from test_syke_hydro_mqtt_producer_data_waterlevelobservation import Test_WaterLevelObservation
+from test_waterlevelobservation import Test_WaterLevelObservation
 from syke_hydro_mqtt_producer_mqtt_client import FISYKEHydrologyMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_fi_syke_hydrology_mqtt_fi_syke_hydrology_mqtt_station_py(mosquitt
         await publisher_client.publish_fi_syke_hydrology_mqtt_station(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -156,6 +158,7 @@ async def test_fi_syke_hydrology_mqtt_fi_syke_hydrology_mqtt_water_level_observa
         await publisher_client.publish_fi_syke_hydrology_mqtt_water_level_observation(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

@@ -94,6 +94,8 @@ class AssignedModeCommand:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class AssignedModeCommand:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(58),
-            RepeatIndicator=int(73),
-            UserID=int(100),
-            Valid=False,
-            Spare=int(67),
-            Commands={'ucshnapnkkmjegsfhfst': 'rwdrqenmojryypdasqeh', 'lsjwhzgzzsewltdvaphc': 'wrnqchmfbdxkwedvkfgl', 'pzzdwivcxlmtajpdvyrm': 'eighzonjfhcwxngxtmxz'}
+            MessageID=int(12),
+            RepeatIndicator=int(29),
+            UserID=int(65),
+            Valid=True,
+            Spare=int(58),
+            Commands={'eppqslkffzudnyjcdvgj': 'jbtavznajyrlrnpnqexg', 'omyzskktausgmsrjvaoy': 'rzgzifdsdhlgxvzpajzh', 'kyuevpuzzhrenoksiobt': 'mvdpjzxqkjfojpjzfoty', 'zsjcqnxruldvkxsabdli': 'hbwowqeddcgwfmompijw', 'ihhcconkftobykcuurup': 'cqmvxvhhgcbpmxbszuwf'}
         )

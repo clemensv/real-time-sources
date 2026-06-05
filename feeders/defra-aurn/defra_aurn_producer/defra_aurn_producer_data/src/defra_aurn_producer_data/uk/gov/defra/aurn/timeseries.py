@@ -1,37 +1,38 @@
 """ Timeseries dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Timeseries:
     """
-    Reference metadata for a Defra AURN station and pollutant timeseries combination.
+    Reference metadata for a Defra AURN station and pollutant timeseries combination, including linked station coordinates and pollutant taxonomy identifiers.
+    
     Attributes:
-        timeseries_id (str): Stable numeric timeseries identifier from id.
-        label (str): Descriptive label from the timeseries label field.
-        uom (str): Unit of measurement string from the timeseries uom field.
-        station_id (str): Stable station identifier from station.properties.id.
-        station_label (str): Station display label from station.properties.label.
-        latitude (typing.Optional[float]): Nullable WGS84 latitude in decimal degrees from station.geometry.coordinates[0].
-        longitude (typing.Optional[float]): Nullable WGS84 longitude in decimal degrees from station.geometry.coordinates[1].
-        phenomenon_id (typing.Optional[str]): Nullable pollutant phenomenon identifier from parameters.phenomenon.id.
-        phenomenon_label (typing.Optional[str]): Nullable pollutant label from parameters.phenomenon.label.
-        category_id (typing.Optional[str]): Nullable category identifier from parameters.category.id.
-        category_label (typing.Optional[str]): Nullable category label from parameters.category.label."""
+        timeseries_id (str)
+        label (str)
+        uom (str)
+        station_id (str)
+        station_label (str)
+        latitude (typing.Optional[float])
+        longitude (typing.Optional[float])
+        phenomenon_id (typing.Optional[str])
+        phenomenon_label (typing.Optional[str])
+        category_id (typing.Optional[str])
+        category_label (typing.Optional[str])
+    """
+    
     
     timeseries_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timeseries_id"))
     label: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="label"))
@@ -44,24 +45,6 @@ class Timeseries:
     phenomenon_label: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="phenomenon_label"))
     category_id: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="category_id"))
     category_label: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="category_label"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Timeseries\", \"namespace\": \"uk.gov.defra.aurn\", \"doc\": \"Reference metadata for a Defra AURN station and pollutant timeseries combination.\", \"fields\": [{\"name\": \"timeseries_id\", \"type\": \"string\", \"doc\": \"Stable numeric timeseries identifier from id.\", \"description\": \"Measurement payload for pollutant concentration measurements in the DEFRA AURN source.\"}, {\"name\": \"label\", \"type\": \"string\", \"doc\": \"Descriptive label from the timeseries label field.\", \"description\": \"Measurement payload for pollutant concentration measurements in the DEFRA AURN source.\"}, {\"name\": \"uom\", \"type\": \"string\", \"doc\": \"Unit of measurement string from the timeseries uom field.\", \"description\": \"Measurement payload for pollutant concentration measurements in the DEFRA AURN source.\"}, {\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Stable station identifier from station.properties.id.\", \"description\": \"Reference details for one station, monitoring site, or forecast area in the DEFRA AURN source.\"}, {\"name\": \"station_label\", \"type\": \"string\", \"doc\": \"Station display label from station.properties.label.\", \"description\": \"Reference details for one station, monitoring site, or forecast area in the DEFRA AURN source.\"}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null, \"doc\": \"Nullable WGS84 latitude in decimal degrees from station.geometry.coordinates[0].\", \"description\": \"Measurement payload for pollutant concentration measurements in the DEFRA AURN source.\"}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null, \"doc\": \"Nullable WGS84 longitude in decimal degrees from station.geometry.coordinates[1].\", \"description\": \"Measurement payload for pollutant concentration measurements in the DEFRA AURN source.\"}, {\"name\": \"phenomenon_id\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Nullable pollutant phenomenon identifier from parameters.phenomenon.id.\", \"description\": \"Measurement payload for pollutant concentration measurements in the DEFRA AURN source.\"}, {\"name\": \"phenomenon_label\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Nullable pollutant label from parameters.phenomenon.label.\", \"description\": \"Measurement payload for pollutant concentration measurements in the DEFRA AURN source.\"}, {\"name\": \"category_id\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Nullable category identifier from parameters.category.id.\", \"description\": \"Measurement payload for pollutant concentration measurements in the DEFRA AURN source.\"}, {\"name\": \"category_label\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Nullable category label from parameters.category.label.\", \"description\": \"Measurement payload for pollutant concentration measurements in the DEFRA AURN source.\"}], \"description\": \"Measurement payload for pollutant concentration measurements in the DEFRA AURN source.\"}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.timeseries_id=str(self.timeseries_id)
-        self.label=str(self.label)
-        self.uom=str(self.uom)
-        self.station_id=str(self.station_id)
-        self.station_label=str(self.station_label)
-        self.latitude=float(self.latitude) if self.latitude else None
-        self.longitude=float(self.longitude) if self.longitude else None
-        self.phenomenon_id=str(self.phenomenon_id) if self.phenomenon_id else None
-        self.phenomenon_label=str(self.phenomenon_label) if self.phenomenon_label else None
-        self.category_id=str(self.category_id) if self.category_id else None
-        self.category_label=str(self.category_label) if self.category_label else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Timeseries':
@@ -72,7 +55,7 @@ class Timeseries:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -91,7 +74,7 @@ class Timeseries:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -105,8 +88,6 @@ class Timeseries:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -119,16 +100,12 @@ class Timeseries:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -153,10 +130,6 @@ class Timeseries:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -182,18 +155,6 @@ class Timeseries:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return Timeseries.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -201,5 +162,26 @@ class Timeseries:
                 return Timeseries.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Timeseries':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            timeseries_id='ktfmgkgnwejxkklrfhmz',
+            label='bteaeujlcpjlxggwpyfh',
+            uom='jldiyzititpovgidwugt',
+            station_id='mwsornnosdkhhvaraeoj',
+            station_label='zbsqoxhoewsbrajerxoj',
+            latitude=float(20.49201373295958),
+            longitude=float(97.595876038851),
+            phenomenon_id='wtgwqtevslmvqrsqqwta',
+            phenomenon_label='baizeuxdquexyfhtzaaa',
+            category_id='gdxsorfxjmajuqdwvirm',
+            category_label='lweubxwjtywmqctvzpyd'
+        )

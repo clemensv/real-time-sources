@@ -100,6 +100,8 @@ class EventAdmission:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class EventAdmission:
             An instance of the dataclass.
         """
         return cls(
-            event_id='fzxfebchdmdfhcqlmdhx',
-            admission_id='yewwrkqcyaqwpjqtqdgb',
-            admission_type='qfdgzyecqwvgvvyfmtlt',
-            name='jsltidoqvpxvqjzpksom',
+            event_id='jaarwlfytzctmnndhdbc',
+            admission_id='jsfzrjtxsczwpbdclkdo',
+            admission_type='lyfmvmadlzbznhjxfenf',
+            name='pjeztihdbsorvkztqdlg',
             is_sold_out=True,
             is_sales_closed=False,
-            price=float(75.6735028872494),
-            currency='oogqszxwmihgqmbnvlgp',
-            remaining=int(33)
+            price=float(79.32236761935495),
+            currency='pvafmhefyotcqwwypdue',
+            remaining=int(34)
         )

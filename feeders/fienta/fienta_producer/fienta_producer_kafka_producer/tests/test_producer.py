@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from fienta_producer_kafka_producer.producer import ComFientaEventProducer
 from fienta_producer_data import Event
-from test_fienta_producer_data_event import Test_Event
+from test_event import Test_Event
 from fienta_producer_data import EventSaleStatus
-from test_fienta_producer_data_eventsalestatus import Test_EventSaleStatus
+from test_eventsalestatus import Test_EventSaleStatus
 from fienta_producer_kafka_producer.producer import ComFientaMqttEventProducer
 from fienta_producer_kafka_producer.producer import ComFientaAmqpEventProducer
 
@@ -71,17 +71,17 @@ def test_com_fienta_comfientaevent(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -104,11 +104,12 @@ def test_com_fienta_comfientaevent(kafka_emulator):
     producer_instance = ComFientaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Event.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_com_fienta_event(_event_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_com_fienta_event(_event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -134,17 +135,17 @@ def test_com_fienta_comfientaeventsalestatus(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -167,11 +168,12 @@ def test_com_fienta_comfientaeventsalestatus(kafka_emulator):
     producer_instance = ComFientaEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_EventSaleStatus.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_com_fienta_event_sale_status(_event_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_com_fienta_event_sale_status(_event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -197,17 +199,17 @@ def test_com_fienta_mqtt_comfientamqttevent(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -230,11 +232,12 @@ def test_com_fienta_mqtt_comfientamqttevent(kafka_emulator):
     producer_instance = ComFientaMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Event.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_com_fienta_mqtt_event(_event_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_com_fienta_mqtt_event(_event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -258,17 +261,17 @@ def test_com_fienta_mqtt_comfientamqtteventsalestatus(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -291,11 +294,12 @@ def test_com_fienta_mqtt_comfientamqtteventsalestatus(kafka_emulator):
     producer_instance = ComFientaMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_EventSaleStatus.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_com_fienta_mqtt_event_sale_status(_event_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_com_fienta_mqtt_event_sale_status(_event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -319,17 +323,17 @@ def test_com_fienta_amqp_comfientaamqpevent(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -352,11 +356,12 @@ def test_com_fienta_amqp_comfientaamqpevent(kafka_emulator):
     producer_instance = ComFientaAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Event.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_com_fienta_amqp_event(_event_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_com_fienta_amqp_event(_event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -380,17 +385,17 @@ def test_com_fienta_amqp_comfientaamqpeventsalestatus(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -413,11 +418,12 @@ def test_com_fienta_amqp_comfientaamqpeventsalestatus(kafka_emulator):
     producer_instance = ComFientaAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_EventSaleStatus.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_com_fienta_amqp_event_sale_status(_event_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_com_fienta_amqp_event_sale_status(_event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 

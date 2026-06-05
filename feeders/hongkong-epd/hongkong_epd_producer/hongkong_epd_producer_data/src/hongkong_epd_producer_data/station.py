@@ -17,12 +17,13 @@ import json
 @dataclass
 class Station:
     """
-    Reference data for a Hong Kong EPD AQHI monitoring station. The EPD operates a network of General Stations and Roadside Stations across Hong Kong. Station coordinates are derived from the EPD station map.
+    A reference record published by Hong Kong's Environmental Protection Department. It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
         station_id (str)
         station_name (str)
         station_type (str)
+        district (str)
         latitude (typing.Optional[float])
         longitude (typing.Optional[float])
     """
@@ -31,6 +32,7 @@ class Station:
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
     station_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_type"))
+    district: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="district"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
 
@@ -92,6 +94,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +163,10 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='inoembnpimuuhxrpjine',
-            station_name='onaevgsrnyisnuquqwtn',
-            station_type='mnumispgpwblnkjjifyq',
-            latitude=float(47.994281742327026),
-            longitude=float(24.81361628008345)
+            station_id='mopkgysjkvvwnutwagdu',
+            station_name='rfmyzlomrtojtolqlsab',
+            station_type='ogwugcudhzkrsaxnbxac',
+            district='vxxizbhgjvvrwqzgvpyi',
+            latitude=float(51.684238268122016),
+            longitude=float(11.331359912184592)
         )

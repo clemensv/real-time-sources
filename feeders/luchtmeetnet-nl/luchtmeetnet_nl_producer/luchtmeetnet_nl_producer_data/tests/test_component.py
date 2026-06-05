@@ -28,9 +28,9 @@ class Test_Component(unittest.TestCase):
         Create instance of Component for testing
         """
         instance = Component(
-            formula='naswmlywarsjkhgksyxz',
-            name_nl='kcirkiuewrtleunmkbkl',
-            name_en='gjqwyohqmuznvuoevljj'
+            formula='cvcnclmfhweontgrgtfs',
+            name_nl='xiwldbqiicfogihqzhhk',
+            name_en='rfbczclhwtcaqksixtnc'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_Component(unittest.TestCase):
         """
         Test formula property
         """
-        test_value = 'naswmlywarsjkhgksyxz'
+        test_value = 'cvcnclmfhweontgrgtfs'
         self.instance.formula = test_value
         self.assertEqual(self.instance.formula, test_value)
     
@@ -47,7 +47,7 @@ class Test_Component(unittest.TestCase):
         """
         Test name_nl property
         """
-        test_value = 'kcirkiuewrtleunmkbkl'
+        test_value = 'xiwldbqiicfogihqzhhk'
         self.instance.name_nl = test_value
         self.assertEqual(self.instance.name_nl, test_value)
     
@@ -55,19 +55,10 @@ class Test_Component(unittest.TestCase):
         """
         Test name_en property
         """
-        test_value = 'gjqwyohqmuznvuoevljj'
+        test_value = 'rfbczclhwtcaqksixtnc'
         self.instance.name_en = test_value
         self.assertEqual(self.instance.name_en, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Component.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

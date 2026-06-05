@@ -96,6 +96,8 @@ class DailyForecast:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class DailyForecast:
             An instance of the dataclass.
         """
         return cls(
-            location_id='hrvicdklrugmbifvbpbp',
-            city='ksmyklxbeuvuzwinlujm',
-            state='xdexooviczhzklpwmmos',
-            forecast_date='fiznilmuurpztzgrusok',
-            uv_index=int(65),
-            uv_alert='ugjnxqcisgalgasxhvrt',
-            city_slug='mdmgrrnzuobzwxizadaj'
+            location_id='rvsbfkbelvwbyhhpyjga',
+            city='dyrwhwcdilszltfszjir',
+            state='nzdxkicgsdqtjbppmgzz',
+            forecast_date='ndqacpgvbfdxltkrwtkg',
+            uv_index=int(52),
+            uv_alert='lesmyqyxxptkuyjdhtco',
+            city_slug='ztsoebwvzayaycgccjxn'
         )

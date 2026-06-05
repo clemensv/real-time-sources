@@ -102,6 +102,8 @@ class BikeshareStationStatus:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,14 +171,14 @@ class BikeshareStationStatus:
             An instance of the dataclass.
         """
         return cls(
-            system_id='rbrmbybmphxhtuuxvhdr',
-            station_id='kfnqgethubjbvnmuvjgm',
-            num_bikes_available=int(29),
-            num_bikes_disabled=int(80),
-            num_docks_available=int(89),
-            num_docks_disabled=int(10),
+            system_id='enxxdzrdkanxgpxwmrie',
+            station_id='wmflstjqpghjbkwrndpm',
+            num_bikes_available=int(39),
+            num_bikes_disabled=int(31),
+            num_docks_available=int(72),
+            num_docks_disabled=int(39),
             is_installed=False,
             is_renting=False,
             is_returning=False,
-            last_reported=int(90)
+            last_reported=int(64)
         )

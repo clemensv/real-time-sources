@@ -1,3 +1,3 @@
-from .net import NetworkStatus, PilotPosition, ControllerPosition
+from .net import ControllerPosition, PilotPosition, NetworkStatus
 
-__all__ = ["NetworkStatus", "PilotPosition", "ControllerPosition"]
+__all__ = ["ControllerPosition", "PilotPosition", "NetworkStatus"]

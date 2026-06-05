@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from imgw_hydro_producer_kafka_producer.producer import PLGovIMGWHydroEventProducer
 from imgw_hydro_producer_data import Station
-from test_imgw_hydro_producer_data_station import Test_Station
+from test_station import Test_Station
 from imgw_hydro_producer_data import WaterLevelObservation
-from test_imgw_hydro_producer_data_waterlevelobservation import Test_WaterLevelObservation
+from test_waterlevelobservation import Test_WaterLevelObservation
 from imgw_hydro_producer_kafka_producer.producer import PLGovIMGWHydroMqttEventProducer
 from imgw_hydro_producer_kafka_producer.producer import PLGovIMGWHydroAmqpEventProducer
 
@@ -107,7 +107,8 @@ def test_pl_gov_imgw_hydro_plgovimgwhydrostation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_pl_gov_imgw_hydro_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_pl_gov_imgw_hydro_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_pl_gov_imgw_hydro_plgovimgwhydrowaterlevelobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_pl_gov_imgw_hydro_water_level_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_pl_gov_imgw_hydro_water_level_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_pl_gov_imgw_hydro_mqtt_plgovimgwhydromqttstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_pl_gov_imgw_hydro_mqtt_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_pl_gov_imgw_hydro_mqtt_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_pl_gov_imgw_hydro_mqtt_plgovimgwhydromqttwaterlevelobservation(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_pl_gov_imgw_hydro_mqtt_water_level_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_pl_gov_imgw_hydro_mqtt_water_level_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_pl_gov_imgw_hydro_amqp_plgovimgwhydroamqpstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_pl_gov_imgw_hydro_amqp_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_pl_gov_imgw_hydro_amqp_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_pl_gov_imgw_hydro_amqp_plgovimgwhydroamqpwaterlevelobservation(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_pl_gov_imgw_hydro_amqp_water_level_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_pl_gov_imgw_hydro_amqp_water_level_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

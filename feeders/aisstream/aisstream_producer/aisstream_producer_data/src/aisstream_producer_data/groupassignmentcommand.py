@@ -114,6 +114,8 @@ class GroupAssignmentCommand:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -181,20 +183,20 @@ class GroupAssignmentCommand:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(11),
-            RepeatIndicator=int(99),
-            UserID=int(64),
-            Valid=False,
-            Spare1=int(52),
-            Longitude1=float(89.41747726089534),
-            Latitude1=float(64.47203765710344),
-            Longitude2=float(68.40286651959318),
-            Latitude2=float(92.22279668530095),
-            StationType=int(82),
-            ShipType=int(77),
-            Spare2=int(89),
-            TxRxMode=int(38),
-            ReportingInterval=int(57),
-            QuietTime=int(1),
-            Spare3=int(60)
+            MessageID=int(55),
+            RepeatIndicator=int(27),
+            UserID=int(67),
+            Valid=True,
+            Spare1=int(54),
+            Longitude1=float(84.92696359814205),
+            Latitude1=float(71.5183653229905),
+            Longitude2=float(43.38938425996904),
+            Latitude2=float(89.82060493331298),
+            StationType=int(55),
+            ShipType=int(73),
+            Spare2=int(83),
+            TxRxMode=int(82),
+            ReportingInterval=int(98),
+            QuietTime=int(4),
+            Spare3=int(25)
         )

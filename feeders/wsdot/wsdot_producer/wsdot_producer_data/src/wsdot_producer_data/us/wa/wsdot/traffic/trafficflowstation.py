@@ -101,6 +101,8 @@ class TrafficFlowStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -168,13 +170,13 @@ class TrafficFlowStation:
             An instance of the dataclass.
         """
         return cls(
-            flow_data_id='mgwhiebfnwljpoxakssz',
-            station_name='tfzpevlgvmswyplbdjcj',
+            flow_data_id='xuxhbjegelhxnufksgqt',
+            station_name='gqyrqphvvnzrmoabeadq',
             region=RegionEnum.Eastern,
-            description='cqkopjetimoqsavtvgzf',
-            road_name='qvhqddrthiyphbsswpcr',
-            direction='ymrgaqxpiehfpqxyqowz',
-            milepost=float(33.80284329018757),
-            latitude=float(79.47054430286164),
-            longitude=float(69.03147306000777)
+            description='unvznstnfeuanetmpgzz',
+            road_name='voidledcpypkzogiowjm',
+            direction='gtrgmbvpwowjuiyyzbfn',
+            milepost=float(95.28876288169616),
+            latitude=float(59.95209162799093),
+            longitude=float(65.47247362181318)
         )

@@ -20,12 +20,12 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWeatherEventProducer
 from bom_australia_producer_data import Station
-from test_bom_australia_producer_data_station import Test_Station
+from test_station import Test_Station
 from bom_australia_producer_data import WeatherObservation
-from test_bom_australia_producer_data_weatherobservation import Test_WeatherObservation
+from test_weatherobservation import Test_WeatherObservation
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWarningEventProducer
 from bom_australia_producer_data import WarningBulletin
-from test_bom_australia_producer_data_warningbulletin import Test_WarningBulletin
+from test_warningbulletin import Test_WarningBulletin
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWeatherMqttEventProducer
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWeatherAmqpEventProducer
 from bom_australia_producer_kafka_producer.producer import AUGovBOMWarningMqttEventProducer
@@ -112,7 +112,8 @@ def test_au_gov_bom_weather_augovbomweatherstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_au_gov_bom_weather_station(_station_wmo = f'test_{i}', data = event_data)
+        producer_instance.send_au_gov_bom_weather_station(_station_wmo = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -175,7 +176,8 @@ def test_au_gov_bom_weather_augovbomweatherweatherobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_au_gov_bom_weather_weather_observation(_station_wmo = f'test_{i}', data = event_data)
+        producer_instance.send_au_gov_bom_weather_weather_observation(_station_wmo = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -238,7 +240,8 @@ def test_au_gov_bom_warning_augovbomwarningwarningbulletin(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_au_gov_bom_warning_warning_bulletin(_warning_id = f'test_{i}', data = event_data)
+        producer_instance.send_au_gov_bom_warning_warning_bulletin(_warning_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -301,7 +304,8 @@ def test_au_gov_bom_weather_mqtt_augovbomweathermqttstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_au_gov_bom_weather_mqtt_station(_station_wmo = f'test_{i}', data = event_data)
+        producer_instance.send_au_gov_bom_weather_mqtt_station(_station_wmo = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -362,7 +366,8 @@ def test_au_gov_bom_weather_mqtt_augovbomweathermqttweatherobservation(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_au_gov_bom_weather_mqtt_weather_observation(_station_wmo = f'test_{i}', data = event_data)
+        producer_instance.send_au_gov_bom_weather_mqtt_weather_observation(_station_wmo = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -423,7 +428,8 @@ def test_au_gov_bom_weather_amqp_augovbomweatheramqpstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_au_gov_bom_weather_amqp_station(_station_wmo = f'test_{i}', data = event_data)
+        producer_instance.send_au_gov_bom_weather_amqp_station(_station_wmo = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -484,7 +490,8 @@ def test_au_gov_bom_weather_amqp_augovbomweatheramqpweatherobservation(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_au_gov_bom_weather_amqp_weather_observation(_station_wmo = f'test_{i}', data = event_data)
+        producer_instance.send_au_gov_bom_weather_amqp_weather_observation(_station_wmo = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -545,7 +552,8 @@ def test_au_gov_bom_warning_mqtt_augovbomwarningmqttwarningbulletin(kafka_emulat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_au_gov_bom_warning_mqtt_warning_bulletin(_state = f'test_{i}', _severity = f'test_{i}', _warning_id = f'test_{i}', data = event_data)
+        producer_instance.send_au_gov_bom_warning_mqtt_warning_bulletin(_state = f'test_{i}', _severity = f'test_{i}', _warning_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -606,7 +614,8 @@ def test_au_gov_bom_warning_amqp_augovbomwarningamqpwarningbulletin(kafka_emulat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_au_gov_bom_warning_amqp_warning_bulletin(_state = f'test_{i}', _severity = f'test_{i}', _warning_id = f'test_{i}', data = event_data)
+        producer_instance.send_au_gov_bom_warning_amqp_warning_bulletin(_state = f'test_{i}', _severity = f'test_{i}', _warning_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

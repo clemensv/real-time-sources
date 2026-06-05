@@ -20,15 +20,15 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from tepco_denkiyoho_producer_kafka_producer.producer import JPTEPCODenkiyohoKafkaEventProducer
 from tepco_denkiyoho_producer_data import SupplyCapacity
-from test_tepco_denkiyoho_producer_data_supplycapacity import Test_SupplyCapacity
+from test_supplycapacity import Test_SupplyCapacity
 from tepco_denkiyoho_producer_data import PeakDemandForecast
-from test_tepco_denkiyoho_producer_data_peakdemandforecast import Test_PeakDemandForecast
+from test_peakdemandforecast import Test_PeakDemandForecast
 from tepco_denkiyoho_producer_data import DemandActual
-from test_tepco_denkiyoho_producer_data_demandactual import Test_DemandActual
+from test_demandactual import Test_DemandActual
 from tepco_denkiyoho_producer_data import DemandForecast
-from test_tepco_denkiyoho_producer_data_demandforecast import Test_DemandForecast
+from test_demandforecast import Test_DemandForecast
 from tepco_denkiyoho_producer_data import Info
-from test_tepco_denkiyoho_producer_data_info import Test_Info
+from test_info import Test_Info
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -111,7 +111,8 @@ def test_jp_tepco_denkiyoho_kafka_jptepcodenkiyohokafkasupplycapacity(kafka_emul
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_tepco_denkiyoho_kafka_supply_capacity(_feedurl = f'test_{i}', _area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_tepco_denkiyoho_kafka_supply_capacity(_feedurl = f'test_{i}', _area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -174,7 +175,8 @@ def test_jp_tepco_denkiyoho_kafka_jptepcodenkiyohokafkapeakdemandforecast(kafka_
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_tepco_denkiyoho_kafka_peak_demand_forecast(_feedurl = f'test_{i}', _area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_tepco_denkiyoho_kafka_peak_demand_forecast(_feedurl = f'test_{i}', _area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -237,7 +239,8 @@ def test_jp_tepco_denkiyoho_kafka_jptepcodenkiyohokafkademandactual(kafka_emulat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_tepco_denkiyoho_kafka_demand_actual(_feedurl = f'test_{i}', _area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_tepco_denkiyoho_kafka_demand_actual(_feedurl = f'test_{i}', _area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -300,7 +303,8 @@ def test_jp_tepco_denkiyoho_kafka_jptepcodenkiyohokafkademandforecast(kafka_emul
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_tepco_denkiyoho_kafka_demand_forecast(_feedurl = f'test_{i}', _area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_tepco_denkiyoho_kafka_demand_forecast(_feedurl = f'test_{i}', _area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -363,7 +367,8 @@ def test_jp_tepco_denkiyoho_kafka_jptepcodenkiyohokafkainfo(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_tepco_denkiyoho_kafka_info(_area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_tepco_denkiyoho_kafka_info(_area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

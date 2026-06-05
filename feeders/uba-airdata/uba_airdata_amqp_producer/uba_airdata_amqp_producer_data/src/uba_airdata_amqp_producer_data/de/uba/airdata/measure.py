@@ -96,6 +96,8 @@ class Measure:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class Measure:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(66),
-            component_id=int(92),
-            scope_id=int(93),
-            date_start='mqacizmyecrgtifdvbih',
-            date_end='cioejlztkioypburmqqx',
-            value=float(75.61504652964292),
-            quality_index='hmpqngsxiqerehceqktg'
+            station_id=int(63),
+            component_id=int(5),
+            scope_id=int(63),
+            date_start='wsgwumxsvxwtoradlxqe',
+            date_end='aqcvdxxnifcikwmmirsq',
+            value=float(96.66723217118845),
+            quality_index='akglpbwmrfuymhgrpupu'
         )

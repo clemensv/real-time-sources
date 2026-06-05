@@ -17,7 +17,7 @@ import json
 @dataclass
 class MaintenanceTracking:
     """
-    Road maintenance vehicle tracking update from the Finnish national road network operated by Fintraffic. Each message represents a position and task report from a maintenance vehicle, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic maintenance-v2/routes/{domain}. Data originates from the Finnish Transport Infrastructure Agency's Harja system for state roads and from municipal systems for other domains. Updates arrive approximately every minute. A new tracking event is created when the vehicle's task changes, the gap between consecutive positions exceeds 5 minutes, or the calculated speed exceeds 140 km/h. See https://www.digitraffic.fi/en/road-traffic/ for the full API documentation and task type taxonomy at /api/maintenance/v1/tracking/tasks.
+    A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
     
     Attributes:
         domain (str)
@@ -96,6 +96,8 @@ class MaintenanceTracking:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class MaintenanceTracking:
             An instance of the dataclass.
         """
         return cls(
-            domain='merdtyqtnshipcdqwswf',
-            time=int(35),
-            source='emqjbgsspjqrrggrwmok',
-            tasks=['lyiisrggnfotkzouctip'],
-            x=float(89.67540381376187),
-            y=float(3.582368335275954),
-            direction=float(99.63456323795602)
+            domain='bdtqcgdtmcvfdfloiuxo',
+            time=int(50),
+            source='inyduwfyenxbiutyhjlk',
+            tasks=['fyysykdfpjujiuccwkrm'],
+            x=float(15.129539018552796),
+            y=float(78.96174862678018),
+            direction=float(82.4945036723031)
         )

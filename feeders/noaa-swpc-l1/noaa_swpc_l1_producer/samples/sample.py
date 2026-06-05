@@ -36,7 +36,7 @@ from noaa_swpc_l1_producer_kafka_producer.producer import GovNoaaSwpcL1KafkaEven
 
 # imports for the data classes for each event
 
-from noaa_swpc_l1_producer_data.propagatedsolarwind import PropagatedSolarWind
+from noaa_swpc_l1_producer_data import PropagatedSolarWind
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -61,14 +61,14 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _propagated_solar_wind = PropagatedSolarWind()
 
     # sends the 'gov.noaa.swpc.l1.kafka.PropagatedSolarWind' event to Kafka topic.
-    await gov_noaa_swpc_l1_kafka_event_producer.send_gov_noaa_swpc_l1_kafka_propagated_solar_wind(_feedurl = 'TODO: replace me', _spacecraft = 'TODO: replace me', _time_tag = 'TODO: replace me', data = _propagated_solar_wind)
+    await gov_noaa_swpc_l1_kafka_event_producer.send_gov_noaa_swpc_l1_kafka_propagated_solar_wind(_feedurl = 'TODO: replace me', _spacecraft = 'TODO: replace me', data = _propagated_solar_wind)
     print(f"Sent 'gov.noaa.swpc.l1.kafka.PropagatedSolarWind' event: {_propagated_solar_wind.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

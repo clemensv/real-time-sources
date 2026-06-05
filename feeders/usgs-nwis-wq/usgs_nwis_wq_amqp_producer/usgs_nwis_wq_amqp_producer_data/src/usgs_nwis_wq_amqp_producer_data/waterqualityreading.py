@@ -100,6 +100,8 @@ class WaterQualityReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class WaterQualityReading:
             An instance of the dataclass.
         """
         return cls(
-            site_number='qhebehbzkyaelensecdn',
-            site_name='aktqyvmiszyrzpcnsfgn',
-            parameter_code='ybnjhiafguqaprzvbims',
-            parameter_name='hbscnrvhjywomknbjyoj',
-            value=float(39.29752130234537),
-            unit='rtwxauezzybkglfulork',
-            qualifier='nchjxamafqoywoohlfej',
-            date_time='qkuxehavcsfyxbltyfse',
-            state='qumkfkefwnimuryfxskt'
+            site_number='iozhqvbdzfitkilyamej',
+            site_name='nbrdjabrvcrhqredrucy',
+            parameter_code='lmrwrbpbqscqnggkieth',
+            parameter_name='klkacpiteyudtqvimkee',
+            value=float(21.009114915580863),
+            unit='irlvekgolxlhspedyyxp',
+            qualifier='xhezlmpzyfhszioftkmp',
+            date_time='zqekegcmeyuczcaqquoz',
+            state='wwvfvhniaegkkkqawtxj'
         )
