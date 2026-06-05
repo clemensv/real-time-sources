@@ -1,5 +1,5 @@
 from enum import Enum
-_WheelchairBoarding_members = []
+
 
 class WheelchairBoarding(Enum):
     """
@@ -10,28 +10,23 @@ class WheelchairBoarding(Enum):
     NOT_POSSIBLE = 'NOT_POSSIBLE'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int|str) -> 'WheelchairBoarding':
+    def from_ordinal(cls, ordinal: int | str) -> 'WheelchairBoarding':
         """
         Get enum member by ordinal
 
         Args:
-            ordinal (int| str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
+            ordinal (int | str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
 
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _WheelchairBoarding_members
-        # pylint: enable=global-statement
-
         if ordinal is None:
             raise ValueError("ordinal must not be None")
         if isinstance(ordinal, str) and ordinal.isdigit():
             ordinal = int(ordinal)
-        if not _WheelchairBoarding_members:
-            _WheelchairBoarding_members = list(cls)
-        if 0 <= int(ordinal) < len(_WheelchairBoarding_members):
-            return _WheelchairBoarding_members[ordinal]
+        members = list(cls)
+        if 0 <= int(ordinal) < len(members):
+            return members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -46,11 +41,5 @@ class WheelchairBoarding(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _WheelchairBoarding_members
-        # pylint: enable=global-statement
-        
-        if not _WheelchairBoarding_members:
-            _WheelchairBoarding_members = list(cls)
-        return _WheelchairBoarding_members.index(member)
-_WheelchairBoarding_members = list(WheelchairBoarding)
+        members = list(cls)
+        return members.index(member)

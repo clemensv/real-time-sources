@@ -1,5 +1,5 @@
 from enum import Enum
-_RouteType_members = []
+
 
 class RouteType(Enum):
     """
@@ -21,28 +21,23 @@ class RouteType(Enum):
     OTHER = 'OTHER'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int|str) -> 'RouteType':
+    def from_ordinal(cls, ordinal: int | str) -> 'RouteType':
         """
         Get enum member by ordinal
 
         Args:
-            ordinal (int| str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
+            ordinal (int | str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
 
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _RouteType_members
-        # pylint: enable=global-statement
-
         if ordinal is None:
             raise ValueError("ordinal must not be None")
         if isinstance(ordinal, str) and ordinal.isdigit():
             ordinal = int(ordinal)
-        if not _RouteType_members:
-            _RouteType_members = list(cls)
-        if 0 <= int(ordinal) < len(_RouteType_members):
-            return _RouteType_members[ordinal]
+        members = list(cls)
+        if 0 <= int(ordinal) < len(members):
+            return members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -57,11 +52,5 @@ class RouteType(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _RouteType_members
-        # pylint: enable=global-statement
-        
-        if not _RouteType_members:
-            _RouteType_members = list(cls)
-        return _RouteType_members.index(member)
-_RouteType_members = list(RouteType)
+        members = list(cls)
+        return members.index(member)

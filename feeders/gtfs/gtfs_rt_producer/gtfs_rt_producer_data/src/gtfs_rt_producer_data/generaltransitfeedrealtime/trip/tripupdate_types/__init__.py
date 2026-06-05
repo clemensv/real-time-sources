@@ -1,5 +1,5 @@
 from .stoptimeevent import StopTimeEvent
-from .stoptimeupdate_types import ScheduleRelationship
 from .stoptimeupdate import StopTimeUpdate
+from .stoptimeupdate_types import ScheduleRelationship
 
-__all__ = ["StopTimeEvent", "ScheduleRelationship", "StopTimeUpdate"]
+__all__ = ["StopTimeEvent", "StopTimeUpdate", "ScheduleRelationship"]

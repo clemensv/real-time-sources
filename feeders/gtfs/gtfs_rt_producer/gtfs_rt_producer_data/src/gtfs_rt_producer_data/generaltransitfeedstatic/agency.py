@@ -1,18 +1,16 @@
 """ Agency dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -20,15 +18,18 @@ import avro.io
 class Agency:
     """
     Information about the transit agencies.
+    
     Attributes:
-        agencyId (str): Identifies a transit brand which is often synonymous with a transit agency.
-        agencyName (str): Full name of the transit agency.
-        agencyUrl (str): URL of the transit agency.
-        agencyTimezone (str): Timezone where the transit agency is located.
-        agencyLang (typing.Optional[str]): Primary language used by this transit agency.
-        agencyPhone (typing.Optional[str]): A voice telephone number for the specified agency.
-        agencyFareUrl (typing.Optional[str]): URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online.
-        agencyEmail (typing.Optional[str]): Email address actively monitored by the agency’s customer service department."""
+        agencyId (str)
+        agencyName (str)
+        agencyUrl (str)
+        agencyTimezone (str)
+        agencyLang (typing.Optional[str])
+        agencyPhone (typing.Optional[str])
+        agencyFareUrl (typing.Optional[str])
+        agencyEmail (typing.Optional[str])
+    """
+    
     
     agencyId: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
     agencyName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyName"))
@@ -38,21 +39,6 @@ class Agency:
     agencyPhone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyPhone"))
     agencyFareUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyFareUrl"))
     agencyEmail: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyEmail"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Agency\", \"namespace\": \"GeneralTransitFeedStatic\", \"doc\": \"Information about the transit agencies.\", \"fields\": [{\"name\": \"agencyId\", \"type\": \"string\", \"doc\": \"Identifies a transit brand which is often synonymous with a transit agency.\"}, {\"name\": \"agencyName\", \"type\": \"string\", \"doc\": \"Full name of the transit agency.\"}, {\"name\": \"agencyUrl\", \"type\": \"string\", \"doc\": \"URL of the transit agency.\"}, {\"name\": \"agencyTimezone\", \"type\": \"string\", \"doc\": \"Timezone where the transit agency is located.\"}, {\"name\": \"agencyLang\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Primary language used by this transit agency.\"}, {\"name\": \"agencyPhone\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"A voice telephone number for the specified agency.\"}, {\"name\": \"agencyFareUrl\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"URL of a web page that allows a rider to purchase tickets or other fare instruments for that agency online.\"}, {\"name\": \"agencyEmail\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Email address actively monitored by the agency\u2019s customer service department.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.agencyId=str(self.agencyId)
-        self.agencyName=str(self.agencyName)
-        self.agencyUrl=str(self.agencyUrl)
-        self.agencyTimezone=str(self.agencyTimezone)
-        self.agencyLang=str(self.agencyLang) if self.agencyLang else None
-        self.agencyPhone=str(self.agencyPhone) if self.agencyPhone else None
-        self.agencyFareUrl=str(self.agencyFareUrl) if self.agencyFareUrl else None
-        self.agencyEmail=str(self.agencyEmail) if self.agencyEmail else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Agency':
@@ -63,7 +49,7 @@ class Agency:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -82,7 +68,7 @@ class Agency:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -96,8 +82,6 @@ class Agency:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -110,16 +94,12 @@ class Agency:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -144,10 +124,6 @@ class Agency:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -173,18 +149,6 @@ class Agency:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return Agency.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -192,5 +156,23 @@ class Agency:
                 return Agency.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Agency':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            agencyId='amfftpjyaxxjqwlwtrcy',
+            agencyName='plcqypodkmgqhounrtif',
+            agencyUrl='oafjclndqisiczlpqkfr',
+            agencyTimezone='ikxbjvvghuyzdsbjysrw',
+            agencyLang='adnoucwdlknoonfgmfvc',
+            agencyPhone='zqvivvlhxdgyxwwfqpbs',
+            agencyFareUrl='ypecakiugqkwgmnfhlzu',
+            agencyEmail='lbmwjeoysrddxfgfxyvp'
+        )

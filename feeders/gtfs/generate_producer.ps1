@@ -4,7 +4,7 @@ Assert-XrcgVersion
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $xregFile = Join-Path $scriptDir 'xreg\gtfs.xreg.json'
 
-xrcg generate --style kafkaproducer --language py --definitions $xregFile --endpoint 'GeneralTransitFeed.Kafka' --projectname gtfs_producer --output (Join-Path $scriptDir 'gtfs_producer')
+xrcg generate --style kafkaproducer --language py --definitions $xregFile --endpoint 'GeneralTransitFeed.Kafka' --projectname gtfs_rt_producer --output (Join-Path $scriptDir 'gtfs_rt_producer')
 
 xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'GeneralTransitFeedRealTime.Mqtt' --projectname gtfs_mqtt_producer --output (Join-Path $scriptDir 'gtfs_mqtt_producer')
 

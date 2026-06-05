@@ -1,5 +1,5 @@
 from enum import Enum
-_LocationType_members = []
+
 
 class LocationType(Enum):
     """
@@ -12,28 +12,23 @@ class LocationType(Enum):
     BOARDING_AREA = 'BOARDING_AREA'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int|str) -> 'LocationType':
+    def from_ordinal(cls, ordinal: int | str) -> 'LocationType':
         """
         Get enum member by ordinal
 
         Args:
-            ordinal (int| str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
+            ordinal (int | str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
 
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _LocationType_members
-        # pylint: enable=global-statement
-
         if ordinal is None:
             raise ValueError("ordinal must not be None")
         if isinstance(ordinal, str) and ordinal.isdigit():
             ordinal = int(ordinal)
-        if not _LocationType_members:
-            _LocationType_members = list(cls)
-        if 0 <= int(ordinal) < len(_LocationType_members):
-            return _LocationType_members[ordinal]
+        members = list(cls)
+        if 0 <= int(ordinal) < len(members):
+            return members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -48,11 +43,5 @@ class LocationType(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _LocationType_members
-        # pylint: enable=global-statement
-        
-        if not _LocationType_members:
-            _LocationType_members = list(cls)
-        return _LocationType_members.index(member)
-_LocationType_members = list(LocationType)
+        members = list(cls)
+        return members.index(member)
