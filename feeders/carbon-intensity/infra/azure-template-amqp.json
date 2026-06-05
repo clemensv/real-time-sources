@@ -38,7 +38,7 @@
       "minLength": 1,
       "maxLength": 50,
       "metadata": {
-        "description": "Component-level AMQP endpoint settings."
+        "description": "AMQP node (queue / topic) name (default carbon-intensity)."
       }
     },
     "imageName": {

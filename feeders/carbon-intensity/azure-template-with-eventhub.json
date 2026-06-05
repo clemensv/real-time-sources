@@ -22,7 +22,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hubs namespace SKU for the broker that receives Carbon Intensity regional forecast CloudEvents."
+        "description": "Event Hubs namespace SKU for the broker that receives carbon-intensity CloudEvents."
       }
     },
     "location": {
