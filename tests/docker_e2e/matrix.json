@@ -25,7 +25,8 @@
     },
     {
       "dir": "feeders/bluesky",
-      "module": "bluesky"
+      "module": "bluesky",
+      "smoke": true
     },
     {
       "dir": "feeders/bluesky",
@@ -37,7 +38,8 @@
       "dir": "feeders/aisstream",
       "image": "aisstream-kafka",
       "file": "Dockerfile",
-      "module": "aisstream"
+      "module": "aisstream",
+      "smoke": true
     },
     {
       "dir": "feeders/aisstream",
@@ -269,19 +271,22 @@
       "dir": "feeders/pegelonline",
       "image": "pegelonline-kafka",
       "file": "Dockerfile.kafka",
-      "module": "pegelonline_kafka"
+      "module": "pegelonline_kafka",
+      "smoke": true
     },
     {
       "dir": "feeders/pegelonline",
       "image": "pegelonline-mqtt",
       "file": "Dockerfile.mqtt",
-      "module": "pegelonline_mqtt"
+      "module": "pegelonline_mqtt",
+      "smoke": true
     },
     {
       "dir": "feeders/pegelonline",
       "image": "pegelonline-amqp",
       "file": "Dockerfile.amqp",
-      "module": "pegelonline_amqp"
+      "module": "pegelonline_amqp",
+      "smoke": true
     },
     {
       "dir": "feeders/rss",
@@ -2091,21 +2096,24 @@
       "dir": "feeders/pegelonline",
       "image": "pegelonline-kafka",
       "file": "Dockerfile.kafka",
-      "test_class": "TestPegelonlineDockerFlow"
+      "test_class": "TestPegelonlineDockerFlow",
+      "smoke": true
     },
     {
       "dir": "feeders/pegelonline",
       "image": "pegelonline-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
-      "test_class": "TestPegelonlineMqttDockerFlow"
+      "test_class": "TestPegelonlineMqttDockerFlow",
+      "smoke": true
     },
     {
       "dir": "feeders/pegelonline",
       "image": "pegelonline-amqp",
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
-      "test_class": "TestPegelonlineAmqpArtemisFlow"
+      "test_class": "TestPegelonlineAmqpArtemisFlow",
+      "smoke": true
     },
     {
       "dir": "feeders/pegelonline",
@@ -2698,7 +2706,8 @@
       "image": "aisstream-kafka",
       "file": "Dockerfile",
       "test_file": "test_docker_kafka_flow.py",
-      "test_class": "TestAisstreamKafkaDockerFlow"
+      "test_class": "TestAisstreamKafkaDockerFlow",
+      "smoke": true
     },
     {
       "dir": "feeders/aisstream",
@@ -2754,7 +2763,8 @@
       "image": "bluesky-kafka",
       "file": "Dockerfile",
       "test_file": "test_docker_kafka_flow.py",
-      "test_class": "TestBlueskyDockerFlow"
+      "test_class": "TestBlueskyDockerFlow",
+      "smoke": true
     },
     {
       "dir": "feeders/bluesky",
