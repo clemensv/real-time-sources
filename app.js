@@ -21,7 +21,7 @@ const SOURCES = [
   { id: "king-county-marine", name: "King County Marine", cat: "Hydrology", key: false, desc: "Washington State / Puget Sound — buoy and mooring telemetry", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "nepal-bipad-hydrology", name: "Nepal BIPAD Hydrology", cat: "Hydrology", key: false, desc: "Nepal — Himalayan river basins, BIPAD", notebook: true, mqtt: true, amqp: true },
   { id: "noaa-ndbc", name: "NOAA NDBC", cat: "Hydrology", key: false, desc: "United States — buoy observations", notebook: true, mqtt: true, amqp: true },
-  { id: "noaa", name: "NOAA Tides & Currents", cat: "Hydrology", key: false, desc: "United States — ~3,000 stations", notebook: true, mqtt: true, amqp: true },
+  { id: "noaa", name: "NOAA Tides & Currents", cat: "Hydrology", key: false, desc: "United States — ~3,000 stations", mqtt: true, amqp: true },
   { id: "nve-hydro", name: "NVE Hydro", cat: "Hydrology", key: true, desc: "Norway — NVE (requires free API key)", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "pegelonline", name: "Pegelonline", cat: "Hydrology", key: false, desc: "Germany — federal waterways, ~3,000 stations", notebook: true, mqtt: true, amqp: true },
   { id: "rws-waterwebservices", name: "RWS Waterwebservices", cat: "Hydrology", key: false, desc: "Netherlands — ~785 stations", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
@@ -46,11 +46,11 @@ const SOURCES = [
   { id: "jma-japan", name: "JMA Japan", cat: "Weather", key: false, desc: "Japan — weather bulletins, warnings, forecasts", notebook: true, mqtt: true, amqp: true },
   { id: "jma-bosai-amedas", name: "JMA Bosai AMeDAS", cat: "Weather", key: false, desc: "Japan — ~1,300 AMeDAS automated weather stations, 10-min obs", notebook: true, mqtt: true, amqp: true, kafka: false },
   { id: "kmi-belgium", name: "KMI Belgium", cat: "Weather", key: false, desc: "Belgium — ~14 AWS stations, 10-min observations", notebook: true, mqtt: true, amqp: true },
-  { id: "meteoalarm", name: "Meteoalarm", cat: "Weather", key: false, desc: "Europe — 37 countries, severe weather warnings", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
+  { id: "meteoalarm", name: "Meteoalarm", cat: "Weather", key: false, desc: "Europe — 37 countries, severe weather warnings", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "noaa-goes", name: "NOAA GOES / SWPC", cat: "Weather", key: false, desc: "Global — space weather, solar wind, K-index", notebook: true, mqtt: true, amqp: true },
   { id: "noaa-swpc-l1", name: "NOAA SWPC L1", cat: "Weather", key: false, desc: "Global — L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact lead time", notebook: true, mqtt: true, amqp: true },
   { id: "noaa-nws", name: "NOAA NWS", cat: "Weather", key: false, desc: "United States — weather alerts, CAP", notebook: true, mqtt: true, amqp: true },
-  { id: "nws-alerts", name: "NWS CAP Alerts", cat: "Weather", key: false, desc: "United States — active alerts via api.weather.gov", notebook: true, mqtt: true, amqp: true },
+  { id: "nws-alerts", name: "NWS CAP Alerts", cat: "Weather", key: false, desc: "United States — active alerts via api.weather.gov", mqtt: true, amqp: true },
   { id: "nws-forecasts", name: "NWS Forecast Zones", cat: "Weather", key: false, desc: "United States — configurable land and marine forecast zones", notebook: true, mqtt: true, amqp: true },
   { id: "singapore-nea", name: "Singapore NEA", cat: "Weather", key: false, desc: "Singapore — 62 weather stations + 5 air-quality regions", notebook: true, mqtt: true, amqp: true },
   { id: "smhi-weather", name: "SMHI Weather", cat: "Weather", key: false, desc: "Sweden — ~232 stations, hourly obs", notebook: true, mqtt: true, amqp: true },
@@ -67,20 +67,20 @@ const SOURCES = [
   { id: "luchtmeetnet-nl", name: "Luchtmeetnet Netherlands", cat: "Air Quality", key: false, desc: "Netherlands — station measurements, components, LKI index", notebook: true, mqtt: true, amqp: true },
   { id: "sensor-community", name: "Sensor.Community", cat: "Air Quality", key: false, desc: "Global — citizen air sensors, PM and climate readings", notebook: true, mqtt: true, amqp: true },
   { id: "uba-airdata", name: "UBA AirData", cat: "Air Quality", key: false, desc: "Germany — stations, pollutant components, hourly measures", notebook: true, mqtt: true, amqp: true },
-  { id: "wallonia-issep", name: "Wallonia ISSeP", cat: "Air Quality", key: false, desc: "Belgium / Wallonia — low-cost air quality sensors", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
+  { id: "wallonia-issep", name: "Wallonia ISSeP", cat: "Air Quality", key: false, desc: "Belgium / Wallonia — low-cost air quality sensors", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
 
   // ── Disaster Alerts and Civil Protection ──
   { id: "australia-wildfires", name: "Australian Wildfires", cat: "Disasters", key: false, desc: "Australia — NSW, QLD, VIC bushfire incidents", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
   { id: "eaws-albina", name: "EAWS ALBINA Avalanche", cat: "Disasters", key: false, desc: "European Alps — daily avalanche bulletins, CAAMLv6", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "gdacs", name: "GDACS", cat: "Disasters", key: false, desc: "Global — earthquakes, floods, cyclones, volcanoes, droughts", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
-  { id: "inpe-deter-brazil", name: "INPE DETER Brazil", cat: "Disasters", key: false, desc: "Brazil — Amazon & Cerrado deforestation alerts", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
+  { id: "inpe-deter-brazil", name: "INPE DETER Brazil", cat: "Disasters", key: false, desc: "Brazil — Amazon & Cerrado deforestation alerts", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
   { id: "jma-bosai-quake", name: "JMA Bosai Earthquake", cat: "Disasters", key: false, desc: "Japan — JMA earthquake / tsunami / hypocenter feeds", notebook: true, mqtt: true, amqp: true, kafka: false },
   { id: "jma-bosai-volcano", name: "JMA Bosai Volcano", cat: "Disasters", key: false, desc: "Japan — JMA volcanic activity bulletins and alerts", notebook: true, mqtt: true, amqp: true, kafka: false },
   { id: "jma-bosai-warning", name: "JMA Bosai Warning", cat: "Disasters", key: false, desc: "Japan — JMA weather warnings and advisories", notebook: true, mqtt: true, amqp: true, kafka: false },
   { id: "nasa-firms", name: "NASA FIRMS Active Fire", cat: "Disasters", key: true, desc: "Global — VIIRS/MODIS active-fire detections, OSINT", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
-  { id: "nifc-usa-wildfires", name: "NIFC USA Wildfires", cat: "Disasters", key: false, desc: "United States — active wildfire incidents, NIFC", notebook: true, mqtt: true, amqp: true },
-  { id: "nina-bbk", name: "NINA/BBK", cat: "Disasters", key: false, desc: "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
-  { id: "ptwc-tsunami", name: "PTWC Tsunami", cat: "Disasters", key: false, desc: "Pacific and Atlantic — NOAA tsunami bulletins", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
+  { id: "nifc-usa-wildfires", name: "NIFC USA Wildfires", cat: "Disasters", key: false, desc: "United States — active wildfire incidents, NIFC", mqtt: true, amqp: true },
+  { id: "nina-bbk", name: "NINA/BBK", cat: "Disasters", key: false, desc: "Germany — MOWAS, KATWARN, BIWAPP, DWD, LHP, Police", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
+  { id: "ptwc-tsunami", name: "PTWC Tsunami", cat: "Disasters", key: false, desc: "Pacific and Atlantic — NOAA tsunami bulletins", mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "seattle-911", name: "Seattle Fire 911", cat: "Disasters", key: false, desc: "Seattle, WA — real-time fire dispatch incidents", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "usgs-earthquakes", name: "USGS Earthquakes", cat: "Disasters", key: false, desc: "Global — seismic events", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
 
@@ -102,10 +102,11 @@ const SOURCES = [
   { id: "autobahn", name: "Autobahn", cat: "Transport", key: false, desc: "Germany — roadworks, warnings, closures, webcams", notebook: true, mqtt: true, amqp: true },
   { id: "digitraffic-road", name: "Digitraffic Road", cat: "Transport", key: false, desc: "Finland — TMS sensors, road weather, traffic messages", mqtt: true, amqp: true },
   { id: "french-road-traffic", name: "French Road Traffic", cat: "Transport", key: false, desc: "France — national road network, DATEX II", notebook: true, mqtt: true, amqp: true, amqpSb: false },
-  { id: "gtfs", name: "GTFS Realtime", cat: "Transport", key: false, desc: "Global — 1,000+ transit agencies, vehicles, trips, alerts", notebook: true, mqtt: true, amqp: true, amqpSb: false },
+  { id: "gtfs", name: "GTFS Realtime", cat: "Transport", key: false, desc: "Global — 1,000+ transit agencies, vehicles, trips, alerts", mqtt: true, amqp: true, amqpSb: false },
+  { id: "uk-bods-siri", name: "UK BODS SIRI", cat: "Transport", key: true, desc: "England — 28,000+ buses, BODS AVL (requires free API key)", notebook: true, kql: true, mqtt: true, amqp: true },
   { id: "madrid-traffic", name: "Madrid Traffic", cat: "Transport", key: false, desc: "Madrid, Spain — ~4,000 sensors, Informo", notebook: true, mqtt: true, amqp: true, amqpSb: false },
-  { id: "ndw-road-traffic", name: "NDW Road Traffic", cat: "Transport", key: false, desc: "Netherlands — national road traffic, DATEX II XML", notebook: true, mqtt: true, amqp: true, amqpSb: false },
-  { id: "nextbus", name: "Nextbus", cat: "Transport", key: true, desc: "North America — public transit arrivals", kql: false, notebook: true, mqtt: true, amqp: true, amqpSb: false },
+  { id: "ndw-road-traffic", name: "NDW Road Traffic", cat: "Transport", key: false, desc: "Netherlands — national road traffic, DATEX II XML", mqtt: true, amqp: true, amqpSb: false },
+  { id: "nextbus", name: "Nextbus", cat: "Transport", key: true, desc: "North America — public transit arrivals", kql: false, mqtt: true, amqp: true, amqpSb: false },
   { id: "paris-bicycle-counters", name: "Paris Bicycle Counters", cat: "Transport", key: false, desc: "Paris — ~141 counting stations, hourly counts", notebook: true, mqtt: true, amqp: true },
   { id: "seattle-street-closures", name: "Seattle Street Closures", cat: "Transport", key: false, desc: "Seattle, WA — permit-driven street closure windows", notebook: true, mqtt: true, amqp: true, amqpSb: false },
   { id: "tfl-road-traffic", name: "TfL Road Traffic", cat: "Transport", key: false, desc: "London, UK — road corridor status and disruptions", kql: false, mqtt: true, amqp: true, kafka: false },
@@ -118,7 +119,7 @@ const SOURCES = [
   { id: "irail", name: "iRail", cat: "Railway", key: false, desc: "Belgium — ~600 NMBS/SNCB stations, departures, delays", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
 
   // ── Nightlife and Live Entertainment ──
-  { id: "xceed", name: "Xceed", cat: "Nightlife", key: false, desc: "Europe — clubs, bars, parties, festivals — event schedules", notebook: true, mqtt: true, amqp: true },
+  { id: "xceed", name: "Xceed", cat: "Nightlife", key: false, desc: "Europe — clubs, bars, parties, festivals — event schedules", mqtt: true, amqp: true },
 
   // ── Energy and Infrastructure ──
   { id: "carbon-intensity", name: "Carbon Intensity UK", cat: "Energy", key: false, desc: "United Kingdom — national grid carbon intensity", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
@@ -898,3 +899,4 @@ async function selectFromHash() {
 }
 window.addEventListener("hashchange", selectFromHash);
 selectFromHash();
+
