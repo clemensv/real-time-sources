@@ -336,6 +336,17 @@
     "amqp": true
   },
   {
+    "id": "fdsn-seismology",
+    "name": "FDSN Seismology",
+    "cat": "Disasters",
+    "key": false,
+    "desc": "Global \u00e2\u20ac\u201d federated earthquake detections, 7 FDSN nodes",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "fienta",
     "name": "Fienta",
     "cat": "Public Events",
@@ -371,7 +382,7 @@
   {
     "id": "gbfs-bikeshare",
     "name": "GBFS Bikeshare",
-    "desc": "Global \u2014 user-configured GBFS micromobility systems",
+    "desc": "Global - user-configured GBFS micromobility systems",
     "slug": "gbfs-bikeshare",
     "notebook": true,
     "kafka": true,

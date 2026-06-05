@@ -1,0 +1,23 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "fdsn_seismology"
+version = "0.1.0"
+description = "Kafka feeder for federated FDSN earthquake event nodes."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "fdsn_seismology" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+fdsn_seismology_core = { path = "../fdsn_seismology_core" }
+fdsn_seismology_producer_data = { path = "../fdsn_seismology_producer/fdsn_seismology_producer_data" }
+fdsn_seismology_producer_kafka_producer = { path = "../fdsn_seismology_producer/fdsn_seismology_producer_kafka_producer" }
+
+[tool.poetry.scripts]
+fdsn-seismology = "fdsn_seismology.app:main"
