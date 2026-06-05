@@ -16,17 +16,17 @@ class Test_EventEnum(unittest.TestCase):
         """
         Setup test
         """
-        self.instance = EventEnum.warning
+        self.instance = EventEnum.info
 
     @staticmethod
     def create_instance():
         """
         Create instance of EventEnum
         """
-        return EventEnum.warning
+        return EventEnum.info
 
     def test_enum_values(self):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(EventEnum.warning.value, 'warning')
+        self.assertEqual(EventEnum.info.value, 'info')

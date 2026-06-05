@@ -146,7 +146,7 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 - **`event_id`** (string, required): JMA eventId from the Bosai warning record. The warning feed uses this identifier with reportDatetime to identify the active report for a target volcano.
 - **`report_datetime`** (datetime, required): Report issue time converted from JMA local Japan Standard Time to UTC and serialized as an RFC3339 timestamp. This is the normalized time used for cross-region analytics.
 - **`report_datetime_local`** (datetime, required): Original JMA reportDatetime value in Japan Standard Time as published by the Bosai warning feed. Keeping the local timestamp preserves the official bulletin time shown by JMA.
-- **`alert_level_code`** (enum, required): JMA volcanic warning code from warning.json. Enum symbols CODE_02, CODE_03, CODE_04, CODE_11, CODE_12, CODE_13, CODE_22, CODE_23, CODE_36, CODE_43, CODE_44, CODE_45, and CODE_49 correspond via altenums.json to observed live JMA wire codes 02, 03, 04, 11, 12, 13, 22, 23, 36, 43, 44, 45, and 49. JMA explains eruption alert levels as indicators combining volcanic activity state, area requiring caution, and expected disaster-prevention actions. Labels for CODE_11/CODE_12/CODE_13 are from JMA eruption alert level guidance; CODE_22/CODE_23/CODE_36 are target-volcano warning labels observed in live warning.json; CODE_02/CODE_03/CODE_04/CODE_43/CODE_44/CODE_45/CODE_49 labels are taken from live warning.json item name fields because the Bosai JSON feed publishes those public JMA labels directly.
+- **`alert_level_code`** (string, required): Raw JMA volcanic warning code as published in the `code` field of warning.json, emitted verbatim as a string. JMA's volcanic warning codes form an OPEN, upstream-controlled vocabulary that changes with volcanic activity, so this field is intentionally not constrained to a closed enum; consumers should treat any unlisted code as a valid JMA code and rely on the sibling `alert_level_name` field for the human-readable label JMA publishes alongside each code. Known codes observed in the live feed and JMA eruption-alert-level guidance: `02` = Crater-area warning (火口周辺警報); `03` = Eruption warning for surrounding sea area (噴火警報（周辺海域）); `04` = Eruption forecast, warning lifted (噴火予報：警報解除); `11` = Active volcano, pay attention (活動火山であることに留意); `12` = Crater area restriction (火口周辺規制); `13` = Mountain access restriction (入山規制); `22` = Crater vicinity danger (火口周辺危険); `23` = Mountain access danger (入山危険); `36` = Surrounding waters warning for submarine or island volcanoes (周辺海域警戒); `43` = Crater-area warning, entry restrictions (火口周辺警報：入山規制等); `44` = Eruption warning for surrounding sea area, sea-area warning (噴火警報（周辺海域）：周辺海域警戒); `45` = Active volcano, pay attention (活火山であることに留意); `49` = Crater-area warning, caution around the crater (火口周辺警報：火口周辺警戒). Labels for codes 11/12/13 are from JMA eruption-alert-level guidance; the remaining labels are taken from the live warning.json item `name` fields, which the Bosai JSON feed publishes directly.
 - **`alert_level_name`** (string, required): Japanese alert level or warning label from the target-volcano item, such as レベル３（入山規制）. JMA uses this text to communicate the public-facing warning level or restriction phrase.
 - **`previous_level_code`** (string or null, optional): Previous JMA alert level or warning code from lastCode when the warning feed provides one. It allows consumers to determine whether the current report raised, lowered, continued, or newly issued a level.
 - **`condition`** (enum, required): Normalized lifecycle condition derived from the Japanese JMA condition text. 発表 is mapped to ISSUED, 引上げ to RAISED, 引下げ to LOWERED, 継続 to CONTINUED, 切替 to SWITCHED, and 解除 to CANCELLED so downstream consumers can compare reports without parsing Japanese status labels.
@@ -154,21 +154,6 @@ Each event identifies the real-world resource with `jp.jma.volcano/{volcano_code
 - **`area_codes`** (array of string, required): List of JMA municipal or regional area codes from the outer areas field of the Bosai volcano report. JMA uses these area identifiers to indicate municipalities or regions affected by the volcanic warning or eruption information.
 - **`prefecture`** (string, required): ASCII-safe Japanese prefecture or region slug used as a MQTT and AMQP routing axis. The bridge derives this from JMA station/volcano metadata when available, otherwise emits unknown. Constraints: pattern `^[a-z0-9][a-z0-9-]*$`.
 - **`event`** (enum, required): Fixed topic event segment for VolcanicWarning messages.
-##### `alert_level_code` values
-
-- `CODE_02` — Crater-area warning: Provider value `CODE_02` for this coded alert field.
-- `CODE_03` — Eruption warning for surrounding sea area: Provider value `CODE_03` for this coded alert field.
-- `CODE_04` — Eruption forecast: warning lifted: Provider value `CODE_04` for this coded alert field.
-- `CODE_11` — Active volcano; pay attention: Provider value `CODE_11` for this coded alert field.
-- `CODE_12` — Crater area restriction: Provider value `CODE_12` for this coded alert field.
-- `CODE_13` — Mountain access restriction: Provider value `CODE_13` for this coded alert field.
-- `CODE_22` — Crater vicinity danger: Provider value `CODE_22` for this coded alert field.
-- `CODE_23` — Mountain access danger: Provider value `CODE_23` for this coded alert field.
-- `CODE_36` — Surrounding waters warning for submarine or island volcanoes: Provider value `CODE_36` for this coded alert field.
-- `CODE_43` — Crater-area warning: entry restrictions and similar measures: Provider value `CODE_43` for this coded alert field.
-- `CODE_44` — Eruption warning for surrounding sea area: surrounding sea area warning: Provider value `CODE_44` for this coded alert field.
-- `CODE_45` — Active volcano; pay attention: Provider value `CODE_45` for this coded alert field.
-- `CODE_49` — Crater-area warning: caution around the crater: Provider value `CODE_49` for this coded alert field.
 ##### `condition` values
 
 - `ISSUED`: Provider value `ISSUED` for this coded alert field.
@@ -190,7 +175,7 @@ Synthetic example values are generated deterministically from the schema: consta
   "event_id": "string",
   "report_datetime": "2024-01-01T00:00:00Z",
   "report_datetime_local": "2024-01-01T00:00:00Z",
-  "alert_level_code": "CODE_02",
+  "alert_level_code": "string",
   "alert_level_name": "string",
   "previous_level_code": "string",
   "condition": "ISSUED",

@@ -12,9 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_volcano_amqp_producer_data.eventenum import EventEnum
-from jma_bosai_volcano_amqp_producer_data.alertlevelcodeenum import AlertLevelCodeenum
 from jma_bosai_volcano_amqp_producer_data.conditionenum import ConditionEnum
+from jma_bosai_volcano_amqp_producer_data.eventenum import EventEnum
 import datetime
 
 
@@ -29,7 +28,7 @@ class VolcanicWarning:
         event_id (str)
         report_datetime (datetime.datetime)
         report_datetime_local (datetime.datetime)
-        alert_level_code (AlertLevelCodeenum)
+        alert_level_code (str)
         alert_level_name (str)
         previous_level_code (typing.Optional[str])
         condition (ConditionEnum)
@@ -44,7 +43,7 @@ class VolcanicWarning:
     event_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_id"))
     report_datetime: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     report_datetime_local: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="report_datetime_local", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    alert_level_code: AlertLevelCodeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alert_level_code"))
+    alert_level_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alert_level_code"))
     alert_level_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alert_level_name"))
     previous_level_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="previous_level_code"))
     condition: ConditionEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="condition"))
@@ -180,16 +179,16 @@ class VolcanicWarning:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='mjjvanaqhjcuywrqrdhc',
-            event_id='vzpogxxjrmseutjvdqss',
+            volcano_code='jhvxdydpboobkgpodear',
+            event_id='tyrvwrhdejfpmemrasoc',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            alert_level_code=AlertLevelCodeenum.CODE_02,
-            alert_level_name='nvmogczxopwbapdefxhy',
-            previous_level_code='onwfmamkjapqkihywwmp',
+            alert_level_code='rwjunptesxnbrlfxwria',
+            alert_level_name='iybmmirlwrtojujzwcip',
+            previous_level_code='tmyadnmepydsxavdiawq',
             condition=ConditionEnum.ISSUED,
-            info_type_jp='jlojmwcdxksnwjnfiiqp',
-            area_codes=['vjzjcqmuybpsbbviofhk'],
-            prefecture='pvrsneygulidmqeptesk',
+            info_type_jp='nipbrhjgtlfmxhjjqpdl',
+            area_codes=['ejzigptpxlklmgogqftl', 'vfgnhmjdzomhienspnvb', 'yoohbnuxuvoxdegjmusv', 'rvuwelbmyosgjthaqlcn', 'aejjxxxzdpltmhbgpxcy'],
+            prefecture='fygzkglajhzahipnoypf',
             event=EventEnum.warning
         )
