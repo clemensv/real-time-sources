@@ -1,3 +1,3 @@
-from .bfs import DoseRateMeasurement, Station
+from .bfs import Station, DoseRateMeasurement
 
-__all__ = ["DoseRateMeasurement", "Station"]
+__all__ = ["Station", "DoseRateMeasurement"]
