@@ -1,4 +1,4 @@
-from .ticketmaster import Classification, Venue, Attraction, Event
 from .info import Info
+from .ticketmaster import Event, Attraction, Venue, Classification
 
-__all__ = ["Classification", "Venue", "Attraction", "Event", "Info"]
+__all__ = ["Info", "Event", "Attraction", "Venue", "Classification"]

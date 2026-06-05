@@ -29,9 +29,9 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            tidal=False,
+            tidal=True,
             greatlakes=True,
-            shefcode='tdzyjpopprkuuaebjilk',
+            shefcode='likxhovfnshnqwymjist',
             details=None,
             sensors=None,
             floodlevels=None,
@@ -41,9 +41,9 @@ class Test_Station(unittest.TestCase):
             benchmarks=None,
             tidePredOffsets=None,
             ofsMapOffsets=None,
-            state='ejrjsavgoidbtolapzuo',
-            timezone='ldbvmbkyurfqfccldzue',
-            timezonecorr=int(40),
+            state='iwkcgdtzhlvsnzryzkdh',
+            timezone='oepuwthlfwlfijzaoika',
+            timezonecorr=int(4),
             observedst=True,
             stormsurge=True,
             nearby=None,
@@ -51,18 +51,18 @@ class Test_Station(unittest.TestCase):
             outlook=False,
             HTFhistorical=True,
             nonNavigational=True,
-            station_id='echrrriexdeggckvjalb',
-            name='scmehaydihyazkltkquz',
-            lat=float(68.32226733892101),
-            lng=float(0.6293987881237584),
-            affiliations='kqtaflsxbiblnfrynjlk',
-            portscode='tpbjdtxtjkzfedfmcadh',
+            station_id='vqlfjjqdyrsxumepbkyo',
+            name='dscyrnkwspqcbdpfmsux',
+            lat=float(20.86934391546189),
+            lng=float(21.693180766916452),
+            affiliations='gdspnsnrofnuindjasyc',
+            portscode='cmqbufcfiapuyltuzwco',
             products=None,
             disclaimers=None,
             notices=None,
-            self_='thlmydiwumdywskfpwii',
-            expand='biqipvnkdpgpxeyijfjn',
-            tideType='sxbijcfmopsposjqtvzt'
+            self_='tfbobtruuxzbcsouiioe',
+            expand='wfcggyyswbklpgtsfryq',
+            tideType='fzextczcpjsafemwhtoo'
         )
         return instance
 
@@ -71,7 +71,7 @@ class Test_Station(unittest.TestCase):
         """
         Test tidal property
         """
-        test_value = False
+        test_value = True
         self.instance.tidal = test_value
         self.assertEqual(self.instance.tidal, test_value)
     
@@ -87,7 +87,7 @@ class Test_Station(unittest.TestCase):
         """
         Test shefcode property
         """
-        test_value = 'tdzyjpopprkuuaebjilk'
+        test_value = 'likxhovfnshnqwymjist'
         self.instance.shefcode = test_value
         self.assertEqual(self.instance.shefcode, test_value)
     
@@ -167,7 +167,7 @@ class Test_Station(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'ejrjsavgoidbtolapzuo'
+        test_value = 'iwkcgdtzhlvsnzryzkdh'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -175,7 +175,7 @@ class Test_Station(unittest.TestCase):
         """
         Test timezone property
         """
-        test_value = 'ldbvmbkyurfqfccldzue'
+        test_value = 'oepuwthlfwlfijzaoika'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
     
@@ -183,7 +183,7 @@ class Test_Station(unittest.TestCase):
         """
         Test timezonecorr property
         """
-        test_value = int(40)
+        test_value = int(4)
         self.instance.timezonecorr = test_value
         self.assertEqual(self.instance.timezonecorr, test_value)
     
@@ -247,7 +247,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'echrrriexdeggckvjalb'
+        test_value = 'vqlfjjqdyrsxumepbkyo'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -255,7 +255,7 @@ class Test_Station(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'scmehaydihyazkltkquz'
+        test_value = 'dscyrnkwspqcbdpfmsux'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -263,7 +263,7 @@ class Test_Station(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(68.32226733892101)
+        test_value = float(20.86934391546189)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -271,7 +271,7 @@ class Test_Station(unittest.TestCase):
         """
         Test lng property
         """
-        test_value = float(0.6293987881237584)
+        test_value = float(21.693180766916452)
         self.instance.lng = test_value
         self.assertEqual(self.instance.lng, test_value)
     
@@ -279,7 +279,7 @@ class Test_Station(unittest.TestCase):
         """
         Test affiliations property
         """
-        test_value = 'kqtaflsxbiblnfrynjlk'
+        test_value = 'gdspnsnrofnuindjasyc'
         self.instance.affiliations = test_value
         self.assertEqual(self.instance.affiliations, test_value)
     
@@ -287,7 +287,7 @@ class Test_Station(unittest.TestCase):
         """
         Test portscode property
         """
-        test_value = 'tpbjdtxtjkzfedfmcadh'
+        test_value = 'cmqbufcfiapuyltuzwco'
         self.instance.portscode = test_value
         self.assertEqual(self.instance.portscode, test_value)
     
@@ -319,7 +319,7 @@ class Test_Station(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'thlmydiwumdywskfpwii'
+        test_value = 'tfbobtruuxzbcsouiioe'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     
@@ -327,7 +327,7 @@ class Test_Station(unittest.TestCase):
         """
         Test expand property
         """
-        test_value = 'biqipvnkdpgpxeyijfjn'
+        test_value = 'wfcggyyswbklpgtsfryq'
         self.instance.expand = test_value
         self.assertEqual(self.instance.expand, test_value)
     
@@ -335,19 +335,10 @@ class Test_Station(unittest.TestCase):
         """
         Test tideType property
         """
-        test_value = 'sxbijcfmopsposjqtvzt'
+        test_value = 'fzextczcpjsafemwhtoo'
         self.instance.tideType = test_value
         self.assertEqual(self.instance.tideType, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Station.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

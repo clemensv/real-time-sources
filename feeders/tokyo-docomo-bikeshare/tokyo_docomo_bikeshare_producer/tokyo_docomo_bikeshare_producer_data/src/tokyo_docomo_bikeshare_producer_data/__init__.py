@@ -1,5 +1,5 @@
 from .bikesharesystem import BikeshareSystem
-from .bikesharestation import BikeshareStation
 from .bikesharestationstatus import BikeshareStationStatus
+from .bikesharestation import BikeshareStation
 
-__all__ = ["BikeshareSystem", "BikeshareStation", "BikeshareStationStatus"]
+__all__ = ["BikeshareSystem", "BikeshareStationStatus", "BikeshareStation"]

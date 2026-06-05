@@ -28,7 +28,7 @@ class Test_Benchmarks(unittest.TestCase):
         Create instance of Benchmarks for testing
         """
         instance = Benchmarks(
-            self_='udkjzwyewnrkbwiemqgs'
+            self_='pwpvcblvusyiibbkyjyk'
         )
         return instance
 
@@ -37,19 +37,10 @@ class Test_Benchmarks(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'udkjzwyewnrkbwiemqgs'
+        test_value = 'pwpvcblvusyiibbkyjyk'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Benchmarks.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

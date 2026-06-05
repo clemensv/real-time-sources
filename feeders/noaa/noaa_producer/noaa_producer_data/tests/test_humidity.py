@@ -28,13 +28,13 @@ class Test_Humidity(unittest.TestCase):
         Create instance of Humidity for testing
         """
         instance = Humidity(
-            station_id='aqljkhdrfmafiwedanhl',
-            timestamp='depukghzrvgusowpclrb',
-            value=float(58.63842616683503),
+            station_id='ejtczgqllewoxqwphoaj',
+            timestamp='afsbgmpfyezatgbnmevj',
+            value=float(93.928897373349),
             max_humidity_exceeded=False,
             min_humidity_exceeded=True,
-            rate_of_change_exceeded=False,
-            region='ichxsvqblphisdkjflqs'
+            rate_of_change_exceeded=True,
+            region='kwqikfbpbclkcdgvkyxb'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'aqljkhdrfmafiwedanhl'
+        test_value = 'ejtczgqllewoxqwphoaj'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'depukghzrvgusowpclrb'
+        test_value = 'afsbgmpfyezatgbnmevj'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(58.63842616683503)
+        test_value = float(93.928897373349)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -83,7 +83,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     
@@ -91,19 +91,10 @@ class Test_Humidity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'ichxsvqblphisdkjflqs'
+        test_value = 'kwqikfbpbclkcdgvkyxb'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Humidity.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

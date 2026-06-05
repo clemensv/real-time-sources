@@ -20,7 +20,7 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from cdec_reservoirs_producer_kafka_producer.producer import GovCaWaterCdecEventProducer
 from cdec_reservoirs_producer_data import ReservoirReading
-from test_cdec_reservoirs_producer_data_reservoirreading import Test_ReservoirReading
+from test_reservoirreading import Test_ReservoirReading
 from cdec_reservoirs_producer_kafka_producer.producer import GovCaWaterCdecMqttEventProducer
 from cdec_reservoirs_producer_kafka_producer.producer import GovCaWaterCdecAmqpEventProducer
 
@@ -105,7 +105,8 @@ def test_gov_ca_water_cdec_govcawatercdecreservoirreading(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_ca_water_cdec_reservoir_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', _sensor_num = f'test_{i}', data = event_data)
+        producer_instance.send_gov_ca_water_cdec_reservoir_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', _sensor_num = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -168,7 +169,8 @@ def test_gov_ca_water_cdec_mqtt_govcawatercdecmqttreservoirreading(kafka_emulato
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_ca_water_cdec_mqtt_reservoir_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', _sensor_num = f'test_{i}', data = event_data)
+        producer_instance.send_gov_ca_water_cdec_mqtt_reservoir_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', _sensor_num = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -229,7 +231,8 @@ def test_gov_ca_water_cdec_amqp_govcawatercdecamqpreservoirreading(kafka_emulato
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_ca_water_cdec_amqp_reservoir_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', _sensor_num = f'test_{i}', data = event_data)
+        producer_instance.send_gov_ca_water_cdec_amqp_reservoir_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', _sensor_num = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

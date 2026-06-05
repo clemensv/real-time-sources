@@ -124,6 +124,8 @@ class TrafficMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -191,25 +193,25 @@ class TrafficMessage:
             An instance of the dataclass.
         """
         return cls(
-            situation_id='mdbnhodziosegkthyfsb',
-            situation_type='ubtoxggkitgmzcclzctw',
-            traffic_announcement_type='yqhcjplulnhvnpkazzma',
-            version=int(8),
-            release_time='sjkvytiexyelhgklcvfk',
-            version_time='moivbvwdazijsxledwvs',
-            title='jdohcjvuwfqtwcbersup',
-            language='wnplmmenucivhivhbdkv',
-            sender='idzqqvhickccmasljokn',
-            location_description='xpkmsgdgyvakebceqxvv',
-            start_time='tsvilsdqpotrzhayeeqy',
-            end_time='xpgqxanjpoftlbvjygvf',
-            features_json='cdrgrxdyfvwmjcchzpjy',
-            road_work_phases_json='pkobdpqnsklhxktpcbrj',
-            comment='rehddrgkgkalkqvjmqsm',
-            additional_information='irssrlnfpkvtnfflavav',
-            contact_phone='hskntwtrgqvawkwlxtdr',
-            contact_email='bkvucsosazsenhjbshwr',
-            announcements_json='ecxinqhsxetzzaysiavf',
-            geometry_type='immhxtbiulctikcgcyqn',
-            geometry_coordinates_json='nmpesrtdehbtuahlxfhf'
+            situation_id='josiiyuqsqogituorjyb',
+            situation_type='rrifbxnhoohjtezgdshs',
+            traffic_announcement_type='xhvriliusuqweudpgocz',
+            version=int(35),
+            release_time='omoyunjhmzzvpzksyxzr',
+            version_time='kelwfsmoywyuchyoxtox',
+            title='frxxdugpufkvopvzncmg',
+            language='lrhffqianbrjffymbbie',
+            sender='fifwqbydhcoiofnmhtqg',
+            location_description='osuvgvdmkbsvsyaznado',
+            start_time='rqtyswutqhgbwbvjranv',
+            end_time='krvamqmgrgqqigpdtfdj',
+            features_json='zyroqusqtxklmisnsjri',
+            road_work_phases_json='gqurpjluotzblctlfvim',
+            comment='zcnwdcaajyjdrykinhql',
+            additional_information='jyikyxcdbtmfrcihgvof',
+            contact_phone='nqaixwcwmauiivbckfqp',
+            contact_email='moxkteiayjnagcnrxulq',
+            announcements_json='brdclosatacwcreqmczo',
+            geometry_type='gmcnkgwdywvvnfiefuqp',
+            geometry_coordinates_json='zpkpswzqauqweugzkxoy'
         )

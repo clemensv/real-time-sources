@@ -1,41 +1,43 @@
 """ Site dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
+from laqn_london_producer_data.uk.kcl.laqn.sitetypeenum import SiteTypeenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Site:
     """
-    Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.
+    LAQN monitoring site reference data, including stable site identity, operator information, and WGS84 coordinates.
+    
     Attributes:
-        site_code (str): Stable LAQN site code that identifies the monitoring site, such as BX1.
-        site_name (str): Human-readable LAQN site name published for the monitoring site.
-        site_type (str): Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.
-        local_authority_code (str): Stable local authority code associated with the site in the LAQN reference data.
-        local_authority_name (str): Human-readable local authority name associated with the site in the LAQN reference data.
-        latitude (typing.Optional[float]): WGS84 latitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.
-        longitude (typing.Optional[float]): WGS84 longitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.
-        date_opened (str): Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.
-        date_closed (typing.Optional[str]): Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.
-        data_owner (str): Organisation listed by LAQN as the owner of the site's data.
-        data_manager (str): Organisation listed by LAQN as the manager of the monitoring site data."""
+        site_code (str)
+        site_name (str)
+        site_type (SiteTypeenum)
+        local_authority_code (str)
+        local_authority_name (str)
+        latitude (typing.Optional[float])
+        longitude (typing.Optional[float])
+        date_opened (str)
+        date_closed (typing.Optional[str])
+        data_owner (str)
+        data_manager (str)
+    """
+    
     
     site_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="site_code"))
     site_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="site_name"))
-    site_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="site_type"))
+    site_type: SiteTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="site_type"))
     local_authority_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="local_authority_code"))
     local_authority_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="local_authority_name"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
@@ -44,24 +46,6 @@ class Site:
     date_closed: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_closed"))
     data_owner: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="data_owner"))
     data_manager: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="data_manager"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Site\", \"namespace\": \"uk.kcl.laqn\", \"doc\": \"Reference description of a London Air Quality Network monitoring site, including its stable code, operator metadata, and WGS84 coordinates.\", \"fields\": [{\"name\": \"site_code\", \"type\": \"string\", \"doc\": \"Stable LAQN site code that identifies the monitoring site, such as BX1.\", \"description\": \"Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source.\"}, {\"name\": \"site_name\", \"type\": \"string\", \"doc\": \"Human-readable LAQN site name published for the monitoring site.\", \"description\": \"Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source.\"}, {\"name\": \"site_type\", \"type\": \"string\", \"doc\": \"Site classification published by LAQN, such as Suburban, Kerbside, Roadside, Urban Background, Industrial, Rural, or other.\", \"description\": \"Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source.\"}, {\"name\": \"local_authority_code\", \"type\": \"string\", \"doc\": \"Stable local authority code associated with the site in the LAQN reference data.\", \"description\": \"Measurement payload for pollutant concentration measurements in the London Air Quality Network source.\"}, {\"name\": \"local_authority_name\", \"type\": \"string\", \"doc\": \"Human-readable local authority name associated with the site in the LAQN reference data.\", \"description\": \"Measurement payload for pollutant concentration measurements in the London Air Quality Network source.\"}, {\"name\": \"latitude\", \"type\": [\"null\", \"double\"], \"default\": null, \"doc\": \"WGS84 latitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.\", \"description\": \"Measurement payload for pollutant concentration measurements in the London Air Quality Network source.\"}, {\"name\": \"longitude\", \"type\": [\"null\", \"double\"], \"default\": null, \"doc\": \"WGS84 longitude of the monitoring site in decimal degrees, or null when the upstream site record leaves the coordinate blank.\", \"description\": \"Measurement payload for pollutant concentration measurements in the London Air Quality Network source.\"}, {\"name\": \"date_opened\", \"type\": \"string\", \"doc\": \"Date and time when the site opened, as published by LAQN in YYYY-MM-DD HH:MM:SS format.\", \"description\": \"Measurement payload for pollutant concentration measurements in the London Air Quality Network source.\"}, {\"name\": \"date_closed\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Date and time when the site closed in YYYY-MM-DD HH:MM:SS format, or null when the site is still active and no closure date is published.\", \"description\": \"Measurement payload for pollutant concentration measurements in the London Air Quality Network source.\"}, {\"name\": \"data_owner\", \"type\": \"string\", \"doc\": \"Organisation listed by LAQN as the owner of the site's data.\", \"description\": \"Measurement payload for pollutant concentration measurements in the London Air Quality Network source.\"}, {\"name\": \"data_manager\", \"type\": \"string\", \"doc\": \"Organisation listed by LAQN as the manager of the monitoring site data.\", \"description\": \"Measurement payload for pollutant concentration measurements in the London Air Quality Network source.\"}], \"description\": \"Reference details for one station, monitoring site, or forecast area in the London Air Quality Network source.\"}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.site_code=str(self.site_code)
-        self.site_name=str(self.site_name)
-        self.site_type=str(self.site_type)
-        self.local_authority_code=str(self.local_authority_code)
-        self.local_authority_name=str(self.local_authority_name)
-        self.latitude=float(self.latitude) if self.latitude else None
-        self.longitude=float(self.longitude) if self.longitude else None
-        self.date_opened=str(self.date_opened)
-        self.date_closed=str(self.date_closed) if self.date_closed else None
-        self.data_owner=str(self.data_owner)
-        self.data_manager=str(self.data_manager)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Site':
@@ -72,7 +56,7 @@ class Site:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -91,7 +75,7 @@ class Site:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -105,8 +89,6 @@ class Site:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -119,16 +101,12 @@ class Site:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -153,10 +131,6 @@ class Site:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -182,18 +156,6 @@ class Site:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return Site.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -201,5 +163,26 @@ class Site:
                 return Site.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Site':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            site_code='gbkelcopwexovdmbxcbl',
+            site_name='ezcofhbvqxubflzxxqsk',
+            site_type=SiteTypeenum.Suburban,
+            local_authority_code='libaounankhymgybyavw',
+            local_authority_name='hiutiacrrbjvomqdrhmk',
+            latitude=float(51.500694040285374),
+            longitude=float(34.930113220184836),
+            date_opened='jeezwdcurujsllzdzzht',
+            date_closed='nyqzdnomackqwgguhuap',
+            data_owner='jbtruaandxnbjcnhntut',
+            data_manager='emjirjvnkyxuerlrpazy'
+        )

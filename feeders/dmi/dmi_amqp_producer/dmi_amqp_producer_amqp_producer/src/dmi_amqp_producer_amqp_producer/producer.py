@@ -14,14 +14,62 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
+from datetime import datetime, timezone
 from urllib.parse import quote_plus
-from proton import Message
+from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -36,7 +84,7 @@ import hmac
 import logging
 import time as _cbs_time
 from urllib.parse import quote
-from proton import Endpoint, symbol
+from proton import Endpoint
 from proton.handlers import MessagingHandler
 from proton.reactor import Container, AtLeastOnce
 
@@ -394,6 +442,14 @@ class _CbsAzureHandler(MessagingHandler):
             if not fut.done():
                 fut.set_exception(exc)
         self._pending.clear()
+from dmi_amqp_producer_data import MetObsStation
+from dmi_amqp_producer_data import MetObsObservation
+from dmi_amqp_producer_data import OceanStation
+from dmi_amqp_producer_data import TidewaterStation
+from dmi_amqp_producer_data import OceanObservation
+from dmi_amqp_producer_data import TidewaterPrediction
+from dmi_amqp_producer_data import LightningSensor
+from dmi_amqp_producer_data import LightningStrike
 
 class DkDmiMetObsAmqpProducer:
     """
@@ -482,9 +538,7 @@ class DkDmiMetObsAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -547,6 +601,32 @@ class DkDmiMetObsAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -574,6 +654,23 @@ class DkDmiMetObsAmqpProducer:
         return payload
 
     @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
         CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
@@ -597,21 +694,64 @@ class DkDmiMetObsAmqpProducer:
     
     
     def send_station(self,
-        data: object,
+        data: MetObsStation,
+        _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `dk.dmi.metObs.amqp.Station` message
+        Reference data for a DMI meteorological observation station. Emitted at feeder startup and refreshed daily. Stations cover Denmark, Greenland (DNK/GRL) and the Faroe Islands (FRO).
         
         Args:
-            _station_id (str): Value for AMQP protocol option placeholder station_id
-            data (object): The message data object
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (MetObsStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Plain AMQP message (non-CloudEvent)
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "dk.dmi.metObs.MetObsStation",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{station_id}".format(station_id=_station_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        amqp_msg = Message(body=byte_data, inferred=True)
-        amqp_msg.content_type = content_type
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -620,50 +760,105 @@ class DkDmiMetObsAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_station_batch(self,
-        data_array: typing.List[object],
+        data_array: typing.List[MetObsStation],
+        _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `dk.dmi.metObs.amqp.Station` messages
         
         Args:
-            data_array (typing.List[object]): Array of message data objects
-            _station_id (str): Value for AMQP protocol option placeholder station_id
+            data_array (typing.List[MetObsStation]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_station(
                 data=data,
+                _feedurl=_feedurl,
                 _station_id=_station_id,
+                _time=_time,
                 content_type=content_type)
     
     
     def send_observation(self,
-        data: object,
+        data: MetObsObservation,
+        _feedurl: str,
         _station_id: str,
         _parameter_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `dk.dmi.metObs.amqp.Observation` message
+        A single meteorological observation value reported by a station for one parameter at a specific observed time. Cadence depends on parameter (10-minute or hourly).
         
         Args:
-            _station_id (str): Value for AMQP protocol option placeholder station_id
-            _parameter_id (str): Value for AMQP protocol option placeholder parameter_id
-            data (object): The message data object
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _parameter_id (str): Value for placeholder parameter_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (MetObsObservation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Plain AMQP message (non-CloudEvent)
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "dk.dmi.metObs.MetObsObservation",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{station_id}/{parameter_id}".format(station_id=_station_id, parameter_id=_parameter_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        amqp_msg = Message(body=byte_data, inferred=True)
-        amqp_msg.content_type = content_type
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}/{parameter_id}".format(station_id=_station_id, parameter_id=_parameter_id)
 
@@ -672,32 +867,44 @@ class DkDmiMetObsAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_observation_batch(self,
-        data_array: typing.List[object],
+        data_array: typing.List[MetObsObservation],
+        _feedurl: str,
         _station_id: str,
         _parameter_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `dk.dmi.metObs.amqp.Observation` messages
         
         Args:
-            data_array (typing.List[object]): Array of message data objects
-            _station_id (str): Value for AMQP protocol option placeholder station_id
-            _parameter_id (str): Value for AMQP protocol option placeholder parameter_id
+            data_array (typing.List[MetObsObservation]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _parameter_id (str): Value for placeholder parameter_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_observation(
                 data=data,
+                _feedurl=_feedurl,
                 _station_id=_station_id,
                 _parameter_id=_parameter_id,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -817,9 +1024,7 @@ class DkDmiOceanObsAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -882,6 +1087,32 @@ class DkDmiOceanObsAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -909,6 +1140,23 @@ class DkDmiOceanObsAmqpProducer:
         return payload
 
     @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
         CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
@@ -932,21 +1180,64 @@ class DkDmiOceanObsAmqpProducer:
     
     
     def send_station(self,
-        data: object,
+        data: OceanStation,
+        _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `dk.dmi.oceanObs.amqp.Station` message
+        Reference data for an oceanographic observation station (tide gauge or other coastal sensor). Owners include DMI and Kystdirektoratet (Danish Coastal Authority).
         
         Args:
-            _station_id (str): Value for AMQP protocol option placeholder station_id
-            data (object): The message data object
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (OceanStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Plain AMQP message (non-CloudEvent)
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "dk.dmi.oceanObs.OceanStation",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{station_id}".format(station_id=_station_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        amqp_msg = Message(body=byte_data, inferred=True)
-        amqp_msg.content_type = content_type
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -955,48 +1246,103 @@ class DkDmiOceanObsAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_station_batch(self,
-        data_array: typing.List[object],
+        data_array: typing.List[OceanStation],
+        _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `dk.dmi.oceanObs.amqp.Station` messages
         
         Args:
-            data_array (typing.List[object]): Array of message data objects
-            _station_id (str): Value for AMQP protocol option placeholder station_id
+            data_array (typing.List[OceanStation]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_station(
                 data=data,
+                _feedurl=_feedurl,
                 _station_id=_station_id,
+                _time=_time,
                 content_type=content_type)
     
     
     def send_tidewater_station(self,
-        data: object,
+        data: TidewaterStation,
+        _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `dk.dmi.oceanObs.amqp.TidewaterStation` message
+        Reference data for a station/grid-point at which DMI publishes tidewater (sea-level) predictions. The set partially overlaps physical tide gauges but also includes prediction-only grid points (e.g. Faroes).
         
         Args:
-            _station_id (str): Value for AMQP protocol option placeholder station_id
-            data (object): The message data object
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (TidewaterStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Plain AMQP message (non-CloudEvent)
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "dk.dmi.oceanObs.TidewaterStation",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{station_id}".format(station_id=_station_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        amqp_msg = Message(body=byte_data, inferred=True)
-        amqp_msg.content_type = content_type
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -1005,50 +1351,105 @@ class DkDmiOceanObsAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_tidewater_station_batch(self,
-        data_array: typing.List[object],
+        data_array: typing.List[TidewaterStation],
+        _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `dk.dmi.oceanObs.amqp.TidewaterStation` messages
         
         Args:
-            data_array (typing.List[object]): Array of message data objects
-            _station_id (str): Value for AMQP protocol option placeholder station_id
+            data_array (typing.List[TidewaterStation]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_tidewater_station(
                 data=data,
+                _feedurl=_feedurl,
                 _station_id=_station_id,
+                _time=_time,
                 content_type=content_type)
     
     
     def send_observation(self,
-        data: object,
+        data: OceanObservation,
+        _feedurl: str,
         _station_id: str,
         _parameter_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `dk.dmi.oceanObs.amqp.Observation` message
+        A single oceanographic observation. Parameters are sealev_dvr (sea level vs DVR90 datum, cm), sealev_ln (sea level vs local zero, cm), sea_reg (registered sea level by Kystdirektoratet, cm), and tw (water temperature, deg C). 10-minute cadence.
         
         Args:
-            _station_id (str): Value for AMQP protocol option placeholder station_id
-            _parameter_id (str): Value for AMQP protocol option placeholder parameter_id
-            data (object): The message data object
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _parameter_id (str): Value for placeholder parameter_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (OceanObservation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Plain AMQP message (non-CloudEvent)
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "dk.dmi.oceanObs.OceanObservation",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{station_id}/{parameter_id}".format(station_id=_station_id, parameter_id=_parameter_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        amqp_msg = Message(body=byte_data, inferred=True)
-        amqp_msg.content_type = content_type
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}/{parameter_id}".format(station_id=_station_id, parameter_id=_parameter_id)
 
@@ -1057,51 +1458,106 @@ class DkDmiOceanObsAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_observation_batch(self,
-        data_array: typing.List[object],
+        data_array: typing.List[OceanObservation],
+        _feedurl: str,
         _station_id: str,
         _parameter_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `dk.dmi.oceanObs.amqp.Observation` messages
         
         Args:
-            data_array (typing.List[object]): Array of message data objects
-            _station_id (str): Value for AMQP protocol option placeholder station_id
-            _parameter_id (str): Value for AMQP protocol option placeholder parameter_id
+            data_array (typing.List[OceanObservation]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _parameter_id (str): Value for placeholder parameter_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_observation(
                 data=data,
+                _feedurl=_feedurl,
                 _station_id=_station_id,
                 _parameter_id=_parameter_id,
+                _time=_time,
                 content_type=content_type)
     
     
     def send_tidewater_prediction(self,
-        data: object,
+        data: TidewaterPrediction,
+        _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `dk.dmi.oceanObs.amqp.TidewaterPrediction` message
+        A deterministic tidewater (sea-level) prediction for one station and one forecast horizon. predictionType is typically '10minutes'; predictions are issued forward ~30 days.
         
         Args:
-            _station_id (str): Value for AMQP protocol option placeholder station_id
-            data (object): The message data object
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (TidewaterPrediction): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Plain AMQP message (non-CloudEvent)
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "dk.dmi.oceanObs.TidewaterPrediction",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{station_id}".format(station_id=_station_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        amqp_msg = Message(body=byte_data, inferred=True)
-        amqp_msg.content_type = content_type
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -1110,29 +1566,41 @@ class DkDmiOceanObsAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_tidewater_prediction_batch(self,
-        data_array: typing.List[object],
+        data_array: typing.List[TidewaterPrediction],
+        _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `dk.dmi.oceanObs.amqp.TidewaterPrediction` messages
         
         Args:
-            data_array (typing.List[object]): Array of message data objects
-            _station_id (str): Value for AMQP protocol option placeholder station_id
+            data_array (typing.List[TidewaterPrediction]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_tidewater_prediction(
                 data=data,
+                _feedurl=_feedurl,
                 _station_id=_station_id,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1252,9 +1720,7 @@ class DkDmiLightningAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -1317,6 +1783,32 @@ class DkDmiLightningAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -1344,6 +1836,23 @@ class DkDmiLightningAmqpProducer:
         return payload
 
     @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
         CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
@@ -1367,21 +1876,64 @@ class DkDmiLightningAmqpProducer:
     
     
     def send_sensor(self,
-        data: object,
+        data: LightningSensor,
+        _feedurl: str,
         _sensor_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `dk.dmi.lightning.amqp.Sensor` message
+        Reference data for one of DMI's lightning detection sensors. Six DMI-owned sensors cover Denmark; third-party sensor IDs that appear in observation.sensors are not catalogued here.
         
         Args:
-            _sensor_id (str): Value for AMQP protocol option placeholder sensor_id
-            data (object): The message data object
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _sensor_id (str): Value for placeholder sensor_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (LightningSensor): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Plain AMQP message (non-CloudEvent)
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "dk.dmi.lightning.LightningSensor",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{sensor_id}".format(sensor_id=_sensor_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        amqp_msg = Message(body=byte_data, inferred=True)
-        amqp_msg.content_type = content_type
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{sensor_id}".format(sensor_id=_sensor_id)
 
@@ -1390,48 +1942,103 @@ class DkDmiLightningAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_sensor_batch(self,
-        data_array: typing.List[object],
+        data_array: typing.List[LightningSensor],
+        _feedurl: str,
         _sensor_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `dk.dmi.lightning.amqp.Sensor` messages
         
         Args:
-            data_array (typing.List[object]): Array of message data objects
-            _sensor_id (str): Value for AMQP protocol option placeholder sensor_id
+            data_array (typing.List[LightningSensor]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _sensor_id (str): Value for placeholder sensor_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_sensor(
                 data=data,
+                _feedurl=_feedurl,
                 _sensor_id=_sensor_id,
+                _time=_time,
                 content_type=content_type)
     
     
     def send_strike(self,
-        data: object,
+        data: LightningStrike,
+        _feedurl: str,
         _strike_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `dk.dmi.lightning.amqp.Strike` message
+        A single triangulated lightning strike. Type 0 = cloud-to-ground negative, 1 = cloud-to-ground positive, 2 = cloud-to-cloud. amp is signed peak current in kA. observed timestamps have microsecond precision.
         
         Args:
-            _strike_id (str): Value for AMQP protocol option placeholder strike_id
-            data (object): The message data object
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _strike_id (str): Value for placeholder strike_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (LightningStrike): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Plain AMQP message (non-CloudEvent)
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "dk.dmi.lightning.LightningStrike",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{strike_id}".format(strike_id=_strike_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        amqp_msg = Message(body=byte_data, inferred=True)
-        amqp_msg.content_type = content_type
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{strike_id}".format(strike_id=_strike_id)
 
@@ -1440,29 +2047,41 @@ class DkDmiLightningAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_strike_batch(self,
-        data_array: typing.List[object],
+        data_array: typing.List[LightningStrike],
+        _feedurl: str,
         _strike_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `dk.dmi.lightning.amqp.Strike` messages
         
         Args:
-            data_array (typing.List[object]): Array of message data objects
-            _strike_id (str): Value for AMQP protocol option placeholder strike_id
+            data_array (typing.List[LightningStrike]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _strike_id (str): Value for placeholder strike_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_strike(
                 data=data,
+                _feedurl=_feedurl,
                 _strike_id=_strike_id,
+                _time=_time,
                 content_type=content_type)
     
     

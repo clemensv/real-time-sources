@@ -96,6 +96,8 @@ class NetworkStatus:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class NetworkStatus:
             An instance of the dataclass.
         """
         return cls(
-            callsign='opstiwrpvhazmqyidztu',
-            update_timestamp='hvzdpocsuydimnfeikvp',
-            connected_clients=int(90),
-            unique_users=int(61),
-            pilot_count=int(30),
-            controller_count=int(100),
-            facility='mppebimymtqfdqhsudjy'
+            callsign='hkosnpjwepwmyiudfnuu',
+            update_timestamp='uuwzwrntlugywmkhcjka',
+            connected_clients=int(20),
+            unique_users=int(68),
+            pilot_count=int(81),
+            controller_count=int(32),
+            facility='uiebvmotzhcugnbsbccv'
         )

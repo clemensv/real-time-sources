@@ -5,6 +5,7 @@
 Tests for jma_bosai_quake_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../jma_bosai_quake_amqp_producer_data/src')))
@@ -25,7 +27,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from jma_bosai_quake_amqp_producer_amqp_producer import *
 from jma_bosai_quake_amqp_producer_data import EarthquakeReport
-from test_jma_bosai_quake_amqp_producer_data_earthquakereport import Test_EarthquakeReport
+from test_earthquakereport import Test_EarthquakeReport
 
 
 
@@ -231,6 +233,45 @@ class TestJPJMAQuakeAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(JPJMAQuakeAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_earthquake_report(self, artemis_container):
         """Send and receive a EarthquakeReport message via ActiveMQ Artemis."""
@@ -259,6 +300,7 @@ class TestJPJMAQuakeAmqpProducer:
                     _feedurl="value",
                     _event_id="value",
                     _serial="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -266,6 +308,7 @@ class TestJPJMAQuakeAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -289,4 +332,36 @@ class TestJPJMAQuakeAmqpProducer:
                 assert received.subject == "jp.jma.quake/{event_id}/{serial}".format(event_id="value", serial="value")
         finally:
             producer.close()
+
+    def test_send_earthquake_report_single_fresh_connection(self, artemis_container):
+        """Send exactly one EarthquakeReport message on a fresh producer connection."""
+        payload = Test_EarthquakeReport.create_instance()
+
+        producer = JPJMAQuakeAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_earthquake_report(
+                data=payload,
+                _feedurl="value",
+                _event_id="value",
+                _serial="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'JP.JMA.Quake.amqp.EarthquakeReport'
+        assert received.body is not None
+        assert received.subject == "jp.jma.quake/{event_id}/{serial}".format(event_id="value", serial="value")
 

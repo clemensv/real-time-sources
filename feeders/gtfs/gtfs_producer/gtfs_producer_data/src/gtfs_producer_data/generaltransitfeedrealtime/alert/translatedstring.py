@@ -85,6 +85,8 @@ class TranslatedString:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -152,5 +154,5 @@ class TranslatedString:
             An instance of the dataclass.
         """
         return cls(
-            translation=[None, None, None]
+            translation=[None, None, None, None, None]
         )

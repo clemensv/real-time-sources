@@ -216,6 +216,7 @@ def test_normalize_observation_full_record():
     api = WalloniaISsePAPI()
     obs = api.normalize_observation(SAMPLE_RECORD)
     assert obs.configuration_id == "10412"
+    assert obs.province == "unknown"
     assert obs.moment == "2026-04-08T20:21:04+02:00"
     assert obs.co == 16
     assert obs.no == 7
@@ -262,6 +263,7 @@ def test_normalize_observation_null_fields():
     }
     obs = api.normalize_observation(minimal_record)
     assert obs.configuration_id == "99999"
+    assert obs.province == "unknown"
     assert obs.moment == "2026-04-08T10:00:00+02:00"
     assert obs.co is None
     assert obs.no is None
@@ -291,6 +293,13 @@ def test_normalize_observation_config_id_as_string():
 
 
 @pytest.mark.unit
+def test_normalize_observation_preserves_province_when_present():
+    api = WalloniaISsePAPI()
+    obs = api.normalize_observation({**SAMPLE_RECORD, "province": "hainaut"})
+    assert obs.province == "hainaut"
+
+
+@pytest.mark.unit
 def test_normalize_observation_zero_humidity():
     """Zero humidity is valid, not None."""
     api = WalloniaISsePAPI()
@@ -310,6 +319,7 @@ def test_observation_serialization_roundtrip():
     obs = api.normalize_observation(SAMPLE_RECORD)
     serialized = obs.to_serializer_dict()
     assert serialized["configuration_id"] == "10412"
+    assert serialized["province"] == "unknown"
     assert serialized["moment"] == "2026-04-08T20:21:04+02:00"
     assert serialized["no2"] == -1
     assert serialized["pm25"] == 1.957
@@ -329,6 +339,7 @@ def test_observation_json_roundtrip():
     from wallonia_issep_producer_data import Observation
     restored = Observation.from_json(json_str)  # type: ignore[attr-defined]
     assert restored.configuration_id == "10412"
+    assert restored.province == "unknown"
     assert restored.no2 == -1
     assert restored.ppbno == 2.711
 
@@ -338,9 +349,10 @@ def test_sensor_configuration_serialization():
     from wallonia_issep_producer_data import SensorConfiguration
     config = SensorConfiguration(configuration_id="10412")
     serialized = config.to_serializer_dict()
-    assert serialized == {"configuration_id": "10412"}
+    assert serialized == {"configuration_id": "10412", "province": "unknown"}
     restored = SensorConfiguration.from_serializer_dict(serialized)
     assert restored.configuration_id == "10412"
+    assert restored.province == "unknown"
 
 
 @pytest.mark.unit
@@ -361,6 +373,7 @@ def test_observation_byte_array_roundtrip():
     restored = Observation.from_data(byte_arr, "application/json")
     assert restored is not None
     assert restored.configuration_id == "10412"
+    assert restored.province == "unknown"
     assert restored.no2 == -1
 
 
@@ -372,6 +385,7 @@ def test_observation_null_fields_in_json():
     obs = api.normalize_observation(minimal)
     json_str = obs.to_json()  # type: ignore[attr-defined]
     parsed = json.loads(json_str)
+    assert parsed["province"] == "unknown"
     assert parsed["co"] is None
     assert parsed["pm10"] is None
     assert parsed["vbat"] is None
@@ -393,6 +407,17 @@ def test_extract_configurations():
     assert len(configs) == 2
     ids = {c.configuration_id for c in configs}
     assert ids == {"10412", "10296"}
+    assert {c.province for c in configs} == {"unknown"}
+
+
+@pytest.mark.unit
+def test_extract_configurations_preserves_province():
+    records = [
+        {"id_configuration": 10412, "moment": "2026-04-08T20:21:04+02:00", "province": "hainaut"},
+    ]
+    configs = WalloniaISsePAPI.extract_configurations(records)
+    assert configs[0].configuration_id == "10412"
+    assert configs[0].province == "hainaut"
 
 
 @pytest.mark.unit

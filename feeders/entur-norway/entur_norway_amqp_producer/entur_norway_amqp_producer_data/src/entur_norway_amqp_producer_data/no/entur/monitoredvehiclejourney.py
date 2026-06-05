@@ -120,6 +120,8 @@ class MonitoredVehicleJourney:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -187,22 +189,22 @@ class MonitoredVehicleJourney:
             An instance of the dataclass.
         """
         return cls(
-            service_journey_id='qztcjbckwhmfcxxcslqa',
-            operating_day='ninzgsmootlpxgsxdemh',
+            service_journey_id='ndewfcbtrmdymegykbcs',
+            operating_day='uzypnzzhklacedlhckvb',
             recorded_at_time=datetime.datetime.now(datetime.timezone.utc),
-            line_ref='mrltufuzjjeqdflqegaz',
-            operator_ref='vimssmvhtxgtvjoelprw',
-            direction_ref='pbvopyhkodcwxiornjdl',
-            vehicle_mode='fommvbabffamvufbeoqo',
-            published_line_name='sqvyxfnhinwcjfgmxdtl',
-            origin_name='tlvzltcbzpopyyfmiwri',
-            destination_name='xsmqibhhnelhltmaownq',
-            vehicle_ref='horijhbgkfzasadvspgr',
-            latitude=float(87.36851977556924),
-            longitude=float(4.246814421721778),
-            bearing=float(82.5353786500983),
-            delay_seconds=int(40),
-            occupancy_status='xhmdbsjazsylvhxvxznh',
-            progress_status='ylcdtovoccgcbbwofcxn',
+            line_ref='enwnigdupmjhucfzrelk',
+            operator_ref='hismatrrasnkfzdrcwix',
+            direction_ref='eivkclgyanlccbfmvkex',
+            vehicle_mode='jnjisqputlvcaibrzxtp',
+            published_line_name='idgskwrensdfcpzyliax',
+            origin_name='oyncxpqkrvljultgggdf',
+            destination_name='wpszfgzyqslnwleuaqvs',
+            vehicle_ref='jpauvoaxifjckadgajpp',
+            latitude=float(49.7563363106172),
+            longitude=float(24.972783609570072),
+            bearing=float(45.226446006605215),
+            delay_seconds=int(48),
+            occupancy_status='sbtnvlaexpkakzqcnzkc',
+            progress_status='ocsjmkddejuqtrznbmhx',
             monitored=False
         )

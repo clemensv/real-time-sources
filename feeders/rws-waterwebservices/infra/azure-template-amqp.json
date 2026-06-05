@@ -38,7 +38,7 @@
       "minLength": 1,
       "maxLength": 50,
       "metadata": {
-        "description": "AMQP node/address name."
+        "description": "AMQP node (queue / topic) name (default rws-waterwebservices)."
       }
     },
     "imageName": {

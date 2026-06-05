@@ -101,6 +101,8 @@ class ReportB:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -168,13 +170,13 @@ class ReportB:
             An instance of the dataclass.
         """
         return cls(
-            Valid=False,
-            ShipType=int(22),
-            VendorIDName='rcbyvbeerzypfzndkwxf',
-            VenderIDModel=int(74),
-            VenderIDSerial=int(64),
-            CallSign='biluvviacdfalnxcjmbt',
+            Valid=True,
+            ShipType=int(62),
+            VendorIDName='mzfazsdabkcbmebvlymz',
+            VenderIDModel=int(54),
+            VenderIDSerial=int(79),
+            CallSign='pfokjgqsxtsphjmdigud',
             Dimension=None,
-            FixType=int(5),
-            Spare=int(53)
+            FixType=int(17),
+            Spare=int(61)
         )

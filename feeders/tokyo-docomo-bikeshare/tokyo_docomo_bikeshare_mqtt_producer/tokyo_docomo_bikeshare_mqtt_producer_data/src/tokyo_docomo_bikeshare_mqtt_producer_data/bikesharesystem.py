@@ -108,6 +108,8 @@ class BikeshareSystem:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -175,17 +177,17 @@ class BikeshareSystem:
             An instance of the dataclass.
         """
         return cls(
-            system_id='olgclfwabsbnfjfrwugh',
-            language='fvohxbjfkhtrqkofipqf',
-            name='moojdfvtjdnzihmkagib',
-            short_name='emscjgamvvpabwgpisnd',
-            operator='tlywjdekgearphwuizkl',
-            url='mhxfdlofqkaapwwebloj',
-            purchase_url='jgidjyygfhvghzpyoozj',
-            start_date='uicaqmmgnmkyncqgyxiv',
-            phone_number='pizwyvuktzzhpnyaidqx',
-            email='axkpiakbtybeinscxefk',
-            feed_contact_email='qhlubryzbpbqwphhtcce',
-            timezone='kbstxxczeukmblmhalaf',
-            license_url='lnmahpnxvblieqrugrzr'
+            system_id='zdqsvwzjcqkbkekhwlpt',
+            language='ehwswzyevdrpvznowuwh',
+            name='tbavzewvthmphjcwwdvt',
+            short_name='jhjpbbfgxdzxrogzzfmp',
+            operator='whnrpufmewxcyfuuqipx',
+            url='macmfaqpqbfenxjejhrr',
+            purchase_url='wwrmlozzqvryuiqzdymg',
+            start_date='blaizcycunfbzaoxznxz',
+            phone_number='zdhiszmyhbdpnfhtaqln',
+            email='rqlxrqoulzyttqbaplxs',
+            feed_contact_email='mwirbxchltipxwrnbsql',
+            timezone='chbwpqlnqpjvhnedkujv',
+            license_url='gkadecvehwjonoxmbicg'
         )

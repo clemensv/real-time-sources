@@ -166,7 +166,6 @@ Feature Service.
 - `data` (WildfireIncident): The message data object
 - `_source_uri` (str): Value for placeholder source_uri in attribute source
 - `_irwin_id` (str): Value for placeholder irwin_id in attribute subject
-- `_modified_on_datetime` (str): Value for placeholder modified_on_datetime in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_wildfire_incident_batch()`
@@ -177,7 +176,6 @@ Send multiple WildfireIncident messages in sequence.
 - `data_array` (List[WildfireIncident]): Array of message data objects
 - `_source_uri` (str): Value for placeholder source_uri in attribute source
 - `_irwin_id` (str): Value for placeholder irwin_id in attribute subject
-- `_modified_on_datetime` (str): Value for placeholder modified_on_datetime in attribute time
 - `content_type` (str): Content type of the message data
 
 

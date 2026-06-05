@@ -40,7 +40,7 @@
         "Standard"
       ],
       "metadata": {
-        "description": "Event Hub namespace SKU."
+        "description": "Event Hubs namespace SKU for the broker that receives ticketmaster CloudEvents."
       },
       "type": "string",
       "defaultValue": "Standard"

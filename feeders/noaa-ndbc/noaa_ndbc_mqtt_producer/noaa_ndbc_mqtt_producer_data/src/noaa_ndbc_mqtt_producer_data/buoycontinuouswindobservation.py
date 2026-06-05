@@ -100,6 +100,8 @@ class BuoyContinuousWindObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,12 +169,12 @@ class BuoyContinuousWindObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='unjaejgouqawghdypdrb',
+            station_id='lesaxtdrdcgtpzpiuqsq',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            wind_direction=float(62.21245285797503),
-            wind_speed=float(19.576821371765806),
-            gust_direction=float(88.19300133493796),
-            gust=float(24.860877707464613),
-            gust_time_code='jvtxrufumbykeqnvgvma',
-            region='rikaprlwrgqqejelvexq'
+            wind_direction=float(41.982367190653335),
+            wind_speed=float(85.07816390671046),
+            gust_direction=float(89.51537741773497),
+            gust=float(96.21613343528253),
+            gust_time_code='wrljlmcqeuswixxowcsm',
+            region='wcxeqkdlfxldaoahpgkd'
         )

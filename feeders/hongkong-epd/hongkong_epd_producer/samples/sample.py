@@ -33,11 +33,13 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from hongkong_epd_producer_kafka_producer.producer import HKGovEPDAQHIEventProducer
+from hongkong_epd_producer_kafka_producer.producer import HKGovEPDAQHIMqttEventProducer
+from hongkong_epd_producer_kafka_producer.producer import HKGovEPDAQHIAmqpEventProducer
 
 # imports for the data classes for each event
 
-from hongkong_epd_producer_data.station import Station
-from hongkong_epd_producer_data.aqhireading import AQHIReading
+from hongkong_epd_producer_data import Station
+from hongkong_epd_producer_data import AQHIReading
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,12 +74,60 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'HK.Gov.EPD.AQHI.AQHIReading' event to Kafka topic.
     await hkgov_epdaqhievent_producer.send_hk_gov_epd_aqhi_aqhireading(_station_id = 'TODO: replace me', data = _aqhireading)
     print(f"Sent 'HK.Gov.EPD.AQHI.AQHIReading' event: {_aqhireading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        hkgov_epdaqhimqtt_event_producer = HKGovEPDAQHIMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        hkgov_epdaqhimqtt_event_producer = HKGovEPDAQHIMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- HK.Gov.EPD.AQHI.mqtt.Station ----
+    # TODO: Supply event data for the HK.Gov.EPD.AQHI.mqtt.Station event
+    _station = Station()
+
+    # sends the 'HK.Gov.EPD.AQHI.mqtt.Station' event to Kafka topic.
+    await hkgov_epdaqhimqtt_event_producer.send_hk_gov_epd_aqhi_mqtt_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'HK.Gov.EPD.AQHI.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- HK.Gov.EPD.AQHI.mqtt.AQHIReading ----
+    # TODO: Supply event data for the HK.Gov.EPD.AQHI.mqtt.AQHIReading event
+    _aqhireading = AQHIReading()
+
+    # sends the 'HK.Gov.EPD.AQHI.mqtt.AQHIReading' event to Kafka topic.
+    await hkgov_epdaqhimqtt_event_producer.send_hk_gov_epd_aqhi_mqtt_aqhireading(_station_id = 'TODO: replace me', data = _aqhireading)
+    print(f"Sent 'HK.Gov.EPD.AQHI.mqtt.AQHIReading' event: {_aqhireading.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        hkgov_epdaqhiamqp_event_producer = HKGovEPDAQHIAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        hkgov_epdaqhiamqp_event_producer = HKGovEPDAQHIAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- HK.Gov.EPD.AQHI.amqp.Station ----
+    # TODO: Supply event data for the HK.Gov.EPD.AQHI.amqp.Station event
+    _station = Station()
+
+    # sends the 'HK.Gov.EPD.AQHI.amqp.Station' event to Kafka topic.
+    await hkgov_epdaqhiamqp_event_producer.send_hk_gov_epd_aqhi_amqp_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'HK.Gov.EPD.AQHI.amqp.Station' event: {_station.to_json()}")
+
+    # ---- HK.Gov.EPD.AQHI.amqp.AQHIReading ----
+    # TODO: Supply event data for the HK.Gov.EPD.AQHI.amqp.AQHIReading event
+    _aqhireading = AQHIReading()
+
+    # sends the 'HK.Gov.EPD.AQHI.amqp.AQHIReading' event to Kafka topic.
+    await hkgov_epdaqhiamqp_event_producer.send_hk_gov_epd_aqhi_amqp_aqhireading(_station_id = 'TODO: replace me', data = _aqhireading)
+    print(f"Sent 'HK.Gov.EPD.AQHI.amqp.AQHIReading' event: {_aqhireading.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

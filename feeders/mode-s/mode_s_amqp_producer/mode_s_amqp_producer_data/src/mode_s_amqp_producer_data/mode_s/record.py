@@ -42,7 +42,7 @@ class Record:
     icao24: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="icao24"))
     receiver_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="receiver_id"))
     msg_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
-    ts: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ts"))
+    ts: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ts", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     df: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="df"))
     tc: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="tc"))
     bcode: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bcode"))
@@ -67,6 +67,8 @@ class Record:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'ts' in data and isinstance(data['ts'], str):
+            data['ts'] = int(data['ts'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -77,6 +79,8 @@ class Record:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'ts' in asdict_result and asdict_result['ts'] is not None:
+            asdict_result['ts'] = str(asdict_result['ts'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -114,6 +118,8 @@ class Record:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -181,20 +187,20 @@ class Record:
             An instance of the dataclass.
         """
         return cls(
-            icao24='ynhfdhcerfwqziscawdg',
-            receiver_id='iufydxdnkzgurmakvuqj',
-            msg_type='bagyznubxnpsyjypkajt',
-            ts=int(48),
-            df=int(89),
-            tc=int(83),
-            bcode='jojhxyjvzouleujumevg',
-            alt=int(0),
-            cs='dcbagslljqgrggnzafld',
-            sq='mbmfrmnraynfyloimwyw',
-            lat=float(71.53088589275026),
-            lon=float(1.4495423880951708),
-            spd=float(63.438055792237066),
-            ang=float(22.233883123772546),
-            vr=int(20),
-            rssi=float(7.76201866593339)
+            icao24='ddsovwhourmbuqnyyruv',
+            receiver_id='rbcvzbyhryxufbnanpfo',
+            msg_type='hlgwxujwwedhyozepnkr',
+            ts=int(74),
+            df=int(49),
+            tc=int(11),
+            bcode='zjpalbxtscxsnnjetxyk',
+            alt=int(72),
+            cs='zmncsiyjwlmkvgahwnjv',
+            sq='gedgnyhywwbgbohaaeam',
+            lat=float(70.76614598548544),
+            lon=float(58.267423003742216),
+            spd=float(11.856856640287516),
+            ang=float(23.125060059288938),
+            vr=int(71),
+            rssi=float(9.248979369730092)
         )

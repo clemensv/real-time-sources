@@ -98,6 +98,8 @@ class BridgeOpening:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,12 +167,12 @@ class BridgeOpening:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='cfbtffmajwosdlpzxfdi',
-            version_time='lcxmonvkwiisfahbvmky',
-            validity_status='iigbwisveowuyqljoxye',
-            start_time='lhapjdgruylztyijsnhu',
-            end_time='bqstvozbmkljghqnmymb',
-            bridge_name='hagokadnpepyoaictpee',
-            road_name='aqqxbbtpkbldrqencnjf',
-            description='nqeufdraadqozpqrhwnl'
+            situation_record_id='gtasagmgzinqvipncvfr',
+            version_time='oxdvkamztuedwdfmasvh',
+            validity_status='ykpgxamxrjlqxolpmjxl',
+            start_time='rnqsybhhismhhytihqzg',
+            end_time='ledgwuliplianzppknfe',
+            bridge_name='cqarporelevholjbjreo',
+            road_name='vdmmbhzxblrnzvegidse',
+            description='jkhfompcuawbsenvmvlt'
         )

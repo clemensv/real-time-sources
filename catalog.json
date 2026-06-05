@@ -368,6 +368,7 @@
     "key": false,
     "desc": "Europe — 37 countries, severe weather warnings",
     "kql": true,
+    "notebook": true,
     "mqtt": true,
     "amqp": true
   },

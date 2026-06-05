@@ -35,13 +35,14 @@ from confluent_kafka import Producer as KafkaProducer
 from entur_norway_producer_kafka_producer.producer import NoEnturJourneysEventProducer
 from entur_norway_producer_kafka_producer.producer import NoEnturSituationsEventProducer
 from entur_norway_producer_kafka_producer.producer import NoEnturMqttEventProducer
+from entur_norway_producer_kafka_producer.producer import NoEnturAmqpEventProducer
 
 # imports for the data classes for each event
 
-from entur_norway_producer_data.datedservicejourney import DatedServiceJourney
-from entur_norway_producer_data.estimatedvehiclejourney import EstimatedVehicleJourney
-from entur_norway_producer_data.monitoredvehiclejourney import MonitoredVehicleJourney
-from entur_norway_producer_data.ptsituationelement import PtSituationElement
+from entur_norway_producer_data import DatedServiceJourney
+from entur_norway_producer_data import EstimatedVehicleJourney
+from entur_norway_producer_data import MonitoredVehicleJourney
+from entur_norway_producer_data import PtSituationElement
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -132,12 +133,44 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'no.entur.mqtt.PtSituationElement' event to Kafka topic.
     await no_entur_mqtt_event_producer.send_no_entur_mqtt_pt_situation_element(_situation_number = 'TODO: replace me', data = _pt_situation_element)
     print(f"Sent 'no.entur.mqtt.PtSituationElement' event: {_pt_situation_element.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        no_entur_amqp_event_producer = NoEnturAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        no_entur_amqp_event_producer = NoEnturAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- no.entur.amqp.EstimatedVehicleJourney ----
+    # TODO: Supply event data for the no.entur.amqp.EstimatedVehicleJourney event
+    _estimated_vehicle_journey = EstimatedVehicleJourney()
+
+    # sends the 'no.entur.amqp.EstimatedVehicleJourney' event to Kafka topic.
+    await no_entur_amqp_event_producer.send_no_entur_amqp_estimated_vehicle_journey(_operating_day = 'TODO: replace me', _service_journey_id = 'TODO: replace me', data = _estimated_vehicle_journey)
+    print(f"Sent 'no.entur.amqp.EstimatedVehicleJourney' event: {_estimated_vehicle_journey.to_json()}")
+
+    # ---- no.entur.amqp.MonitoredVehicleJourney ----
+    # TODO: Supply event data for the no.entur.amqp.MonitoredVehicleJourney event
+    _monitored_vehicle_journey = MonitoredVehicleJourney()
+
+    # sends the 'no.entur.amqp.MonitoredVehicleJourney' event to Kafka topic.
+    await no_entur_amqp_event_producer.send_no_entur_amqp_monitored_vehicle_journey(_operating_day = 'TODO: replace me', _service_journey_id = 'TODO: replace me', data = _monitored_vehicle_journey)
+    print(f"Sent 'no.entur.amqp.MonitoredVehicleJourney' event: {_monitored_vehicle_journey.to_json()}")
+
+    # ---- no.entur.amqp.PtSituationElement ----
+    # TODO: Supply event data for the no.entur.amqp.PtSituationElement event
+    _pt_situation_element = PtSituationElement()
+
+    # sends the 'no.entur.amqp.PtSituationElement' event to Kafka topic.
+    await no_entur_amqp_event_producer.send_no_entur_amqp_pt_situation_element(_situation_number = 'TODO: replace me', data = _pt_situation_element)
+    print(f"Sent 'no.entur.amqp.PtSituationElement' event: {_pt_situation_element.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

@@ -88,6 +88,8 @@ class Region:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -155,7 +157,7 @@ class Region:
             An instance of the dataclass.
         """
         return cls(
-            region='kpksvbdnocrkqdkbzmru',
-            latitude=float(48.31153056327523),
-            longitude=float(6.105899488176303)
+            region='nobmitaougpzljsywkdv',
+            latitude=float(6.654254858055975),
+            longitude=float(22.350114341629634)
         )

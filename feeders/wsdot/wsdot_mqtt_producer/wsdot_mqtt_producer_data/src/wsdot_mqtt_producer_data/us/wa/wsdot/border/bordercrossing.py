@@ -96,6 +96,8 @@ class BorderCrossing:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class BorderCrossing:
             An instance of the dataclass.
         """
         return cls(
-            crossing_name='wfkulpudzoxmnnrpygwr',
+            crossing_name='rzpnkvcqhqselaipwdoy',
             wait_time=int(97),
-            time='werawhcztsvysjbrfqis',
-            description='lvyhxehkkbzuxpbxaytp',
-            road_name='cdlebnoyuyjraafvykxt',
-            latitude=float(75.25875738958408),
-            longitude=float(79.51702152386213)
+            time='rtvrkbplyzbfnhtpmelw',
+            description='wcgrigscvmltwciplluv',
+            road_name='blfxwoeqxtsiunnguyyp',
+            latitude=float(62.97343824979398),
+            longitude=float(87.66541433862118)
         )

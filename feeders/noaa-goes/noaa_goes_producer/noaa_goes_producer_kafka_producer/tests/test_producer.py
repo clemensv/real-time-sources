@@ -20,29 +20,29 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCAlertsEventProducer
 from noaa_goes_producer_data import SpaceWeatherAlert
-from test_noaa_goes_producer_data_spaceweatheralert import Test_SpaceWeatherAlert
+from test_spaceweatheralert import Test_SpaceWeatherAlert
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCObservationsEventProducer
 from noaa_goes_producer_data import PlanetaryKIndex
-from test_noaa_goes_producer_data_planetarykindex import Test_PlanetaryKIndex
+from test_planetarykindex import Test_PlanetaryKIndex
 from noaa_goes_producer_data import SolarWindSummary
-from test_noaa_goes_producer_data_solarwindsummary import Test_SolarWindSummary
+from test_solarwindsummary import Test_SolarWindSummary
 from noaa_goes_producer_data import SolarWindPlasma
-from test_noaa_goes_producer_data_solarwindplasma import Test_SolarWindPlasma
+from test_solarwindplasma import Test_SolarWindPlasma
 from noaa_goes_producer_data import SolarWindMagField
-from test_noaa_goes_producer_data_solarwindmagfield import Test_SolarWindMagField
+from test_solarwindmagfield import Test_SolarWindMagField
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCGOESParticleFluxEventProducer
 from noaa_goes_producer_data import GoesXrayFlux
-from test_noaa_goes_producer_data_goesxrayflux import Test_GoesXrayFlux
+from test_goesxrayflux import Test_GoesXrayFlux
 from noaa_goes_producer_data import GoesProtonFlux
-from test_noaa_goes_producer_data_goesprotonflux import Test_GoesProtonFlux
+from test_goesprotonflux import Test_GoesProtonFlux
 from noaa_goes_producer_data import GoesElectronFlux
-from test_noaa_goes_producer_data_goeselectronflux import Test_GoesElectronFlux
+from test_goeselectronflux import Test_GoesElectronFlux
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCGOESMagnetometerEventProducer
 from noaa_goes_producer_data import GoesMagnetometer
-from test_noaa_goes_producer_data_goesmagnetometer import Test_GoesMagnetometer
+from test_goesmagnetometer import Test_GoesMagnetometer
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCSolarFlaresEventProducer
 from noaa_goes_producer_data import XrayFlare
-from test_noaa_goes_producer_data_xrayflare import Test_XrayFlare
+from test_xrayflare import Test_XrayFlare
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCGOESMqttEventProducer
 from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASWPCGOESAmqpEventProducer
 
@@ -127,7 +127,8 @@ def test_microsoft_opendata_us_noaa_swpc_alerts_microsoftopendatausnoaaswpcspace
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_space_weather_alert(_product_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_space_weather_alert(_product_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -190,7 +191,8 @@ def test_microsoft_opendata_us_noaa_swpc_observations_microsoftopendatausnoaaswp
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_planetary_kindex(_observation_time = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_planetary_kindex(_observation_time = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -253,7 +255,8 @@ def test_microsoft_opendata_us_noaa_swpc_observations_microsoftopendatausnoaaswp
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_solar_wind_summary(_observation_time = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_solar_wind_summary(_observation_time = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -316,7 +319,8 @@ def test_microsoft_opendata_us_noaa_swpc_observations_microsoftopendatausnoaaswp
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_solar_wind_plasma(_observation_time = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_solar_wind_plasma(_observation_time = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -379,7 +383,8 @@ def test_microsoft_opendata_us_noaa_swpc_observations_microsoftopendatausnoaaswp
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_solar_wind_mag_field(_observation_time = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_solar_wind_mag_field(_observation_time = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -442,7 +447,8 @@ def test_microsoft_opendata_us_noaa_swpc_goesparticleflux_microsoftopendatausnoa
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_xray_flux(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_xray_flux(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -505,7 +511,8 @@ def test_microsoft_opendata_us_noaa_swpc_goesparticleflux_microsoftopendatausnoa
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_proton_flux(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_proton_flux(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -568,7 +575,8 @@ def test_microsoft_opendata_us_noaa_swpc_goesparticleflux_microsoftopendatausnoa
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_electron_flux(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_electron_flux(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -631,7 +639,8 @@ def test_microsoft_opendata_us_noaa_swpc_goesmagnetometer_microsoftopendatausnoa
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_magnetometer(_satellite = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_magnetometer(_satellite = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -694,7 +703,8 @@ def test_microsoft_opendata_us_noaa_swpc_solarflares_microsoftopendatausnoaaswpc
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_xray_flare(_satellite = f'test_{i}', _begin_time = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_xray_flare(_satellite = f'test_{i}', _begin_time = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -757,7 +767,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcgo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_xray_flux_mqtt(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_xray_flux_mqtt(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -818,7 +829,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcgo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_proton_flux_mqtt(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_proton_flux_mqtt(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -879,7 +891,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcgo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_electron_flux_mqtt(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_electron_flux_mqtt(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -940,7 +953,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcgo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_magnetometer_mqtt(_satellite = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_magnetometer_mqtt(_satellite = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1001,7 +1015,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcsp
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_space_weather_alert_mqtt(_product_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_space_weather_alert_mqtt(_product_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1062,7 +1077,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcxr
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_xray_flare_mqtt(_satellite = f'test_{i}', _begin_time = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_xray_flare_mqtt(_satellite = f'test_{i}', _begin_time = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1123,7 +1139,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcgo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_xray_flux_amqp(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_xray_flux_amqp(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1184,7 +1201,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcgo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_proton_flux_amqp(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_proton_flux_amqp(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1245,7 +1263,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcgo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_electron_flux_amqp(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_electron_flux_amqp(_satellite = f'test_{i}', _energy = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1306,7 +1325,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcgo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_magnetometer_amqp(_satellite = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_goes_magnetometer_amqp(_satellite = f'test_{i}', _time_tag = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1367,7 +1387,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcsp
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_space_weather_alert_amqp(_product_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_space_weather_alert_amqp(_product_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1428,7 +1449,8 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcxr
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_swpc_xray_flare_amqp(_satellite = f'test_{i}', _begin_time = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_swpc_xray_flare_amqp(_satellite = f'test_{i}', _begin_time = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

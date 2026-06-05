@@ -28,12 +28,12 @@ class Test_Currents(unittest.TestCase):
         Create instance of Currents for testing
         """
         instance = Currents(
-            station_id='ajzcfdzzdlpssihgysfn',
-            timestamp='jfgxzwjlmhjfrdpsnsek',
-            speed=float(75.16506260087932),
-            direction_degrees=float(92.53474980075201),
-            bin='cknslftirjpcdmhgzibi',
-            region='jwrkcjmslzxgjdfnerxy'
+            station_id='jioykeglwtxrefvmdpxr',
+            timestamp='gbjhxqlpvcoqjrooywzj',
+            speed=float(67.58905494187563),
+            direction_degrees=float(47.48885980070753),
+            bin='repgpnzfxujrdxjxwphh',
+            region='jttjifexevjsspprqjdo'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ajzcfdzzdlpssihgysfn'
+        test_value = 'jioykeglwtxrefvmdpxr'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'jfgxzwjlmhjfrdpsnsek'
+        test_value = 'gbjhxqlpvcoqjrooywzj'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -58,7 +58,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(75.16506260087932)
+        test_value = float(67.58905494187563)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     
@@ -66,7 +66,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test direction_degrees property
         """
-        test_value = float(92.53474980075201)
+        test_value = float(47.48885980070753)
         self.instance.direction_degrees = test_value
         self.assertEqual(self.instance.direction_degrees, test_value)
     
@@ -74,7 +74,7 @@ class Test_Currents(unittest.TestCase):
         """
         Test bin property
         """
-        test_value = 'cknslftirjpcdmhgzibi'
+        test_value = 'repgpnzfxujrdxjxwphh'
         self.instance.bin = test_value
         self.assertEqual(self.instance.bin, test_value)
     
@@ -82,19 +82,10 @@ class Test_Currents(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'jwrkcjmslzxgjdfnerxy'
+        test_value = 'jttjifexevjsspprqjdo'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Currents.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

@@ -94,6 +94,8 @@ class Reading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,9 +163,9 @@ class Reading:
             An instance of the dataclass.
         """
         return cls(
-            station_reference='bfnmraoxrwtmcjagjjkm',
+            station_reference='pincsayjwfvngwnrmjjr',
             date_time=datetime.datetime.now(datetime.timezone.utc),
-            measure='hlmnvoxttpdxuwbbqqfy',
-            value=float(86.008251761851),
-            river='ugeopunzxtggdgcyqavh'
+            measure='xyllwsmvrkszvmzbsqyw',
+            value=float(91.9779446019853),
+            river='oqreuyqlvigtxpvtajwh'
         )

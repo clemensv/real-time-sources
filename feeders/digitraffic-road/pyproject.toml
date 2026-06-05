@@ -12,16 +12,16 @@ packages = [{ include = "digitraffic_road" }]
 [tool.poetry.dependencies]
 python = ">=3.10,<4.0"
 paho-mqtt = ">=2.1.0"
-confluent-kafka = ">=2.5.3"
-cloudevents = ">=1.11.0,<2.0.0"
+confluent-kafka = ">=2.14.2"
+cloudevents = ">=1.12.1,<2.0.0"
 requests = ">=2.31.0"
 dataclasses-json = ">=0.6.7"
 digitraffic_road_producer_data = { path = "digitraffic_road_producer/digitraffic_road_producer_data" }
 digitraffic_road_producer_kafka_producer = { path = "digitraffic_road_producer/digitraffic_road_producer_kafka_producer" }
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
-testcontainers = ">=4.8.1"
+pytest = ">=9.0.3"
+testcontainers = ">=4.14.2"
 
 [tool.poetry.scripts]
 digitraffic-road = "digitraffic_road:main"

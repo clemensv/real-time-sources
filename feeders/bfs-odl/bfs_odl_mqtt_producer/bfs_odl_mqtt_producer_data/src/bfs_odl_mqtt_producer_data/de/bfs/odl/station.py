@@ -21,6 +21,7 @@ class Station:
     
     Attributes:
         station_id (str)
+        state (str)
         station_code (str)
         name (str)
         postal_code (str)
@@ -30,11 +31,11 @@ class Station:
         height_above_sea (typing.Optional[float])
         longitude (float)
         latitude (float)
-        canton (str)
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
+    state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     station_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_code"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     postal_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="postal_code"))
@@ -44,7 +45,6 @@ class Station:
     height_above_sea: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="height_above_sea"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    canton: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="canton"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -104,6 +104,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='iqseczoqvulwobsnnnky',
-            station_code='zfodxtjubvzpwrfyuseq',
-            name='auueifnviyrlrxdszrmf',
-            postal_code='dxemeuapgqwtegdvqnyl',
-            site_status=int(19),
-            site_status_text='feccyjwjijlflafynphr',
-            kid=int(8),
-            height_above_sea=float(22.25521430959404),
-            longitude=float(32.600910492964175),
-            latitude=float(42.369276190712945),
-            canton='rcumvuyknwddpmqappeg'
+            station_id='ozeusycalyeqgxbkwfxb',
+            state='vtqllozayuyvzobbeggv',
+            station_code='wlzbolrpjouolggqnihd',
+            name='vfzwkuqxnullnbukqbjy',
+            postal_code='nghjtksqcvtpdtvngyyg',
+            site_status=int(46),
+            site_status_text='jjrgweugpkayabpxtsdc',
+            kid=int(9),
+            height_above_sea=float(37.63032699590817),
+            longitude=float(90.9909759974038),
+            latitude=float(0.8285905108129432)
         )

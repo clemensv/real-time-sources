@@ -20,11 +20,11 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from energidataservice_dk_producer_kafka_producer.producer import DkEnerginetEnergidataserviceEventProducer
 from energidataservice_dk_producer_data import PowerSystemSnapshot
-from test_energidataservice_dk_producer_data_powersystemsnapshot import Test_PowerSystemSnapshot
+from test_powersystemsnapshot import Test_PowerSystemSnapshot
 from energidataservice_dk_producer_data import SpotPrice
-from test_energidataservice_dk_producer_data_spotprice import Test_SpotPrice
+from test_spotprice import Test_SpotPrice
 from energidataservice_dk_producer_data import Info
-from test_energidataservice_dk_producer_data_info import Test_Info
+from test_info import Test_Info
 from energidataservice_dk_producer_kafka_producer.producer import DkEnerginetEnergidataserviceMqttEventProducer
 from energidataservice_dk_producer_kafka_producer.producer import DkEnerginetEnergidataserviceAmqpEventProducer
 
@@ -109,7 +109,8 @@ def test_dk_energinet_energidataservice_dkenerginetenergidataservicepowersystems
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_energinet_energidataservice_power_system_snapshot(_price_area = f'test_{i}', data = event_data)
+        producer_instance.send_dk_energinet_energidataservice_power_system_snapshot(_price_area = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -172,7 +173,8 @@ def test_dk_energinet_energidataservice_dkenerginetenergidataservicespotprice(ka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_energinet_energidataservice_spot_price(_price_area = f'test_{i}', data = event_data)
+        producer_instance.send_dk_energinet_energidataservice_spot_price(_price_area = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -235,7 +237,8 @@ def test_dk_energinet_energidataservice_dkenerginetenergidataserviceinfo(kafka_e
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_energinet_energidataservice_info(_price_area = f'test_{i}', data = event_data)
+        producer_instance.send_dk_energinet_energidataservice_info(_price_area = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -298,7 +301,8 @@ def test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttpow
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_energinet_energidataservice_mqtt_power_system_snapshot(_price_area = f'test_{i}', data = event_data)
+        producer_instance.send_dk_energinet_energidataservice_mqtt_power_system_snapshot(_price_area = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -359,7 +363,8 @@ def test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttspo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_energinet_energidataservice_mqtt_spot_price(_price_area = f'test_{i}', data = event_data)
+        producer_instance.send_dk_energinet_energidataservice_mqtt_spot_price(_price_area = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -420,7 +425,8 @@ def test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttinf
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_energinet_energidataservice_mqtt_info(_price_area = f'test_{i}', data = event_data)
+        producer_instance.send_dk_energinet_energidataservice_mqtt_info(_price_area = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -481,7 +487,8 @@ def test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqppow
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_energinet_energidataservice_amqp_power_system_snapshot(_price_area = f'test_{i}', data = event_data)
+        producer_instance.send_dk_energinet_energidataservice_amqp_power_system_snapshot(_price_area = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -542,7 +549,8 @@ def test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqpspo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_energinet_energidataservice_amqp_spot_price(_price_area = f'test_{i}', data = event_data)
+        producer_instance.send_dk_energinet_energidataservice_amqp_spot_price(_price_area = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -603,7 +611,8 @@ def test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqpinf
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_energinet_energidataservice_amqp_info(_price_area = f'test_{i}', data = event_data)
+        producer_instance.send_dk_energinet_energidataservice_amqp_info(_price_area = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

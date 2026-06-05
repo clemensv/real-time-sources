@@ -33,12 +33,14 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from irail_producer_kafka_producer.producer import BeIrailEventProducer
+from irail_producer_kafka_producer.producer import BeIrailMqttEventProducer
+from irail_producer_kafka_producer.producer import BeIrailAmqpEventProducer
 
 # imports for the data classes for each event
 
-from irail_producer_data.station import Station
-from irail_producer_data.stationboard import StationBoard
-from irail_producer_data.arrivalboard import ArrivalBoard
+from irail_producer_data import Station
+from irail_producer_data import StationBoard
+from irail_producer_data import ArrivalBoard
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -81,12 +83,76 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'be.irail.ArrivalBoard' event to Kafka topic.
     await be_irail_event_producer.send_be_irail_arrival_board(_station_id = 'TODO: replace me', data = _arrival_board)
     print(f"Sent 'be.irail.ArrivalBoard' event: {_arrival_board.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        be_irail_mqtt_event_producer = BeIrailMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        be_irail_mqtt_event_producer = BeIrailMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- be.irail.mqtt.Station ----
+    # TODO: Supply event data for the be.irail.mqtt.Station event
+    _station = Station()
+
+    # sends the 'be.irail.mqtt.Station' event to Kafka topic.
+    await be_irail_mqtt_event_producer.send_be_irail_mqtt_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'be.irail.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- be.irail.mqtt.StationBoard ----
+    # TODO: Supply event data for the be.irail.mqtt.StationBoard event
+    _station_board = StationBoard()
+
+    # sends the 'be.irail.mqtt.StationBoard' event to Kafka topic.
+    await be_irail_mqtt_event_producer.send_be_irail_mqtt_station_board(_station_id = 'TODO: replace me', data = _station_board)
+    print(f"Sent 'be.irail.mqtt.StationBoard' event: {_station_board.to_json()}")
+
+    # ---- be.irail.mqtt.ArrivalBoard ----
+    # TODO: Supply event data for the be.irail.mqtt.ArrivalBoard event
+    _arrival_board = ArrivalBoard()
+
+    # sends the 'be.irail.mqtt.ArrivalBoard' event to Kafka topic.
+    await be_irail_mqtt_event_producer.send_be_irail_mqtt_arrival_board(_station_id = 'TODO: replace me', data = _arrival_board)
+    print(f"Sent 'be.irail.mqtt.ArrivalBoard' event: {_arrival_board.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        be_irail_amqp_event_producer = BeIrailAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        be_irail_amqp_event_producer = BeIrailAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- be.irail.amqp.Station ----
+    # TODO: Supply event data for the be.irail.amqp.Station event
+    _station = Station()
+
+    # sends the 'be.irail.amqp.Station' event to Kafka topic.
+    await be_irail_amqp_event_producer.send_be_irail_amqp_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'be.irail.amqp.Station' event: {_station.to_json()}")
+
+    # ---- be.irail.amqp.StationBoard ----
+    # TODO: Supply event data for the be.irail.amqp.StationBoard event
+    _station_board = StationBoard()
+
+    # sends the 'be.irail.amqp.StationBoard' event to Kafka topic.
+    await be_irail_amqp_event_producer.send_be_irail_amqp_station_board(_station_id = 'TODO: replace me', data = _station_board)
+    print(f"Sent 'be.irail.amqp.StationBoard' event: {_station_board.to_json()}")
+
+    # ---- be.irail.amqp.ArrivalBoard ----
+    # TODO: Supply event data for the be.irail.amqp.ArrivalBoard event
+    _arrival_board = ArrivalBoard()
+
+    # sends the 'be.irail.amqp.ArrivalBoard' event to Kafka topic.
+    await be_irail_amqp_event_producer.send_be_irail_amqp_arrival_board(_station_id = 'TODO: replace me', data = _arrival_board)
+    print(f"Sent 'be.irail.amqp.ArrivalBoard' event: {_arrival_board.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

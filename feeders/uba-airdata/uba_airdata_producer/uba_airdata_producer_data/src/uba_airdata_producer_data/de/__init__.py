@@ -1,3 +1,3 @@
-from .uba import Station, Measure, Component
+from .uba import Component, Station, Measure
 
-__all__ = ["Station", "Measure", "Component"]
+__all__ = ["Component", "Station", "Measure"]

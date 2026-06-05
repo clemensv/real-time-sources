@@ -92,6 +92,8 @@ class MsiDisplayState:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class MsiDisplayState:
             An instance of the dataclass.
         """
         return cls(
-            sign_id='qvcmtjwsxdyyaqncvfwn',
-            publication_time='qdhciyulglbhcdzcjovu',
-            image_code='iincjxihfchulfvcqmqb',
-            state='yzhpzjsvecwzhlqtcdmb',
-            speed_limit=int(83)
+            sign_id='sgldaanvoecynjjhhfxq',
+            publication_time='ayzzezegijerpptbspwi',
+            image_code='sttzthuhkfcbmesadqjp',
+            state='ybmrlgubtosldjafesjt',
+            speed_limit=int(87)
         )

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import nifc_usa_wildfires_mqtt_producer_data
 from nifc_usa_wildfires_mqtt_producer_data import WildfireIncident
-from test_nifc_usa_wildfires_mqtt_producer_data_wildfireincident import Test_WildfireIncident
+from test_wildfireincident import Test_WildfireIncident
 from nifc_usa_wildfires_mqtt_producer_mqtt_client import GovNIFCWildfiresMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -90,7 +91,7 @@ async def test_gov_nifc_wildfires_mqtt_gov_nifc_wildfires_mqtt_wildfire_incident
             topic=test_topic,
             source_uri=f"test_source_uri_{i}",
             irwin_id=f"test_irwin_id_{i}",
-            modified_on_datetime=f"test_modified_on_datetime_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

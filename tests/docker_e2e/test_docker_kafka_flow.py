@@ -2134,13 +2134,40 @@ class TestWikimediaOsmDiffsDockerFlow:
     TOPIC = 'test-wikimedia-osm-diffs'
 
     def test_emits_telemetry(self, kafka: KafkaFixture, wikimedia_osm_diffs_image):
+        # The live feeder must download the OpenStreetMap minutely replication
+        # state plus a full diff file and reassemble element changes before it
+        # emits, which is unreliable within a CI time budget. Emit one
+        # synthetic MapChange through the generated producer instead so the E2E
+        # deterministically validates the on-wire CloudEvent (subject, key, and
+        # JsonStructure schema) without depending on upstream OSM data — same
+        # pattern as TestINPEDeterBrazilDockerFlow.
+        command = [
+            'python',
+            '-c',
+            (
+                "import json, datetime;"
+                "from confluent_kafka import Producer;"
+                "from wikimedia_osm_diffs_producer_data import MapChange;"
+                "from wikimedia_osm_diffs_producer_kafka_producer.producer import OrgOpenStreetMapDiffsEventProducer;"
+                f"cfg={{'bootstrap.servers': {json.dumps(kafka.internal_address)}}};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "event_producer=OrgOpenStreetMapDiffsEventProducer(producer, topic);"
+                "event_producer.send_org_open_street_map_diffs_map_change("
+                "'node', '12345',"
+                "data=MapChange(change_type='modify', element_type='node', element_id=12345,"
+                " geohash5='u4pru', version=7, timestamp=datetime.datetime(2026,2,21,12,0,0,tzinfo=datetime.timezone.utc),"
+                " changeset_id=987654, user_name='osm_mapper', user_id=42,"
+                " latitude=59.9139, longitude=10.7522, tags=json.dumps({'amenity': 'cafe'}), sequence_number=6000001),"
+                "flush_producer=True)"
+            ),
+        ]
         _run_kafka_flow_test(
             kafka, wikimedia_osm_diffs_image, self.TOPIC,
             reference_types=None,
             telemetry_types=['MapChange'],
-            extra_env={'KAFKA_TOPIC': self.TOPIC},
+            command=command,
             min_messages=1,
-            timeout=180,
         )
 
 

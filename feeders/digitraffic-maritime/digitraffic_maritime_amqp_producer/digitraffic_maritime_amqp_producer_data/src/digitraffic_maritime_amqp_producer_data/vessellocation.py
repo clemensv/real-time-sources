@@ -104,6 +104,8 @@ class VesselLocation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class VesselLocation:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(17),
-            time=int(61),
-            sog=float(28.12288284831739),
-            cog=float(54.69451450856325),
-            navStat=int(85),
-            rot=int(96),
+            mmsi=int(64),
+            time=int(94),
+            sog=float(73.21317131034091),
+            cog=float(78.6620378475525),
+            navStat=int(72),
+            rot=int(40),
             posAcc=True,
             raim=False,
-            heading=int(18),
-            lon=float(30.968604345187956),
-            lat=float(20.30072255555737)
+            heading=int(55),
+            lon=float(0.4568764275088899),
+            lat=float(37.88597867217438)
         )

@@ -34,10 +34,11 @@ from confluent_kafka import Producer as KafkaProducer
 
 from nina_bbk_producer_kafka_producer.producer import NINAWarningsEventProducer
 from nina_bbk_producer_kafka_producer.producer import NINAWarningsMqttEventProducer
+from nina_bbk_producer_kafka_producer.producer import NINAWarningsAmqpEventProducer
 
 # imports for the data classes for each event
 
-from nina_bbk_producer_data.civilwarning import CivilWarning
+from nina_bbk_producer_data import CivilWarning
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -80,12 +81,28 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'NINA.Warnings.mqtt.CivilWarning' event to Kafka topic.
     await ninawarnings_mqtt_event_producer.send_nina_warnings_mqtt_civil_warning(_warning_id = 'TODO: replace me', data = _civil_warning)
     print(f"Sent 'NINA.Warnings.mqtt.CivilWarning' event: {_civil_warning.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        ninawarnings_amqp_event_producer = NINAWarningsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        ninawarnings_amqp_event_producer = NINAWarningsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- NINA.Warnings.amqp.CivilWarning ----
+    # TODO: Supply event data for the NINA.Warnings.amqp.CivilWarning event
+    _civil_warning = CivilWarning()
+
+    # sends the 'NINA.Warnings.amqp.CivilWarning' event to Kafka topic.
+    await ninawarnings_amqp_event_producer.send_nina_warnings_amqp_civil_warning(_warning_id = 'TODO: replace me', data = _civil_warning)
+    print(f"Sent 'NINA.Warnings.amqp.CivilWarning' event: {_civil_warning.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

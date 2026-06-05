@@ -20,10 +20,10 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualitySitesEventProducer
 from usgs_nwis_wq_producer_data import MonitoringSite
-from test_usgs_nwis_wq_producer_data_monitoringsite import Test_MonitoringSite
+from test_monitoringsite import Test_MonitoringSite
 from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualityReadingsEventProducer
 from usgs_nwis_wq_producer_data import WaterQualityReading
-from test_usgs_nwis_wq_producer_data_waterqualityreading import Test_WaterQualityReading
+from test_waterqualityreading import Test_WaterQualityReading
 from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualitySitesMqttEventProducer
 from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualitySitesAmqpEventProducer
 from usgs_nwis_wq_producer_kafka_producer.producer import USGSWaterQualityReadingsMqttEventProducer
@@ -110,7 +110,8 @@ def test_usgs_waterquality_sites_usgswaterqualitysitesmonitoringsite(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_usgs_water_quality_sites_monitoring_site(_source_uri = f'test_{i}', _site_number = f'test_{i}', data = event_data)
+        producer_instance.send_usgs_water_quality_sites_monitoring_site(_source_uri = f'test_{i}', _site_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -173,7 +174,8 @@ def test_usgs_waterquality_readings_usgswaterqualityreadingswaterqualityreading(
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_usgs_water_quality_readings_water_quality_reading(_source_uri = f'test_{i}', _site_number = f'test_{i}', _parameter_code = f'test_{i}', data = event_data)
+        producer_instance.send_usgs_water_quality_readings_water_quality_reading(_source_uri = f'test_{i}', _site_number = f'test_{i}', _parameter_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -236,7 +238,8 @@ def test_usgs_waterquality_sites_mqtt_usgswaterqualitysitesmqttmonitoringsite(ka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_usgs_water_quality_sites_mqtt_monitoring_site(_source_uri = f'test_{i}', _site_number = f'test_{i}', data = event_data)
+        producer_instance.send_usgs_water_quality_sites_mqtt_monitoring_site(_source_uri = f'test_{i}', _site_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -297,7 +300,8 @@ def test_usgs_waterquality_sites_amqp_usgswaterqualitysitesamqpmonitoringsite(ka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_usgs_water_quality_sites_amqp_monitoring_site(_source_uri = f'test_{i}', _site_number = f'test_{i}', data = event_data)
+        producer_instance.send_usgs_water_quality_sites_amqp_monitoring_site(_source_uri = f'test_{i}', _site_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -358,7 +362,8 @@ def test_usgs_waterquality_readings_mqtt_usgswaterqualityreadingsmqttwaterqualit
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_usgs_water_quality_readings_mqtt_water_quality_reading(_source_uri = f'test_{i}', _site_number = f'test_{i}', _parameter_code = f'test_{i}', data = event_data)
+        producer_instance.send_usgs_water_quality_readings_mqtt_water_quality_reading(_source_uri = f'test_{i}', _site_number = f'test_{i}', _parameter_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -419,7 +424,8 @@ def test_usgs_waterquality_readings_amqp_usgswaterqualityreadingsamqpwaterqualit
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_usgs_water_quality_readings_amqp_water_quality_reading(_source_uri = f'test_{i}', _site_number = f'test_{i}', _parameter_code = f'test_{i}', data = event_data)
+        producer_instance.send_usgs_water_quality_readings_amqp_water_quality_reading(_source_uri = f'test_{i}', _site_number = f'test_{i}', _parameter_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

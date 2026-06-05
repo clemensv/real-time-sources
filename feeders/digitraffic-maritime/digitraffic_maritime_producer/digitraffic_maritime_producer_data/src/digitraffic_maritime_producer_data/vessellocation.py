@@ -17,7 +17,7 @@ import json
 @dataclass
 class VesselLocation:
     """
-    AIS vessel position report from Digitraffic MQTT stream. Represents a decoded AIS message type 1/2/3/18/19 position update.
+    A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
     
     Attributes:
         mmsi (typing.Optional[int])
@@ -104,6 +104,8 @@ class VesselLocation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class VesselLocation:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(70),
-            time=int(30),
-            sog=float(44.02708777302499),
-            cog=float(3.8201412940597645),
-            navStat=int(97),
-            rot=int(33),
-            posAcc=True,
-            raim=True,
-            heading=int(58),
-            lon=float(83.59517655201986),
-            lat=float(85.45386942503005)
+            mmsi=int(9),
+            time=int(76),
+            sog=float(12.629832300207799),
+            cog=float(26.15917449093018),
+            navStat=int(50),
+            rot=int(41),
+            posAcc=False,
+            raim=False,
+            heading=int(84),
+            lon=float(35.53684507111902),
+            lat=float(33.0057431493895)
         )

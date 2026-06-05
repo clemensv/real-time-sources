@@ -101,6 +101,8 @@ class Port:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -168,13 +170,13 @@ class Port:
             An instance of the dataclass.
         """
         return cls(
-            port_number='qdizdzgujricgkeeqvrr',
-            port_name='mufugkboqfkmtlkxfazq',
-            border='dqzihtdrhqdjaqzviqmj',
-            crossing_name='ikpqtuowusxkfsilfvec',
-            hours='dxqlhthxbhufknqmeyvq',
-            passenger_vehicle_max_lanes=int(92),
-            commercial_vehicle_max_lanes=int(95),
-            pedestrian_max_lanes=int(66),
+            port_number='zfffgvsyiyicvmyxibrg',
+            port_name='dtbhcwvrkgttsodhmybp',
+            border='kjqymzfdvdvapfzrunlu',
+            crossing_name='gnkctekjnhzxjoqzolvf',
+            hours='rwlpegnchcapmeeuhesd',
+            passenger_vehicle_max_lanes=int(21),
+            commercial_vehicle_max_lanes=int(29),
+            pedestrian_max_lanes=int(46),
             border_slug=BorderSlugenum.canadian_border
         )

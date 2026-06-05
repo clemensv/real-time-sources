@@ -5,6 +5,7 @@
 Tests for irail_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../irail_amqp_producer_data/src')))
@@ -25,11 +27,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from irail_amqp_producer_amqp_producer import *
 from irail_amqp_producer_data import Station
-from test_irail_amqp_producer_data_station import Test_Station
+from test_station import Test_Station
 from irail_amqp_producer_data import StationBoard
-from test_irail_amqp_producer_data_stationboard import Test_StationBoard
+from test_stationboard import Test_StationBoard
 from irail_amqp_producer_data import ArrivalBoard
-from test_irail_amqp_producer_data_arrivalboard import Test_ArrivalBoard
+from test_arrivalboard import Test_ArrivalBoard
 
 
 
@@ -235,6 +237,45 @@ class TestBeIrailAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(BeIrailAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_station(self, artemis_container):
         """Send and receive a Station message via ActiveMQ Artemis."""
@@ -261,6 +302,7 @@ class TestBeIrailAmqpProducer:
                 producer.send_station(
                     data=payload,
                     _station_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -268,6 +310,7 @@ class TestBeIrailAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -289,8 +332,40 @@ class TestBeIrailAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_station_single_fresh_connection(self, artemis_container):
+        """Send exactly one Station message on a fresh producer connection."""
+        payload = Test_Station.create_instance()
+
+        producer = BeIrailAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_station(
+                data=payload,
+                _station_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'be.irail.amqp.Station'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_station_board(self, artemis_container):
         """Send and receive a StationBoard message via ActiveMQ Artemis."""
@@ -317,6 +392,7 @@ class TestBeIrailAmqpProducer:
                 producer.send_station_board(
                     data=payload,
                     _station_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -324,6 +400,7 @@ class TestBeIrailAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -345,8 +422,40 @@ class TestBeIrailAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_station_board_single_fresh_connection(self, artemis_container):
+        """Send exactly one StationBoard message on a fresh producer connection."""
+        payload = Test_StationBoard.create_instance()
+
+        producer = BeIrailAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_station_board(
+                data=payload,
+                _station_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'be.irail.amqp.StationBoard'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_arrival_board(self, artemis_container):
         """Send and receive a ArrivalBoard message via ActiveMQ Artemis."""
@@ -373,6 +482,7 @@ class TestBeIrailAmqpProducer:
                 producer.send_arrival_board(
                     data=payload,
                     _station_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -380,6 +490,7 @@ class TestBeIrailAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -401,6 +512,38 @@ class TestBeIrailAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_arrival_board_single_fresh_connection(self, artemis_container):
+        """Send exactly one ArrivalBoard message on a fresh producer connection."""
+        payload = Test_ArrivalBoard.create_instance()
+
+        producer = BeIrailAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_arrival_board(
+                data=payload,
+                _station_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'be.irail.amqp.ArrivalBoard'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
 

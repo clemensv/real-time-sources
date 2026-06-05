@@ -17,7 +17,7 @@ import json
 @dataclass
 class WaterQualityReading:
     """
-    Normalized King County buoy or mooring reading carrying the documented water-quality and weather measurements published by the current raw-data datasets.
+    A transport update from King County Metro marine feeds. It carries marine transit schedule and status updates for King County water-taxi routes and sailings.
     
     Attributes:
         station_id (str)
@@ -132,6 +132,8 @@ class WaterQualityReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -199,29 +201,29 @@ class WaterQualityReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='xgjexukvjfbilaucufgr',
-            station_name='fjymfoafvjeyiulwjnwb',
-            observation_time='pjgkgckfvwwntspafooq',
-            water_temperature_c=float(48.77456045397357),
-            conductivity_s_m=float(37.266055331041606),
-            pressure_dbar=float(44.861332221535555),
-            dissolved_oxygen_mg_l=float(92.5267414439993),
-            ph=float(83.17600478322025),
-            chlorophyll_ug_l=float(94.04027506527905),
-            turbidity_ntu=float(44.088321111976015),
-            chlorophyll_stddev_ug_l=float(76.14315154843737),
-            turbidity_stddev_ntu=float(86.5310663422413),
-            salinity_psu=float(50.338343930760345),
-            specific_conductivity_s_m=float(25.5135980900531),
-            dissolved_oxygen_saturation_pct=float(48.86976785782298),
-            nitrate_umol=float(82.53309603309027),
-            nitrate_mg_l=float(25.983211491705116),
-            wind_direction_deg=float(20.816425048829068),
-            wind_speed_m_s=float(47.14336665581882),
-            photosynthetically_active_radiation_umol_s_m2=float(13.543481251644419),
-            air_temperature_f=float(19.598605013524974),
-            air_humidity_pct=float(18.109443226101263),
-            air_pressure_in_hg=float(41.72443009486676),
-            system_battery_v=float(86.38391676066604),
-            sensor_battery_v=float(2.083432892778081)
+            station_id='dinvkscmzhwlxtusxjgr',
+            station_name='vbmfgzzlnzagrpxqjede',
+            observation_time='fcdsgspqqrwcbmnwrnoi',
+            water_temperature_c=float(97.20251511363985),
+            conductivity_s_m=float(5.362811896633146),
+            pressure_dbar=float(33.44230830094127),
+            dissolved_oxygen_mg_l=float(85.46629539707949),
+            ph=float(88.93776827583036),
+            chlorophyll_ug_l=float(88.18424654691182),
+            turbidity_ntu=float(70.89392227142561),
+            chlorophyll_stddev_ug_l=float(76.03940418751013),
+            turbidity_stddev_ntu=float(50.475205078336835),
+            salinity_psu=float(73.42911851601094),
+            specific_conductivity_s_m=float(44.722378517045044),
+            dissolved_oxygen_saturation_pct=float(44.337654374289556),
+            nitrate_umol=float(89.03541103602304),
+            nitrate_mg_l=float(58.614979585446356),
+            wind_direction_deg=float(26.991791187487024),
+            wind_speed_m_s=float(53.69964001765367),
+            photosynthetically_active_radiation_umol_s_m2=float(54.81545934780201),
+            air_temperature_f=float(25.349891414851953),
+            air_humidity_pct=float(54.73842533768307),
+            air_pressure_in_hg=float(50.03021119318145),
+            system_battery_v=float(82.06549959939647),
+            sensor_battery_v=float(65.90198397258601)
         )

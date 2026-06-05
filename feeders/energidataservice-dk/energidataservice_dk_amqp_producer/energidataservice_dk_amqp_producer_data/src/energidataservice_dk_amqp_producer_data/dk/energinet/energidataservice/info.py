@@ -108,6 +108,8 @@ class Info:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -175,17 +177,17 @@ class Info:
             An instance of the dataclass.
         """
         return cls(
-            info_id='rupnbumqarfekexnfotu',
-            name='lrsmajekyympmipovuza',
-            country='midaefwfaopxtjtjqdzb',
-            city='eggtsaxttoheebkvbxlx',
-            category='jrpkgoptlxegdtpeuxif',
-            price_area='wrojwxkqoxplcypaamil',
-            settlement_date='sayylkdgtlctjnzzmtre',
-            settlement_period=int(93),
-            area_code='xulesglapvtkmimicmsl',
-            segment='zqzbsgaesqksztllanxq',
-            entity_id='stmfdyttjusmaumvqtvz',
-            event_id='ydvpwwxarsynqjmqyufs',
-            venue_id='cbortwjuzehkwydxmvfc'
+            info_id='dnddswjbyjrbotviitlf',
+            name='ewsberudzkegbxxvlant',
+            country='rxqjnpqdhekrgilllmfu',
+            city='haovgfkpaqpwprsgevae',
+            category='mwmsprtpzhsjecumwotd',
+            price_area='bvcnyxrxnuanvemmxocz',
+            settlement_date='iypkevchztxvadpqtiwt',
+            settlement_period=int(98),
+            area_code='filqhlqmdcctaptputha',
+            segment='jehzmojhxhdceamjyhbw',
+            entity_id='deoecuuxlujtjfqpfbzg',
+            event_id='nuetzfbtvcjwfunwnpbj',
+            venue_id='rmzvmmwcdcgnynbfceaq'
         )

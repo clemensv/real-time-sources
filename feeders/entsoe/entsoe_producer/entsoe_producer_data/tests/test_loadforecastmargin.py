@@ -28,11 +28,11 @@ class Test_LoadForecastMargin(unittest.TestCase):
         Create instance of LoadForecastMargin for testing
         """
         instance = LoadForecastMargin(
-            inDomain='spckjaciegbpidosnmhl',
-            quantity=float(55.050822553411564),
-            resolution='xrvvdvucnlczfeyablax',
-            documentType='jkrvgjtacoxpxorwxexn',
-            unitName='crhduwuojgyyeayojvvd'
+            inDomain='ejyktcpqbmcfbpyfvlbs',
+            quantity=float(0.3980349750637546),
+            resolution='wyytzfrcdoylkhgyxzkf',
+            documentType='yyraohlflkeaijntijxg',
+            unitName='oenhfvctbmgozsrfxfuq'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_LoadForecastMargin(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'spckjaciegbpidosnmhl'
+        test_value = 'ejyktcpqbmcfbpyfvlbs'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -49,7 +49,7 @@ class Test_LoadForecastMargin(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(55.050822553411564)
+        test_value = float(0.3980349750637546)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -57,7 +57,7 @@ class Test_LoadForecastMargin(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'xrvvdvucnlczfeyablax'
+        test_value = 'wyytzfrcdoylkhgyxzkf'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -65,7 +65,7 @@ class Test_LoadForecastMargin(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'jkrvgjtacoxpxorwxexn'
+        test_value = 'yyraohlflkeaijntijxg'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -73,19 +73,10 @@ class Test_LoadForecastMargin(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'crhduwuojgyyeayojvvd'
+        test_value = 'oenhfvctbmgozsrfxfuq'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = LoadForecastMargin.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

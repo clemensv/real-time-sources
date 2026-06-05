@@ -1,3 +1,3 @@
-from .sensor import SensorInfo, SensorReading
+from .sensor import SensorReading, SensorInfo
 
-__all__ = ["SensorInfo", "SensorReading"]
+__all__ = ["SensorReading", "SensorInfo"]

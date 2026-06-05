@@ -28,10 +28,10 @@ class Test_Predictions(unittest.TestCase):
         Create instance of Predictions for testing
         """
         instance = Predictions(
-            station_id='sdhulfbmsdzkthzwdgsn',
-            timestamp='ybrlonsoltgiaqpmefvg',
-            value=float(82.60496028912885),
-            region='cyjqxpwwrlpzfixrdwpd'
+            station_id='jqhwuqsndzvstdxtfgzb',
+            timestamp='nxbyttrwteirdxdvmiyx',
+            value=float(98.39187744423866),
+            region='abihdnxuzmfmyqgcbhnw'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Predictions(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'sdhulfbmsdzkthzwdgsn'
+        test_value = 'jqhwuqsndzvstdxtfgzb'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -48,7 +48,7 @@ class Test_Predictions(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'ybrlonsoltgiaqpmefvg'
+        test_value = 'nxbyttrwteirdxdvmiyx'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -56,7 +56,7 @@ class Test_Predictions(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(82.60496028912885)
+        test_value = float(98.39187744423866)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -64,19 +64,10 @@ class Test_Predictions(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'cyjqxpwwrlpzfixrdwpd'
+        test_value = 'abihdnxuzmfmyqgcbhnw'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Predictions.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

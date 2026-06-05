@@ -100,6 +100,8 @@ class EventSaleStatus:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class EventSaleStatus:
             An instance of the dataclass.
         """
         return cls(
-            event_id='tswxhfrncnmlxjipubsw',
-            name='dlleszaxxxduomxwhuah',
-            sale_status='bjumhybsuzcnmdhfqomm',
-            event_status='joerkaozizgjdgzpxkmt',
-            start='weauxsyhhnliezwiocyj',
-            end='nzckofbueegirfyjnnih',
-            url='erdplemzadsrbqzgzpdl',
-            buy_tickets_url='cmzhifuwugjesjbxprvj',
-            observed_at='jncqycmfovcswzdwjlcr'
+            event_id='xpzavmqcjlucuhleffie',
+            name='zxuaikvxpkfnblfyyglf',
+            sale_status='oizsoeibfisspuzjhgsc',
+            event_status='ttkferkqrvcwwrvrtjar',
+            start='imcofdoggawetsyanxpo',
+            end='cdefjypshrjlhlpbkvcu',
+            url='mpydizkxcbaoogflomjx',
+            buy_tickets_url='cqohnniikxoalspqemyc',
+            observed_at='anvvowxmyukiuanyphuu'
         )

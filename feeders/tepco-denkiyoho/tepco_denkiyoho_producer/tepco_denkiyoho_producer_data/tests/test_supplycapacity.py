@@ -30,19 +30,19 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         instance = SupplyCapacity(
             date=datetime.date.today(),
-            time='vicyxhuctsgserzcruee',
-            peak_supply_capacity_mw=float(82.68022467617017),
-            peak_supply_capacity_jp_unit_value=int(43),
-            peak_time_slot='akvhkgaxhshmthoapswi',
-            peak_reserve_margin_pct=float(30.756738673464458),
-            peak_usage_pct=float(14.949959834640769),
-            daily_max_usage_pct=float(36.442153563749415),
-            daily_max_usage_time_slot='hdzbqmnxasxyencdajcg',
+            time='pymjpmqgqluzkddhtsng',
+            peak_supply_capacity_mw=float(44.41172061878329),
+            peak_supply_capacity_jp_unit_value=int(57),
+            peak_time_slot='gwgnasxittjqzenpnslc',
+            peak_reserve_margin_pct=float(89.08902393442236),
+            peak_usage_pct=float(43.50697729183294),
+            daily_max_usage_pct=float(58.400730479287986),
+            daily_max_usage_time_slot='kddiqughrxxeehmvkxpt',
             update_datetime=datetime.datetime.now(datetime.timezone.utc),
             update_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            area_code='lctznzfgoyflscdyljjs',
-            area_name_jp='bimbqqujwuwiqazxnqze',
-            area_name_en='ugwfuuucmhxfnercbrkh'
+            area_code='vswagitcxpwpvefblcaa',
+            area_name_jp='hdxmenldktgvlncwaipk',
+            area_name_en='tfsbdjvbaujxgsuwmsdu'
         )
         return instance
 
@@ -59,7 +59,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test time property
         """
-        test_value = 'vicyxhuctsgserzcruee'
+        test_value = 'pymjpmqgqluzkddhtsng'
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -67,7 +67,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test peak_supply_capacity_mw property
         """
-        test_value = float(82.68022467617017)
+        test_value = float(44.41172061878329)
         self.instance.peak_supply_capacity_mw = test_value
         self.assertEqual(self.instance.peak_supply_capacity_mw, test_value)
     
@@ -75,7 +75,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test peak_supply_capacity_jp_unit_value property
         """
-        test_value = int(43)
+        test_value = int(57)
         self.instance.peak_supply_capacity_jp_unit_value = test_value
         self.assertEqual(self.instance.peak_supply_capacity_jp_unit_value, test_value)
     
@@ -83,7 +83,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test peak_time_slot property
         """
-        test_value = 'akvhkgaxhshmthoapswi'
+        test_value = 'gwgnasxittjqzenpnslc'
         self.instance.peak_time_slot = test_value
         self.assertEqual(self.instance.peak_time_slot, test_value)
     
@@ -91,7 +91,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test peak_reserve_margin_pct property
         """
-        test_value = float(30.756738673464458)
+        test_value = float(89.08902393442236)
         self.instance.peak_reserve_margin_pct = test_value
         self.assertEqual(self.instance.peak_reserve_margin_pct, test_value)
     
@@ -99,7 +99,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test peak_usage_pct property
         """
-        test_value = float(14.949959834640769)
+        test_value = float(43.50697729183294)
         self.instance.peak_usage_pct = test_value
         self.assertEqual(self.instance.peak_usage_pct, test_value)
     
@@ -107,7 +107,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test daily_max_usage_pct property
         """
-        test_value = float(36.442153563749415)
+        test_value = float(58.400730479287986)
         self.instance.daily_max_usage_pct = test_value
         self.assertEqual(self.instance.daily_max_usage_pct, test_value)
     
@@ -115,7 +115,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test daily_max_usage_time_slot property
         """
-        test_value = 'hdzbqmnxasxyencdajcg'
+        test_value = 'kddiqughrxxeehmvkxpt'
         self.instance.daily_max_usage_time_slot = test_value
         self.assertEqual(self.instance.daily_max_usage_time_slot, test_value)
     
@@ -139,7 +139,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'lctznzfgoyflscdyljjs'
+        test_value = 'vswagitcxpwpvefblcaa'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
     
@@ -147,7 +147,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test area_name_jp property
         """
-        test_value = 'bimbqqujwuwiqazxnqze'
+        test_value = 'hdxmenldktgvlncwaipk'
         self.instance.area_name_jp = test_value
         self.assertEqual(self.instance.area_name_jp, test_value)
     
@@ -155,7 +155,7 @@ class Test_SupplyCapacity(unittest.TestCase):
         """
         Test area_name_en property
         """
-        test_value = 'ugwfuuucmhxfnercbrkh'
+        test_value = 'tfsbdjvbaujxgsuwmsdu'
         self.instance.area_name_en = test_value
         self.assertEqual(self.instance.area_name_en, test_value)
     

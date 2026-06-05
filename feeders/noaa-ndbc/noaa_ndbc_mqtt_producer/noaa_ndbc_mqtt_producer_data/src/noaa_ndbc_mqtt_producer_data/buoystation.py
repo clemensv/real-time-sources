@@ -100,6 +100,8 @@ class BuoyStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class BuoyStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='xpiqfhvlajboxhhmokkv',
-            owner='ocznwvlsoljzumkchqez',
-            station_type='inaexvhsxinltbtopxzy',
-            hull='yuepbnceestumgeqprkm',
-            name='kwemcrknichacdbmjequ',
-            latitude=float(35.116887473571786),
-            longitude=float(80.30056223596488),
-            timezone='qauwenlliqqslidzemxk',
-            region='ubykizlyjwevlbarmxqq'
+            station_id='tbuxrkbemdsxnlozqaqn',
+            owner='yyxavdsikcxnddcevfid',
+            station_type='qutsjftsqhbmrxyjmgtd',
+            hull='cxinttzpbsjudlijmbbw',
+            name='hkygmstucjpbivhbyhaj',
+            latitude=float(81.1334828822161),
+            longitude=float(20.555620626785675),
+            timezone='xqwjipmzepkymzosvvda',
+            region='qvpkhqkryebumwwulqke'
         )

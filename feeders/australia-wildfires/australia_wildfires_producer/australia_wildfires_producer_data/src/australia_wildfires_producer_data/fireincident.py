@@ -10,54 +10,56 @@ import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
 import json
+import datetime
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class FireIncident:
     """
-    Normalized bushfire or grass fire incident record aggregated from three Australian state emergency services.
-
+    An incident update from Australian emergency-services incident feeds. It reports the current status, location, and classification for a wildfire or emergency incident.
+    
     Attributes:
         incident_id (str)
         state (str)
         title (str)
         alert_level (str)
-        status (typing.Optional[str])
+        status (str)
         location (typing.Optional[str])
         latitude (typing.Optional[float])
         longitude (typing.Optional[float])
         size_hectares (typing.Optional[float])
         type (typing.Optional[str])
         responsible_agency (typing.Optional[str])
-        updated (str)
+        updated (datetime.datetime)
         source_url (str)
     """
-
-
+    
+    
     incident_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="incident_id"))
     state: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
     title: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
     alert_level: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alert_level"))
-    status: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
+    status: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
     location: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="location"))
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     size_hectares: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="size_hectares"))
     type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
     responsible_agency: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="responsible_agency"))
-    updated: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated"))
+    updated: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="updated", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     source_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source_url"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'FireIncident':
         """
         Converts a dictionary to a dataclass instance.
-
+        
         Args:
             data: The dictionary to convert to a dataclass.
-
+        
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -76,7 +78,7 @@ class FireIncident:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """
+        """ 
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -88,7 +90,7 @@ class FireIncident:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-
+        
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -97,17 +99,19 @@ class FireIncident:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.
+            The byte array representation of the dataclass.        
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -127,10 +131,10 @@ class FireIncident:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['FireIncident']:
         """
         Converts the data to a dataclass based on the content type string.
-
+        
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to.
+            content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -154,7 +158,7 @@ class FireIncident:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -170,22 +174,22 @@ class FireIncident:
     def create_instance(cls) -> 'FireIncident':
         """
         Creates an instance of the dataclass with test values.
-
+        
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            incident_id='test-incident-001',
-            state='NSW',
-            title='Test Fire Incident',
-            alert_level='Advice',
-            status='Under control',
-            location='Test Location, NSW 2000',
-            latitude=float(-33.8688),
-            longitude=float(151.2093),
-            size_hectares=float(10.5),
-            type='Bush Fire',
-            responsible_agency='Rural Fire Service',
-            updated='2026-01-01T00:00:00+00:00',
-            source_url='https://incidents.rfs.nsw.gov.au/api/v1/incidents/000001'
+            incident_id='awtrhkyeqwsagyoodbct',
+            state='fdedjzbtpnpdmgajurnf',
+            title='frhgbgpqgsxejzoytzhn',
+            alert_level='ogekmroocpgzlsxqbbnq',
+            status='ewtmjoqpzjzachptmryt',
+            location='zlavgcvhbvqrxcxqgggl',
+            latitude=float(42.0009714515957),
+            longitude=float(95.31833986740946),
+            size_hectares=float(44.83582253382856),
+            type='xitkokvzuzsjkydeeyzi',
+            responsible_agency='esavoijcbkqzfyrmegty',
+            updated=datetime.datetime.now(datetime.timezone.utc),
+            source_url='spvdzbwccyrjrsjylhay'
         )

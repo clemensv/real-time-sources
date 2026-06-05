@@ -17,7 +17,7 @@ import json
 @dataclass
 class TmsStation:
     """
-    Traffic Measurement System (TMS) station metadata from the Finnish national road network operated by Fintraffic. Each TMS station is a fixed roadside installation that measures traffic volumes and speeds. Over 500 TMS stations are deployed across the Finnish road network. Station metadata includes geographic location, road address, municipality, available sensor list, free-flow reference speeds, and collection status. This reference data contextualizes the real-time TmsSensorData telemetry events and is fetched from the Digitraffic REST API at https://tie.digitraffic.fi/api/tms/v1/stations. See https://www.digitraffic.fi/en/road-traffic/lam/ for full TMS station documentation.
+    A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
     
     Attributes:
         station_id (int)
@@ -138,6 +138,8 @@ class TmsStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -205,32 +207,32 @@ class TmsStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(83),
-            name='bsehouelnnadyvussqvm',
-            tms_number=int(19),
-            names_fi='ykhxpgqmmefoditnofeq',
-            names_sv='ahnjnuawndosqakvczwc',
-            names_en='xokvhskludqbudgwvqpt',
-            longitude=float(72.88243890208881),
-            latitude=float(20.470806610451632),
-            altitude=float(28.590125126154508),
-            municipality='ahwvkgcwuznlpcaqynpd',
-            municipality_code=int(85),
-            province='cmfxrrhzuwkbrqpfkegb',
-            province_code=int(48),
-            road_number=int(48),
-            road_section=int(95),
-            distance_from_section_start=int(41),
-            carriageway='vdhdpqztgfentpvcqvfa',
-            side='kufivjvmddlosxavhsje',
-            station_type='rekwbkiylpihztvfpbcd',
-            collection_status='qdaendgldiouuhjlfiyb',
-            state='fnnfsspxdvfxjcvibwim',
-            free_flow_speed_1=float(64.86497788940494),
-            free_flow_speed_2=float(43.43660301173989),
-            bearing=int(87),
-            start_time='czpvxkfzmjbpmxqktfuz',
-            livi_id='psfuoicfxdprcykmnxvg',
-            sensors=[int(44), int(58), int(81), int(87)],
-            data_updated_time='fusykulggfxbrfgeypft'
+            station_id=int(45),
+            name='twgtfqkcaqtrvfvnlqgr',
+            tms_number=int(24),
+            names_fi='fxbvrcwgvgdsyftcktxw',
+            names_sv='vqpcppfuwfvmejauedzb',
+            names_en='cbyqswgbltnsjvfoohoq',
+            longitude=float(85.63512355943404),
+            latitude=float(24.153361400506633),
+            altitude=float(10.48313142862437),
+            municipality='cqbkmrcqfuakyvvcdgtu',
+            municipality_code=int(56),
+            province='yivhuzvpuvnshlvoafzp',
+            province_code=int(71),
+            road_number=int(28),
+            road_section=int(14),
+            distance_from_section_start=int(26),
+            carriageway='gbwhwlbwnvxwdzcabgbc',
+            side='kpvdjtvjdyxrjttgqjae',
+            station_type='advosnixvrpybcqxdooi',
+            collection_status='sskbkymvtcsskybedszk',
+            state='koatnykvtqyctujscgyy',
+            free_flow_speed_1=float(83.2115482290208),
+            free_flow_speed_2=float(47.51029926921922),
+            bearing=int(28),
+            start_time='nlyftwujcesygzsqfzum',
+            livi_id='lrowjyoylkennjjeeagx',
+            sensors=[int(52)],
+            data_updated_time='eozasbdhsxnqohhcdyje'
         )

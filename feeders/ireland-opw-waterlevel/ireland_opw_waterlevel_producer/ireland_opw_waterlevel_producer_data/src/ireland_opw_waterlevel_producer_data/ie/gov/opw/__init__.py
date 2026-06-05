@@ -1,3 +1,3 @@
-from .waterlevel import Station, WaterLevelReading
+from .waterlevel import WaterLevelReading, Station
 
-__all__ = ["Station", "WaterLevelReading"]
+__all__ = ["WaterLevelReading", "Station"]

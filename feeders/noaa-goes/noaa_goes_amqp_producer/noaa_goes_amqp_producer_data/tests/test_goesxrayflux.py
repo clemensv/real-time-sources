@@ -28,10 +28,10 @@ class Test_GoesXrayFlux(unittest.TestCase):
         Create instance of GoesXrayFlux for testing
         """
         instance = GoesXrayFlux(
-            time_tag='jmhsvdxrnpqpxxothqco',
-            satellite=int(3),
-            flux=float(29.316145529843894),
-            energy='sdyxtkglqqtcmyypjnil'
+            time_tag='zjcmyzmfuzfvpaosucnc',
+            satellite=int(98),
+            flux=float(93.50414109373074),
+            energy='fnqnuaxdxyropmuooggu'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_GoesXrayFlux(unittest.TestCase):
         """
         Test time_tag property
         """
-        test_value = 'jmhsvdxrnpqpxxothqco'
+        test_value = 'zjcmyzmfuzfvpaosucnc'
         self.instance.time_tag = test_value
         self.assertEqual(self.instance.time_tag, test_value)
     
@@ -48,7 +48,7 @@ class Test_GoesXrayFlux(unittest.TestCase):
         """
         Test satellite property
         """
-        test_value = int(3)
+        test_value = int(98)
         self.instance.satellite = test_value
         self.assertEqual(self.instance.satellite, test_value)
     
@@ -56,7 +56,7 @@ class Test_GoesXrayFlux(unittest.TestCase):
         """
         Test flux property
         """
-        test_value = float(29.316145529843894)
+        test_value = float(93.50414109373074)
         self.instance.flux = test_value
         self.assertEqual(self.instance.flux, test_value)
     
@@ -64,7 +64,7 @@ class Test_GoesXrayFlux(unittest.TestCase):
         """
         Test energy property
         """
-        test_value = 'sdyxtkglqqtcmyypjnil'
+        test_value = 'fnqnuaxdxyropmuooggu'
         self.instance.energy = test_value
         self.assertEqual(self.instance.energy, test_value)
     

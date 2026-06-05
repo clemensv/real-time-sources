@@ -10,8 +10,8 @@ import requests
 from datetime import datetime, timezone, timedelta
 from confluent_kafka import Producer
 
-from syke_hydro_producer_data.fi.syke.hydrology.station import Station
-from syke_hydro_producer_data.fi.syke.hydrology.waterlevelobservation import WaterLevelObservation
+from syke_hydro_producer_data import Station
+from syke_hydro_producer_data import WaterLevelObservation
 from syke_hydro_producer_kafka_producer.producer import FISYKEHydrologyEventProducer
 
 logger = logging.getLogger(__name__)

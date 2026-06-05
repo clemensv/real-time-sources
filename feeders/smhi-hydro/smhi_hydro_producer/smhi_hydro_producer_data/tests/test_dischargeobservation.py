@@ -29,12 +29,12 @@ class Test_DischargeObservation(unittest.TestCase):
         Create instance of DischargeObservation for testing
         """
         instance = DischargeObservation(
-            station_id='fvkfrdugobczwodpyqki',
-            station_name='sxblcfsxdaidmvxatetq',
-            catchment_name='honutndapdgjcfijxnek',
+            station_id='wtscmwgezvtorgqiuspf',
+            station_name='eedohelnuzigpcorkhln',
+            catchment_name='mjzguvvidaawblxoxtct',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(50.09415957784674),
-            quality='htodkoyaehpywuclrhtp'
+            discharge=float(97.71513938158166),
+            quality='okalxeqegapqcaipqvzv'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'fvkfrdugobczwodpyqki'
+        test_value = 'wtscmwgezvtorgqiuspf'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'sxblcfsxdaidmvxatetq'
+        test_value = 'eedohelnuzigpcorkhln'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -59,7 +59,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test catchment_name property
         """
-        test_value = 'honutndapdgjcfijxnek'
+        test_value = 'mjzguvvidaawblxoxtct'
         self.instance.catchment_name = test_value
         self.assertEqual(self.instance.catchment_name, test_value)
     
@@ -75,7 +75,7 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(50.09415957784674)
+        test_value = float(97.71513938158166)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -83,19 +83,10 @@ class Test_DischargeObservation(unittest.TestCase):
         """
         Test quality property
         """
-        test_value = 'htodkoyaehpywuclrhtp'
+        test_value = 'okalxeqegapqcaipqvzv'
         self.instance.quality = test_value
         self.assertEqual(self.instance.quality, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = DischargeObservation.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

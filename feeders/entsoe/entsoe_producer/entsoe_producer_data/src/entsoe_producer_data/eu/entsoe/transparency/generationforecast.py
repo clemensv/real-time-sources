@@ -1,49 +1,38 @@
 """ GenerationForecast dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class GenerationForecast:
     """
-    A GenerationForecast record.
+    GenerationForecast
+    
     Attributes:
-        inDomain (str): EIC code of the bidding zone
-        quantity (float): Forecast total generation in MW
-        resolution (str): ISO 8601 duration
-        documentType (str): ENTSO-E document type code (A71)
-        unitName (str): Unit of measurement (MAW)"""
+        inDomain (str)
+        quantity (float)
+        resolution (str)
+        documentType (str)
+        unitName (str)
+    """
+    
     
     inDomain: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="inDomain"))
     quantity: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quantity"))
     resolution: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="resolution"))
     documentType: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="documentType"))
     unitName: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unitName"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"GenerationForecast\", \"namespace\": \"eu.entsoe.transparency\", \"fields\": [{\"name\": \"inDomain\", \"type\": \"string\", \"doc\": \"EIC code of the bidding zone\"}, {\"name\": \"quantity\", \"type\": \"double\", \"doc\": \"Forecast total generation in MW\", \"unit\": \"MW\"}, {\"name\": \"resolution\", \"type\": \"string\", \"doc\": \"ISO 8601 duration\"}, {\"name\": \"documentType\", \"type\": \"string\", \"doc\": \"ENTSO-E document type code (A71)\"}, {\"name\": \"unitName\", \"type\": \"string\", \"doc\": \"Unit of measurement (MAW)\"}], \"altnames\": {\"kql\": \"GenerationForecast\"}}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.inDomain=str(self.inDomain)
-        self.quantity=float(self.quantity)
-        self.resolution=str(self.resolution)
-        self.documentType=str(self.documentType)
-        self.unitName=str(self.unitName)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'GenerationForecast':
@@ -54,7 +43,7 @@ class GenerationForecast:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -73,7 +62,7 @@ class GenerationForecast:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -87,8 +76,6 @@ class GenerationForecast:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -101,16 +88,12 @@ class GenerationForecast:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -135,10 +118,6 @@ class GenerationForecast:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -164,18 +143,6 @@ class GenerationForecast:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return GenerationForecast.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -183,5 +150,20 @@ class GenerationForecast:
                 return GenerationForecast.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'GenerationForecast':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            inDomain='eqpeiitaczwzwawumoxp',
+            quantity=float(78.4327779797905),
+            resolution='dkhdsomepplfaohytxxk',
+            documentType='iyjsmzwidgeirkpqkyrf',
+            unitName='oyrtqtzvoxfxbeqqpcso'
+        )

@@ -29,6 +29,6 @@ class Test_CountryEnum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(CountryEnum.DNK.value, "DNK")
-        self.assertEqual(CountryEnum.GRL.value, "GRL")
-        self.assertEqual(CountryEnum.FRO.value, "FRO")
+        self.assertEqual(CountryEnum.DNK.value, 'DNK')
+        self.assertEqual(CountryEnum.GRL.value, 'GRL')
+        self.assertEqual(CountryEnum.FRO.value, 'FRO')

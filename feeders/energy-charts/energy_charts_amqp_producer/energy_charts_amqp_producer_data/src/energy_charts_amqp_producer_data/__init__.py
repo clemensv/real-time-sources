@@ -1,6 +1,6 @@
-from .spotprice import SpotPrice
 from .info import Info
-from .gridsignal import GridSignal
 from .publicpower import PublicPower
+from .spotprice import SpotPrice
+from .gridsignal import GridSignal
 
-__all__ = ["SpotPrice", "Info", "GridSignal", "PublicPower"]
+__all__ = ["Info", "PublicPower", "SpotPrice", "GridSignal"]

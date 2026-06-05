@@ -132,8 +132,8 @@ class TestEAFloodMonitoringContainerIntegration:
 
         from uk_ea_flood_monitoring.uk_ea_flood_monitoring import EAFloodMonitoringAPI
         from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
-        from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.station import Station
-        from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.reading import Reading
+        from uk_ea_flood_monitoring_producer_data import Station
+        from uk_ea_flood_monitoring_producer_data import Reading
         from confluent_kafka import Producer
 
         producer = Producer(kafka_config)
@@ -229,7 +229,7 @@ class TestEAFloodMonitoringContainerIntegration:
         mock_readings.return_value = []
 
         from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
-        from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.station import Station
+        from uk_ea_flood_monitoring_producer_data import Station
         from confluent_kafka import Producer
 
         producer = Producer(kafka_config)
@@ -327,7 +327,7 @@ class TestEAFloodMonitoringLiveContainerIntegration:
 
         from uk_ea_flood_monitoring.uk_ea_flood_monitoring import EAFloodMonitoringAPI
         from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
-        from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.station import Station
+        from uk_ea_flood_monitoring_producer_data import Station
         from confluent_kafka import Producer
 
         api = EAFloodMonitoringAPI()
@@ -397,7 +397,7 @@ class TestEAFloodMonitoringLiveContainerIntegration:
         self._create_topic(kafka_container, topic)
 
         from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
-        from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.reading import Reading
+        from uk_ea_flood_monitoring_producer_data import Reading
         from confluent_kafka import Producer
 
         producer = Producer(kafka_config)

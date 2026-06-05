@@ -1,3 +1,3 @@
-from .irail import OccupancyEnum, Departure, StationBoard, Station, Arrival, ArrivalBoard
+from .irail import Station, OccupancyEnum, Arrival, ArrivalBoard, Departure, StationBoard
 
-__all__ = ["OccupancyEnum", "Departure", "StationBoard", "Station", "Arrival", "ArrivalBoard"]
+__all__ = ["Station", "OccupancyEnum", "Arrival", "ArrivalBoard", "Departure", "StationBoard"]

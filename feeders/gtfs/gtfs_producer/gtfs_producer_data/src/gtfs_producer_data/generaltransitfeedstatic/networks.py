@@ -90,6 +90,8 @@ class Networks:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class Networks:
             An instance of the dataclass.
         """
         return cls(
-            networkId='gfftzyerdomrzoyoibdh',
-            networkName='epbwxhzndikonahjuxbp',
-            networkDesc='cixecvtguicchicnptdc',
-            networkUrl='bruyearcszrakngieibm'
+            networkId='uzkxnvwyowmgxeefyxwr',
+            networkName='jnvscwvblxchimephyop',
+            networkDesc='pjwttcwrejwyinjopuon',
+            networkUrl='sspgyilyepfpknsufygh'
         )

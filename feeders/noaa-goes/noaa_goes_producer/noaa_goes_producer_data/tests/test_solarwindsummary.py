@@ -28,10 +28,10 @@ class Test_SolarWindSummary(unittest.TestCase):
         Create instance of SolarWindSummary for testing
         """
         instance = SolarWindSummary(
-            observation_time='taqgyskupscuctikloed',
-            wind_speed=float(98.58846776477817),
-            bt=float(89.877628090897),
-            bz=float(77.17509888591293)
+            observation_time='fyobmzugjabnkjfsfrev',
+            wind_speed=float(82.33691923659573),
+            bt=float(39.29658075169639),
+            bz=float(8.183830361701972)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_SolarWindSummary(unittest.TestCase):
         """
         Test observation_time property
         """
-        test_value = 'taqgyskupscuctikloed'
+        test_value = 'fyobmzugjabnkjfsfrev'
         self.instance.observation_time = test_value
         self.assertEqual(self.instance.observation_time, test_value)
     
@@ -48,7 +48,7 @@ class Test_SolarWindSummary(unittest.TestCase):
         """
         Test wind_speed property
         """
-        test_value = float(98.58846776477817)
+        test_value = float(82.33691923659573)
         self.instance.wind_speed = test_value
         self.assertEqual(self.instance.wind_speed, test_value)
     
@@ -56,7 +56,7 @@ class Test_SolarWindSummary(unittest.TestCase):
         """
         Test bt property
         """
-        test_value = float(89.877628090897)
+        test_value = float(39.29658075169639)
         self.instance.bt = test_value
         self.assertEqual(self.instance.bt, test_value)
     
@@ -64,19 +64,10 @@ class Test_SolarWindSummary(unittest.TestCase):
         """
         Test bz property
         """
-        test_value = float(77.17509888591293)
+        test_value = float(8.183830361701972)
         self.instance.bz = test_value
         self.assertEqual(self.instance.bz, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = SolarWindSummary.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

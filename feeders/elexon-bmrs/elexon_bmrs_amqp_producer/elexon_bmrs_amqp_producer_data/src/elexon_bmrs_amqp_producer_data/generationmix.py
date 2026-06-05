@@ -122,6 +122,8 @@ class GenerationMix:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -189,23 +191,23 @@ class GenerationMix:
             An instance of the dataclass.
         """
         return cls(
-            settlement_period=int(85),
+            settlement_period=int(13),
             start_time=datetime.datetime.now(datetime.timezone.utc),
-            biomass_mw=float(73.19439131083308),
-            ccgt_mw=float(97.30297047989701),
-            coal_mw=float(19.316693691722186),
-            nuclear_mw=float(5.475870307588105),
-            wind_mw=float(23.921307061388653),
-            ocgt_mw=float(72.13892570146899),
-            oil_mw=float(63.66296662600899),
-            npshyd_mw=float(56.849450405871806),
-            ps_mw=float(68.9906602532778),
-            intfr_mw=float(54.29196787153462),
-            intned_mw=float(2.1987360333903805),
-            intnem_mw=float(84.29575071708989),
-            intelec_mw=float(81.37371317329756),
-            intifa2_mw=float(18.27961891461314),
-            intnsl_mw=float(66.45489847684772),
-            intvkl_mw=float(6.432491776579729),
-            other_mw=float(20.744974224999623)
+            biomass_mw=float(25.430720655304363),
+            ccgt_mw=float(12.122777775949011),
+            coal_mw=float(25.253046729587346),
+            nuclear_mw=float(87.95554810479271),
+            wind_mw=float(10.556266702993689),
+            ocgt_mw=float(46.42045265140909),
+            oil_mw=float(24.880621349153408),
+            npshyd_mw=float(29.946773262444292),
+            ps_mw=float(48.89798198962871),
+            intfr_mw=float(0.9422842417877275),
+            intned_mw=float(17.049345444063157),
+            intnem_mw=float(2.3533545653587895),
+            intelec_mw=float(46.282894428228886),
+            intifa2_mw=float(43.263098475554465),
+            intnsl_mw=float(97.39571915118049),
+            intvkl_mw=float(4.846599312006427),
+            other_mw=float(15.479370137353888)
         )

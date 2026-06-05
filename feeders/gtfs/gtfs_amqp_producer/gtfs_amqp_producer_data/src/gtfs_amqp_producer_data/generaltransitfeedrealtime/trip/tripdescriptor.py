@@ -95,6 +95,8 @@ class TripDescriptor:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -162,10 +164,10 @@ class TripDescriptor:
             An instance of the dataclass.
         """
         return cls(
-            trip_id='zircrcddfvacwlvampgn',
-            route_id='wniofptgbcvuyiieutgt',
-            direction_id=int(63),
-            start_time='jxmxvbjrlqkmjvaaxfsy',
-            start_date='racdcuxxvhrrdbjgavpi',
+            trip_id='ykwhpotgxdztynmxuggu',
+            route_id='qscahnwkrqxsfgxufcum',
+            direction_id=int(88),
+            start_time='zeibskefchknvyuhtarz',
+            start_date='ymynutusbzwzfyyggtdq',
             schedule_relationship=None
         )

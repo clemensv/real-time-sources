@@ -97,6 +97,8 @@ class AffectedCoastalRegion:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -164,10 +166,10 @@ class AffectedCoastalRegion:
             An instance of the dataclass.
         """
         return cls(
-            code='dayzfyatdyyvxfdkiaky',
-            name='almpqlpthyybzqzslsmj',
+            code='xxditkbbwqvhqlafczci',
+            name='viuigaksnefbukatoigy',
             category=CategoryEnum.MAJOR_WARNING,
-            expected_max_wave_height_m=float(47.89960100010282),
+            expected_max_wave_height_m=float(32.79191049050026),
             expected_arrival_datetime=datetime.datetime.now(datetime.timezone.utc),
             expected_arrival_datetime_local=datetime.datetime.now(datetime.timezone.utc)
         )

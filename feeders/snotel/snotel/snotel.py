@@ -215,9 +215,14 @@ def parse_observation_row(station_triplet: str, row: List[str]) -> Optional[Snow
     prec = parse_float(row[2]) if len(row) > 2 else None
     tobs = parse_float(row[3]) if len(row) > 3 else None
     snwd = parse_float(row[4]) if len(row) > 4 else None
+    state = STATION_METADATA.get(station_triplet, {}).get("state")
+    if state is None:
+        parts = station_triplet.split(":")
+        state = parts[1] if len(parts) > 1 else ""
 
     return SnowObservation(
         station_triplet=station_triplet,
+        state=state,
         date_time=dt,
         snow_water_equivalent=swe,
         snow_depth=snwd,

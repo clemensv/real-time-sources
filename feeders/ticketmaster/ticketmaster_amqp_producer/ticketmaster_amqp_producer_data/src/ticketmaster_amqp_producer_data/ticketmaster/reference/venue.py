@@ -106,6 +106,8 @@ class Venue:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -173,16 +175,16 @@ class Venue:
             An instance of the dataclass.
         """
         return cls(
-            entity_id='bsyewfdurpnqstwpfcac',
-            name='hvydtxnavuhetrnugtmf',
-            url='oroqrepbzubkibzbjezc',
-            locale='qadnkwomlmwirojummmp',
-            timezone='lsumkmzldjmmaccduxaz',
-            city='ushvgkumbrxdznctglkb',
-            state_code='lppgepnsmyyysqvchjsx',
-            country_code='jzbjfxaapmnpemrnoope',
-            address='aenuhonxdgqzbwuieqkw',
-            postal_code='wruwpzcutysgunsuflqu',
-            latitude=float(17.966090548555346),
-            longitude=float(77.26537111687853)
+            entity_id='vwcquytzuwriusridvvn',
+            name='teyjlfwtbhysvpqetehk',
+            url='wegrxucyfdloamgeyvuu',
+            locale='tczntsjwzjbhbekwxiad',
+            timezone='ahwjwadbbsqxqyqrquja',
+            city='thsqeqmhyordrmdpslqc',
+            state_code='golziphmypkfaigecryh',
+            country_code='iuhseygqkbfrpherqowc',
+            address='geillavzzvntyvxbmqsj',
+            postal_code='znkggqwyyjuiadhqfdho',
+            latitude=float(1.6787066487314761),
+            longitude=float(95.17505218607683)
         )

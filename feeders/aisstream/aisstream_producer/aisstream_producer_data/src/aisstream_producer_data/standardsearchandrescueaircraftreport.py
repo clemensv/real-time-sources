@@ -120,6 +120,8 @@ class StandardSearchAndRescueAircraftReport:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -187,23 +189,23 @@ class StandardSearchAndRescueAircraftReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(68),
-            RepeatIndicator=int(64),
-            UserID=int(54),
+            MessageID=int(31),
+            RepeatIndicator=int(70),
+            UserID=int(37),
             Valid=False,
-            Altitude=int(7),
-            Sog=float(70.5249823796638),
+            Altitude=int(25),
+            Sog=float(0.88256364936109),
             PositionAccuracy=True,
-            Longitude=float(50.505197920716384),
-            Latitude=float(91.97464840094784),
-            Cog=float(90.13370506440228),
-            Timestamp=int(80),
-            AltFromBaro=True,
-            Spare1=int(14),
-            Dte=False,
-            Spare2=int(37),
-            AssignedMode=False,
-            Raim=False,
+            Longitude=float(35.64816663560884),
+            Latitude=float(6.023717615089142),
+            Cog=float(95.2798634074953),
+            Timestamp=int(38),
+            AltFromBaro=False,
+            Spare1=int(35),
+            Dte=True,
+            Spare2=int(68),
+            AssignedMode=True,
+            Raim=True,
             CommunicationStateIsItdma=True,
-            CommunicationState=int(83)
+            CommunicationState=int(3)
         )

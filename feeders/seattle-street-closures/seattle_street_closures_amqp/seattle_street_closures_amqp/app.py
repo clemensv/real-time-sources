@@ -1,198 +1,272 @@
+"""AMQP 1.0 feeder for Seattle Street Closures.
+
+Reuses the upstream HTTP polling logic from the existing
+``seattle_street_closures`` Kafka bridge (imported as the transport-agnostic
+"core" package) and pushes change-detected ``StreetClosure`` events into
+AMQP 1.0 via the xrcg-generated :class:`USWASeattleStreetClosuresAmqpProducer`.
+
+Authentication modes:
+
+* ``password`` -- SASL PLAIN against generic AMQP 1.0 brokers (RabbitMQ,
+  Artemis, the local Service Bus emulator with username/password).
+* ``entra``    -- AMQP CBS put-token with a JWT acquired from Microsoft
+  Entra ID (``DefaultAzureCredential`` or ``ManagedIdentityCredential``
+  when ``AMQP_ENTRA_CLIENT_ID`` is provided). Targets Azure Service Bus.
+* ``sas``      -- AMQP CBS put-token with a SAS token signed locally from
+  ``AMQP_SAS_KEY_NAME``/``AMQP_SAS_KEY``. Targets the Service Bus emulator
+  and SAS-only namespaces.
+"""
+
 from __future__ import annotations
 
-import argparse, json, os, re, time, uuid
-from pathlib import Path
-from typing import Any, Dict, Iterable, Mapping
+import argparse
+import logging
+import os
+import time
+from datetime import datetime, timezone
+from typing import Optional
+from urllib.parse import urlparse
 
-PROJECT_DIR = "seattle-street-closures"
-XREG_FILE = "seattle-street-closures.xreg.json"
-TRANSPORT = "amqp"
-ROOT = Path(os.getenv("SOURCE_ROOT", os.getcwd()))
-if not (ROOT / "xreg" / XREG_FILE).exists():
-    ROOT = Path(__file__).resolve().parents[2]
-MANIFEST_PATH = ROOT / "xreg" / XREG_FILE
-TEMPLATE_RE = re.compile(r"{([^{}]+)}")
-NOW = "2025-01-15T12:00:00Z"
+from seattle_street_closures.seattle_street_closures import (
+    DEFAULT_POLL_INTERVAL_SECONDS,
+    SeattleStreetClosuresBridge,
+    closure_digest,
+)
+from seattle_street_closures_amqp_producer_amqp_producer.producer import (
+    USWASeattleStreetClosuresAmqpProducer,
+)
 
-DEFAULTS = {
-    "agencyid": "sample-agency", "agency_id": "sample-agency", "route_id": "sample-route", "route_tag": "sample-route",
-    "vehicle_id": "sample-vehicle", "trip_id": "sample-trip", "alert_id": "sample-alert", "row_id": "sample-row",
-    "road": "A1", "site_id": "sample-site", "situation_id": "sample-situation", "situation_record_id": "sample-situation",
-    "district": "centro", "sensor_id": "sample-sensor", "counter_id": "sample-counter", "neighborhood": "downtown",
-    "closure_id": "sample-closure", "road_id": "A1", "severity": "moderate", "disruption_id": "sample-disruption",
-    "system_id": "docomo-cycle", "ward": "chiyoda", "station_id": "sample-station", "region": "seattle",
-    "crossing_name": "sample-crossing", "vessel_id": "sample-vessel", "mountain_pass_id": "sample-pass",
-    "state_route_id": "SR-520", "bridge_number": "sample-bridge", "flow_data_id": "sample-flow",
-    "travel_time_id": "sample-travel-time", "trip_name": "sample-trip", "vms_controller_id": "sample-controller",
-    "vms_index": "1", "sign_id": "sample-sign", "measurement_site_id": "sample-site", "id": "sample-id",
-    "identifier": "sample-identifier", "event": "event", "ce_id": "sample-event", "date": NOW, "event_time": NOW,
-}
+logger = logging.getLogger("seattle_street_closures_amqp")
 
-def load_manifest() -> Dict[str, Any]:
-    with MANIFEST_PATH.open("r", encoding="utf-8") as fh:
-        return json.load(fh)
+DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
 
-def resolve_pointer(document: Mapping[str, Any], pointer: str) -> Any:
-    if pointer.startswith('#'):
-        pointer = pointer[1:]
-    cur: Any = document
-    for raw in pointer.strip('/').split('/'):
-        if not raw:
-            continue
-        cur = cur[raw.replace('~1','/').replace('~0','~')]
-    return cur
 
-def resolve_message(document: Mapping[str, Any], message: Mapping[str, Any]) -> Dict[str, Any]:
-    base_url = message.get('basemessageuri')
-    if not base_url:
-        return dict(message)
-    base = resolve_message(document, resolve_pointer(document, str(base_url)))
-    base.update({k:v for k,v in message.items() if k != 'basemessageuri'})
-    return base
+def _parse_amqp_broker_url(url: str):
+    parsed = urlparse(url if "://" in url else f"amqp://{url}")
+    scheme = (parsed.scheme or "amqp").lower()
+    tls = scheme in ("amqps", "ssl", "tls")
+    port = parsed.port or (5671 if tls else 5672)
+    host = parsed.hostname or "localhost"
+    user = parsed.username or None
+    pwd = parsed.password or None
+    path = (parsed.path or "").lstrip("/") or None
+    return host, port, tls, user, pwd, path
 
-def render(template: str | None, context: Mapping[str, Any]) -> str:
-    if not template:
-        return ""
-    def repl(match):
-        name = match.group(1)
-        return str(context.get(name, DEFAULTS.get(name, f"sample-{name.replace('_','-')}")))
-    return TEMPLATE_RE.sub(repl, template)
 
-def sample_for_type(spec: Any, defs: Mapping[str, Any]) -> Any:
-    if isinstance(spec, list):
-        non_null = [x for x in spec if x != 'null']
-        return sample_for_type(non_null[0] if non_null else 'string', defs)
-    if isinstance(spec, dict):
-        if '$ref' in spec:
-            resolved = resolve_pointer(defs, spec['$ref'])
-            if isinstance(resolved, Mapping) and resolved.get('enum'):
-                return resolved['enum'][0]
-            if isinstance(resolved, Mapping) and resolved.get('type') not in (None, 'object'):
-                return sample_for_type(resolved.get('type'), defs)
-            return sample_from_schema(resolved, defs)
-        if spec.get('enum'):
-            return spec['enum'][0]
-        if spec.get('type') == 'choice' and spec.get('choices'):
-            choice_name, first = next(iter(spec['choices'].items()))
-            return {choice_name: sample_for_type(first, defs)}
-        if 'type' in spec:
-            return sample_for_type(spec['type'], defs)
-    t = str(spec or 'string').lower()
-    if t in ('int','integer','long','int32','int64','uint32','uint64'): return 1
-    if t in ('float','double','number','decimal'): return 1.0
-    if t in ('bool','boolean'): return True
-    if t == 'array': return []
-    if t == 'object': return {}
-    if 'date' in t or 'time' in t: return NOW
-    return 'sample'
+def add_amqp_arguments(parser: argparse.ArgumentParser, default_address: str) -> None:
+    parser.add_argument("--broker-url", default=os.getenv("AMQP_BROKER_URL"))
+    parser.add_argument("--host", default=os.getenv("AMQP_HOST"))
+    parser.add_argument("--port", type=int, default=int(os.getenv("AMQP_PORT", "0")) or None)
+    parser.add_argument("--address", default=os.getenv("AMQP_ADDRESS", default_address))
+    parser.add_argument("--username", default=os.getenv("AMQP_USERNAME"))
+    parser.add_argument("--password", default=os.getenv("AMQP_PASSWORD"))
+    parser.add_argument(
+        "--tls",
+        action="store_true",
+        default=os.getenv("AMQP_TLS", "").lower() in ("1", "true", "yes"),
+    )
+    parser.add_argument(
+        "--content-mode",
+        choices=("binary", "structured"),
+        default=os.getenv("AMQP_CONTENT_MODE", "binary"),
+    )
+    parser.add_argument(
+        "--auth-mode",
+        choices=("password", "entra", "sas"),
+        default=os.getenv("AMQP_AUTH_MODE", "password"),
+    )
+    parser.add_argument(
+        "--entra-audience",
+        default=os.getenv("AMQP_ENTRA_AUDIENCE", DEFAULT_ENTRA_AUDIENCE_SERVICEBUS),
+    )
+    parser.add_argument(
+        "--entra-client-id", default=os.getenv("AMQP_ENTRA_CLIENT_ID")
+    )
+    parser.add_argument("--sas-key-name", default=os.getenv("AMQP_SAS_KEY_NAME"))
+    parser.add_argument("--sas-key", default=os.getenv("AMQP_SAS_KEY"))
 
-def sample_from_schema(schema: Mapping[str, Any], defs: Mapping[str, Any] | None = None) -> Dict[str, Any]:
-    root_doc = defs or schema
-    if isinstance(schema, Mapping) and "$root" in schema:
-        schema = resolve_pointer(schema, str(schema["$root"]))
-    defs = root_doc
-    if isinstance(schema.get('type'), dict) or schema.get('type') not in (None, 'object'):
-        val = sample_for_type(schema.get('type'), defs)
-        return val if isinstance(val, dict) else {"value": val}
-    props = schema.get('properties') or {}
-    required = set(schema.get('required') or [])
-    data: Dict[str, Any] = {}
-    for name, prop in props.items():
-        if name in required:
-            if isinstance(prop, Mapping) and 'enum' in prop:
-                data[name] = prop['enum'][0]
-            else:
-                data[name] = sample_for_type(prop if isinstance(prop, Mapping) else 'string', defs)
-    return data
 
-def topic_options(message: Mapping[str, Any]) -> tuple[str,int,bool]:
-    po = message.get('protocoloptions') or {}
-    props = po.get('properties') or {}
-    topic = po.get('topic_name') or po.get('topic') or props.get('topic')
-    if isinstance(topic, Mapping): topic = topic.get('value')
-    return str(topic), int(po.get('qos', props.get('qos', 1))), bool(po.get('retain', props.get('retain', False)))
+def create_amqp_producer(
+    args: argparse.Namespace, producer_cls
+) -> USWASeattleStreetClosuresAmqpProducer:
+    address = args.address
+    if args.broker_url:
+        host, port, tls, user, pwd, path = _parse_amqp_broker_url(args.broker_url)
+        username = args.username or user
+        password = args.password or pwd
+        if args.port:
+            port = args.port
+        if args.tls:
+            tls = True
+        if path:
+            address = path
+    else:
+        host = args.host or "localhost"
+        tls = bool(args.tls) or args.auth_mode in ("entra", "sas")
+        port = args.port or (5671 if tls else 5672)
+        username = args.username
+        password = args.password
 
-def iter_contracts(protocol_prefix: str) -> Iterable[Dict[str, Any]]:
-    manifest = load_manifest()
-    for endpoint in manifest.get('endpoints', {}).values():
-        if not str(endpoint.get('protocol','')).upper().startswith(protocol_prefix.upper()):
-            continue
-        for group_ref in endpoint.get('messagegroups', []):
-            group = resolve_pointer(manifest, group_ref)
-            for key, m in (group.get('messages') or {}).items():
-                msg = resolve_message(manifest, m)
-                ce = msg.get('envelopemetadata') or {}
-                schema = resolve_pointer(manifest, msg['dataschemauri'])
-                version = schema.get('defaultversionid','1')
-                jschema = schema['versions'][version]['schema']
-                data = sample_from_schema(jschema)
-                context = dict(DEFAULTS)
-                context.update(data if isinstance(data, dict) else {})
-                subject = render((ce.get('subject') or {}).get('value'), context) or 'sample'
-                _merge_subject_context((ce.get('subject') or {}).get('value'), subject, context)
-                ce_type = (ce.get('type') or {}).get('value') or key
-                source = render((ce.get('source') or {}).get('value'), context) or f"https://example.invalid/{PROJECT_DIR}"
-                ce_id = render((ce.get('id') or {}).get('value'), context) or str(uuid.uuid4())
-                ce_time = render((ce.get('time') or {}).get('value'), context) or NOW
-                for pname in set(TEMPLATE_RE.findall(subject) + TEMPLATE_RE.findall(source) + TEMPLATE_RE.findall(ce_id) + TEMPLATE_RE.findall(ce_time)):
-                    context.setdefault(pname, DEFAULTS.get(pname, f"sample-{pname.replace('_','-')}"))
-                if isinstance(data, dict):
-                    for k,v in context.items(): data.setdefault(k, v)
-                yield {"type": ce_type, "source": source, "subject": subject, "id": ce_id, "time": ce_time, "data": data, "message": msg, "context": context}
+    if args.auth_mode == "entra":
+        from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
 
-def _merge_subject_context(template: str | None, rendered: str, context: Dict[str, Any]) -> None:
-    if not template:
+        credential = (
+            ManagedIdentityCredential(client_id=args.entra_client_id)
+            if args.entra_client_id
+            else DefaultAzureCredential()
+        )
+        return producer_cls(
+            host=host,
+            address=address,
+            port=port,
+            content_mode=args.content_mode,
+            credential=credential,
+            entra_audience=args.entra_audience,
+            use_tls=tls,
+        )
+    if args.auth_mode == "sas":
+        if not args.sas_key_name or not args.sas_key:
+            raise RuntimeError(
+                "AMQP auth-mode=sas requires AMQP_SAS_KEY_NAME and AMQP_SAS_KEY"
+            )
+        return producer_cls(
+            host=host,
+            address=address,
+            port=port,
+            content_mode=args.content_mode,
+            sas_key_name=args.sas_key_name,
+            sas_key=args.sas_key,
+            use_tls=tls,
+        )
+    return producer_cls(
+        host=host,
+        address=address,
+        port=port,
+        username=username,
+        password=password,
+        content_mode=args.content_mode,
+        use_tls=tls,
+    )
+
+
+def _publish_mock(producer: USWASeattleStreetClosuresAmqpProducer) -> None:
+    """Emit one synthetic record so smoke tests can assert delivery."""
+    from seattle_street_closures_amqp_producer_data import StreetClosure
+
+    closure = StreetClosure(
+        closure_id="mock-permit|mock-segkey|2026-01-01|2026-01-02",
+        permit_number="mock-permit",
+        permit_type="utility",
+        project_name="Mock project",
+        project_description="Mock street closure for emulator smoke test",
+        start_date="2026-01-01",
+        end_date="2026-01-02",
+        sunday=None,
+        monday="07:00-19:00",
+        tuesday="07:00-19:00",
+        wednesday="07:00-19:00",
+        thursday="07:00-19:00",
+        friday="07:00-19:00",
+        saturday=None,
+        street_on="Mock Street",
+        street_from="Mock Ave",
+        street_to="Mock Blvd",
+        segkey="mock-segkey",
+        geometry_json=None,
+    )
+    producer.send_amqp(data=closure, _closure_id=closure.closure_id)
+
+
+def feed(
+    producer: USWASeattleStreetClosuresAmqpProducer,
+    state_file: str,
+    polling_interval: int,
+    once: bool,
+) -> None:
+    """Run the AMQP polling loop until ``once`` triggers an early exit."""
+    if os.getenv("MOCK_MODE", "").lower() in ("1", "true", "yes"):
+        try:
+            _publish_mock(producer)
+        finally:
+            producer.close()
         return
-    names = TEMPLATE_RE.findall(template)
-    pattern = '^' + re.escape(template) + '$'
-    for name in names:
-        pattern = pattern.replace('\\{' + name + '\\}', f'(?P<{name}>[^/]+)')
-    match = re.match(pattern, rendered)
-    if match:
-        context.update(match.groupdict())
 
-def mqtt_feed() -> None:
-    import paho.mqtt.client as mqtt
-    from paho.mqtt.client import CallbackAPIVersion, MQTTv5
-    from paho.mqtt.properties import Properties
-    from paho.mqtt.packettypes import PacketTypes
-    from urllib.parse import urlparse
-    url = os.getenv('MQTT_BROKER_URL') or f"mqtt://{os.getenv('MQTT_HOST','localhost')}:{os.getenv('MQTT_PORT','1883')}"
-    parsed = urlparse(url if '://' in url else f'mqtt://{url}')
-    host = parsed.hostname or 'localhost'; port = parsed.port or (8883 if parsed.scheme == 'mqtts' else 1883)
-    client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
-    if os.getenv('MQTT_USERNAME'):
-        client.username_pw_set(os.getenv('MQTT_USERNAME'), os.getenv('MQTT_PASSWORD',''))
-    if parsed.scheme == 'mqtts' or os.getenv('MQTT_TLS','').lower() in ('1','true','yes'):
-        client.tls_set()
-    client.connect(host, port, 30); client.loop_start(); time.sleep(0.5)
-    for c in iter_contracts('MQTT'):
-        topic, qos, retain = topic_options(c['message'])
-        topic = render(topic, {**c['context'], **(c['data'] if isinstance(c['data'],dict) else {})})
-        props = Properties(PacketTypes.PUBLISH)
-        props.ContentType = 'application/json'
-        props.UserProperty = [('specversion','1.0'),('type',c['type']),('source',c['source']),('subject',c['subject']),('id',c['id']),('time',c['time'])]
-        client.publish(topic, json.dumps(c['data'], ensure_ascii=False).encode('utf-8'), qos=qos, retain=retain, properties=props).wait_for_publish()
-    time.sleep(1.0); client.loop_stop(); client.disconnect()
+    bridge = SeattleStreetClosuresBridge(state_file=state_file)
+    try:
+        while True:
+            try:
+                start = datetime.now(timezone.utc)
+                closures = bridge.fetch_closures()
+                current_digests = {}
+                sent = 0
+                for closure in closures:
+                    digest = closure_digest(closure)
+                    current_digests[closure.closure_id] = digest
+                    if bridge.previous_digests.get(closure.closure_id) == digest:
+                        continue
+                    producer.send_amqp(data=closure, _closure_id=closure.closure_id)
+                    sent += 1
+                bridge.previous_digests = current_digests
+                bridge.save_state()
+                elapsed = (datetime.now(timezone.utc) - start).total_seconds()
+                logger.info(
+                    "Fetched %d closures, sent %d new/changed AMQP events in %.1fs",
+                    len(closures),
+                    sent,
+                    elapsed,
+                )
+            except KeyboardInterrupt:
+                logger.info("Interrupt received, exiting")
+                break
+            except Exception:
+                logger.exception("Error during Seattle street closure poll")
+            if once:
+                logger.info("--once mode: exiting after first polling cycle")
+                break
+            sleep_for = max(0, polling_interval)
+            if sleep_for:
+                time.sleep(sleep_for)
+    finally:
+        producer.close()
 
-def amqp_feed() -> None:
-    from proton import Message
-    from proton.utils import BlockingConnection
-    from urllib.parse import quote
-    host=os.getenv('AMQP_HOST','localhost'); port=int(os.getenv('AMQP_PORT','5672')); address=os.getenv('AMQP_ADDRESS') or PROJECT_DIR
-    user=os.getenv('AMQP_USERNAME'); pwd=os.getenv('AMQP_PASSWORD') or ''
-    auth = f"{quote(user)}:{quote(pwd)}@" if user else ''
-    conn=BlockingConnection(f"amqp://{auth}{host}:{port}", timeout=30, allowed_mechs='PLAIN' if user else None)
-    sender=conn.create_sender(address)
-    for c in iter_contracts('AMQP'):
-        props={f'cloudEvents:{k}':str(v) for k,v in {'specversion':'1.0','type':c['type'],'source':c['source'],'subject':c['subject'],'id':c['id'],'time':c['time']}.items()}
-        sender.send(Message(body=json.dumps(c['data'], ensure_ascii=False), subject=c['subject'], properties=props, content_type='application/json'))
-    conn.close()
 
-def main() -> None:
-    parser=argparse.ArgumentParser(); parser.add_argument('command', nargs='?', default='feed'); parser.add_argument('--once', action='store_true')
-    args=parser.parse_args()
-    if args.command != 'feed': parser.error("only 'feed' is supported")
-    if TRANSPORT == 'mqtt': mqtt_feed()
-    else: amqp_feed()
-if __name__ == '__main__': main()
+def _build_arg_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(
+        description="Seattle Street Closures -> AMQP 1.0 bridge"
+    )
+    parser.add_argument("command", nargs="?", default="feed")
+    add_amqp_arguments(parser, "seattle-street-closures")
+    parser.add_argument(
+        "--state-file",
+        default=os.getenv(
+            "SEATTLE_STREET_CLOSURES_STATE_FILE",
+            os.getenv("STATE_FILE", ""),
+        ),
+    )
+    parser.add_argument(
+        "--polling-interval",
+        type=int,
+        default=int(os.getenv("POLLING_INTERVAL", str(DEFAULT_POLL_INTERVAL_SECONDS))),
+    )
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+    )
+    return parser
+
+
+def main(argv: Optional[list] = None) -> None:
+    logging.basicConfig(
+        level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s"
+    )
+    parser = _build_arg_parser()
+    args = parser.parse_args(argv)
+    if args.command != "feed":
+        parser.error("only the 'feed' command is supported")
+    producer = create_amqp_producer(args, USWASeattleStreetClosuresAmqpProducer)
+    feed(producer, args.state_file, args.polling_interval, args.once)
+
+
+if __name__ == "__main__":
+    main()

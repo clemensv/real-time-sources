@@ -5,6 +5,7 @@
 Tests for tfl_road_traffic_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../tfl_road_traffic_amqp_producer_data/src')))
@@ -25,11 +27,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from tfl_road_traffic_amqp_producer_amqp_producer import *
 from tfl_road_traffic_amqp_producer_data import RoadCorridor
-from test_tfl_road_traffic_amqp_producer_data_roadcorridor import Test_RoadCorridor
+from test_roadcorridor import Test_RoadCorridor
 from tfl_road_traffic_amqp_producer_data import RoadStatus
-from test_tfl_road_traffic_amqp_producer_data_roadstatus import Test_RoadStatus
+from test_roadstatus import Test_RoadStatus
 from tfl_road_traffic_amqp_producer_data import RoadDisruption
-from test_tfl_road_traffic_amqp_producer_data_roaddisruption import Test_RoadDisruption
+from test_roaddisruption import Test_RoadDisruption
 
 
 
@@ -235,6 +237,45 @@ class TestUkGovTflRoadAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UkGovTflRoadAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_road_corridor(self, artemis_container):
         """Send and receive a RoadCorridor message via ActiveMQ Artemis."""
@@ -261,6 +302,7 @@ class TestUkGovTflRoadAmqpProducer:
                 producer.send_road_corridor(
                     data=payload,
                     _road_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -268,6 +310,7 @@ class TestUkGovTflRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -290,8 +333,41 @@ class TestUkGovTflRoadAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "roads/{road_id}".format(road_id="value")
                 assert properties.get('road_id') == "{road_id}".format(road_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("roads/{road_id}".format(road_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_road_corridor_single_fresh_connection(self, artemis_container):
+        """Send exactly one RoadCorridor message on a fresh producer connection."""
+        payload = Test_RoadCorridor.create_instance()
+
+        producer = UkGovTflRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_road_corridor(
+                data=payload,
+                _road_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadCorridor'
+        assert received.body is not None
+        assert received.subject == "roads/{road_id}".format(road_id="value")
+        assert properties.get('road_id') == "{road_id}".format(road_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("roads/{road_id}".format(road_id="value"))[:128]
     
     def test_send_road_status(self, artemis_container):
         """Send and receive a RoadStatus message via ActiveMQ Artemis."""
@@ -318,6 +394,7 @@ class TestUkGovTflRoadAmqpProducer:
                 producer.send_road_status(
                     data=payload,
                     _road_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -325,6 +402,7 @@ class TestUkGovTflRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -347,8 +425,41 @@ class TestUkGovTflRoadAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "roads/{road_id}".format(road_id="value")
                 assert properties.get('road_id') == "{road_id}".format(road_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("roads/{road_id}".format(road_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_road_status_single_fresh_connection(self, artemis_container):
+        """Send exactly one RoadStatus message on a fresh producer connection."""
+        payload = Test_RoadStatus.create_instance()
+
+        producer = UkGovTflRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_road_status(
+                data=payload,
+                _road_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadStatus'
+        assert received.body is not None
+        assert received.subject == "roads/{road_id}".format(road_id="value")
+        assert properties.get('road_id') == "{road_id}".format(road_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("roads/{road_id}".format(road_id="value"))[:128]
     
     def test_send_road_disruption_serious(self, artemis_container):
         """Send and receive a RoadDisruptionSerious message via ActiveMQ Artemis."""
@@ -377,6 +488,7 @@ class TestUkGovTflRoadAmqpProducer:
                     _road_id="value",
                     _severity="value",
                     _disruption_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -384,6 +496,7 @@ class TestUkGovTflRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -408,8 +521,45 @@ class TestUkGovTflRoadAmqpProducer:
                 assert properties.get('road_id') == "{road_id}".format(road_id="value")
                 assert properties.get('severity') == "{severity}".format(severity="value")
                 assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_road_disruption_serious_single_fresh_connection(self, artemis_container):
+        """Send exactly one RoadDisruptionSerious message on a fresh producer connection."""
+        payload = Test_RoadDisruption.create_instance()
+
+        producer = UkGovTflRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_road_disruption_serious(
+                data=payload,
+                _road_id="value",
+                _severity="value",
+                _disruption_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionSerious'
+        assert received.body is not None
+        assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+        assert properties.get('road_id') == "{road_id}".format(road_id="value")
+        assert properties.get('severity') == "{severity}".format(severity="value")
+        assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
     
     def test_send_road_disruption_severe(self, artemis_container):
         """Send and receive a RoadDisruptionSevere message via ActiveMQ Artemis."""
@@ -438,6 +588,7 @@ class TestUkGovTflRoadAmqpProducer:
                     _road_id="value",
                     _severity="value",
                     _disruption_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -445,6 +596,7 @@ class TestUkGovTflRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -469,8 +621,45 @@ class TestUkGovTflRoadAmqpProducer:
                 assert properties.get('road_id') == "{road_id}".format(road_id="value")
                 assert properties.get('severity') == "{severity}".format(severity="value")
                 assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_road_disruption_severe_single_fresh_connection(self, artemis_container):
+        """Send exactly one RoadDisruptionSevere message on a fresh producer connection."""
+        payload = Test_RoadDisruption.create_instance()
+
+        producer = UkGovTflRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_road_disruption_severe(
+                data=payload,
+                _road_id="value",
+                _severity="value",
+                _disruption_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionSevere'
+        assert received.body is not None
+        assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+        assert properties.get('road_id') == "{road_id}".format(road_id="value")
+        assert properties.get('severity') == "{severity}".format(severity="value")
+        assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
     
     def test_send_road_disruption_moderate(self, artemis_container):
         """Send and receive a RoadDisruptionModerate message via ActiveMQ Artemis."""
@@ -499,6 +688,7 @@ class TestUkGovTflRoadAmqpProducer:
                     _road_id="value",
                     _severity="value",
                     _disruption_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -506,6 +696,7 @@ class TestUkGovTflRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -530,8 +721,45 @@ class TestUkGovTflRoadAmqpProducer:
                 assert properties.get('road_id') == "{road_id}".format(road_id="value")
                 assert properties.get('severity') == "{severity}".format(severity="value")
                 assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_road_disruption_moderate_single_fresh_connection(self, artemis_container):
+        """Send exactly one RoadDisruptionModerate message on a fresh producer connection."""
+        payload = Test_RoadDisruption.create_instance()
+
+        producer = UkGovTflRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_road_disruption_moderate(
+                data=payload,
+                _road_id="value",
+                _severity="value",
+                _disruption_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionModerate'
+        assert received.body is not None
+        assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+        assert properties.get('road_id') == "{road_id}".format(road_id="value")
+        assert properties.get('severity') == "{severity}".format(severity="value")
+        assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
     
     def test_send_road_disruption_minor(self, artemis_container):
         """Send and receive a RoadDisruptionMinor message via ActiveMQ Artemis."""
@@ -560,6 +788,7 @@ class TestUkGovTflRoadAmqpProducer:
                     _road_id="value",
                     _severity="value",
                     _disruption_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -567,6 +796,7 @@ class TestUkGovTflRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -591,8 +821,45 @@ class TestUkGovTflRoadAmqpProducer:
                 assert properties.get('road_id') == "{road_id}".format(road_id="value")
                 assert properties.get('severity') == "{severity}".format(severity="value")
                 assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_road_disruption_minor_single_fresh_connection(self, artemis_container):
+        """Send exactly one RoadDisruptionMinor message on a fresh producer connection."""
+        payload = Test_RoadDisruption.create_instance()
+
+        producer = UkGovTflRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_road_disruption_minor(
+                data=payload,
+                _road_id="value",
+                _severity="value",
+                _disruption_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionMinor'
+        assert received.body is not None
+        assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+        assert properties.get('road_id') == "{road_id}".format(road_id="value")
+        assert properties.get('severity') == "{severity}".format(severity="value")
+        assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
     
     def test_send_road_disruption_information(self, artemis_container):
         """Send and receive a RoadDisruptionInformation message via ActiveMQ Artemis."""
@@ -621,6 +888,7 @@ class TestUkGovTflRoadAmqpProducer:
                     _road_id="value",
                     _severity="value",
                     _disruption_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -628,6 +896,7 @@ class TestUkGovTflRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -652,8 +921,45 @@ class TestUkGovTflRoadAmqpProducer:
                 assert properties.get('road_id') == "{road_id}".format(road_id="value")
                 assert properties.get('severity') == "{severity}".format(severity="value")
                 assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_road_disruption_information_single_fresh_connection(self, artemis_container):
+        """Send exactly one RoadDisruptionInformation message on a fresh producer connection."""
+        payload = Test_RoadDisruption.create_instance()
+
+        producer = UkGovTflRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_road_disruption_information(
+                data=payload,
+                _road_id="value",
+                _severity="value",
+                _disruption_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionInformation'
+        assert received.body is not None
+        assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+        assert properties.get('road_id') == "{road_id}".format(road_id="value")
+        assert properties.get('severity') == "{severity}".format(severity="value")
+        assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
     
     def test_send_road_disruption_closure(self, artemis_container):
         """Send and receive a RoadDisruptionClosure message via ActiveMQ Artemis."""
@@ -682,6 +988,7 @@ class TestUkGovTflRoadAmqpProducer:
                     _road_id="value",
                     _severity="value",
                     _disruption_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -689,6 +996,7 @@ class TestUkGovTflRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -713,6 +1021,43 @@ class TestUkGovTflRoadAmqpProducer:
                 assert properties.get('road_id') == "{road_id}".format(road_id="value")
                 assert properties.get('severity') == "{severity}".format(severity="value")
                 assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_road_disruption_closure_single_fresh_connection(self, artemis_container):
+        """Send exactly one RoadDisruptionClosure message on a fresh producer connection."""
+        payload = Test_RoadDisruption.create_instance()
+
+        producer = UkGovTflRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_road_disruption_closure(
+                data=payload,
+                _road_id="value",
+                _severity="value",
+                _disruption_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionClosure'
+        assert received.body is not None
+        assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
+        assert properties.get('road_id') == "{road_id}".format(road_id="value")
+        assert properties.get('severity') == "{severity}".format(severity="value")
+        assert properties.get('disruption_id') == "{disruption_id}".format(disruption_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value"))[:128]
 

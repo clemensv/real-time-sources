@@ -9,10 +9,10 @@ class MaxIntensityenum(Enum):
     VALUE_2 = '2'
     VALUE_3 = '3'
     VALUE_4 = '4'
-    INTENSITY_5_MINUS = '5-'
-    INTENSITY_5_PLUS = '5+'
-    INTENSITY_6_MINUS = '6-'
-    INTENSITY_6_PLUS = '6+'
+    VALUE_5_ = '5-'
+    VALUE_5_ = '5+'
+    VALUE_6_ = '6-'
+    VALUE_6_ = '6+'
     VALUE_7 = '7'
 
     @classmethod

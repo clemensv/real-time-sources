@@ -3,7 +3,7 @@ from enum import Enum
 
 class AqhiCategoryenum(Enum):
     """
-    Public AQHI health-risk category derived from the forecast AQHI value.
+    Public AQHI health-risk category derived from the AQHI value.
     """
     Low = 'Low'
     Moderate = 'Moderate'

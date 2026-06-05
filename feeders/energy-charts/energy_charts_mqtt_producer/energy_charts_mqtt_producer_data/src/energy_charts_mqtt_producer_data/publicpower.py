@@ -52,7 +52,7 @@ class PublicPower:
     
     country: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="country"))
     timestamp: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    unix_seconds: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unix_seconds"))
+    unix_seconds: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="unix_seconds", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     hydro_pumped_storage_consumption_mw: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="hydro_pumped_storage_consumption_mw"))
     cross_border_electricity_trading_mw: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cross_border_electricity_trading_mw"))
     hydro_run_of_river_mw: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="hydro_run_of_river_mw"))
@@ -87,6 +87,8 @@ class PublicPower:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'unix_seconds' in data and isinstance(data['unix_seconds'], str):
+            data['unix_seconds'] = int(data['unix_seconds'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -97,6 +99,8 @@ class PublicPower:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'unix_seconds' in asdict_result and asdict_result['unix_seconds'] is not None:
+            asdict_result['unix_seconds'] = str(asdict_result['unix_seconds'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -134,6 +138,8 @@ class PublicPower:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -201,29 +207,29 @@ class PublicPower:
             An instance of the dataclass.
         """
         return cls(
-            country='mcqjueyjhjifvydbivqv',
+            country='harzdhvjydreqlcupfbh',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(8),
-            hydro_pumped_storage_consumption_mw=float(45.91753067098311),
-            cross_border_electricity_trading_mw=float(60.038137081830115),
-            hydro_run_of_river_mw=float(91.24131068622063),
-            biomass_mw=float(19.871571431306513),
-            fossil_brown_coal_lignite_mw=float(45.64215111451128),
-            fossil_hard_coal_mw=float(10.685767939659186),
-            fossil_oil_mw=float(77.83994275483369),
-            fossil_coal_derived_gas_mw=float(11.34515932198189),
-            fossil_gas_mw=float(16.425970044589477),
-            geothermal_mw=float(65.58193798198492),
-            hydro_water_reservoir_mw=float(68.71968012614418),
-            hydro_pumped_storage_mw=float(46.26107623632565),
-            others_mw=float(83.7334949556285),
-            waste_mw=float(85.44763040489897),
-            wind_offshore_mw=float(91.30724274743599),
-            wind_onshore_mw=float(18.927129906493768),
-            solar_mw=float(15.766589056707724),
-            nuclear_mw=float(31.39641439008146),
-            load_mw=float(19.627539163891015),
-            residual_load_mw=float(21.18966980848689),
-            renewable_share_of_generation_pct=float(84.07909018107297),
-            renewable_share_of_load_pct=float(65.36233629784103)
+            unix_seconds=int(35),
+            hydro_pumped_storage_consumption_mw=float(94.71159167618563),
+            cross_border_electricity_trading_mw=float(38.97177291352523),
+            hydro_run_of_river_mw=float(35.15139327976349),
+            biomass_mw=float(1.6032879430194824),
+            fossil_brown_coal_lignite_mw=float(77.01597810066895),
+            fossil_hard_coal_mw=float(89.09300407607667),
+            fossil_oil_mw=float(19.95152119281326),
+            fossil_coal_derived_gas_mw=float(69.87067645738378),
+            fossil_gas_mw=float(56.76293385421418),
+            geothermal_mw=float(78.74646015943306),
+            hydro_water_reservoir_mw=float(26.021385699212928),
+            hydro_pumped_storage_mw=float(98.2527082284919),
+            others_mw=float(85.60930423588212),
+            waste_mw=float(69.44636387327925),
+            wind_offshore_mw=float(62.0116752386076),
+            wind_onshore_mw=float(25.267888812533336),
+            solar_mw=float(32.95890062353438),
+            nuclear_mw=float(69.45201498068197),
+            load_mw=float(75.54731670864379),
+            residual_load_mw=float(4.273682697291703),
+            renewable_share_of_generation_pct=float(37.63054643162551),
+            renewable_share_of_load_pct=float(87.15321762801122)
         )

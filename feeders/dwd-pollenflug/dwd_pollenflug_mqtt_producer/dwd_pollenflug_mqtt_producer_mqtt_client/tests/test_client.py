@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import dwd_pollenflug_mqtt_producer_data
 from dwd_pollenflug_mqtt_producer_data import Region
-from test_dwd_pollenflug_mqtt_producer_data_region import Test_Region
+from test_region import Test_Region
 from dwd_pollenflug_mqtt_producer_data import PollenForecast
-from test_dwd_pollenflug_mqtt_producer_data_pollenforecast import Test_PollenForecast
+from test_pollenforecast import Test_PollenForecast
 from dwd_pollenflug_mqtt_producer_mqtt_client import DEDWDPollenflugMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_de_dwd_pollenflug_mqtt_de_dwd_pollenflug_mqtt_region_py(mosquitto
         await publisher_client.publish_de_dwd_pollenflug_mqtt_region(
             topic=test_topic,
             region_id=f"test_region_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -157,6 +159,7 @@ async def test_de_dwd_pollenflug_mqtt_de_dwd_pollenflug_mqtt_pollen_forecast_py(
             topic=test_topic,
             region_id=f"test_region_id_{i}",
             pollen_type=f"test_pollen_type_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

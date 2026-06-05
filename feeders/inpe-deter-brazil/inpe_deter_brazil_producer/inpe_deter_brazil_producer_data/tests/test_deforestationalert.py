@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from inpe_deter_brazil_producer_data.br.inpe.deter.deforestationalert import DeforestationAlert
-from inpe_deter_brazil_producer_data.br.inpe.deter.classslugenum import ClassSlugenum
 from inpe_deter_brazil_producer_data.br.inpe.deter.biomeenum import BiomeEnum
+from inpe_deter_brazil_producer_data.br.inpe.deter.classslugenum import ClassSlugenum
 
 
 class Test_DeforestationAlert(unittest.TestCase):
@@ -30,20 +30,20 @@ class Test_DeforestationAlert(unittest.TestCase):
         Create instance of DeforestationAlert for testing
         """
         instance = DeforestationAlert(
-            alert_id='nhvhqrrkbgkncqtsxgcf',
+            alert_id='rhujvuvwleejaoppiffm',
             biome=BiomeEnum.amazon,
-            classname='iwknqtperqzewclulmpz',
-            view_date='vanszvdheqzlokwkveas',
-            satellite='yprvjoxnqdjtninwjmwv',
-            sensor='tttyopzsftaizmkjntzh',
-            area_km2=float(29.969868969105416),
-            municipality='fbvzgmerhepkzidjyada',
-            state_code='kjptqpvhnvymihspgvas',
-            path_row='buyvaofknpvrjyxewqdb',
-            publish_month='pmowfnkjedcejkkghhfy',
-            centroid_latitude=float(36.731898151316955),
-            centroid_longitude=float(20.27943273625756),
-            state_slug='kgybxfswqcipcewdzhzv',
+            classname='iuvponrmvfzhokcbcdlu',
+            view_date='eoghpfpsogvekokhhbsx',
+            satellite='rrfrehdknfeiedwrqmtj',
+            sensor='prqdhwaxzectolcnanvo',
+            area_km2=float(9.903586242688178),
+            municipality='wvthbprsyygqmurpqhis',
+            state_code='jbhcfeiwuufvbaaahsam',
+            path_row='yoxhhrjdzoyckonnnclt',
+            publish_month='crpxmcpfzxieotzgdjkg',
+            centroid_latitude=float(9.446509095879286),
+            centroid_longitude=float(92.92348301699293),
+            state_slug='rsbxgzhqpzkrbstypsuz',
             class_slug=ClassSlugenum.desmatamento_cr
         )
         return instance
@@ -53,7 +53,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test alert_id property
         """
-        test_value = 'nhvhqrrkbgkncqtsxgcf'
+        test_value = 'rhujvuvwleejaoppiffm'
         self.instance.alert_id = test_value
         self.assertEqual(self.instance.alert_id, test_value)
     
@@ -69,7 +69,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test classname property
         """
-        test_value = 'iwknqtperqzewclulmpz'
+        test_value = 'iuvponrmvfzhokcbcdlu'
         self.instance.classname = test_value
         self.assertEqual(self.instance.classname, test_value)
     
@@ -77,7 +77,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test view_date property
         """
-        test_value = 'vanszvdheqzlokwkveas'
+        test_value = 'eoghpfpsogvekokhhbsx'
         self.instance.view_date = test_value
         self.assertEqual(self.instance.view_date, test_value)
     
@@ -85,7 +85,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test satellite property
         """
-        test_value = 'yprvjoxnqdjtninwjmwv'
+        test_value = 'rrfrehdknfeiedwrqmtj'
         self.instance.satellite = test_value
         self.assertEqual(self.instance.satellite, test_value)
     
@@ -93,7 +93,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test sensor property
         """
-        test_value = 'tttyopzsftaizmkjntzh'
+        test_value = 'prqdhwaxzectolcnanvo'
         self.instance.sensor = test_value
         self.assertEqual(self.instance.sensor, test_value)
     
@@ -101,7 +101,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test area_km2 property
         """
-        test_value = float(29.969868969105416)
+        test_value = float(9.903586242688178)
         self.instance.area_km2 = test_value
         self.assertEqual(self.instance.area_km2, test_value)
     
@@ -109,7 +109,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test municipality property
         """
-        test_value = 'fbvzgmerhepkzidjyada'
+        test_value = 'wvthbprsyygqmurpqhis'
         self.instance.municipality = test_value
         self.assertEqual(self.instance.municipality, test_value)
     
@@ -117,7 +117,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test state_code property
         """
-        test_value = 'kjptqpvhnvymihspgvas'
+        test_value = 'jbhcfeiwuufvbaaahsam'
         self.instance.state_code = test_value
         self.assertEqual(self.instance.state_code, test_value)
     
@@ -125,7 +125,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test path_row property
         """
-        test_value = 'buyvaofknpvrjyxewqdb'
+        test_value = 'yoxhhrjdzoyckonnnclt'
         self.instance.path_row = test_value
         self.assertEqual(self.instance.path_row, test_value)
     
@@ -133,7 +133,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test publish_month property
         """
-        test_value = 'pmowfnkjedcejkkghhfy'
+        test_value = 'crpxmcpfzxieotzgdjkg'
         self.instance.publish_month = test_value
         self.assertEqual(self.instance.publish_month, test_value)
     
@@ -141,7 +141,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test centroid_latitude property
         """
-        test_value = float(36.731898151316955)
+        test_value = float(9.446509095879286)
         self.instance.centroid_latitude = test_value
         self.assertEqual(self.instance.centroid_latitude, test_value)
     
@@ -149,7 +149,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test centroid_longitude property
         """
-        test_value = float(20.27943273625756)
+        test_value = float(92.92348301699293)
         self.instance.centroid_longitude = test_value
         self.assertEqual(self.instance.centroid_longitude, test_value)
     
@@ -157,7 +157,7 @@ class Test_DeforestationAlert(unittest.TestCase):
         """
         Test state_slug property
         """
-        test_value = 'kgybxfswqcipcewdzhzv'
+        test_value = 'rsbxgzhqpzkrbstypsuz'
         self.instance.state_slug = test_value
         self.assertEqual(self.instance.state_slug, test_value)
     
@@ -169,15 +169,6 @@ class Test_DeforestationAlert(unittest.TestCase):
         self.instance.class_slug = test_value
         self.assertEqual(self.instance.class_slug, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = DeforestationAlert.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

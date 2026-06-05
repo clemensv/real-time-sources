@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -126,6 +126,8 @@ class Webcam:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,24 +195,24 @@ class Webcam:
             An instance of the dataclass.
         """
         return cls(
-            identifier='stwvdccurejasfyzujrb',
-            road='xwicmsfpynjwsvvtsaed',
-            road_ids=['fgepkujfvmapsqzhkyvm', 'nhzcomklqvljfogyvfxo', 'jnxvxsnynaxncnimxrgw', 'fxolgwjxzxqhhzidurvp'],
+            identifier='odymbthjsvjsccbtqcyu',
+            road='pzeksimavaqzqrdjjkjn',
+            road_ids=['zvfhjausfwbrmmeslzwb'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
             display_type=DisplayTypeenum.WARNING,
-            title='ylpgulqnuvdkfioaffvf',
-            subtitle='bmqgliiporgzvkosfzkg',
+            title='vfndcskkrlazjmxhxsba',
+            subtitle='ikrbwlkowgjvwlfaomxt',
             description_lines=None,
-            future=True,
-            is_blocked=False,
-            icon='lrpjyperhnhbxnxrgqyc',
-            extent='znjloareutsdhxgtgjjo',
-            point='gxsarxytxuxepykvfbaj',
-            coordinate_lat=float(74.87983081663864),
-            coordinate_lon=float(76.64997241756033),
-            route_recommendation_json='vhictqbyztysxvmegyky',
+            future=False,
+            is_blocked=True,
+            icon='xgtdkfvqynpmckoeambw',
+            extent='ghnytjevevfjzbmwdung',
+            point='fnsbpyrvdzunjnyhlsan',
+            coordinate_lat=float(24.4852768788416),
+            coordinate_lon=float(84.59041128087618),
+            route_recommendation_json='mdrzfcsxjvrnixjorjkr',
             footer_lines=None,
-            operator_name='bvljgjtsumwpouhgtufq',
-            image_url='ovmwaflwhlgfqjooggnj',
-            stream_url='xggpmvixxokrwydpdfvi'
+            operator_name='ysqzakawzvsggefpecvl',
+            image_url='axydlhaboycxupbusopk',
+            stream_url='fottlnujxtetnztonvbe'
         )

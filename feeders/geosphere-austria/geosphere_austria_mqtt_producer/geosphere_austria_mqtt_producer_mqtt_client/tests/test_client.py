@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import geosphere_austria_mqtt_producer_data
 from geosphere_austria_mqtt_producer_data import WeatherStation
-from test_geosphere_austria_mqtt_producer_data_weatherstation import Test_WeatherStation
+from test_weatherstation import Test_WeatherStation
 from geosphere_austria_mqtt_producer_data import WeatherObservation
-from test_geosphere_austria_mqtt_producer_data_weatherobservation import Test_WeatherObservation
+from test_weatherobservation import Test_WeatherObservation
 from geosphere_austria_mqtt_producer_mqtt_client import AtGeosphereTawesMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_at_geosphere_tawes_mqtt_at_geosphere_tawes_mqtt_weather_station_p
         await publisher_client.publish_at_geosphere_tawes_mqtt_weather_station(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -156,6 +158,7 @@ async def test_at_geosphere_tawes_mqtt_at_geosphere_tawes_mqtt_weather_observati
         await publisher_client.publish_at_geosphere_tawes_mqtt_weather_observation(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

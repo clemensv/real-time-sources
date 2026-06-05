@@ -31,18 +31,18 @@ class Test_GenerationMix(unittest.TestCase):
         instance = GenerationMix(
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            biomass_pct=float(53.27921957075665),
-            coal_pct=float(91.17646445687274),
-            gas_pct=float(17.782359973529115),
-            hydro_pct=float(97.9633387546917),
-            imports_pct=float(39.48848974791995),
-            nuclear_pct=float(17.14762789059031),
-            oil_pct=float(87.47183302941714),
-            other_pct=float(98.91094833314264),
-            solar_pct=float(57.05245486297672),
-            wind_pct=float(44.574062634671975),
-            region='slkzxbhbilmrqnzeproz',
-            ce_id='kszqfwblumaqxttxnwwv'
+            biomass_pct=float(7.913666078070769),
+            coal_pct=float(81.01185478525356),
+            gas_pct=float(83.12884894408937),
+            hydro_pct=float(67.51440216133992),
+            imports_pct=float(41.50809692677049),
+            nuclear_pct=float(2.912235703986399),
+            oil_pct=float(25.359561209287563),
+            other_pct=float(78.72874509631743),
+            solar_pct=float(30.594401774228007),
+            wind_pct=float(43.25686289327933),
+            region='nnmarndonbwffcquxmql',
+            ce_id='ynkqsqolxdamskzfqdbu'
         )
         return instance
 
@@ -67,7 +67,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test biomass_pct property
         """
-        test_value = float(53.27921957075665)
+        test_value = float(7.913666078070769)
         self.instance.biomass_pct = test_value
         self.assertEqual(self.instance.biomass_pct, test_value)
     
@@ -75,7 +75,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test coal_pct property
         """
-        test_value = float(91.17646445687274)
+        test_value = float(81.01185478525356)
         self.instance.coal_pct = test_value
         self.assertEqual(self.instance.coal_pct, test_value)
     
@@ -83,7 +83,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test gas_pct property
         """
-        test_value = float(17.782359973529115)
+        test_value = float(83.12884894408937)
         self.instance.gas_pct = test_value
         self.assertEqual(self.instance.gas_pct, test_value)
     
@@ -91,7 +91,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test hydro_pct property
         """
-        test_value = float(97.9633387546917)
+        test_value = float(67.51440216133992)
         self.instance.hydro_pct = test_value
         self.assertEqual(self.instance.hydro_pct, test_value)
     
@@ -99,7 +99,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test imports_pct property
         """
-        test_value = float(39.48848974791995)
+        test_value = float(41.50809692677049)
         self.instance.imports_pct = test_value
         self.assertEqual(self.instance.imports_pct, test_value)
     
@@ -107,7 +107,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test nuclear_pct property
         """
-        test_value = float(17.14762789059031)
+        test_value = float(2.912235703986399)
         self.instance.nuclear_pct = test_value
         self.assertEqual(self.instance.nuclear_pct, test_value)
     
@@ -115,7 +115,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test oil_pct property
         """
-        test_value = float(87.47183302941714)
+        test_value = float(25.359561209287563)
         self.instance.oil_pct = test_value
         self.assertEqual(self.instance.oil_pct, test_value)
     
@@ -123,7 +123,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test other_pct property
         """
-        test_value = float(98.91094833314264)
+        test_value = float(78.72874509631743)
         self.instance.other_pct = test_value
         self.assertEqual(self.instance.other_pct, test_value)
     
@@ -131,7 +131,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test solar_pct property
         """
-        test_value = float(57.05245486297672)
+        test_value = float(30.594401774228007)
         self.instance.solar_pct = test_value
         self.assertEqual(self.instance.solar_pct, test_value)
     
@@ -139,7 +139,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test wind_pct property
         """
-        test_value = float(44.574062634671975)
+        test_value = float(43.25686289327933)
         self.instance.wind_pct = test_value
         self.assertEqual(self.instance.wind_pct, test_value)
     
@@ -147,7 +147,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'slkzxbhbilmrqnzeproz'
+        test_value = 'nnmarndonbwffcquxmql'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -155,7 +155,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test ce_id property
         """
-        test_value = 'kszqfwblumaqxttxnwwv'
+        test_value = 'ynkqsqolxdamskzfqdbu'
         self.instance.ce_id = test_value
         self.assertEqual(self.instance.ce_id, test_value)
     

@@ -128,6 +128,8 @@ class CommercialVehicleRestriction:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -195,27 +197,27 @@ class CommercialVehicleRestriction:
             An instance of the dataclass.
         """
         return cls(
-            state_route_id='yrxdqriydgmnjpgwfijp',
-            bridge_number='bzivrrxzmswbsltktmlu',
-            bridge_name='rvkbrhyviwzleoexwlni',
-            location_name='efzugqimozauiygwuyvt',
-            location_description='rxhcmelmtamgvoolqkhq',
-            latitude=float(58.83388770194073),
-            longitude=float(55.29704524825828),
-            state='dhdsyfwpsbsqvrxvdlug',
-            restriction_type='ftkkrfcwqnrqdbiwbego',
-            vehicle_type='pcvdstscropitwsoobod',
-            restriction_weight_in_pounds=int(5),
-            maximum_gross_vehicle_weight_in_pounds=int(84),
-            restriction_height_in_inches=int(1),
-            restriction_width_in_inches=int(54),
-            restriction_length_in_inches=int(99),
-            is_permanent_restriction=True,
+            state_route_id='qmcnvhlhobmeozjmoyok',
+            bridge_number='aatogpagbjoxialiarom',
+            bridge_name='kdldcbgpggzbicnhnfzz',
+            location_name='obqvadpxpdbljqdnmwtb',
+            location_description='vykutihhckvtavrayjek',
+            latitude=float(31.538688265825996),
+            longitude=float(17.329149355166816),
+            state='chlbohynxmdfwmbdhfiq',
+            restriction_type='xyzblyaygorrontwmbyy',
+            vehicle_type='dscmsbjxthtycsieqxhr',
+            restriction_weight_in_pounds=int(60),
+            maximum_gross_vehicle_weight_in_pounds=int(36),
+            restriction_height_in_inches=int(48),
+            restriction_width_in_inches=int(56),
+            restriction_length_in_inches=int(39),
+            is_permanent_restriction=False,
             is_warning=False,
-            is_detour_available=True,
+            is_detour_available=False,
             is_exceptions_allowed=False,
-            restriction_comment='wwpygdjeomhbmmrbfpvc',
-            date_posted='neemymlnxxkfzmnolfho',
-            date_effective='veraxysvzgfkhcnunbyq',
-            date_expires='bvxgqoqdcbrremkvawpu'
+            restriction_comment='eyghxbctqlalzudeomjr',
+            date_posted='mirrskevvgtzwbuhftlt',
+            date_effective='eqmvbbyzwapsnradwkif',
+            date_expires='yguflialkzfqndykeelb'
         )

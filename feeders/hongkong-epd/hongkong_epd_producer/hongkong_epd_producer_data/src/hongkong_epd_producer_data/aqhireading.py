@@ -19,12 +19,13 @@ import datetime
 @dataclass
 class AQHIReading:
     """
-    Air Quality Health Index (AQHI) reading for a Hong Kong EPD monitoring station. AQHI quantifies health risk from air pollution on a scale of 1 to 10+ and is calculated from concentrations of nitrogen dioxide, sulphur dioxide, ozone, and PM2.5. Published hourly by the EPD.
+    A current environmental measurement from Hong Kong's Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream feed reports a new or refreshed value.
     
     Attributes:
         station_id (str)
         station_name (str)
         station_type (str)
+        district (str)
         reading_time (datetime.datetime)
         aqhi (int)
         health_risk_category (typing.Optional[str])
@@ -34,6 +35,7 @@ class AQHIReading:
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
     station_type: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_type"))
+    district: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="district"))
     reading_time: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="reading_time", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
     aqhi: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="aqhi"))
     health_risk_category: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="health_risk_category"))
@@ -96,6 +98,8 @@ class AQHIReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,10 +167,11 @@ class AQHIReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='nooctpphvvonjqhuuufa',
-            station_name='nemmudkjkifictwhlgrw',
-            station_type='jkilyzbnzsbfcgcaqsws',
+            station_id='chzeezbqxrubfcmqsxep',
+            station_name='ksxqmtvakcefkvtdxggs',
+            station_type='yunpwnflypbixwlmhzuw',
+            district='koaltgiugupnkpccgwbc',
             reading_time=datetime.datetime.now(datetime.timezone.utc),
-            aqhi=int(28),
-            health_risk_category='wqffgzsgbofldcdpsgnj'
+            aqhi=int(32),
+            health_risk_category='hdsxzmaguykswdmkzrmj'
         )

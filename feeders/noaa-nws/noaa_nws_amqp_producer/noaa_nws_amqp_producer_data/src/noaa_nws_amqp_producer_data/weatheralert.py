@@ -12,11 +12,11 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from noaa_nws_amqp_producer_data.certaintyenum import CertaintyEnum
-from noaa_nws_amqp_producer_data.statusenum import StatusEnum
-from noaa_nws_amqp_producer_data.urgencyenum import UrgencyEnum
 from noaa_nws_amqp_producer_data.severityenum import SeverityEnum
+from noaa_nws_amqp_producer_data.statusenum import StatusEnum
 from noaa_nws_amqp_producer_data.categoryenum import CategoryEnum
+from noaa_nws_amqp_producer_data.urgencyenum import UrgencyEnum
+from noaa_nws_amqp_producer_data.certaintyenum import CertaintyEnum
 from noaa_nws_amqp_producer_data.messagetypeenum import MessageTypeenum
 import datetime
 
@@ -126,6 +126,8 @@ class WeatherAlert:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,8 +195,8 @@ class WeatherAlert:
             An instance of the dataclass.
         """
         return cls(
-            alert_id='tzduxhyexxptdkfghddy',
-            area_desc='ferajhuhdoyurfohdzyl',
+            alert_id='roqueaeetxuyhejabvmp',
+            area_desc='wqpxnjtkyvyznddbduva',
             sent=datetime.datetime.now(datetime.timezone.utc),
             effective=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
@@ -204,11 +206,11 @@ class WeatherAlert:
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
             urgency=UrgencyEnum.Immediate,
-            event='cngnrqsilowhllpdsoqd',
-            sender_name='wqayuzdkdtlfydljfxtz',
-            headline='wrrvxkmfjdmvanwhttkb',
-            description='sxdcgaeibtgqtjsrspal',
-            zone_id='xhrtmqsmcpsdsfxjdxzx',
-            state='dtdeurmczjtmgqwtrtpk',
-            event_type='rgqbbtyytvxvuolcgvje'
+            event='tzrjfkbiiyvpfmzlxrvy',
+            sender_name='mfmtbmkzfrtbkgxptcbs',
+            headline='uhcdtavwsctbgzqtunpd',
+            description='zypvilejiwbktqnfbpth',
+            zone_id='wywffagwytftarjlbkxz',
+            state='lndzsntcnuarkpdkvhgf',
+            event_type='iepzrmxbecofvjqusfwo'
         )

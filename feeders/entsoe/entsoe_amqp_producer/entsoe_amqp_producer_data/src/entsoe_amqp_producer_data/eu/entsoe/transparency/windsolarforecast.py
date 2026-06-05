@@ -96,6 +96,8 @@ class WindSolarForecast:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class WindSolarForecast:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='smikbcjosvdjcpyaciee',
-            psrType='pqlhmkflnhqlecumimvm',
-            quantity=float(65.14097348844051),
-            resolution='pmskcjomzzjyhonioxmc',
-            businessType='bntejdjarycaikyxgile',
-            documentType='hkyuvhqfpcuphtnbrsia',
-            unitName='kpwnddhguqqddogosyva'
+            inDomain='rvhvovaoejihkxivfrsp',
+            psrType='pnklamwmqlawynyhrmkm',
+            quantity=float(41.10436326362888),
+            resolution='obmgkhfgztzxeqgznvwr',
+            businessType='sgkgaikpbqxwrnmrvjqy',
+            documentType='relrhheypbbqbdduujyi',
+            unitName='gsycffsgsniilvbcbiej'
         )

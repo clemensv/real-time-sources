@@ -88,6 +88,8 @@ class LandForecastPeriod:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -155,7 +157,7 @@ class LandForecastPeriod:
             An instance of the dataclass.
         """
         return cls(
-            period_number=int(23),
-            period_name='ozjnvyfxnbbeptntrjjz',
-            detailed_forecast='giwgtzjgidxczizyjrnh'
+            period_number=int(50),
+            period_name='lxjrpsqamrqatensmjmn',
+            detailed_forecast='nwjojqycobtqerulrlfb'
         )

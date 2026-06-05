@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import bfs_odl_mqtt_producer_data
 from bfs_odl_mqtt_producer_data import Station
-from test_bfs_odl_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from bfs_odl_mqtt_producer_data import DoseRateMeasurement
-from test_bfs_odl_mqtt_producer_data_doseratemeasurement import Test_DoseRateMeasurement
+from test_doseratemeasurement import Test_DoseRateMeasurement
 from bfs_odl_mqtt_producer_mqtt_client import DeBfsOdlMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -92,6 +93,7 @@ async def test_de_bfs_odl_mqtt_de_bfs_odl_mqtt_station_py(mosquitto_broker):
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -158,6 +160,7 @@ async def test_de_bfs_odl_mqtt_de_bfs_odl_mqtt_dose_rate_measurement_py(mosquitt
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

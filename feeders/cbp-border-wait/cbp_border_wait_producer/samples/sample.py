@@ -34,11 +34,12 @@ from confluent_kafka import Producer as KafkaProducer
 
 from cbp_border_wait_producer_kafka_producer.producer import GovCbpBorderwaitEventProducer
 from cbp_border_wait_producer_kafka_producer.producer import GovCbpBorderwaitMqttEventProducer
+from cbp_border_wait_producer_kafka_producer.producer import GovCbpBorderwaitAmqpEventProducer
 
 # imports for the data classes for each event
 
-from cbp_border_wait_producer_data.port import Port
-from cbp_border_wait_producer_data.waittime import WaitTime
+from cbp_border_wait_producer_data import Port
+from cbp_border_wait_producer_data import WaitTime
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -97,12 +98,36 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'gov.cbp.borderwait.mqtt.WaitTime' event to Kafka topic.
     await gov_cbp_borderwait_mqtt_event_producer.send_gov_cbp_borderwait_mqtt_wait_time(_port_number = 'TODO: replace me', data = _wait_time)
     print(f"Sent 'gov.cbp.borderwait.mqtt.WaitTime' event: {_wait_time.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        gov_cbp_borderwait_amqp_event_producer = GovCbpBorderwaitAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        gov_cbp_borderwait_amqp_event_producer = GovCbpBorderwaitAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- gov.cbp.borderwait.amqp.Port ----
+    # TODO: Supply event data for the gov.cbp.borderwait.amqp.Port event
+    _port = Port()
+
+    # sends the 'gov.cbp.borderwait.amqp.Port' event to Kafka topic.
+    await gov_cbp_borderwait_amqp_event_producer.send_gov_cbp_borderwait_amqp_port(_port_number = 'TODO: replace me', data = _port)
+    print(f"Sent 'gov.cbp.borderwait.amqp.Port' event: {_port.to_json()}")
+
+    # ---- gov.cbp.borderwait.amqp.WaitTime ----
+    # TODO: Supply event data for the gov.cbp.borderwait.amqp.WaitTime event
+    _wait_time = WaitTime()
+
+    # sends the 'gov.cbp.borderwait.amqp.WaitTime' event to Kafka topic.
+    await gov_cbp_borderwait_amqp_event_producer.send_gov_cbp_borderwait_amqp_wait_time(_port_number = 'TODO: replace me', data = _wait_time)
+    print(f"Sent 'gov.cbp.borderwait.amqp.WaitTime' event: {_wait_time.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

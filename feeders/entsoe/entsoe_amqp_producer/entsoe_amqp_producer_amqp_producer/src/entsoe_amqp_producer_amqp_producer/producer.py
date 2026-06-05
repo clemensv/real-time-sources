@@ -14,14 +14,62 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
+from datetime import datetime, timezone
 from urllib.parse import quote_plus
-from proton import Message
+from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -36,7 +84,7 @@ import hmac
 import logging
 import time as _cbs_time
 from urllib.parse import quote
-from proton import Endpoint, symbol
+from proton import Endpoint
 from proton.handlers import MessagingHandler
 from proton.reactor import Container, AtLeastOnce
 
@@ -493,9 +541,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -558,6 +604,32 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -585,6 +657,23 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         return payload
 
     @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
         CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
@@ -610,6 +699,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
     def send_day_ahead_prices(self,
         data: DayAheadPrices,
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices` message
@@ -617,6 +707,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (DayAheadPrices): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -631,6 +722,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -660,26 +752,39 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}".format(inDomain=_in_domain)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["eventType"] = "DayAheadPrices"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["event-type"] = "DayAheadPrices"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}".format(inDomain=_in_domain)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_day_ahead_prices_batch(self,
         data_array: typing.List[DayAheadPrices],
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices` messages
@@ -687,18 +792,21 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         Args:
             data_array (typing.List[DayAheadPrices]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_day_ahead_prices(
                 data=data,
                 _in_domain=_in_domain,
+                _time=_time,
                 content_type=content_type)
     
     
     def send_actual_total_load(self,
         data: ActualTotalLoad,
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad` message
@@ -706,6 +814,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ActualTotalLoad): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -720,6 +829,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -749,26 +859,39 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}".format(inDomain=_in_domain)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["eventType"] = "ActualTotalLoad"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["event-type"] = "ActualTotalLoad"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}".format(inDomain=_in_domain)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_actual_total_load_batch(self,
         data_array: typing.List[ActualTotalLoad],
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad` messages
@@ -776,18 +899,21 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         Args:
             data_array (typing.List[ActualTotalLoad]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_actual_total_load(
                 data=data,
                 _in_domain=_in_domain,
+                _time=_time,
                 content_type=content_type)
     
     
     def send_load_forecast_margin(self,
         data: LoadForecastMargin,
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin` message
@@ -795,6 +921,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (LoadForecastMargin): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -809,6 +936,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -838,26 +966,39 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}".format(inDomain=_in_domain)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["eventType"] = "LoadForecastMargin"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["event-type"] = "LoadForecastMargin"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}".format(inDomain=_in_domain)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_load_forecast_margin_batch(self,
         data_array: typing.List[LoadForecastMargin],
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin` messages
@@ -865,18 +1006,21 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         Args:
             data_array (typing.List[LoadForecastMargin]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_load_forecast_margin(
                 data=data,
                 _in_domain=_in_domain,
+                _time=_time,
                 content_type=content_type)
     
     
     def send_generation_forecast(self,
         data: GenerationForecast,
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.ByDomain.amqp.GenerationForecast` message
@@ -884,6 +1028,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (GenerationForecast): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -898,6 +1043,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -927,26 +1073,39 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}".format(inDomain=_in_domain)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["eventType"] = "GenerationForecast"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["event-type"] = "GenerationForecast"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}".format(inDomain=_in_domain)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_generation_forecast_batch(self,
         data_array: typing.List[GenerationForecast],
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.ByDomain.amqp.GenerationForecast` messages
@@ -954,18 +1113,21 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         Args:
             data_array (typing.List[GenerationForecast]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_generation_forecast(
                 data=data,
                 _in_domain=_in_domain,
+                _time=_time,
                 content_type=content_type)
     
     
     def send_reservoir_filling_information(self,
         data: ReservoirFillingInformation,
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation` message
@@ -973,6 +1135,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ReservoirFillingInformation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -987,6 +1150,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1016,26 +1180,39 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}".format(inDomain=_in_domain)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["eventType"] = "ReservoirFillingInformation"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["event-type"] = "ReservoirFillingInformation"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}".format(inDomain=_in_domain)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_reservoir_filling_information_batch(self,
         data_array: typing.List[ReservoirFillingInformation],
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation` messages
@@ -1043,18 +1220,21 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         Args:
             data_array (typing.List[ReservoirFillingInformation]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_reservoir_filling_information(
                 data=data,
                 _in_domain=_in_domain,
+                _time=_time,
                 content_type=content_type)
     
     
     def send_actual_generation(self,
         data: ActualGeneration,
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.ByDomain.amqp.ActualGeneration` message
@@ -1062,6 +1242,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ActualGeneration): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1076,6 +1257,7 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1105,26 +1287,39 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}".format(inDomain=_in_domain)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["eventType"] = "ActualGeneration"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["event-type"] = "ActualGeneration"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}".format(inDomain=_in_domain)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_actual_generation_batch(self,
         data_array: typing.List[ActualGeneration],
         _in_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.ByDomain.amqp.ActualGeneration` messages
@@ -1132,12 +1327,14 @@ class EuEntsoeTransparencyByDomainAmqpProducer:
         Args:
             data_array (typing.List[ActualGeneration]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_actual_generation(
                 data=data,
                 _in_domain=_in_domain,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1257,9 +1454,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -1322,6 +1517,32 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -1347,6 +1568,23 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -1375,6 +1613,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         data: ActualGenerationPerType,
         _in_domain: str,
         _psr_type: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType` message
@@ -1383,6 +1622,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
             _psr_type (str): Value for placeholder psrType in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ActualGenerationPerType): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1397,6 +1637,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1426,28 +1667,41 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}/{psrType}".format(inDomain=_in_domain, psrType=_psr_type)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["psrType"] = "{psrType}".format(psrType=_psr_type)
-        app_properties["eventType"] = "ActualGenerationPerType"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["psr-type"] = "{psrType}".format(psrType=_psr_type)
+        app_properties["event-type"] = "ActualGenerationPerType"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}/{psrType}".format(inDomain=_in_domain, psrType=_psr_type)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_actual_generation_per_type_batch(self,
         data_array: typing.List[ActualGenerationPerType],
         _in_domain: str,
         _psr_type: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType` messages
@@ -1456,6 +1710,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             data_array (typing.List[ActualGenerationPerType]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
             _psr_type (str): Value for placeholder psrType in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1463,6 +1718,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                 data=data,
                 _in_domain=_in_domain,
                 _psr_type=_psr_type,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1470,6 +1726,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         data: WindSolarForecast,
         _in_domain: str,
         _psr_type: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast` message
@@ -1478,6 +1735,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
             _psr_type (str): Value for placeholder psrType in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (WindSolarForecast): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1492,6 +1750,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1521,28 +1780,41 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}/{psrType}".format(inDomain=_in_domain, psrType=_psr_type)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["psrType"] = "{psrType}".format(psrType=_psr_type)
-        app_properties["eventType"] = "WindSolarForecast"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["psr-type"] = "{psrType}".format(psrType=_psr_type)
+        app_properties["event-type"] = "WindSolarForecast"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}/{psrType}".format(inDomain=_in_domain, psrType=_psr_type)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_wind_solar_forecast_batch(self,
         data_array: typing.List[WindSolarForecast],
         _in_domain: str,
         _psr_type: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast` messages
@@ -1551,6 +1823,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             data_array (typing.List[WindSolarForecast]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
             _psr_type (str): Value for placeholder psrType in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1558,6 +1831,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                 data=data,
                 _in_domain=_in_domain,
                 _psr_type=_psr_type,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1565,6 +1839,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         data: WindSolarGeneration,
         _in_domain: str,
         _psr_type: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration` message
@@ -1573,6 +1848,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
             _psr_type (str): Value for placeholder psrType in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (WindSolarGeneration): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1587,6 +1863,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1616,28 +1893,41 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}/{psrType}".format(inDomain=_in_domain, psrType=_psr_type)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["psrType"] = "{psrType}".format(psrType=_psr_type)
-        app_properties["eventType"] = "WindSolarGeneration"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["psr-type"] = "{psrType}".format(psrType=_psr_type)
+        app_properties["event-type"] = "WindSolarGeneration"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}/{psrType}".format(inDomain=_in_domain, psrType=_psr_type)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_wind_solar_generation_batch(self,
         data_array: typing.List[WindSolarGeneration],
         _in_domain: str,
         _psr_type: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration` messages
@@ -1646,6 +1936,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             data_array (typing.List[WindSolarGeneration]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
             _psr_type (str): Value for placeholder psrType in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1653,6 +1944,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                 data=data,
                 _in_domain=_in_domain,
                 _psr_type=_psr_type,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1660,6 +1952,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         data: InstalledGenerationCapacityPerType,
         _in_domain: str,
         _psr_type: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType` message
@@ -1668,6 +1961,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
             _psr_type (str): Value for placeholder psrType in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (InstalledGenerationCapacityPerType): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1682,6 +1976,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1711,28 +2006,41 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}/{psrType}".format(inDomain=_in_domain, psrType=_psr_type)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["psrType"] = "{psrType}".format(psrType=_psr_type)
-        app_properties["eventType"] = "InstalledGenerationCapacityPerType"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["psr-type"] = "{psrType}".format(psrType=_psr_type)
+        app_properties["event-type"] = "InstalledGenerationCapacityPerType"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}/{psrType}".format(inDomain=_in_domain, psrType=_psr_type)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_installed_generation_capacity_per_type_batch(self,
         data_array: typing.List[InstalledGenerationCapacityPerType],
         _in_domain: str,
         _psr_type: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType` messages
@@ -1741,6 +2049,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             data_array (typing.List[InstalledGenerationCapacityPerType]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
             _psr_type (str): Value for placeholder psrType in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1748,6 +2057,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                 data=data,
                 _in_domain=_in_domain,
                 _psr_type=_psr_type,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1867,9 +2177,7 @@ class EuEntsoeTransparencyCrossBorderAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -1932,6 +2240,32 @@ class EuEntsoeTransparencyCrossBorderAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -1957,6 +2291,23 @@ class EuEntsoeTransparencyCrossBorderAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -1985,6 +2336,7 @@ class EuEntsoeTransparencyCrossBorderAmqpProducer:
         data: CrossBorderPhysicalFlows,
         _in_domain: str,
         _out_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows` message
@@ -1993,6 +2345,7 @@ class EuEntsoeTransparencyCrossBorderAmqpProducer:
         Args:
             _in_domain (str): Value for placeholder inDomain in attribute subject
             _out_domain (str): Value for placeholder outDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (CrossBorderPhysicalFlows): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2007,6 +2360,7 @@ class EuEntsoeTransparencyCrossBorderAmqpProducer:
             "datacontenttype":
             content_type,
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2036,28 +2390,41 @@ class EuEntsoeTransparencyCrossBorderAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{inDomain}/{outDomain}".format(inDomain=_in_domain, outDomain=_out_domain)
 
         app_properties = {}
-        app_properties["inDomain"] = "{inDomain}".format(inDomain=_in_domain)
-        app_properties["outDomain"] = "{outDomain}".format(outDomain=_out_domain)
-        app_properties["eventType"] = "CrossBorderPhysicalFlows"
+        app_properties["in-domain"] = "{inDomain}".format(inDomain=_in_domain)
+        app_properties["out-domain"] = "{outDomain}".format(outDomain=_out_domain)
+        app_properties["event-type"] = "CrossBorderPhysicalFlows"
         if app_properties:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{inDomain}/{outDomain}".format(inDomain=_in_domain, outDomain=_out_domain)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_cross_border_physical_flows_batch(self,
         data_array: typing.List[CrossBorderPhysicalFlows],
         _in_domain: str,
         _out_domain: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows` messages
@@ -2066,6 +2433,7 @@ class EuEntsoeTransparencyCrossBorderAmqpProducer:
             data_array (typing.List[CrossBorderPhysicalFlows]): Array of message data objects
             _in_domain (str): Value for placeholder inDomain in attribute subject
             _out_domain (str): Value for placeholder outDomain in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2073,6 +2441,7 @@ class EuEntsoeTransparencyCrossBorderAmqpProducer:
                 data=data,
                 _in_domain=_in_domain,
                 _out_domain=_out_domain,
+                _time=_time,
                 content_type=content_type)
     
     

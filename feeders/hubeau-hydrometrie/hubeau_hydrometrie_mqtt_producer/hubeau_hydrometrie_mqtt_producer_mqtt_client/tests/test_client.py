@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import hubeau_hydrometrie_mqtt_producer_data
 from hubeau_hydrometrie_mqtt_producer_data import Station
-from test_hubeau_hydrometrie_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from hubeau_hydrometrie_mqtt_producer_data import Observation
-from test_hubeau_hydrometrie_mqtt_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from hubeau_hydrometrie_mqtt_producer_mqtt_client import FRGovEaufranceHubEauHydrometrieMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_fr_gov_eaufrance_hubeau_hydrometrie_mqtt_fr_gov_eaufrance_hub_eau
         await publisher_client.publish_fr_gov_eaufrance_hub_eau_hydrometrie_mqtt_station(
             topic=test_topic,
             code_station=f"test_code_station_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -156,6 +158,7 @@ async def test_fr_gov_eaufrance_hubeau_hydrometrie_mqtt_fr_gov_eaufrance_hub_eau
         await publisher_client.publish_fr_gov_eaufrance_hub_eau_hydrometrie_mqtt_observation(
             topic=test_topic,
             code_station=f"test_code_station_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

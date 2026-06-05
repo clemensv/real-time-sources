@@ -1,3 +1,3 @@
-from .deter import DeforestationAlert
+from .deter import BiomeEnum, ClassSlugenum, DeforestationAlert
 
-__all__ = ["DeforestationAlert"]
+__all__ = ["BiomeEnum", "ClassSlugenum", "DeforestationAlert"]

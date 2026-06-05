@@ -5,6 +5,7 @@
 Tests for aisstream_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,7 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
-from proton import symbol
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../aisstream_amqp_producer_data/src')))
@@ -26,11 +27,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from aisstream_amqp_producer_amqp_producer import *
 from aisstream_amqp_producer_data import PositionReport
-from test_aisstream_amqp_producer_data_positionreport import Test_PositionReport
+from test_positionreport import Test_PositionReport
 from aisstream_amqp_producer_data import ShipStatic
-from test_aisstream_amqp_producer_data_shipstatic import Test_ShipStatic
+from test_shipstatic import Test_ShipStatic
 from aisstream_amqp_producer_data import AidToNavigation
-from test_aisstream_amqp_producer_data_aidtonavigation import Test_AidToNavigation
+from test_aidtonavigation import Test_AidToNavigation
 
 
 
@@ -236,6 +237,45 @@ class TestIOAISstreamAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(IOAISstreamAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_position_report(self, artemis_container):
         """Send and receive a PositionReport message via ActiveMQ Artemis."""
@@ -265,6 +305,7 @@ class TestIOAISstreamAmqpProducer:
                     _flag="value",
                     _ship_type="value",
                     _geohash5="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -299,6 +340,42 @@ class TestIOAISstreamAmqpProducer:
                 assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
         finally:
             producer.close()
+
+    def test_send_position_report_single_fresh_connection(self, artemis_container):
+        """Send exactly one PositionReport message on a fresh producer connection."""
+        payload = Test_PositionReport.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_position_report(
+                data=payload,
+                _mmsi="value",
+                _flag="value",
+                _ship_type="value",
+                _geohash5="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.amqp.PositionReport'
+        assert received.body is not None
+        assert received.subject == "{mmsi}".format(mmsi="value")
+        assert properties.get('flag') == "{flag}".format(flag="value")
+        assert properties.get('ship_type') == "{ship_type}".format(ship_type="value")
+        assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
     
     def test_send_ship_static(self, artemis_container):
         """Send and receive a ShipStatic message via ActiveMQ Artemis."""
@@ -328,6 +405,7 @@ class TestIOAISstreamAmqpProducer:
                     _flag="value",
                     _ship_type="value",
                     _geohash5="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -362,6 +440,42 @@ class TestIOAISstreamAmqpProducer:
                 assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
         finally:
             producer.close()
+
+    def test_send_ship_static_single_fresh_connection(self, artemis_container):
+        """Send exactly one ShipStatic message on a fresh producer connection."""
+        payload = Test_ShipStatic.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_ship_static(
+                data=payload,
+                _mmsi="value",
+                _flag="value",
+                _ship_type="value",
+                _geohash5="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.amqp.ShipStatic'
+        assert received.body is not None
+        assert received.subject == "{mmsi}".format(mmsi="value")
+        assert properties.get('flag') == "{flag}".format(flag="value")
+        assert properties.get('ship_type') == "{ship_type}".format(ship_type="value")
+        assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
     
     def test_send_aid_to_navigation(self, artemis_container):
         """Send and receive a AidToNavigation message via ActiveMQ Artemis."""
@@ -391,6 +505,7 @@ class TestIOAISstreamAmqpProducer:
                     _flag="value",
                     _ship_type="value",
                     _geohash5="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -425,4 +540,40 @@ class TestIOAISstreamAmqpProducer:
                 assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
         finally:
             producer.close()
+
+    def test_send_aid_to_navigation_single_fresh_connection(self, artemis_container):
+        """Send exactly one AidToNavigation message on a fresh producer connection."""
+        payload = Test_AidToNavigation.create_instance()
+
+        producer = IOAISstreamAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_aid_to_navigation(
+                data=payload,
+                _mmsi="value",
+                _flag="value",
+                _ship_type="value",
+                _geohash5="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.amqp.AidToNavigation'
+        assert received.body is not None
+        assert received.subject == "{mmsi}".format(mmsi="value")
+        assert properties.get('flag') == "{flag}".format(flag="value")
+        assert properties.get('ship_type') == "{ship_type}".format(ship_type="value")
+        assert properties.get('geohash5') == "{geohash5}".format(geohash5="value")
 

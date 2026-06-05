@@ -28,13 +28,13 @@ class Test_Community(unittest.TestCase):
         Create instance of Community for testing
         """
         instance = Community(
-            province='keqfibcaleuwdmrxdjnc',
-            community_name='vxffalxelsuparjbgcbw',
-            cgndb_code='wiuhalevdrnbdaxfpuia',
-            latitude=float(71.11406013628229),
-            longitude=float(83.46202065754737),
-            observation_url='gqrlwinzjpognosvvwqu',
-            forecast_url='rlfxpywthvtlhisbglei'
+            province='ypbmgdemptafnjulbcln',
+            community_name='arjebsiydpvndbiaxmgy',
+            cgndb_code='agbxmdhyestccskxfjdp',
+            latitude=float(91.90015820129916),
+            longitude=float(27.709227885340514),
+            observation_url='kkfcrijmbxaqatlxtbqf',
+            forecast_url='yvydpdhgldpgkytfjilo'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Community(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'keqfibcaleuwdmrxdjnc'
+        test_value = 'ypbmgdemptafnjulbcln'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -51,7 +51,7 @@ class Test_Community(unittest.TestCase):
         """
         Test community_name property
         """
-        test_value = 'vxffalxelsuparjbgcbw'
+        test_value = 'arjebsiydpvndbiaxmgy'
         self.instance.community_name = test_value
         self.assertEqual(self.instance.community_name, test_value)
     
@@ -59,7 +59,7 @@ class Test_Community(unittest.TestCase):
         """
         Test cgndb_code property
         """
-        test_value = 'wiuhalevdrnbdaxfpuia'
+        test_value = 'agbxmdhyestccskxfjdp'
         self.instance.cgndb_code = test_value
         self.assertEqual(self.instance.cgndb_code, test_value)
     
@@ -67,7 +67,7 @@ class Test_Community(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(71.11406013628229)
+        test_value = float(91.90015820129916)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -75,7 +75,7 @@ class Test_Community(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(83.46202065754737)
+        test_value = float(27.709227885340514)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -83,7 +83,7 @@ class Test_Community(unittest.TestCase):
         """
         Test observation_url property
         """
-        test_value = 'gqrlwinzjpognosvvwqu'
+        test_value = 'kkfcrijmbxaqatlxtbqf'
         self.instance.observation_url = test_value
         self.assertEqual(self.instance.observation_url, test_value)
     
@@ -91,19 +91,10 @@ class Test_Community(unittest.TestCase):
         """
         Test forecast_url property
         """
-        test_value = 'rlfxpywthvtlhisbglei'
+        test_value = 'yvydpdhgldpgkytfjilo'
         self.instance.forecast_url = test_value
         self.assertEqual(self.instance.forecast_url, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Community.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

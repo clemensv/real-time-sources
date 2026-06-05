@@ -18,7 +18,7 @@ import json
 class Event:
     """
     A public ticketed event from the Billetto platform. Each record represents a single upcoming or ongoing public event with schedule, venue, organizer, pricing, and availability information.
-
+    
     Attributes:
         event_id (int)
         title (str)
@@ -41,8 +41,8 @@ class Event:
         minimum_price_currency (typing.Optional[str])
         availability (typing.Optional[str])
     """
-
-
+    
+    
     event_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_id"))
     title: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="title"))
     description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="description"))
@@ -68,10 +68,10 @@ class Event:
     def from_serializer_dict(cls, data: dict) -> 'Event':
         """
         Converts a dictionary to a dataclass instance.
-
+        
         Args:
             data: The dictionary to convert to a dataclass.
-
+        
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -90,7 +90,7 @@ class Event:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """
+        """ 
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -102,7 +102,7 @@ class Event:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-
+        
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -111,17 +111,19 @@ class Event:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.
+            The byte array representation of the dataclass.        
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -141,10 +143,10 @@ class Event:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['Event']:
         """
         Converts the data to a dataclass based on the content type string.
-
+        
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to.
+            content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -168,7 +170,7 @@ class Event:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -184,29 +186,29 @@ class Event:
     def create_instance(cls) -> 'Event':
         """
         Creates an instance of the dataclass with test values.
-
+        
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            event_id=int(61),
-            title='keiielwpnvunikivkszy',
-            description='qurkdkozuxxhevewwqlk',
-            startdate='fqwxqymgdtqbbzmswzpr',
-            enddate='msgqhjpntjtentlmbwou',
-            url='udmehcrwuwgtksxizqea',
-            image_link='lvjxllpcdcdfrikwxgqs',
-            status='cohvwzhtjpxrhqgviphy',
-            location_city='sgkazawcjfwebitqwbcp',
-            location_name='gmbsbynzklhrmpyozwzz',
-            location_address='nnexpbujtrbcksragzdw',
-            location_zip_code='isjotvaiqlzbpwuyrbpv',
-            location_country_code='uuwgeyjatdlqcwbfhvrh',
-            location_latitude=float(0.730694555877498),
-            location_longitude=float(26.578412604679723),
-            organiser_id=int(98),
-            organiser_name='amicpmctaplzgnnjkywh',
-            minimum_price_amount_in_cents=int(84),
-            minimum_price_currency='ljoyflqgnbbezuszgjve',
-            availability='rrovxzhrqoyxwvqrtwyp'
+            event_id=int(64),
+            title='gikngpswpjjggfvcaykg',
+            description='shoeqommpthiobznwelt',
+            startdate='nrdjlvefvphjpvfsgcfl',
+            enddate='oopbymgvwkbkoezbumyz',
+            url='ogeniaqqehdfuwwfqgcl',
+            image_link='qjhctydcgenusrihnlca',
+            status='whymhjloqbyxwwoeiqre',
+            location_city='vlfddggbhhnvzatqtnow',
+            location_name='nvksiwjdkmqdgwjkmvjl',
+            location_address='vjwsvinxykpctluwpuzy',
+            location_zip_code='nirydkdoptfjothbpuls',
+            location_country_code='zrwusiypjqfqfeqlhiqg',
+            location_latitude=float(7.571447198083636),
+            location_longitude=float(23.450678042935223),
+            organiser_id=int(19),
+            organiser_name='ikvrlnhjegftjgqqxdqk',
+            minimum_price_amount_in_cents=int(48),
+            minimum_price_currency='oqejjcgpvqpvhyukkakl',
+            availability='ecbuwyxslvtygpagbcnk'
         )

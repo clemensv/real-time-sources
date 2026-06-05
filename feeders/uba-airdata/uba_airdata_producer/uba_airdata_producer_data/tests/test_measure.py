@@ -28,13 +28,13 @@ class Test_Measure(unittest.TestCase):
         Create instance of Measure for testing
         """
         instance = Measure(
-            station_id=int(6),
+            station_id=int(81),
             component_id=int(100),
-            scope_id=int(18),
-            date_start='vumhbepvpqcfnifojrwa',
-            date_end='zsxrfthkyiazwnqynzqp',
-            value=float(77.37281257102032),
-            quality_index='rbavmexuftsalglnuzpg'
+            scope_id=int(53),
+            date_start='gnziojmvmxoldmluxhqj',
+            date_end='tjuwlaekofidmhpoxnso',
+            value=float(8.402250988119764),
+            quality_index='plduxghtqvomxjnqllqg'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Measure(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(6)
+        test_value = int(81)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -59,7 +59,7 @@ class Test_Measure(unittest.TestCase):
         """
         Test scope_id property
         """
-        test_value = int(18)
+        test_value = int(53)
         self.instance.scope_id = test_value
         self.assertEqual(self.instance.scope_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_Measure(unittest.TestCase):
         """
         Test date_start property
         """
-        test_value = 'vumhbepvpqcfnifojrwa'
+        test_value = 'gnziojmvmxoldmluxhqj'
         self.instance.date_start = test_value
         self.assertEqual(self.instance.date_start, test_value)
     
@@ -75,7 +75,7 @@ class Test_Measure(unittest.TestCase):
         """
         Test date_end property
         """
-        test_value = 'zsxrfthkyiazwnqynzqp'
+        test_value = 'tjuwlaekofidmhpoxnso'
         self.instance.date_end = test_value
         self.assertEqual(self.instance.date_end, test_value)
     
@@ -83,7 +83,7 @@ class Test_Measure(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(77.37281257102032)
+        test_value = float(8.402250988119764)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -91,7 +91,7 @@ class Test_Measure(unittest.TestCase):
         """
         Test quality_index property
         """
-        test_value = 'rbavmexuftsalglnuzpg'
+        test_value = 'plduxghtqvomxjnqllqg'
         self.instance.quality_index = test_value
         self.assertEqual(self.instance.quality_index, test_value)
     

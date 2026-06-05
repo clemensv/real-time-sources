@@ -12,7 +12,7 @@ def fake_api_and_producer():
     with patch('nve_hydro.nve_hydro.NVEHydroAPI') as api_cls, \
          patch('nve_hydro.nve_hydro.Producer') as producer_cls, \
          patch('nve_hydro.nve_hydro.NONVEHydrologyEventProducer') as nve_prod_cls, \
-         patch('nve_hydro.nve_hydro.send_stations', return_value={}) as send_st, \
+         patch('nve_hydro.nve_hydro.send_stations', return_value=({}, {})) as send_st, \
          patch('nve_hydro.nve_hydro.feed_observations', return_value=0) as feed_obs, \
          patch('nve_hydro.nve_hydro._load_state', return_value={}), \
          patch('nve_hydro.nve_hydro._save_state'), \

@@ -5,6 +5,7 @@
 Tests for noaa_goes_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa_goes_amqp_producer_data/src')))
@@ -25,17 +27,17 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from noaa_goes_amqp_producer_amqp_producer import *
 from noaa_goes_amqp_producer_data import GoesXrayFlux
-from test_noaa_goes_amqp_producer_data_goesxrayflux import Test_GoesXrayFlux
+from test_goesxrayflux import Test_GoesXrayFlux
 from noaa_goes_amqp_producer_data import GoesProtonFlux
-from test_noaa_goes_amqp_producer_data_goesprotonflux import Test_GoesProtonFlux
+from test_goesprotonflux import Test_GoesProtonFlux
 from noaa_goes_amqp_producer_data import GoesElectronFlux
-from test_noaa_goes_amqp_producer_data_goeselectronflux import Test_GoesElectronFlux
+from test_goeselectronflux import Test_GoesElectronFlux
 from noaa_goes_amqp_producer_data import GoesMagnetometer
-from test_noaa_goes_amqp_producer_data_goesmagnetometer import Test_GoesMagnetometer
+from test_goesmagnetometer import Test_GoesMagnetometer
 from noaa_goes_amqp_producer_data import SpaceWeatherAlert
-from test_noaa_goes_amqp_producer_data_spaceweatheralert import Test_SpaceWeatherAlert
+from test_spaceweatheralert import Test_SpaceWeatherAlert
 from noaa_goes_amqp_producer_data import XrayFlare
-from test_noaa_goes_amqp_producer_data_xrayflare import Test_XrayFlare
+from test_xrayflare import Test_XrayFlare
 
 
 
@@ -241,6 +243,45 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(MicrosoftOpenDataUSNOAASWPCGOESAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -270,6 +311,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                     _energy="value",
                     _time_tag="value",
                     _event="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -277,6 +319,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -301,6 +344,40 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                 assert properties.get('event') == "{event}".format(event="value")
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_GoesXrayFlux.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAASWPCGOESAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _satellite="value",
+                _energy="value",
+                _time_tag="value",
+                _event="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp'
+        assert received.body is not None
+        assert received.subject == "{satellite}/{energy}/{time_tag}".format(satellite="value", energy="value", time_tag="value")
+        assert properties.get('event') == "{event}".format(event="value")
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -330,6 +407,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                     _energy="value",
                     _time_tag="value",
                     _event="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -337,6 +415,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -361,6 +440,40 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                 assert properties.get('event') == "{event}".format(event="value")
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_GoesProtonFlux.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAASWPCGOESAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _satellite="value",
+                _energy="value",
+                _time_tag="value",
+                _event="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp'
+        assert received.body is not None
+        assert received.subject == "{satellite}/{energy}/{time_tag}".format(satellite="value", energy="value", time_tag="value")
+        assert properties.get('event') == "{event}".format(event="value")
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -390,6 +503,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                     _energy="value",
                     _time_tag="value",
                     _event="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -397,6 +511,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -421,6 +536,40 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                 assert properties.get('event') == "{event}".format(event="value")
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_GoesElectronFlux.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAASWPCGOESAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _satellite="value",
+                _energy="value",
+                _time_tag="value",
+                _event="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp'
+        assert received.body is not None
+        assert received.subject == "{satellite}/{energy}/{time_tag}".format(satellite="value", energy="value", time_tag="value")
+        assert properties.get('event') == "{event}".format(event="value")
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -449,6 +598,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                     _satellite="value",
                     _time_tag="value",
                     _event="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -456,6 +606,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -480,6 +631,39 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                 assert properties.get('event') == "{event}".format(event="value")
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_GoesMagnetometer.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAASWPCGOESAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _satellite="value",
+                _time_tag="value",
+                _event="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp'
+        assert received.body is not None
+        assert received.subject == "{satellite}/{time_tag}".format(satellite="value", time_tag="value")
+        assert properties.get('event') == "{event}".format(event="value")
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -506,6 +690,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _product_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -513,6 +698,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -536,6 +722,36 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                 assert received.subject == "{product_id}".format(product_id="value")
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_SpaceWeatherAlert.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAASWPCGOESAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _product_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp'
+        assert received.body is not None
+        assert received.subject == "{product_id}".format(product_id="value")
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -564,6 +780,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                     _satellite="value",
                     _begin_time="value",
                     _flare_class="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -571,6 +788,7 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -595,4 +813,37 @@ class TestMicrosoftOpenDataUSNOAASWPCGOESAmqpProducer:
                 assert properties.get('flare_class') == "{flare_class}".format(flare_class="value")
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_XrayFlare.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAASWPCGOESAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _satellite="value",
+                _begin_time="value",
+                _flare_class="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp'
+        assert received.body is not None
+        assert received.subject == "{satellite}/{begin_time}".format(satellite="value", begin_time="value")
+        assert properties.get('flare_class') == "{flare_class}".format(flare_class="value")
 

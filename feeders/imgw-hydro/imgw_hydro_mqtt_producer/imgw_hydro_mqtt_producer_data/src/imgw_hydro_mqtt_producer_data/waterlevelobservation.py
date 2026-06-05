@@ -110,6 +110,8 @@ class WaterLevelObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -177,17 +179,17 @@ class WaterLevelObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='teqmlsgidzbwajtdpmlm',
-            station_name='mzsvmrvufdytzococwyr',
-            river='lonwydqqpzyhpikefcii',
-            voivodeship='uvtbzzfosfuujmhguddd',
-            water_level=float(52.314941704692075),
+            station_id='qczlsvwvkixollqiqafn',
+            station_name='npqrwtodhfpnnqmejglo',
+            river='snbpnkhkngcubcyndfbc',
+            voivodeship='fpdeqrtfxbqubbyvzsec',
+            water_level=float(98.76130462863694),
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            water_temperature=float(97.41887438396338),
+            water_temperature=float(56.265478988269955),
             water_temperature_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(88.6503841139685),
+            discharge=float(91.39106276949616),
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            ice_phenomenon_code='trrlpnbajypquwhowanl',
-            overgrowth_code='vddlgkbkpuzqmakffgnd',
-            basin='jbgukgdyrecefuszzkkq'
+            ice_phenomenon_code='ixmdzefjpcvqfucfopss',
+            overgrowth_code='pilizxjkbwjgbhbarndy',
+            basin='oliolxhbqvtrnjbnmlke'
         )

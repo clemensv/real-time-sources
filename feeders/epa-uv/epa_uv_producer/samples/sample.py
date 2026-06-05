@@ -34,11 +34,12 @@ from confluent_kafka import Producer as KafkaProducer
 
 from epa_uv_producer_kafka_producer.producer import USEPAUVIndexEventProducer
 from epa_uv_producer_kafka_producer.producer import USEPAUVIndexMqttEventProducer
+from epa_uv_producer_kafka_producer.producer import USEPAUVIndexAmqpEventProducer
 
 # imports for the data classes for each event
 
-from epa_uv_producer_data.hourlyforecast import HourlyForecast
-from epa_uv_producer_data.dailyforecast import DailyForecast
+from epa_uv_producer_data import HourlyForecast
+from epa_uv_producer_data import DailyForecast
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -97,12 +98,36 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'US.EPA.UVIndex.mqtt.DailyForecast' event to Kafka topic.
     await usepauvindex_mqtt_event_producer.send_us_epa_uvindex_mqtt_daily_forecast(_location_id = 'TODO: replace me', data = _daily_forecast)
     print(f"Sent 'US.EPA.UVIndex.mqtt.DailyForecast' event: {_daily_forecast.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usepauvindex_amqp_event_producer = USEPAUVIndexAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usepauvindex_amqp_event_producer = USEPAUVIndexAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- US.EPA.UVIndex.amqp.HourlyForecast ----
+    # TODO: Supply event data for the US.EPA.UVIndex.amqp.HourlyForecast event
+    _hourly_forecast = HourlyForecast()
+
+    # sends the 'US.EPA.UVIndex.amqp.HourlyForecast' event to Kafka topic.
+    await usepauvindex_amqp_event_producer.send_us_epa_uvindex_amqp_hourly_forecast(_location_id = 'TODO: replace me', data = _hourly_forecast)
+    print(f"Sent 'US.EPA.UVIndex.amqp.HourlyForecast' event: {_hourly_forecast.to_json()}")
+
+    # ---- US.EPA.UVIndex.amqp.DailyForecast ----
+    # TODO: Supply event data for the US.EPA.UVIndex.amqp.DailyForecast event
+    _daily_forecast = DailyForecast()
+
+    # sends the 'US.EPA.UVIndex.amqp.DailyForecast' event to Kafka topic.
+    await usepauvindex_amqp_event_producer.send_us_epa_uvindex_amqp_daily_forecast(_location_id = 'TODO: replace me', data = _daily_forecast)
+    print(f"Sent 'US.EPA.UVIndex.amqp.DailyForecast' event: {_daily_forecast.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

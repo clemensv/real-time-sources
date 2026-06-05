@@ -92,6 +92,8 @@ class ReservoirFillingInformation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class ReservoirFillingInformation:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='gdfjjzxxdfsngeqmkwai',
-            quantity=float(47.70918897926985),
-            resolution='aankikaiamftekwhupri',
-            documentType='lcovqytselkhtwxstsvu',
-            unitName='kchkrzexrajmjmbgybtq'
+            inDomain='xbrzpdsfgdsvzphjzqgj',
+            quantity=float(14.776248306975914),
+            resolution='nolknvsjfiizmauagpko',
+            documentType='clljoqyvzhyselwjukjd',
+            unitName='lgzszaxtmycwelxbjtli'
         )

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import jma_bosai_amedas_mqtt_producer_data
 from jma_bosai_amedas_mqtt_producer_data import Station
-from test_jma_bosai_amedas_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from jma_bosai_amedas_mqtt_producer_data import Observation
-from test_jma_bosai_amedas_mqtt_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from jma_bosai_amedas_mqtt_producer_mqtt_client import JPJMAAmedasMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -92,6 +93,7 @@ async def test_jp_jma_amedas_mqtt_jp_jma_amedas_mqtt_station_py(mosquitto_broker
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_code=f"test_station_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -158,6 +160,7 @@ async def test_jp_jma_amedas_mqtt_jp_jma_amedas_mqtt_observation_py(mosquitto_br
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_code=f"test_station_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

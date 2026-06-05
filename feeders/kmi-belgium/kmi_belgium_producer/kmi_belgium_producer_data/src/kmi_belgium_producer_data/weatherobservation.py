@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class WeatherObservation:
     """
-    Ten-minute automatic weather station observation from the KMI/RMI aws:aws_10min feed, containing precipitation, temperature, wind, humidity, pressure, radiation, and soil measurements.
+    A current environmental measurement from the Royal Meteorological Institute of Belgium (KMI/IRM). It carries weather observations when the upstream feed reports a new or refreshed value.
     
     Attributes:
         station_code (str)
@@ -41,6 +41,7 @@ class WeatherObservation:
         sun_duration (typing.Optional[float])
         short_wave_from_sky_avg (typing.Optional[float])
         sun_int_avg (typing.Optional[float])
+        region (typing.Optional[str])
     """
     
     
@@ -63,6 +64,7 @@ class WeatherObservation:
     sun_duration: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sun_duration"))
     short_wave_from_sky_avg: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="short_wave_from_sky_avg"))
     sun_int_avg: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sun_int_avg"))
+    region: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherObservation':
@@ -122,6 +124,8 @@ class WeatherObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -189,23 +193,24 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_code='mdyiocckijqmkrndevcs',
+            station_code='axuhadogtgzjpmkuphdh',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            precip_quantity=float(25.305175711159787),
-            temp_dry_shelter_avg=float(10.14976553849225),
-            temp_grass_pt100_avg=float(16.06791912753248),
-            temp_soil_avg=float(16.223018749746466),
-            temp_soil_avg_5cm=float(27.89864081952407),
-            temp_soil_avg_10cm=float(9.287816433815033),
-            temp_soil_avg_20cm=float(68.73477384759344),
-            temp_soil_avg_50cm=float(53.15605440747153),
-            wind_speed_10m=float(73.32390760333568),
-            wind_speed_avg_30m=float(23.073007503228293),
-            wind_direction=float(85.67654182548307),
-            wind_gusts_speed=float(80.09326914036919),
-            humidity_rel_shelter_avg=float(20.759569454282158),
-            pressure=float(85.00874994538279),
-            sun_duration=float(72.31864744388096),
-            short_wave_from_sky_avg=float(7.284232483610687),
-            sun_int_avg=float(53.46009147943691)
+            precip_quantity=float(24.563619603873732),
+            temp_dry_shelter_avg=float(52.718614288252),
+            temp_grass_pt100_avg=float(22.305386200975473),
+            temp_soil_avg=float(18.60379054601785),
+            temp_soil_avg_5cm=float(74.87981569414612),
+            temp_soil_avg_10cm=float(17.95268237175681),
+            temp_soil_avg_20cm=float(60.71053991128712),
+            temp_soil_avg_50cm=float(71.44906708220262),
+            wind_speed_10m=float(44.9246952490902),
+            wind_speed_avg_30m=float(11.40952008424212),
+            wind_direction=float(47.084033687206336),
+            wind_gusts_speed=float(60.500214770914255),
+            humidity_rel_shelter_avg=float(2.256538369874239),
+            pressure=float(24.495413160649328),
+            sun_duration=float(81.89297627089849),
+            short_wave_from_sky_avg=float(29.55818572089831),
+            sun_int_avg=float(45.360440276467315),
+            region='qdeujsacapbwsezyjiea'
         )

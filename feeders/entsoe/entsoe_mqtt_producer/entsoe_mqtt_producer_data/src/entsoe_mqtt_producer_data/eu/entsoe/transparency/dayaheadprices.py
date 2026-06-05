@@ -94,6 +94,8 @@ class DayAheadPrices:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class DayAheadPrices:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='dmfcknuowkcyufxvilqs',
-            price=float(40.22307024264615),
-            currency='aikzpcnwkhpqmyesnwwv',
-            unitName='cbavnzfizvnknofjiubz',
-            resolution='djoodigfxfjjzfvyhasf',
-            documentType='zfyozsoeqmnogfsxsras'
+            inDomain='zseqhgyrtgqjtxeolbhm',
+            price=float(70.77329846651178),
+            currency='qygfppewihoexrlwuukh',
+            unitName='wusvnahqawiyalagivxj',
+            resolution='yghtqemuytwbxwuibngf',
+            documentType='xihufbxuhlialqwqhztp'
         )

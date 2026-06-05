@@ -18,7 +18,7 @@ from kystverket_ais_amqp_producer_data.msgtypeenum import MsgTypeenum
 @dataclass
 class PositionReport:
     """
-    AIS position report (Type 1/2/3/18/19) projected onto the UNS axes.
+    A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
     
     Attributes:
         mmsi (str)
@@ -115,6 +115,8 @@ class PositionReport:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -182,20 +184,20 @@ class PositionReport:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='obgyhzbnghroawkdmywg',
-            flag='wqyejiarkdoivlnuixjy',
-            ship_type='nyguqiyqqabopzkyhhrb',
-            geohash5='lhqofhpwrsfdwthnuthz',
+            mmsi='kvclchzikowhmneqzooy',
+            flag='dblsyqryuiszqqurhrso',
+            ship_type='vwccqlisnpblocyjlzfv',
+            geohash5='qmxpjfqekbbxbguxywtc',
             msg_type=MsgTypeenum.position_report,
-            latitude=float(6.882877869518733),
-            longitude=float(23.281852758073683),
-            speed_over_ground=float(72.32489505332128),
-            course_over_ground=float(37.59987939473931),
-            true_heading=int(74),
-            navigation_status=int(41),
-            rate_of_turn=float(84.93297507246378),
-            position_accuracy=int(12),
-            timestamp='cjfcizsvyjjprwavozmy',
-            station_id='uprqpmhzypwzdeeoiewr',
-            ais_msg_type=int(31)
+            latitude=float(83.83598268427903),
+            longitude=float(58.47752160679698),
+            speed_over_ground=float(94.64849769060845),
+            course_over_ground=float(67.80207933886827),
+            true_heading=int(78),
+            navigation_status=int(79),
+            rate_of_turn=float(36.35036539618235),
+            position_accuracy=int(40),
+            timestamp='aifvkqdfnavdgcszqwja',
+            station_id='xgzqogfzlhamlxlzksfg',
+            ais_msg_type=int(78)
         )

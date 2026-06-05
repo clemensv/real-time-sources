@@ -122,6 +122,8 @@ class RegionalIntensity:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -189,23 +191,23 @@ class RegionalIntensity:
             An instance of the dataclass.
         """
         return cls(
-            region_id=int(24),
-            dnoregion='ueakvllykyuytkencjsg',
-            shortname='lfvfetvmmazwjnperbxm',
+            region_id=int(1),
+            dnoregion='qxxyoaqvwrvvmzwnsdrz',
+            shortname='xzoglwsuckxvhqkammay',
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            forecast=int(38),
-            index='dawjviarcfgbstrzfhao',
-            biomass_pct=float(72.34767670393511),
-            coal_pct=float(79.30216042512717),
-            gas_pct=float(27.720818213629805),
-            hydro_pct=float(50.45856615049955),
-            imports_pct=float(48.74829828099742),
-            nuclear_pct=float(78.86878036560464),
-            oil_pct=float(20.241077440128752),
-            other_pct=float(20.60780912514667),
-            solar_pct=float(54.58624495561003),
-            wind_pct=float(11.51388453426334),
-            region='xiypxeyelmvmgibxlbyo',
-            ce_id='ntzhrzvskrqirsztxcns'
+            forecast=int(4),
+            index='puqckkuvappapmqzhhig',
+            biomass_pct=float(30.791238096389094),
+            coal_pct=float(26.135799081538778),
+            gas_pct=float(7.908524165131747),
+            hydro_pct=float(54.92624402513737),
+            imports_pct=float(23.139387113126876),
+            nuclear_pct=float(53.89833723052069),
+            oil_pct=float(1.8085916739323915),
+            other_pct=float(64.18022731794888),
+            solar_pct=float(93.42229243227406),
+            wind_pct=float(72.05013426413083),
+            region='gdkdqfzgfhlvjmaoswnu',
+            ce_id='mntkrmuxqxftwykskajj'
         )

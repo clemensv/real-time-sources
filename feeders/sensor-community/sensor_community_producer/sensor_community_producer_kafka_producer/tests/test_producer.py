@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from sensor_community_producer_kafka_producer.producer import IoSensorCommunityEventProducer
 from sensor_community_producer_data import SensorInfo
-from test_sensor_community_producer_data_sensorinfo import Test_SensorInfo
+from test_sensorinfo import Test_SensorInfo
 from sensor_community_producer_data import SensorReading
-from test_sensor_community_producer_data_sensorreading import Test_SensorReading
+from test_sensorreading import Test_SensorReading
 from sensor_community_producer_kafka_producer.producer import IoSensorCommunityMqttEventProducer
 from sensor_community_producer_kafka_producer.producer import IoSensorCommunityAmqpEventProducer
 
@@ -107,7 +107,8 @@ def test_io_sensor_community_iosensorcommunitysensorinfo(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_sensor_community_sensor_info(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_sensor_community_sensor_info(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_io_sensor_community_iosensorcommunitysensorreading(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_sensor_community_sensor_reading(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_sensor_community_sensor_reading(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_io_sensor_community_mqtt_iosensorcommunitymqttsensorinfo(kafka_emulator
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_sensor_community_mqtt_sensor_info(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_sensor_community_mqtt_sensor_info(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_io_sensor_community_mqtt_iosensorcommunitymqttsensorreading(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_sensor_community_mqtt_sensor_reading(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_sensor_community_mqtt_sensor_reading(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_io_sensor_community_amqp_iosensorcommunityamqpsensorinfo(kafka_emulator
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_sensor_community_amqp_sensor_info(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_sensor_community_amqp_sensor_info(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_io_sensor_community_amqp_iosensorcommunityamqpsensorreading(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_sensor_community_amqp_sensor_reading(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_sensor_community_amqp_sensor_reading(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

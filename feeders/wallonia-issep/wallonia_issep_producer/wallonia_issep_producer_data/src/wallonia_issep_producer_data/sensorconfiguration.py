@@ -17,7 +17,7 @@ import json
 @dataclass
 class SensorConfiguration:
     """
-    Reference data for one ISSeP Wallonia air quality sensor configuration. Each id_configuration identifies a deployed sensor unit. The bridge emits this event at startup for each distinct configuration seen in the data records.
+    A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value.
     
     Attributes:
         configuration_id (str)
@@ -26,7 +26,7 @@ class SensorConfiguration:
     
     
     configuration_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="configuration_id"))
-    province: str=dataclasses.field(default="unknown", kw_only=True, metadata=dataclasses_json.config(field_name="province"))
+    province: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="province"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'SensorConfiguration':
@@ -86,6 +86,8 @@ class SensorConfiguration:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -153,6 +155,6 @@ class SensorConfiguration:
             An instance of the dataclass.
         """
         return cls(
-            configuration_id='rsjzqhoafxbclvknoyev',
-            province='ytpbzsjlmnehhtywlsjz'
+            configuration_id='pewkqniydwhnrbjzueoa',
+            province='rgccvxpoibopoerceohu'
         )

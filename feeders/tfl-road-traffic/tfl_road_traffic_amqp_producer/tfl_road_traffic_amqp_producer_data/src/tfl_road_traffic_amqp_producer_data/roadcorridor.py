@@ -102,6 +102,8 @@ class RoadCorridor:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,13 +171,13 @@ class RoadCorridor:
             An instance of the dataclass.
         """
         return cls(
-            road_id='xptshoyfpbwzmtdhtcxg',
-            display_name='spkdgtknqlmqbhlooruo',
-            status_severity='vzntzuvmjtslpoqatwsa',
-            status_severity_description='bfhxlptcrbokkvgddgsz',
-            bounds='ofmprkmvcqcafcyugmuh',
-            envelope='lilzqjzvwpdqgpwadlmz',
-            url='tpsefyyfqpnqqscwvipe',
+            road_id='yeydyiuiipwhwvhxdrwn',
+            display_name='zlufxfmtjxkblxlkeglb',
+            status_severity='kanhkfgnioeekqrrtwpt',
+            status_severity_description='fdjubhwgivyhpiagmhew',
+            bounds='myyxbjwoqgjskyxmgnbd',
+            envelope='aanfmncujglfpawraocm',
+            url='lrsdwxyviyjyrbuasgzx',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
             status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )

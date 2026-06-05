@@ -130,6 +130,8 @@ class WeatherObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -197,27 +199,27 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            msc_id='noirkavciddkauqghvfn',
-            station_name='ewnvnscttfitghlwuqex',
+            msc_id='ocityvemgtwxuqwrpudv',
+            station_name='hpohirrfklbsmteegezo',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            air_temperature=float(3.9560623594654953),
-            dew_point=float(94.13671232386865),
-            relative_humidity=int(82),
-            station_pressure=float(48.710152802659564),
-            wind_speed=float(19.570613969869456),
-            wind_direction=int(87),
-            wind_gust=float(1.6150822451561408),
-            precipitation_1hr=float(86.37514867049363),
-            mean_sea_level_pressure=float(43.91634080143666),
-            visibility=float(81.89156901298549),
-            snow_depth=float(14.833501506351187),
-            total_cloud_cover=int(65),
-            pressure_tendency_3hr=float(79.15076588305237),
-            max_temperature_24hr=float(57.21662318600189),
-            min_temperature_24hr=float(70.57700771076539),
-            wind_speed_1hr=float(97.15491425828388),
-            wind_gust_1hr=float(20.39500676832763),
-            precipitation_24hr=float(93.83655232595864),
-            altimeter_setting=float(33.52341956509982),
-            province='lxtbecirwobjdcwjrnvf'
+            air_temperature=float(84.7954512740927),
+            dew_point=float(40.27561570729612),
+            relative_humidity=int(10),
+            station_pressure=float(67.40072508334588),
+            wind_speed=float(1.527112128248309),
+            wind_direction=int(60),
+            wind_gust=float(10.677525667470977),
+            precipitation_1hr=float(83.17222832826525),
+            mean_sea_level_pressure=float(11.881506845590161),
+            visibility=float(80.7506489196893),
+            snow_depth=float(28.63639737118211),
+            total_cloud_cover=int(43),
+            pressure_tendency_3hr=float(43.006478112898826),
+            max_temperature_24hr=float(72.99152433587744),
+            min_temperature_24hr=float(81.87307099285789),
+            wind_speed_1hr=float(92.92651112524094),
+            wind_gust_1hr=float(77.19093771672867),
+            precipitation_24hr=float(38.15686877442638),
+            altimeter_setting=float(63.448495493112155),
+            province='rlxqtlbpmjizliiaaapg'
         )

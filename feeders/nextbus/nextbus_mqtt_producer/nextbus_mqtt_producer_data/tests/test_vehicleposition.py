@@ -28,14 +28,14 @@ class Test_VehiclePosition(unittest.TestCase):
         Create instance of VehiclePosition for testing
         """
         instance = VehiclePosition(
-            agency_id='bsectugcrrocgkhheqyz',
-            route_tag='pscecdsfksxlbntduqqn',
-            vehicle_id='ohknngpbhmqqiyjkygrt',
-            stop_or_vehicle_id='tydfdiqovarcqphlswye',
-            event_type='ulrdxxgxaakfpcxgeihg',
-            lat='zflkarfydbmfnpqroukg',
-            lon='dkzbsomugshnetcpqlid',
-            timestamp=float(18.52981487135382)
+            agency_id='gbnuvnofitnwmigpbirv',
+            route_tag='enwzktxofsljufqfuhzh',
+            vehicle_id='npidwcxkgqxsrqppnlph',
+            stop_or_vehicle_id='ooyqwmouivlrqodzxnnb',
+            event_type='hkqhjgndwogkkrtwhhvm',
+            lat='iwnvirydcloyifwmqbfg',
+            lon='xpvexekvdamlqhokdnre',
+            timestamp=float(76.02835683293152)
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test agency_id property
         """
-        test_value = 'bsectugcrrocgkhheqyz'
+        test_value = 'gbnuvnofitnwmigpbirv'
         self.instance.agency_id = test_value
         self.assertEqual(self.instance.agency_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test route_tag property
         """
-        test_value = 'pscecdsfksxlbntduqqn'
+        test_value = 'enwzktxofsljufqfuhzh'
         self.instance.route_tag = test_value
         self.assertEqual(self.instance.route_tag, test_value)
     
@@ -60,7 +60,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test vehicle_id property
         """
-        test_value = 'ohknngpbhmqqiyjkygrt'
+        test_value = 'npidwcxkgqxsrqppnlph'
         self.instance.vehicle_id = test_value
         self.assertEqual(self.instance.vehicle_id, test_value)
     
@@ -68,7 +68,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test stop_or_vehicle_id property
         """
-        test_value = 'tydfdiqovarcqphlswye'
+        test_value = 'ooyqwmouivlrqodzxnnb'
         self.instance.stop_or_vehicle_id = test_value
         self.assertEqual(self.instance.stop_or_vehicle_id, test_value)
     
@@ -76,7 +76,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test event_type property
         """
-        test_value = 'ulrdxxgxaakfpcxgeihg'
+        test_value = 'hkqhjgndwogkkrtwhhvm'
         self.instance.event_type = test_value
         self.assertEqual(self.instance.event_type, test_value)
     
@@ -84,7 +84,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = 'zflkarfydbmfnpqroukg'
+        test_value = 'iwnvirydcloyifwmqbfg'
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -92,7 +92,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test lon property
         """
-        test_value = 'dkzbsomugshnetcpqlid'
+        test_value = 'xpvexekvdamlqhokdnre'
         self.instance.lon = test_value
         self.assertEqual(self.instance.lon, test_value)
     
@@ -100,7 +100,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = float(18.52981487135382)
+        test_value = float(76.02835683293152)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     

@@ -90,6 +90,8 @@ class Details:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,7 +161,7 @@ class Details:
             An instance of the dataclass.
         """
         return cls(
-            self_='vtxmuqvpwxwaayqensmk',
-            region='bcnjcrafszgvtxderxcm',
-            station_id='tfbeyyrylyqbtqwizkcv'
+            self_='rmahbgwfpemljsoqflmi',
+            region='zykgmephfpbdrpclqtjt',
+            station_id='amgjneklhqxequvqkfgl'
         )

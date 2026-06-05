@@ -28,13 +28,13 @@ class Test_Visibility(unittest.TestCase):
         Create instance of Visibility for testing
         """
         instance = Visibility(
-            timestamp='kjpnelluuqsrqwrtnmzn',
-            value=float(24.122319013911152),
+            timestamp='ahoheugpnfjkqkpsyaap',
+            value=float(80.66865534338618),
             max_visibility_exceeded=True,
-            min_visibility_exceeded=False,
+            min_visibility_exceeded=True,
             rate_of_change_exceeded=False,
-            station_id='eychubmyhnpkaezxsxrn',
-            region='neyiqxszadtkgnfvlvjj'
+            station_id='skliirsbttwwbhdmysyw',
+            region='sqbezguduxliiwsjfrby'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'kjpnelluuqsrqwrtnmzn'
+        test_value = 'ahoheugpnfjkqkpsyaap'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -51,7 +51,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(24.122319013911152)
+        test_value = float(80.66865534338618)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test min_visibility_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.min_visibility_exceeded = test_value
         self.assertEqual(self.instance.min_visibility_exceeded, test_value)
     
@@ -83,7 +83,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'eychubmyhnpkaezxsxrn'
+        test_value = 'skliirsbttwwbhdmysyw'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -91,19 +91,10 @@ class Test_Visibility(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'neyiqxszadtkgnfvlvjj'
+        test_value = 'sqbezguduxliiwsjfrby'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Visibility.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

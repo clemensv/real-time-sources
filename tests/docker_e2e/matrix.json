@@ -1772,6 +1772,60 @@
       "image": "digitraffic-road-amqp",
       "file": "Dockerfile.amqp",
       "module": "digitraffic_road_amqp"
+    },
+    {
+      "dir": "feeders/nasa-firms",
+      "image": "nasa-firms",
+      "file": "Dockerfile",
+      "module": "nasa_firms"
+    },
+    {
+      "dir": "feeders/nve-hydro",
+      "image": "nve-hydro",
+      "file": "Dockerfile",
+      "module": "nve_hydro"
+    },
+    {
+      "dir": "feeders/snotel",
+      "image": "snotel",
+      "file": "Dockerfile",
+      "module": "snotel"
+    },
+    {
+      "dir": "feeders/ticketmaster",
+      "image": "ticketmaster",
+      "file": "Dockerfile",
+      "module": "ticketmaster"
+    },
+    {
+      "dir": "feeders/tokyo-docomo-bikeshare",
+      "image": "tokyo-docomo-bikeshare",
+      "file": "Dockerfile",
+      "module": "tokyo_docomo_bikeshare"
+    },
+    {
+      "dir": "feeders/usgs-nwis-wq",
+      "image": "usgs-nwis-wq",
+      "file": "Dockerfile",
+      "module": "usgs_nwis_wq"
+    },
+    {
+      "dir": "feeders/wallonia-issep",
+      "image": "wallonia-issep",
+      "file": "Dockerfile",
+      "module": "wallonia_issep"
+    },
+    {
+      "dir": "feeders/wikimedia-eventstreams",
+      "image": "wikimedia-eventstreams",
+      "file": "Dockerfile",
+      "module": "wikimedia_eventstreams"
+    },
+    {
+      "dir": "feeders/wikimedia-osm-diffs",
+      "image": "wikimedia-osm-diffs",
+      "file": "Dockerfile",
+      "module": "wikimedia_osm_diffs"
     }
   ],
   "flow": [
@@ -3529,13 +3583,6 @@
     },
     {
       "dir": "feeders/nextbus",
-      "image": "nextbus",
-      "file": "Dockerfile",
-      "test_file": "test_docker_kafka_flow.py",
-      "test_class": "TestNextbusDockerFlow"
-    },
-    {
-      "dir": "feeders/nextbus",
       "image": "nextbus-mqtt",
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
@@ -3914,6 +3961,90 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestDigitrafficRoadAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/nasa-firms",
+      "image": "nasa-firms-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestNASAFIRMSDockerFlow"
+    },
+    {
+      "dir": "feeders/singapore-nea",
+      "image": "singapore-nea-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestSingaporeNEADockerFlow"
+    },
+    {
+      "dir": "feeders/singapore-nea",
+      "image": "singapore-nea-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestSingaporeNEAAirQualityDockerFlow"
+    },
+    {
+      "dir": "feeders/snotel",
+      "image": "snotel-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestSnotelDockerFlow"
+    },
+    {
+      "dir": "feeders/tepco-denkiyoho",
+      "image": "tepco-denkiyoho-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestTepcoDenkiyohoDockerFlow"
+    },
+    {
+      "dir": "feeders/tfl-road-traffic",
+      "image": "tfl-road-traffic-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestTflRoadTrafficDockerFlow"
+    },
+    {
+      "dir": "feeders/ticketmaster",
+      "image": "ticketmaster-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestTicketmasterDockerFlow"
+    },
+    {
+      "dir": "feeders/tokyo-docomo-bikeshare",
+      "image": "tokyo-docomo-bikeshare-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestTokyoDocomoBikeshareDockerFlow"
+    },
+    {
+      "dir": "feeders/usgs-nwis-wq",
+      "image": "usgs-nwis-wq-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestUSGSNWISWQDockerFlow"
+    },
+    {
+      "dir": "feeders/wallonia-issep",
+      "image": "wallonia-issep-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestWalloniaISsePDockerFlow"
+    },
+    {
+      "dir": "feeders/wikimedia-eventstreams",
+      "image": "wikimedia-eventstreams-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestWikimediaEventStreamsDockerFlow"
+    },
+    {
+      "dir": "feeders/wikimedia-osm-diffs",
+      "image": "wikimedia-osm-diffs-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestWikimediaOsmDiffsDockerFlow"
     }
   ]
 }

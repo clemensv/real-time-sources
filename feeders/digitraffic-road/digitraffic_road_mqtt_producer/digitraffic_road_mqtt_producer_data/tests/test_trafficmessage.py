@@ -28,27 +28,27 @@ class Test_TrafficMessage(unittest.TestCase):
         Create instance of TrafficMessage for testing
         """
         instance = TrafficMessage(
-            situation_id='mdbnhodziosegkthyfsb',
-            situation_type='ubtoxggkitgmzcclzctw',
-            traffic_announcement_type='yqhcjplulnhvnpkazzma',
-            version=int(8),
-            release_time='sjkvytiexyelhgklcvfk',
-            version_time='moivbvwdazijsxledwvs',
-            title='jdohcjvuwfqtwcbersup',
-            language='wnplmmenucivhivhbdkv',
-            sender='idzqqvhickccmasljokn',
-            location_description='xpkmsgdgyvakebceqxvv',
-            start_time='tsvilsdqpotrzhayeeqy',
-            end_time='xpgqxanjpoftlbvjygvf',
-            features_json='cdrgrxdyfvwmjcchzpjy',
-            road_work_phases_json='pkobdpqnsklhxktpcbrj',
-            comment='rehddrgkgkalkqvjmqsm',
-            additional_information='irssrlnfpkvtnfflavav',
-            contact_phone='hskntwtrgqvawkwlxtdr',
-            contact_email='bkvucsosazsenhjbshwr',
-            announcements_json='ecxinqhsxetzzaysiavf',
-            geometry_type='immhxtbiulctikcgcyqn',
-            geometry_coordinates_json='nmpesrtdehbtuahlxfhf'
+            situation_id='josiiyuqsqogituorjyb',
+            situation_type='rrifbxnhoohjtezgdshs',
+            traffic_announcement_type='xhvriliusuqweudpgocz',
+            version=int(35),
+            release_time='omoyunjhmzzvpzksyxzr',
+            version_time='kelwfsmoywyuchyoxtox',
+            title='frxxdugpufkvopvzncmg',
+            language='lrhffqianbrjffymbbie',
+            sender='fifwqbydhcoiofnmhtqg',
+            location_description='osuvgvdmkbsvsyaznado',
+            start_time='rqtyswutqhgbwbvjranv',
+            end_time='krvamqmgrgqqigpdtfdj',
+            features_json='zyroqusqtxklmisnsjri',
+            road_work_phases_json='gqurpjluotzblctlfvim',
+            comment='zcnwdcaajyjdrykinhql',
+            additional_information='jyikyxcdbtmfrcihgvof',
+            contact_phone='nqaixwcwmauiivbckfqp',
+            contact_email='moxkteiayjnagcnrxulq',
+            announcements_json='brdclosatacwcreqmczo',
+            geometry_type='gmcnkgwdywvvnfiefuqp',
+            geometry_coordinates_json='zpkpswzqauqweugzkxoy'
         )
         return instance
 
@@ -57,7 +57,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test situation_id property
         """
-        test_value = 'mdbnhodziosegkthyfsb'
+        test_value = 'josiiyuqsqogituorjyb'
         self.instance.situation_id = test_value
         self.assertEqual(self.instance.situation_id, test_value)
     
@@ -65,7 +65,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test situation_type property
         """
-        test_value = 'ubtoxggkitgmzcclzctw'
+        test_value = 'rrifbxnhoohjtezgdshs'
         self.instance.situation_type = test_value
         self.assertEqual(self.instance.situation_type, test_value)
     
@@ -73,7 +73,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test traffic_announcement_type property
         """
-        test_value = 'yqhcjplulnhvnpkazzma'
+        test_value = 'xhvriliusuqweudpgocz'
         self.instance.traffic_announcement_type = test_value
         self.assertEqual(self.instance.traffic_announcement_type, test_value)
     
@@ -81,7 +81,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test version property
         """
-        test_value = int(8)
+        test_value = int(35)
         self.instance.version = test_value
         self.assertEqual(self.instance.version, test_value)
     
@@ -89,7 +89,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test release_time property
         """
-        test_value = 'sjkvytiexyelhgklcvfk'
+        test_value = 'omoyunjhmzzvpzksyxzr'
         self.instance.release_time = test_value
         self.assertEqual(self.instance.release_time, test_value)
     
@@ -97,7 +97,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test version_time property
         """
-        test_value = 'moivbvwdazijsxledwvs'
+        test_value = 'kelwfsmoywyuchyoxtox'
         self.instance.version_time = test_value
         self.assertEqual(self.instance.version_time, test_value)
     
@@ -105,7 +105,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'jdohcjvuwfqtwcbersup'
+        test_value = 'frxxdugpufkvopvzncmg'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -113,7 +113,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'wnplmmenucivhivhbdkv'
+        test_value = 'lrhffqianbrjffymbbie'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -121,7 +121,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test sender property
         """
-        test_value = 'idzqqvhickccmasljokn'
+        test_value = 'fifwqbydhcoiofnmhtqg'
         self.instance.sender = test_value
         self.assertEqual(self.instance.sender, test_value)
     
@@ -129,7 +129,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test location_description property
         """
-        test_value = 'xpkmsgdgyvakebceqxvv'
+        test_value = 'osuvgvdmkbsvsyaznado'
         self.instance.location_description = test_value
         self.assertEqual(self.instance.location_description, test_value)
     
@@ -137,7 +137,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'tsvilsdqpotrzhayeeqy'
+        test_value = 'rqtyswutqhgbwbvjranv'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -145,7 +145,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test end_time property
         """
-        test_value = 'xpgqxanjpoftlbvjygvf'
+        test_value = 'krvamqmgrgqqigpdtfdj'
         self.instance.end_time = test_value
         self.assertEqual(self.instance.end_time, test_value)
     
@@ -153,7 +153,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test features_json property
         """
-        test_value = 'cdrgrxdyfvwmjcchzpjy'
+        test_value = 'zyroqusqtxklmisnsjri'
         self.instance.features_json = test_value
         self.assertEqual(self.instance.features_json, test_value)
     
@@ -161,7 +161,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test road_work_phases_json property
         """
-        test_value = 'pkobdpqnsklhxktpcbrj'
+        test_value = 'gqurpjluotzblctlfvim'
         self.instance.road_work_phases_json = test_value
         self.assertEqual(self.instance.road_work_phases_json, test_value)
     
@@ -169,7 +169,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test comment property
         """
-        test_value = 'rehddrgkgkalkqvjmqsm'
+        test_value = 'zcnwdcaajyjdrykinhql'
         self.instance.comment = test_value
         self.assertEqual(self.instance.comment, test_value)
     
@@ -177,7 +177,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test additional_information property
         """
-        test_value = 'irssrlnfpkvtnfflavav'
+        test_value = 'jyikyxcdbtmfrcihgvof'
         self.instance.additional_information = test_value
         self.assertEqual(self.instance.additional_information, test_value)
     
@@ -185,7 +185,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test contact_phone property
         """
-        test_value = 'hskntwtrgqvawkwlxtdr'
+        test_value = 'nqaixwcwmauiivbckfqp'
         self.instance.contact_phone = test_value
         self.assertEqual(self.instance.contact_phone, test_value)
     
@@ -193,7 +193,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test contact_email property
         """
-        test_value = 'bkvucsosazsenhjbshwr'
+        test_value = 'moxkteiayjnagcnrxulq'
         self.instance.contact_email = test_value
         self.assertEqual(self.instance.contact_email, test_value)
     
@@ -201,7 +201,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test announcements_json property
         """
-        test_value = 'ecxinqhsxetzzaysiavf'
+        test_value = 'brdclosatacwcreqmczo'
         self.instance.announcements_json = test_value
         self.assertEqual(self.instance.announcements_json, test_value)
     
@@ -209,7 +209,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test geometry_type property
         """
-        test_value = 'immhxtbiulctikcgcyqn'
+        test_value = 'gmcnkgwdywvvnfiefuqp'
         self.instance.geometry_type = test_value
         self.assertEqual(self.instance.geometry_type, test_value)
     
@@ -217,7 +217,7 @@ class Test_TrafficMessage(unittest.TestCase):
         """
         Test geometry_coordinates_json property
         """
-        test_value = 'nmpesrtdehbtuahlxfhf'
+        test_value = 'zpkpswzqauqweugzkxoy'
         self.instance.geometry_coordinates_json = test_value
         self.assertEqual(self.instance.geometry_coordinates_json, test_value)
     

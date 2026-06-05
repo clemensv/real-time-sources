@@ -113,6 +113,8 @@ class Arrival:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -180,19 +182,19 @@ class Arrival:
             An instance of the dataclass.
         """
         return cls(
-            origin_station_id='camshdumjbgehetfqhzw',
-            origin_name='ewqkhrtyrcnecnebtjmh',
-            scheduled_time='uxkrfvicmfqvgcosklgf',
-            delay_seconds=int(61),
-            is_canceled=False,
+            origin_station_id='xexejetxrffbvpflvxzt',
+            origin_name='iqwvoeqczmzshtkaafyk',
+            scheduled_time='edifmhcrrbhxxhcmlops',
+            delay_seconds=int(13),
+            is_canceled=True,
             has_arrived=True,
-            is_extra_stop=False,
-            vehicle_id='awbsgjbamtcajuzwqogl',
-            vehicle_short_name='ykemezfdnpzsnrkbfjjg',
-            vehicle_type='cewmswqfbietatrlpngp',
-            vehicle_number='djlqbflxtorpqaorerdq',
-            platform='ieeqxsyahcpggtbwotlk',
-            is_normal_platform=False,
+            is_extra_stop=True,
+            vehicle_id='moqynplketdqruqparnm',
+            vehicle_short_name='srzhnwghmjenzbpowtpp',
+            vehicle_type='qoyjxokhmwibmtebmadc',
+            vehicle_number='idycexkvhwrbupeuqhmz',
+            platform='buqwuxfhtcmeioxrfhmv',
+            is_normal_platform=True,
             occupancy=OccupancyEnum.low,
-            connection_uri='aatbnnobioxxfehwylib'
+            connection_uri='rlmaawqjnpiccekfffdv'
         )

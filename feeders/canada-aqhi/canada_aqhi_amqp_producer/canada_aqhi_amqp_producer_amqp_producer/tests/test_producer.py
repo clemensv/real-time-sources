@@ -5,6 +5,7 @@
 Tests for canada_aqhi_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../canada_aqhi_amqp_producer_data/src')))
@@ -25,11 +27,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from canada_aqhi_amqp_producer_amqp_producer import *
 from canada_aqhi_amqp_producer_data import Community
-from test_canada_aqhi_amqp_producer_data_community import Test_Community
+from test_community import Test_Community
 from canada_aqhi_amqp_producer_data import Observation
-from test_canada_aqhi_amqp_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from canada_aqhi_amqp_producer_data import Forecast
-from test_canada_aqhi_amqp_producer_data_forecast import Test_Forecast
+from test_forecast import Test_Forecast
 
 
 
@@ -235,6 +237,45 @@ class TestCaGcWeatherAqhiAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(CaGcWeatherAqhiAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_community(self, artemis_container):
         """Send and receive a Community message via ActiveMQ Artemis."""
@@ -262,6 +303,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
                     data=payload,
                     _province="value",
                     _community_name="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -269,6 +311,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -294,6 +337,39 @@ class TestCaGcWeatherAqhiAmqpProducer:
                 assert properties.get('community_name') == "{community_name}".format(community_name="value")
         finally:
             producer.close()
+
+    def test_send_community_single_fresh_connection(self, artemis_container):
+        """Send exactly one Community message on a fresh producer connection."""
+        payload = Test_Community.create_instance()
+
+        producer = CaGcWeatherAqhiAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_community(
+                data=payload,
+                _province="value",
+                _community_name="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'ca.gc.weather.aqhi.amqp.Community'
+        assert received.body is not None
+        assert received.subject == "{province}/{community_name}".format(province="value", community_name="value")
+        assert properties.get('province') == "{province}".format(province="value")
+        assert properties.get('community_name') == "{community_name}".format(community_name="value")
     
     def test_send_observation(self, artemis_container):
         """Send and receive a Observation message via ActiveMQ Artemis."""
@@ -321,6 +397,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
                     data=payload,
                     _province="value",
                     _community_name="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -328,6 +405,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -353,6 +431,39 @@ class TestCaGcWeatherAqhiAmqpProducer:
                 assert properties.get('community_name') == "{community_name}".format(community_name="value")
         finally:
             producer.close()
+
+    def test_send_observation_single_fresh_connection(self, artemis_container):
+        """Send exactly one Observation message on a fresh producer connection."""
+        payload = Test_Observation.create_instance()
+
+        producer = CaGcWeatherAqhiAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_observation(
+                data=payload,
+                _province="value",
+                _community_name="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'ca.gc.weather.aqhi.amqp.Observation'
+        assert received.body is not None
+        assert received.subject == "{province}/{community_name}".format(province="value", community_name="value")
+        assert properties.get('province') == "{province}".format(province="value")
+        assert properties.get('community_name') == "{community_name}".format(community_name="value")
     
     def test_send_forecast(self, artemis_container):
         """Send and receive a Forecast message via ActiveMQ Artemis."""
@@ -380,6 +491,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
                     data=payload,
                     _province="value",
                     _community_name="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -387,6 +499,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -412,4 +525,37 @@ class TestCaGcWeatherAqhiAmqpProducer:
                 assert properties.get('community_name') == "{community_name}".format(community_name="value")
         finally:
             producer.close()
+
+    def test_send_forecast_single_fresh_connection(self, artemis_container):
+        """Send exactly one Forecast message on a fresh producer connection."""
+        payload = Test_Forecast.create_instance()
+
+        producer = CaGcWeatherAqhiAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_forecast(
+                data=payload,
+                _province="value",
+                _community_name="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'ca.gc.weather.aqhi.amqp.Forecast'
+        assert received.body is not None
+        assert received.subject == "{province}/{community_name}".format(province="value", community_name="value")
+        assert properties.get('province') == "{province}".format(province="value")
+        assert properties.get('community_name') == "{community_name}".format(community_name="value")
 

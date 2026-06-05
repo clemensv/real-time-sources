@@ -102,6 +102,8 @@ class LightningStrike:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,13 +171,13 @@ class LightningStrike:
             An instance of the dataclass.
         """
         return cls(
-            strike_id='opblxwomdgsakqnsjmeg',
+            strike_id='eiaisyxeomchwwtxudcq',
             observed=datetime.datetime.now(datetime.timezone.utc),
             created=datetime.datetime.now(datetime.timezone.utc),
-            type=int(94),
-            amp=float(88.53007330633503),
-            strokes=int(95),
-            sensors='tkmutvfgkbpbrkegrneo',
-            latitude=float(92.56631704835424),
-            longitude=float(28.7784056715381)
+            type=int(25),
+            amp=float(75.76972140504753),
+            strokes=int(41),
+            sensors='cblghdzohinzkyqrzobr',
+            latitude=float(38.01812211455486),
+            longitude=float(35.77658526752832)
         )

@@ -100,6 +100,8 @@ class WaterLevelReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,12 +169,12 @@ class WaterLevelReading:
             An instance of the dataclass.
         """
         return cls(
-            ts_id='utwejxwgfmxqnkugqgxk',
-            station_no='ihdjbuyobmqhyfboddjt',
-            station_name='gwmnshaeyrjkrkqqeide',
+            ts_id='bcvkihhkpjzpxzchnefn',
+            station_no='etcywjgqyhaelnheylxb',
+            station_name='zzmonkidtljwqrwazabo',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(83.34943447810392),
-            unit_name='ncvccbpkweaqdhazgjxm',
-            parameter_name='ejojdckqpbwbmoridlji',
-            water_body='zzeyktvydsjydhzxsixu'
+            value=float(98.13606005307594),
+            unit_name='yvanpfzqnndhtdkzojso',
+            parameter_name='xugblsojeoifjslhwlmv',
+            water_body='sgswltghlpxyqrbzzxry'
         )

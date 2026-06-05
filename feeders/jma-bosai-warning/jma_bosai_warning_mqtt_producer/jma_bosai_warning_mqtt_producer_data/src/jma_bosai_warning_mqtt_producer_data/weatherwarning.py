@@ -12,9 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_warning_mqtt_producer_data.warningitem import WarningItem
-from jma_bosai_warning_mqtt_producer_data.eventenum import EventEnum
 from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
+from jma_bosai_warning_mqtt_producer_data.eventenum import EventEnum
+from jma_bosai_warning_mqtt_producer_data.warningitem import WarningItem
 import datetime
 
 
@@ -109,6 +109,8 @@ class WeatherWarning:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -176,15 +178,15 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            prefecture='zampzcdnsgkhvdsfgfgn',
-            severity=SeverityEnum.info,
-            office_code='ssilrgpnmakwybuoqndv',
-            area_code='rvrvmafsqwrvmnsoxbmd',
-            event=EventEnum.warning,
-            area_name='sxbvyibylrkjptsuyjke',
+            prefecture='nvdnaqiicwaytajhodsz',
+            severity=SeverityEnum.advisory,
+            office_code='xetodkagmagzyoqfhuwi',
+            area_code='bdypdzfbatdwficvjsta',
+            event=EventEnum.info,
+            area_name='awkhtvwalvfzmikpuuvs',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            headline_text='zlqknuodgpmvdkwehawr',
-            warnings=[None, None, None, None],
-            time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
+            headline_text='fyolhvmrywdfqaxzzjbb',
+            warnings=[None, None, None],
+            time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )

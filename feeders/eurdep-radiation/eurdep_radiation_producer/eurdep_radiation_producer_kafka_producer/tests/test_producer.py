@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from eurdep_radiation_producer_kafka_producer.producer import EuJrcEurdepEventProducer
 from eurdep_radiation_producer_data import Station
-from test_eurdep_radiation_producer_data_station import Test_Station
+from test_station import Test_Station
 from eurdep_radiation_producer_data import DoseRateReading
-from test_eurdep_radiation_producer_data_doseratereading import Test_DoseRateReading
+from test_doseratereading import Test_DoseRateReading
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -105,7 +105,8 @@ def test_eu_jrc_eurdep_eujrceurdepstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_jrc_eurdep_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_eu_jrc_eurdep_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -168,7 +169,8 @@ def test_eu_jrc_eurdep_eujrceurdepdoseratereading(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_jrc_eurdep_dose_rate_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_eu_jrc_eurdep_dose_rate_reading(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

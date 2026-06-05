@@ -90,6 +90,8 @@ class Measurement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class Measurement:
             An instance of the dataclass.
         """
         return cls(
-            site_code='axolkidqapdaifbozvcf',
-            species_code='iscrddsiudyzrlbdoedz',
-            measurement_date_gmt='acvbppughabdsqpakphy',
-            value=float(75.35808164443874)
+            site_code='ljfaehxpfjllpfmejyvl',
+            species_code='jonfzrohkmejrxufllyt',
+            measurement_date_gmt='ykcnfbeigtbiuxnryemv',
+            value=float(16.02274633090043)
         )

@@ -20,7 +20,7 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from noaa_swpc_l1_producer_kafka_producer.producer import GovNoaaSwpcL1KafkaEventProducer
 from noaa_swpc_l1_producer_data import PropagatedSolarWind
-from test_noaa_swpc_l1_producer_data_propagatedsolarwind import Test_PropagatedSolarWind
+from test_propagatedsolarwind import Test_PropagatedSolarWind
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -103,7 +103,8 @@ def test_gov_noaa_swpc_l1_kafka_govnoaaswpcl1kafkapropagatedsolarwind(kafka_emul
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_noaa_swpc_l1_kafka_propagated_solar_wind(_feedurl = f'test_{i}', _spacecraft = f'test_{i}', _time_tag = f'test_{i}', data = event_data)
+        producer_instance.send_gov_noaa_swpc_l1_kafka_propagated_solar_wind(_feedurl = f'test_{i}', _spacecraft = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

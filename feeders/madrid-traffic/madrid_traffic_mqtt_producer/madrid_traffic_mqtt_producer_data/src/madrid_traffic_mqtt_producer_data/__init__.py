@@ -1,4 +1,4 @@
-from .trafficreading import TrafficReading
 from .measurementpoint import MeasurementPoint
+from .trafficreading import TrafficReading
 
-__all__ = ["TrafficReading", "MeasurementPoint"]
+__all__ = ["MeasurementPoint", "TrafficReading"]

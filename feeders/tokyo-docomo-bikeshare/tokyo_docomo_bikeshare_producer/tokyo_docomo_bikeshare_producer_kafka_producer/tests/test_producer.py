@@ -20,12 +20,12 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from tokyo_docomo_bikeshare_producer_kafka_producer.producer import JPODPTDocomoBikeshareSystemEventProducer
 from tokyo_docomo_bikeshare_producer_data import BikeshareSystem
-from test_tokyo_docomo_bikeshare_producer_data_bikesharesystem import Test_BikeshareSystem
+from test_bikesharesystem import Test_BikeshareSystem
 from tokyo_docomo_bikeshare_producer_kafka_producer.producer import JPODPTDocomoBikeshareStationsEventProducer
 from tokyo_docomo_bikeshare_producer_data import BikeshareStation
-from test_tokyo_docomo_bikeshare_producer_data_bikesharestation import Test_BikeshareStation
+from test_bikesharestation import Test_BikeshareStation
 from tokyo_docomo_bikeshare_producer_data import BikeshareStationStatus
-from test_tokyo_docomo_bikeshare_producer_data_bikesharestationstatus import Test_BikeshareStationStatus
+from test_bikesharestationstatus import Test_BikeshareStationStatus
 from tokyo_docomo_bikeshare_producer_kafka_producer.producer import JPODPTDocomoBikeshareSystemMqttEventProducer
 from tokyo_docomo_bikeshare_producer_kafka_producer.producer import JPODPTDocomoBikeshareStationsMqttEventProducer
 from tokyo_docomo_bikeshare_producer_kafka_producer.producer import JPODPTDocomoBikeshareSystemAmqpEventProducer
@@ -112,7 +112,8 @@ def test_jp_odpt_docomobikeshare_system_jpodptdocomobikesharebikesharesystem(kaf
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_system(_system_id = f'test_{i}', data = event_data)
+        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_system(_system_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -175,7 +176,8 @@ def test_jp_odpt_docomobikeshare_stations_jpodptdocomobikesharebikesharestation(
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station(_system_id = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station(_system_id = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -238,7 +240,8 @@ def test_jp_odpt_docomobikeshare_stations_jpodptdocomobikesharebikesharestations
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station_status(_system_id = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station_status(_system_id = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -301,7 +304,8 @@ def test_jp_odpt_docomobikeshare_system_mqtt_jpodptdocomobikesharebikesharesyste
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_system_mqtt(_system_id = f'test_{i}', data = event_data)
+        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_system_mqtt(_system_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -362,7 +366,8 @@ def test_jp_odpt_docomobikeshare_stations_mqtt_jpodptdocomobikesharebikesharesta
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station_mqtt(_system_id = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station_mqtt(_system_id = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -423,7 +428,8 @@ def test_jp_odpt_docomobikeshare_stations_mqtt_jpodptdocomobikesharebikesharesta
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt(_system_id = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station_status_mqtt(_system_id = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -484,7 +490,8 @@ def test_jp_odpt_docomobikeshare_system_amqp_jpodptdocomobikesharebikesharesyste
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_system_amqp(_system_id = f'test_{i}', data = event_data)
+        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_system_amqp(_system_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -545,7 +552,8 @@ def test_jp_odpt_docomobikeshare_stations_amqp_jpodptdocomobikesharebikesharesta
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station_amqp(_system_id = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station_amqp(_system_id = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -606,7 +614,8 @@ def test_jp_odpt_docomobikeshare_stations_amqp_jpodptdocomobikesharebikesharesta
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp(_system_id = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_jp_odpt_docomo_bikeshare_bikeshare_station_status_amqp(_system_id = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

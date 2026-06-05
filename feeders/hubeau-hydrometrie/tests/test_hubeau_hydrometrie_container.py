@@ -101,8 +101,8 @@ class TestHubEauContainerIntegration:
 
         from hubeau_hydrometrie.hubeau_hydrometrie import HubEauHydrometrieAPI
         from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieEventProducer
-        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
-        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
+        from hubeau_hydrometrie_producer_data import Station
+        from hubeau_hydrometrie_producer_data import Observation
         from confluent_kafka import Producer
 
         producer = Producer(kafka_config)
@@ -186,7 +186,7 @@ class TestHubEauLiveContainerIntegration:
         self._create_topic(kafka_container, topic)
 
         from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieEventProducer
-        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.station import Station
+        from hubeau_hydrometrie_producer_data import Station
         from confluent_kafka import Producer
         import requests
 
@@ -246,7 +246,7 @@ class TestHubEauLiveContainerIntegration:
         self._create_topic(kafka_container, topic)
 
         from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieEventProducer
-        from hubeau_hydrometrie_producer_data.fr.gov.eaufrance.hubeau.hydrometrie.observation import Observation
+        from hubeau_hydrometrie_producer_data import Observation
         from confluent_kafka import Producer
         import requests
 
