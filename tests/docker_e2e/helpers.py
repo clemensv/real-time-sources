@@ -472,10 +472,11 @@ def _load_project_contract(project_dir: str) -> Dict[str, Dict[str, Any]]:
                     validators[dataschema_uri] = InstanceValidator(schema, extended=True)
 
                 subject_template = resolved_message.get('envelopemetadata', {}).get('subject', {}).get('value')
+                message_key_template = resolved_message.get('protocoloptions', {}).get('key', key_template)
                 existing = contracts.get(contract_key)
                 if existing is not None:
                     if (
-                        existing['key_template'] != key_template
+                        existing['key_template'] != message_key_template
                         or existing['subject_template'] != subject_template
                         or existing['dataschema_uri'] != dataschema_uri
                     ):
@@ -485,7 +486,7 @@ def _load_project_contract(project_dir: str) -> Dict[str, Dict[str, Any]]:
                     continue
 
                 contracts[contract_key] = {
-                    'key_template': key_template,
+                    'key_template': message_key_template,
                     'subject_template': subject_template,
                     'dataschema_uri': dataschema_uri,
                     'validator': validators[dataschema_uri],

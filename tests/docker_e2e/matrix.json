@@ -326,6 +326,10 @@
       "module": "usgs_earthquakes"
     },
     {
+      "dir": "feeders/fdsn-seismology",
+      "module": "fdsn_seismology"
+    },
+    {
       "dir": "feeders/usgs-geomag",
       "module": "usgs_geomag"
     },
@@ -512,6 +516,12 @@
       "image": "usgs-earthquakes-mqtt",
       "file": "Dockerfile.mqtt",
       "module": "usgs_earthquakes_mqtt"
+    },
+    {
+      "dir": "feeders/fdsn-seismology",
+      "image": "fdsn-seismology-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "fdsn_seismology_mqtt"
     },
     {
       "dir": "feeders/eaws-albina",
@@ -858,6 +868,12 @@
       "image": "usgs-earthquakes-amqp",
       "file": "Dockerfile.amqp",
       "module": "usgs_earthquakes_amqp"
+    },
+    {
+      "dir": "feeders/fdsn-seismology",
+      "image": "fdsn-seismology-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "fdsn_seismology_amqp"
     },
     {
       "dir": "feeders/usgs-geomag",
@@ -2127,6 +2143,10 @@
       "test_class": "TestUSGSEarthquakesDockerFlow"
     },
     {
+      "dir": "feeders/fdsn-seismology",
+      "test_class": "TestFdsnSeismologyDockerFlow"
+    },
+    {
       "dir": "feeders/usgs-geomag",
       "test_class": "TestUSGSGeomagDockerFlow"
     },
@@ -2346,6 +2366,13 @@
       "file": "Dockerfile.mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestUSGSEarthquakesMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/fdsn-seismology",
+      "image": "fdsn-seismology-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestFdsnSeismologyMqttDockerFlow"
     },
     {
       "dir": "feeders/eaws-albina",
@@ -2850,6 +2877,13 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestUSGSEarthquakesAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/fdsn-seismology",
+      "image": "fdsn-seismology-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestFdsnSeismologyAmqpDockerFlow"
     },
     {
       "dir": "feeders/usgs-geomag",

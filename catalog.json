@@ -681,6 +681,17 @@
     "amqp": true
   },
   {
+    "id": "fdsn-seismology",
+    "name": "FDSN Seismology",
+    "cat": "Disasters",
+    "key": false,
+    "desc": "Global — federated earthquake detections, 7 FDSN nodes",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "nasa-firms",
     "name": "NASA FIRMS Active Fire",
     "cat": "Disasters",
