@@ -400,6 +400,14 @@ class TestUSGSEarthquakesAmqpDockerFlow(AmqpDockerFlowBase):
     expected_count = 1
 
 
+class TestFdsnSeismologyAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "fdsn-seismology"
+    image = "fdsn-seismology-amqp"
+    env = {"ONCE_MODE": "true"}
+    expected_types = {'org.fdsn.event.Node', 'org.fdsn.event.Earthquake'}
+    expected_count = 2
+
+
 class TestUSGSGeomagAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "usgs-geomag"
     image = "usgs-geomag-amqp"
@@ -723,6 +731,13 @@ class TestTokyoDocomoBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
     image = "tokyo-docomo-bikeshare-amqp"
     env = {"ONCE_MODE": "true"}
     expected_types = {'JP.ODPT.DocomoBikeshare.BikeshareSystem', 'JP.ODPT.DocomoBikeshare.BikeshareStation', 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus'}
+    expected_count = 3
+
+class TestGbfsBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "gbfs-bikeshare"
+    image = "gbfs-bikeshare-amqp"
+    env = {"GBFS_FEEDS": "https://gbfs.citibikenyc.com/gbfs/gbfs.json", "ONCE_MODE": "true"}
+    expected_types = {'org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'}
     expected_count = 3
 
 class TestWSDOTAmqpDockerFlow(AmqpDockerFlowBase):

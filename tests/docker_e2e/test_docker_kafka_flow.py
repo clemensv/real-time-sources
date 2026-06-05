@@ -93,6 +93,10 @@ def usgs_earthquakes_image():
     return build_image('usgs-earthquakes')
 
 @pytest.fixture(scope='module')
+def fdsn_seismology_image():
+    return build_image('fdsn-seismology')
+
+@pytest.fixture(scope='module')
 def nasa_firms_image():
     return build_image('nasa-firms')
 
@@ -119,6 +123,10 @@ def tfl_road_traffic_image():
 @pytest.fixture(scope='module')
 def tokyo_docomo_bikeshare_image():
     return build_image('tokyo-docomo-bikeshare')
+
+@pytest.fixture(scope='module')
+def gbfs_bikeshare_image():
+    return build_image('gbfs-bikeshare')
 
 @pytest.fixture(scope='module')
 def aisstream_image():
@@ -942,6 +950,18 @@ class TestUSGSEarthquakesDockerFlow:
             reference_types=None,
             telemetry_types=['Earthquakes.Event'],
             min_messages=1,
+        )
+
+
+class TestFdsnSeismologyDockerFlow:
+    TOPIC = 'test-fdsn-seismology'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, fdsn_seismology_image):
+        _run_kafka_flow_test(
+            kafka, fdsn_seismology_image, self.TOPIC,
+            reference_types=['Node'],
+            telemetry_types=['Earthquake'],
+            timeout=420,
         )
 
 
@@ -2361,6 +2381,25 @@ class TestTokyoDocomoBikeshareDockerFlow:
             telemetry_types=['BikeshareStationStatus'],
             required_types=['BikeshareSystem', 'BikeshareStation', 'BikeshareStationStatus'],
             extra_env={'ONCE_MODE': 'true'},
+            min_messages=3,
+            timeout=300,
+        )
+
+
+class TestGbfsBikeshareDockerFlow:
+    TOPIC = 'test-gbfs-bikeshare'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, gbfs_bikeshare_image):
+        _run_kafka_flow_test(
+            kafka, gbfs_bikeshare_image, self.TOPIC,
+            reference_types=['org.gbfs.SystemInformation', 'org.gbfs.StationInformation'],
+            telemetry_types=['org.gbfs.StationStatus'],
+            required_exact_types=['org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'],
+            extra_env={
+                'GBFS_FEEDS': 'https://gbfs.citibikenyc.com/gbfs/gbfs.json',
+                'ONCE_MODE': 'true',
+                'KAFKA_ENABLE_TLS': 'false',
+            },
             min_messages=3,
             timeout=300,
         )

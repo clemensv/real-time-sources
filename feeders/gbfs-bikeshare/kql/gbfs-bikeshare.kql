@@ -1,0 +1,395 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table [SystemInformation] (
+   [system_id]: string,
+   [name]: string,
+   [operator]: string,
+   [url]: string,
+   [timezone]: string,
+   [language]: string,
+   [phone_number]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [SystemInformation] docstring "{\"description\": \"Reference data from the GBFS `system_information.json` feed. Each record describes one bikeshare or shared-micromobility system, including the stable `system_id`, public name, operator, website, timezone, language, and customer support metadata.\"}";
+
+.alter table [SystemInformation] column-docstrings (
+   [system_id]: "{\"description\": \"Stable identifier for the GBFS system from the `system_id` field in `system_information.json`, or a configured override when the user supplies `GBFS_SYSTEM_IDS` to relabel systems consistently across deployments.\"}",
+   [name]: "{\"description\": \"Public system display name from the `name` field in `system_information.json`, such as the brand name shown in the operator app and on the website.\"}",
+   [operator]: "{\"description\": \"Optional operator company or agency name from the `operator` field in `system_information.json`.\"}",
+   [url]: "{\"description\": \"Optional public website URL from the `url` field in `system_information.json`.\"}",
+   [timezone]: "{\"description\": \"IANA timezone identifier from the `timezone` field in `system_information.json`, such as `America/New_York` or `Europe/London`.\"}",
+   [language]: "{\"description\": \"Optional BCP-47 language tag from the `language` field in `system_information.json`, representing the primary language used in this dataset.\"}",
+   [phone_number]: "{\"description\": \"Optional customer-service phone number from the `phone_number` field in `system_information.json`.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [SystemInformation] ingestion json mapping "SystemInformation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.system_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "operator", "path": "$.operator"},
+  {"column": "url", "path": "$.url"},
+  {"column": "timezone", "path": "$.timezone"},
+  {"column": "language", "path": "$.language"},
+  {"column": "phone_number", "path": "$.phone_number"},
+]
+```
+
+.create-or-alter table [SystemInformation] ingestion json mapping "SystemInformation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.data.system_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "operator", "path": "$.data.operator"},
+  {"column": "url", "path": "$.data.url"},
+  {"column": "timezone", "path": "$.data.timezone"},
+  {"column": "language", "path": "$.data.language"},
+  {"column": "phone_number", "path": "$.data.phone_number"},
+]
+```
+
+.drop materialized-view SystemInformationLatest ifexists;
+
+.create materialized-view with (backfill=true) SystemInformationLatest on table SystemInformation {
+    SystemInformation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [SystemInformation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.gbfs.SystemInformation') | project['system_id'] = tostring(data.['system_id']),['name'] = tostring(data.['name']),['operator'] = tostring(data.['operator']),['url'] = tostring(data.['url']),['timezone'] = tostring(data.['timezone']),['language'] = tostring(data.['language']),['phone_number'] = tostring(data.['phone_number']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [StationInformation] (
+   [system_id]: string,
+   [station_id]: string,
+   [name]: string,
+   [short_name]: string,
+   [lat]: real,
+   [lon]: real,
+   [capacity]: int,
+   [region_id]: string,
+   [address]: string,
+   [post_code]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [StationInformation] docstring "{\"description\": \"Dock-based station reference data from the GBFS `station_information.json` feed. Each record identifies one station in a bikeshare or scooter-share system and provides the stable station identifier, customer-facing name, WGS 84 coordinates, docking capacity, and optional regional or address context.\"}";
+
+.alter table [StationInformation] column-docstrings (
+   [system_id]: "{\"description\": \"Stable identifier for the GBFS system that publishes this station. The bridge resolves it from `system_information.system_id`, or from operator configuration when a custom label is supplied. It is the first component of the CloudEvents subject and Kafka key.\"}",
+   [station_id]: "{\"description\": \"Unique station identifier within the GBFS system, sourced from the `station_id` field in `station_information.json`. This identifier is stable across feed refreshes and forms the second component of the CloudEvents subject and Kafka key.\"}",
+   [name]: "{\"description\": \"Public-facing station name from `station_information.json`. GBFS recommends mixed-case, human-readable names suitable for maps, screens, and accessibility tooling.\"}",
+   [short_name]: "{\"description\": \"Optional short station name or numbering code from the `short_name` field in `station_information.json`, such as a kiosk number or abbreviated label used on maps or in the operator app.\"}",
+   [lat]: "{\"description\": \"WGS 84 latitude of the station in decimal degrees from `station_information.json`. GBFS recommends six decimal places of precision for latitude / longitude coordinates.\"}",
+   [lon]: "{\"description\": \"WGS 84 longitude of the station in decimal degrees from `station_information.json`. Positive values are east of the prime meridian and negative values are west.\"}",
+   [capacity]: "{\"description\": \"Total number of docking points or parking capacity published for the station in `station_information.json`. When omitted upstream, the bridge emits null rather than inventing a capacity.\"}",
+   [region_id]: "{\"description\": \"Optional region identifier from the `region_id` field in `station_information.json`. When present, it links the station to a region published in `system_regions.json`.\"}",
+   [address]: "{\"description\": \"Optional street address from the `address` field in `station_information.json`, as supplied by the operator for customer navigation.\"}",
+   [post_code]: "{\"description\": \"Optional postal or ZIP code from the `post_code` field in `station_information.json`.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [StationInformation] ingestion json mapping "StationInformation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.system_id"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "short_name", "path": "$.short_name"},
+  {"column": "lat", "path": "$.lat"},
+  {"column": "lon", "path": "$.lon"},
+  {"column": "capacity", "path": "$.capacity"},
+  {"column": "region_id", "path": "$.region_id"},
+  {"column": "address", "path": "$.address"},
+  {"column": "post_code", "path": "$.post_code"},
+]
+```
+
+.create-or-alter table [StationInformation] ingestion json mapping "StationInformation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.data.system_id"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "short_name", "path": "$.data.short_name"},
+  {"column": "lat", "path": "$.data.lat"},
+  {"column": "lon", "path": "$.data.lon"},
+  {"column": "capacity", "path": "$.data.capacity"},
+  {"column": "region_id", "path": "$.data.region_id"},
+  {"column": "address", "path": "$.data.address"},
+  {"column": "post_code", "path": "$.data.post_code"},
+]
+```
+
+.drop materialized-view StationInformationLatest ifexists;
+
+.create materialized-view with (backfill=true) StationInformationLatest on table StationInformation {
+    StationInformation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [StationInformation] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.gbfs.StationInformation') | project['system_id'] = tostring(data.['system_id']),['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['short_name'] = tostring(data.['short_name']),['lat'] = toreal(data.['lat']),['lon'] = toreal(data.['lon']),['capacity'] = toint(data.['capacity']),['region_id'] = tostring(data.['region_id']),['address'] = tostring(data.['address']),['post_code'] = tostring(data.['post_code']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [StationStatus] (
+   [system_id]: string,
+   [station_id]: string,
+   [num_bikes_available]: int,
+   [num_docks_available]: int,
+   [num_ebikes_available]: int,
+   [is_installed]: bool,
+   [is_renting]: bool,
+   [is_returning]: bool,
+   [last_reported]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [StationStatus] docstring "{\"description\": \"Near-real-time station availability data from the GBFS `station_status.json` feed. Each record reports the current inventory of rentable vehicles and available docks together with boolean operating flags and the upstream `last_reported` timestamp for the station.\"}";
+
+.alter table [StationStatus] column-docstrings (
+   [system_id]: "{\"description\": \"Stable identifier for the GBFS system that publishes this station status record.\"}",
+   [station_id]: "{\"description\": \"Stable station identifier from the `station_id` field in `station_status.json`, matching the corresponding `StationInformation` event.\"}",
+   [num_bikes_available]: "{\"description\": \"Current number of rentable bikes or vehicles available at the station from the `num_bikes_available` field in `station_status.json`.\"}",
+   [num_docks_available]: "{\"description\": \"Current number of empty docks or parking spaces available for return at the station from `num_docks_available`. Some operators omit this field, in which case the bridge emits null.\"}",
+   [num_ebikes_available]: "{\"description\": \"Current number of electric bikes available at the station from `num_ebikes_available` when the operator distinguishes e-bikes from the aggregate bike count.\"}",
+   [is_installed]: "{\"description\": \"Boolean flag indicating whether the station is physically installed, normalized from the GBFS `is_installed` value.\"}",
+   [is_renting]: "{\"description\": \"Boolean flag indicating whether the station is currently accepting rentals, normalized from the GBFS `is_renting` value.\"}",
+   [is_returning]: "{\"description\": \"Boolean flag indicating whether the station is currently accepting vehicle returns, normalized from the GBFS `is_returning` value.\"}",
+   [last_reported]: "{\"description\": \"POSIX timestamp from the GBFS `last_reported` field representing when the operator backend last received a status update for this station.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [StationStatus] ingestion json mapping "StationStatus_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.system_id"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "num_bikes_available", "path": "$.num_bikes_available"},
+  {"column": "num_docks_available", "path": "$.num_docks_available"},
+  {"column": "num_ebikes_available", "path": "$.num_ebikes_available"},
+  {"column": "is_installed", "path": "$.is_installed"},
+  {"column": "is_renting", "path": "$.is_renting"},
+  {"column": "is_returning", "path": "$.is_returning"},
+  {"column": "last_reported", "path": "$.last_reported"},
+]
+```
+
+.create-or-alter table [StationStatus] ingestion json mapping "StationStatus_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.data.system_id"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "num_bikes_available", "path": "$.data.num_bikes_available"},
+  {"column": "num_docks_available", "path": "$.data.num_docks_available"},
+  {"column": "num_ebikes_available", "path": "$.data.num_ebikes_available"},
+  {"column": "is_installed", "path": "$.data.is_installed"},
+  {"column": "is_renting", "path": "$.data.is_renting"},
+  {"column": "is_returning", "path": "$.data.is_returning"},
+  {"column": "last_reported", "path": "$.data.last_reported"},
+]
+```
+
+.drop materialized-view StationStatusLatest ifexists;
+
+.create materialized-view with (backfill=true) StationStatusLatest on table StationStatus {
+    StationStatus | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [StationStatus] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.gbfs.StationStatus') | project['system_id'] = tostring(data.['system_id']),['station_id'] = tostring(data.['station_id']),['num_bikes_available'] = toint(data.['num_bikes_available']),['num_docks_available'] = toint(data.['num_docks_available']),['num_ebikes_available'] = toint(data.['num_ebikes_available']),['is_installed'] = tobool(data.['is_installed']),['is_renting'] = tobool(data.['is_renting']),['is_returning'] = tobool(data.['is_returning']),['last_reported'] = toint(data.['last_reported']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table [FreeBikeStatus] (
+   [system_id]: string,
+   [bike_id]: string,
+   [lat]: real,
+   [lon]: real,
+   [is_reserved]: bool,
+   [is_disabled]: bool,
+   [vehicle_type_id]: string,
+   [current_range_meters]: real,
+   [last_reported]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table [FreeBikeStatus] docstring "{\"description\": \"Dockless vehicle telemetry from the GBFS `free_bike_status.json` feed, which is renamed `vehicle_status.json` in GBFS v3. Each record describes a currently available vehicle that is not in an active rental and can include location, reservation state, disablement state, vehicle type reference, and remaining electric range.\"}";
+
+.alter table [FreeBikeStatus] column-docstrings (
+   [system_id]: "{\"description\": \"Stable identifier for the GBFS system that publishes this dockless-vehicle status record.\"}",
+   [bike_id]: "{\"description\": \"Unique vehicle identifier from the `bike_id` field in `free_bike_status.json`. This value is stable for the vehicle within the system and forms the second component of the CloudEvents subject and Kafka key.\"}",
+   [lat]: "{\"description\": \"Optional WGS 84 latitude in decimal degrees for the vehicle's current position. GBFS allows free-bike records without coordinates when precise location is not published.\"}",
+   [lon]: "{\"description\": \"Optional WGS 84 longitude in decimal degrees for the vehicle's current position.\"}",
+   [is_reserved]: "{\"description\": \"Boolean flag from `is_reserved` indicating whether the vehicle is currently reserved for a customer and therefore not immediately rentable by others.\"}",
+   [is_disabled]: "{\"description\": \"Boolean flag from `is_disabled` indicating whether the vehicle is disabled or otherwise unavailable for rental.\"}",
+   [vehicle_type_id]: "{\"description\": \"Optional vehicle-type identifier from `vehicle_type_id`, used by operators that publish multiple vehicle classes such as e-bikes or scooters.\"}",
+   [current_range_meters]: "{\"description\": \"Optional remaining electric range in meters from `current_range_meters`, typically published for electric vehicles.\"}",
+   [last_reported]: "{\"description\": \"Optional POSIX timestamp from the `last_reported` field representing the last time the operator backend received a telemetry update for this vehicle.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table [FreeBikeStatus] ingestion json mapping "FreeBikeStatus_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.system_id"},
+  {"column": "bike_id", "path": "$.bike_id"},
+  {"column": "lat", "path": "$.lat"},
+  {"column": "lon", "path": "$.lon"},
+  {"column": "is_reserved", "path": "$.is_reserved"},
+  {"column": "is_disabled", "path": "$.is_disabled"},
+  {"column": "vehicle_type_id", "path": "$.vehicle_type_id"},
+  {"column": "current_range_meters", "path": "$.current_range_meters"},
+  {"column": "last_reported", "path": "$.last_reported"},
+]
+```
+
+.create-or-alter table [FreeBikeStatus] ingestion json mapping "FreeBikeStatus_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "system_id", "path": "$.data.system_id"},
+  {"column": "bike_id", "path": "$.data.bike_id"},
+  {"column": "lat", "path": "$.data.lat"},
+  {"column": "lon", "path": "$.data.lon"},
+  {"column": "is_reserved", "path": "$.data.is_reserved"},
+  {"column": "is_disabled", "path": "$.data.is_disabled"},
+  {"column": "vehicle_type_id", "path": "$.data.vehicle_type_id"},
+  {"column": "current_range_meters", "path": "$.data.current_range_meters"},
+  {"column": "last_reported", "path": "$.data.last_reported"},
+]
+```
+
+.drop materialized-view FreeBikeStatusLatest ifexists;
+
+.create materialized-view with (backfill=true) FreeBikeStatusLatest on table FreeBikeStatus {
+    FreeBikeStatus | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table [FreeBikeStatus] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.gbfs.FreeBikeStatus') | project['system_id'] = tostring(data.['system_id']),['bike_id'] = tostring(data.['bike_id']),['lat'] = toreal(data.['lat']),['lon'] = toreal(data.['lon']),['is_reserved'] = tobool(data.['is_reserved']),['is_disabled'] = tobool(data.['is_disabled']),['vehicle_type_id'] = tostring(data.['vehicle_type_id']),['current_range_meters'] = toreal(data.['current_range_meters']),['last_reported'] = toint(data.['last_reported']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

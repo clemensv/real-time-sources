@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "gbfs_bikeshare_mqtt"
+version = "0.1.0"
+description = "MQTT feeder for configurable GBFS bikeshare systems."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "gbfs_bikeshare_mqtt" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+paho-mqtt = ">=2.1.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+azure-identity = ">=1.17.0"
+gbfs_bikeshare_core = { path = "../gbfs_bikeshare_core" }
+gbfs_bikeshare_mqtt_producer_data = { path = "../gbfs_bikeshare_mqtt_producer/gbfs_bikeshare_mqtt_producer_data" }
+gbfs_bikeshare_mqtt_producer_mqtt_client = { path = "../gbfs_bikeshare_mqtt_producer/gbfs_bikeshare_mqtt_producer_mqtt_client" }
+
+[tool.poetry.scripts]
+gbfs-bikeshare-mqtt = "gbfs_bikeshare_mqtt.app:main"

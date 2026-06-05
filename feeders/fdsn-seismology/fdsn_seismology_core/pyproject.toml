@@ -1,0 +1,14 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "fdsn_seismology_core"
+version = "0.1.0"
+description = "Transport-agnostic acquisition and state management for the FDSN Seismology feeder."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "fdsn_seismology_core" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"

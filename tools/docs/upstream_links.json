@@ -376,6 +376,10 @@
     "homepage": "https://earthquake.usgs.gov/",
     "api_docs": "https://earthquake.usgs.gov/fdsnws/event/1/"
   },
+  "fdsn-seismology": {
+    "homepage": "https://www.fdsn.org/webservices/",
+    "api_docs": "https://geofon.gfz-potsdam.de/fdsnws/event/1/application.wadl"
+  },
   "nasa-firms": {
     "homepage": "https://firms.modaps.eosdis.nasa.gov/",
     "api_docs": "https://firms.modaps.eosdis.nasa.gov/api/area/"
