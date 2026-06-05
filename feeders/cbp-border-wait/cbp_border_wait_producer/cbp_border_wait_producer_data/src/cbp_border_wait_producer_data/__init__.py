@@ -1,3 +1,3 @@
-from .gov import WaitTime, Port
+from .gov import BorderSlugenum, WaitTime, Port
 
-__all__ = ["WaitTime", "Port"]
+__all__ = ["BorderSlugenum", "WaitTime", "Port"]

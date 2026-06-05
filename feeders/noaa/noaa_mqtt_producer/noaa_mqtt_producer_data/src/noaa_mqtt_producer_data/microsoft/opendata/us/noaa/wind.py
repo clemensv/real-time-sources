@@ -100,6 +100,8 @@ class Wind:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class Wind:
             An instance of the dataclass.
         """
         return cls(
-            station_id='jkizyvqvkddmlubaddve',
-            timestamp='sbjybdvkukswkrtzjpul',
-            speed=float(96.26396910974414),
-            direction_degrees='aogafvbwmstlsxvsknof',
-            direction_text='okfplsmziplchlcyroww',
-            gusts=float(61.06744434984318),
+            station_id='epqcfkakxjlbqfmwzsrg',
+            timestamp='uuuowoztilpoaaxmrhra',
+            speed=float(75.20701791097909),
+            direction_degrees='vvzsizlcrwriolrrudjx',
+            direction_text='ywjcpmdoicbtyzbmujkk',
+            gusts=float(80.12114122194417),
             max_wind_speed_exceeded=True,
             rate_of_change_exceeded=True,
-            region='kzyyopnmtokxwxivbzie'
+            region='vatskaukjosihaoydcth'
         )

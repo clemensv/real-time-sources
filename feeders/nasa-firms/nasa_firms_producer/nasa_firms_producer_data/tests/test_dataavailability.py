@@ -30,14 +30,14 @@ class Test_DataAvailability(unittest.TestCase):
         Create instance of DataAvailability for testing
         """
         instance = DataAvailability(
-            source='hcdoybhpeozonaxruuhf',
-            record_id='qujhfvrduqwjricoksxn',
-            data_id='fecgcintyfeebmwwzqtv',
+            source='gdoozrxhxcdhfnduyfxo',
+            record_id='rfgkhpvokzwddahqmsmj',
+            data_id='bujbqyuosmxqzncvisxe',
             min_date=datetime.date.today(),
             max_date=datetime.date.today(),
             instrument=InstrumentEnum.VIIRS,
-            satellite='cfcvyinqwyhdybejdage',
-            resolution_m=float(90.22995116721482),
+            satellite='lmbpllylabxidhhwmezi',
+            resolution_m=float(20.452509048722835),
             retrieved_at=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
@@ -47,7 +47,7 @@ class Test_DataAvailability(unittest.TestCase):
         """
         Test source property
         """
-        test_value = 'hcdoybhpeozonaxruuhf'
+        test_value = 'gdoozrxhxcdhfnduyfxo'
         self.instance.source = test_value
         self.assertEqual(self.instance.source, test_value)
     
@@ -55,7 +55,7 @@ class Test_DataAvailability(unittest.TestCase):
         """
         Test record_id property
         """
-        test_value = 'qujhfvrduqwjricoksxn'
+        test_value = 'rfgkhpvokzwddahqmsmj'
         self.instance.record_id = test_value
         self.assertEqual(self.instance.record_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_DataAvailability(unittest.TestCase):
         """
         Test data_id property
         """
-        test_value = 'fecgcintyfeebmwwzqtv'
+        test_value = 'bujbqyuosmxqzncvisxe'
         self.instance.data_id = test_value
         self.assertEqual(self.instance.data_id, test_value)
     
@@ -95,7 +95,7 @@ class Test_DataAvailability(unittest.TestCase):
         """
         Test satellite property
         """
-        test_value = 'cfcvyinqwyhdybejdage'
+        test_value = 'lmbpllylabxidhhwmezi'
         self.instance.satellite = test_value
         self.assertEqual(self.instance.satellite, test_value)
     
@@ -103,7 +103,7 @@ class Test_DataAvailability(unittest.TestCase):
         """
         Test resolution_m property
         """
-        test_value = float(90.22995116721482)
+        test_value = float(20.452509048722835)
         self.instance.resolution_m = test_value
         self.assertEqual(self.instance.resolution_m, test_value)
     

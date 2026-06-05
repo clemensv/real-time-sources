@@ -100,6 +100,8 @@ class ReservoirReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class ReservoirReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='qirzoeghwvonlnhopbai',
-            sensor_num=int(43),
-            sensor_type='pqebfqojgjrvjmbrgbsm',
-            value=float(61.70002121070297),
-            units='ixteihtcvcilcnoflhvp',
-            date='xfcmlsfnourmoprrbkwn',
-            dur_code='cpehpakmugsftknlvddi',
-            data_flag='kuqwackbpswxhrlcqxww',
-            basin='awhhgohukgdatiseijtg'
+            station_id='iiwzfylcdaonoywowbnd',
+            sensor_num=int(59),
+            sensor_type='hdceyaexpqzmfzljgdkz',
+            value=float(48.0755594652861),
+            units='lshjukglcuqmgmcsmibk',
+            date='cwdmbooscoqobeqozasn',
+            dur_code='byunvldmdekjtpcxzjfy',
+            data_flag='oaexdpbwcqrcagmzgjdp',
+            basin='ijwqlijjmkongrpvyvhk'
         )

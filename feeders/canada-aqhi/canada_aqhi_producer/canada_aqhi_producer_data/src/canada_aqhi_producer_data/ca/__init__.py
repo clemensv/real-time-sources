@@ -1,3 +1,3 @@
-from .gc import Community, Observation, Forecast
+from .gc import AqhiCategoryenum, Observation, Community, ForecastPeriodenum, ForecastPeriodLabelenum, Forecast
 
-__all__ = ["Community", "Observation", "Forecast"]
+__all__ = ["AqhiCategoryenum", "Observation", "Community", "ForecastPeriodenum", "ForecastPeriodLabelenum", "Forecast"]

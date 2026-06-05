@@ -28,18 +28,18 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_number='hrqgjitaewallfocuyzk',
-            station_name='kgibicjgbpldidqvrmqq',
-            prov_terr_state_loc='psrcvqjkfzgscidwjtpf',
-            status_en='cnjooghnwoslaiswdlxv',
-            contributor_en='bxetgwvusttgexvyjftf',
-            drainage_area_gross=float(66.0494533327738),
-            drainage_area_effect=float(28.247418172926466),
-            rhbn=True,
+            station_number='kqctldwpjinzvibuzjsu',
+            station_name='lgiurdgulmmycmxkktwg',
+            prov_terr_state_loc='qlmhxezpklhfjrennapd',
+            status_en='lnafbkmjvcuxhchblhge',
+            contributor_en='glvrmcphcqiaobhyamdz',
+            drainage_area_gross=float(66.81941536174178),
+            drainage_area_effect=float(70.34691371532529),
+            rhbn=False,
             real_time=True,
-            latitude=float(23.192207564357915),
-            longitude=float(56.09487184263391),
-            basin='anbprjukemjdrigumlhq'
+            latitude=float(6.909835920445384),
+            longitude=float(15.713136939475225),
+            basin='wihdebnvynzwydviyfng'
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_number property
         """
-        test_value = 'hrqgjitaewallfocuyzk'
+        test_value = 'kqctldwpjinzvibuzjsu'
         self.instance.station_number = test_value
         self.assertEqual(self.instance.station_number, test_value)
     
@@ -56,7 +56,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'kgibicjgbpldidqvrmqq'
+        test_value = 'lgiurdgulmmycmxkktwg'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -64,7 +64,7 @@ class Test_Station(unittest.TestCase):
         """
         Test prov_terr_state_loc property
         """
-        test_value = 'psrcvqjkfzgscidwjtpf'
+        test_value = 'qlmhxezpklhfjrennapd'
         self.instance.prov_terr_state_loc = test_value
         self.assertEqual(self.instance.prov_terr_state_loc, test_value)
     
@@ -72,7 +72,7 @@ class Test_Station(unittest.TestCase):
         """
         Test status_en property
         """
-        test_value = 'cnjooghnwoslaiswdlxv'
+        test_value = 'lnafbkmjvcuxhchblhge'
         self.instance.status_en = test_value
         self.assertEqual(self.instance.status_en, test_value)
     
@@ -80,7 +80,7 @@ class Test_Station(unittest.TestCase):
         """
         Test contributor_en property
         """
-        test_value = 'bxetgwvusttgexvyjftf'
+        test_value = 'glvrmcphcqiaobhyamdz'
         self.instance.contributor_en = test_value
         self.assertEqual(self.instance.contributor_en, test_value)
     
@@ -88,7 +88,7 @@ class Test_Station(unittest.TestCase):
         """
         Test drainage_area_gross property
         """
-        test_value = float(66.0494533327738)
+        test_value = float(66.81941536174178)
         self.instance.drainage_area_gross = test_value
         self.assertEqual(self.instance.drainage_area_gross, test_value)
     
@@ -96,7 +96,7 @@ class Test_Station(unittest.TestCase):
         """
         Test drainage_area_effect property
         """
-        test_value = float(28.247418172926466)
+        test_value = float(70.34691371532529)
         self.instance.drainage_area_effect = test_value
         self.assertEqual(self.instance.drainage_area_effect, test_value)
     
@@ -104,7 +104,7 @@ class Test_Station(unittest.TestCase):
         """
         Test rhbn property
         """
-        test_value = True
+        test_value = False
         self.instance.rhbn = test_value
         self.assertEqual(self.instance.rhbn, test_value)
     
@@ -120,7 +120,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(23.192207564357915)
+        test_value = float(6.909835920445384)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -128,7 +128,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(56.09487184263391)
+        test_value = float(15.713136939475225)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -136,7 +136,7 @@ class Test_Station(unittest.TestCase):
         """
         Test basin property
         """
-        test_value = 'anbprjukemjdrigumlhq'
+        test_value = 'wihdebnvynzwydviyfng'
         self.instance.basin = test_value
         self.assertEqual(self.instance.basin, test_value)
     

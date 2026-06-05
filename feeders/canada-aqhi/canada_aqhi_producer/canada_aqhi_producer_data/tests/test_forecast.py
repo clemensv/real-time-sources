@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from canada_aqhi_producer_data.ca.gc.weather.aqhi.forecast import Forecast
-from canada_aqhi_producer_data.ca.gc.weather.aqhi.forecastperiodenum import ForecastPeriodenum
 from canada_aqhi_producer_data.ca.gc.weather.aqhi.aqhicategoryenum import AqhiCategoryenum
+from canada_aqhi_producer_data.ca.gc.weather.aqhi.forecastperiodenum import ForecastPeriodenum
 from canada_aqhi_producer_data.ca.gc.weather.aqhi.forecastperiodlabelenum import ForecastPeriodLabelenum
 
 
@@ -31,14 +31,14 @@ class Test_Forecast(unittest.TestCase):
         Create instance of Forecast for testing
         """
         instance = Forecast(
-            province='kamygdnlmeafsrcajlqr',
-            community_name='aycjlrsjhqunbatcddjv',
-            cgndb_code='pqsrcnuldapfctxozkrg',
-            publication_datetime='jweioygjalaymyqcwvly',
-            forecast_date='lppwummaxcpfbfkpuvhm',
+            province='otxzmmfhucjuqurggupf',
+            community_name='yeqjqwowapvyhiyfuhyp',
+            cgndb_code='pthqyeliannjvvaxwzpr',
+            publication_datetime='zttsjxaufcxytceugnkt',
+            forecast_date='pekescwwitwvjoyajzql',
             forecast_period=ForecastPeriodenum.VALUE_1,
             forecast_period_label=ForecastPeriodLabelenum.Today,
-            aqhi=int(32),
+            aqhi=int(59),
             aqhi_category=AqhiCategoryenum.Low
         )
         return instance
@@ -48,7 +48,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'kamygdnlmeafsrcajlqr'
+        test_value = 'otxzmmfhucjuqurggupf'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -56,7 +56,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test community_name property
         """
-        test_value = 'aycjlrsjhqunbatcddjv'
+        test_value = 'yeqjqwowapvyhiyfuhyp'
         self.instance.community_name = test_value
         self.assertEqual(self.instance.community_name, test_value)
     
@@ -64,7 +64,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test cgndb_code property
         """
-        test_value = 'pqsrcnuldapfctxozkrg'
+        test_value = 'pthqyeliannjvvaxwzpr'
         self.instance.cgndb_code = test_value
         self.assertEqual(self.instance.cgndb_code, test_value)
     
@@ -72,7 +72,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test publication_datetime property
         """
-        test_value = 'jweioygjalaymyqcwvly'
+        test_value = 'zttsjxaufcxytceugnkt'
         self.instance.publication_datetime = test_value
         self.assertEqual(self.instance.publication_datetime, test_value)
     
@@ -80,7 +80,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test forecast_date property
         """
-        test_value = 'lppwummaxcpfbfkpuvhm'
+        test_value = 'pekescwwitwvjoyajzql'
         self.instance.forecast_date = test_value
         self.assertEqual(self.instance.forecast_date, test_value)
     
@@ -104,7 +104,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test aqhi property
         """
-        test_value = int(32)
+        test_value = int(59)
         self.instance.aqhi = test_value
         self.assertEqual(self.instance.aqhi, test_value)
     
@@ -116,15 +116,6 @@ class Test_Forecast(unittest.TestCase):
         self.instance.aqhi_category = test_value
         self.assertEqual(self.instance.aqhi_category, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Forecast.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

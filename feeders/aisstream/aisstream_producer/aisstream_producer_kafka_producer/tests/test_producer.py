@@ -20,56 +20,56 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from aisstream_producer_kafka_producer.producer import IOAISstreamEventProducer
 from aisstream_producer_data import PositionReport
-from test_aisstream_producer_data_positionreport import Test_PositionReport
+from test_positionreport import Test_PositionReport
 from aisstream_producer_data import ShipStaticData
-from test_aisstream_producer_data_shipstaticdata import Test_ShipStaticData
+from test_shipstaticdata import Test_ShipStaticData
 from aisstream_producer_data import StandardClassBPositionReport
-from test_aisstream_producer_data_standardclassbpositionreport import Test_StandardClassBPositionReport
+from test_standardclassbpositionreport import Test_StandardClassBPositionReport
 from aisstream_producer_data import ExtendedClassBPositionReport
-from test_aisstream_producer_data_extendedclassbpositionreport import Test_ExtendedClassBPositionReport
+from test_extendedclassbpositionreport import Test_ExtendedClassBPositionReport
 from aisstream_producer_data import AidsToNavigationReport
-from test_aisstream_producer_data_aidstonavigationreport import Test_AidsToNavigationReport
+from test_aidstonavigationreport import Test_AidsToNavigationReport
 from aisstream_producer_data import StaticDataReport
-from test_aisstream_producer_data_staticdatareport import Test_StaticDataReport
+from test_staticdatareport import Test_StaticDataReport
 from aisstream_producer_data import BaseStationReport
-from test_aisstream_producer_data_basestationreport import Test_BaseStationReport
+from test_basestationreport import Test_BaseStationReport
 from aisstream_producer_data import SafetyBroadcastMessage
-from test_aisstream_producer_data_safetybroadcastmessage import Test_SafetyBroadcastMessage
+from test_safetybroadcastmessage import Test_SafetyBroadcastMessage
 from aisstream_producer_data import StandardSearchAndRescueAircraftReport
-from test_aisstream_producer_data_standardsearchandrescueaircraftreport import Test_StandardSearchAndRescueAircraftReport
+from test_standardsearchandrescueaircraftreport import Test_StandardSearchAndRescueAircraftReport
 from aisstream_producer_data import LongRangeAisBroadcastMessage
-from test_aisstream_producer_data_longrangeaisbroadcastmessage import Test_LongRangeAisBroadcastMessage
+from test_longrangeaisbroadcastmessage import Test_LongRangeAisBroadcastMessage
 from aisstream_producer_data import AddressedSafetyMessage
-from test_aisstream_producer_data_addressedsafetymessage import Test_AddressedSafetyMessage
+from test_addressedsafetymessage import Test_AddressedSafetyMessage
 from aisstream_producer_data import AddressedBinaryMessage
-from test_aisstream_producer_data_addressedbinarymessage import Test_AddressedBinaryMessage
+from test_addressedbinarymessage import Test_AddressedBinaryMessage
 from aisstream_producer_data import AssignedModeCommand
-from test_aisstream_producer_data_assignedmodecommand import Test_AssignedModeCommand
+from test_assignedmodecommand import Test_AssignedModeCommand
 from aisstream_producer_data import BinaryAcknowledge
-from test_aisstream_producer_data_binaryacknowledge import Test_BinaryAcknowledge
+from test_binaryacknowledge import Test_BinaryAcknowledge
 from aisstream_producer_data import BinaryBroadcastMessage
-from test_aisstream_producer_data_binarybroadcastmessage import Test_BinaryBroadcastMessage
+from test_binarybroadcastmessage import Test_BinaryBroadcastMessage
 from aisstream_producer_data import ChannelManagement
-from test_aisstream_producer_data_channelmanagement import Test_ChannelManagement
+from test_channelmanagement import Test_ChannelManagement
 from aisstream_producer_data import CoordinatedUTCInquiry
-from test_aisstream_producer_data_coordinatedutcinquiry import Test_CoordinatedUTCInquiry
+from test_coordinatedutcinquiry import Test_CoordinatedUTCInquiry
 from aisstream_producer_data import DataLinkManagementMessage
-from test_aisstream_producer_data_datalinkmanagementmessage import Test_DataLinkManagementMessage
+from test_datalinkmanagementmessage import Test_DataLinkManagementMessage
 from aisstream_producer_data import GnssBroadcastBinaryMessage
-from test_aisstream_producer_data_gnssbroadcastbinarymessage import Test_GnssBroadcastBinaryMessage
+from test_gnssbroadcastbinarymessage import Test_GnssBroadcastBinaryMessage
 from aisstream_producer_data import GroupAssignmentCommand
-from test_aisstream_producer_data_groupassignmentcommand import Test_GroupAssignmentCommand
+from test_groupassignmentcommand import Test_GroupAssignmentCommand
 from aisstream_producer_data import Interrogation
-from test_aisstream_producer_data_interrogation import Test_Interrogation
+from test_interrogation import Test_Interrogation
 from aisstream_producer_data import MultiSlotBinaryMessage
-from test_aisstream_producer_data_multislotbinarymessage import Test_MultiSlotBinaryMessage
+from test_multislotbinarymessage import Test_MultiSlotBinaryMessage
 from aisstream_producer_data import SingleSlotBinaryMessage
-from test_aisstream_producer_data_singleslotbinarymessage import Test_SingleSlotBinaryMessage
+from test_singleslotbinarymessage import Test_SingleSlotBinaryMessage
 from aisstream_producer_kafka_producer.producer import IOAISstreamMqttEventProducer
 from aisstream_producer_data import ShipStatic
-from test_aisstream_producer_data_shipstatic import Test_ShipStatic
+from test_shipstatic import Test_ShipStatic
 from aisstream_producer_data import AidToNavigation
-from test_aisstream_producer_data_aidtonavigation import Test_AidToNavigation
+from test_aidtonavigation import Test_AidToNavigation
 from aisstream_producer_kafka_producer.producer import IOAISstreamAmqpEventProducer
 
 @pytest.fixture(scope="module")
@@ -153,7 +153,8 @@ def test_io_aisstream_ioaisstreampositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_position_report(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_position_report(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -216,7 +217,8 @@ def test_io_aisstream_ioaisstreamshipstaticdata(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_ship_static_data(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_ship_static_data(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -279,7 +281,8 @@ def test_io_aisstream_ioaisstreamstandardclassbpositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_standard_class_bposition_report(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_standard_class_bposition_report(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -342,7 +345,8 @@ def test_io_aisstream_ioaisstreamextendedclassbpositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_extended_class_bposition_report(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_extended_class_bposition_report(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -405,7 +409,8 @@ def test_io_aisstream_ioaisstreamaidstonavigationreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_aids_to_navigation_report(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_aids_to_navigation_report(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -468,7 +473,8 @@ def test_io_aisstream_ioaisstreamstaticdatareport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_static_data_report(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_static_data_report(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -531,7 +537,8 @@ def test_io_aisstream_ioaisstreambasestationreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_base_station_report(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_base_station_report(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -594,7 +601,8 @@ def test_io_aisstream_ioaisstreamsafetybroadcastmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_safety_broadcast_message(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_safety_broadcast_message(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -657,7 +665,8 @@ def test_io_aisstream_ioaisstreamstandardsearchandrescueaircraftreport(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_standard_search_and_rescue_aircraft_report(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_standard_search_and_rescue_aircraft_report(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -720,7 +729,8 @@ def test_io_aisstream_ioaisstreamlongrangeaisbroadcastmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_long_range_ais_broadcast_message(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_long_range_ais_broadcast_message(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -783,7 +793,8 @@ def test_io_aisstream_ioaisstreamaddressedsafetymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_addressed_safety_message(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_addressed_safety_message(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -846,7 +857,8 @@ def test_io_aisstream_ioaisstreamaddressedbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_addressed_binary_message(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_addressed_binary_message(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -909,7 +921,8 @@ def test_io_aisstream_ioaisstreamassignedmodecommand(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_assigned_mode_command(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_assigned_mode_command(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -972,7 +985,8 @@ def test_io_aisstream_ioaisstreambinaryacknowledge(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_binary_acknowledge(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_binary_acknowledge(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1035,7 +1049,8 @@ def test_io_aisstream_ioaisstreambinarybroadcastmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_binary_broadcast_message(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_binary_broadcast_message(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1098,7 +1113,8 @@ def test_io_aisstream_ioaisstreamchannelmanagement(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_channel_management(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_channel_management(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1161,7 +1177,8 @@ def test_io_aisstream_ioaisstreamcoordinatedutcinquiry(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_coordinated_utcinquiry(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_coordinated_utcinquiry(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1224,7 +1241,8 @@ def test_io_aisstream_ioaisstreamdatalinkmanagementmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_data_link_management_message(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_data_link_management_message(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1287,7 +1305,8 @@ def test_io_aisstream_ioaisstreamgnssbroadcastbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_gnss_broadcast_binary_message(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_gnss_broadcast_binary_message(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1350,7 +1369,8 @@ def test_io_aisstream_ioaisstreamgroupassignmentcommand(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_group_assignment_command(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_group_assignment_command(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1413,7 +1433,8 @@ def test_io_aisstream_ioaisstreaminterrogation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_interrogation(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_interrogation(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1476,7 +1497,8 @@ def test_io_aisstream_ioaisstreammultislotbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_multi_slot_binary_message(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_multi_slot_binary_message(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1539,7 +1561,8 @@ def test_io_aisstream_ioaisstreamsingleslotbinarymessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_single_slot_binary_message(_user_id = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_single_slot_binary_message(_user_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1602,7 +1625,8 @@ def test_io_aisstream_mqtt_ioaisstreammqttpositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_mqtt_position_report(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_mqtt_position_report(_mmsi = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1663,7 +1687,8 @@ def test_io_aisstream_mqtt_ioaisstreammqttshipstatic(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_mqtt_ship_static(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_mqtt_ship_static(_mmsi = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1724,7 +1749,8 @@ def test_io_aisstream_mqtt_ioaisstreammqttaidtonavigation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_mqtt_aid_to_navigation(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_mqtt_aid_to_navigation(_mmsi = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1785,7 +1811,8 @@ def test_io_aisstream_amqp_ioaisstreamamqppositionreport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_amqp_position_report(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_amqp_position_report(_mmsi = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1846,7 +1873,8 @@ def test_io_aisstream_amqp_ioaisstreamamqpshipstatic(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_amqp_ship_static(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_amqp_ship_static(_mmsi = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1907,7 +1935,8 @@ def test_io_aisstream_amqp_ioaisstreamamqpaidtonavigation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_io_aisstream_amqp_aid_to_navigation(_mmsi = f'test_{i}', data = event_data)
+        producer_instance.send_io_aisstream_amqp_aid_to_navigation(_mmsi = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

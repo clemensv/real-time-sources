@@ -104,6 +104,8 @@ class Observation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,14 +173,14 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            station_number='babkotcrnsrjpeodbtft',
-            identifier='ltqfirzooyomigdzmiel',
-            station_name='uueqjfedaikgtxrvnaks',
-            prov_terr_state_loc='ksefqizlgsazfkshsqkv',
+            station_number='lvmgcidbupayqujlamiu',
+            identifier='shmtzlzuvnnyzeapxinv',
+            station_name='ztxletedoewqqzjavmgu',
+            prov_terr_state_loc='gzxqoeydoesdshvezxta',
             observation_datetime=datetime.datetime.now(datetime.timezone.utc),
-            level=float(15.287942141878851),
-            discharge=float(72.40019887891391),
-            latitude=float(96.07411560984556),
-            longitude=float(54.71078523300462),
-            basin='iaxsexwgbuvdjgardddv'
+            level=float(37.73805136912956),
+            discharge=float(34.4104527968685),
+            latitude=float(66.34534981364904),
+            longitude=float(58.36114619883245),
+            basin='malrdcgpsvlltokrjbrw'
         )

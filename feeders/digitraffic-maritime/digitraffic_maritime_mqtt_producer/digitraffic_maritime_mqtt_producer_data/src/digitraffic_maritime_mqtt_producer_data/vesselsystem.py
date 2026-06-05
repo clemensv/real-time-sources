@@ -90,6 +90,8 @@ class VesselSystem:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class VesselSystem:
             An instance of the dataclass.
         """
         return cls(
-            ship_owner='legzipqmpducgzeukvfh',
-            ship_telephone_1='ahvtbbesylijrwduijfo',
-            ship_email='opgfookirdvtiualxrtb',
-            ship_verifier='myhbrotgkvcnhahfxyno'
+            ship_owner='wngrmzjuwmarvcczrhji',
+            ship_telephone_1='dqgqredcgwmjhbpviusf',
+            ship_email='jwmlmyikhpjtupohljqv',
+            ship_verifier='avsboognlyoictxpuvso'
         )

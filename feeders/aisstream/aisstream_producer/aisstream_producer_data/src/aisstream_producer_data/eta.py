@@ -90,6 +90,8 @@ class Eta:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class Eta:
             An instance of the dataclass.
         """
         return cls(
-            Month=int(60),
-            Day=int(68),
-            Hour=int(52),
-            Minute=int(34)
+            Month=int(30),
+            Day=int(17),
+            Hour=int(93),
+            Minute=int(31)
         )

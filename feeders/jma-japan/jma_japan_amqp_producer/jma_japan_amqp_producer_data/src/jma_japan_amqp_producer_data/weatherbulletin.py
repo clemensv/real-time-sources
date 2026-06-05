@@ -101,6 +101,8 @@ class WeatherBulletin:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -168,12 +170,12 @@ class WeatherBulletin:
             An instance of the dataclass.
         """
         return cls(
-            bulletin_id='hbsvewkffxhunsmpiesg',
-            title='afktafrceymlkgnzxxtz',
-            author='lnakusfjhbjqvcuskqhy',
+            bulletin_id='qvophyhxcrkhhpaavewg',
+            title='tsjtlgrqcdaobmittrjf',
+            author='yidruslfzwsduuwrtqpk',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            link='czuhfiacjpusjwydoubc',
-            content='gltvwuttunzteiqdfcpl',
+            link='sxnjftptkvraxptnjfir',
+            content='bhmzcixrqmlhivjmxokq',
             feed_type=FeedTypeenum.regular,
-            office='vchzjbdqchmihdgnidey'
+            office='oqfprwcoezpxpabpbmje'
         )

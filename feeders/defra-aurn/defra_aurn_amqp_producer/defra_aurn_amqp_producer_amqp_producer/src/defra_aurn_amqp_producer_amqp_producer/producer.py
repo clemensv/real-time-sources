@@ -14,14 +14,62 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
+from datetime import datetime, timezone
 from urllib.parse import quote_plus
-from proton import Message
+from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -36,7 +84,7 @@ import hmac
 import logging
 import time as _cbs_time
 from urllib.parse import quote
-from proton import Endpoint, symbol
+from proton import Endpoint
 from proton.handlers import MessagingHandler
 from proton.reactor import Container, AtLeastOnce
 
@@ -485,9 +533,7 @@ class UkGovDefraAurnStationsAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -550,6 +596,32 @@ class UkGovDefraAurnStationsAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -575,6 +647,23 @@ class UkGovDefraAurnStationsAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -604,6 +693,7 @@ class UkGovDefraAurnStationsAmqpProducer:
         _station_id: str,
         _region: str,
         _pollutant: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `uk.gov.defra.aurn.Stations.amqp.Station` message
@@ -613,6 +703,7 @@ class UkGovDefraAurnStationsAmqpProducer:
             _station_id (str): Value for placeholder station_id in attribute subject
             _region (str): Value for AMQP protocol option placeholder region
             _pollutant (str): Value for AMQP protocol option placeholder pollutant
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Station): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -625,6 +716,7 @@ class UkGovDefraAurnStationsAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -654,6 +746,9 @@ class UkGovDefraAurnStationsAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -664,18 +759,25 @@ class UkGovDefraAurnStationsAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_station_batch(self,
         data_array: typing.List[Station],
         _station_id: str,
         _region: str,
         _pollutant: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `uk.gov.defra.aurn.Stations.amqp.Station` messages
@@ -683,6 +785,7 @@ class UkGovDefraAurnStationsAmqpProducer:
         Args:
             data_array (typing.List[Station]): Array of message data objects
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _region (str): Value for AMQP protocol option placeholder region
             _pollutant (str): Value for AMQP protocol option placeholder pollutant
             content_type (str): The content type of the message data
@@ -691,6 +794,7 @@ class UkGovDefraAurnStationsAmqpProducer:
             self.send_station(
                 data=data,
                 _station_id=_station_id,
+                _time=_time,
                 _region=_region,
                 _pollutant=_pollutant,
                 content_type=content_type)
@@ -812,9 +916,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -877,6 +979,32 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -902,6 +1030,23 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -932,6 +1077,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
         _region: str,
         _station_id: str,
         _pollutant: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `uk.gov.defra.aurn.Timeseries.amqp.Timeseries` message
@@ -942,6 +1088,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
             _region (str): Value for AMQP protocol option placeholder region
             _station_id (str): Value for AMQP protocol option placeholder station_id
             _pollutant (str): Value for AMQP protocol option placeholder pollutant
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Timeseries): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -954,6 +1101,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
             "subject":
             "{timeseries_id}".format(timeseries_id=_timeseries_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -983,6 +1131,9 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{timeseries_id}".format(timeseries_id=_timeseries_id)
 
@@ -994,12 +1145,18 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_timeseries_batch(self,
         data_array: typing.List[Timeseries],
@@ -1007,6 +1164,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
         _region: str,
         _station_id: str,
         _pollutant: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `uk.gov.defra.aurn.Timeseries.amqp.Timeseries` messages
@@ -1014,6 +1172,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
         Args:
             data_array (typing.List[Timeseries]): Array of message data objects
             _timeseries_id (str): Value for placeholder timeseries_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _region (str): Value for AMQP protocol option placeholder region
             _station_id (str): Value for AMQP protocol option placeholder station_id
             _pollutant (str): Value for AMQP protocol option placeholder pollutant
@@ -1023,6 +1182,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
             self.send_timeseries(
                 data=data,
                 _timeseries_id=_timeseries_id,
+                _time=_time,
                 _region=_region,
                 _station_id=_station_id,
                 _pollutant=_pollutant,
@@ -1035,6 +1195,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
         _region: str,
         _station_id: str,
         _pollutant: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `uk.gov.defra.aurn.Timeseries.amqp.Observation` message
@@ -1045,6 +1206,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
             _region (str): Value for AMQP protocol option placeholder region
             _station_id (str): Value for AMQP protocol option placeholder station_id
             _pollutant (str): Value for AMQP protocol option placeholder pollutant
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Observation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1057,6 +1219,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
             "subject":
             "{timeseries_id}".format(timeseries_id=_timeseries_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1086,6 +1249,9 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{timeseries_id}".format(timeseries_id=_timeseries_id)
 
@@ -1097,12 +1263,18 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_observation_batch(self,
         data_array: typing.List[Observation],
@@ -1110,6 +1282,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
         _region: str,
         _station_id: str,
         _pollutant: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `uk.gov.defra.aurn.Timeseries.amqp.Observation` messages
@@ -1117,6 +1290,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
         Args:
             data_array (typing.List[Observation]): Array of message data objects
             _timeseries_id (str): Value for placeholder timeseries_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _region (str): Value for AMQP protocol option placeholder region
             _station_id (str): Value for AMQP protocol option placeholder station_id
             _pollutant (str): Value for AMQP protocol option placeholder pollutant
@@ -1126,6 +1300,7 @@ class UkGovDefraAurnTimeseriesAmqpProducer:
             self.send_observation(
                 data=data,
                 _timeseries_id=_timeseries_id,
+                _time=_time,
                 _region=_region,
                 _station_id=_station_id,
                 _pollutant=_pollutant,

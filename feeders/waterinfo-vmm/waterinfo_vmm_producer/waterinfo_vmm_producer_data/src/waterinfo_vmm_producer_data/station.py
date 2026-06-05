@@ -11,8 +11,6 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-import avro.schema
-import avro.io
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -33,10 +31,6 @@ class Station:
         ts_unitname (typing.Optional[str])
         water_body (typing.Optional[str])
     """
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"Station\", \"doc\": \"Reference details for one monitoring station or site in the Waterinfo VMM source.\", \"fields\": [{\"name\": \"station_no\", \"type\": \"string\", \"doc\": \"Provider-supplied station no value for this record.\"}, {\"name\": \"station_name\", \"type\": \"string\", \"doc\": \"Human-readable name of the monitoring station.\"}, {\"name\": \"station_id\", \"type\": [\"null\", \"string\"], \"doc\": \"Stable identifier assigned by the upstream provider for the monitoring station or site.\", \"default\": null}, {\"name\": \"station_latitude\", \"type\": \"double\", \"doc\": \"Provider-supplied station latitude value for this record.\"}, {\"name\": \"station_longitude\", \"type\": \"double\", \"doc\": \"Provider-supplied station longitude value for this record.\"}, {\"name\": \"river_name\", \"type\": [\"string\", \"null\"], \"doc\": \"Name of the river or watercourse observed at the station.\", \"default\": null}, {\"name\": \"stationparameter_name\", \"type\": [\"string\", \"null\"], \"doc\": \"Human-readable name of the stationparameter.\", \"default\": null}, {\"name\": \"ts_id\", \"type\": [\"string\", \"null\"], \"doc\": \"Stable identifier assigned by the upstream provider for the ts.\", \"default\": null}, {\"name\": \"ts_unitname\", \"type\": [\"string\", \"null\"], \"doc\": \"Provider-supplied ts unitname value for this record.\", \"default\": null}, {\"name\": \"water_body\", \"type\": [\"null\", \"string\"], \"doc\": \"Stable routing axis used by MQTT and AMQP transport templates for waterinfo-vmm.\", \"default\": null}]}"
-    )
     
     
     station_no: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_no"))
@@ -62,43 +56,6 @@ class Station:
             The dataclass representation of the dataclass.
         """
         return cls(**data)
-    @classmethod
-    def from_avro_dict(cls, data: dict) -> 'Station':
-        """
-        Converts a dictionary from Avro deserialization to a dataclass instance.
-        Handles conversion of string representations back to Python types for
-        extended logical types.
-        
-        Args:
-            data: The dictionary from Avro deserialization.
-        
-        Returns:
-            The dataclass representation.
-        """
-        # Convert string values back to Python types for Avro string-based logical types
-        converted = data.copy()
-        if 'station_no' in converted and converted['station_no'] is not None:
-            value = converted['station_no']
-        if 'station_name' in converted and converted['station_name'] is not None:
-            value = converted['station_name']
-        if 'station_id' in converted and converted['station_id'] is not None:
-            value = converted['station_id']
-        if 'station_latitude' in converted and converted['station_latitude'] is not None:
-            value = converted['station_latitude']
-        if 'station_longitude' in converted and converted['station_longitude'] is not None:
-            value = converted['station_longitude']
-        if 'river_name' in converted and converted['river_name'] is not None:
-            value = converted['river_name']
-        if 'stationparameter_name' in converted and converted['stationparameter_name'] is not None:
-            value = converted['stationparameter_name']
-        if 'ts_id' in converted and converted['ts_id'] is not None:
-            value = converted['ts_id']
-        if 'ts_unitname' in converted and converted['ts_unitname'] is not None:
-            value = converted['ts_unitname']
-        if 'water_body' in converted and converted['water_body'] is not None:
-            value = converted['water_body']
-        
-        return cls(**converted)
 
     def to_serializer_dict(self) -> dict:
         """
@@ -122,22 +79,6 @@ class Station:
             return k[:-1] if k.endswith('_') else k
         return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
 
-    def to_avro_dict(self) -> dict:
-        """
-        Converts the dataclass to a dictionary suitable for Avro serialization.
-        Handles conversion of Python types to Avro-compatible string representations
-        for extended logical types.
-
-        Returns:
-            The dictionary representation suitable for Avro serialization.
-        """
-        result = self.to_serializer_dict()
-        converted = result.copy()
-        
-        # Convert specific fields based on their source types
-        
-        return converted
-
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
@@ -146,8 +87,6 @@ class Station:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
                     'application/json': Encodes the data to JSON format.
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
@@ -159,17 +98,12 @@ class Station:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            # Convert to Avro binary format using the embedded schema
-            writer = avro.io.DatumWriter(self.AvroType)
-            with io.BytesIO() as stream:
-                encoder = avro.io.BinaryEncoder(stream)
-                writer.write(self.to_avro_dict(), encoder)
-                result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -195,8 +129,6 @@ class Station:
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
-                    'avro/binary': Attempts to decode the data from Avro binary format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
         Returns:
@@ -221,16 +153,6 @@ class Station:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            if isinstance(data, bytes):
-                # Decode from Avro binary format using the embedded schema
-                reader = avro.io.DatumReader(cls.AvroType)
-                with io.BytesIO(data) as stream:
-                    decoder = avro.io.BinaryDecoder(stream)
-                    _record = reader.read(decoder)
-                    return Station.from_avro_dict(_record)
-            else:
-                raise NotImplementedError('Data is not of a supported type for Avro deserialization')
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -249,14 +171,14 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_no='wjmwjsptlsomxdiuttmx',
-            station_name='twokoiakikwiysqzunch',
-            station_id='wlwcrpdcdmuuttrlavbr',
-            station_latitude=float(49.90369494113256),
-            station_longitude=float(63.10779310722863),
-            river_name='flqdoqwlzxhebqgbjvoj',
-            stationparameter_name='tphcprepgxpqafjilajf',
-            ts_id='neyepctnsjhyputvqfeq',
-            ts_unitname='knocjvhayodqxctwrahc',
-            water_body='eeywzurewmklnvnffpkk'
+            station_no='pgrcgfecvjkuwfgwctmk',
+            station_name='ohobhqglnhnxtupeahqv',
+            station_id='spzzaaigdrxcepairkki',
+            station_latitude=float(88.8163728623668),
+            station_longitude=float(70.58383910458029),
+            river_name='bxiuppdavtggmbywzxgi',
+            stationparameter_name='dghvxwesnecnpoulsvpw',
+            ts_id='dxeilwjwyqdermaifgsu',
+            ts_unitname='dzskkksghisajuqhqdfy',
+            water_body='ygciknxzwigkcklunjnb'
         )

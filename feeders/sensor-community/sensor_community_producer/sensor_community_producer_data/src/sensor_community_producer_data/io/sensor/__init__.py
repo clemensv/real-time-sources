@@ -1,3 +1,3 @@
-from .community import SensorReading, SensorInfo
+from .community import SensorInfo, SensorReading
 
-__all__ = ["SensorReading", "SensorInfo"]
+__all__ = ["SensorInfo", "SensorReading"]

@@ -11,9 +11,9 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from gtfs_amqp_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 from typing import Any
 from gtfs_amqp_producer_data.generaltransitfeedstatic.calendar import Calendar
-from gtfs_amqp_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -107,6 +107,8 @@ class Trips:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -174,15 +176,15 @@ class Trips:
             An instance of the dataclass.
         """
         return cls(
-            routeId='wzzkmvvbipzxaibpfacj',
+            routeId='wjibwwwbvbzqdlutfqyq',
             serviceDates=None,
-            serviceExceptions=[None, None, None, None],
-            tripId='gtxujfracuupxbciwfjb',
-            tripHeadsign='guvxygeqqkulgjvnhqsj',
-            tripShortName='ddgtrvotocnhxdvcqeto',
+            serviceExceptions=[None, None, None, None, None],
+            tripId='brpueaykxmtexbiostim',
+            tripHeadsign='sjdfaldysrywcpcwcdxm',
+            tripShortName='qynzkpydgzqicfhqlqxg',
             directionId=None,
-            blockId='wmjaiyhumnifbxtjmowd',
-            shapeId='ixrxjyxpazafgmvvrwqs',
+            blockId='fgjcsggfnucpbsbfqnan',
+            shapeId='scjindeaboolwnqawexg',
             wheelchairAccessible=None,
             bikesAllowed=None
         )

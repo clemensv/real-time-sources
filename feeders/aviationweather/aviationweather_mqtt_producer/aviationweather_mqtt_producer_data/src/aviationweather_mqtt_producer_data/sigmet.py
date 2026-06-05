@@ -116,6 +116,8 @@ class Sigmet:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -183,20 +185,20 @@ class Sigmet:
             An instance of the dataclass.
         """
         return cls(
-            icao_id='gjpzeuzwjdirsfntjxco',
-            series_id='cjyhqvrizofdbdctluwn',
+            icao_id='ezorbwrnhwjmuosagkal',
+            series_id='wbdbbnzzmbbfpozezkah',
             valid_time_from=datetime.datetime.now(datetime.timezone.utc),
             valid_time_to=datetime.datetime.now(datetime.timezone.utc),
-            hazard='ongqtuxjzfywevxdoycw',
-            qualifier='kwowlqtvmzmrigjfqnxe',
-            sigmet_type='kskonwnojqvihkfwtkqx',
-            altitude_hi=int(63),
-            altitude_low=int(94),
-            movement_dir='buxfubloryvmewmrtgpb',
-            movement_spd='zarykahusbtxdfeiskvr',
-            severity='qqdiozoewboqoftxxncg',
-            raw_sigmet='ffmrbwumsdzebgckuxev',
-            coords='vxxuxpncpsxijuqirjbv',
-            sigmet_id='vkzjutkmsqcpmzrnnbiv',
-            region='rjhztzqpypnqxoscjryv'
+            hazard='lolqxcmjcbrljequwvgf',
+            qualifier='ucywfzhvafbkiepmrdam',
+            sigmet_type='bcuescmsqbiznumiohbi',
+            altitude_hi=int(24),
+            altitude_low=int(71),
+            movement_dir='nuditrsrygcoowolvhry',
+            movement_spd='jdbppfdxnfwfgymhmutr',
+            severity='vgetqivapzpbfcezsxef',
+            raw_sigmet='grzqhbijvnfckikyjbin',
+            coords='sxqrcukhlegxgmhlijio',
+            sigmet_id='qyhhysmoljxdcxitrfey',
+            region='nbqvpvhuuzanoyelfdxx'
         )

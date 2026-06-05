@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -140,6 +140,8 @@ class WarningEvent:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -207,31 +209,31 @@ class WarningEvent:
             An instance of the dataclass.
         """
         return cls(
-            identifier='oikmnmgndumajtoueuog',
-            road='lbxqulpvtbpibkoguphe',
-            road_ids=['zaaecaykscvodixshdjk', 'qmmmkaxlnppcoiotafiw', 'hhhuwbogedsvrfyzocrk'],
+            identifier='hicpxerhltuwiowzlyht',
+            road='bufhsmapduervviuplwa',
+            road_ids=['crskhzqftgdkjbdtrkdw', 'nefgtmgignhbexvinocx', 'ioechxfseoovuusbsdsp', 'hjevmnbxqytrrozrkcmo'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
-            title='srknlovmgdajxbrmrdzt',
-            subtitle='bneefqbybrhhxppukqim',
+            display_type=DisplayTypeenum.ROADWORKS,
+            title='rtpcdiiyjvzunaorxiyv',
+            subtitle='ncninrapkolxkutxsvzk',
             description_lines=None,
-            future=False,
-            is_blocked=False,
-            icon='tbfnsrjiosehvfsxmhrw',
-            start_lc_position=int(68),
+            future=True,
+            is_blocked=True,
+            icon='dejatuzetbykkjceramu',
+            start_lc_position=int(24),
             start_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            extent='pvlohrayhhqfqvhulocq',
-            point='igjralviwlzphdhqdcxe',
-            coordinate_lat=float(20.569202276679533),
-            coordinate_lon=float(35.666214731025484),
-            geometry_json='fjhirjykvbpbdewujicc',
-            impact_lower='ezkbsioizmiksgvmejls',
-            impact_upper='eetxqdlduzsulqxsyylw',
+            extent='htraloxhqxxixaoxntzt',
+            point='jviceiapoaaxeakoplai',
+            coordinate_lat=float(86.16736906823539),
+            coordinate_lon=float(9.013985534161161),
+            geometry_json='myqrmiktdwcjzkavflpk',
+            impact_lower='pbdhqhottrylhaanlzim',
+            impact_upper='qajnvqevccjvmlqahdkx',
             impact_symbols=None,
-            route_recommendation_json='qgcscwggntuzdxexeuoa',
+            route_recommendation_json='wwsjwgrbmtbxgiawejkz',
             footer_lines=None,
-            delay_minutes=int(5),
-            average_speed_kmh=int(17),
-            abnormal_traffic_type='hlpkihbtvshpdulfxsgq',
-            source_name='phzmnlahrnzifgppywuj'
+            delay_minutes=int(44),
+            average_speed_kmh=int(35),
+            abnormal_traffic_type='rbmgfehslnikfikqufio',
+            source_name='zmpimsmeiweqvxxkyjrr'
         )

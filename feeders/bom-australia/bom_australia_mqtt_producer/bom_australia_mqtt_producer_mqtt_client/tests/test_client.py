@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import bom_australia_mqtt_producer_data
 from bom_australia_mqtt_producer_data import Station
-from test_bom_australia_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from bom_australia_mqtt_producer_data import WeatherObservation
-from test_bom_australia_mqtt_producer_data_weatherobservation import Test_WeatherObservation
+from test_weatherobservation import Test_WeatherObservation
 from bom_australia_mqtt_producer_data import WarningBulletin
-from test_bom_australia_mqtt_producer_data_warningbulletin import Test_WarningBulletin
+from test_warningbulletin import Test_WarningBulletin
 from bom_australia_mqtt_producer_mqtt_client import AUGovBOMWeatherMqttMqttClient
 from bom_australia_mqtt_producer_mqtt_client import AUGovBOMWarningMqttMqttClient
 
@@ -94,6 +95,7 @@ async def test_au_gov_bom_weather_mqtt_au_gov_bom_weather_mqtt_station_py(mosqui
         await publisher_client.publish_au_gov_bom_weather_mqtt_station(
             topic=test_topic,
             station_wmo=f"test_station_wmo_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -159,6 +161,7 @@ async def test_au_gov_bom_weather_mqtt_au_gov_bom_weather_mqtt_weather_observati
         await publisher_client.publish_au_gov_bom_weather_mqtt_weather_observation(
             topic=test_topic,
             station_wmo=f"test_station_wmo_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -229,6 +232,7 @@ async def test_au_gov_bom_warning_mqtt_au_gov_bom_warning_mqtt_warning_bulletin_
             state=f"test_state_{i}",
             severity=f"test_severity_{i}",
             warning_id=f"test_warning_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

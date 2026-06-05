@@ -28,11 +28,11 @@ class Test_GenerationForecast(unittest.TestCase):
         Create instance of GenerationForecast for testing
         """
         instance = GenerationForecast(
-            inDomain='ddyvslaxocctkvayqsif',
-            quantity=float(17.701116391249705),
-            resolution='gxuvqlzuccpfmkdvupuv',
-            documentType='auwlmauaguezgucrcocb',
-            unitName='supepmimlexpvsstneyv'
+            inDomain='rtmdxudjzttfhmcnhtxz',
+            quantity=float(2.315869063843101),
+            resolution='fixphnvjdjuexvvigpez',
+            documentType='btpzhurddfjrmticvcsx',
+            unitName='qdjvrswbskwuemmwgvrw'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_GenerationForecast(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'ddyvslaxocctkvayqsif'
+        test_value = 'rtmdxudjzttfhmcnhtxz'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -49,7 +49,7 @@ class Test_GenerationForecast(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(17.701116391249705)
+        test_value = float(2.315869063843101)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -57,7 +57,7 @@ class Test_GenerationForecast(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'gxuvqlzuccpfmkdvupuv'
+        test_value = 'fixphnvjdjuexvvigpez'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -65,7 +65,7 @@ class Test_GenerationForecast(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'auwlmauaguezgucrcocb'
+        test_value = 'btpzhurddfjrmticvcsx'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -73,7 +73,7 @@ class Test_GenerationForecast(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'supepmimlexpvsstneyv'
+        test_value = 'qdjvrswbskwuemmwgvrw'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     

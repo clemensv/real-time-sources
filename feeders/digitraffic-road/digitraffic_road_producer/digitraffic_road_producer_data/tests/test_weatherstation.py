@@ -28,34 +28,34 @@ class Test_WeatherStation(unittest.TestCase):
         Create instance of WeatherStation for testing
         """
         instance = WeatherStation(
-            station_id=int(35),
-            name='ihficlkuolbzdtubrfkr',
-            names_fi='cpdkbznnylhigmnpyspq',
-            names_sv='xxrbcwtoebiuvdjcrcov',
-            names_en='joszvxjbibjttlvbusfo',
-            longitude=float(22.36188932627188),
-            latitude=float(75.7689500886018),
-            altitude=float(85.71589562186816),
-            municipality='duoloywyozscdsezdawa',
-            municipality_code=int(6),
-            province='ozxpmhuiyegvypzrrlfn',
-            province_code=int(56),
-            road_number=int(69),
-            road_section=int(1),
-            distance_from_section_start=int(88),
-            carriageway='grsbdcabeznvkgvoxhlc',
-            side='tjomvvdhaqawhwacecit',
-            contract_area='hvppggxusdfsrjmsdatm',
-            contract_area_code=int(57),
-            station_type='efkwxhbabcqwkxcmioic',
-            master=True,
-            collection_status='cybofqmnxufifiunykdz',
-            collection_interval=int(49),
-            state='mlbujtwdsdskvobhsqde',
-            start_time='xoxpfvpbcnzmmemciczp',
-            livi_id='odeiuktkxiypnvdsvpzn',
-            sensors=[int(23), int(90)],
-            data_updated_time='teqwrnbkdrpftvpptftk'
+            station_id=int(78),
+            name='dbcsvmeidpsmnssrtoqi',
+            names_fi='vjneyzcuqmsclvvadbxg',
+            names_sv='fsqogrvuuilvfrgpltwe',
+            names_en='ozzheacmsboowzqedzxo',
+            longitude=float(99.51189586662699),
+            latitude=float(87.44334418390378),
+            altitude=float(13.603522957088543),
+            municipality='iguudymcogjcmiuaoqsf',
+            municipality_code=int(38),
+            province='vrbpujnbphcfkiecnqul',
+            province_code=int(80),
+            road_number=int(21),
+            road_section=int(33),
+            distance_from_section_start=int(65),
+            carriageway='hxcldezevshppijwwapc',
+            side='vwfllwxxtvaouajdqkgl',
+            contract_area='lyltjaqgxvywuzaovffx',
+            contract_area_code=int(89),
+            station_type='evewgehkswpqcbseychn',
+            master=False,
+            collection_status='szshtupcxdbxmuzchxsd',
+            collection_interval=int(72),
+            state='xbdnfxfcuyiupuidkicr',
+            start_time='ldojsmdekfwjnllbgdmx',
+            livi_id='hhigafgikcqgpbjsryiu',
+            sensors=[int(71), int(8), int(37)],
+            data_updated_time='dgrikboivklmosowneer'
         )
         return instance
 
@@ -64,7 +64,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(35)
+        test_value = int(78)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -72,7 +72,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'ihficlkuolbzdtubrfkr'
+        test_value = 'dbcsvmeidpsmnssrtoqi'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -80,7 +80,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test names_fi property
         """
-        test_value = 'cpdkbznnylhigmnpyspq'
+        test_value = 'vjneyzcuqmsclvvadbxg'
         self.instance.names_fi = test_value
         self.assertEqual(self.instance.names_fi, test_value)
     
@@ -88,7 +88,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test names_sv property
         """
-        test_value = 'xxrbcwtoebiuvdjcrcov'
+        test_value = 'fsqogrvuuilvfrgpltwe'
         self.instance.names_sv = test_value
         self.assertEqual(self.instance.names_sv, test_value)
     
@@ -96,7 +96,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test names_en property
         """
-        test_value = 'joszvxjbibjttlvbusfo'
+        test_value = 'ozzheacmsboowzqedzxo'
         self.instance.names_en = test_value
         self.assertEqual(self.instance.names_en, test_value)
     
@@ -104,7 +104,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(22.36188932627188)
+        test_value = float(99.51189586662699)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -112,7 +112,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(75.7689500886018)
+        test_value = float(87.44334418390378)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -120,7 +120,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test altitude property
         """
-        test_value = float(85.71589562186816)
+        test_value = float(13.603522957088543)
         self.instance.altitude = test_value
         self.assertEqual(self.instance.altitude, test_value)
     
@@ -128,7 +128,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test municipality property
         """
-        test_value = 'duoloywyozscdsezdawa'
+        test_value = 'iguudymcogjcmiuaoqsf'
         self.instance.municipality = test_value
         self.assertEqual(self.instance.municipality, test_value)
     
@@ -136,7 +136,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test municipality_code property
         """
-        test_value = int(6)
+        test_value = int(38)
         self.instance.municipality_code = test_value
         self.assertEqual(self.instance.municipality_code, test_value)
     
@@ -144,7 +144,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'ozxpmhuiyegvypzrrlfn'
+        test_value = 'vrbpujnbphcfkiecnqul'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -152,7 +152,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test province_code property
         """
-        test_value = int(56)
+        test_value = int(80)
         self.instance.province_code = test_value
         self.assertEqual(self.instance.province_code, test_value)
     
@@ -160,7 +160,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test road_number property
         """
-        test_value = int(69)
+        test_value = int(21)
         self.instance.road_number = test_value
         self.assertEqual(self.instance.road_number, test_value)
     
@@ -168,7 +168,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test road_section property
         """
-        test_value = int(1)
+        test_value = int(33)
         self.instance.road_section = test_value
         self.assertEqual(self.instance.road_section, test_value)
     
@@ -176,7 +176,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test distance_from_section_start property
         """
-        test_value = int(88)
+        test_value = int(65)
         self.instance.distance_from_section_start = test_value
         self.assertEqual(self.instance.distance_from_section_start, test_value)
     
@@ -184,7 +184,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test carriageway property
         """
-        test_value = 'grsbdcabeznvkgvoxhlc'
+        test_value = 'hxcldezevshppijwwapc'
         self.instance.carriageway = test_value
         self.assertEqual(self.instance.carriageway, test_value)
     
@@ -192,7 +192,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test side property
         """
-        test_value = 'tjomvvdhaqawhwacecit'
+        test_value = 'vwfllwxxtvaouajdqkgl'
         self.instance.side = test_value
         self.assertEqual(self.instance.side, test_value)
     
@@ -200,7 +200,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test contract_area property
         """
-        test_value = 'hvppggxusdfsrjmsdatm'
+        test_value = 'lyltjaqgxvywuzaovffx'
         self.instance.contract_area = test_value
         self.assertEqual(self.instance.contract_area, test_value)
     
@@ -208,7 +208,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test contract_area_code property
         """
-        test_value = int(57)
+        test_value = int(89)
         self.instance.contract_area_code = test_value
         self.assertEqual(self.instance.contract_area_code, test_value)
     
@@ -216,7 +216,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test station_type property
         """
-        test_value = 'efkwxhbabcqwkxcmioic'
+        test_value = 'evewgehkswpqcbseychn'
         self.instance.station_type = test_value
         self.assertEqual(self.instance.station_type, test_value)
     
@@ -224,7 +224,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test master property
         """
-        test_value = True
+        test_value = False
         self.instance.master = test_value
         self.assertEqual(self.instance.master, test_value)
     
@@ -232,7 +232,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test collection_status property
         """
-        test_value = 'cybofqmnxufifiunykdz'
+        test_value = 'szshtupcxdbxmuzchxsd'
         self.instance.collection_status = test_value
         self.assertEqual(self.instance.collection_status, test_value)
     
@@ -240,7 +240,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test collection_interval property
         """
-        test_value = int(49)
+        test_value = int(72)
         self.instance.collection_interval = test_value
         self.assertEqual(self.instance.collection_interval, test_value)
     
@@ -248,7 +248,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'mlbujtwdsdskvobhsqde'
+        test_value = 'xbdnfxfcuyiupuidkicr'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -256,7 +256,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'xoxpfvpbcnzmmemciczp'
+        test_value = 'ldojsmdekfwjnllbgdmx'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -264,7 +264,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test livi_id property
         """
-        test_value = 'odeiuktkxiypnvdsvpzn'
+        test_value = 'hhigafgikcqgpbjsryiu'
         self.instance.livi_id = test_value
         self.assertEqual(self.instance.livi_id, test_value)
     
@@ -272,7 +272,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test sensors property
         """
-        test_value = [int(23), int(90)]
+        test_value = [int(71), int(8), int(37)]
         self.instance.sensors = test_value
         self.assertEqual(self.instance.sensors, test_value)
     
@@ -280,7 +280,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test data_updated_time property
         """
-        test_value = 'teqwrnbkdrpftvpptftk'
+        test_value = 'dgrikboivklmosowneer'
         self.instance.data_updated_time = test_value
         self.assertEqual(self.instance.data_updated_time, test_value)
     

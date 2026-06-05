@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import canada_aqhi_mqtt_producer_data
 from canada_aqhi_mqtt_producer_data import Community
-from test_canada_aqhi_mqtt_producer_data_community import Test_Community
+from test_community import Test_Community
 from canada_aqhi_mqtt_producer_data import Observation
-from test_canada_aqhi_mqtt_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from canada_aqhi_mqtt_producer_data import Forecast
-from test_canada_aqhi_mqtt_producer_data_forecast import Test_Forecast
+from test_forecast import Test_Forecast
 from canada_aqhi_mqtt_producer_mqtt_client import CaGcWeatherAqhiMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -94,6 +95,7 @@ async def test_ca_gc_weather_aqhi_mqtt_ca_gc_weather_aqhi_mqtt_community_py(mosq
             topic=test_topic,
             province=f"test_province_{i}",
             community_name=f"test_community_name_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -160,6 +162,7 @@ async def test_ca_gc_weather_aqhi_mqtt_ca_gc_weather_aqhi_mqtt_observation_py(mo
             topic=test_topic,
             province=f"test_province_{i}",
             community_name=f"test_community_name_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -226,6 +229,7 @@ async def test_ca_gc_weather_aqhi_mqtt_ca_gc_weather_aqhi_mqtt_forecast_py(mosqu
             topic=test_topic,
             province=f"test_province_{i}",
             community_name=f"test_community_name_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

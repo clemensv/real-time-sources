@@ -96,6 +96,8 @@ class MeasurementPoint:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class MeasurementPoint:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='zeqxdtoadasxyazoamon',
-            description='erzwmwrepzzlsducqvam',
-            element_type='pnmxnylgbjuvokuupuik',
-            subarea='mwbrxwvulewihpaobysz',
-            longitude=float(53.51104397739768),
-            latitude=float(49.97369191035178),
-            saturation_intensity=int(81)
+            sensor_id='jtgefrdxlbylbvkcugpn',
+            description='mxmwoflenpqqyqaqtbfj',
+            element_type='gailysbmwdeuukeaafss',
+            subarea='kiwelsbkbqyughvncuou',
+            longitude=float(34.00666693128935),
+            latitude=float(39.523665635639915),
+            saturation_intensity=int(94)
         )

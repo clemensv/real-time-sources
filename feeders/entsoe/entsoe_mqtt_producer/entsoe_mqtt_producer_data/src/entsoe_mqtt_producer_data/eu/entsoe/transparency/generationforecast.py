@@ -92,6 +92,8 @@ class GenerationForecast:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class GenerationForecast:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='ddyvslaxocctkvayqsif',
-            quantity=float(17.701116391249705),
-            resolution='gxuvqlzuccpfmkdvupuv',
-            documentType='auwlmauaguezgucrcocb',
-            unitName='supepmimlexpvsstneyv'
+            inDomain='rtmdxudjzttfhmcnhtxz',
+            quantity=float(2.315869063843101),
+            resolution='fixphnvjdjuexvvigpez',
+            documentType='btpzhurddfjrmticvcsx',
+            unitName='qdjvrswbskwuemmwgvrw'
         )

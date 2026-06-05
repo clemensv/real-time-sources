@@ -29,8 +29,8 @@ class Test_AffectedPrefecture(unittest.TestCase):
         Create instance of AffectedPrefecture for testing
         """
         instance = AffectedPrefecture(
-            code='vzxlfmdijfisslpwoijc',
-            max_intensity=MaxIntensityenum.INTENSITY_1
+            code='bfoykkwmaffidmxaghnc',
+            max_intensity=MaxIntensityenum.VALUE_1
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_AffectedPrefecture(unittest.TestCase):
         """
         Test code property
         """
-        test_value = 'vzxlfmdijfisslpwoijc'
+        test_value = 'bfoykkwmaffidmxaghnc'
         self.instance.code = test_value
         self.assertEqual(self.instance.code, test_value)
     
@@ -47,7 +47,7 @@ class Test_AffectedPrefecture(unittest.TestCase):
         """
         Test max_intensity property
         """
-        test_value = MaxIntensityenum.INTENSITY_1
+        test_value = MaxIntensityenum.VALUE_1
         self.instance.max_intensity = test_value
         self.assertEqual(self.instance.max_intensity, test_value)
     

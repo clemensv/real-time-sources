@@ -38,7 +38,7 @@ from billetto_producer_kafka_producer.producer import BillettoEventsAmqpEventPro
 
 # imports for the data classes for each event
 
-from billetto_producer_data.event import Event
+from billetto_producer_data import Event
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -63,7 +63,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _event = Event()
 
     # sends the 'Billetto.Events.Event' event to Kafka topic.
-    await billetto_events_event_producer.send_billetto_events_event(_event_id = 'TODO: replace me', _startdate = 'TODO: replace me', data = _event)
+    await billetto_events_event_producer.send_billetto_events_event(_event_id = 'TODO: replace me', data = _event)
     print(f"Sent 'Billetto.Events.Event' event: {_event.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -79,7 +79,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _event = Event()
 
     # sends the 'Billetto.Events.mqtt.Event' event to Kafka topic.
-    await billetto_events_mqtt_event_producer.send_billetto_events_mqtt_event(_event_id = 'TODO: replace me', _startdate = 'TODO: replace me', data = _event)
+    await billetto_events_mqtt_event_producer.send_billetto_events_mqtt_event(_event_id = 'TODO: replace me', data = _event)
     print(f"Sent 'Billetto.Events.mqtt.Event' event: {_event.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -95,14 +95,14 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _event = Event()
 
     # sends the 'Billetto.Events.amqp.Event' event to Kafka topic.
-    await billetto_events_amqp_event_producer.send_billetto_events_amqp_event(_event_id = 'TODO: replace me', _startdate = 'TODO: replace me', data = _event)
+    await billetto_events_amqp_event_producer.send_billetto_events_amqp_event(_event_id = 'TODO: replace me', data = _event)
     print(f"Sent 'Billetto.Events.amqp.Event' event: {_event.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

@@ -90,6 +90,8 @@ class GoesElectronFlux:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class GoesElectronFlux:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='wujfpzkqdpeflpnhvfsu',
-            satellite=int(69),
-            flux=float(51.5947934492757),
-            energy='fpuxxaaxulvbruamlomo'
+            time_tag='zstzyjzfbtjirsvnabss',
+            satellite=int(45),
+            flux=float(68.31957789683082),
+            energy='fjybuvxaftmddtybdccg'
         )

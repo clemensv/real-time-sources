@@ -20,16 +20,16 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from singapore_nea_producer_kafka_producer.producer import SGGovNEAWeatherEventProducer
 from singapore_nea_producer_data import Station
-from test_singapore_nea_producer_data_station import Test_Station
+from test_station import Test_Station
 from singapore_nea_producer_data import WeatherObservation
-from test_singapore_nea_producer_data_weatherobservation import Test_WeatherObservation
+from test_weatherobservation import Test_WeatherObservation
 from singapore_nea_producer_kafka_producer.producer import SGGovNEAAirQualityEventProducer
 from singapore_nea_producer_data import Region
-from test_singapore_nea_producer_data_region import Test_Region
+from test_region import Test_Region
 from singapore_nea_producer_data import PSIReading
-from test_singapore_nea_producer_data_psireading import Test_PSIReading
+from test_psireading import Test_PSIReading
 from singapore_nea_producer_data import PM25Reading
-from test_singapore_nea_producer_data_pm25reading import Test_PM25Reading
+from test_pm25reading import Test_PM25Reading
 from singapore_nea_producer_kafka_producer.producer import SGGovNEAWeatherMqttEventProducer
 from singapore_nea_producer_kafka_producer.producer import SGGovNEAAirQualityMqttEventProducer
 from singapore_nea_producer_kafka_producer.producer import SGGovNEAWeatherAmqpEventProducer
@@ -116,7 +116,8 @@ def test_sg_gov_nea_weather_sggovneaweatherstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_weather_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_weather_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -179,7 +180,8 @@ def test_sg_gov_nea_weather_sggovneaweatherweatherobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_weather_weather_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_weather_weather_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -242,7 +244,8 @@ def test_sg_gov_nea_airquality_sggovneaairqualityregion(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_air_quality_region(_region = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_air_quality_region(_region = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -305,7 +308,8 @@ def test_sg_gov_nea_airquality_sggovneaairqualitypsireading(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_air_quality_psireading(_region = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_air_quality_psireading(_region = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -368,7 +372,8 @@ def test_sg_gov_nea_airquality_sggovneaairqualitypm25reading(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_air_quality_pm25_reading(_region = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_air_quality_pm25_reading(_region = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -431,7 +436,8 @@ def test_sg_gov_nea_weather_mqtt_sggovneaweatherstationmqtt(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_weather_station_mqtt(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_weather_station_mqtt(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -492,7 +498,8 @@ def test_sg_gov_nea_weather_mqtt_sggovneaweatherweatherobservationmqtt(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_weather_weather_observation_mqtt(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_weather_weather_observation_mqtt(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -553,7 +560,8 @@ def test_sg_gov_nea_airquality_mqtt_sggovneaairqualityregionmqtt(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_air_quality_region_mqtt(_region = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_air_quality_region_mqtt(_region = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -614,7 +622,8 @@ def test_sg_gov_nea_airquality_mqtt_sggovneaairqualitypsireadingmqtt(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_air_quality_psireading_mqtt(_region = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_air_quality_psireading_mqtt(_region = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -675,7 +684,8 @@ def test_sg_gov_nea_airquality_mqtt_sggovneaairqualitypm25readingmqtt(kafka_emul
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_air_quality_pm25_reading_mqtt(_region = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_air_quality_pm25_reading_mqtt(_region = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -736,7 +746,8 @@ def test_sg_gov_nea_weather_amqp_sggovneaweatherstationamqp(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_weather_station_amqp(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_weather_station_amqp(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -797,7 +808,8 @@ def test_sg_gov_nea_weather_amqp_sggovneaweatherweatherobservationamqp(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_weather_weather_observation_amqp(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_weather_weather_observation_amqp(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -858,7 +870,8 @@ def test_sg_gov_nea_airquality_amqp_sggovneaairqualityregionamqp(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_air_quality_region_amqp(_region = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_air_quality_region_amqp(_region = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -919,7 +932,8 @@ def test_sg_gov_nea_airquality_amqp_sggovneaairqualitypsireadingamqp(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_air_quality_psireading_amqp(_region = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_air_quality_psireading_amqp(_region = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -980,7 +994,8 @@ def test_sg_gov_nea_airquality_amqp_sggovneaairqualitypm25readingamqp(kafka_emul
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_sg_gov_nea_air_quality_pm25_reading_amqp(_region = f'test_{i}', data = event_data)
+        producer_instance.send_sg_gov_nea_air_quality_pm25_reading_amqp(_region = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

@@ -30,10 +30,10 @@ class Test_DailyIndex(unittest.TestCase):
         Create instance of DailyIndex for testing
         """
         instance = DailyIndex(
-            site_code='fbfdwrulwmrzzgdcunoy',
-            bulletin_date='ajvwzsnrcsqheubgnytj',
-            species_code='blcjfibaqkxleqociehd',
-            air_quality_index=int(74),
+            site_code='lsmdhuncyrtkfosbxyno',
+            bulletin_date='bajeqjkmiwtzuzctkcfy',
+            species_code='jcrqsqosidfenemxrhnu',
+            air_quality_index=int(14),
             air_quality_band=AirQualityBandenum.Low,
             index_source=IndexSourceenum.Measurement
         )
@@ -44,7 +44,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test site_code property
         """
-        test_value = 'fbfdwrulwmrzzgdcunoy'
+        test_value = 'lsmdhuncyrtkfosbxyno'
         self.instance.site_code = test_value
         self.assertEqual(self.instance.site_code, test_value)
     
@@ -52,7 +52,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test bulletin_date property
         """
-        test_value = 'ajvwzsnrcsqheubgnytj'
+        test_value = 'bajeqjkmiwtzuzctkcfy'
         self.instance.bulletin_date = test_value
         self.assertEqual(self.instance.bulletin_date, test_value)
     
@@ -60,7 +60,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test species_code property
         """
-        test_value = 'blcjfibaqkxleqociehd'
+        test_value = 'jcrqsqosidfenemxrhnu'
         self.instance.species_code = test_value
         self.assertEqual(self.instance.species_code, test_value)
     
@@ -68,7 +68,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test air_quality_index property
         """
-        test_value = int(74)
+        test_value = int(14)
         self.instance.air_quality_index = test_value
         self.assertEqual(self.instance.air_quality_index, test_value)
     

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import usgs_nwis_wq_mqtt_producer_data
 from usgs_nwis_wq_mqtt_producer_data import MonitoringSite
-from test_usgs_nwis_wq_mqtt_producer_data_monitoringsite import Test_MonitoringSite
+from test_monitoringsite import Test_MonitoringSite
 from usgs_nwis_wq_mqtt_producer_data import WaterQualityReading
-from test_usgs_nwis_wq_mqtt_producer_data_waterqualityreading import Test_WaterQualityReading
+from test_waterqualityreading import Test_WaterQualityReading
 from usgs_nwis_wq_mqtt_producer_mqtt_client import USGSWaterQualitySitesMqttMqttClient
 from usgs_nwis_wq_mqtt_producer_mqtt_client import USGSWaterQualityReadingsMqttMqttClient
 
@@ -93,6 +94,7 @@ async def test_usgs_waterquality_sites_mqtt_usgs_water_quality_sites_mqtt_monito
             topic=test_topic,
             source_uri=f"test_source_uri_{i}",
             site_number=f"test_site_number_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -163,6 +165,7 @@ async def test_usgs_waterquality_readings_mqtt_usgs_water_quality_readings_mqtt_
             source_uri=f"test_source_uri_{i}",
             site_number=f"test_site_number_{i}",
             parameter_code=f"test_parameter_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

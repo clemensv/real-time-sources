@@ -110,6 +110,8 @@ class BuoyOceanographicObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -177,17 +179,17 @@ class BuoyOceanographicObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='isbqwkajsbvgrnfufguu',
+            station_id='arzbbmtwkqetswpqitvy',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            depth=float(28.012342395880317),
-            ocean_temperature=float(25.624952003800438),
-            conductivity=float(59.83602412363488),
-            salinity=float(96.07030226143746),
-            oxygen_saturation=float(14.812014833873299),
-            oxygen_concentration=float(68.29957649839704),
-            chlorophyll_concentration=float(78.64047947003276),
-            turbidity=float(92.87174835876499),
-            ph=float(84.60273955208159),
-            redox_potential=float(60.425124834786004),
-            region='vujdnjynruiswontaugv'
+            depth=float(68.36277670384288),
+            ocean_temperature=float(0.3115007481425569),
+            conductivity=float(12.243703596061906),
+            salinity=float(72.79126687196006),
+            oxygen_saturation=float(49.75492584053253),
+            oxygen_concentration=float(59.115025436871846),
+            chlorophyll_concentration=float(26.265737565880777),
+            turbidity=float(13.578791920425992),
+            ph=float(88.31404227015757),
+            redox_potential=float(72.63004046347002),
+            region='omaocxihnbqttddbqmvl'
         )

@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - HKGovEPDAQHIEventDispatcher
+3. [Quick Start](#quick-start)    - HKGovEPDAQHIEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    HKGovEPDAQHIMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    HKGovEPDAQHIAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - HKGovEPDAQHIProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- HKGovEPDAQHIMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- HKGovEPDAQHIAmqpProducersolution for event-driven applications.
 
 
 
@@ -147,7 +159,8 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `HK.Gov.EPD.AQHI.Station`:
+Asynchronous handler hook for `HK.Gov.EPD.AQHI.Station`: A reference record published by Hong Kong's Environmental
+Protection Department. It lets consumers label, group, and route the live measurement or forecast events.
 
 ## Generated Producer Classes
 
@@ -190,6 +203,80 @@ hk_gov_epd_aqhi_dispatcher.hk_gov_epd_aqhi_station_async = hk_gov_epd_aqhi_stati
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIMqttProducer- `data`: The event data of type `hongkong_epd_producer_data.Station`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_mqtt_dispatcher.hk_gov_epd_aqhi_station_async = hk_gov_epd_aqhi_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIAmqpProducer- `data`: The event data of type `hongkong_epd_producer_data.Station`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_amqp_dispatcher.hk_gov_epd_aqhi_station_async = hk_gov_epd_aqhi_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -209,7 +296,9 @@ Awaitable[None]]
 
 ```
 
-Asynchronous handler hook for `HK.Gov.EPD.AQHI.AQHIReading`:
+Asynchronous handler hook for `HK.Gov.EPD.AQHI.AQHIReading`: A current environmental measurement from Hong Kong's
+Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream
+feed reports a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -252,6 +341,80 @@ hk_gov_epd_aqhi_dispatcher.hk_gov_epd_aqhi_aqhireading_async = hk_gov_epd_aqhi_a
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIMqttProducer- `data`: The event data of type `hongkong_epd_producer_data.AQHIReading`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_aqhireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: AQHIReading) -> None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_mqtt_dispatcher.hk_gov_epd_aqhi_aqhireading_async = hk_gov_epd_aqhi_aqhireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIAmqpProducer- `data`: The event data of type `hongkong_epd_producer_data.AQHIReading`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_aqhireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: AQHIReading) -> None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_amqp_dispatcher.hk_gov_epd_aqhi_aqhireading_async = hk_gov_epd_aqhi_aqhireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -288,7 +451,8 @@ async def send_hk_gov_epd_aqhi_station(
 
 
 
-Send a single `HK.Gov.EPD.AQHI.Station` message.Args:
+Send a single `HK.Gov.EPD.AQHI.Station` message. A reference record published by Hong Kong's Environmental Protection
+Department. It lets consumers label, group, and route the live measurement or forecast events.Args:
 
 - `record`: The Kafka record.
 
@@ -391,7 +555,9 @@ async def send_hk_gov_epd_aqhi_aqhireading(
 
 
 
-Send a single `HK.Gov.EPD.AQHI.AQHIReading` message.Args:
+Send a single `HK.Gov.EPD.AQHI.AQHIReading` message. A current environmental measurement from Hong Kong's Environmental
+Protection Department. It carries air-quality health index and pollutant measurements when the upstream feed reports a
+new or refreshed value.Args:
 
 - `record`: The Kafka record.
 
@@ -449,6 +615,1168 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_hk_gov_epd_aqhi_aqhireading_batch(```
+
+    messages=[
+
+        AQHIReading(...),Initializes the runner with a Kafka consumer.
+
+        AQHIReading(...),
+
+        AQHIReading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### HKGovEPDAQHIMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`HKGovEPDAQHIMqttEventDispatcher` handles events for the HK.Gov.EPD.AQHI.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from hongkong_epd_producer import HKGovEPDAQHIProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = HKGovEPDAQHIProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_hk_gov_epd_aqhi_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The HKGovEPDAQHIMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = HKGovEPDAQHIProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `hk_gov_epd_aqhi_mqtt_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'hk_gov_epd_aqhi_mqtt_station_async:  Callable[[ConsumerRecord, CloudEvent, Station],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `HK.Gov.EPD.AQHI.mqtt.Station`: A reference record published by Hong Kong's Environmental
+Protection Department. It lets consumers label, group, and route the live measurement or forecast events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIProducer- `data`: The event data of type `hongkong_epd_producer_data.Station`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_dispatcher.hk_gov_epd_aqhi_mqtt_station_async = hk_gov_epd_aqhi_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIMqttProducer- `data`: The event data of type `hongkong_epd_producer_data.Station`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_mqtt_dispatcher.hk_gov_epd_aqhi_mqtt_station_async = hk_gov_epd_aqhi_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIAmqpProducer- `data`: The event data of type `hongkong_epd_producer_data.Station`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_amqp_dispatcher.hk_gov_epd_aqhi_mqtt_station_async = hk_gov_epd_aqhi_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `hk_gov_epd_aqhi_mqtt_aqhireading_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'hk_gov_epd_aqhi_mqtt_aqhireading_async:  Callable[[ConsumerRecord, CloudEvent,
+AQHIReading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `HK.Gov.EPD.AQHI.mqtt.AQHIReading`: A current environmental measurement from Hong Kong's
+Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream
+feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIProducer- `data`: The event data of type `hongkong_epd_producer_data.AQHIReading`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_mqtt_aqhireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: AQHIReading) ->
+None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_dispatcher.hk_gov_epd_aqhi_mqtt_aqhireading_async = hk_gov_epd_aqhi_mqtt_aqhireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIMqttProducer- `data`: The event data of type `hongkong_epd_producer_data.AQHIReading`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_mqtt_aqhireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: AQHIReading) ->
+None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_mqtt_dispatcher.hk_gov_epd_aqhi_mqtt_aqhireading_async = hk_gov_epd_aqhi_mqtt_aqhireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIAmqpProducer- `data`: The event data of type `hongkong_epd_producer_data.AQHIReading`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_mqtt_aqhireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: AQHIReading) ->
+None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_amqp_dispatcher.hk_gov_epd_aqhi_mqtt_aqhireading_async = hk_gov_epd_aqhi_mqtt_aqhireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_hk_gov_epd_aqhi_mqtt_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_hk_gov_epd_aqhi_mqtt_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `HK.Gov.EPD.AQHI.mqtt.Station` message. A reference record published by Hong Kong's Environmental
+Protection Department. It lets consumers label, group, and route the live measurement or forecast events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_hk_gov_epd_aqhi_mqtt_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `HK.Gov.EPD.AQHI.mqtt.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_hk_gov_epd_aqhi_mqtt_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_hk_gov_epd_aqhi_mqtt_aqhireading`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_hk_gov_epd_aqhi_mqtt_aqhireading(
+
+    self,##### `_process_event`
+
+    data: AQHIReading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `HK.Gov.EPD.AQHI.mqtt.AQHIReading` message. A current environmental measurement from Hong Kong's
+Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream
+feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AQHIReading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_hk_gov_epd_aqhi_mqtt_aqhireading(
+
+    data=AQHIReading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `HK.Gov.EPD.AQHI.mqtt.AQHIReading` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_hk_gov_epd_aqhi_mqtt_aqhireading_batch(```
+
+    messages=[
+
+        AQHIReading(...),Initializes the runner with a Kafka consumer.
+
+        AQHIReading(...),
+
+        AQHIReading(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### HKGovEPDAQHIAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`HKGovEPDAQHIAmqpEventDispatcher` handles events for the HK.Gov.EPD.AQHI.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from hongkong_epd_producer import HKGovEPDAQHIProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = HKGovEPDAQHIProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_hk_gov_epd_aqhi_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The HKGovEPDAQHIAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = HKGovEPDAQHIProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `hk_gov_epd_aqhi_amqp_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'hk_gov_epd_aqhi_amqp_station_async:  Callable[[ConsumerRecord, CloudEvent, Station],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `HK.Gov.EPD.AQHI.amqp.Station`: A reference record published by Hong Kong's Environmental
+Protection Department. It lets consumers label, group, and route the live measurement or forecast events.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIProducer- `data`: The event data of type `hongkong_epd_producer_data.Station`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_dispatcher.hk_gov_epd_aqhi_amqp_station_async = hk_gov_epd_aqhi_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIMqttProducer- `data`: The event data of type `hongkong_epd_producer_data.Station`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_mqtt_dispatcher.hk_gov_epd_aqhi_amqp_station_async = hk_gov_epd_aqhi_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIAmqpProducer- `data`: The event data of type `hongkong_epd_producer_data.Station`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_amqp_dispatcher.hk_gov_epd_aqhi_amqp_station_async = hk_gov_epd_aqhi_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `hk_gov_epd_aqhi_amqp_aqhireading_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'hk_gov_epd_aqhi_amqp_aqhireading_async:  Callable[[ConsumerRecord, CloudEvent,
+AQHIReading], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `HK.Gov.EPD.AQHI.amqp.AQHIReading`: A current environmental measurement from Hong Kong's
+Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream
+feed reports a new or refreshed value.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIProducer- `data`: The event data of type `hongkong_epd_producer_data.AQHIReading`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_amqp_aqhireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: AQHIReading) ->
+None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_dispatcher.hk_gov_epd_aqhi_amqp_aqhireading_async = hk_gov_epd_aqhi_amqp_aqhireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIMqttProducer- `data`: The event data of type `hongkong_epd_producer_data.AQHIReading`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_amqp_aqhireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: AQHIReading) ->
+None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_mqtt_dispatcher.hk_gov_epd_aqhi_amqp_aqhireading_async = hk_gov_epd_aqhi_amqp_aqhireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### HKGovEPDAQHIAmqpProducer- `data`: The event data of type `hongkong_epd_producer_data.AQHIReading`.
+
+
+
+Producer for `HK.Gov.EPD.AQHI.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def hk_gov_epd_aqhi_amqp_aqhireading_event(record: ConsumerRecord, cloud_event: CloudEvent, data: AQHIReading) ->
+None:
+
+```python    # Process the event data
+
+HKGovEPDAQHIAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+hk_gov_epd_aqhi_amqp_dispatcher.hk_gov_epd_aqhi_amqp_aqhireading_async = hk_gov_epd_aqhi_amqp_aqhireading_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_hk_gov_epd_aqhi_amqp_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_hk_gov_epd_aqhi_amqp_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `HK.Gov.EPD.AQHI.amqp.Station` message. A reference record published by Hong Kong's Environmental
+Protection Department. It lets consumers label, group, and route the live measurement or forecast events.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_hk_gov_epd_aqhi_amqp_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `HK.Gov.EPD.AQHI.amqp.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_hk_gov_epd_aqhi_amqp_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_hk_gov_epd_aqhi_amqp_aqhireading`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_hk_gov_epd_aqhi_amqp_aqhireading(
+
+    self,##### `_process_event`
+
+    data: AQHIReading,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `HK.Gov.EPD.AQHI.amqp.AQHIReading` message. A current environmental measurement from Hong Kong's
+Environmental Protection Department. It carries air-quality health index and pollutant measurements when the upstream
+feed reports a new or refreshed value.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `AQHIReading`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_hk_gov_epd_aqhi_amqp_aqhireading(
+
+    data=AQHIReading(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `HK.Gov.EPD.AQHI.amqp.AQHIReading` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_hk_gov_epd_aqhi_amqp_aqhireading_batch(```
 
     messages=[
 

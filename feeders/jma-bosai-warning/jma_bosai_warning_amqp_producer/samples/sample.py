@@ -9,8 +9,8 @@ from jma_bosai_warning_amqp_producer_amqp_producer import *
 
 def main():
     """Main function"""
-
-
+    
+    
     # Create producer
     print("Creating AMQP producer...")
     producer = JPJMAWarningAmqpProducer(
@@ -22,10 +22,10 @@ def main():
         content_mode='structured',  # or 'binary' for CloudEvents
         format_type='application/json'
     )
-
+    
     try:
-
-
+        
+        
         # Send Office message
         print("Sending Office message...")
         # TODO: Create a Office instance with actual data
@@ -35,9 +35,9 @@ def main():
         #     content_type="application/json"
         # )
         # print("Office message sent successfully!")
-
-
-
+        
+        
+        
         # Send WeatherWarning message
         print("Sending WeatherWarning message...")
         # TODO: Create a WeatherWarning instance with actual data
@@ -47,9 +47,9 @@ def main():
         #     content_type="application/json"
         # )
         # print("WeatherWarning message sent successfully!")
-
-
-
+        
+        
+        
         # Send TsunamiAlert message
         print("Sending TsunamiAlert message...")
         # TODO: Create a TsunamiAlert instance with actual data
@@ -59,19 +59,19 @@ def main():
         #     content_type="application/json"
         # )
         # print("TsunamiAlert message sent successfully!")
-
-
+        
+        
         print("\nAll messages sent successfully!")
-
+        
     except Exception as e:
         print(f"Error sending messages: {e}", file=sys.stderr)
         return 1
     finally:
         producer.close()
         print("Producer closed")
-
+    
     return 0
-
+    
 
 if __name__ == "__main__":
     sys.exit(main())

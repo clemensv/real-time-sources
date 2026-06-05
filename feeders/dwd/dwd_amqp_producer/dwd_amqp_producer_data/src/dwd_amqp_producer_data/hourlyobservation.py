@@ -96,6 +96,8 @@ class HourlyObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class HourlyObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='bbztsrqhgbtygdkcnztm',
-            timestamp='olwauiukgwhabjlmqbwz',
-            quality_level=int(99),
-            parameter='uizmkubiaqdhbgxaaupu',
-            value=float(18.29489336752914),
-            unit='rublzbwrhvlwqzqvlgon',
-            state='ucjaeufgmgoplrxaokxi'
+            station_id='pjkgegcrjaqjesstwqaz',
+            timestamp='pdligmmpmxaxvcmyovzq',
+            quality_level=int(13),
+            parameter='ersfyfpzyihpnuyycjix',
+            value=float(90.9430523489215),
+            unit='lmjoyjllbrsnmmixqpsl',
+            state='bynpekhhytvpinzutwat'
         )

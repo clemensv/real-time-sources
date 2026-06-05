@@ -28,13 +28,13 @@ class Test_WaterLevelReading(unittest.TestCase):
         Create instance of WaterLevelReading for testing
         """
         instance = WaterLevelReading(
-            station_ref='otfhnkszpbzykheycalt',
-            station_name='pgzqkfathdfnxvsmihil',
-            sensor_ref='gbokbarvfwcbsenbhgsj',
-            value=float(21.306696378119796),
-            datetime='hqzuhalycivwvpsvquqj',
-            err_code=int(32),
-            basin='mmpftifhsqfjnvwwzsng'
+            station_ref='usklyfpnyvlfvwqhwjap',
+            station_name='rmcwuisbnwnakvjznmjh',
+            sensor_ref='cnzhoyoknqowduolzkhz',
+            value=float(97.98107944219912),
+            datetime='ykupztehasjmlyjrriki',
+            err_code=int(4),
+            basin='ndouecggtwoscurswfkg'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test station_ref property
         """
-        test_value = 'otfhnkszpbzykheycalt'
+        test_value = 'usklyfpnyvlfvwqhwjap'
         self.instance.station_ref = test_value
         self.assertEqual(self.instance.station_ref, test_value)
     
@@ -51,7 +51,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'pgzqkfathdfnxvsmihil'
+        test_value = 'rmcwuisbnwnakvjznmjh'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -59,7 +59,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test sensor_ref property
         """
-        test_value = 'gbokbarvfwcbsenbhgsj'
+        test_value = 'cnzhoyoknqowduolzkhz'
         self.instance.sensor_ref = test_value
         self.assertEqual(self.instance.sensor_ref, test_value)
     
@@ -67,7 +67,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(21.306696378119796)
+        test_value = float(97.98107944219912)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -75,7 +75,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'hqzuhalycivwvpsvquqj'
+        test_value = 'ykupztehasjmlyjrriki'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -83,7 +83,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test err_code property
         """
-        test_value = int(32)
+        test_value = int(4)
         self.instance.err_code = test_value
         self.assertEqual(self.instance.err_code, test_value)
     
@@ -91,19 +91,10 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test basin property
         """
-        test_value = 'mmpftifhsqfjnvwwzsng'
+        test_value = 'ndouecggtwoscurswfkg'
         self.instance.basin = test_value
         self.assertEqual(self.instance.basin, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = WaterLevelReading.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

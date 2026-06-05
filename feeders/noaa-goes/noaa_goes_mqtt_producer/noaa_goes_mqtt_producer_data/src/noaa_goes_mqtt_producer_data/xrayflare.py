@@ -106,6 +106,8 @@ class XrayFlare:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -173,16 +175,16 @@ class XrayFlare:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='yiijrdenvczxypkcdqth',
-            begin_time='xekoojioorhvfsqdokgk',
-            begin_class='tojgsjcycckhybhdsjgz',
-            max_time='gejnxfvpkbwheypfflcd',
-            max_class='rmndbyklgfnbopcxtnka',
-            max_xrlong=float(29.983259408219),
-            max_ratio=float(29.884006787119766),
-            max_ratio_time='eouevtthftkpgpwobxee',
-            current_int_xrlong=float(67.57544121730777),
-            end_time='jnkdiwjzfdznwzptqnpq',
-            end_class='towbuvuzzcnqxptbqsrs',
-            satellite=int(97)
+            time_tag='fzsktjvjbupvwebhcmfn',
+            begin_time='fooeyoxwkzkufbvrjyow',
+            begin_class='otrjjbzofyyhgexbdjgm',
+            max_time='zhaezmwjtoujhtxhfhoy',
+            max_class='aidwakpxfaytnnnmlxfw',
+            max_xrlong=float(82.50663040131624),
+            max_ratio=float(2.4757407581097124),
+            max_ratio_time='egaxqsygjdcvbdnhbkpb',
+            current_int_xrlong=float(5.5548626290016445),
+            end_time='mzjblyknzxltciqpmvkx',
+            end_class='rekdnnyvmltuckmkpcqz',
+            satellite=int(4)
         )

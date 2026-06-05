@@ -1,6 +1,6 @@
 from .regionenum import RegionEnum
+from .trafficflowstation import TrafficFlowStation
 from .flowreadingenum import FlowReadingenum
 from .trafficflowreading import TrafficFlowReading
-from .trafficflowstation import TrafficFlowStation
 
-__all__ = ["RegionEnum", "FlowReadingenum", "TrafficFlowReading", "TrafficFlowStation"]
+__all__ = ["RegionEnum", "TrafficFlowStation", "FlowReadingenum", "TrafficFlowReading"]

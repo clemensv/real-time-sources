@@ -9,11 +9,11 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from nws_alerts_mqtt_producer_data.weatheralert import WeatherAlert
-from nws_alerts_mqtt_producer_data.certaintyenum import CertaintyEnum
+from nws_alerts_mqtt_producer_data.urgencyenum import UrgencyEnum
 from nws_alerts_mqtt_producer_data.messagetypeenum import MessageTypeenum
 from nws_alerts_mqtt_producer_data.severityenum import SeverityEnum
-from nws_alerts_mqtt_producer_data.urgencyenum import UrgencyEnum
 from nws_alerts_mqtt_producer_data.statusenum import StatusEnum
+from nws_alerts_mqtt_producer_data.certaintyenum import CertaintyEnum
 import datetime
 
 
@@ -34,10 +34,10 @@ class Test_WeatherAlert(unittest.TestCase):
         Create instance of WeatherAlert for testing
         """
         instance = WeatherAlert(
-            alert_id='rxkgsebuqdjokrglnvts',
-            area_desc='tusfqdzfwkqemfhmnyoi',
-            same_codes='qmksrcluihqshaothiih',
-            ugc_codes='tdfxwlayslmfmrjtxyrl',
+            alert_id='ucphzepuhtidehlsfbpd',
+            area_desc='zdrxtroqsanrtrdxmelr',
+            same_codes='spxsgyrpwsipgxizzpkb',
+            ugc_codes='jfaayziwkfphzqcmhfvi',
             sent=datetime.datetime.now(datetime.timezone.utc),
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
@@ -45,24 +45,24 @@ class Test_WeatherAlert(unittest.TestCase):
             ends=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             message_type=MessageTypeenum.Alert,
-            category='mhlseqizcqyfgllzggxa',
+            category='zyxutahjdkzcrcofavbs',
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
             urgency=UrgencyEnum.Immediate,
-            event='xzwfqmlbheemmbjqbkdm',
-            sender='aglnpydyemrtlsdpaxhq',
-            sender_name='jyocjfseyfvwbwrsjmkw',
-            headline='dnermgdgnnainktnkyjj',
-            description='xvvlsachkghryxvgcfcd',
-            instruction='ljftjkcpcfwwxirmmpwo',
-            response='bbkhzraevwvyqbykktnf',
-            scope='ikawawxdeasjsltljluu',
-            code='onpukgmkpnoljotdnmix',
-            nws_headline='pnuucwqsjlwamaellsof',
-            vtec='fzqvxlqcltqsyvfibgfn',
-            web='umuitwasbenpqsrudxsq',
-            state='jwzbekuzzskwiiatfncm',
-            event_type='eppawiavoklkqiqwgruc'
+            event='hbpcufwpocuoyfubuhlc',
+            sender='yeswoevqzhpxkrcwaceh',
+            sender_name='qltavjlkyxhbjqreyepm',
+            headline='haljquhsuwifafknvlsz',
+            description='xuetvwpnhhcxikbwerdu',
+            instruction='lbdefadqntebglrpqbal',
+            response='ybeyydpyyyqmnbkxsdxp',
+            scope='nikgikokkqlwqbnpvbbb',
+            code='bcnrnqsdfnxiemuuxunc',
+            nws_headline='jbvfymxktpiuwqzkgtkf',
+            vtec='hmtmbundlznvaprssymc',
+            web='xteranczipvsmceijbjr',
+            state='uiovhdwsqilamnacbthf',
+            event_type='tkdfpksljzonleqwplkd'
         )
         return instance
 
@@ -71,7 +71,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test alert_id property
         """
-        test_value = 'rxkgsebuqdjokrglnvts'
+        test_value = 'ucphzepuhtidehlsfbpd'
         self.instance.alert_id = test_value
         self.assertEqual(self.instance.alert_id, test_value)
     
@@ -79,7 +79,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test area_desc property
         """
-        test_value = 'tusfqdzfwkqemfhmnyoi'
+        test_value = 'zdrxtroqsanrtrdxmelr'
         self.instance.area_desc = test_value
         self.assertEqual(self.instance.area_desc, test_value)
     
@@ -87,7 +87,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test same_codes property
         """
-        test_value = 'qmksrcluihqshaothiih'
+        test_value = 'spxsgyrpwsipgxizzpkb'
         self.instance.same_codes = test_value
         self.assertEqual(self.instance.same_codes, test_value)
     
@@ -95,7 +95,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test ugc_codes property
         """
-        test_value = 'tdfxwlayslmfmrjtxyrl'
+        test_value = 'jfaayziwkfphzqcmhfvi'
         self.instance.ugc_codes = test_value
         self.assertEqual(self.instance.ugc_codes, test_value)
     
@@ -159,7 +159,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test category property
         """
-        test_value = 'mhlseqizcqyfgllzggxa'
+        test_value = 'zyxutahjdkzcrcofavbs'
         self.instance.category = test_value
         self.assertEqual(self.instance.category, test_value)
     
@@ -191,7 +191,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test event property
         """
-        test_value = 'xzwfqmlbheemmbjqbkdm'
+        test_value = 'hbpcufwpocuoyfubuhlc'
         self.instance.event = test_value
         self.assertEqual(self.instance.event, test_value)
     
@@ -199,7 +199,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test sender property
         """
-        test_value = 'aglnpydyemrtlsdpaxhq'
+        test_value = 'yeswoevqzhpxkrcwaceh'
         self.instance.sender = test_value
         self.assertEqual(self.instance.sender, test_value)
     
@@ -207,7 +207,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test sender_name property
         """
-        test_value = 'jyocjfseyfvwbwrsjmkw'
+        test_value = 'qltavjlkyxhbjqreyepm'
         self.instance.sender_name = test_value
         self.assertEqual(self.instance.sender_name, test_value)
     
@@ -215,7 +215,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test headline property
         """
-        test_value = 'dnermgdgnnainktnkyjj'
+        test_value = 'haljquhsuwifafknvlsz'
         self.instance.headline = test_value
         self.assertEqual(self.instance.headline, test_value)
     
@@ -223,7 +223,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'xvvlsachkghryxvgcfcd'
+        test_value = 'xuetvwpnhhcxikbwerdu'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -231,7 +231,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test instruction property
         """
-        test_value = 'ljftjkcpcfwwxirmmpwo'
+        test_value = 'lbdefadqntebglrpqbal'
         self.instance.instruction = test_value
         self.assertEqual(self.instance.instruction, test_value)
     
@@ -239,7 +239,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test response property
         """
-        test_value = 'bbkhzraevwvyqbykktnf'
+        test_value = 'ybeyydpyyyqmnbkxsdxp'
         self.instance.response = test_value
         self.assertEqual(self.instance.response, test_value)
     
@@ -247,7 +247,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test scope property
         """
-        test_value = 'ikawawxdeasjsltljluu'
+        test_value = 'nikgikokkqlwqbnpvbbb'
         self.instance.scope = test_value
         self.assertEqual(self.instance.scope, test_value)
     
@@ -255,7 +255,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test code property
         """
-        test_value = 'onpukgmkpnoljotdnmix'
+        test_value = 'bcnrnqsdfnxiemuuxunc'
         self.instance.code = test_value
         self.assertEqual(self.instance.code, test_value)
     
@@ -263,7 +263,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test nws_headline property
         """
-        test_value = 'pnuucwqsjlwamaellsof'
+        test_value = 'jbvfymxktpiuwqzkgtkf'
         self.instance.nws_headline = test_value
         self.assertEqual(self.instance.nws_headline, test_value)
     
@@ -271,7 +271,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test vtec property
         """
-        test_value = 'fzqvxlqcltqsyvfibgfn'
+        test_value = 'hmtmbundlznvaprssymc'
         self.instance.vtec = test_value
         self.assertEqual(self.instance.vtec, test_value)
     
@@ -279,7 +279,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test web property
         """
-        test_value = 'umuitwasbenpqsrudxsq'
+        test_value = 'xteranczipvsmceijbjr'
         self.instance.web = test_value
         self.assertEqual(self.instance.web, test_value)
     
@@ -287,7 +287,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'jwzbekuzzskwiiatfncm'
+        test_value = 'uiovhdwsqilamnacbthf'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -295,7 +295,7 @@ class Test_WeatherAlert(unittest.TestCase):
         """
         Test event_type property
         """
-        test_value = 'eppawiavoklkqiqwgruc'
+        test_value = 'tkdfpksljzonleqwplkd'
         self.instance.event_type = test_value
         self.assertEqual(self.instance.event_type, test_value)
     

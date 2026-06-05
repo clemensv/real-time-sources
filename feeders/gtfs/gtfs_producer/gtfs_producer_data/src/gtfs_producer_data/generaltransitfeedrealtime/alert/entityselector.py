@@ -93,6 +93,8 @@ class EntitySelector:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -160,9 +162,9 @@ class EntitySelector:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='zoixjpzbqgfakcfdwfzl',
-            route_id='biqvjftwrssiclssqkii',
-            route_type=int(81),
+            agency_id='patpuoaaouakdqqkiesm',
+            route_id='udiytyarjtsaqadzvqkw',
+            route_type=int(47),
             trip=None,
-            stop_id='mkswqunbwizgiheuwnvz'
+            stop_id='xczecbwhldfukcddhysu'
         )

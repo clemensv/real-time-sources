@@ -1,3 +1,1 @@
-from .producer import AUGovEmergencyWildfiresEventProducer
-
-__all__ = ["AUGovEmergencyWildfiresEventProducer"]
+""" __init__.py """

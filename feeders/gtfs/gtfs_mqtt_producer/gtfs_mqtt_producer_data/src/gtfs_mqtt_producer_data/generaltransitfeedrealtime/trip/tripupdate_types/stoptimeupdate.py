@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from typing import Any
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeevent import StopTimeEvent
+from typing import Any
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -94,6 +94,8 @@ class StopTimeUpdate:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,8 +163,8 @@ class StopTimeUpdate:
             An instance of the dataclass.
         """
         return cls(
-            stop_sequence=int(6),
-            stop_id='aqbwntjwaibrtmfxxshf',
+            stop_sequence=int(96),
+            stop_id='vrpclqqqwokvsrzwxqnv',
             arrival=None,
             departure=None,
             schedule_relationship=None

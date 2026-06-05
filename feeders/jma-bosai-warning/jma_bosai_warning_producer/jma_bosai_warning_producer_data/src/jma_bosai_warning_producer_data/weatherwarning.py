@@ -12,9 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_warning_producer_data.severityenum import SeverityEnum
-from jma_bosai_warning_producer_data.warningitem import WarningItem
 from jma_bosai_warning_producer_data.eventenum import EventEnum
+from jma_bosai_warning_producer_data.warningitem import WarningItem
+from jma_bosai_warning_producer_data.severityenum import SeverityEnum
 import datetime
 
 
@@ -109,6 +109,8 @@ class WeatherWarning:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -176,15 +178,15 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            prefecture='necwagtziheewporfjmz',
-            severity=SeverityEnum.info,
-            office_code='ksimyuxhyotjwoempkxf',
-            area_code='rniwlsvkpbsmextzflyy',
+            prefecture='qtaqbbdizcjvvmwzdgcl',
+            severity=SeverityEnum.advisory,
+            office_code='qqfhpnzvynwtkuxtgudj',
+            area_code='osnrhxkkohpqdrtwellf',
             event=EventEnum.info,
-            area_name='efspkyfiqvmmjustzurq',
+            area_name='vlbxpzfgvjfhlqdklgak',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            headline_text='brevbzlhqcecxmigwlxs',
-            warnings=[None, None],
-            time_defines=[datetime.datetime.now(datetime.timezone.utc)]
+            headline_text='xazckxrnkwszsqctubbe',
+            warnings=[None],
+            time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )

@@ -110,6 +110,8 @@ class MountainPassCondition:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -177,18 +179,18 @@ class MountainPassCondition:
             An instance of the dataclass.
         """
         return cls(
-            mountain_pass_id='iqrlywcllqeirvyqdcrk',
-            mountain_pass_name='ugmsgplugkkboknapqkz',
-            elevation_in_feet=int(13),
-            latitude=float(49.15246977843131),
-            longitude=float(96.1329417377088),
-            temperature_in_fahrenheit=int(46),
-            weather_condition='btawqbqxsekzgfsfzcdj',
-            road_condition='ztzajzncfrperjkezskg',
-            travel_advisory_active=True,
-            restriction_one_direction='ntekairzeffcokzhzity',
-            restriction_one_text='tolpofedkwynzowvbunw',
-            restriction_two_direction='euplfauqictbijlleqxo',
-            restriction_two_text='oaxgrjtrsokrgzfocqvi',
-            date_updated='nfaulagnjgtqxtiabtck'
+            mountain_pass_id='kwtmtegiwjuswjmvvyjb',
+            mountain_pass_name='vtexoiwuqzbipqaroubc',
+            elevation_in_feet=int(49),
+            latitude=float(31.670689325230374),
+            longitude=float(50.71170348881518),
+            temperature_in_fahrenheit=int(43),
+            weather_condition='pgbvlqyulzsuiygwheei',
+            road_condition='fxlkbzchjajycrwepssz',
+            travel_advisory_active=False,
+            restriction_one_direction='maebvyjygozgmmkeammg',
+            restriction_one_text='nromaoxtirvunhwokbyu',
+            restriction_two_direction='npqgbszoycscvbpvquqd',
+            restriction_two_text='rbmumzzeikuxqctisdxe',
+            date_updated='dujqlqxgzbhwdijcjhop'
         )

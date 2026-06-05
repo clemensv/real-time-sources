@@ -1,12 +1,58 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
 import json
+import re
 import uuid
 import typing
-from datetime import datetime
+from datetime import datetime, timezone
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 from singapore_nea_producer_data import Station
 from singapore_nea_producer_data import WeatherObservation
 from singapore_nea_producer_data import Region
@@ -44,7 +90,15 @@ class SGGovNEAWeatherEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_sg_gov_nea_weather_station(self,_station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_sg_gov_nea_weather_station(self,_station_id : str, data: Station, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.Weather.Station' event to the Kafka topic
 
@@ -52,6 +106,7 @@ class SGGovNEAWeatherEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -63,6 +118,7 @@ class SGGovNEAWeatherEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -70,13 +126,13 @@ class SGGovNEAWeatherEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_sg_gov_nea_weather_weather_observation(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
+    def send_sg_gov_nea_weather_weather_observation(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.Weather.WeatherObservation' event to the Kafka topic
 
@@ -84,6 +140,7 @@ class SGGovNEAWeatherEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WeatherObservation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WeatherObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -95,6 +152,7 @@ class SGGovNEAWeatherEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -102,7 +160,7 @@ class SGGovNEAWeatherEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -190,7 +248,15 @@ class SGGovNEAAirQualityEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_sg_gov_nea_air_quality_region(self,_region : str, data: Region, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_sg_gov_nea_air_quality_region(self,_region : str, data: Region, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.AirQuality.Region' event to the Kafka topic
 
@@ -198,6 +264,7 @@ class SGGovNEAAirQualityEventProducer:
             _region(str):  Value for placeholder region in attribute subject
             data: (Region): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Region], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{region}'
@@ -209,6 +276,7 @@ class SGGovNEAAirQualityEventProducer:
              "subject":"{region}".format(region = _region)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -216,13 +284,13 @@ class SGGovNEAAirQualityEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_sg_gov_nea_air_quality_psireading(self,_region : str, data: PSIReading, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PSIReading], str]=None) -> None:
+    def send_sg_gov_nea_air_quality_psireading(self,_region : str, data: PSIReading, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PSIReading], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.AirQuality.PSIReading' event to the Kafka topic
 
@@ -230,6 +298,7 @@ class SGGovNEAAirQualityEventProducer:
             _region(str):  Value for placeholder region in attribute subject
             data: (PSIReading): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, PSIReading], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{region}'
@@ -241,6 +310,7 @@ class SGGovNEAAirQualityEventProducer:
              "subject":"{region}".format(region = _region)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -248,13 +318,13 @@ class SGGovNEAAirQualityEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_sg_gov_nea_air_quality_pm25_reading(self,_region : str, data: PM25Reading, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PM25Reading], str]=None) -> None:
+    def send_sg_gov_nea_air_quality_pm25_reading(self,_region : str, data: PM25Reading, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PM25Reading], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.AirQuality.PM25Reading' event to the Kafka topic
 
@@ -262,6 +332,7 @@ class SGGovNEAAirQualityEventProducer:
             _region(str):  Value for placeholder region in attribute subject
             data: (PM25Reading): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, PM25Reading], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{region}'
@@ -273,6 +344,7 @@ class SGGovNEAAirQualityEventProducer:
              "subject":"{region}".format(region = _region)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -280,7 +352,7 @@ class SGGovNEAAirQualityEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -368,7 +440,15 @@ class SGGovNEAWeatherMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_sg_gov_nea_weather_station_mqtt(self,_station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_sg_gov_nea_weather_station_mqtt(self,_station_id : str, data: Station, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.Weather.Station.mqtt' event to the Kafka topic
 
@@ -376,6 +456,7 @@ class SGGovNEAWeatherMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -386,6 +467,7 @@ class SGGovNEAWeatherMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -393,13 +475,13 @@ class SGGovNEAWeatherMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_sg_gov_nea_weather_weather_observation_mqtt(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
+    def send_sg_gov_nea_weather_weather_observation_mqtt(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.Weather.WeatherObservation.mqtt' event to the Kafka topic
 
@@ -407,6 +489,7 @@ class SGGovNEAWeatherMqttEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WeatherObservation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WeatherObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -417,6 +500,7 @@ class SGGovNEAWeatherMqttEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -424,7 +508,7 @@ class SGGovNEAWeatherMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -512,7 +596,15 @@ class SGGovNEAAirQualityMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_sg_gov_nea_air_quality_region_mqtt(self,_region : str, data: Region, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_sg_gov_nea_air_quality_region_mqtt(self,_region : str, data: Region, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.AirQuality.Region.mqtt' event to the Kafka topic
 
@@ -520,6 +612,7 @@ class SGGovNEAAirQualityMqttEventProducer:
             _region(str):  Value for placeholder region in attribute subject
             data: (Region): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Region], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -530,6 +623,7 @@ class SGGovNEAAirQualityMqttEventProducer:
              "subject":"{region}".format(region = _region)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -537,13 +631,13 @@ class SGGovNEAAirQualityMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_sg_gov_nea_air_quality_psireading_mqtt(self,_region : str, data: PSIReading, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PSIReading], str]=None) -> None:
+    def send_sg_gov_nea_air_quality_psireading_mqtt(self,_region : str, data: PSIReading, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PSIReading], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.AirQuality.PSIReading.mqtt' event to the Kafka topic
 
@@ -551,6 +645,7 @@ class SGGovNEAAirQualityMqttEventProducer:
             _region(str):  Value for placeholder region in attribute subject
             data: (PSIReading): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, PSIReading], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -561,6 +656,7 @@ class SGGovNEAAirQualityMqttEventProducer:
              "subject":"{region}".format(region = _region)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -568,13 +664,13 @@ class SGGovNEAAirQualityMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_sg_gov_nea_air_quality_pm25_reading_mqtt(self,_region : str, data: PM25Reading, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PM25Reading], str]=None) -> None:
+    def send_sg_gov_nea_air_quality_pm25_reading_mqtt(self,_region : str, data: PM25Reading, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PM25Reading], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.AirQuality.PM25Reading.mqtt' event to the Kafka topic
 
@@ -582,6 +678,7 @@ class SGGovNEAAirQualityMqttEventProducer:
             _region(str):  Value for placeholder region in attribute subject
             data: (PM25Reading): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, PM25Reading], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -592,6 +689,7 @@ class SGGovNEAAirQualityMqttEventProducer:
              "subject":"{region}".format(region = _region)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -599,7 +697,7 @@ class SGGovNEAAirQualityMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -687,7 +785,15 @@ class SGGovNEAWeatherAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_sg_gov_nea_weather_station_amqp(self,_station_id : str, data: Station, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_sg_gov_nea_weather_station_amqp(self,_station_id : str, data: Station, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Station], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.Weather.Station.amqp' event to the Kafka topic
 
@@ -695,6 +801,7 @@ class SGGovNEAWeatherAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (Station): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Station], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -705,6 +812,7 @@ class SGGovNEAWeatherAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -712,13 +820,13 @@ class SGGovNEAWeatherAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_sg_gov_nea_weather_weather_observation_amqp(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
+    def send_sg_gov_nea_weather_weather_observation_amqp(self,_station_id : str, data: WeatherObservation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherObservation], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.Weather.WeatherObservation.amqp' event to the Kafka topic
 
@@ -726,6 +834,7 @@ class SGGovNEAWeatherAmqpEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (WeatherObservation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WeatherObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -736,6 +845,7 @@ class SGGovNEAWeatherAmqpEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -743,7 +853,7 @@ class SGGovNEAWeatherAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -831,7 +941,15 @@ class SGGovNEAAirQualityAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_sg_gov_nea_air_quality_region_amqp(self,_region : str, data: Region, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_sg_gov_nea_air_quality_region_amqp(self,_region : str, data: Region, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.AirQuality.Region.amqp' event to the Kafka topic
 
@@ -839,6 +957,7 @@ class SGGovNEAAirQualityAmqpEventProducer:
             _region(str):  Value for placeholder region in attribute subject
             data: (Region): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Region], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -849,6 +968,7 @@ class SGGovNEAAirQualityAmqpEventProducer:
              "subject":"{region}".format(region = _region)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -856,13 +976,13 @@ class SGGovNEAAirQualityAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_sg_gov_nea_air_quality_psireading_amqp(self,_region : str, data: PSIReading, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PSIReading], str]=None) -> None:
+    def send_sg_gov_nea_air_quality_psireading_amqp(self,_region : str, data: PSIReading, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PSIReading], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.AirQuality.PSIReading.amqp' event to the Kafka topic
 
@@ -870,6 +990,7 @@ class SGGovNEAAirQualityAmqpEventProducer:
             _region(str):  Value for placeholder region in attribute subject
             data: (PSIReading): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, PSIReading], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -880,6 +1001,7 @@ class SGGovNEAAirQualityAmqpEventProducer:
              "subject":"{region}".format(region = _region)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -887,13 +1009,13 @@ class SGGovNEAAirQualityAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_sg_gov_nea_air_quality_pm25_reading_amqp(self,_region : str, data: PM25Reading, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PM25Reading], str]=None) -> None:
+    def send_sg_gov_nea_air_quality_pm25_reading_amqp(self,_region : str, data: PM25Reading, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PM25Reading], str]=None) -> None:
         """
         Sends the 'SG.Gov.NEA.AirQuality.PM25Reading.amqp' event to the Kafka topic
 
@@ -901,6 +1023,7 @@ class SGGovNEAAirQualityAmqpEventProducer:
             _region(str):  Value for placeholder region in attribute subject
             data: (PM25Reading): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, PM25Reading], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -911,6 +1034,7 @@ class SGGovNEAAirQualityAmqpEventProducer:
              "subject":"{region}".format(region = _region)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -918,7 +1042,7 @@ class SGGovNEAAirQualityAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()

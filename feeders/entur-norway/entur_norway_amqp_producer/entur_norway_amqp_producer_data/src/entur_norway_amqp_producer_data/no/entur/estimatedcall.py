@@ -112,6 +112,8 @@ class EstimatedCall:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -179,18 +181,18 @@ class EstimatedCall:
             An instance of the dataclass.
         """
         return cls(
-            stop_point_ref='yzomaaakcmxddytciaqs',
-            order=int(62),
-            stop_point_name='edxgfnoiibzgajbrmuml',
+            stop_point_ref='hcawufcchjcnulkqvmtg',
+            order=int(52),
+            stop_point_name='hjttwlaowvbczsnzhscl',
             aimed_arrival_time=datetime.datetime.now(datetime.timezone.utc),
             expected_arrival_time=datetime.datetime.now(datetime.timezone.utc),
             aimed_departure_time=datetime.datetime.now(datetime.timezone.utc),
             expected_departure_time=datetime.datetime.now(datetime.timezone.utc),
-            arrival_status='qtctddurubexbtnevkjy',
-            departure_status='mpzepnipeoxpdewgnqyv',
-            departure_platform_name='bszlimvhxkpwmwcyjyic',
-            arrival_boarding_activity='ogxepuqmoyuzlmniuolb',
-            departure_boarding_activity='lhawlgcbfpqxpwgntlyd',
+            arrival_status='eszeblvutksvsnljpbdu',
+            departure_status='zzitlayssengbmwoxrtt',
+            departure_platform_name='favcarscxnobswaaeccn',
+            arrival_boarding_activity='atxfxgknopvtedrjrkhg',
+            departure_boarding_activity='hlbwnbfqbcawcgybskkj',
             is_cancellation=True,
-            is_extra_stop=True
+            is_extra_stop=False
         )

@@ -5,6 +5,7 @@
 Tests for digitraffic_road_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../digitraffic_road_amqp_producer_data/src')))
@@ -25,19 +27,19 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from digitraffic_road_amqp_producer_amqp_producer import *
 from digitraffic_road_amqp_producer_data import TmsSensorData
-from test_digitraffic_road_amqp_producer_data_tmssensordata import Test_TmsSensorData
+from test_tmssensordata import Test_TmsSensorData
 from digitraffic_road_amqp_producer_data import WeatherSensorData
-from test_digitraffic_road_amqp_producer_data_weathersensordata import Test_WeatherSensorData
+from test_weathersensordata import Test_WeatherSensorData
 from digitraffic_road_amqp_producer_data import TrafficMessage
-from test_digitraffic_road_amqp_producer_data_trafficmessage import Test_TrafficMessage
+from test_trafficmessage import Test_TrafficMessage
 from digitraffic_road_amqp_producer_data import MaintenanceTracking
-from test_digitraffic_road_amqp_producer_data_maintenancetracking import Test_MaintenanceTracking
+from test_maintenancetracking import Test_MaintenanceTracking
 from digitraffic_road_amqp_producer_data import TmsStation
-from test_digitraffic_road_amqp_producer_data_tmsstation import Test_TmsStation
+from test_tmsstation import Test_TmsStation
 from digitraffic_road_amqp_producer_data import WeatherStation
-from test_digitraffic_road_amqp_producer_data_weatherstation import Test_WeatherStation
+from test_weatherstation import Test_WeatherStation
 from digitraffic_road_amqp_producer_data import MaintenanceTaskType
-from test_digitraffic_road_amqp_producer_data_maintenancetasktype import Test_MaintenanceTaskType
+from test_maintenancetasktype import Test_MaintenanceTaskType
 
 
 
@@ -243,6 +245,45 @@ class TestFiDigitrafficRoadAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(FiDigitrafficRoadAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_tms_sensor_data(self, artemis_container):
         """Send and receive a TmsSensorData message via ActiveMQ Artemis."""
@@ -270,6 +311,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _sensor_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -277,6 +319,7 @@ class TestFiDigitrafficRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -300,8 +343,43 @@ class TestFiDigitrafficRoadAmqpProducer:
                 assert received.subject == "{station_id}/{sensor_id}".format(station_id="value", sensor_id="value")
                 assert properties.get('station_id') == "{station_id}".format(station_id="value")
                 assert properties.get('sensor_id') == "{sensor_id}".format(sensor_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}/{sensor_id}".format(station_id="value", sensor_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_tms_sensor_data_single_fresh_connection(self, artemis_container):
+        """Send exactly one TmsSensorData message on a fresh producer connection."""
+        payload = Test_TmsSensorData.create_instance()
+
+        producer = FiDigitrafficRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_tms_sensor_data(
+                data=payload,
+                _station_id="value",
+                _sensor_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.TmsSensorData'
+        assert received.body is not None
+        assert received.subject == "{station_id}/{sensor_id}".format(station_id="value", sensor_id="value")
+        assert properties.get('station_id') == "{station_id}".format(station_id="value")
+        assert properties.get('sensor_id') == "{sensor_id}".format(sensor_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}/{sensor_id}".format(station_id="value", sensor_id="value"))[:128]
     
     def test_send_weather_sensor_data(self, artemis_container):
         """Send and receive a WeatherSensorData message via ActiveMQ Artemis."""
@@ -329,6 +407,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _sensor_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -336,6 +415,7 @@ class TestFiDigitrafficRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -359,8 +439,43 @@ class TestFiDigitrafficRoadAmqpProducer:
                 assert received.subject == "{station_id}/{sensor_id}".format(station_id="value", sensor_id="value")
                 assert properties.get('station_id') == "{station_id}".format(station_id="value")
                 assert properties.get('sensor_id') == "{sensor_id}".format(sensor_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}/{sensor_id}".format(station_id="value", sensor_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_weather_sensor_data_single_fresh_connection(self, artemis_container):
+        """Send exactly one WeatherSensorData message on a fresh producer connection."""
+        payload = Test_WeatherSensorData.create_instance()
+
+        producer = FiDigitrafficRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_weather_sensor_data(
+                data=payload,
+                _station_id="value",
+                _sensor_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.WeatherSensorData'
+        assert received.body is not None
+        assert received.subject == "{station_id}/{sensor_id}".format(station_id="value", sensor_id="value")
+        assert properties.get('station_id') == "{station_id}".format(station_id="value")
+        assert properties.get('sensor_id') == "{sensor_id}".format(sensor_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}/{sensor_id}".format(station_id="value", sensor_id="value"))[:128]
     
     def test_send_traffic_announcement(self, artemis_container):
         """Send and receive a TrafficAnnouncement message via ActiveMQ Artemis."""
@@ -387,6 +502,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                 producer.send_traffic_announcement(
                     data=payload,
                     _situation_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -394,6 +510,7 @@ class TestFiDigitrafficRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -415,8 +532,40 @@ class TestFiDigitrafficRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{situation_id}".format(situation_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_traffic_announcement_single_fresh_connection(self, artemis_container):
+        """Send exactly one TrafficAnnouncement message on a fresh producer connection."""
+        payload = Test_TrafficMessage.create_instance()
+
+        producer = FiDigitrafficRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_traffic_announcement(
+                data=payload,
+                _situation_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.TrafficAnnouncement'
+        assert received.body is not None
+        assert received.subject == "{situation_id}".format(situation_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
     
     def test_send_road_work(self, artemis_container):
         """Send and receive a RoadWork message via ActiveMQ Artemis."""
@@ -443,6 +592,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                 producer.send_road_work(
                     data=payload,
                     _situation_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -450,6 +600,7 @@ class TestFiDigitrafficRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -471,8 +622,40 @@ class TestFiDigitrafficRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{situation_id}".format(situation_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_road_work_single_fresh_connection(self, artemis_container):
+        """Send exactly one RoadWork message on a fresh producer connection."""
+        payload = Test_TrafficMessage.create_instance()
+
+        producer = FiDigitrafficRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_road_work(
+                data=payload,
+                _situation_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.RoadWork'
+        assert received.body is not None
+        assert received.subject == "{situation_id}".format(situation_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
     
     def test_send_weight_restriction(self, artemis_container):
         """Send and receive a WeightRestriction message via ActiveMQ Artemis."""
@@ -499,6 +682,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                 producer.send_weight_restriction(
                     data=payload,
                     _situation_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -506,6 +690,7 @@ class TestFiDigitrafficRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -527,8 +712,40 @@ class TestFiDigitrafficRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{situation_id}".format(situation_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_weight_restriction_single_fresh_connection(self, artemis_container):
+        """Send exactly one WeightRestriction message on a fresh producer connection."""
+        payload = Test_TrafficMessage.create_instance()
+
+        producer = FiDigitrafficRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_weight_restriction(
+                data=payload,
+                _situation_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.WeightRestriction'
+        assert received.body is not None
+        assert received.subject == "{situation_id}".format(situation_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
     
     def test_send_exempted_transport(self, artemis_container):
         """Send and receive a ExemptedTransport message via ActiveMQ Artemis."""
@@ -555,6 +772,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                 producer.send_exempted_transport(
                     data=payload,
                     _situation_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -562,6 +780,7 @@ class TestFiDigitrafficRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -583,8 +802,40 @@ class TestFiDigitrafficRoadAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{situation_id}".format(situation_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_exempted_transport_single_fresh_connection(self, artemis_container):
+        """Send exactly one ExemptedTransport message on a fresh producer connection."""
+        payload = Test_TrafficMessage.create_instance()
+
+        producer = FiDigitrafficRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_exempted_transport(
+                data=payload,
+                _situation_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.ExemptedTransport'
+        assert received.body is not None
+        assert received.subject == "{situation_id}".format(situation_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
     
     def test_send_maintenance_tracking(self, artemis_container):
         """Send and receive a MaintenanceTracking message via ActiveMQ Artemis."""
@@ -611,6 +862,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                 producer.send_maintenance_tracking(
                     data=payload,
                     _domain="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -618,6 +870,7 @@ class TestFiDigitrafficRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -640,8 +893,41 @@ class TestFiDigitrafficRoadAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{domain}".format(domain="value")
                 assert properties.get('domain') == "{domain}".format(domain="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{domain}".format(domain="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_maintenance_tracking_single_fresh_connection(self, artemis_container):
+        """Send exactly one MaintenanceTracking message on a fresh producer connection."""
+        payload = Test_MaintenanceTracking.create_instance()
+
+        producer = FiDigitrafficRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_maintenance_tracking(
+                data=payload,
+                _domain="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.MaintenanceTracking'
+        assert received.body is not None
+        assert received.subject == "{domain}".format(domain="value")
+        assert properties.get('domain') == "{domain}".format(domain="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{domain}".format(domain="value"))[:128]
     
     def test_send_tms_station(self, artemis_container):
         """Send and receive a TmsStation message via ActiveMQ Artemis."""
@@ -668,6 +954,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                 producer.send_tms_station(
                     data=payload,
                     _station_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -675,6 +962,7 @@ class TestFiDigitrafficRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -697,8 +985,41 @@ class TestFiDigitrafficRoadAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('station_id') == "{station_id}".format(station_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_tms_station_single_fresh_connection(self, artemis_container):
+        """Send exactly one TmsStation message on a fresh producer connection."""
+        payload = Test_TmsStation.create_instance()
+
+        producer = FiDigitrafficRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_tms_station(
+                data=payload,
+                _station_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.TmsStation'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('station_id') == "{station_id}".format(station_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_weather_station(self, artemis_container):
         """Send and receive a WeatherStation message via ActiveMQ Artemis."""
@@ -725,6 +1046,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                 producer.send_weather_station(
                     data=payload,
                     _station_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -732,6 +1054,7 @@ class TestFiDigitrafficRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -754,8 +1077,41 @@ class TestFiDigitrafficRoadAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('station_id') == "{station_id}".format(station_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_weather_station_single_fresh_connection(self, artemis_container):
+        """Send exactly one WeatherStation message on a fresh producer connection."""
+        payload = Test_WeatherStation.create_instance()
+
+        producer = FiDigitrafficRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_weather_station(
+                data=payload,
+                _station_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.WeatherStation'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('station_id') == "{station_id}".format(station_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_maintenance_task_type(self, artemis_container):
         """Send and receive a MaintenanceTaskType message via ActiveMQ Artemis."""
@@ -782,6 +1138,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                 producer.send_maintenance_task_type(
                     data=payload,
                     _task_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -789,6 +1146,7 @@ class TestFiDigitrafficRoadAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -811,6 +1169,39 @@ class TestFiDigitrafficRoadAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{task_id}".format(task_id="value")
                 assert properties.get('task_id') == "{task_id}".format(task_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{task_id}".format(task_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_maintenance_task_type_single_fresh_connection(self, artemis_container):
+        """Send exactly one MaintenanceTaskType message on a fresh producer connection."""
+        payload = Test_MaintenanceTaskType.create_instance()
+
+        producer = FiDigitrafficRoadAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_maintenance_task_type(
+                data=payload,
+                _task_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.MaintenanceTaskType'
+        assert received.body is not None
+        assert received.subject == "{task_id}".format(task_id="value")
+        assert properties.get('task_id') == "{task_id}".format(task_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{task_id}".format(task_id="value"))[:128]
 

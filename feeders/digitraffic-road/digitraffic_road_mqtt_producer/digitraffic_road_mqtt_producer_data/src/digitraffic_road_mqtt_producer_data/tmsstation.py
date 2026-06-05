@@ -138,6 +138,8 @@ class TmsStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -205,32 +207,32 @@ class TmsStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(35),
-            name='mgzguqpkdqayaxrptsyd',
-            tms_number=int(71),
-            names_fi='tutbiebbawmslokczpae',
-            names_sv='svsikbjsqarkoefvqcww',
-            names_en='vprhkajmbkolhjzqaenp',
-            longitude=float(52.43042515998687),
-            latitude=float(63.45769766918943),
-            altitude=float(56.64742729965633),
-            municipality='wyxtvadbcwgetylpxhbg',
-            municipality_code=int(84),
-            province='dtgwueixntfvzwcnhbur',
-            province_code=int(13),
-            road_number=int(89),
-            road_section=int(11),
-            distance_from_section_start=int(92),
-            carriageway='gfotahafccpyxswwtmko',
-            side='qailqazzkoaludvybtig',
-            station_type='oilmoojjcdrxpcmsomqj',
-            collection_status='zemuzaknadhhjtudeppw',
-            state='neaqsguhanxeruevcgxz',
-            free_flow_speed_1=float(38.49016632673118),
-            free_flow_speed_2=float(73.58898758677358),
-            bearing=int(89),
-            start_time='njdjejdakjwkbzjivrji',
-            livi_id='nskookymlqwxwzopimde',
-            sensors=[int(25), int(29), int(23)],
-            data_updated_time='sgdpvnejjcbyfnnfbhxr'
+            station_id=int(0),
+            name='gfjsefbnrhdybxghqjql',
+            tms_number=int(9),
+            names_fi='vjsnwdvfvoodinjlqago',
+            names_sv='fxwgnyhpbhnjuodaczff',
+            names_en='afexnzqjsgbbisaqoodw',
+            longitude=float(45.971333505618176),
+            latitude=float(17.12977324799042),
+            altitude=float(5.501289806150222),
+            municipality='dusyeidgkzpjtltwplap',
+            municipality_code=int(3),
+            province='rhgefqdxrmlsauclnufq',
+            province_code=int(80),
+            road_number=int(23),
+            road_section=int(63),
+            distance_from_section_start=int(23),
+            carriageway='ilyhtfxjmkmpxyexoawu',
+            side='rrejikxxifbibxfzjqzv',
+            station_type='bnbqtoppvaaooznrxspp',
+            collection_status='wzcidiicbfocerovkkfn',
+            state='xkvrbhimmldejoovdaer',
+            free_flow_speed_1=float(7.825802162315199),
+            free_flow_speed_2=float(40.895479919308606),
+            bearing=int(79),
+            start_time='xarzwyylstrjdhoidawo',
+            livi_id='hbefhiiwcdhneozrkcpv',
+            sensors=[int(76), int(67)],
+            data_updated_time='uqujawevsrklyqtznabw'
         )

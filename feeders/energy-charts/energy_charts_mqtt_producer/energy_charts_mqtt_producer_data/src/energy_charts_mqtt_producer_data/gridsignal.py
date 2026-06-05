@@ -100,6 +100,8 @@ class GridSignal:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,10 +169,10 @@ class GridSignal:
             An instance of the dataclass.
         """
         return cls(
-            country='nmotagwcdnfpthkuavxs',
+            country='xkvmhtulbujhhbdakljt',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(20),
-            signal=int(31),
-            renewable_share_pct=float(53.809501578335116),
-            substitute=False
+            unix_seconds=int(19),
+            signal=int(72),
+            renewable_share_pct=float(43.47159101091837),
+            substitute=True
         )

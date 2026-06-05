@@ -109,6 +109,8 @@ class Routes:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -176,17 +178,17 @@ class Routes:
             An instance of the dataclass.
         """
         return cls(
-            routeId='bpagokvirgcsjwbjndfk',
-            agencyId='xvnqlankugulxglfeeuq',
-            routeShortName='jyxdwwxanuhvunghkdbv',
-            routeLongName='hkjdsdwbpzhsewcszyxi',
-            routeDesc='phddsvvdombaffujpwlg',
+            routeId='fksyugydlemxzxqmejhr',
+            agencyId='focefdafzernjpondphi',
+            routeShortName='xsbbsiaehapttsmgycjq',
+            routeLongName='gsycpllvulefqmajeteh',
+            routeDesc='ljnjpyfdlqojkhiiiaaz',
             routeType=None,
-            routeUrl='srctvrdggmluxluprcdk',
-            routeColor='kumsnlfzffqrwvpxzdbb',
-            routeTextColor='kzgcieaovksiwbjwhvid',
-            routeSortOrder=int(72),
+            routeUrl='zxclgxaaromaduaorgmy',
+            routeColor='laeochmeyadfuwasijwz',
+            routeTextColor='wtboovznggyidjlonznv',
+            routeSortOrder=int(29),
             continuousPickup=None,
             continuousDropOff=None,
-            networkId='yarzeuqbcrwxneuxhcto'
+            networkId='duijnlfuobbnaselkxxo'
         )

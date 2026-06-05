@@ -20,7 +20,7 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from blitzortung_producer_kafka_producer.producer import BlitzortungLightningEventProducer
 from blitzortung_producer_data import LightningStroke
-from test_blitzortung_producer_data_lightningstroke import Test_LightningStroke
+from test_lightningstroke import Test_LightningStroke
 from blitzortung_producer_kafka_producer.producer import BlitzortungLightningMqttEventProducer
 from blitzortung_producer_kafka_producer.producer import BlitzortungLightningAmqpEventProducer
 

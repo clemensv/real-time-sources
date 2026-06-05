@@ -18,7 +18,7 @@ from kystverket_ais_producer_data.msgtypeenum import MsgTypeenum
 @dataclass
 class AidToNavigation:
     """
-    Aid-to-Navigation report (Type 21) projected onto the UNS axes.
+    A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
     
     Attributes:
         mmsi (str)
@@ -109,6 +109,8 @@ class AidToNavigation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -176,17 +178,17 @@ class AidToNavigation:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='ggsadlvyqxjrolpoovlj',
-            flag='fjkdwdgraxabjhxezimy',
-            ship_type='ntjtgimnpfnqdeomvvkc',
-            geohash5='zoqemofnykudcedtvkna',
+            mmsi='ymcpscgqisbuooitydmf',
+            flag='pwciuibscnsjwxbkives',
+            ship_type='nzodnljjtbumtefhkube',
+            geohash5='iedxcskzsffihccjubgr',
             msg_type=MsgTypeenum.position_report,
-            name='lqfoinbouoidzfdgchqj',
-            aid_type=int(96),
-            latitude=float(53.87349212328557),
-            longitude=float(75.83176118480073),
-            position_accuracy=int(77),
-            timestamp='heyxtdjzcohtkthygvvi',
-            station_id='epcobpnjkfeeszvgxrqr',
-            ais_msg_type=int(24)
+            name='jomturljbpvzxvcjqzax',
+            aid_type=int(66),
+            latitude=float(75.18932461117164),
+            longitude=float(84.78947712059392),
+            position_accuracy=int(39),
+            timestamp='wfuhohejwbaxxarjemel',
+            station_id='jqfdpogwtcfdekzstjxb',
+            ais_msg_type=int(72)
         )

@@ -29,23 +29,23 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         Create instance of MonitoredVehicleJourney for testing
         """
         instance = MonitoredVehicleJourney(
-            service_journey_id='qztcjbckwhmfcxxcslqa',
-            operating_day='ninzgsmootlpxgsxdemh',
+            service_journey_id='ndewfcbtrmdymegykbcs',
+            operating_day='uzypnzzhklacedlhckvb',
             recorded_at_time=datetime.datetime.now(datetime.timezone.utc),
-            line_ref='mrltufuzjjeqdflqegaz',
-            operator_ref='vimssmvhtxgtvjoelprw',
-            direction_ref='pbvopyhkodcwxiornjdl',
-            vehicle_mode='fommvbabffamvufbeoqo',
-            published_line_name='sqvyxfnhinwcjfgmxdtl',
-            origin_name='tlvzltcbzpopyyfmiwri',
-            destination_name='xsmqibhhnelhltmaownq',
-            vehicle_ref='horijhbgkfzasadvspgr',
-            latitude=float(87.36851977556924),
-            longitude=float(4.246814421721778),
-            bearing=float(82.5353786500983),
-            delay_seconds=int(40),
-            occupancy_status='xhmdbsjazsylvhxvxznh',
-            progress_status='ylcdtovoccgcbbwofcxn',
+            line_ref='enwnigdupmjhucfzrelk',
+            operator_ref='hismatrrasnkfzdrcwix',
+            direction_ref='eivkclgyanlccbfmvkex',
+            vehicle_mode='jnjisqputlvcaibrzxtp',
+            published_line_name='idgskwrensdfcpzyliax',
+            origin_name='oyncxpqkrvljultgggdf',
+            destination_name='wpszfgzyqslnwleuaqvs',
+            vehicle_ref='jpauvoaxifjckadgajpp',
+            latitude=float(49.7563363106172),
+            longitude=float(24.972783609570072),
+            bearing=float(45.226446006605215),
+            delay_seconds=int(48),
+            occupancy_status='sbtnvlaexpkakzqcnzkc',
+            progress_status='ocsjmkddejuqtrznbmhx',
             monitored=False
         )
         return instance
@@ -55,7 +55,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test service_journey_id property
         """
-        test_value = 'qztcjbckwhmfcxxcslqa'
+        test_value = 'ndewfcbtrmdymegykbcs'
         self.instance.service_journey_id = test_value
         self.assertEqual(self.instance.service_journey_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test operating_day property
         """
-        test_value = 'ninzgsmootlpxgsxdemh'
+        test_value = 'uzypnzzhklacedlhckvb'
         self.instance.operating_day = test_value
         self.assertEqual(self.instance.operating_day, test_value)
     
@@ -79,7 +79,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test line_ref property
         """
-        test_value = 'mrltufuzjjeqdflqegaz'
+        test_value = 'enwnigdupmjhucfzrelk'
         self.instance.line_ref = test_value
         self.assertEqual(self.instance.line_ref, test_value)
     
@@ -87,7 +87,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test operator_ref property
         """
-        test_value = 'vimssmvhtxgtvjoelprw'
+        test_value = 'hismatrrasnkfzdrcwix'
         self.instance.operator_ref = test_value
         self.assertEqual(self.instance.operator_ref, test_value)
     
@@ -95,7 +95,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test direction_ref property
         """
-        test_value = 'pbvopyhkodcwxiornjdl'
+        test_value = 'eivkclgyanlccbfmvkex'
         self.instance.direction_ref = test_value
         self.assertEqual(self.instance.direction_ref, test_value)
     
@@ -103,7 +103,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test vehicle_mode property
         """
-        test_value = 'fommvbabffamvufbeoqo'
+        test_value = 'jnjisqputlvcaibrzxtp'
         self.instance.vehicle_mode = test_value
         self.assertEqual(self.instance.vehicle_mode, test_value)
     
@@ -111,7 +111,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test published_line_name property
         """
-        test_value = 'sqvyxfnhinwcjfgmxdtl'
+        test_value = 'idgskwrensdfcpzyliax'
         self.instance.published_line_name = test_value
         self.assertEqual(self.instance.published_line_name, test_value)
     
@@ -119,7 +119,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test origin_name property
         """
-        test_value = 'tlvzltcbzpopyyfmiwri'
+        test_value = 'oyncxpqkrvljultgggdf'
         self.instance.origin_name = test_value
         self.assertEqual(self.instance.origin_name, test_value)
     
@@ -127,7 +127,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test destination_name property
         """
-        test_value = 'xsmqibhhnelhltmaownq'
+        test_value = 'wpszfgzyqslnwleuaqvs'
         self.instance.destination_name = test_value
         self.assertEqual(self.instance.destination_name, test_value)
     
@@ -135,7 +135,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test vehicle_ref property
         """
-        test_value = 'horijhbgkfzasadvspgr'
+        test_value = 'jpauvoaxifjckadgajpp'
         self.instance.vehicle_ref = test_value
         self.assertEqual(self.instance.vehicle_ref, test_value)
     
@@ -143,7 +143,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(87.36851977556924)
+        test_value = float(49.7563363106172)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -151,7 +151,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(4.246814421721778)
+        test_value = float(24.972783609570072)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -159,7 +159,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test bearing property
         """
-        test_value = float(82.5353786500983)
+        test_value = float(45.226446006605215)
         self.instance.bearing = test_value
         self.assertEqual(self.instance.bearing, test_value)
     
@@ -167,7 +167,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test delay_seconds property
         """
-        test_value = int(40)
+        test_value = int(48)
         self.instance.delay_seconds = test_value
         self.assertEqual(self.instance.delay_seconds, test_value)
     
@@ -175,7 +175,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test occupancy_status property
         """
-        test_value = 'xhmdbsjazsylvhxvxznh'
+        test_value = 'sbtnvlaexpkakzqcnzkc'
         self.instance.occupancy_status = test_value
         self.assertEqual(self.instance.occupancy_status, test_value)
     
@@ -183,7 +183,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test progress_status property
         """
-        test_value = 'ylcdtovoccgcbbwofcxn'
+        test_value = 'ocsjmkddejuqtrznbmhx'
         self.instance.progress_status = test_value
         self.assertEqual(self.instance.progress_status, test_value)
     

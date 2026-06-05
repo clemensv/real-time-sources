@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import aviationweather_mqtt_producer_data
 from aviationweather_mqtt_producer_data import Station
-from test_aviationweather_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from aviationweather_mqtt_producer_data import Metar
-from test_aviationweather_mqtt_producer_data_metar import Test_Metar
+from test_metar import Test_Metar
 from aviationweather_mqtt_producer_data import Sigmet
-from test_aviationweather_mqtt_producer_data_sigmet import Test_Sigmet
+from test_sigmet import Test_Sigmet
 from aviationweather_mqtt_producer_mqtt_client import GovNoaaAviationweatherMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -93,6 +94,7 @@ async def test_gov_noaa_aviationweather_mqtt_gov_noaa_aviationweather_mqtt_stati
         await publisher_client.publish_gov_noaa_aviationweather_mqtt_station(
             topic=test_topic,
             icao_id=f"test_icao_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -158,6 +160,7 @@ async def test_gov_noaa_aviationweather_mqtt_gov_noaa_aviationweather_mqtt_metar
         await publisher_client.publish_gov_noaa_aviationweather_mqtt_metar(
             topic=test_topic,
             icao_id=f"test_icao_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -224,6 +227,7 @@ async def test_gov_noaa_aviationweather_mqtt_gov_noaa_aviationweather_mqtt_sigme
             topic=test_topic,
             region=f"test_region_{i}",
             sigmet_id=f"test_sigmet_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

@@ -9,11 +9,11 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_quake_amqp_producer_data.earthquakereport import EarthquakeReport
-from jma_bosai_quake_amqp_producer_data.affectedprefecture import AffectedPrefecture
-from jma_bosai_quake_amqp_producer_data.maxintensityenum import MaxIntensityenum
 from jma_bosai_quake_amqp_producer_data.affectedcity import AffectedCity
 from jma_bosai_quake_amqp_producer_data.infotypeenum import InfoTypeenum
 from jma_bosai_quake_amqp_producer_data.bulletintypeenum import BulletinTypeenum
+from jma_bosai_quake_amqp_producer_data.maxintensityenum import MaxIntensityenum
+from jma_bosai_quake_amqp_producer_data.affectedprefecture import AffectedPrefecture
 import datetime
 
 
@@ -34,11 +34,11 @@ class Test_EarthquakeReport(unittest.TestCase):
         Create instance of EarthquakeReport for testing
         """
         instance = EarthquakeReport(
-            prefecture='yomtptpdxxdplfbdfsdw',
-            magnitude_bucket='jfqkchtfxqsbhwcunxnu',
-            event_id='poyusqffafsyminxtmzu',
-            serial=int(71),
-            report_id='xwiuyaevopvfefpesqqa',
+            prefecture='qvejdroqtkwphhmpgurh',
+            magnitude_bucket='ehasdvfrfdhznaxsjgpc',
+            event_id='ngotlvydnknffsfslego',
+            serial=int(41),
+            report_id='dpzcemltuqkqnexxmtim',
             info_type=InfoTypeenum.ISSUED,
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
@@ -46,21 +46,21 @@ class Test_EarthquakeReport(unittest.TestCase):
             control_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             origin_datetime=datetime.datetime.now(datetime.timezone.utc),
             origin_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            title_jp='qwlrqhhugpwvztcnrkwn',
-            title_en='fabcufpbyimlfmuqsmvw',
-            epicenter_area_code='clilysplkguyuzcgkizd',
-            epicenter_area_jp='doodusnrvtcuaoyrbnfh',
-            epicenter_area_en='sjctpflrgpgfcgudrzhw',
-            latitude=float(71.74183856401851),
-            longitude=float(88.90992475050507),
-            depth_km=float(67.6503160224727),
-            magnitude=float(9.477645750730701),
+            title_jp='arbyzzylcfzwqmzwhqmg',
+            title_en='kxkpqgqocffgcxcnkyok',
+            epicenter_area_code='rmsdfgtjrpccxdgdgrvz',
+            epicenter_area_jp='tiyttbavhmhsrtnrfycv',
+            epicenter_area_en='guqfqlbnesksqdukhoyq',
+            latitude=float(37.56066523588588),
+            longitude=float(55.0350682489957),
+            depth_km=float(6.605098735359238),
+            magnitude=float(76.33414940605277),
             max_intensity=MaxIntensityenum.VALUE_1,
             bulletin_type=BulletinTypeenum.VXSE51,
-            detail_url='pxooxhtlyrilrgvnjseg',
+            detail_url='yiwmywmgfypuotowtifd',
             affected_prefectures=[None, None],
-            affected_cities=[None, None, None, None],
-            tsunami_possible=True
+            affected_cities=[None, None],
+            tsunami_possible=False
         )
         return instance
 
@@ -69,7 +69,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test prefecture property
         """
-        test_value = 'yomtptpdxxdplfbdfsdw'
+        test_value = 'qvejdroqtkwphhmpgurh'
         self.instance.prefecture = test_value
         self.assertEqual(self.instance.prefecture, test_value)
     
@@ -77,7 +77,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test magnitude_bucket property
         """
-        test_value = 'jfqkchtfxqsbhwcunxnu'
+        test_value = 'ehasdvfrfdhznaxsjgpc'
         self.instance.magnitude_bucket = test_value
         self.assertEqual(self.instance.magnitude_bucket, test_value)
     
@@ -85,7 +85,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'poyusqffafsyminxtmzu'
+        test_value = 'ngotlvydnknffsfslego'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -93,7 +93,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test serial property
         """
-        test_value = int(71)
+        test_value = int(41)
         self.instance.serial = test_value
         self.assertEqual(self.instance.serial, test_value)
     
@@ -101,7 +101,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test report_id property
         """
-        test_value = 'xwiuyaevopvfefpesqqa'
+        test_value = 'dpzcemltuqkqnexxmtim'
         self.instance.report_id = test_value
         self.assertEqual(self.instance.report_id, test_value)
     
@@ -165,7 +165,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test title_jp property
         """
-        test_value = 'qwlrqhhugpwvztcnrkwn'
+        test_value = 'arbyzzylcfzwqmzwhqmg'
         self.instance.title_jp = test_value
         self.assertEqual(self.instance.title_jp, test_value)
     
@@ -173,7 +173,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test title_en property
         """
-        test_value = 'fabcufpbyimlfmuqsmvw'
+        test_value = 'kxkpqgqocffgcxcnkyok'
         self.instance.title_en = test_value
         self.assertEqual(self.instance.title_en, test_value)
     
@@ -181,7 +181,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test epicenter_area_code property
         """
-        test_value = 'clilysplkguyuzcgkizd'
+        test_value = 'rmsdfgtjrpccxdgdgrvz'
         self.instance.epicenter_area_code = test_value
         self.assertEqual(self.instance.epicenter_area_code, test_value)
     
@@ -189,7 +189,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test epicenter_area_jp property
         """
-        test_value = 'doodusnrvtcuaoyrbnfh'
+        test_value = 'tiyttbavhmhsrtnrfycv'
         self.instance.epicenter_area_jp = test_value
         self.assertEqual(self.instance.epicenter_area_jp, test_value)
     
@@ -197,7 +197,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test epicenter_area_en property
         """
-        test_value = 'sjctpflrgpgfcgudrzhw'
+        test_value = 'guqfqlbnesksqdukhoyq'
         self.instance.epicenter_area_en = test_value
         self.assertEqual(self.instance.epicenter_area_en, test_value)
     
@@ -205,7 +205,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(71.74183856401851)
+        test_value = float(37.56066523588588)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -213,7 +213,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(88.90992475050507)
+        test_value = float(55.0350682489957)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -221,7 +221,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test depth_km property
         """
-        test_value = float(67.6503160224727)
+        test_value = float(6.605098735359238)
         self.instance.depth_km = test_value
         self.assertEqual(self.instance.depth_km, test_value)
     
@@ -229,7 +229,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test magnitude property
         """
-        test_value = float(9.477645750730701)
+        test_value = float(76.33414940605277)
         self.instance.magnitude = test_value
         self.assertEqual(self.instance.magnitude, test_value)
     
@@ -253,7 +253,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test detail_url property
         """
-        test_value = 'pxooxhtlyrilrgvnjseg'
+        test_value = 'yiwmywmgfypuotowtifd'
         self.instance.detail_url = test_value
         self.assertEqual(self.instance.detail_url, test_value)
     
@@ -269,7 +269,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test affected_cities property
         """
-        test_value = [None, None, None, None]
+        test_value = [None, None]
         self.instance.affected_cities = test_value
         self.assertEqual(self.instance.affected_cities, test_value)
     
@@ -277,7 +277,7 @@ class Test_EarthquakeReport(unittest.TestCase):
         """
         Test tsunami_possible property
         """
-        test_value = True
+        test_value = False
         self.instance.tsunami_possible = test_value
         self.assertEqual(self.instance.tsunami_possible, test_value)
     

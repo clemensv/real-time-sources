@@ -28,10 +28,10 @@ class Test_StatusInterval(unittest.TestCase):
         Create instance of StatusInterval for testing
         """
         instance = StatusInterval(
-            lower='fpbawnialdjflmbpjkjo',
-            upper='mkggnjgkgudmqiufwntl',
-            name='cegpjwubgbsfqztdmkay',
-            color='tlnrfkfwkcarmuwwkimv'
+            lower='obnskvcxbjiitnsnzekc',
+            upper='wtnhzxsqjrwagkvgfyqi',
+            name='efjjumypbaldlurzhyzh',
+            color='vkqlwcdzugxmjmcdakdl'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_StatusInterval(unittest.TestCase):
         """
         Test lower property
         """
-        test_value = 'fpbawnialdjflmbpjkjo'
+        test_value = 'obnskvcxbjiitnsnzekc'
         self.instance.lower = test_value
         self.assertEqual(self.instance.lower, test_value)
     
@@ -48,7 +48,7 @@ class Test_StatusInterval(unittest.TestCase):
         """
         Test upper property
         """
-        test_value = 'mkggnjgkgudmqiufwntl'
+        test_value = 'wtnhzxsqjrwagkvgfyqi'
         self.instance.upper = test_value
         self.assertEqual(self.instance.upper, test_value)
     
@@ -56,7 +56,7 @@ class Test_StatusInterval(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'cegpjwubgbsfqztdmkay'
+        test_value = 'efjjumypbaldlurzhyzh'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -64,7 +64,7 @@ class Test_StatusInterval(unittest.TestCase):
         """
         Test color property
         """
-        test_value = 'tlnrfkfwkcarmuwwkimv'
+        test_value = 'vkqlwcdzugxmjmcdakdl'
         self.instance.color = test_value
         self.assertEqual(self.instance.color, test_value)
     

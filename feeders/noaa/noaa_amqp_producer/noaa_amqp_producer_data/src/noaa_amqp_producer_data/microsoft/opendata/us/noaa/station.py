@@ -153,6 +153,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -222,9 +224,9 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            tidal=False,
+            tidal=True,
             greatlakes=False,
-            shefcode='gvabeepknoogbzbhyjst',
+            shefcode='znyvtcdoeaoflnswarhj',
             details=None,
             sensors=None,
             floodlevels=None,
@@ -234,26 +236,26 @@ class Station:
             benchmarks=None,
             tidePredOffsets=None,
             ofsMapOffsets=None,
-            state='qdlsnhnslxgjlveebcif',
-            timezone='lkadfvdhuteupdtemprq',
-            timezonecorr=int(99),
-            observedst=False,
+            state='ddlgdmvaqpvdschipsax',
+            timezone='iyqjteizosuepbuzazat',
+            timezonecorr=int(17),
+            observedst=True,
             stormsurge=True,
             nearby=None,
             forecast=True,
-            outlook=True,
-            HTFhistorical=True,
-            nonNavigational=True,
-            station_id='ulypoovfgwiuodklielp',
-            name='lyenfgbiirwutxbhqryx',
-            lat=float(72.29335101337385),
-            lng=float(13.424777553570678),
-            affiliations='gyhiiqxpsfhhfbiwubbi',
-            portscode='wsuifhtfuuixcpvqbnph',
+            outlook=False,
+            HTFhistorical=False,
+            nonNavigational=False,
+            station_id='qeppiblhiobikpdkeafb',
+            name='dfcjplnqworpsjisreib',
+            lat=float(2.516855615148683),
+            lng=float(45.01941870640442),
+            affiliations='jqcemmylgmdwvjvkvtbi',
+            portscode='vzlcuhchrzfnopwqqfgc',
             products=None,
             disclaimers=None,
             notices=None,
-            self_='ibyxqmfvpsskmvoyduju',
-            expand='jsriyebrsvrypqslhkpr',
-            tideType='htwwupvjhwnondnsvcaa'
+            self_='miqusyoxswamuitwrtjp',
+            expand='qyhfenulkwbjgknuxntp',
+            tideType='saqmlacgiecpfkyocwnc'
         )

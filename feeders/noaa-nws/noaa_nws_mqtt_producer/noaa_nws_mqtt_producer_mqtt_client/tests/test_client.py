@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import noaa_nws_mqtt_producer_data
 from noaa_nws_mqtt_producer_data import WeatherAlert
-from test_noaa_nws_mqtt_producer_data_weatheralert import Test_WeatherAlert
+from test_weatheralert import Test_WeatherAlert
 from noaa_nws_mqtt_producer_data import ObservationStation
-from test_noaa_nws_mqtt_producer_data_observationstation import Test_ObservationStation
+from test_observationstation import Test_ObservationStation
 from noaa_nws_mqtt_producer_data import WeatherObservation
-from test_noaa_nws_mqtt_producer_data_weatherobservation import Test_WeatherObservation
+from test_weatherobservation import Test_WeatherObservation
 from noaa_nws_mqtt_producer_mqtt_client import MicrosoftOpenDataUSNOAANWSAlertsMqttMqttClient
 from noaa_nws_mqtt_producer_mqtt_client import MicrosoftOpenDataUSNOAANWSObservationsMqttMqttClient
 
@@ -97,6 +98,7 @@ async def test_microsoft_opendata_us_noaa_nws_alerts_mqtt_microsoft_open_data_us
             severity=f"test_severity_{i}",
             event_type=f"test_event_type_{i}",
             alert_id=f"test_alert_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -165,6 +167,7 @@ async def test_microsoft_opendata_us_noaa_nws_observations_mqtt_microsoft_open_d
         await publisher_client.publish_microsoft_open_data_us_noaa_nws_observations_mqtt_observation_station(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -230,6 +233,7 @@ async def test_microsoft_opendata_us_noaa_nws_observations_mqtt_microsoft_open_d
         await publisher_client.publish_microsoft_open_data_us_noaa_nws_observations_mqtt_weather_observation(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

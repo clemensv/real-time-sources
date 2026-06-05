@@ -1,5 +1,5 @@
-from .networkstatus import NetworkStatus
-from .pilotposition import PilotPosition
 from .controllerposition import ControllerPosition
+from .pilotposition import PilotPosition
+from .networkstatus import NetworkStatus
 
-__all__ = ["NetworkStatus", "PilotPosition", "ControllerPosition"]
+__all__ = ["ControllerPosition", "PilotPosition", "NetworkStatus"]

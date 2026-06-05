@@ -1,3 +1,3 @@
-from .aqhi import Community, Observation, Forecast
+from .aqhi import AqhiCategoryenum, Observation, Community, ForecastPeriodenum, ForecastPeriodLabelenum, Forecast
 
-__all__ = ["Community", "Observation", "Forecast"]
+__all__ = ["AqhiCategoryenum", "Observation", "Community", "ForecastPeriodenum", "ForecastPeriodLabelenum", "Forecast"]

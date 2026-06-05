@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import xceed_mqtt_producer_data
 from xceed_mqtt_producer_data import Event
-from test_xceed_mqtt_producer_data_event import Test_Event
+from test_event import Test_Event
 from xceed_mqtt_producer_data import EventAdmission
-from test_xceed_mqtt_producer_data_eventadmission import Test_EventAdmission
+from test_eventadmission import Test_EventAdmission
 from xceed_mqtt_producer_mqtt_client import XceedMqttMqttClient
 from xceed_mqtt_producer_mqtt_client import XceedAdmissionsMqttMqttClient
 
@@ -93,6 +94,7 @@ async def test_xceed_mqtt_xceed_mqtt_event_py(mosquitto_broker):
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             event_id=f"test_event_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -163,6 +165,7 @@ async def test_xceed_admissions_mqtt_xceed_admissions_mqtt_event_admission_py(mo
             feedurl=f"test_feedurl_{i}",
             event_id=f"test_event_id_{i}",
             admission_id=f"test_admission_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

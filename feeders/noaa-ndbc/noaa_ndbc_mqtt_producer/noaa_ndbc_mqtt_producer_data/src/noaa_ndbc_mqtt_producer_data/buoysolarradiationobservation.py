@@ -96,6 +96,8 @@ class BuoySolarRadiationObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,10 +165,10 @@ class BuoySolarRadiationObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='ptepjvzgcsczgpvndbfx',
+            station_id='wkzzjpozpvvdazyyfvdj',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            shortwave_radiation_licor=float(98.95874250466272),
-            shortwave_radiation_eppley=float(46.753143975051756),
-            longwave_radiation=float(12.88751450451635),
-            region='ekigqluuojbgancylcrg'
+            shortwave_radiation_licor=float(76.35493001728234),
+            shortwave_radiation_eppley=float(9.284758823815542),
+            longwave_radiation=float(67.05022529576785),
+            region='kslztsrnvixyjbuidibe'
         )

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,19 +17,19 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import digitraffic_road_mqtt_producer_data
 from digitraffic_road_mqtt_producer_data import TmsSensorData
-from test_digitraffic_road_mqtt_producer_data_tmssensordata import Test_TmsSensorData
+from test_tmssensordata import Test_TmsSensorData
 from digitraffic_road_mqtt_producer_data import WeatherSensorData
-from test_digitraffic_road_mqtt_producer_data_weathersensordata import Test_WeatherSensorData
+from test_weathersensordata import Test_WeatherSensorData
 from digitraffic_road_mqtt_producer_data import TrafficMessage
-from test_digitraffic_road_mqtt_producer_data_trafficmessage import Test_TrafficMessage
+from test_trafficmessage import Test_TrafficMessage
 from digitraffic_road_mqtt_producer_data import MaintenanceTracking
-from test_digitraffic_road_mqtt_producer_data_maintenancetracking import Test_MaintenanceTracking
+from test_maintenancetracking import Test_MaintenanceTracking
 from digitraffic_road_mqtt_producer_data import TmsStation
-from test_digitraffic_road_mqtt_producer_data_tmsstation import Test_TmsStation
+from test_tmsstation import Test_TmsStation
 from digitraffic_road_mqtt_producer_data import WeatherStation
-from test_digitraffic_road_mqtt_producer_data_weatherstation import Test_WeatherStation
+from test_weatherstation import Test_WeatherStation
 from digitraffic_road_mqtt_producer_data import MaintenanceTaskType
-from test_digitraffic_road_mqtt_producer_data_maintenancetasktype import Test_MaintenanceTaskType
+from test_maintenancetasktype import Test_MaintenanceTaskType
 from digitraffic_road_mqtt_producer_mqtt_client import FiDigitrafficRoadMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -102,6 +103,7 @@ async def test_fi_digitraffic_road_mqtt_fi_digitraffic_road_mqtt_tms_sensor_data
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             sensor_id=f"test_sensor_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -168,6 +170,7 @@ async def test_fi_digitraffic_road_mqtt_fi_digitraffic_road_mqtt_weather_sensor_
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             sensor_id=f"test_sensor_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -233,6 +236,7 @@ async def test_fi_digitraffic_road_mqtt_fi_digitraffic_road_mqtt_traffic_announc
         await publisher_client.publish_fi_digitraffic_road_mqtt_traffic_announcement(
             topic=test_topic,
             situation_id=f"test_situation_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -298,6 +302,7 @@ async def test_fi_digitraffic_road_mqtt_fi_digitraffic_road_mqtt_road_work_py(mo
         await publisher_client.publish_fi_digitraffic_road_mqtt_road_work(
             topic=test_topic,
             situation_id=f"test_situation_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -363,6 +368,7 @@ async def test_fi_digitraffic_road_mqtt_fi_digitraffic_road_mqtt_weight_restrict
         await publisher_client.publish_fi_digitraffic_road_mqtt_weight_restriction(
             topic=test_topic,
             situation_id=f"test_situation_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -428,6 +434,7 @@ async def test_fi_digitraffic_road_mqtt_fi_digitraffic_road_mqtt_exempted_transp
         await publisher_client.publish_fi_digitraffic_road_mqtt_exempted_transport(
             topic=test_topic,
             situation_id=f"test_situation_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -493,6 +500,7 @@ async def test_fi_digitraffic_road_mqtt_fi_digitraffic_road_mqtt_maintenance_tra
         await publisher_client.publish_fi_digitraffic_road_mqtt_maintenance_tracking(
             topic=test_topic,
             domain=f"test_domain_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -558,6 +566,7 @@ async def test_fi_digitraffic_road_mqtt_fi_digitraffic_road_mqtt_tms_station_py(
         await publisher_client.publish_fi_digitraffic_road_mqtt_tms_station(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -623,6 +632,7 @@ async def test_fi_digitraffic_road_mqtt_fi_digitraffic_road_mqtt_weather_station
         await publisher_client.publish_fi_digitraffic_road_mqtt_weather_station(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -688,6 +698,7 @@ async def test_fi_digitraffic_road_mqtt_fi_digitraffic_road_mqtt_maintenance_tas
         await publisher_client.publish_fi_digitraffic_road_mqtt_maintenance_task_type(
             topic=test_topic,
             task_id=f"test_task_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

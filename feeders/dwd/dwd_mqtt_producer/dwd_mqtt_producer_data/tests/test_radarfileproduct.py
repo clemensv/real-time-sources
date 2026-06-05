@@ -28,14 +28,14 @@ class Test_RadarFileProduct(unittest.TestCase):
         Create instance of RadarFileProduct for testing
         """
         instance = RadarFileProduct(
-            file_url='oonyiyifuhmtximtcitw',
-            product='ojdtssnwnyhghvaqsrqk',
-            file_name='hblsxmuizwhgwuxmpytx',
-            modified='vtnsesuzufzhokwjgtfx',
-            size_bytes=int(18),
-            file_id='wyeqdqfbvhaqdsgronjp',
-            state='mustffrunzxesxjyyfur',
-            product_type='aosboeihywzwcfasgllk'
+            file_url='bqcvhasalewjxywifiln',
+            product='vgafvnhlvkxsqnnponqv',
+            file_name='hallmijyhjoyhcqcmvin',
+            modified='mtkfgraihdikgurtfnex',
+            size_bytes=int(3),
+            file_id='nbgdpvbghjupheiqhsqa',
+            state='rimiqteskwgnhrdtbqnr',
+            product_type='pbhsuwocacgwdvcezeca'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test file_url property
         """
-        test_value = 'oonyiyifuhmtximtcitw'
+        test_value = 'bqcvhasalewjxywifiln'
         self.instance.file_url = test_value
         self.assertEqual(self.instance.file_url, test_value)
     
@@ -52,7 +52,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test product property
         """
-        test_value = 'ojdtssnwnyhghvaqsrqk'
+        test_value = 'vgafvnhlvkxsqnnponqv'
         self.instance.product = test_value
         self.assertEqual(self.instance.product, test_value)
     
@@ -60,7 +60,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test file_name property
         """
-        test_value = 'hblsxmuizwhgwuxmpytx'
+        test_value = 'hallmijyhjoyhcqcmvin'
         self.instance.file_name = test_value
         self.assertEqual(self.instance.file_name, test_value)
     
@@ -68,7 +68,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test modified property
         """
-        test_value = 'vtnsesuzufzhokwjgtfx'
+        test_value = 'mtkfgraihdikgurtfnex'
         self.instance.modified = test_value
         self.assertEqual(self.instance.modified, test_value)
     
@@ -76,7 +76,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test size_bytes property
         """
-        test_value = int(18)
+        test_value = int(3)
         self.instance.size_bytes = test_value
         self.assertEqual(self.instance.size_bytes, test_value)
     
@@ -84,7 +84,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test file_id property
         """
-        test_value = 'wyeqdqfbvhaqdsgronjp'
+        test_value = 'nbgdpvbghjupheiqhsqa'
         self.instance.file_id = test_value
         self.assertEqual(self.instance.file_id, test_value)
     
@@ -92,7 +92,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'mustffrunzxesxjyyfur'
+        test_value = 'rimiqteskwgnhrdtbqnr'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -100,7 +100,7 @@ class Test_RadarFileProduct(unittest.TestCase):
         """
         Test product_type property
         """
-        test_value = 'aosboeihywzwcfasgllk'
+        test_value = 'pbhsuwocacgwdvcezeca'
         self.instance.product_type = test_value
         self.assertEqual(self.instance.product_type, test_value)
     

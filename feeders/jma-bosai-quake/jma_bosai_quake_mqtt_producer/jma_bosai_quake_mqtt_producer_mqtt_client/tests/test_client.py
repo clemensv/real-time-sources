@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import jma_bosai_quake_mqtt_producer_data
 from jma_bosai_quake_mqtt_producer_data import EarthquakeReport
-from test_jma_bosai_quake_mqtt_producer_data_earthquakereport import Test_EarthquakeReport
+from test_earthquakereport import Test_EarthquakeReport
 from jma_bosai_quake_mqtt_producer_mqtt_client import JPJMAQuakeMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_jp_jma_quake_mqtt_jp_jma_quake_mqtt_earthquake_report_py(mosquitt
             feedurl=f"test_feedurl_{i}",
             event_id=f"test_event_id_{i}",
             serial=f"test_serial_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

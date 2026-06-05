@@ -118,6 +118,8 @@ class Record:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -185,20 +187,20 @@ class Record:
             An instance of the dataclass.
         """
         return cls(
-            icao24='svrxoihutggaftxpkbrt',
-            receiver_id='otwmqffrlbbknvlyiwah',
-            msg_type='lsrjwoaoebynpdsivnfo',
-            ts=int(20),
-            df=int(36),
-            tc=int(99),
-            bcode='oxrbtaqrnrndlhaoaofi',
-            alt=int(78),
-            cs='ytqlsywhttbhugwhijak',
-            sq='iqnydvgkzntbfegpbyez',
-            lat=float(12.78612550044823),
-            lon=float(50.30243914669201),
-            spd=float(59.23588129716446),
-            ang=float(30.263012535257705),
-            vr=int(64),
-            rssi=float(23.19484276098599)
+            icao24='mdufdzavwaxnsoeckdlh',
+            receiver_id='gzbfawrizjscdubwygmb',
+            msg_type='umyccmjftvjvigfcnfsk',
+            ts=int(60),
+            df=int(51),
+            tc=int(44),
+            bcode='lzuvtinqbjoxnenoyscm',
+            alt=int(90),
+            cs='cjpewmuwlmvcstikwpzr',
+            sq='mvcydrjljfyovknerwwg',
+            lat=float(40.59004914089422),
+            lon=float(48.31838831201435),
+            spd=float(3.580064889619061),
+            ang=float(29.132896977906064),
+            vr=int(57),
+            rssi=float(90.48835667497752)
         )

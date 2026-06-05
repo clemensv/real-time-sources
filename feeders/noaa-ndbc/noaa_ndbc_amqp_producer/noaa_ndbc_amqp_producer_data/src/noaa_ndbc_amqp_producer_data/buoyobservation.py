@@ -122,6 +122,8 @@ class BuoyObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -189,23 +191,23 @@ class BuoyObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='rbszlkhotzjgnivpwems',
-            latitude=float(49.78043069332534),
-            longitude=float(11.805553749950992),
+            station_id='qyxpmvigkuwlrfukcptt',
+            latitude=float(75.51404840440101),
+            longitude=float(59.940287997951756),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            wind_direction=float(54.66819774528603),
-            wind_speed=float(39.1890238974008),
-            gust=float(14.289823947741564),
-            wave_height=float(65.80445714506993),
-            dominant_wave_period=float(1.1543510309078853),
-            average_wave_period=float(57.16772326327888),
-            mean_wave_direction=float(84.206185354173),
-            pressure=float(85.34746188811204),
-            air_temperature=float(68.86574761351633),
-            water_temperature=float(4.551512181533079),
-            dewpoint=float(55.747508279821176),
-            pressure_tendency=float(60.62235763727726),
-            visibility=float(62.82108375244708),
-            tide=float(39.23903135169874),
-            region='jadgvlnsevzjnsmvgnee'
+            wind_direction=float(44.639408792130276),
+            wind_speed=float(85.59773338403237),
+            gust=float(62.78568267769214),
+            wave_height=float(5.704955886640295),
+            dominant_wave_period=float(31.90790494938007),
+            average_wave_period=float(93.5617781728434),
+            mean_wave_direction=float(65.5777937888974),
+            pressure=float(91.58299301091952),
+            air_temperature=float(6.152002129597978),
+            water_temperature=float(62.67103855656936),
+            dewpoint=float(23.505641060651506),
+            pressure_tendency=float(51.279389288322385),
+            visibility=float(74.08585027132717),
+            tide=float(79.2732023404457),
+            region='kencgrweipzatkaebpoq'
         )

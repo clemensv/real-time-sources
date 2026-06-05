@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import tokyo_docomo_bikeshare_mqtt_producer_data
 from tokyo_docomo_bikeshare_mqtt_producer_data import BikeshareSystem
-from test_tokyo_docomo_bikeshare_mqtt_producer_data_bikesharesystem import Test_BikeshareSystem
+from test_bikesharesystem import Test_BikeshareSystem
 from tokyo_docomo_bikeshare_mqtt_producer_data import BikeshareStation
-from test_tokyo_docomo_bikeshare_mqtt_producer_data_bikesharestation import Test_BikeshareStation
+from test_bikesharestation import Test_BikeshareStation
 from tokyo_docomo_bikeshare_mqtt_producer_data import BikeshareStationStatus
-from test_tokyo_docomo_bikeshare_mqtt_producer_data_bikesharestationstatus import Test_BikeshareStationStatus
+from test_bikesharestationstatus import Test_BikeshareStationStatus
 from tokyo_docomo_bikeshare_mqtt_producer_mqtt_client import JPODPTDocomoBikeshareSystemMqttMqttClient
 from tokyo_docomo_bikeshare_mqtt_producer_mqtt_client import JPODPTDocomoBikeshareStationsMqttMqttClient
 
@@ -94,6 +95,7 @@ async def test_jp_odpt_docomobikeshare_system_mqtt_jp_odpt_docomo_bikeshare_bike
         await publisher_client.publish_jp_odpt_docomo_bikeshare_bikeshare_system_mqtt(
             topic=test_topic,
             system_id=f"test_system_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -163,6 +165,7 @@ async def test_jp_odpt_docomobikeshare_stations_mqtt_jp_odpt_docomo_bikeshare_bi
             topic=test_topic,
             system_id=f"test_system_id_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -229,6 +232,7 @@ async def test_jp_odpt_docomobikeshare_stations_mqtt_jp_odpt_docomo_bikeshare_bi
             topic=test_topic,
             system_id=f"test_system_id_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

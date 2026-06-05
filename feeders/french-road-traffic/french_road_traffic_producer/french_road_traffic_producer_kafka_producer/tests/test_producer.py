@@ -110,7 +110,8 @@ def test_fr_gouv_transport_bisonfute_trafficflow_frgouvtransportbisonfutetraffic
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gouv_transport_bison_fute_traffic_flow_measurement(_feedurl = f'test_{i}', _site_id = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gouv_transport_bison_fute_traffic_flow_measurement(_feedurl = f'test_{i}', _site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -173,7 +174,8 @@ def test_fr_gouv_transport_bisonfute_roadevent_frgouvtransportbisonfuteroadevent
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gouv_transport_bison_fute_road_event(_feedurl = f'test_{i}', _situation_id = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gouv_transport_bison_fute_road_event(_feedurl = f'test_{i}', _situation_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -236,7 +238,8 @@ def test_fr_gouv_transport_bisonfute_trafficflow_mqtt_frgouvtransportbisonfutetr
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gouv_transport_bison_fute_traffic_flow_measurement_mqtt(_feedurl = f'test_{i}', _site_id = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gouv_transport_bison_fute_traffic_flow_measurement_mqtt(_feedurl = f'test_{i}', _site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -297,7 +300,8 @@ def test_fr_gouv_transport_bisonfute_roadevent_mqtt_frgouvtransportbisonfuteroad
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gouv_transport_bison_fute_road_event_mqtt(_feedurl = f'test_{i}', _situation_id = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gouv_transport_bison_fute_road_event_mqtt(_feedurl = f'test_{i}', _situation_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -358,7 +362,8 @@ def test_fr_gouv_transport_bisonfute_trafficflow_amqp_frgouvtransportbisonfutetr
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gouv_transport_bison_fute_traffic_flow_measurement_amqp(_feedurl = f'test_{i}', _site_id = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gouv_transport_bison_fute_traffic_flow_measurement_amqp(_feedurl = f'test_{i}', _site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -419,7 +424,8 @@ def test_fr_gouv_transport_bisonfute_roadevent_amqp_frgouvtransportbisonfuteroad
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gouv_transport_bison_fute_road_event_amqp(_feedurl = f'test_{i}', _situation_id = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gouv_transport_bison_fute_road_event_amqp(_feedurl = f'test_{i}', _situation_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

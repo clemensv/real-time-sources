@@ -1,33 +1,34 @@
 """ ControllerPosition dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class ControllerPosition:
     """
-    Current state and frequency of an air traffic controller connected to the VATSIM virtual aviation network.
+    Current state and frequency of an air traffic controller or observer connected to the VATSIM virtual aviation network.
+    
     Attributes:
-        cid (int): VATSIM Certificate Identifier (CID).
-        callsign (str): Controller position callsign.
-        frequency (str): Radio frequency in MHz.
-        facility (int): VATSIM facility type code.
-        rating (int): VATSIM ATC rating.
-        text_atis (typing.Optional[str]): Controller ATIS text, lines joined by newline. Null when not set.
-        last_updated (str): UTC timestamp of last update."""
+        cid (int)
+        callsign (str)
+        frequency (str)
+        facility (int)
+        rating (int)
+        text_atis (typing.Optional[str])
+        last_updated (str)
+    """
+    
     
     cid: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cid"))
     callsign: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
@@ -36,20 +37,6 @@ class ControllerPosition:
     rating: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="rating"))
     text_atis: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="text_atis"))
     last_updated: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="last_updated"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"ControllerPosition\", \"namespace\": \"net.vatsim\", \"doc\": \"Current state and frequency of an air traffic controller connected to the VATSIM virtual aviation network.\", \"fields\": [{\"name\": \"cid\", \"type\": \"int\", \"doc\": \"VATSIM Certificate Identifier (CID).\"}, {\"name\": \"callsign\", \"type\": \"string\", \"doc\": \"Controller position callsign.\"}, {\"name\": \"frequency\", \"type\": \"string\", \"doc\": \"Radio frequency in MHz.\"}, {\"name\": \"facility\", \"type\": \"int\", \"doc\": \"VATSIM facility type code.\"}, {\"name\": \"rating\", \"type\": \"int\", \"doc\": \"VATSIM ATC rating.\"}, {\"name\": \"text_atis\", \"type\": [\"null\", \"string\"], \"doc\": \"Controller ATIS text, lines joined by newline. Null when not set.\", \"default\": null}, {\"name\": \"last_updated\", \"type\": \"string\", \"doc\": \"UTC timestamp of last update.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.cid=int(self.cid)
-        self.callsign=str(self.callsign)
-        self.frequency=str(self.frequency)
-        self.facility=int(self.facility)
-        self.rating=int(self.rating)
-        self.text_atis=str(self.text_atis) if self.text_atis else None
-        self.last_updated=str(self.last_updated)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'ControllerPosition':
@@ -60,7 +47,7 @@ class ControllerPosition:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -79,7 +66,7 @@ class ControllerPosition:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -93,8 +80,6 @@ class ControllerPosition:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -107,16 +92,12 @@ class ControllerPosition:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -141,10 +122,6 @@ class ControllerPosition:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -170,18 +147,6 @@ class ControllerPosition:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return ControllerPosition.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -189,5 +154,22 @@ class ControllerPosition:
                 return ControllerPosition.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'ControllerPosition':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            cid=int(71),
+            callsign='gbcjfrvueddtnpudbpse',
+            frequency='yavfdxrypyqpzxfasciu',
+            facility=int(40),
+            rating=int(18),
+            text_atis='ilodwsbwshrwuttidgrc',
+            last_updated='arkigkhjkytjkfdafywj'
+        )

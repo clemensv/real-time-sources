@@ -29,23 +29,23 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         Create instance of MonitoredVehicleJourney for testing
         """
         instance = MonitoredVehicleJourney(
-            service_journey_id='oeumnqbxvzhaqbnpcmma',
-            operating_day='dtuqvrpsqczacirqgcmi',
+            service_journey_id='yiaqvfftoqhgzlptfaip',
+            operating_day='jtudiprawajamoyybdhf',
             recorded_at_time=datetime.datetime.now(datetime.timezone.utc),
-            line_ref='dcesvagairoprjpudgbv',
-            operator_ref='goixzlpymusxobgefxzm',
-            direction_ref='lrewthbvzmjdjnlnlmtf',
-            vehicle_mode='vagxowsdvsbxwpgmqhdh',
-            published_line_name='trdouotxvxerapaavgvs',
-            origin_name='qgmlcldxxeubohlkmesk',
-            destination_name='vjhsslxkzcrxhrtwcecd',
-            vehicle_ref='lhpzbifdlwfbatxikllx',
-            latitude=float(1.572729012839813),
-            longitude=float(7.145699407354922),
-            bearing=float(7.690381241206512),
-            delay_seconds=int(43),
-            occupancy_status='kacglqapwgmomcttxpri',
-            progress_status='jkqsqlddpthbuagqvshw',
+            line_ref='rmjwxecbxacooandzfwl',
+            operator_ref='ltmfjgbzxswffhlsvidm',
+            direction_ref='cedqzvjtbhvfflczhlxv',
+            vehicle_mode='cgfnrchnupfppqbxipdh',
+            published_line_name='yhyglohjkzlbkzceqknc',
+            origin_name='mycjdzsrqfyiwygvhtpv',
+            destination_name='nfzeuandistwpsfldggp',
+            vehicle_ref='kgbcowagtzameoailfwx',
+            latitude=float(73.89777863198958),
+            longitude=float(83.52535297411346),
+            bearing=float(38.75811213582444),
+            delay_seconds=int(29),
+            occupancy_status='nzvibibbrsaidkbznjbq',
+            progress_status='ljkhffuvvvqoellfbyjd',
             monitored=False
         )
         return instance
@@ -55,7 +55,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test service_journey_id property
         """
-        test_value = 'oeumnqbxvzhaqbnpcmma'
+        test_value = 'yiaqvfftoqhgzlptfaip'
         self.instance.service_journey_id = test_value
         self.assertEqual(self.instance.service_journey_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test operating_day property
         """
-        test_value = 'dtuqvrpsqczacirqgcmi'
+        test_value = 'jtudiprawajamoyybdhf'
         self.instance.operating_day = test_value
         self.assertEqual(self.instance.operating_day, test_value)
     
@@ -79,7 +79,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test line_ref property
         """
-        test_value = 'dcesvagairoprjpudgbv'
+        test_value = 'rmjwxecbxacooandzfwl'
         self.instance.line_ref = test_value
         self.assertEqual(self.instance.line_ref, test_value)
     
@@ -87,7 +87,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test operator_ref property
         """
-        test_value = 'goixzlpymusxobgefxzm'
+        test_value = 'ltmfjgbzxswffhlsvidm'
         self.instance.operator_ref = test_value
         self.assertEqual(self.instance.operator_ref, test_value)
     
@@ -95,7 +95,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test direction_ref property
         """
-        test_value = 'lrewthbvzmjdjnlnlmtf'
+        test_value = 'cedqzvjtbhvfflczhlxv'
         self.instance.direction_ref = test_value
         self.assertEqual(self.instance.direction_ref, test_value)
     
@@ -103,7 +103,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test vehicle_mode property
         """
-        test_value = 'vagxowsdvsbxwpgmqhdh'
+        test_value = 'cgfnrchnupfppqbxipdh'
         self.instance.vehicle_mode = test_value
         self.assertEqual(self.instance.vehicle_mode, test_value)
     
@@ -111,7 +111,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test published_line_name property
         """
-        test_value = 'trdouotxvxerapaavgvs'
+        test_value = 'yhyglohjkzlbkzceqknc'
         self.instance.published_line_name = test_value
         self.assertEqual(self.instance.published_line_name, test_value)
     
@@ -119,7 +119,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test origin_name property
         """
-        test_value = 'qgmlcldxxeubohlkmesk'
+        test_value = 'mycjdzsrqfyiwygvhtpv'
         self.instance.origin_name = test_value
         self.assertEqual(self.instance.origin_name, test_value)
     
@@ -127,7 +127,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test destination_name property
         """
-        test_value = 'vjhsslxkzcrxhrtwcecd'
+        test_value = 'nfzeuandistwpsfldggp'
         self.instance.destination_name = test_value
         self.assertEqual(self.instance.destination_name, test_value)
     
@@ -135,7 +135,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test vehicle_ref property
         """
-        test_value = 'lhpzbifdlwfbatxikllx'
+        test_value = 'kgbcowagtzameoailfwx'
         self.instance.vehicle_ref = test_value
         self.assertEqual(self.instance.vehicle_ref, test_value)
     
@@ -143,7 +143,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(1.572729012839813)
+        test_value = float(73.89777863198958)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -151,7 +151,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(7.145699407354922)
+        test_value = float(83.52535297411346)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -159,7 +159,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test bearing property
         """
-        test_value = float(7.690381241206512)
+        test_value = float(38.75811213582444)
         self.instance.bearing = test_value
         self.assertEqual(self.instance.bearing, test_value)
     
@@ -167,7 +167,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test delay_seconds property
         """
-        test_value = int(43)
+        test_value = int(29)
         self.instance.delay_seconds = test_value
         self.assertEqual(self.instance.delay_seconds, test_value)
     
@@ -175,7 +175,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test occupancy_status property
         """
-        test_value = 'kacglqapwgmomcttxpri'
+        test_value = 'nzvibibbrsaidkbznjbq'
         self.instance.occupancy_status = test_value
         self.assertEqual(self.instance.occupancy_status, test_value)
     
@@ -183,7 +183,7 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         """
         Test progress_status property
         """
-        test_value = 'jkqsqlddpthbuagqvshw'
+        test_value = 'ljkhffuvvvqoellfbyjd'
         self.instance.progress_status = test_value
         self.assertEqual(self.instance.progress_status, test_value)
     
@@ -195,15 +195,6 @@ class Test_MonitoredVehicleJourney(unittest.TestCase):
         self.instance.monitored = test_value
         self.assertEqual(self.instance.monitored, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = MonitoredVehicleJourney.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

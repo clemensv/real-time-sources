@@ -96,6 +96,8 @@ class AirPressure:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class AirPressure:
             An instance of the dataclass.
         """
         return cls(
-            station_id='hytxpxgthiectyczfgpf',
-            timestamp='werykfbedtkkchweygqe',
-            value=float(53.004553291357496),
-            max_pressure_exceeded=True,
-            min_pressure_exceeded=False,
+            station_id='sqazjsivcxlsxxzjzrut',
+            timestamp='qzugyrhpjurinqajgovd',
+            value=float(10.254549044256622),
+            max_pressure_exceeded=False,
+            min_pressure_exceeded=True,
             rate_of_change_exceeded=True,
-            region='clavlfttwipwhipgvper'
+            region='cqoowarjfivgqslvkrqt'
         )

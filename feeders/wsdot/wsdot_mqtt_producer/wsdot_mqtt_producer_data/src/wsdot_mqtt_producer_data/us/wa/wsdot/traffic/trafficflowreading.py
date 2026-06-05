@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from wsdot_mqtt_producer_data.us.wa.wsdot.traffic.flowreadingenum import FlowReadingenum
 from wsdot_mqtt_producer_data.us.wa.wsdot.traffic.regionenum import RegionEnum
+from wsdot_mqtt_producer_data.us.wa.wsdot.traffic.flowreadingenum import FlowReadingenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -94,6 +94,8 @@ class TrafficFlowReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,9 +163,9 @@ class TrafficFlowReading:
             An instance of the dataclass.
         """
         return cls(
-            flow_data_id='vafizcwlzpyqqpyculuy',
-            station_name='wsfzxvunqbvqfyonpzrn',
+            flow_data_id='teacjyeuoyfyrgpavalf',
+            station_name='ylflbdcyqbgwwvtonchv',
             region=RegionEnum.Eastern,
             flow_reading=FlowReadingenum.Unknown,
-            reading_time='ppusthwyxbtbeicppjqm'
+            reading_time='wtqbsiattvnuwxokvqlg'
         )

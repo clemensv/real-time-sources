@@ -29,27 +29,27 @@ class Test_Metar(unittest.TestCase):
         Create instance of Metar for testing
         """
         instance = Metar(
-            icao_id='iulvyzwabzzodtrtfzay',
+            icao_id='ixlfvwdtxeixlohblany',
             obs_time=datetime.datetime.now(datetime.timezone.utc),
             report_time=datetime.datetime.now(datetime.timezone.utc),
-            temp=float(76.73136863945238),
-            dewp=float(67.37168005986483),
-            wdir=int(96),
-            wspd=int(31),
-            wgst=int(18),
-            visib='ztvfnrbhncijcjofhlyp',
-            altim=float(34.81349058175527),
-            slp=float(1.469525502506852),
-            qc_field=int(85),
-            wx_string='peahngsgzxemcvkfotdf',
-            metar_type='scbvjozsjcarafwglmnu',
-            raw_ob='yqxbtppweizipuinkasy',
-            latitude=float(76.67301751094355),
-            longitude=float(11.785536421389386),
-            elevation=float(31.605887882630658),
-            flt_cat='ddfojimvidesvsyqtxzy',
-            clouds='bvkzmofqopryklxrscql',
-            name='puahodvhoplqixtqvaka'
+            temp=float(41.567161850278445),
+            dewp=float(10.79696886539483),
+            wdir=int(34),
+            wspd=int(83),
+            wgst=int(4),
+            visib='ycqspfmrpwqwdzpyrnew',
+            altim=float(42.772334392782426),
+            slp=float(99.8131247938374),
+            qc_field=int(46),
+            wx_string='meivkoyrievszczodjvr',
+            metar_type='avosdtivoqqhcyochvqz',
+            raw_ob='deeqzcaxveiowxnatdco',
+            latitude=float(58.299075298156964),
+            longitude=float(22.90913436023555),
+            elevation=float(13.957500352224994),
+            flt_cat='carhbrqtbmrozbgvdycy',
+            clouds='bnnoibzvvtagphfwmfec',
+            name='hiqfljicohbrjwrlxocm'
         )
         return instance
 
@@ -58,7 +58,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test icao_id property
         """
-        test_value = 'iulvyzwabzzodtrtfzay'
+        test_value = 'ixlfvwdtxeixlohblany'
         self.instance.icao_id = test_value
         self.assertEqual(self.instance.icao_id, test_value)
     
@@ -82,7 +82,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test temp property
         """
-        test_value = float(76.73136863945238)
+        test_value = float(41.567161850278445)
         self.instance.temp = test_value
         self.assertEqual(self.instance.temp, test_value)
     
@@ -90,7 +90,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test dewp property
         """
-        test_value = float(67.37168005986483)
+        test_value = float(10.79696886539483)
         self.instance.dewp = test_value
         self.assertEqual(self.instance.dewp, test_value)
     
@@ -98,7 +98,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test wdir property
         """
-        test_value = int(96)
+        test_value = int(34)
         self.instance.wdir = test_value
         self.assertEqual(self.instance.wdir, test_value)
     
@@ -106,7 +106,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test wspd property
         """
-        test_value = int(31)
+        test_value = int(83)
         self.instance.wspd = test_value
         self.assertEqual(self.instance.wspd, test_value)
     
@@ -114,7 +114,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test wgst property
         """
-        test_value = int(18)
+        test_value = int(4)
         self.instance.wgst = test_value
         self.assertEqual(self.instance.wgst, test_value)
     
@@ -122,7 +122,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test visib property
         """
-        test_value = 'ztvfnrbhncijcjofhlyp'
+        test_value = 'ycqspfmrpwqwdzpyrnew'
         self.instance.visib = test_value
         self.assertEqual(self.instance.visib, test_value)
     
@@ -130,7 +130,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test altim property
         """
-        test_value = float(34.81349058175527)
+        test_value = float(42.772334392782426)
         self.instance.altim = test_value
         self.assertEqual(self.instance.altim, test_value)
     
@@ -138,7 +138,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test slp property
         """
-        test_value = float(1.469525502506852)
+        test_value = float(99.8131247938374)
         self.instance.slp = test_value
         self.assertEqual(self.instance.slp, test_value)
     
@@ -146,7 +146,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test qc_field property
         """
-        test_value = int(85)
+        test_value = int(46)
         self.instance.qc_field = test_value
         self.assertEqual(self.instance.qc_field, test_value)
     
@@ -154,7 +154,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test wx_string property
         """
-        test_value = 'peahngsgzxemcvkfotdf'
+        test_value = 'meivkoyrievszczodjvr'
         self.instance.wx_string = test_value
         self.assertEqual(self.instance.wx_string, test_value)
     
@@ -162,7 +162,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test metar_type property
         """
-        test_value = 'scbvjozsjcarafwglmnu'
+        test_value = 'avosdtivoqqhcyochvqz'
         self.instance.metar_type = test_value
         self.assertEqual(self.instance.metar_type, test_value)
     
@@ -170,7 +170,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test raw_ob property
         """
-        test_value = 'yqxbtppweizipuinkasy'
+        test_value = 'deeqzcaxveiowxnatdco'
         self.instance.raw_ob = test_value
         self.assertEqual(self.instance.raw_ob, test_value)
     
@@ -178,7 +178,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(76.67301751094355)
+        test_value = float(58.299075298156964)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -186,7 +186,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(11.785536421389386)
+        test_value = float(22.90913436023555)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -194,7 +194,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test elevation property
         """
-        test_value = float(31.605887882630658)
+        test_value = float(13.957500352224994)
         self.instance.elevation = test_value
         self.assertEqual(self.instance.elevation, test_value)
     
@@ -202,7 +202,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test flt_cat property
         """
-        test_value = 'ddfojimvidesvsyqtxzy'
+        test_value = 'carhbrqtbmrozbgvdycy'
         self.instance.flt_cat = test_value
         self.assertEqual(self.instance.flt_cat, test_value)
     
@@ -210,7 +210,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test clouds property
         """
-        test_value = 'bvkzmofqopryklxrscql'
+        test_value = 'bnnoibzvvtagphfwmfec'
         self.instance.clouds = test_value
         self.assertEqual(self.instance.clouds, test_value)
     
@@ -218,7 +218,7 @@ class Test_Metar(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'puahodvhoplqixtqvaka'
+        test_value = 'hiqfljicohbrjwrlxocm'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     

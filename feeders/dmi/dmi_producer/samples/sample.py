@@ -38,14 +38,14 @@ from dmi_producer_kafka_producer.producer import DkDmiLightningKafkaEventProduce
 
 # imports for the data classes for each event
 
-from dmi_producer_data.metobsstation import MetObsStation
-from dmi_producer_data.metobsobservation import MetObsObservation
-from dmi_producer_data.oceanstation import OceanStation
-from dmi_producer_data.tidewaterstation import TidewaterStation
-from dmi_producer_data.oceanobservation import OceanObservation
-from dmi_producer_data.tidewaterprediction import TidewaterPrediction
-from dmi_producer_data.lightningsensor import LightningSensor
-from dmi_producer_data.lightningstrike import LightningStrike
+from dmi_producer_data import MetObsStation
+from dmi_producer_data import MetObsObservation
+from dmi_producer_data import OceanStation
+from dmi_producer_data import TidewaterStation
+from dmi_producer_data import OceanObservation
+from dmi_producer_data import TidewaterPrediction
+from dmi_producer_data import LightningSensor
+from dmi_producer_data import LightningStrike
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -149,7 +149,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

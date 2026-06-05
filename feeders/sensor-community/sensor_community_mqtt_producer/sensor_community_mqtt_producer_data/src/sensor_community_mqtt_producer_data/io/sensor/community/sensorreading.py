@@ -110,6 +110,8 @@ class SensorReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -177,18 +179,18 @@ class SensorReading:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id=int(2),
-            timestamp='qqtpshwhltahebudarkb',
-            sensor_type_name='publzvkhvwytltyxrqai',
-            pm10_ug_m3=float(33.755339014989026),
-            pm2_5_ug_m3=float(84.095951246011),
-            pm1_0_ug_m3=float(33.600040045365375),
-            pm4_0_ug_m3=float(81.07258413037425),
-            temperature_celsius=float(60.36022476479885),
-            humidity_percent=float(86.2108947244489),
-            pressure_pa=float(65.19667270860711),
-            pressure_sealevel_pa=float(28.743757110745662),
-            noise_laeq_db=float(45.090203455833446),
-            noise_la_min_db=float(98.42121512232839),
-            noise_la_max_db=float(68.37681598752475)
+            sensor_id=int(12),
+            timestamp='nlpignkmpjhoqikpujpf',
+            sensor_type_name='ixusntgwaijjexslmgos',
+            pm10_ug_m3=float(52.99270954678435),
+            pm2_5_ug_m3=float(60.11259739652321),
+            pm1_0_ug_m3=float(35.571418406686576),
+            pm4_0_ug_m3=float(71.3999194363422),
+            temperature_celsius=float(56.595226952495956),
+            humidity_percent=float(51.04699028687206),
+            pressure_pa=float(84.52506560176158),
+            pressure_sealevel_pa=float(42.44491680116246),
+            noise_laeq_db=float(17.91672926222284),
+            noise_la_min_db=float(0.316112963550097),
+            noise_la_max_db=float(84.38385808634455)
         )

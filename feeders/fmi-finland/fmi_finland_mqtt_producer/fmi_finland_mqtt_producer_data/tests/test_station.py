@@ -28,11 +28,11 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            fmisid='yjccqektspguuuylngqh',
-            station_name='eovxtwnjsmlrevruwlzq',
-            latitude=float(89.06764713615712),
-            longitude=float(42.177980000587034),
-            municipality='qztnbrtkvckauvzgdlpq'
+            fmisid='lavfhvxknrpmqbesuhjv',
+            station_name='uqgjwxibtvlybkefwsdn',
+            latitude=float(96.02670675687915),
+            longitude=float(55.11898066778882),
+            municipality='zcsbqvwfpzeoxmontdwy'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Station(unittest.TestCase):
         """
         Test fmisid property
         """
-        test_value = 'yjccqektspguuuylngqh'
+        test_value = 'lavfhvxknrpmqbesuhjv'
         self.instance.fmisid = test_value
         self.assertEqual(self.instance.fmisid, test_value)
     
@@ -49,7 +49,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'eovxtwnjsmlrevruwlzq'
+        test_value = 'uqgjwxibtvlybkefwsdn'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -57,7 +57,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(89.06764713615712)
+        test_value = float(96.02670675687915)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -65,7 +65,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(42.177980000587034)
+        test_value = float(55.11898066778882)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -73,7 +73,7 @@ class Test_Station(unittest.TestCase):
         """
         Test municipality property
         """
-        test_value = 'qztnbrtkvckauvzgdlpq'
+        test_value = 'zcsbqvwfpzeoxmontdwy'
         self.instance.municipality = test_value
         self.assertEqual(self.instance.municipality, test_value)
     

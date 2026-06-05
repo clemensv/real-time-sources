@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
 from uk_ea_flood_monitoring_producer_data import Station
-from test_uk_ea_flood_monitoring_producer_data_station import Test_Station
+from test_station import Test_Station
 from uk_ea_flood_monitoring_producer_data import Reading
-from test_uk_ea_flood_monitoring_producer_data_reading import Test_Reading
+from test_reading import Test_Reading
 from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringMqttEventProducer
 from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringAmqpEventProducer
 
@@ -107,7 +107,8 @@ def test_uk_gov_environment_ea_floodmonitoring_ukgovenvironmenteafloodmonitoring
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_environment_ea_flood_monitoring_station(_station_reference = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_environment_ea_flood_monitoring_station(_station_reference = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_uk_gov_environment_ea_floodmonitoring_ukgovenvironmenteafloodmonitoring
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_environment_ea_flood_monitoring_reading(_station_reference = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_environment_ea_flood_monitoring_reading(_station_reference = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_uk_gov_environment_ea_floodmonitoring_mqtt_ukgovenvironmenteafloodmonit
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_environment_ea_flood_monitoring_mqtt_station(_station_reference = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_environment_ea_flood_monitoring_mqtt_station(_station_reference = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_uk_gov_environment_ea_floodmonitoring_mqtt_ukgovenvironmenteafloodmonit
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_environment_ea_flood_monitoring_mqtt_reading(_station_reference = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_environment_ea_flood_monitoring_mqtt_reading(_station_reference = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_uk_gov_environment_ea_floodmonitoring_amqp_ukgovenvironmenteafloodmonit
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_environment_ea_flood_monitoring_amqp_station(_station_reference = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_environment_ea_flood_monitoring_amqp_station(_station_reference = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_uk_gov_environment_ea_floodmonitoring_amqp_ukgovenvironmenteafloodmonit
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_environment_ea_flood_monitoring_amqp_reading(_station_reference = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_environment_ea_flood_monitoring_amqp_reading(_station_reference = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

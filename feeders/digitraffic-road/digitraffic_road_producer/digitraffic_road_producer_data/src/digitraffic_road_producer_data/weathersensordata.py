@@ -17,7 +17,7 @@ import json
 @dataclass
 class WeatherSensorData:
     """
-    Road weather station sensor reading from the Finnish national road network operated by Fintraffic. Each message represents a single sensor measurement at a road weather station, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic weather-v2/{stationId}/{sensorId}. Over 350 road weather stations measure parameters including air temperature (ILMA), road surface temperature (TIE_1), ground temperature (MAA_1), dew point (KASTEPISTE), freezing point (JÄÄTYMISPISTE_1), wind speed (KESKITUULI, MAKSIMITUULI), humidity (ILMAN_KOSTEUS), and precipitation. Data is updated every minute. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.
+    A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
     
     Attributes:
         station_id (int)
@@ -90,6 +90,8 @@ class WeatherSensorData:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class WeatherSensorData:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(5),
-            sensor_id=int(50),
-            value=float(60.048798334014386),
-            time=int(5)
+            station_id=int(84),
+            sensor_id=int(42),
+            value=float(96.0793598024062),
+            time=int(37)
         )

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import defra_aurn_mqtt_producer_data
 from defra_aurn_mqtt_producer_data import Station
-from test_defra_aurn_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from defra_aurn_mqtt_producer_data import Timeseries
-from test_defra_aurn_mqtt_producer_data_timeseries import Test_Timeseries
+from test_timeseries import Test_Timeseries
 from defra_aurn_mqtt_producer_data import Observation
-from test_defra_aurn_mqtt_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from defra_aurn_mqtt_producer_mqtt_client import UkGovDefraAurnStationsMqttMqttClient
 from defra_aurn_mqtt_producer_mqtt_client import UkGovDefraAurnTimeseriesMqttMqttClient
 
@@ -94,6 +95,7 @@ async def test_uk_gov_defra_aurn_stations_mqtt_uk_gov_defra_aurn_stations_mqtt_s
         await publisher_client.publish_uk_gov_defra_aurn_stations_mqtt_station(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -162,6 +164,7 @@ async def test_uk_gov_defra_aurn_timeseries_mqtt_uk_gov_defra_aurn_timeseries_mq
         await publisher_client.publish_uk_gov_defra_aurn_timeseries_mqtt_timeseries(
             topic=test_topic,
             timeseries_id=f"test_timeseries_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -227,6 +230,7 @@ async def test_uk_gov_defra_aurn_timeseries_mqtt_uk_gov_defra_aurn_timeseries_mq
         await publisher_client.publish_uk_gov_defra_aurn_timeseries_mqtt_observation(
             topic=test_topic,
             timeseries_id=f"test_timeseries_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

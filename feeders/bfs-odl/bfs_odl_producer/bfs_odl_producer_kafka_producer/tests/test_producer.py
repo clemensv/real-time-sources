@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from bfs_odl_producer_kafka_producer.producer import DeBfsOdlEventProducer
 from bfs_odl_producer_data import Station
-from test_bfs_odl_producer_data_station import Test_Station
+from test_station import Test_Station
 from bfs_odl_producer_data import DoseRateMeasurement
-from test_bfs_odl_producer_data_doseratemeasurement import Test_DoseRateMeasurement
+from test_doseratemeasurement import Test_DoseRateMeasurement
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

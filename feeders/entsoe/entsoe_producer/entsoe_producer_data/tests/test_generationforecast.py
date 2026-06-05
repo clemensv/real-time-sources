@@ -28,11 +28,11 @@ class Test_GenerationForecast(unittest.TestCase):
         Create instance of GenerationForecast for testing
         """
         instance = GenerationForecast(
-            inDomain='wnnjdcraeldqhvmanohd',
-            quantity=float(48.501841178922334),
-            resolution='hpvoplznqesqwgxdgcar',
-            documentType='iqaodsjshnqpnktuzymc',
-            unitName='ezuzburipxuplmicdlbs'
+            inDomain='eqpeiitaczwzwawumoxp',
+            quantity=float(78.4327779797905),
+            resolution='dkhdsomepplfaohytxxk',
+            documentType='iyjsmzwidgeirkpqkyrf',
+            unitName='oyrtqtzvoxfxbeqqpcso'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_GenerationForecast(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'wnnjdcraeldqhvmanohd'
+        test_value = 'eqpeiitaczwzwawumoxp'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -49,7 +49,7 @@ class Test_GenerationForecast(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(48.501841178922334)
+        test_value = float(78.4327779797905)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -57,7 +57,7 @@ class Test_GenerationForecast(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'hpvoplznqesqwgxdgcar'
+        test_value = 'dkhdsomepplfaohytxxk'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -65,7 +65,7 @@ class Test_GenerationForecast(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'iqaodsjshnqpnktuzymc'
+        test_value = 'iyjsmzwidgeirkpqkyrf'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -73,19 +73,10 @@ class Test_GenerationForecast(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'ezuzburipxuplmicdlbs'
+        test_value = 'oyrtqtzvoxfxbeqqpcso'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = GenerationForecast.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

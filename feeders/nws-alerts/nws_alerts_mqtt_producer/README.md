@@ -143,21 +143,21 @@ finally:- `checkpoint_container`: The name of the blob container to store checkp
 
 make build
 
-```##### `nws_weather_alert_mqtt_async`
+```##### `nws_weather_alert_minor_mqtt_async`
 
 
 
 ## Test```python
 
-nws_weather_alert_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent, WeatherAlert], Awaitable[None]]
+nws_weather_alert_minor_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent, WeatherAlert], Awaitable[None]]
 
 ```bash```
 
 make test
 
-```Asynchronous handler hook for `NWS.WeatherAlert.mqtt`: A weather or non-weather alert from the US National Weather
-Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common Alerting
-Protocol) standard.
+```Asynchronous handler hook for `NWS.WeatherAlert.Minor.mqtt`: A weather or non-weather alert from the US National
+Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common
+Alerting Protocol) standard.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -170,8 +170,8 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 Example:
 
 ```python
-async def nws_weather_alert_mqtt_event(partition_context: PartitionContext, event: EventData, cloud_event: CloudEvent,
-data: WeatherAlert) -> None:
+async def nws_weather_alert_minor_mqtt_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: WeatherAlert) -> None:
     # Process the event data
     await partition_context.update_checkpoint(event)
 ```
@@ -180,7 +180,186 @@ The handler functions is then assigned to the event dispatcher for the message g
 responsible for calling the appropriate handler function when a message is received. Example:
 
 ```python
-nws_alerts_mqtt_dispatcher.nws_weather_alert_mqtt_async = nws_weather_alert_mqtt_event
+nws_alerts_mqtt_dispatcher.nws_weather_alert_minor_mqtt_async = nws_weather_alert_minor_mqtt_event
+```
+
+
+
+make build
+
+```##### `nws_weather_alert_moderate_mqtt_async`
+
+
+
+## Test```python
+
+nws_weather_alert_moderate_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent, WeatherAlert],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `NWS.WeatherAlert.Moderate.mqtt`: A weather or non-weather alert from the US National
+Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common
+Alerting Protocol) standard.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `nws_alerts_mqtt_producer_data.WeatherAlert`.
+
+Example:
+
+```python
+async def nws_weather_alert_moderate_mqtt_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: WeatherAlert) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+nws_alerts_mqtt_dispatcher.nws_weather_alert_moderate_mqtt_async = nws_weather_alert_moderate_mqtt_event
+```
+
+
+
+make build
+
+```##### `nws_weather_alert_severe_mqtt_async`
+
+
+
+## Test```python
+
+nws_weather_alert_severe_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent, WeatherAlert], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `NWS.WeatherAlert.Severe.mqtt`: A weather or non-weather alert from the US National
+Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common
+Alerting Protocol) standard.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `nws_alerts_mqtt_producer_data.WeatherAlert`.
+
+Example:
+
+```python
+async def nws_weather_alert_severe_mqtt_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: WeatherAlert) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+nws_alerts_mqtt_dispatcher.nws_weather_alert_severe_mqtt_async = nws_weather_alert_severe_mqtt_event
+```
+
+
+
+make build
+
+```##### `nws_weather_alert_extreme_mqtt_async`
+
+
+
+## Test```python
+
+nws_weather_alert_extreme_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent, WeatherAlert],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `NWS.WeatherAlert.Extreme.mqtt`: A weather or non-weather alert from the US National
+Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common
+Alerting Protocol) standard.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `nws_alerts_mqtt_producer_data.WeatherAlert`.
+
+Example:
+
+```python
+async def nws_weather_alert_extreme_mqtt_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: WeatherAlert) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+nws_alerts_mqtt_dispatcher.nws_weather_alert_extreme_mqtt_async = nws_weather_alert_extreme_mqtt_event
+```
+
+
+
+make build
+
+```##### `nws_weather_alert_unknown_mqtt_async`
+
+
+
+## Test```python
+
+nws_weather_alert_unknown_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent, WeatherAlert],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `NWS.WeatherAlert.Unknown.mqtt`: A weather or non-weather alert from the US National
+Weather Service, distributed through the Integrated Public Alert and Warning System (IPAWS). Follows the CAP (Common
+Alerting Protocol) standard.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `nws_alerts_mqtt_producer_data.WeatherAlert`.
+
+Example:
+
+```python
+async def nws_weather_alert_unknown_mqtt_event(partition_context: PartitionContext, event: EventData, cloud_event:
+CloudEvent, data: WeatherAlert) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+nws_alerts_mqtt_dispatcher.nws_weather_alert_unknown_mqtt_async = nws_weather_alert_unknown_mqtt_event
 ```
 
 

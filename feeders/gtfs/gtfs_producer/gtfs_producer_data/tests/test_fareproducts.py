@@ -28,10 +28,10 @@ class Test_FareProducts(unittest.TestCase):
         Create instance of FareProducts for testing
         """
         instance = FareProducts(
-            fareProductId='fqsvsvbeerdegcnqrpzr',
-            fareProductName='xpriqftmzpmhypwfvebq',
-            fareProductDesc='iptgkdmyhmhpwkbrsrie',
-            fareProductUrl='avhvjlvbelsihzujaecr'
+            fareProductId='vlhvpabzkdanmqxdvssa',
+            fareProductName='xzcljvkogheeenifzlzo',
+            fareProductDesc='frgdvrervumvlgpvcbrp',
+            fareProductUrl='kgicusfsbpjmouhzjayr'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductId property
         """
-        test_value = 'fqsvsvbeerdegcnqrpzr'
+        test_value = 'vlhvpabzkdanmqxdvssa'
         self.instance.fareProductId = test_value
         self.assertEqual(self.instance.fareProductId, test_value)
     
@@ -48,7 +48,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductName property
         """
-        test_value = 'xpriqftmzpmhypwfvebq'
+        test_value = 'xzcljvkogheeenifzlzo'
         self.instance.fareProductName = test_value
         self.assertEqual(self.instance.fareProductName, test_value)
     
@@ -56,7 +56,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductDesc property
         """
-        test_value = 'iptgkdmyhmhpwkbrsrie'
+        test_value = 'frgdvrervumvlgpvcbrp'
         self.instance.fareProductDesc = test_value
         self.assertEqual(self.instance.fareProductDesc, test_value)
     
@@ -64,7 +64,7 @@ class Test_FareProducts(unittest.TestCase):
         """
         Test fareProductUrl property
         """
-        test_value = 'avhvjlvbelsihzujaecr'
+        test_value = 'kgicusfsbpjmouhzjayr'
         self.instance.fareProductUrl = test_value
         self.assertEqual(self.instance.fareProductUrl, test_value)
     

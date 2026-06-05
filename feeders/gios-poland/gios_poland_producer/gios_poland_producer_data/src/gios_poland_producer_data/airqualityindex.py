@@ -138,6 +138,8 @@ class AirQualityIndex:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -205,31 +207,31 @@ class AirQualityIndex:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(56),
+            station_id=int(62),
             calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            index_value=int(82),
-            index_category='dhcmkyelbnklmrxevvcr',
+            index_value=int(57),
+            index_category='uckpauycthdatnjghafv',
             source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             so2_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            so2_index_value=int(16),
-            so2_index_category='nhaiiibioofwlgpicrwd',
+            so2_index_value=int(10),
+            so2_index_category='pfoamzjccrtdipeagqxg',
             so2_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             no2_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            no2_index_value=int(10),
-            no2_index_category='dtylbbhxseeaenkhjajf',
+            no2_index_value=int(6),
+            no2_index_category='kibsxilxnyhjwiavjxik',
             no2_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             pm10_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            pm10_index_value=int(15),
-            pm10_index_category='ggmfskuyqpvxbqjktcyb',
+            pm10_index_value=int(73),
+            pm10_index_category='cumwkvtxsiurpfvjhndp',
             pm10_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             pm25_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            pm25_index_value=int(32),
-            pm25_index_category='hafajtszsrtrhcavhriy',
+            pm25_index_value=int(2),
+            pm25_index_category='fpncnedqnyrkhtqstzve',
             pm25_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             o3_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            o3_index_value=int(83),
-            o3_index_category='dvqgzhbzlojkxgdtrsjj',
+            o3_index_value=int(17),
+            o3_index_category='artdtgbvqlvuljlzevez',
             o3_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            overall_status=True,
-            critical_pollutant_code='ukflqocxhjlwxmasdpbe'
+            overall_status=False,
+            critical_pollutant_code='dulullvblfufbafnulkf'
         )

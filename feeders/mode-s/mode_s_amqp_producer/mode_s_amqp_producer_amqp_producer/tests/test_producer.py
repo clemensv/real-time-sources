@@ -27,7 +27,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from mode_s_amqp_producer_amqp_producer import *
 from mode_s_amqp_producer_data import Record
-from test_mode_s_amqp_producer_data_record import Test_Record
+from test_record import Test_Record
 
 
 

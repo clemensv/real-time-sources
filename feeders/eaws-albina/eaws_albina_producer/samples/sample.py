@@ -34,11 +34,12 @@ from confluent_kafka import Producer as KafkaProducer
 
 from eaws_albina_producer_kafka_producer.producer import OrgEAWSALBINABulletinsEventProducer
 from eaws_albina_producer_kafka_producer.producer import OrgEAWSALBINAMqttEventProducer
+from eaws_albina_producer_kafka_producer.producer import OrgEAWSALBINAAmqpEventProducer
 
 # imports for the data classes for each event
 
-from eaws_albina_producer_data.avalancheregion import AvalancheRegion
-from eaws_albina_producer_data.avalanchebulletin import AvalancheBulletin
+from eaws_albina_producer_data import AvalancheRegion
+from eaws_albina_producer_data import AvalancheBulletin
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -89,12 +90,28 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'org.EAWS.ALBINA.mqtt.AvalancheBulletin' event to Kafka topic.
     await org_eawsalbinamqtt_event_producer.send_org_eaws_albina_mqtt_avalanche_bulletin(_region_id = 'TODO: replace me', data = _avalanche_bulletin)
     print(f"Sent 'org.EAWS.ALBINA.mqtt.AvalancheBulletin' event: {_avalanche_bulletin.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        org_eawsalbinaamqp_event_producer = OrgEAWSALBINAAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        org_eawsalbinaamqp_event_producer = OrgEAWSALBINAAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- org.EAWS.ALBINA.amqp.AvalancheBulletin ----
+    # TODO: Supply event data for the org.EAWS.ALBINA.amqp.AvalancheBulletin event
+    _avalanche_bulletin = AvalancheBulletin()
+
+    # sends the 'org.EAWS.ALBINA.amqp.AvalancheBulletin' event to Kafka topic.
+    await org_eawsalbinaamqp_event_producer.send_org_eaws_albina_amqp_avalanche_bulletin(_region_id = 'TODO: replace me', data = _avalanche_bulletin)
+    print(f"Sent 'org.EAWS.ALBINA.amqp.AvalancheBulletin' event: {_avalanche_bulletin.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

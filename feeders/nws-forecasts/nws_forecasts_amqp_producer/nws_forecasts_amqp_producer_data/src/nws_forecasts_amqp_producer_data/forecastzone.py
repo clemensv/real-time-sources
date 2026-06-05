@@ -113,6 +113,8 @@ class ForecastZone:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -180,18 +182,18 @@ class ForecastZone:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='wlwogkobimllakfhdlxh',
+            zone_id='ugkelqnlyglhskkinole',
             zone_type=ZoneTypeenum.public,
-            name='kcajyelepxfqzibcifck',
-            state='ohjxzrmgqrokenkymxmx',
-            forecast_office_url='zhqsgsyrnilyiydnzcxf',
-            grid_identifier='omdozwzsifvtgxdpgxkd',
-            awips_location_identifier='hldtbftwdrfwhzvkmjyi',
-            cwa_ids=['vaeidtdqvvcwprjmbbok', 'kmbihppcfrbmmwdfmkmu', 'vestloqctioihqbszpoq'],
-            forecast_office_urls=['wtfitwwwggsrdtgpscxi', 'ejtakipnpaxhsqobukzw', 'bpflalwcflpqxvzjxycj'],
-            time_zones=['nliupjnknsroadphqmbd', 'lsvlsstcjbgwvfksehup', 'sjxjlhjizyptcpodighn'],
-            observation_station_ids=['urhpevwukpjfjhhhhfly'],
-            radar_station='fyqhtblbuqarygabousn',
+            name='jdfzxznyadjctdzimwuw',
+            state='riytydxmtvchbqlykwqe',
+            forecast_office_url='oyopnfadhnmfxjhcwqad',
+            grid_identifier='kxjzhemgvbqbyuchtqgb',
+            awips_location_identifier='rsxwsxpnxfzyfxydpwkf',
+            cwa_ids=['pwsmljfrbmbepxooapqz', 'rssdkrladwymvhzkdntl', 'twgfiljucxektcuwlves', 'lsjacmhnjkiiefqlsjty', 'sjomalxkglslmuedinpa'],
+            forecast_office_urls=['ckhqfkpvbbnhkeobfowy', 'vbhthuliymvnlxzmgvkq', 'addygpiyimdecgjmxxum', 'pkvfvghqjjzdehaogedk'],
+            time_zones=['uibsusoicpbgkzhirfbf', 'nllefxgoqrlhqptnqcuo', 'hlytldhufbvfbubdkxbq', 'lifrhgguxiucpibovrfu', 'kidxfnpgnzfcuibvmwks'],
+            observation_station_ids=['upzjuzojozfmkncjqcgo', 'nkgacdcndhsjsdbxzhqh', 'ohgfzwsbrjtwrgilwrhp'],
+            radar_station='dvxrcblcqxpqewvozhmd',
             effective_date=datetime.datetime.now(datetime.timezone.utc),
             expiration_date=datetime.datetime.now(datetime.timezone.utc)
         )

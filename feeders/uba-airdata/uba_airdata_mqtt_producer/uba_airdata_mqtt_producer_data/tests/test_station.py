@@ -28,24 +28,24 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_id=int(32),
-            station_code='bhldvaplvlkubikeajpk',
-            station_name='xwqopvtrtejzggqpbpna',
-            station_city='uenyiytrvjcqofsbcldp',
-            station_synonym='alchpaznskcngfguaica',
-            active_from='fqzoazpjdhwhzmgkwcac',
-            active_to='rtfaccyqktgypglopvxa',
-            longitude=float(18.026977133613354),
-            latitude=float(19.867613334023304),
-            network_id=int(57),
-            network_code='pxdvtdoffbhtjkhigmgj',
-            network_name='qzgfrgozixzouwqzbjqx',
-            setting_name='awgnwnfxaaoemjjinlsw',
-            setting_short='hfptipflictiswvyetqp',
-            type_name='vdecmdnpqcquqvvmdwzx',
-            street='nwefhrnrsmhthsbztoez',
-            street_nr='xhjgnvjltsunxynnwckc',
-            zip_code='hsrkgitjwewskpxkstqg'
+            station_id=int(95),
+            station_code='vpiwjitnuiqqqreysrem',
+            station_name='vdgmrfygxeovjrdqdpic',
+            station_city='ydrgwoiehymtvecxirgn',
+            station_synonym='lnsbnzzpojkymxslikcf',
+            active_from='qqrxvlycbllklmppznlw',
+            active_to='trbidiwpxpxgiwdnxkdu',
+            longitude=float(94.56752323055308),
+            latitude=float(53.935741231545684),
+            network_id=int(98),
+            network_code='lnpcjiwhetrteickqavb',
+            network_name='aqipsvhkxsgcsrcactoy',
+            setting_name='afexwoplxqtsylpmmjtn',
+            setting_short='kafnqroaxngccdybwure',
+            type_name='itxquwnmnljccyxpyawd',
+            street='kudmmcbbyjrbcodlorpu',
+            street_nr='pbjxzjxmirkekmfatqco',
+            zip_code='cusbbzqlnxcdwrwjrmzh'
         )
         return instance
 
@@ -54,7 +54,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(32)
+        test_value = int(95)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -62,7 +62,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'bhldvaplvlkubikeajpk'
+        test_value = 'vpiwjitnuiqqqreysrem'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -70,7 +70,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'xwqopvtrtejzggqpbpna'
+        test_value = 'vdgmrfygxeovjrdqdpic'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -78,7 +78,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_city property
         """
-        test_value = 'uenyiytrvjcqofsbcldp'
+        test_value = 'ydrgwoiehymtvecxirgn'
         self.instance.station_city = test_value
         self.assertEqual(self.instance.station_city, test_value)
     
@@ -86,7 +86,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_synonym property
         """
-        test_value = 'alchpaznskcngfguaica'
+        test_value = 'lnsbnzzpojkymxslikcf'
         self.instance.station_synonym = test_value
         self.assertEqual(self.instance.station_synonym, test_value)
     
@@ -94,7 +94,7 @@ class Test_Station(unittest.TestCase):
         """
         Test active_from property
         """
-        test_value = 'fqzoazpjdhwhzmgkwcac'
+        test_value = 'qqrxvlycbllklmppznlw'
         self.instance.active_from = test_value
         self.assertEqual(self.instance.active_from, test_value)
     
@@ -102,7 +102,7 @@ class Test_Station(unittest.TestCase):
         """
         Test active_to property
         """
-        test_value = 'rtfaccyqktgypglopvxa'
+        test_value = 'trbidiwpxpxgiwdnxkdu'
         self.instance.active_to = test_value
         self.assertEqual(self.instance.active_to, test_value)
     
@@ -110,7 +110,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(18.026977133613354)
+        test_value = float(94.56752323055308)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -118,7 +118,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(19.867613334023304)
+        test_value = float(53.935741231545684)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -126,7 +126,7 @@ class Test_Station(unittest.TestCase):
         """
         Test network_id property
         """
-        test_value = int(57)
+        test_value = int(98)
         self.instance.network_id = test_value
         self.assertEqual(self.instance.network_id, test_value)
     
@@ -134,7 +134,7 @@ class Test_Station(unittest.TestCase):
         """
         Test network_code property
         """
-        test_value = 'pxdvtdoffbhtjkhigmgj'
+        test_value = 'lnpcjiwhetrteickqavb'
         self.instance.network_code = test_value
         self.assertEqual(self.instance.network_code, test_value)
     
@@ -142,7 +142,7 @@ class Test_Station(unittest.TestCase):
         """
         Test network_name property
         """
-        test_value = 'qzgfrgozixzouwqzbjqx'
+        test_value = 'aqipsvhkxsgcsrcactoy'
         self.instance.network_name = test_value
         self.assertEqual(self.instance.network_name, test_value)
     
@@ -150,7 +150,7 @@ class Test_Station(unittest.TestCase):
         """
         Test setting_name property
         """
-        test_value = 'awgnwnfxaaoemjjinlsw'
+        test_value = 'afexwoplxqtsylpmmjtn'
         self.instance.setting_name = test_value
         self.assertEqual(self.instance.setting_name, test_value)
     
@@ -158,7 +158,7 @@ class Test_Station(unittest.TestCase):
         """
         Test setting_short property
         """
-        test_value = 'hfptipflictiswvyetqp'
+        test_value = 'kafnqroaxngccdybwure'
         self.instance.setting_short = test_value
         self.assertEqual(self.instance.setting_short, test_value)
     
@@ -166,7 +166,7 @@ class Test_Station(unittest.TestCase):
         """
         Test type_name property
         """
-        test_value = 'vdecmdnpqcquqvvmdwzx'
+        test_value = 'itxquwnmnljccyxpyawd'
         self.instance.type_name = test_value
         self.assertEqual(self.instance.type_name, test_value)
     
@@ -174,7 +174,7 @@ class Test_Station(unittest.TestCase):
         """
         Test street property
         """
-        test_value = 'nwefhrnrsmhthsbztoez'
+        test_value = 'kudmmcbbyjrbcodlorpu'
         self.instance.street = test_value
         self.assertEqual(self.instance.street, test_value)
     
@@ -182,7 +182,7 @@ class Test_Station(unittest.TestCase):
         """
         Test street_nr property
         """
-        test_value = 'xhjgnvjltsunxynnwckc'
+        test_value = 'pbjxzjxmirkekmfatqco'
         self.instance.street_nr = test_value
         self.assertEqual(self.instance.street_nr, test_value)
     
@@ -190,7 +190,7 @@ class Test_Station(unittest.TestCase):
         """
         Test zip_code property
         """
-        test_value = 'hsrkgitjwewskpxkstqg'
+        test_value = 'cusbbzqlnxcdwrwjrmzh'
         self.instance.zip_code = test_value
         self.assertEqual(self.instance.zip_code, test_value)
     

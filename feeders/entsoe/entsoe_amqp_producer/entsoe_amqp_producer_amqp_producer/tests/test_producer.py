@@ -5,6 +5,7 @@
 Tests for entsoe_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../entsoe_amqp_producer_data/src')))
@@ -25,27 +27,27 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from entsoe_amqp_producer_amqp_producer import *
 from entsoe_amqp_producer_data import DayAheadPrices
-from test_entsoe_amqp_producer_data_dayaheadprices import Test_DayAheadPrices
+from test_dayaheadprices import Test_DayAheadPrices
 from entsoe_amqp_producer_data import ActualTotalLoad
-from test_entsoe_amqp_producer_data_actualtotalload import Test_ActualTotalLoad
+from test_actualtotalload import Test_ActualTotalLoad
 from entsoe_amqp_producer_data import LoadForecastMargin
-from test_entsoe_amqp_producer_data_loadforecastmargin import Test_LoadForecastMargin
+from test_loadforecastmargin import Test_LoadForecastMargin
 from entsoe_amqp_producer_data import GenerationForecast
-from test_entsoe_amqp_producer_data_generationforecast import Test_GenerationForecast
+from test_generationforecast import Test_GenerationForecast
 from entsoe_amqp_producer_data import ReservoirFillingInformation
-from test_entsoe_amqp_producer_data_reservoirfillinginformation import Test_ReservoirFillingInformation
+from test_reservoirfillinginformation import Test_ReservoirFillingInformation
 from entsoe_amqp_producer_data import ActualGeneration
-from test_entsoe_amqp_producer_data_actualgeneration import Test_ActualGeneration
+from test_actualgeneration import Test_ActualGeneration
 from entsoe_amqp_producer_data import ActualGenerationPerType
-from test_entsoe_amqp_producer_data_actualgenerationpertype import Test_ActualGenerationPerType
+from test_actualgenerationpertype import Test_ActualGenerationPerType
 from entsoe_amqp_producer_data import WindSolarForecast
-from test_entsoe_amqp_producer_data_windsolarforecast import Test_WindSolarForecast
+from test_windsolarforecast import Test_WindSolarForecast
 from entsoe_amqp_producer_data import WindSolarGeneration
-from test_entsoe_amqp_producer_data_windsolargeneration import Test_WindSolarGeneration
+from test_windsolargeneration import Test_WindSolarGeneration
 from entsoe_amqp_producer_data import InstalledGenerationCapacityPerType
-from test_entsoe_amqp_producer_data_installedgenerationcapacitypertype import Test_InstalledGenerationCapacityPerType
+from test_installedgenerationcapacitypertype import Test_InstalledGenerationCapacityPerType
 from entsoe_amqp_producer_data import CrossBorderPhysicalFlows
-from test_entsoe_amqp_producer_data_crossborderphysicalflows import Test_CrossBorderPhysicalFlows
+from test_crossborderphysicalflows import Test_CrossBorderPhysicalFlows
 
 
 
@@ -251,6 +253,45 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(EuEntsoeTransparencyByDomainAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_day_ahead_prices(self, artemis_container):
         """Send and receive a DayAheadPrices message via ActiveMQ Artemis."""
@@ -277,6 +318,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                 producer.send_day_ahead_prices(
                     data=payload,
                     _in_domain="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -284,6 +326,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -305,10 +348,44 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}".format(inDomain="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('eventType') == "DayAheadPrices"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('event-type') == "DayAheadPrices"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_day_ahead_prices_single_fresh_connection(self, artemis_container):
+        """Send exactly one DayAheadPrices message on a fresh producer connection."""
+        payload = Test_DayAheadPrices.create_instance()
+
+        producer = EuEntsoeTransparencyByDomainAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_day_ahead_prices(
+                data=payload,
+                _in_domain="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices'
+        assert received.body is not None
+        assert received.subject == "{inDomain}".format(inDomain="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('event-type') == "DayAheadPrices"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
     
     def test_send_actual_total_load(self, artemis_container):
         """Send and receive a ActualTotalLoad message via ActiveMQ Artemis."""
@@ -335,6 +412,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                 producer.send_actual_total_load(
                     data=payload,
                     _in_domain="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -342,6 +420,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -363,10 +442,44 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}".format(inDomain="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('eventType') == "ActualTotalLoad"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('event-type') == "ActualTotalLoad"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_actual_total_load_single_fresh_connection(self, artemis_container):
+        """Send exactly one ActualTotalLoad message on a fresh producer connection."""
+        payload = Test_ActualTotalLoad.create_instance()
+
+        producer = EuEntsoeTransparencyByDomainAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_actual_total_load(
+                data=payload,
+                _in_domain="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad'
+        assert received.body is not None
+        assert received.subject == "{inDomain}".format(inDomain="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('event-type') == "ActualTotalLoad"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
     
     def test_send_load_forecast_margin(self, artemis_container):
         """Send and receive a LoadForecastMargin message via ActiveMQ Artemis."""
@@ -393,6 +506,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                 producer.send_load_forecast_margin(
                     data=payload,
                     _in_domain="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -400,6 +514,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -421,10 +536,44 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}".format(inDomain="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('eventType') == "LoadForecastMargin"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('event-type') == "LoadForecastMargin"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_load_forecast_margin_single_fresh_connection(self, artemis_container):
+        """Send exactly one LoadForecastMargin message on a fresh producer connection."""
+        payload = Test_LoadForecastMargin.create_instance()
+
+        producer = EuEntsoeTransparencyByDomainAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_load_forecast_margin(
+                data=payload,
+                _in_domain="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin'
+        assert received.body is not None
+        assert received.subject == "{inDomain}".format(inDomain="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('event-type') == "LoadForecastMargin"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
     
     def test_send_generation_forecast(self, artemis_container):
         """Send and receive a GenerationForecast message via ActiveMQ Artemis."""
@@ -451,6 +600,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                 producer.send_generation_forecast(
                     data=payload,
                     _in_domain="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -458,6 +608,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -479,10 +630,44 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}".format(inDomain="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('eventType') == "GenerationForecast"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('event-type') == "GenerationForecast"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_generation_forecast_single_fresh_connection(self, artemis_container):
+        """Send exactly one GenerationForecast message on a fresh producer connection."""
+        payload = Test_GenerationForecast.create_instance()
+
+        producer = EuEntsoeTransparencyByDomainAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_generation_forecast(
+                data=payload,
+                _in_domain="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.GenerationForecast'
+        assert received.body is not None
+        assert received.subject == "{inDomain}".format(inDomain="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('event-type') == "GenerationForecast"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
     
     def test_send_reservoir_filling_information(self, artemis_container):
         """Send and receive a ReservoirFillingInformation message via ActiveMQ Artemis."""
@@ -509,6 +694,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                 producer.send_reservoir_filling_information(
                     data=payload,
                     _in_domain="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -516,6 +702,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -537,10 +724,44 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}".format(inDomain="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('eventType') == "ReservoirFillingInformation"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('event-type') == "ReservoirFillingInformation"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_reservoir_filling_information_single_fresh_connection(self, artemis_container):
+        """Send exactly one ReservoirFillingInformation message on a fresh producer connection."""
+        payload = Test_ReservoirFillingInformation.create_instance()
+
+        producer = EuEntsoeTransparencyByDomainAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_reservoir_filling_information(
+                data=payload,
+                _in_domain="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation'
+        assert received.body is not None
+        assert received.subject == "{inDomain}".format(inDomain="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('event-type') == "ReservoirFillingInformation"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
     
     def test_send_actual_generation(self, artemis_container):
         """Send and receive a ActualGeneration message via ActiveMQ Artemis."""
@@ -567,6 +788,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                 producer.send_actual_generation(
                     data=payload,
                     _in_domain="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -574,6 +796,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -595,10 +818,44 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}".format(inDomain="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('eventType') == "ActualGeneration"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('event-type') == "ActualGeneration"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_actual_generation_single_fresh_connection(self, artemis_container):
+        """Send exactly one ActualGeneration message on a fresh producer connection."""
+        payload = Test_ActualGeneration.create_instance()
+
+        producer = EuEntsoeTransparencyByDomainAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_actual_generation(
+                data=payload,
+                _in_domain="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.ActualGeneration'
+        assert received.body is not None
+        assert received.subject == "{inDomain}".format(inDomain="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('event-type') == "ActualGeneration"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}".format(inDomain="value"))[:128]
 
 
 
@@ -620,6 +877,45 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(EuEntsoeTransparencyByDomainPsrTypeAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_actual_generation_per_type(self, artemis_container):
         """Send and receive a ActualGenerationPerType message via ActiveMQ Artemis."""
@@ -647,6 +943,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     data=payload,
                     _in_domain="value",
                     _psr_type="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -654,6 +951,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -675,11 +973,47 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('psrType') == "{psrType}".format(psrType="value")
-                assert properties.get('eventType') == "ActualGenerationPerType"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('psr-type') == "{psrType}".format(psrType="value")
+                assert properties.get('event-type') == "ActualGenerationPerType"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}/{psrType}".format(inDomain="value", psrType="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_actual_generation_per_type_single_fresh_connection(self, artemis_container):
+        """Send exactly one ActualGenerationPerType message on a fresh producer connection."""
+        payload = Test_ActualGenerationPerType.create_instance()
+
+        producer = EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_actual_generation_per_type(
+                data=payload,
+                _in_domain="value",
+                _psr_type="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType'
+        assert received.body is not None
+        assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('psr-type') == "{psrType}".format(psrType="value")
+        assert properties.get('event-type') == "ActualGenerationPerType"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}/{psrType}".format(inDomain="value", psrType="value"))[:128]
     
     def test_send_wind_solar_forecast(self, artemis_container):
         """Send and receive a WindSolarForecast message via ActiveMQ Artemis."""
@@ -707,6 +1041,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     data=payload,
                     _in_domain="value",
                     _psr_type="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -714,6 +1049,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -735,11 +1071,47 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('psrType') == "{psrType}".format(psrType="value")
-                assert properties.get('eventType') == "WindSolarForecast"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('psr-type') == "{psrType}".format(psrType="value")
+                assert properties.get('event-type') == "WindSolarForecast"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}/{psrType}".format(inDomain="value", psrType="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_wind_solar_forecast_single_fresh_connection(self, artemis_container):
+        """Send exactly one WindSolarForecast message on a fresh producer connection."""
+        payload = Test_WindSolarForecast.create_instance()
+
+        producer = EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_wind_solar_forecast(
+                data=payload,
+                _in_domain="value",
+                _psr_type="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast'
+        assert received.body is not None
+        assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('psr-type') == "{psrType}".format(psrType="value")
+        assert properties.get('event-type') == "WindSolarForecast"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}/{psrType}".format(inDomain="value", psrType="value"))[:128]
     
     def test_send_wind_solar_generation(self, artemis_container):
         """Send and receive a WindSolarGeneration message via ActiveMQ Artemis."""
@@ -767,6 +1139,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     data=payload,
                     _in_domain="value",
                     _psr_type="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -774,6 +1147,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -795,11 +1169,47 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('psrType') == "{psrType}".format(psrType="value")
-                assert properties.get('eventType') == "WindSolarGeneration"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('psr-type') == "{psrType}".format(psrType="value")
+                assert properties.get('event-type') == "WindSolarGeneration"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}/{psrType}".format(inDomain="value", psrType="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_wind_solar_generation_single_fresh_connection(self, artemis_container):
+        """Send exactly one WindSolarGeneration message on a fresh producer connection."""
+        payload = Test_WindSolarGeneration.create_instance()
+
+        producer = EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_wind_solar_generation(
+                data=payload,
+                _in_domain="value",
+                _psr_type="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration'
+        assert received.body is not None
+        assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('psr-type') == "{psrType}".format(psrType="value")
+        assert properties.get('event-type') == "WindSolarGeneration"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}/{psrType}".format(inDomain="value", psrType="value"))[:128]
     
     def test_send_installed_generation_capacity_per_type(self, artemis_container):
         """Send and receive a InstalledGenerationCapacityPerType message via ActiveMQ Artemis."""
@@ -827,6 +1237,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     data=payload,
                     _in_domain="value",
                     _psr_type="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -834,6 +1245,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -855,11 +1267,47 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('psrType') == "{psrType}".format(psrType="value")
-                assert properties.get('eventType') == "InstalledGenerationCapacityPerType"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('psr-type') == "{psrType}".format(psrType="value")
+                assert properties.get('event-type') == "InstalledGenerationCapacityPerType"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}/{psrType}".format(inDomain="value", psrType="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_installed_generation_capacity_per_type_single_fresh_connection(self, artemis_container):
+        """Send exactly one InstalledGenerationCapacityPerType message on a fresh producer connection."""
+        payload = Test_InstalledGenerationCapacityPerType.create_instance()
+
+        producer = EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_installed_generation_capacity_per_type(
+                data=payload,
+                _in_domain="value",
+                _psr_type="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType'
+        assert received.body is not None
+        assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('psr-type') == "{psrType}".format(psrType="value")
+        assert properties.get('event-type') == "InstalledGenerationCapacityPerType"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}/{psrType}".format(inDomain="value", psrType="value"))[:128]
 
 
 
@@ -881,6 +1329,45 @@ class TestEuEntsoeTransparencyCrossBorderAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(EuEntsoeTransparencyCrossBorderAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_cross_border_physical_flows(self, artemis_container):
         """Send and receive a CrossBorderPhysicalFlows message via ActiveMQ Artemis."""
@@ -908,6 +1395,7 @@ class TestEuEntsoeTransparencyCrossBorderAmqpProducer:
                     data=payload,
                     _in_domain="value",
                     _out_domain="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -915,6 +1403,7 @@ class TestEuEntsoeTransparencyCrossBorderAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -936,9 +1425,45 @@ class TestEuEntsoeTransparencyCrossBorderAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{inDomain}/{outDomain}".format(inDomain="value", outDomain="value")
-                assert properties.get('inDomain') == "{inDomain}".format(inDomain="value")
-                assert properties.get('outDomain') == "{outDomain}".format(outDomain="value")
-                assert properties.get('eventType') == "CrossBorderPhysicalFlows"
+                assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+                assert properties.get('out-domain') == "{outDomain}".format(outDomain="value")
+                assert properties.get('event-type') == "CrossBorderPhysicalFlows"
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}/{outDomain}".format(inDomain="value", outDomain="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_cross_border_physical_flows_single_fresh_connection(self, artemis_container):
+        """Send exactly one CrossBorderPhysicalFlows message on a fresh producer connection."""
+        payload = Test_CrossBorderPhysicalFlows.create_instance()
+
+        producer = EuEntsoeTransparencyCrossBorderAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_cross_border_physical_flows(
+                data=payload,
+                _in_domain="value",
+                _out_domain="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows'
+        assert received.body is not None
+        assert received.subject == "{inDomain}/{outDomain}".format(inDomain="value", outDomain="value")
+        assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
+        assert properties.get('out-domain') == "{outDomain}".format(outDomain="value")
+        assert properties.get('event-type') == "CrossBorderPhysicalFlows"
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{inDomain}/{outDomain}".format(inDomain="value", outDomain="value"))[:128]
 

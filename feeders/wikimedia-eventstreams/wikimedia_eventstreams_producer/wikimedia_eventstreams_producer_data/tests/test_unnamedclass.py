@@ -28,15 +28,15 @@ class Test_UnnamedClass(unittest.TestCase):
         Create instance of UnnamedClass for testing
         """
         instance = UnnamedClass(
-            uri='lwbytxedscgvejauouuq',
-            request_id='vontbjjrdlxtbhnnyzhg',
-            id='cjstojfihxlnybzpmjut',
-            domain='ucnwmpahacjoijxfmmzi',
-            stream='uzobieioolwtgauhtego',
-            topic='xuraotbirtlsfbvoxboh',
-            partition=int(44),
-            offset='bkcjfdjonjijfytiafjw',
-            dt='yhuxlkwycdpiekacrgqu'
+            uri='dtxiilfyovhipgcfnwqd',
+            request_id='mbycbqaqfvlbbktdexvd',
+            id='hxfcmitwnwhkdxgfbpfs',
+            domain='jnsuwlwinmzhtdocnrvj',
+            stream='pmavbvmdfzkxrpslrmdi',
+            topic='vgxvdtnayxwxcygmsbeh',
+            partition=int(63),
+            offset='sgubgjbnvycxznxnhxbg',
+            dt='sqjflpntejqhpzhvyjza'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test uri property
         """
-        test_value = 'lwbytxedscgvejauouuq'
+        test_value = 'dtxiilfyovhipgcfnwqd'
         self.instance.uri = test_value
         self.assertEqual(self.instance.uri, test_value)
     
@@ -53,7 +53,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test request_id property
         """
-        test_value = 'vontbjjrdlxtbhnnyzhg'
+        test_value = 'mbycbqaqfvlbbktdexvd'
         self.instance.request_id = test_value
         self.assertEqual(self.instance.request_id, test_value)
     
@@ -61,7 +61,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'cjstojfihxlnybzpmjut'
+        test_value = 'hxfcmitwnwhkdxgfbpfs'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -69,7 +69,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test domain property
         """
-        test_value = 'ucnwmpahacjoijxfmmzi'
+        test_value = 'jnsuwlwinmzhtdocnrvj'
         self.instance.domain = test_value
         self.assertEqual(self.instance.domain, test_value)
     
@@ -77,7 +77,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test stream property
         """
-        test_value = 'uzobieioolwtgauhtego'
+        test_value = 'pmavbvmdfzkxrpslrmdi'
         self.instance.stream = test_value
         self.assertEqual(self.instance.stream, test_value)
     
@@ -85,7 +85,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test topic property
         """
-        test_value = 'xuraotbirtlsfbvoxboh'
+        test_value = 'vgxvdtnayxwxcygmsbeh'
         self.instance.topic = test_value
         self.assertEqual(self.instance.topic, test_value)
     
@@ -93,7 +93,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test partition property
         """
-        test_value = int(44)
+        test_value = int(63)
         self.instance.partition = test_value
         self.assertEqual(self.instance.partition, test_value)
     
@@ -101,7 +101,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test offset property
         """
-        test_value = 'bkcjfdjonjijfytiafjw'
+        test_value = 'sgubgjbnvycxznxnhxbg'
         self.instance.offset = test_value
         self.assertEqual(self.instance.offset, test_value)
     
@@ -109,7 +109,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test dt property
         """
-        test_value = 'yhuxlkwycdpiekacrgqu'
+        test_value = 'sqjflpntejqhpzhvyjza'
         self.instance.dt = test_value
         self.assertEqual(self.instance.dt, test_value)
     

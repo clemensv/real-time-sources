@@ -19,7 +19,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 4. [Generated Producer Classes](#generated-producer-classes)    NoEnturSituationsEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    NoEnturMqttEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    NoEnturMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    NoEnturAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -51,6 +53,10 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - NoEnturMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- NoEnturAmqpProducersolution for event-driven applications.
 
 
 
@@ -283,6 +289,44 @@ no_entur_mqtt_dispatcher.no_entur_dated_service_journey_async = no_entur_dated_s
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturAmqpProducer- `data`: The event data of type `entur_norway_producer_data.DatedServiceJourney`.
+
+
+
+Producer for `no.entur.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_dated_service_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+DatedServiceJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_amqp_dispatcher.no_entur_dated_service_journey_async = no_entur_dated_service_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -425,6 +469,44 @@ no_entur_mqtt_dispatcher.no_entur_estimated_vehicle_journey_async = no_entur_est
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturAmqpProducer- `data`: The event data of type `entur_norway_producer_data.EstimatedVehicleJourney`.
+
+
+
+Producer for `no.entur.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_estimated_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+EstimatedVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_amqp_dispatcher.no_entur_estimated_vehicle_journey_async = no_entur_estimated_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -561,6 +643,44 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 no_entur_mqtt_dispatcher.no_entur_monitored_vehicle_journey_async = no_entur_monitored_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturAmqpProducer- `data`: The event data of type `entur_norway_producer_data.MonitoredVehicleJourney`.
+
+
+
+Producer for `no.entur.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_monitored_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoredVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_amqp_dispatcher.no_entur_monitored_vehicle_journey_async = no_entur_monitored_vehicle_journey_event
 
 **Parameters:**```
 
@@ -1119,6 +1239,44 @@ no_entur_mqtt_dispatcher.no_entur_pt_situation_element_async = no_entur_pt_situa
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturAmqpProducer- `data`: The event data of type `entur_norway_producer_data.PtSituationElement`.
+
+
+
+Producer for `no.entur.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_pt_situation_element_event(record: ConsumerRecord, cloud_event: CloudEvent, data: PtSituationElement)
+-> None:
+
+```python    # Process the event data
+
+NoEnturAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_amqp_dispatcher.no_entur_pt_situation_element_async = no_entur_pt_situation_element_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1462,6 +1620,44 @@ no_entur_mqtt_dispatcher.no_entur_mqtt_estimated_vehicle_journey_async = no_entu
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturAmqpProducer- `data`: The event data of type `entur_norway_producer_data.EstimatedVehicleJourney`.
+
+
+
+Producer for `no.entur.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_mqtt_estimated_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+EstimatedVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_amqp_dispatcher.no_entur_mqtt_estimated_vehicle_journey_async = no_entur_mqtt_estimated_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1606,6 +1802,44 @@ no_entur_mqtt_dispatcher.no_entur_mqtt_monitored_vehicle_journey_async = no_entu
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturAmqpProducer- `data`: The event data of type `entur_norway_producer_data.MonitoredVehicleJourney`.
+
+
+
+Producer for `no.entur.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_mqtt_monitored_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoredVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_amqp_dispatcher.no_entur_mqtt_monitored_vehicle_journey_async = no_entur_mqtt_monitored_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1742,6 +1976,44 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 no_entur_mqtt_dispatcher.no_entur_mqtt_pt_situation_element_async = no_entur_mqtt_pt_situation_element_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturAmqpProducer- `data`: The event data of type `entur_norway_producer_data.PtSituationElement`.
+
+
+
+Producer for `no.entur.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_mqtt_pt_situation_element_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PtSituationElement) -> None:
+
+```python    # Process the event data
+
+NoEnturAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_amqp_dispatcher.no_entur_mqtt_pt_situation_element_async = no_entur_mqtt_pt_situation_element_event
 
 **Parameters:**```
 
@@ -2054,6 +2326,959 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_no_entur_mqtt_pt_situation_element_batch(```
+
+    messages=[
+
+        PtSituationElement(...),Initializes the runner with a Kafka consumer.
+
+        PtSituationElement(...),
+
+        PtSituationElement(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### NoEnturAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`NoEnturAmqpEventDispatcher` handles events for the no.entur.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from entur_norway_producer import NoEnturJourneysProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = NoEnturJourneysProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_no_entur_dated_service_journey(```python
+
+    data=DatedServiceJourney(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The NoEnturAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = NoEnturJourneysProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `no_entur_amqp_estimated_vehicle_journey_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'no_entur_amqp_estimated_vehicle_journey_async:  Callable[[ConsumerRecord, CloudEvent,
+EstimatedVehicleJourney], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `no.entur.amqp.EstimatedVehicleJourney`: Real-time estimated timetable update for a
+vehicle journey from the Entur SIRI-ET feed (GET /realtime/v1/rest/et). Contains updated arrival and departure times for
+each stop along the journey, cancellation flags, and extra journey markers. Uses incremental requestorId polling to
+receive only changed journeys since the last poll.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturJourneysProducer- `data`: The event data of type `entur_norway_producer_data.EstimatedVehicleJourney`.
+
+
+
+Producer for `no.entur.journeys` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_estimated_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+EstimatedVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturJourneysProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_journeys_dispatcher.no_entur_amqp_estimated_vehicle_journey_async =
+no_entur_amqp_estimated_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturSituationsProducer- `data`: The event data of type `entur_norway_producer_data.EstimatedVehicleJourney`.
+
+
+
+Producer for `no.entur.situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_estimated_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+EstimatedVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_situations_dispatcher.no_entur_amqp_estimated_vehicle_journey_async =
+no_entur_amqp_estimated_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturMqttProducer- `data`: The event data of type `entur_norway_producer_data.EstimatedVehicleJourney`.
+
+
+
+Producer for `no.entur.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_estimated_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+EstimatedVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_mqtt_dispatcher.no_entur_amqp_estimated_vehicle_journey_async = no_entur_amqp_estimated_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturAmqpProducer- `data`: The event data of type `entur_norway_producer_data.EstimatedVehicleJourney`.
+
+
+
+Producer for `no.entur.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_estimated_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+EstimatedVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_amqp_dispatcher.no_entur_amqp_estimated_vehicle_journey_async = no_entur_amqp_estimated_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `no_entur_amqp_monitored_vehicle_journey_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'no_entur_amqp_monitored_vehicle_journey_async:  Callable[[ConsumerRecord, CloudEvent,
+MonitoredVehicleJourney], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `no.entur.amqp.MonitoredVehicleJourney`: Real-time vehicle monitoring update from the
+Entur SIRI-VM feed (GET /realtime/v1/rest/vm). Contains the current geographic position of a vehicle, its bearing,
+delay, occupancy status, and the next monitored call. Uses incremental requestorId polling for efficient change
+delivery.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturJourneysProducer- `data`: The event data of type `entur_norway_producer_data.MonitoredVehicleJourney`.
+
+
+
+Producer for `no.entur.journeys` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_monitored_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoredVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturJourneysProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_journeys_dispatcher.no_entur_amqp_monitored_vehicle_journey_async =
+no_entur_amqp_monitored_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturSituationsProducer- `data`: The event data of type `entur_norway_producer_data.MonitoredVehicleJourney`.
+
+
+
+Producer for `no.entur.situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_monitored_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoredVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_situations_dispatcher.no_entur_amqp_monitored_vehicle_journey_async =
+no_entur_amqp_monitored_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturMqttProducer- `data`: The event data of type `entur_norway_producer_data.MonitoredVehicleJourney`.
+
+
+
+Producer for `no.entur.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_monitored_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoredVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_mqtt_dispatcher.no_entur_amqp_monitored_vehicle_journey_async = no_entur_amqp_monitored_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturAmqpProducer- `data`: The event data of type `entur_norway_producer_data.MonitoredVehicleJourney`.
+
+
+
+Producer for `no.entur.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_monitored_vehicle_journey_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+MonitoredVehicleJourney) -> None:
+
+```python    # Process the event data
+
+NoEnturAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_amqp_dispatcher.no_entur_amqp_monitored_vehicle_journey_async = no_entur_amqp_monitored_vehicle_journey_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `no_entur_amqp_pt_situation_element_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'no_entur_amqp_pt_situation_element_async:  Callable[[ConsumerRecord, CloudEvent,
+PtSituationElement], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `no.entur.amqp.PtSituationElement`: Real-time transit disruption or service alert from the
+Entur SIRI-SX feed (GET /realtime/v1/rest/sx). Represents a published situation element describing a service disruption,
+delay cause, or passenger information notice. Includes affected lines, stops, severity level, and validity periods.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturJourneysProducer- `data`: The event data of type `entur_norway_producer_data.PtSituationElement`.
+
+
+
+Producer for `no.entur.journeys` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_pt_situation_element_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PtSituationElement) -> None:
+
+```python    # Process the event data
+
+NoEnturJourneysProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_journeys_dispatcher.no_entur_amqp_pt_situation_element_async = no_entur_amqp_pt_situation_element_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturSituationsProducer- `data`: The event data of type `entur_norway_producer_data.PtSituationElement`.
+
+
+
+Producer for `no.entur.situations` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_pt_situation_element_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PtSituationElement) -> None:
+
+```python    # Process the event data
+
+NoEnturSituationsProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_situations_dispatcher.no_entur_amqp_pt_situation_element_async = no_entur_amqp_pt_situation_element_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturMqttProducer- `data`: The event data of type `entur_norway_producer_data.PtSituationElement`.
+
+
+
+Producer for `no.entur.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_pt_situation_element_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PtSituationElement) -> None:
+
+```python    # Process the event data
+
+NoEnturMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_mqtt_dispatcher.no_entur_amqp_pt_situation_element_async = no_entur_amqp_pt_situation_element_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### NoEnturAmqpProducer- `data`: The event data of type `entur_norway_producer_data.PtSituationElement`.
+
+
+
+Producer for `no.entur.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def no_entur_amqp_pt_situation_element_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+PtSituationElement) -> None:
+
+```python    # Process the event data
+
+NoEnturAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+no_entur_amqp_dispatcher.no_entur_amqp_pt_situation_element_async = no_entur_amqp_pt_situation_element_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_no_entur_amqp_estimated_vehicle_journey`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_no_entur_amqp_estimated_vehicle_journey(
+
+    self,##### `_process_event`
+
+    data: EstimatedVehicleJourney,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `no.entur.amqp.EstimatedVehicleJourney` message. Real-time estimated timetable update for a vehicle
+journey from the Entur SIRI-ET feed (GET /realtime/v1/rest/et). Contains updated arrival and departure times for each
+stop along the journey, cancellation flags, and extra journey markers. Uses incremental requestorId polling to receive
+only changed journeys since the last poll.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `EstimatedVehicleJourney`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_no_entur_amqp_estimated_vehicle_journey(
+
+    data=EstimatedVehicleJourney(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `no.entur.amqp.EstimatedVehicleJourney` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_no_entur_amqp_estimated_vehicle_journey_batch(```
+
+    messages=[
+
+        EstimatedVehicleJourney(...),Initializes the runner with a Kafka consumer.
+
+        EstimatedVehicleJourney(...),
+
+        EstimatedVehicleJourney(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_no_entur_amqp_monitored_vehicle_journey`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_no_entur_amqp_monitored_vehicle_journey(
+
+    self,##### `_process_event`
+
+    data: MonitoredVehicleJourney,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `no.entur.amqp.MonitoredVehicleJourney` message. Real-time vehicle monitoring update from the Entur SIRI-
+VM feed (GET /realtime/v1/rest/vm). Contains the current geographic position of a vehicle, its bearing, delay, occupancy
+status, and the next monitored call. Uses incremental requestorId polling for efficient change delivery.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `MonitoredVehicleJourney`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_no_entur_amqp_monitored_vehicle_journey(
+
+    data=MonitoredVehicleJourney(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `no.entur.amqp.MonitoredVehicleJourney` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_no_entur_amqp_monitored_vehicle_journey_batch(```
+
+    messages=[
+
+        MonitoredVehicleJourney(...),Initializes the runner with a Kafka consumer.
+
+        MonitoredVehicleJourney(...),
+
+        MonitoredVehicleJourney(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_no_entur_amqp_pt_situation_element`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_no_entur_amqp_pt_situation_element(
+
+    self,##### `_process_event`
+
+    data: PtSituationElement,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `no.entur.amqp.PtSituationElement` message. Real-time transit disruption or service alert from the Entur
+SIRI-SX feed (GET /realtime/v1/rest/sx). Represents a published situation element describing a service disruption, delay
+cause, or passenger information notice. Includes affected lines, stops, severity level, and validity periods.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `PtSituationElement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_no_entur_amqp_pt_situation_element(
+
+    data=PtSituationElement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `no.entur.amqp.PtSituationElement` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_no_entur_amqp_pt_situation_element_batch(```
 
     messages=[
 

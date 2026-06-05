@@ -92,6 +92,8 @@ class BuoyHourlyRainMeasurement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,8 +161,8 @@ class BuoyHourlyRainMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='rhujeuhwzblkepccfcrd',
+            station_id='xrhiswuqiqgikrwblfck',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            accumulation=float(21.54414806648075),
-            region='dsjmbiyxddfqdijboxja'
+            accumulation=float(90.13742074603103),
+            region='afwesvfrzswnemiiiddg'
         )

@@ -47,19 +47,19 @@ from dwd_producer_kafka_producer.producer import DEDWDForecastAmqpEventProducer
 
 # imports for the data classes for each event
 
-from dwd_producer_data.stationmetadata import StationMetadata
-from dwd_producer_data.airtemperature10min import AirTemperature10Min
-from dwd_producer_data.precipitation10min import Precipitation10Min
-from dwd_producer_data.wind10min import Wind10Min
-from dwd_producer_data.solar10min import Solar10Min
-from dwd_producer_data.hourlyobservation import HourlyObservation
-from dwd_producer_data.extremewind10min import ExtremeWind10Min
-from dwd_producer_data.extremetemperature10min import ExtremeTemperature10Min
-from dwd_producer_data.alert import Alert
-from dwd_producer_data.radarproductcatalog import RadarProductCatalog
-from dwd_producer_data.radarfileproduct import RadarFileProduct
-from dwd_producer_data.forecastmodelcatalog import ForecastModelCatalog
-from dwd_producer_data.icond2forecastfile import IconD2ForecastFile
+from dwd_producer_data import StationMetadata
+from dwd_producer_data import AirTemperature10Min
+from dwd_producer_data import Precipitation10Min
+from dwd_producer_data import Wind10Min
+from dwd_producer_data import Solar10Min
+from dwd_producer_data import HourlyObservation
+from dwd_producer_data import ExtremeWind10Min
+from dwd_producer_data import ExtremeTemperature10Min
+from dwd_producer_data import Alert
+from dwd_producer_data import RadarProductCatalog
+from dwd_producer_data import RadarFileProduct
+from dwd_producer_data import ForecastModelCatalog
+from dwd_producer_data import IconD2ForecastFile
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -483,7 +483,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

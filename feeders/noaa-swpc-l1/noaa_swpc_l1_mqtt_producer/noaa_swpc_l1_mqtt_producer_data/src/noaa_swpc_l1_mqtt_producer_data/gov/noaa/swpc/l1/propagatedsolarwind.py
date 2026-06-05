@@ -111,6 +111,8 @@ class PropagatedSolarWind:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -181,14 +183,14 @@ class PropagatedSolarWind:
             spacecraft=SpacecraftEnum.dscovr,
             time_tag=datetime.datetime.now(datetime.timezone.utc),
             propagated_time_tag=datetime.datetime.now(datetime.timezone.utc),
-            speed=float(5.558668437398506),
-            density=float(62.94574797362339),
-            temperature=float(0.7914285355932194),
-            bx=float(44.69680497856778),
-            by=float(61.99502183512816),
-            bz=float(78.94089671800664),
-            bt=float(0.3098683041697692),
-            vx=float(70.76053083900699),
-            vy=float(59.38954904468948),
-            vz=float(36.41199377039281)
+            speed=float(8.823189008869715),
+            density=float(51.474375084457414),
+            temperature=float(79.78689455464963),
+            bx=float(14.672562510264186),
+            by=float(9.433013600333028),
+            bz=float(84.42431063445126),
+            bt=float(48.64065570803619),
+            vx=float(25.30081911895835),
+            vy=float(11.097632669450242),
+            vz=float(14.961304533050612)
         )

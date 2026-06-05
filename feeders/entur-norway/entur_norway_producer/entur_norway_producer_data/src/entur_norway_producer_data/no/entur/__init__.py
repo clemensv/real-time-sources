@@ -1,8 +1,8 @@
-from .monitoredvehiclejourney import MonitoredVehicleJourney
+from .datedservicejourney import DatedServiceJourney
 from .estimatedcall import EstimatedCall
 from .estimatedvehiclejourney import EstimatedVehicleJourney
-from .datedservicejourney import DatedServiceJourney
+from .monitoredvehiclejourney import MonitoredVehicleJourney
 from .validityperiod import ValidityPeriod
 from .ptsituationelement import PtSituationElement
 
-__all__ = ["MonitoredVehicleJourney", "EstimatedCall", "EstimatedVehicleJourney", "DatedServiceJourney", "ValidityPeriod", "PtSituationElement"]
+__all__ = ["DatedServiceJourney", "EstimatedCall", "EstimatedVehicleJourney", "MonitoredVehicleJourney", "ValidityPeriod", "PtSituationElement"]

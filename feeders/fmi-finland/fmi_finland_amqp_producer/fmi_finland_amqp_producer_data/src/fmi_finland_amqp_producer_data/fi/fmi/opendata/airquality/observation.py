@@ -17,7 +17,7 @@ import json
 @dataclass
 class Observation:
     """
-    Hourly air quality observation aggregated per station and timestamp from FMI OGC WFS simple query results.
+    Hourly FMI air quality observation aggregated per station and observation timestamp from the urban::observations::airquality::hourly::simple stored query. Each event combines all supported pollutant and index parameters published for the station and hour.
     
     Attributes:
         fmisid (str)
@@ -102,6 +102,8 @@ class Observation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,14 +171,14 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            fmisid='cjuisykzpysavbeqpnwv',
-            station_name='ukqjcnhpvsxibacfzwyk',
-            observation_time='nmzgwarxfxtqpgmgugbo',
-            aqindex=float(29.215024844013506),
-            pm10_ug_m3=float(57.76684624752166),
-            pm2_5_ug_m3=float(16.931192386067284),
-            no2_ug_m3=float(13.879627749083944),
-            o3_ug_m3=float(71.77094882671932),
-            so2_ug_m3=float(72.76731357036618),
-            co_mg_m3=float(36.368186282949935)
+            fmisid='btzbsvlmdsslechoknto',
+            station_name='tfyjzahujvtjergyvncq',
+            observation_time='dqalwrgjeoowpydvwiih',
+            aqindex=float(12.756703332859098),
+            pm10_ug_m3=float(27.111537007381237),
+            pm2_5_ug_m3=float(24.2455430368423),
+            no2_ug_m3=float(24.109999249776635),
+            o3_ug_m3=float(69.47465662961406),
+            so2_ug_m3=float(22.045471382548033),
+            co_mg_m3=float(38.6569612774626)
         )

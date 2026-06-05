@@ -112,6 +112,8 @@ class FeedItemSource:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -179,16 +181,16 @@ class FeedItemSource:
             An instance of the dataclass.
         """
         return cls(
-            author='nnmqifnsgjowjerbzoze',
+            author='txxzdgtrmbpfcjcvevaw',
             author_detail=None,
-            contributors=[None, None],
-            icon='uzzlqrdjilfjnpreirtc',
-            id='wbxeseneffnfhfjtenqw',
-            link='sydgrhhsjpepiuqmejba',
+            contributors=[None, None, None, None],
+            icon='dpqwuvobndhxegosnbww',
+            id='mubxomzpsxpuotxmwifs',
+            link='ngguujcflibfxygbamii',
             links=[None, None, None],
-            logo='dcgoprszrdbwzyioprmd',
-            rights='bckjixynhlyxgvlghliu',
-            subtitle='qubhatevfsmeazukwbkq',
-            title='qwuecaocgijbjsmthnks',
-            updated=int(93)
+            logo='nwddebbmuqwfljmmqvub',
+            rights='sdrzigkmxymwmwgnaabt',
+            subtitle='zcjpihwcamwfzlwqgwuc',
+            title='plfzakdclblqikighkuk',
+            updated=int(39)
         )

@@ -111,6 +111,8 @@ class PtSituationElement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -178,17 +180,17 @@ class PtSituationElement:
             An instance of the dataclass.
         """
         return cls(
-            situation_number='sdoeazysjzcxmbwzrtnx',
-            version='tcomtamxsrjoggtwyrum',
+            situation_number='jfoojsvglzticxgdzivg',
+            version='xboasupxqiiwwamgvaog',
             creation_time=datetime.datetime.now(datetime.timezone.utc),
-            source_type='ubpymdmthdsrfkueurqv',
-            source_name='pueantliitbvrvdcvigh',
-            progress='wktxdewbmvwprvjlfufz',
-            severity='mrgsapzubrtulpbjhdww',
-            keywords='fjqhxggjartbohrovofr',
-            summary='oigkunalszrmvnphkhwb',
-            description='abknshgztsxztlyjlkcv',
-            affects_line_refs=['wudsbmtywaxfxjfzdyyp'],
-            affects_stop_point_refs=['timoywdfeufdjrxvllnx', 'cocvtylrcsjqyjlosrbk', 'khctvfutcircdipwtbku', 'xhfaxhouvdntvbjwugiy'],
-            validity_periods=[None]
+            source_type='ufzaczncygxdprnjyahr',
+            source_name='ycglydjliahjdmjjnyhj',
+            progress='dfzzxijpomfbdiqhwqhs',
+            severity='yedamcosugafjlisfijh',
+            keywords='rqfjkqpuamlylcebetiw',
+            summary='yxodwoqkttqhhagctwxf',
+            description='uazyprebcoqxgxuvwhap',
+            affects_line_refs=['lboiaudllinetipnifrv'],
+            affects_stop_point_refs=['fjunvszpqbzlmpuuukkf', 'jtyjettdcnoxrvvugfdc'],
+            validity_periods=[None, None, None, None, None]
         )

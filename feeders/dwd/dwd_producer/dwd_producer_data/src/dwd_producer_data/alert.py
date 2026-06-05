@@ -116,6 +116,8 @@ class Alert:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -183,21 +185,21 @@ class Alert:
             An instance of the dataclass.
         """
         return cls(
-            identifier='xifayzwstoqrhtwwlqgg',
-            sender='qmkqlevveajcnwlvapha',
-            sent='gxphcxgpfloriptzubpi',
-            status='bareqasclsfchmtbbzdi',
-            msg_type='bwphafnrhqhvxrbliqpw',
-            severity='uudhljadfemxpnkkaixg',
-            urgency='zqxrvlaxghljiemujtmk',
-            certainty='xdgrzwbomzkrxdzdoirp',
-            event='fcyzywwluqgvccdwscmi',
-            headline='szvmajanqdeyinqtilgc',
-            description='epxwpzrjolshgyxfjbpd',
-            effective='ufxkzshaopirgyioqclj',
-            onset='tgkdinwdgnsakyszgqth',
-            expires='ddkstfsadnurhmgegmgp',
-            area_desc='zuvtfcvgthycouckscxl',
-            geocodes='turyuufsheieudzgfjch',
-            state='oseqyplwnrxjqkzkkdrw'
+            identifier='iqkibicjrkevuxnhryyj',
+            sender='uzjtfgegasiyvjanwbxv',
+            sent='hkwcokbgzayndguciqvs',
+            status='qrebmepymnwzwzkzslve',
+            msg_type='bxpjinplpeceugwxlxut',
+            severity='qcpteufditbhfxudaqbw',
+            urgency='hdutqjhqnnnljxggpjvw',
+            certainty='vpiwfkgknolybjrtimzf',
+            event='jeonkdehtasolihsxpcb',
+            headline='vrfvlpmvzivkonvhysik',
+            description='xudgwfqcljidzgcsptvj',
+            effective='uqhmbhlxsoigdfifqahb',
+            onset='trqlhncyledquxporkwe',
+            expires='vfwshtcirwpfdjfadhma',
+            area_desc='yorxyngeammhkrrejvbx',
+            geocodes='ofqusvkwvtanhreeprbx',
+            state='wsbcmdlgvjfueclzrenp'
         )

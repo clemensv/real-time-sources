@@ -100,6 +100,8 @@ class SpotPrice:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,10 +169,10 @@ class SpotPrice:
             An instance of the dataclass.
         """
         return cls(
-            country='swgxbgvifhjfrczadrra',
-            bidding_zone='nerhudotgxytxtftwptq',
+            country='akilqrdytpxtuzfkkiov',
+            bidding_zone='txhabaeaajsmpmnnvxji',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(12),
-            price_eur_per_mwh=float(4.9798014502310695),
-            unit='hghjknfwaxlhiuwuzduv'
+            unix_seconds=int(73),
+            price_eur_per_mwh=float(60.591427699040224),
+            unit='hkmnlsieqfirsuiinszu'
         )

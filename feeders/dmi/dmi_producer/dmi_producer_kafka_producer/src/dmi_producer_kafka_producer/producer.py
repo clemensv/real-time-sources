@@ -1,12 +1,58 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
 import json
+import re
 import uuid
 import typing
-from datetime import datetime
+from datetime import datetime, timezone
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 from dmi_producer_data import MetObsStation
 from dmi_producer_data import MetObsObservation
 from dmi_producer_data import OceanStation
@@ -47,7 +93,15 @@ class DkDmiMetObsKafkaEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_dk_dmi_met_obs_kafka_station(self,_feedurl : str, _station_id : str, data: MetObsStation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, MetObsStation], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_dk_dmi_met_obs_kafka_station(self,_feedurl : str, _station_id : str, data: MetObsStation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, MetObsStation], str]=None) -> None:
         """
         Sends the 'dk.dmi.metObs.kafka.Station' event to the Kafka topic
 
@@ -56,6 +110,7 @@ class DkDmiMetObsKafkaEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (MetObsStation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, MetObsStation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -67,6 +122,7 @@ class DkDmiMetObsKafkaEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -74,13 +130,13 @@ class DkDmiMetObsKafkaEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_dk_dmi_met_obs_kafka_observation(self,_feedurl : str, _station_id : str, _parameter_id : str, data: MetObsObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, MetObsObservation], str]=None) -> None:
+    def send_dk_dmi_met_obs_kafka_observation(self,_feedurl : str, _station_id : str, _parameter_id : str, data: MetObsObservation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, MetObsObservation], str]=None) -> None:
         """
         Sends the 'dk.dmi.metObs.kafka.Observation' event to the Kafka topic
 
@@ -90,6 +146,7 @@ class DkDmiMetObsKafkaEventProducer:
             _parameter_id(str):  Value for placeholder parameter_id in attribute subject
             data: (MetObsObservation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, MetObsObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}/{parameter_id}'
@@ -101,6 +158,7 @@ class DkDmiMetObsKafkaEventProducer:
              "subject":"{station_id}/{parameter_id}".format(station_id = _station_id,parameter_id = _parameter_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -108,7 +166,7 @@ class DkDmiMetObsKafkaEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -196,7 +254,15 @@ class DkDmiOceanObsKafkaEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_dk_dmi_ocean_obs_kafka_station(self,_feedurl : str, _station_id : str, data: OceanStation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, OceanStation], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_dk_dmi_ocean_obs_kafka_station(self,_feedurl : str, _station_id : str, data: OceanStation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, OceanStation], str]=None) -> None:
         """
         Sends the 'dk.dmi.oceanObs.kafka.Station' event to the Kafka topic
 
@@ -205,6 +271,7 @@ class DkDmiOceanObsKafkaEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (OceanStation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, OceanStation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -216,6 +283,7 @@ class DkDmiOceanObsKafkaEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -223,13 +291,13 @@ class DkDmiOceanObsKafkaEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_dk_dmi_ocean_obs_kafka_tidewater_station(self,_feedurl : str, _station_id : str, data: TidewaterStation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, TidewaterStation], str]=None) -> None:
+    def send_dk_dmi_ocean_obs_kafka_tidewater_station(self,_feedurl : str, _station_id : str, data: TidewaterStation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, TidewaterStation], str]=None) -> None:
         """
         Sends the 'dk.dmi.oceanObs.kafka.TidewaterStation' event to the Kafka topic
 
@@ -238,6 +306,7 @@ class DkDmiOceanObsKafkaEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (TidewaterStation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, TidewaterStation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -249,6 +318,7 @@ class DkDmiOceanObsKafkaEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -256,13 +326,13 @@ class DkDmiOceanObsKafkaEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_dk_dmi_ocean_obs_kafka_observation(self,_feedurl : str, _station_id : str, _parameter_id : str, data: OceanObservation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, OceanObservation], str]=None) -> None:
+    def send_dk_dmi_ocean_obs_kafka_observation(self,_feedurl : str, _station_id : str, _parameter_id : str, data: OceanObservation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, OceanObservation], str]=None) -> None:
         """
         Sends the 'dk.dmi.oceanObs.kafka.Observation' event to the Kafka topic
 
@@ -272,6 +342,7 @@ class DkDmiOceanObsKafkaEventProducer:
             _parameter_id(str):  Value for placeholder parameter_id in attribute subject
             data: (OceanObservation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, OceanObservation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}/{parameter_id}'
@@ -283,6 +354,7 @@ class DkDmiOceanObsKafkaEventProducer:
              "subject":"{station_id}/{parameter_id}".format(station_id = _station_id,parameter_id = _parameter_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -290,13 +362,13 @@ class DkDmiOceanObsKafkaEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_dk_dmi_ocean_obs_kafka_tidewater_prediction(self,_feedurl : str, _station_id : str, data: TidewaterPrediction, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, TidewaterPrediction], str]=None) -> None:
+    def send_dk_dmi_ocean_obs_kafka_tidewater_prediction(self,_feedurl : str, _station_id : str, data: TidewaterPrediction, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, TidewaterPrediction], str]=None) -> None:
         """
         Sends the 'dk.dmi.oceanObs.kafka.TidewaterPrediction' event to the Kafka topic
 
@@ -305,6 +377,7 @@ class DkDmiOceanObsKafkaEventProducer:
             _station_id(str):  Value for placeholder station_id in attribute subject
             data: (TidewaterPrediction): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, TidewaterPrediction], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{station_id}'
@@ -316,6 +389,7 @@ class DkDmiOceanObsKafkaEventProducer:
              "subject":"{station_id}".format(station_id = _station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -323,7 +397,7 @@ class DkDmiOceanObsKafkaEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -411,7 +485,15 @@ class DkDmiLightningKafkaEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_dk_dmi_lightning_kafka_sensor(self,_feedurl : str, _sensor_id : str, data: LightningSensor, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LightningSensor], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_dk_dmi_lightning_kafka_sensor(self,_feedurl : str, _sensor_id : str, data: LightningSensor, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LightningSensor], str]=None) -> None:
         """
         Sends the 'dk.dmi.lightning.kafka.Sensor' event to the Kafka topic
 
@@ -420,6 +502,7 @@ class DkDmiLightningKafkaEventProducer:
             _sensor_id(str):  Value for placeholder sensor_id in attribute subject
             data: (LightningSensor): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, LightningSensor], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{sensor_id}'
@@ -431,6 +514,7 @@ class DkDmiLightningKafkaEventProducer:
              "subject":"{sensor_id}".format(sensor_id = _sensor_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -438,13 +522,13 @@ class DkDmiLightningKafkaEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_dk_dmi_lightning_kafka_strike(self,_feedurl : str, _strike_id : str, data: LightningStrike, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LightningStrike], str]=None) -> None:
+    def send_dk_dmi_lightning_kafka_strike(self,_feedurl : str, _strike_id : str, data: LightningStrike, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LightningStrike], str]=None) -> None:
         """
         Sends the 'dk.dmi.lightning.kafka.Strike' event to the Kafka topic
 
@@ -453,6 +537,7 @@ class DkDmiLightningKafkaEventProducer:
             _strike_id(str):  Value for placeholder strike_id in attribute subject
             data: (LightningStrike): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, LightningStrike], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{strike_id}'
@@ -464,6 +549,7 @@ class DkDmiLightningKafkaEventProducer:
              "subject":"{strike_id}".format(strike_id = _strike_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -471,7 +557,7 @@ class DkDmiLightningKafkaEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()

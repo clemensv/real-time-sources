@@ -138,6 +138,8 @@ class PublicPower:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -205,29 +207,29 @@ class PublicPower:
             An instance of the dataclass.
         """
         return cls(
-            country='jjwbzitgmhukglhquzod',
+            country='kitoccleezejupypozky',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(24),
-            hydro_pumped_storage_consumption_mw=float(47.810180367400456),
-            cross_border_electricity_trading_mw=float(91.00184137965122),
-            hydro_run_of_river_mw=float(25.043862595308052),
-            biomass_mw=float(49.88359712301666),
-            fossil_brown_coal_lignite_mw=float(70.65372341350887),
-            fossil_hard_coal_mw=float(72.84519692637087),
-            fossil_oil_mw=float(39.707971467403844),
-            fossil_coal_derived_gas_mw=float(90.29051046857487),
-            fossil_gas_mw=float(69.10926600907679),
-            geothermal_mw=float(50.4361407350269),
-            hydro_water_reservoir_mw=float(65.50526821126927),
-            hydro_pumped_storage_mw=float(83.08809013695364),
-            others_mw=float(70.28807729334923),
-            waste_mw=float(36.46461698902517),
-            wind_offshore_mw=float(50.341502903016135),
-            wind_onshore_mw=float(82.13773469485251),
-            solar_mw=float(67.1461882427179),
-            nuclear_mw=float(63.11720684841159),
-            load_mw=float(81.03192145709139),
-            residual_load_mw=float(79.5558701198233),
-            renewable_share_of_generation_pct=float(22.20134908350404),
-            renewable_share_of_load_pct=float(65.79193446087415)
+            unix_seconds=int(30),
+            hydro_pumped_storage_consumption_mw=float(58.046955806235054),
+            cross_border_electricity_trading_mw=float(86.93162984964977),
+            hydro_run_of_river_mw=float(26.617033435218453),
+            biomass_mw=float(72.427845488569),
+            fossil_brown_coal_lignite_mw=float(18.585744715749108),
+            fossil_hard_coal_mw=float(9.20413464782296),
+            fossil_oil_mw=float(48.210071691046366),
+            fossil_coal_derived_gas_mw=float(59.60644644652927),
+            fossil_gas_mw=float(56.73362583884657),
+            geothermal_mw=float(95.49349152433889),
+            hydro_water_reservoir_mw=float(28.053276258680192),
+            hydro_pumped_storage_mw=float(76.092042467808),
+            others_mw=float(28.44729373832986),
+            waste_mw=float(8.512729474569692),
+            wind_offshore_mw=float(93.9917795029665),
+            wind_onshore_mw=float(89.6664612176118),
+            solar_mw=float(99.01772528143981),
+            nuclear_mw=float(83.51548856441873),
+            load_mw=float(21.432464248094597),
+            residual_load_mw=float(58.63383124834252),
+            renewable_share_of_generation_pct=float(43.130495691619586),
+            renewable_share_of_load_pct=float(65.97098144833997)
         )

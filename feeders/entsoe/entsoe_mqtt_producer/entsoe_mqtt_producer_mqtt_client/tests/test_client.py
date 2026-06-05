@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,27 +17,27 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import entsoe_mqtt_producer_data
 from entsoe_mqtt_producer_data import DayAheadPrices
-from test_entsoe_mqtt_producer_data_dayaheadprices import Test_DayAheadPrices
+from test_dayaheadprices import Test_DayAheadPrices
 from entsoe_mqtt_producer_data import ActualTotalLoad
-from test_entsoe_mqtt_producer_data_actualtotalload import Test_ActualTotalLoad
+from test_actualtotalload import Test_ActualTotalLoad
 from entsoe_mqtt_producer_data import LoadForecastMargin
-from test_entsoe_mqtt_producer_data_loadforecastmargin import Test_LoadForecastMargin
+from test_loadforecastmargin import Test_LoadForecastMargin
 from entsoe_mqtt_producer_data import GenerationForecast
-from test_entsoe_mqtt_producer_data_generationforecast import Test_GenerationForecast
+from test_generationforecast import Test_GenerationForecast
 from entsoe_mqtt_producer_data import ReservoirFillingInformation
-from test_entsoe_mqtt_producer_data_reservoirfillinginformation import Test_ReservoirFillingInformation
+from test_reservoirfillinginformation import Test_ReservoirFillingInformation
 from entsoe_mqtt_producer_data import ActualGeneration
-from test_entsoe_mqtt_producer_data_actualgeneration import Test_ActualGeneration
+from test_actualgeneration import Test_ActualGeneration
 from entsoe_mqtt_producer_data import ActualGenerationPerType
-from test_entsoe_mqtt_producer_data_actualgenerationpertype import Test_ActualGenerationPerType
+from test_actualgenerationpertype import Test_ActualGenerationPerType
 from entsoe_mqtt_producer_data import WindSolarForecast
-from test_entsoe_mqtt_producer_data_windsolarforecast import Test_WindSolarForecast
+from test_windsolarforecast import Test_WindSolarForecast
 from entsoe_mqtt_producer_data import WindSolarGeneration
-from test_entsoe_mqtt_producer_data_windsolargeneration import Test_WindSolarGeneration
+from test_windsolargeneration import Test_WindSolarGeneration
 from entsoe_mqtt_producer_data import InstalledGenerationCapacityPerType
-from test_entsoe_mqtt_producer_data_installedgenerationcapacitypertype import Test_InstalledGenerationCapacityPerType
+from test_installedgenerationcapacitypertype import Test_InstalledGenerationCapacityPerType
 from entsoe_mqtt_producer_data import CrossBorderPhysicalFlows
-from test_entsoe_mqtt_producer_data_crossborderphysicalflows import Test_CrossBorderPhysicalFlows
+from test_crossborderphysicalflows import Test_CrossBorderPhysicalFlows
 from entsoe_mqtt_producer_mqtt_client import EuEntsoeTransparencyByDomainMqttMqttClient
 from entsoe_mqtt_producer_mqtt_client import EuEntsoeTransparencyByDomainPsrTypeMqttMqttClient
 from entsoe_mqtt_producer_mqtt_client import EuEntsoeTransparencyCrossBorderMqttMqttClient
@@ -111,6 +112,7 @@ async def test_eu_entsoe_transparency_bydomain_mqtt_eu_entsoe_transparency_by_do
         await publisher_client.publish_eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices(
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -176,6 +178,7 @@ async def test_eu_entsoe_transparency_bydomain_mqtt_eu_entsoe_transparency_by_do
         await publisher_client.publish_eu_entsoe_transparency_by_domain_mqtt_actual_total_load(
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -241,6 +244,7 @@ async def test_eu_entsoe_transparency_bydomain_mqtt_eu_entsoe_transparency_by_do
         await publisher_client.publish_eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin(
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -306,6 +310,7 @@ async def test_eu_entsoe_transparency_bydomain_mqtt_eu_entsoe_transparency_by_do
         await publisher_client.publish_eu_entsoe_transparency_by_domain_mqtt_generation_forecast(
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -371,6 +376,7 @@ async def test_eu_entsoe_transparency_bydomain_mqtt_eu_entsoe_transparency_by_do
         await publisher_client.publish_eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information(
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -436,6 +442,7 @@ async def test_eu_entsoe_transparency_bydomain_mqtt_eu_entsoe_transparency_by_do
         await publisher_client.publish_eu_entsoe_transparency_by_domain_mqtt_actual_generation(
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -505,6 +512,7 @@ async def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_eu_entsoe_transparenc
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
             psr_type=f"test_psrType_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -571,6 +579,7 @@ async def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_eu_entsoe_transparenc
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
             psr_type=f"test_psrType_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -637,6 +646,7 @@ async def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_eu_entsoe_transparenc
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
             psr_type=f"test_psrType_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -703,6 +713,7 @@ async def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_eu_entsoe_transparenc
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
             psr_type=f"test_psrType_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -772,6 +783,7 @@ async def test_eu_entsoe_transparency_crossborder_mqtt_eu_entsoe_transparency_cr
             topic=test_topic,
             in_domain=f"test_inDomain_{i}",
             out_domain=f"test_outDomain_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

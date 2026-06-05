@@ -29,14 +29,14 @@ class Test_BuoyContinuousWindObservation(unittest.TestCase):
         Create instance of BuoyContinuousWindObservation for testing
         """
         instance = BuoyContinuousWindObservation(
-            station_id='gmbviuybsuskpfwzameu',
+            station_id='wcwtkzjdnaegptxuvafo',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            wind_direction=float(52.03195437135032),
-            wind_speed=float(46.042777376501064),
-            gust_direction=float(56.60459936934977),
-            gust=float(53.80690243464705),
-            gust_time_code='afiylqttnigobvfbkydh',
-            region='taunvvilmsulbgtcwveg'
+            wind_direction=float(81.6417151949945),
+            wind_speed=float(68.71650105002132),
+            gust_direction=float(26.152651338642563),
+            gust=float(16.095945880724404),
+            gust_time_code='fwmqrrqowxdsygwlbssx',
+            region='dwspuyqrdlkczabvzjaf'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_BuoyContinuousWindObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'gmbviuybsuskpfwzameu'
+        test_value = 'wcwtkzjdnaegptxuvafo'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -61,7 +61,7 @@ class Test_BuoyContinuousWindObservation(unittest.TestCase):
         """
         Test wind_direction property
         """
-        test_value = float(52.03195437135032)
+        test_value = float(81.6417151949945)
         self.instance.wind_direction = test_value
         self.assertEqual(self.instance.wind_direction, test_value)
     
@@ -69,7 +69,7 @@ class Test_BuoyContinuousWindObservation(unittest.TestCase):
         """
         Test wind_speed property
         """
-        test_value = float(46.042777376501064)
+        test_value = float(68.71650105002132)
         self.instance.wind_speed = test_value
         self.assertEqual(self.instance.wind_speed, test_value)
     
@@ -77,7 +77,7 @@ class Test_BuoyContinuousWindObservation(unittest.TestCase):
         """
         Test gust_direction property
         """
-        test_value = float(56.60459936934977)
+        test_value = float(26.152651338642563)
         self.instance.gust_direction = test_value
         self.assertEqual(self.instance.gust_direction, test_value)
     
@@ -85,7 +85,7 @@ class Test_BuoyContinuousWindObservation(unittest.TestCase):
         """
         Test gust property
         """
-        test_value = float(53.80690243464705)
+        test_value = float(16.095945880724404)
         self.instance.gust = test_value
         self.assertEqual(self.instance.gust, test_value)
     
@@ -93,7 +93,7 @@ class Test_BuoyContinuousWindObservation(unittest.TestCase):
         """
         Test gust_time_code property
         """
-        test_value = 'afiylqttnigobvfbkydh'
+        test_value = 'fwmqrrqowxdsygwlbssx'
         self.instance.gust_time_code = test_value
         self.assertEqual(self.instance.gust_time_code, test_value)
     
@@ -101,7 +101,7 @@ class Test_BuoyContinuousWindObservation(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'taunvvilmsulbgtcwveg'
+        test_value = 'dwspuyqrdlkczabvzjaf'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

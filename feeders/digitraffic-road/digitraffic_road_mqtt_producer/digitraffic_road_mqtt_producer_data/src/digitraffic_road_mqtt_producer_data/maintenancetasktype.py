@@ -92,6 +92,8 @@ class MaintenanceTaskType:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class MaintenanceTaskType:
             An instance of the dataclass.
         """
         return cls(
-            task_id='lypdnsoinywwovwxdxdj',
-            name_fi='tbmlywkztmoxrkniydqi',
-            name_en='budifprumvgguzzwbgyf',
-            name_sv='xqnymazmgrcsawlmcyoz',
-            data_updated_time='hnfnvgmeomkdbsevnrbt'
+            task_id='uauutghyvxrdlwkqmgxg',
+            name_fi='pdcbksstgjbinhwlgdlq',
+            name_en='thisdfpifhjexywkqovs',
+            name_sv='zirpbvnatcptjqlgivtx',
+            data_updated_time='wsaosmirjkslyoeinqct'
         )

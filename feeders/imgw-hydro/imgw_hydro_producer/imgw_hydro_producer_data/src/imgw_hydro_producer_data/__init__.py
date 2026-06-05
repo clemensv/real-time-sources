@@ -1,3 +1,4 @@
-from .pl import WaterLevelObservation, Station
+from .waterlevelobservation import WaterLevelObservation
+from .station import Station
 
 __all__ = ["WaterLevelObservation", "Station"]

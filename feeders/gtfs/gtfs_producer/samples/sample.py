@@ -37,37 +37,37 @@ from gtfs_producer_kafka_producer.producer import GeneralTransitFeedStaticEventP
 
 # imports for the data classes for each event
 
-from gtfs_producer_data.vehicleposition import VehiclePosition
-from gtfs_producer_data.tripupdate import TripUpdate
-from gtfs_producer_data.alert import Alert
-from gtfs_producer_data.agency import Agency
-from gtfs_producer_data.areas import Areas
-from gtfs_producer_data.attributions import Attributions
-from gtfs_producer_data.bookingrules import BookingRules
-from gtfs_producer_data.fareattributes import FareAttributes
-from gtfs_producer_data.farelegrules import FareLegRules
-from gtfs_producer_data.faremedia import FareMedia
-from gtfs_producer_data.fareproducts import FareProducts
-from gtfs_producer_data.farerules import FareRules
-from gtfs_producer_data.faretransferrules import FareTransferRules
-from gtfs_producer_data.feedinfo import FeedInfo
-from gtfs_producer_data.frequencies import Frequencies
-from gtfs_producer_data.levels import Levels
-from gtfs_producer_data.locationgeojson import LocationGeoJson
-from gtfs_producer_data.locationgroups import LocationGroups
-from gtfs_producer_data.locationgroupstores import LocationGroupStores
-from gtfs_producer_data.networks import Networks
-from gtfs_producer_data.pathways import Pathways
-from gtfs_producer_data.routenetworks import RouteNetworks
-from gtfs_producer_data.routes import Routes
-from gtfs_producer_data.shapes import Shapes
-from gtfs_producer_data.stopareas import StopAreas
-from gtfs_producer_data.stops import Stops
-from gtfs_producer_data.stoptimes import StopTimes
-from gtfs_producer_data.timeframes import Timeframes
-from gtfs_producer_data.transfers import Transfers
-from gtfs_producer_data.translations import Translations
-from gtfs_producer_data.trips import Trips
+from gtfs_producer_data import VehiclePosition
+from gtfs_producer_data import TripUpdate
+from gtfs_producer_data import Alert
+from gtfs_producer_data import Agency
+from gtfs_producer_data import Areas
+from gtfs_producer_data import Attributions
+from gtfs_producer_data import BookingRules
+from gtfs_producer_data import FareAttributes
+from gtfs_producer_data import FareLegRules
+from gtfs_producer_data import FareMedia
+from gtfs_producer_data import FareProducts
+from gtfs_producer_data import FareRules
+from gtfs_producer_data import FareTransferRules
+from gtfs_producer_data import FeedInfo
+from gtfs_producer_data import Frequencies
+from gtfs_producer_data import Levels
+from gtfs_producer_data import LocationGeoJson
+from gtfs_producer_data import LocationGroups
+from gtfs_producer_data import LocationGroupStores
+from gtfs_producer_data import Networks
+from gtfs_producer_data import Pathways
+from gtfs_producer_data import RouteNetworks
+from gtfs_producer_data import Routes
+from gtfs_producer_data import Shapes
+from gtfs_producer_data import StopAreas
+from gtfs_producer_data import Stops
+from gtfs_producer_data import StopTimes
+from gtfs_producer_data import Timeframes
+from gtfs_producer_data import Transfers
+from gtfs_producer_data import Translations
+from gtfs_producer_data import Trips
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -347,7 +347,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

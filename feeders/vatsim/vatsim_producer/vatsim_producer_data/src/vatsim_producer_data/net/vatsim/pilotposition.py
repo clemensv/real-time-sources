@@ -1,43 +1,44 @@
 """ PilotPosition dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class PilotPosition:
     """
-    Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network.
+    Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network. Updated every 15 seconds at the source.
+    
     Attributes:
-        cid (int): VATSIM Certificate Identifier (CID) — unique numeric member ID.
-        callsign (str): ATC-style callsign chosen by the pilot for this session.
-        latitude (float): Aircraft latitude in decimal degrees (WGS-84).
-        longitude (float): Aircraft longitude in decimal degrees (WGS-84).
-        altitude (int): Indicated altitude in feet above mean sea level.
-        groundspeed (int): Ground speed in knots.
-        heading (int): Magnetic heading in degrees (0-359).
-        transponder (str): Four-digit transponder (squawk) code.
-        qnh_mb (int): Altimeter setting (QNH) in millibars.
-        flight_rules (typing.Optional[str]): Flight rules: I or V. Null if no flight plan.
-        aircraft_short (typing.Optional[str]): ICAO aircraft type designator. Null if no flight plan.
-        departure (typing.Optional[str]): ICAO departure airport code. Null if no flight plan.
-        arrival (typing.Optional[str]): ICAO arrival airport code. Null if no flight plan.
-        route (typing.Optional[str]): Route string from flight plan. Null if no flight plan.
-        cruise_altitude (typing.Optional[str]): Planned cruise altitude. Null if no flight plan.
-        pilot_rating (int): VATSIM pilot rating bitmask.
-        last_updated (str): UTC timestamp of last position update."""
+        cid (int)
+        callsign (str)
+        latitude (float)
+        longitude (float)
+        altitude (int)
+        groundspeed (int)
+        heading (int)
+        transponder (str)
+        qnh_mb (int)
+        flight_rules (typing.Optional[str])
+        aircraft_short (typing.Optional[str])
+        departure (typing.Optional[str])
+        arrival (typing.Optional[str])
+        route (typing.Optional[str])
+        cruise_altitude (typing.Optional[str])
+        pilot_rating (int)
+        last_updated (str)
+    """
+    
     
     cid: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cid"))
     callsign: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="callsign"))
@@ -56,30 +57,6 @@ class PilotPosition:
     cruise_altitude: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cruise_altitude"))
     pilot_rating: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pilot_rating"))
     last_updated: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="last_updated"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"PilotPosition\", \"namespace\": \"net.vatsim\", \"doc\": \"Current position, flight plan summary, and state of a pilot connected to the VATSIM virtual aviation network.\", \"fields\": [{\"name\": \"cid\", \"type\": \"int\", \"doc\": \"VATSIM Certificate Identifier (CID) \u2014 unique numeric member ID.\"}, {\"name\": \"callsign\", \"type\": \"string\", \"doc\": \"ATC-style callsign chosen by the pilot for this session.\"}, {\"name\": \"latitude\", \"type\": \"double\", \"doc\": \"Aircraft latitude in decimal degrees (WGS-84).\"}, {\"name\": \"longitude\", \"type\": \"double\", \"doc\": \"Aircraft longitude in decimal degrees (WGS-84).\"}, {\"name\": \"altitude\", \"type\": \"int\", \"doc\": \"Indicated altitude in feet above mean sea level.\"}, {\"name\": \"groundspeed\", \"type\": \"int\", \"doc\": \"Ground speed in knots.\"}, {\"name\": \"heading\", \"type\": \"int\", \"doc\": \"Magnetic heading in degrees (0-359).\"}, {\"name\": \"transponder\", \"type\": \"string\", \"doc\": \"Four-digit transponder (squawk) code.\"}, {\"name\": \"qnh_mb\", \"type\": \"int\", \"doc\": \"Altimeter setting (QNH) in millibars.\"}, {\"name\": \"flight_rules\", \"type\": [\"null\", \"string\"], \"doc\": \"Flight rules: I or V. Null if no flight plan.\", \"default\": null}, {\"name\": \"aircraft_short\", \"type\": [\"null\", \"string\"], \"doc\": \"ICAO aircraft type designator. Null if no flight plan.\", \"default\": null}, {\"name\": \"departure\", \"type\": [\"null\", \"string\"], \"doc\": \"ICAO departure airport code. Null if no flight plan.\", \"default\": null}, {\"name\": \"arrival\", \"type\": [\"null\", \"string\"], \"doc\": \"ICAO arrival airport code. Null if no flight plan.\", \"default\": null}, {\"name\": \"route\", \"type\": [\"null\", \"string\"], \"doc\": \"Route string from flight plan. Null if no flight plan.\", \"default\": null}, {\"name\": \"cruise_altitude\", \"type\": [\"null\", \"string\"], \"doc\": \"Planned cruise altitude. Null if no flight plan.\", \"default\": null}, {\"name\": \"pilot_rating\", \"type\": \"int\", \"doc\": \"VATSIM pilot rating bitmask.\"}, {\"name\": \"last_updated\", \"type\": \"string\", \"doc\": \"UTC timestamp of last position update.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.cid=int(self.cid)
-        self.callsign=str(self.callsign)
-        self.latitude=float(self.latitude)
-        self.longitude=float(self.longitude)
-        self.altitude=int(self.altitude)
-        self.groundspeed=int(self.groundspeed)
-        self.heading=int(self.heading)
-        self.transponder=str(self.transponder)
-        self.qnh_mb=int(self.qnh_mb)
-        self.flight_rules=str(self.flight_rules) if self.flight_rules else None
-        self.aircraft_short=str(self.aircraft_short) if self.aircraft_short else None
-        self.departure=str(self.departure) if self.departure else None
-        self.arrival=str(self.arrival) if self.arrival else None
-        self.route=str(self.route) if self.route else None
-        self.cruise_altitude=str(self.cruise_altitude) if self.cruise_altitude else None
-        self.pilot_rating=int(self.pilot_rating)
-        self.last_updated=str(self.last_updated)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'PilotPosition':
@@ -90,7 +67,7 @@ class PilotPosition:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -109,7 +86,7 @@ class PilotPosition:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -123,8 +100,6 @@ class PilotPosition:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -137,16 +112,12 @@ class PilotPosition:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,10 +142,6 @@ class PilotPosition:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -200,18 +167,6 @@ class PilotPosition:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return PilotPosition.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -219,5 +174,32 @@ class PilotPosition:
                 return PilotPosition.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'PilotPosition':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            cid=int(98),
+            callsign='alyqcdoudfxflqkixfbb',
+            latitude=float(87.5702853008644),
+            longitude=float(81.46026718311069),
+            altitude=int(60),
+            groundspeed=int(35),
+            heading=int(13),
+            transponder='mlltbfkagmxtllfjihcm',
+            qnh_mb=int(48),
+            flight_rules='wxysxxvxckeprstlstkz',
+            aircraft_short='hjapbsfascimaoqqydse',
+            departure='pohjhespgijzrexaanji',
+            arrival='ulgfehnwsgwmyhbwjugp',
+            route='klltkmdzvsiypibxcjnb',
+            cruise_altitude='ntmvshcojllxxxaasmka',
+            pilot_rating=int(33),
+            last_updated='coikymgiswncxupszwze'
+        )

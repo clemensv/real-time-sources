@@ -31,11 +31,11 @@ class Test_Interrogation(unittest.TestCase):
         Create instance of Interrogation for testing
         """
         instance = Interrogation(
-            MessageID=int(65),
-            RepeatIndicator=int(59),
-            UserID=int(85),
+            MessageID=int(39),
+            RepeatIndicator=int(79),
+            UserID=int(21),
             Valid=True,
-            Spare=int(99),
+            Spare=int(9),
             Station1Msg1=None,
             Station1Msg2=None,
             Station2=None
@@ -47,7 +47,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(65)
+        test_value = int(39)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -55,7 +55,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(59)
+        test_value = int(79)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -63,7 +63,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(85)
+        test_value = int(21)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -79,7 +79,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(99)
+        test_value = int(9)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     

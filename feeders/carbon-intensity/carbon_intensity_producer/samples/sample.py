@@ -35,12 +35,13 @@ from confluent_kafka import Producer as KafkaProducer
 from carbon_intensity_producer_kafka_producer.producer import UkOrgCarbonintensityEventProducer
 from carbon_intensity_producer_kafka_producer.producer import UkOrgCarbonintensityRegionalEventProducer
 from carbon_intensity_producer_kafka_producer.producer import UkOrgCarbonintensityMqttEventProducer
+from carbon_intensity_producer_kafka_producer.producer import UkOrgCarbonintensityAmqpEventProducer
 
 # imports for the data classes for each event
 
-from carbon_intensity_producer_data.intensity import Intensity
-from carbon_intensity_producer_data.generationmix import GenerationMix
-from carbon_intensity_producer_data.regionalintensity import RegionalIntensity
+from carbon_intensity_producer_data import Intensity
+from carbon_intensity_producer_data import GenerationMix
+from carbon_intensity_producer_data import RegionalIntensity
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -123,12 +124,44 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'uk.org.carbonintensity.mqtt.RegionalIntensity' event to Kafka topic.
     await uk_org_carbonintensity_mqtt_event_producer.send_uk_org_carbonintensity_mqtt_regional_intensity(_region_id = 'TODO: replace me', _ce_id = 'TODO: replace me', data = _regional_intensity)
     print(f"Sent 'uk.org.carbonintensity.mqtt.RegionalIntensity' event: {_regional_intensity.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        uk_org_carbonintensity_amqp_event_producer = UkOrgCarbonintensityAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        uk_org_carbonintensity_amqp_event_producer = UkOrgCarbonintensityAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- uk.org.carbonintensity.amqp.Intensity ----
+    # TODO: Supply event data for the uk.org.carbonintensity.amqp.Intensity event
+    _intensity = Intensity()
+
+    # sends the 'uk.org.carbonintensity.amqp.Intensity' event to Kafka topic.
+    await uk_org_carbonintensity_amqp_event_producer.send_uk_org_carbonintensity_amqp_intensity(_period_from = 'TODO: replace me', _ce_id = 'TODO: replace me', data = _intensity)
+    print(f"Sent 'uk.org.carbonintensity.amqp.Intensity' event: {_intensity.to_json()}")
+
+    # ---- uk.org.carbonintensity.amqp.GenerationMix ----
+    # TODO: Supply event data for the uk.org.carbonintensity.amqp.GenerationMix event
+    _generation_mix = GenerationMix()
+
+    # sends the 'uk.org.carbonintensity.amqp.GenerationMix' event to Kafka topic.
+    await uk_org_carbonintensity_amqp_event_producer.send_uk_org_carbonintensity_amqp_generation_mix(_period_from = 'TODO: replace me', _ce_id = 'TODO: replace me', data = _generation_mix)
+    print(f"Sent 'uk.org.carbonintensity.amqp.GenerationMix' event: {_generation_mix.to_json()}")
+
+    # ---- uk.org.carbonintensity.amqp.RegionalIntensity ----
+    # TODO: Supply event data for the uk.org.carbonintensity.amqp.RegionalIntensity event
+    _regional_intensity = RegionalIntensity()
+
+    # sends the 'uk.org.carbonintensity.amqp.RegionalIntensity' event to Kafka topic.
+    await uk_org_carbonintensity_amqp_event_producer.send_uk_org_carbonintensity_amqp_regional_intensity(_region_id = 'TODO: replace me', _ce_id = 'TODO: replace me', data = _regional_intensity)
+    print(f"Sent 'uk.org.carbonintensity.amqp.RegionalIntensity' event: {_regional_intensity.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

@@ -1,3 +1,3 @@
-from .tawes import WeatherObservation, WeatherStation
+from .tawes import WeatherStation, WeatherObservation
 
-__all__ = ["WeatherObservation", "WeatherStation"]
+__all__ = ["WeatherStation", "WeatherObservation"]

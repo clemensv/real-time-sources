@@ -94,6 +94,8 @@ class CrossBorderPhysicalFlows:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class CrossBorderPhysicalFlows:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='ddqbbpjvieshtfnlpuqn',
-            outDomain='xaaylubxovpzryomtbnd',
-            quantity=float(43.3403531764567),
-            resolution='sgkfbfgdwzvtsypihnfx',
-            documentType='sxvswsurgvihsrrzxeiz',
-            unitName='veakxkdybzkefvgczofk'
+            inDomain='vtlobjsvedsphkeuasjf',
+            outDomain='wuefgfkcbyayusbbybdm',
+            quantity=float(21.977631471115956),
+            resolution='ommxfdndmrevvxehqouj',
+            documentType='wiseralswzepztcewvnz',
+            unitName='kkvqxtmuliskquyzvgua'
         )

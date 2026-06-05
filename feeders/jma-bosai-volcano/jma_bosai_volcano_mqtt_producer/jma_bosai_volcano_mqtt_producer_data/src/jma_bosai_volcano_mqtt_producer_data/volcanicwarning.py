@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_volcano_mqtt_producer_data.alertlevelcodeenum import AlertLevelCodeenum
 from jma_bosai_volcano_mqtt_producer_data.conditionenum import ConditionEnum
+from jma_bosai_volcano_mqtt_producer_data.alertlevelcodeenum import AlertLevelCodeenum
 from jma_bosai_volcano_mqtt_producer_data.eventenum import EventEnum
 import datetime
 
@@ -111,6 +111,8 @@ class VolcanicWarning:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -178,16 +180,16 @@ class VolcanicWarning:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='pxqbstqgsmbqoxykynsq',
-            event_id='csmgoczgntqvwcytjhko',
+            volcano_code='qglhcqawclwsjgzoifrl',
+            event_id='mbfgjgfgrsnolucohvdg',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             alert_level_code=AlertLevelCodeenum.CODE_02,
-            alert_level_name='wkitebnujhzkvigesygo',
-            previous_level_code='fyukygpzecggsyqlcknk',
+            alert_level_name='fiwvhqhazxmorxcocbhe',
+            previous_level_code='iflwglljambdkqinfskd',
             condition=ConditionEnum.ISSUED,
-            info_type_jp='btglakndjsdogelqgwfz',
-            area_codes=['zjrlaltillibbiguefcz', 'rnmznxgqiyrjftqkqitw', 'ediuskjojltgjhqawlcw', 'lgsrktfpxbnppkazhhmf'],
-            prefecture='mgnhwioehuizcciblcbz',
-            event=EventEnum.eruption
+            info_type_jp='vytxzqlzdovzjovhczmn',
+            area_codes=['qafsmtzbbhdrsigpvjpu', 'uzwqjaeyxrxfufttaxah', 'kmvhgksjjjndgalukjxe', 'aiixmfaiyhdjmfumcovq', 'lvhbqvzurzrxlvcbccww'],
+            prefecture='qfrsyohkdieelouubkdk',
+            event=EventEnum.warning
         )

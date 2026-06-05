@@ -99,6 +99,8 @@ class OceanObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -166,11 +168,11 @@ class OceanObservation:
             An instance of the dataclass.
         """
         return cls(
-            observation_id='gqcuxfibeteotyffnwjq',
-            station_id='lqfzzzqcdajbvmoejzid',
+            observation_id='kihfmgpojmswyflluymg',
+            station_id='sdzcpddqyqyrzdyuflxb',
             parameter_id=ParameterIdenum.sealev_dvr,
             observed=datetime.datetime.now(datetime.timezone.utc),
-            value=float(9.585086220102323),
-            latitude=float(75.0263628368339),
-            longitude=float(61.65254466354092)
+            value=float(51.02246953466697),
+            latitude=float(96.0463089413934),
+            longitude=float(96.48316832159519)
         )

@@ -110,6 +110,8 @@ class TollRate:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -177,18 +179,18 @@ class TollRate:
             An instance of the dataclass.
         """
         return cls(
-            trip_name='fgancxadzzteyclrjquj',
-            state_route='ptlsgqbqpgblivdidblp',
-            travel_direction='wzmvkawkhfcofxjcmfat',
-            current_toll=int(11),
-            current_message='opwqjzpazwjmrkypkbcd',
-            time_updated='jwzomslzawbrasaskknm',
-            start_location_name='vtrttaidwmhqfxxzmxex',
-            start_latitude=float(16.49030597281369),
-            start_longitude=float(26.046733019297253),
-            start_milepost=float(4.513204105057056),
-            end_location_name='zxhhxkpcqmlaydblhncu',
-            end_latitude=float(93.26643217563615),
-            end_longitude=float(42.80746534431521),
-            end_milepost=float(70.8514797325495)
+            trip_name='gpcrvbuodpquhaaoeqgi',
+            state_route='jbsvydfvpzltclfluyjh',
+            travel_direction='wgagolgtismykerqwwfe',
+            current_toll=int(43),
+            current_message='kavbkztyfxigpqfpygpu',
+            time_updated='pmpvaqpzkbhnnibzzbnf',
+            start_location_name='uvszxivzlvkaulduxxvp',
+            start_latitude=float(35.8366616821729),
+            start_longitude=float(47.66340959569045),
+            start_milepost=float(69.36354068918776),
+            end_location_name='wnfqnhvbtyhcjmhoqdsb',
+            end_latitude=float(16.526137443412935),
+            end_longitude=float(14.113984917820366),
+            end_milepost=float(52.27642224248492)
         )

@@ -41,11 +41,11 @@ from ticketmaster_producer_kafka_producer.producer import TicketmasterReferenceA
 
 # imports for the data classes for each event
 
-from ticketmaster_producer_data.event import Event
-from ticketmaster_producer_data.venue import Venue
-from ticketmaster_producer_data.attraction import Attraction
-from ticketmaster_producer_data.classification import Classification
-from ticketmaster_producer_data.info import Info
+from ticketmaster_producer_data import Event
+from ticketmaster_producer_data import Venue
+from ticketmaster_producer_data import Attraction
+from ticketmaster_producer_data import Classification
+from ticketmaster_producer_data import Info
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -229,7 +229,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

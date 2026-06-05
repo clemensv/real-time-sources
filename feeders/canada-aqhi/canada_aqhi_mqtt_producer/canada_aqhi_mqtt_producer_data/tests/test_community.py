@@ -28,13 +28,13 @@ class Test_Community(unittest.TestCase):
         Create instance of Community for testing
         """
         instance = Community(
-            province='xqntvbtqknvpjzptmebv',
-            community_name='mkmgqiuaawsnblikjear',
-            cgndb_code='uiqiurpuoblhhvkwvbvx',
-            latitude=float(6.460594033035449),
-            longitude=float(16.497704267112233),
-            observation_url='becxowpmrpfhxvcigfrv',
-            forecast_url='gvwlmvhboromkvutvdpv'
+            province='aunmxtrvudmamkblnvda',
+            community_name='mlsdcrapkyuaqpkizmra',
+            cgndb_code='cacnhsfqdyhnijwpomvg',
+            latitude=float(22.885583175009806),
+            longitude=float(21.93041248067815),
+            observation_url='yopyinuuxzlvxlxfkfga',
+            forecast_url='dabbrtgtdscgityeloft'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Community(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'xqntvbtqknvpjzptmebv'
+        test_value = 'aunmxtrvudmamkblnvda'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -51,7 +51,7 @@ class Test_Community(unittest.TestCase):
         """
         Test community_name property
         """
-        test_value = 'mkmgqiuaawsnblikjear'
+        test_value = 'mlsdcrapkyuaqpkizmra'
         self.instance.community_name = test_value
         self.assertEqual(self.instance.community_name, test_value)
     
@@ -59,7 +59,7 @@ class Test_Community(unittest.TestCase):
         """
         Test cgndb_code property
         """
-        test_value = 'uiqiurpuoblhhvkwvbvx'
+        test_value = 'cacnhsfqdyhnijwpomvg'
         self.instance.cgndb_code = test_value
         self.assertEqual(self.instance.cgndb_code, test_value)
     
@@ -67,7 +67,7 @@ class Test_Community(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(6.460594033035449)
+        test_value = float(22.885583175009806)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -75,7 +75,7 @@ class Test_Community(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(16.497704267112233)
+        test_value = float(21.93041248067815)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -83,7 +83,7 @@ class Test_Community(unittest.TestCase):
         """
         Test observation_url property
         """
-        test_value = 'becxowpmrpfhxvcigfrv'
+        test_value = 'yopyinuuxzlvxlxfkfga'
         self.instance.observation_url = test_value
         self.assertEqual(self.instance.observation_url, test_value)
     
@@ -91,7 +91,7 @@ class Test_Community(unittest.TestCase):
         """
         Test forecast_url property
         """
-        test_value = 'gvwlmvhboromkvutvdpv'
+        test_value = 'dabbrtgtdscgityeloft'
         self.instance.forecast_url = test_value
         self.assertEqual(self.instance.forecast_url, test_value)
     

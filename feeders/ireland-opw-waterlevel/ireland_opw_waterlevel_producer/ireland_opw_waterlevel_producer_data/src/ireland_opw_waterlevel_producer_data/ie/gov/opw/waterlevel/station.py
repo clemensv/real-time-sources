@@ -1,18 +1,16 @@
 """ Station dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -20,30 +18,23 @@ import avro.io
 class Station:
     """
     Reference data for an OPW hydrometric station in Ireland, including location and region.
+    
     Attributes:
-        station_ref (str): Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041').
-        station_name (str): Human-readable name of the hydrometric station (e.g. 'Sandy Mills').
-        region_id (int): Integer identifier of the OPW hydrometric region the station belongs to.
-        longitude (float): Longitude of the station location in WGS84 decimal degrees.
-        latitude (float): Latitude of the station location in WGS84 decimal degrees."""
+        station_ref (str)
+        station_name (str)
+        region_id (int)
+        longitude (float)
+        latitude (float)
+        basin (typing.Optional[str])
+    """
+    
     
     station_ref: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_ref"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
     region_id: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region_id"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Station\", \"namespace\": \"ie.gov.opw.waterlevel\", \"doc\": \"Reference data for an OPW hydrometric station in Ireland, including location and region.\", \"fields\": [{\"name\": \"station_ref\", \"type\": \"string\", \"doc\": \"Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041').\"}, {\"name\": \"station_name\", \"type\": \"string\", \"doc\": \"Human-readable name of the hydrometric station (e.g. 'Sandy Mills').\"}, {\"name\": \"region_id\", \"type\": \"int\", \"doc\": \"Integer identifier of the OPW hydrometric region the station belongs to.\"}, {\"name\": \"longitude\", \"type\": \"double\", \"doc\": \"Longitude of the station location in WGS84 decimal degrees.\"}, {\"name\": \"latitude\", \"type\": \"double\", \"doc\": \"Latitude of the station location in WGS84 decimal degrees.\"}], \"description\": \"Reference details for one monitoring station or site in the Ireland OPW waterlevel.ie source.\"}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_ref=str(self.station_ref)
-        self.station_name=str(self.station_name)
-        self.region_id=int(self.region_id)
-        self.longitude=float(self.longitude)
-        self.latitude=float(self.latitude)
+    basin: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="basin"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -54,7 +45,7 @@ class Station:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -73,7 +64,7 @@ class Station:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -87,8 +78,6 @@ class Station:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -101,16 +90,12 @@ class Station:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -135,10 +120,6 @@ class Station:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -164,18 +145,6 @@ class Station:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return Station.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -183,5 +152,21 @@ class Station:
                 return Station.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Station':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            station_ref='jcdrlhzpyaplekffaxje',
+            station_name='vdbcmacrubrpojgkosye',
+            region_id=int(57),
+            longitude=float(96.50417104429245),
+            latitude=float(54.99179556925034),
+            basin='hwghtoqhtzkoqquwdrpo'
+        )

@@ -96,6 +96,8 @@ class InstalledGenerationCapacityPerType:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class InstalledGenerationCapacityPerType:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='zqbjfwinixwetlbhypry',
-            psrType='jzpdjvuonjcrcsprfazo',
-            quantity=float(28.43028814076546),
-            resolution='gtbthidujqlugwusndsi',
-            businessType='sbhtpiiyuzntwedivphl',
-            documentType='yxnldsoucowfcjrrshyo',
-            unitName='tzlssyedifrxqeezlbsf'
+            inDomain='smcpegzuesuueghizygb',
+            psrType='zntlgyjcxvmlfoofjltd',
+            quantity=float(0.6656898184256521),
+            resolution='lsvaoaagheemgywreeli',
+            businessType='mxhvuurrhgiifnuntnns',
+            documentType='isfwpxjxfobwvsoppojt',
+            unitName='pajijaptjgiifsvsqspc'
         )

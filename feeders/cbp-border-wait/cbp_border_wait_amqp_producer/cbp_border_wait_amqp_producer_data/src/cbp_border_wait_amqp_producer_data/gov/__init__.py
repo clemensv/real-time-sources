@@ -1,3 +1,3 @@
-from .cbp import BorderSlugenum, WaitTime, Port
+from .cbp import BorderSlugenum, Port, WaitTime
 
-__all__ = ["BorderSlugenum", "WaitTime", "Port"]
+__all__ = ["BorderSlugenum", "Port", "WaitTime"]

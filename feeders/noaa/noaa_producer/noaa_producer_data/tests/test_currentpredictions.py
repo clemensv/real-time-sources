@@ -28,14 +28,14 @@ class Test_CurrentPredictions(unittest.TestCase):
         Create instance of CurrentPredictions for testing
         """
         instance = CurrentPredictions(
-            station_id='iwnhaltqtcfahikhwqji',
-            timestamp='nlsrkcadkyujyfbcehtu',
-            velocity_major=float(78.91633246921617),
-            mean_flood_dir=float(29.206448732331836),
-            mean_ebb_dir=float(52.257011607387525),
-            depth=float(24.219346061087176),
-            bin='llzxilspzpuxxucnjjhq',
-            region='ifufjnawqgrkfmrdwjci'
+            station_id='leqdgfglegsqvjxwkahd',
+            timestamp='sgyczjfveqfkaewqdacx',
+            velocity_major=float(24.560831882621294),
+            mean_flood_dir=float(47.927507538773014),
+            mean_ebb_dir=float(10.446782491505136),
+            depth=float(82.54273539726614),
+            bin='aisqxeotkiaystavcgxh',
+            region='uxmhpvfxnrnjvxoroxct'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'iwnhaltqtcfahikhwqji'
+        test_value = 'leqdgfglegsqvjxwkahd'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'nlsrkcadkyujyfbcehtu'
+        test_value = 'sgyczjfveqfkaewqdacx'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -60,7 +60,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test velocity_major property
         """
-        test_value = float(78.91633246921617)
+        test_value = float(24.560831882621294)
         self.instance.velocity_major = test_value
         self.assertEqual(self.instance.velocity_major, test_value)
     
@@ -68,7 +68,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test mean_flood_dir property
         """
-        test_value = float(29.206448732331836)
+        test_value = float(47.927507538773014)
         self.instance.mean_flood_dir = test_value
         self.assertEqual(self.instance.mean_flood_dir, test_value)
     
@@ -76,7 +76,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test mean_ebb_dir property
         """
-        test_value = float(52.257011607387525)
+        test_value = float(10.446782491505136)
         self.instance.mean_ebb_dir = test_value
         self.assertEqual(self.instance.mean_ebb_dir, test_value)
     
@@ -84,7 +84,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test depth property
         """
-        test_value = float(24.219346061087176)
+        test_value = float(82.54273539726614)
         self.instance.depth = test_value
         self.assertEqual(self.instance.depth, test_value)
     
@@ -92,7 +92,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test bin property
         """
-        test_value = 'llzxilspzpuxxucnjjhq'
+        test_value = 'aisqxeotkiaystavcgxh'
         self.instance.bin = test_value
         self.assertEqual(self.instance.bin, test_value)
     
@@ -100,19 +100,10 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'ifufjnawqgrkfmrdwjci'
+        test_value = 'uxmhpvfxnrnjvxoroxct'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = CurrentPredictions.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

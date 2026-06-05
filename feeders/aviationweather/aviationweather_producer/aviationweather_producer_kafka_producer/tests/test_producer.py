@@ -20,11 +20,11 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from aviationweather_producer_kafka_producer.producer import GovNoaaAviationweatherEventProducer
 from aviationweather_producer_data import Station
-from test_aviationweather_producer_data_station import Test_Station
+from test_station import Test_Station
 from aviationweather_producer_data import Metar
-from test_aviationweather_producer_data_metar import Test_Metar
+from test_metar import Test_Metar
 from aviationweather_producer_data import Sigmet
-from test_aviationweather_producer_data_sigmet import Test_Sigmet
+from test_sigmet import Test_Sigmet
 from aviationweather_producer_kafka_producer.producer import GovNoaaAviationweatherMqttEventProducer
 from aviationweather_producer_kafka_producer.producer import GovNoaaAviationweatherAmqpEventProducer
 
@@ -109,7 +109,8 @@ def test_gov_noaa_aviationweather_govnoaaaviationweatherstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_noaa_aviationweather_station(_icao_id = f'test_{i}', data = event_data)
+        producer_instance.send_gov_noaa_aviationweather_station(_icao_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -172,7 +173,8 @@ def test_gov_noaa_aviationweather_govnoaaaviationweathermetar(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_noaa_aviationweather_metar(_icao_id = f'test_{i}', data = event_data)
+        producer_instance.send_gov_noaa_aviationweather_metar(_icao_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -235,7 +237,8 @@ def test_gov_noaa_aviationweather_govnoaaaviationweathersigmet(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_noaa_aviationweather_sigmet(_icao_id = f'test_{i}', data = event_data)
+        producer_instance.send_gov_noaa_aviationweather_sigmet(_icao_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -298,7 +301,8 @@ def test_gov_noaa_aviationweather_mqtt_govnoaaaviationweathermqttstation(kafka_e
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_noaa_aviationweather_mqtt_station(_icao_id = f'test_{i}', data = event_data)
+        producer_instance.send_gov_noaa_aviationweather_mqtt_station(_icao_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -359,7 +363,8 @@ def test_gov_noaa_aviationweather_mqtt_govnoaaaviationweathermqttmetar(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_noaa_aviationweather_mqtt_metar(_icao_id = f'test_{i}', data = event_data)
+        producer_instance.send_gov_noaa_aviationweather_mqtt_metar(_icao_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -420,7 +425,8 @@ def test_gov_noaa_aviationweather_mqtt_govnoaaaviationweathermqttsigmet(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_noaa_aviationweather_mqtt_sigmet(_region = f'test_{i}', _sigmet_id = f'test_{i}', data = event_data)
+        producer_instance.send_gov_noaa_aviationweather_mqtt_sigmet(_region = f'test_{i}', _sigmet_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -481,7 +487,8 @@ def test_gov_noaa_aviationweather_amqp_govnoaaaviationweatheramqpstation(kafka_e
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_noaa_aviationweather_amqp_station(_icao_id = f'test_{i}', data = event_data)
+        producer_instance.send_gov_noaa_aviationweather_amqp_station(_icao_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -542,7 +549,8 @@ def test_gov_noaa_aviationweather_amqp_govnoaaaviationweatheramqpmetar(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_noaa_aviationweather_amqp_metar(_icao_id = f'test_{i}', data = event_data)
+        producer_instance.send_gov_noaa_aviationweather_amqp_metar(_icao_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -603,7 +611,8 @@ def test_gov_noaa_aviationweather_amqp_govnoaaaviationweatheramqpsigmet(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_noaa_aviationweather_amqp_sigmet(_region = f'test_{i}', _sigmet_id = f'test_{i}', data = event_data)
+        producer_instance.send_gov_noaa_aviationweather_amqp_sigmet(_region = f'test_{i}', _sigmet_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

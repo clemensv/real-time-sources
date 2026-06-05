@@ -1,5 +1,5 @@
 from .venue import Venue
-from .attraction import Attraction
 from .classification import Classification
+from .attraction import Attraction
 
-__all__ = ["Venue", "Attraction", "Classification"]
+__all__ = ["Venue", "Classification", "Attraction"]

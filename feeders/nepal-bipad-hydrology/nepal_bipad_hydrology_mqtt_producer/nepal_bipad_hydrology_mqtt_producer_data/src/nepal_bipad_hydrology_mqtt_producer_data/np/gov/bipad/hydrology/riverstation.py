@@ -110,6 +110,8 @@ class RiverStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -177,18 +179,18 @@ class RiverStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='iezmhvqtoqowtytuwuyn',
-            title='fwpewzwwzxdttjrvuobr',
-            basin='mweonlnaidaevmrsexzp',
-            latitude=float(44.04932155492654),
-            longitude=float(47.43180970159422),
-            elevation=int(64),
-            danger_level=float(42.42220511216901),
-            warning_level=float(14.995475680794234),
-            description='mdlvzjcixohckjodxanq',
-            data_source='ztuxdbfzckrsolwaiqcg',
-            province=int(31),
-            district=int(67),
-            municipality=int(67),
-            ward=int(93)
+            station_id='earhlioqzupraryawrug',
+            title='rcqciunpvpferoucsbtv',
+            basin='adziqqdmdxapatwyzumo',
+            latitude=float(67.91091632457854),
+            longitude=float(16.466846822957613),
+            elevation=int(80),
+            danger_level=float(52.04017434985143),
+            warning_level=float(33.66073113574418),
+            description='qivmzlngsomymddyyrku',
+            data_source='lamjkqiccmdastvrckge',
+            province=int(47),
+            district=int(97),
+            municipality=int(47),
+            ward=int(56)
         )

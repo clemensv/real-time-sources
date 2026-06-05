@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from laqn_london_producer_data.uk.kcl.laqn.dailyindex import DailyIndex
-from laqn_london_producer_data.uk.kcl.laqn.indexsourceenum import IndexSourceenum
 from laqn_london_producer_data.uk.kcl.laqn.airqualitybandenum import AirQualityBandenum
+from laqn_london_producer_data.uk.kcl.laqn.indexsourceenum import IndexSourceenum
 
 
 class Test_DailyIndex(unittest.TestCase):
@@ -30,9 +30,9 @@ class Test_DailyIndex(unittest.TestCase):
         Create instance of DailyIndex for testing
         """
         instance = DailyIndex(
-            site_code='izgkcvtrzyqugcljdkep',
-            bulletin_date='ljptebphopquothjypwl',
-            species_code='gejqqaqzlbhfzgvzkbrj',
+            site_code='okqvuhsloxikgxuuqgaq',
+            bulletin_date='hjzbmmgbplfadjccpnnk',
+            species_code='fwzjbwqlkavvvlyzrfzk',
             air_quality_index=int(88),
             air_quality_band=AirQualityBandenum.Low,
             index_source=IndexSourceenum.Measurement
@@ -44,7 +44,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test site_code property
         """
-        test_value = 'izgkcvtrzyqugcljdkep'
+        test_value = 'okqvuhsloxikgxuuqgaq'
         self.instance.site_code = test_value
         self.assertEqual(self.instance.site_code, test_value)
     
@@ -52,7 +52,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test bulletin_date property
         """
-        test_value = 'ljptebphopquothjypwl'
+        test_value = 'hjzbmmgbplfadjccpnnk'
         self.instance.bulletin_date = test_value
         self.assertEqual(self.instance.bulletin_date, test_value)
     
@@ -60,7 +60,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test species_code property
         """
-        test_value = 'gejqqaqzlbhfzgvzkbrj'
+        test_value = 'fwzjbwqlkavvvlyzrfzk'
         self.instance.species_code = test_value
         self.assertEqual(self.instance.species_code, test_value)
     
@@ -88,15 +88,6 @@ class Test_DailyIndex(unittest.TestCase):
         self.instance.index_source = test_value
         self.assertEqual(self.instance.index_source, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = DailyIndex.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

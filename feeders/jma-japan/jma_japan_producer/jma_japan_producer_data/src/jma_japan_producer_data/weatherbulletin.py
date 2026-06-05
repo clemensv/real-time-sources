@@ -20,7 +20,7 @@ import datetime
 @dataclass
 class WeatherBulletin:
     """
-    Weather bulletin entry from the JMA XML Atom feed. Covers forecasts, warnings, advisories, and risk notifications published by the Japan Meteorological Agency and its regional observatories.
+    An official alert or bulletin from the Japan Meteorological Agency. It carries official bulletin messages for the affected area and validity period published by the upstream source.
     
     Attributes:
         bulletin_id (str)
@@ -30,6 +30,7 @@ class WeatherBulletin:
         link (typing.Optional[str])
         content (typing.Optional[str])
         feed_type (typing.Optional[FeedTypeenum])
+        office (typing.Optional[str])
     """
     
     
@@ -40,6 +41,7 @@ class WeatherBulletin:
     link: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="link"))
     content: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="content"))
     feed_type: typing.Optional[FeedTypeenum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="feed_type"))
+    office: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="office"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherBulletin':
@@ -99,6 +101,8 @@ class WeatherBulletin:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -166,11 +170,12 @@ class WeatherBulletin:
             An instance of the dataclass.
         """
         return cls(
-            bulletin_id='bvhcjhtxblcudwlfwmdh',
-            title='yteutfloswwhyhymnjnp',
-            author='gzabrrasjjkavfvmxlok',
+            bulletin_id='enjurabytmgrepclmggb',
+            title='lcnyzqzgcrgveswzkgof',
+            author='kmewmbyqemibvokzkojp',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            link='antbvxtnneoihvsylynb',
-            content='zexeuvoxzsiaonxaalzj',
-            feed_type=FeedTypeenum.regular
+            link='faejdwkwopoclldvciwp',
+            content='brzysapcwwwqheidvhkp',
+            feed_type=FeedTypeenum.regular,
+            office='ksykhzlrufjlnogauszb'
         )

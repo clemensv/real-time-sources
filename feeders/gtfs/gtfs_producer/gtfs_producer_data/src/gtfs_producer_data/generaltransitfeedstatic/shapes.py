@@ -92,6 +92,8 @@ class Shapes:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class Shapes:
             An instance of the dataclass.
         """
         return cls(
-            shapeId='mloffhhuvkcgehwxdzhr',
-            shapePtLat=float(89.70831137949733),
-            shapePtLon=float(58.15632467947115),
-            shapePtSequence=int(38),
-            shapeDistTraveled=float(49.30993688405749)
+            shapeId='nipshpxvertfbvotecrb',
+            shapePtLat=float(68.18970374902293),
+            shapePtLon=float(9.143604788410153),
+            shapePtSequence=int(1),
+            shapeDistTraveled=float(94.0028002067896)
         )

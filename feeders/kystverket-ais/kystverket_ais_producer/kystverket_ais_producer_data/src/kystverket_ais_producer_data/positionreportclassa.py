@@ -17,7 +17,7 @@ import json
 @dataclass
 class PositionReportClassA:
     """
-    PositionReportClassA
+    A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
     
     Attributes:
         mmsi (int)
@@ -106,6 +106,8 @@ class PositionReportClassA:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -173,16 +175,16 @@ class PositionReportClassA:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(11),
-            navigation_status=int(45),
-            rate_of_turn=float(17.416709957510268),
-            speed_over_ground=float(75.07999063469791),
-            position_accuracy=int(38),
-            longitude=float(89.33365366055398),
-            latitude=float(71.37074052841149),
-            course_over_ground=float(71.29218750145824),
-            true_heading=int(95),
-            timestamp='fnwzxehphawregprtujz',
-            station_id='vrqvudcyvaasxndxbtkp',
-            msg_type=int(18)
+            mmsi=int(65),
+            navigation_status=int(18),
+            rate_of_turn=float(71.45224885791379),
+            speed_over_ground=float(92.83360490412541),
+            position_accuracy=int(73),
+            longitude=float(8.587444634190023),
+            latitude=float(71.26089981663434),
+            course_over_ground=float(58.40110538172776),
+            true_heading=int(75),
+            timestamp='mugchsjphfttdgyooknw',
+            station_id='urmfvnofbketiuotykjd',
+            msg_type=int(23)
         )

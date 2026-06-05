@@ -172,7 +172,6 @@ is a 7-day rolling window (~10080 rows) of array-of-arrays form with the column 
 - `data` (PropagatedSolarWind): The message data object
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
 - `_spacecraft` (str): Value for placeholder spacecraft in attribute subject
-- `_time_tag` (str): Value for placeholder time_tag in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_propagated_solar_wind_batch()`
@@ -183,7 +182,6 @@ Send multiple PropagatedSolarWind messages in sequence.
 - `data_array` (List[PropagatedSolarWind]): Array of message data objects
 - `_feedurl` (str): Value for placeholder feedurl in attribute source
 - `_spacecraft` (str): Value for placeholder spacecraft in attribute subject
-- `_time_tag` (str): Value for placeholder time_tag in attribute time
 - `content_type` (str): Content type of the message data
 
 

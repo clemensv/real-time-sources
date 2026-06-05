@@ -96,6 +96,8 @@ class DemandOutturn:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,10 +165,10 @@ class DemandOutturn:
             An instance of the dataclass.
         """
         return cls(
-            settlement_period=int(95),
-            settlement_date='fksnsunjfwrphwazsucg',
+            settlement_period=int(99),
+            settlement_date='ptufzqioqvsbqlpyaswm',
             start_time=datetime.datetime.now(datetime.timezone.utc),
             publish_time=datetime.datetime.now(datetime.timezone.utc),
-            initial_demand_outturn_mw=float(46.58700861080427),
-            initial_transmission_system_demand_outturn_mw=float(96.90162871935605)
+            initial_demand_outturn_mw=float(63.75136867166537),
+            initial_transmission_system_demand_outturn_mw=float(28.588658480747664)
         )

@@ -14,14 +14,62 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
+from datetime import datetime, timezone
 from urllib.parse import quote_plus
-from proton import Message
+from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -36,7 +84,7 @@ import hmac
 import logging
 import time as _cbs_time
 from urllib.parse import quote
-from proton import Endpoint, symbol
+from proton import Endpoint
 from proton.handlers import MessagingHandler
 from proton.reactor import Container, AtLeastOnce
 
@@ -492,9 +540,7 @@ class UsWaWsdotTrafficAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -557,6 +603,32 @@ class UsWaWsdotTrafficAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -582,6 +654,23 @@ class UsWaWsdotTrafficAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -610,6 +699,7 @@ class UsWaWsdotTrafficAmqpProducer:
         data: TrafficFlowStation,
         _feedurl: str,
         _flow_data_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `us.wa.wsdot.traffic.TrafficFlowStation.amqp` message
@@ -618,6 +708,7 @@ class UsWaWsdotTrafficAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _flow_data_id (str): Value for placeholder flow_data_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (TrafficFlowStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -630,6 +721,7 @@ class UsWaWsdotTrafficAmqpProducer:
             "subject":
             "{flow_data_id}".format(flow_data_id=_flow_data_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -659,6 +751,9 @@ class UsWaWsdotTrafficAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{flow_data_id}".format(flow_data_id=_flow_data_id)
 
@@ -667,17 +762,27 @@ class UsWaWsdotTrafficAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{flow_data_id}".format(flow_data_id=_flow_data_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[TrafficFlowStation],
         _feedurl: str,
         _flow_data_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `us.wa.wsdot.traffic.TrafficFlowStation.amqp` messages
@@ -686,6 +791,7 @@ class UsWaWsdotTrafficAmqpProducer:
             data_array (typing.List[TrafficFlowStation]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _flow_data_id (str): Value for placeholder flow_data_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -693,6 +799,7 @@ class UsWaWsdotTrafficAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _flow_data_id=_flow_data_id,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -700,6 +807,7 @@ class UsWaWsdotTrafficAmqpProducer:
         data: TrafficFlowReading,
         _feedurl: str,
         _flow_data_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `us.wa.wsdot.traffic.TrafficFlowReading.amqp` message
@@ -708,6 +816,7 @@ class UsWaWsdotTrafficAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _flow_data_id (str): Value for placeholder flow_data_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (TrafficFlowReading): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -720,6 +829,7 @@ class UsWaWsdotTrafficAmqpProducer:
             "subject":
             "{flow_data_id}".format(flow_data_id=_flow_data_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -749,6 +859,9 @@ class UsWaWsdotTrafficAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{flow_data_id}".format(flow_data_id=_flow_data_id)
 
@@ -757,17 +870,27 @@ class UsWaWsdotTrafficAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{flow_data_id}".format(flow_data_id=_flow_data_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[TrafficFlowReading],
         _feedurl: str,
         _flow_data_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `us.wa.wsdot.traffic.TrafficFlowReading.amqp` messages
@@ -776,6 +899,7 @@ class UsWaWsdotTrafficAmqpProducer:
             data_array (typing.List[TrafficFlowReading]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _flow_data_id (str): Value for placeholder flow_data_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -783,6 +907,7 @@ class UsWaWsdotTrafficAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _flow_data_id=_flow_data_id,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -902,9 +1027,7 @@ class UsWaWsdotTraveltimesAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -967,6 +1090,32 @@ class UsWaWsdotTraveltimesAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -992,6 +1141,23 @@ class UsWaWsdotTraveltimesAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -1020,6 +1186,7 @@ class UsWaWsdotTraveltimesAmqpProducer:
         data: TravelTimeRoute,
         _feedurl: str,
         _travel_time_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `us.wa.wsdot.traveltimes.TravelTimeRoute.amqp` message
@@ -1028,6 +1195,7 @@ class UsWaWsdotTraveltimesAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _travel_time_id (str): Value for placeholder travel_time_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (TravelTimeRoute): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1040,6 +1208,7 @@ class UsWaWsdotTraveltimesAmqpProducer:
             "subject":
             "{travel_time_id}".format(travel_time_id=_travel_time_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1069,6 +1238,9 @@ class UsWaWsdotTraveltimesAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{travel_time_id}".format(travel_time_id=_travel_time_id)
 
@@ -1077,17 +1249,27 @@ class UsWaWsdotTraveltimesAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{travel_time_id}".format(travel_time_id=_travel_time_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[TravelTimeRoute],
         _feedurl: str,
         _travel_time_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `us.wa.wsdot.traveltimes.TravelTimeRoute.amqp` messages
@@ -1096,6 +1278,7 @@ class UsWaWsdotTraveltimesAmqpProducer:
             data_array (typing.List[TravelTimeRoute]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _travel_time_id (str): Value for placeholder travel_time_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1103,6 +1286,7 @@ class UsWaWsdotTraveltimesAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _travel_time_id=_travel_time_id,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1222,9 +1406,7 @@ class UsWaWsdotMountainpassAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -1287,6 +1469,32 @@ class UsWaWsdotMountainpassAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -1312,6 +1520,23 @@ class UsWaWsdotMountainpassAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -1340,6 +1565,7 @@ class UsWaWsdotMountainpassAmqpProducer:
         data: MountainPassCondition,
         _feedurl: str,
         _mountain_pass_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `us.wa.wsdot.mountainpass.MountainPassCondition.amqp` message
@@ -1348,6 +1574,7 @@ class UsWaWsdotMountainpassAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _mountain_pass_id (str): Value for placeholder mountain_pass_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (MountainPassCondition): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1360,6 +1587,7 @@ class UsWaWsdotMountainpassAmqpProducer:
             "subject":
             "{mountain_pass_id}".format(mountain_pass_id=_mountain_pass_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1389,6 +1617,9 @@ class UsWaWsdotMountainpassAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{mountain_pass_id}".format(mountain_pass_id=_mountain_pass_id)
 
@@ -1397,17 +1628,27 @@ class UsWaWsdotMountainpassAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{mountain_pass_id}".format(mountain_pass_id=_mountain_pass_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[MountainPassCondition],
         _feedurl: str,
         _mountain_pass_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `us.wa.wsdot.mountainpass.MountainPassCondition.amqp` messages
@@ -1416,6 +1657,7 @@ class UsWaWsdotMountainpassAmqpProducer:
             data_array (typing.List[MountainPassCondition]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _mountain_pass_id (str): Value for placeholder mountain_pass_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1423,6 +1665,7 @@ class UsWaWsdotMountainpassAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _mountain_pass_id=_mountain_pass_id,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1542,9 +1785,7 @@ class UsWaWsdotWeatherAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -1607,6 +1848,32 @@ class UsWaWsdotWeatherAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -1632,6 +1899,23 @@ class UsWaWsdotWeatherAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -1660,6 +1944,7 @@ class UsWaWsdotWeatherAmqpProducer:
         data: WeatherStation,
         _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `us.wa.wsdot.weather.WeatherStation.amqp` message
@@ -1668,6 +1953,7 @@ class UsWaWsdotWeatherAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (WeatherStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1680,6 +1966,7 @@ class UsWaWsdotWeatherAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1709,6 +1996,9 @@ class UsWaWsdotWeatherAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -1717,17 +2007,27 @@ class UsWaWsdotWeatherAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{station_id}".format(station_id=_station_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[WeatherStation],
         _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `us.wa.wsdot.weather.WeatherStation.amqp` messages
@@ -1736,6 +2036,7 @@ class UsWaWsdotWeatherAmqpProducer:
             data_array (typing.List[WeatherStation]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1743,6 +2044,7 @@ class UsWaWsdotWeatherAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _station_id=_station_id,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1750,6 +2052,7 @@ class UsWaWsdotWeatherAmqpProducer:
         data: WeatherReading,
         _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `us.wa.wsdot.weather.WeatherReading.amqp` message
@@ -1758,6 +2061,7 @@ class UsWaWsdotWeatherAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (WeatherReading): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1770,6 +2074,7 @@ class UsWaWsdotWeatherAmqpProducer:
             "subject":
             "{station_id}".format(station_id=_station_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1799,6 +2104,9 @@ class UsWaWsdotWeatherAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -1807,17 +2115,27 @@ class UsWaWsdotWeatherAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{station_id}".format(station_id=_station_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[WeatherReading],
         _feedurl: str,
         _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `us.wa.wsdot.weather.WeatherReading.amqp` messages
@@ -1826,6 +2144,7 @@ class UsWaWsdotWeatherAmqpProducer:
             data_array (typing.List[WeatherReading]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1833,6 +2152,7 @@ class UsWaWsdotWeatherAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _station_id=_station_id,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -1952,9 +2272,7 @@ class UsWaWsdotTollsAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -2017,6 +2335,32 @@ class UsWaWsdotTollsAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -2042,6 +2386,23 @@ class UsWaWsdotTollsAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -2070,6 +2431,7 @@ class UsWaWsdotTollsAmqpProducer:
         data: TollRate,
         _feedurl: str,
         _trip_name: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `us.wa.wsdot.tolls.TollRate.amqp` message
@@ -2078,6 +2440,7 @@ class UsWaWsdotTollsAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _trip_name (str): Value for placeholder trip_name in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (TollRate): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2090,6 +2453,7 @@ class UsWaWsdotTollsAmqpProducer:
             "subject":
             "{trip_name}".format(trip_name=_trip_name),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2119,6 +2483,9 @@ class UsWaWsdotTollsAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{trip_name}".format(trip_name=_trip_name)
 
@@ -2127,17 +2494,27 @@ class UsWaWsdotTollsAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{trip_name}".format(trip_name=_trip_name)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[TollRate],
         _feedurl: str,
         _trip_name: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `us.wa.wsdot.tolls.TollRate.amqp` messages
@@ -2146,6 +2523,7 @@ class UsWaWsdotTollsAmqpProducer:
             data_array (typing.List[TollRate]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _trip_name (str): Value for placeholder trip_name in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2153,6 +2531,7 @@ class UsWaWsdotTollsAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _trip_name=_trip_name,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2272,9 +2651,7 @@ class UsWaWsdotCvrestrictionsAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -2337,6 +2714,32 @@ class UsWaWsdotCvrestrictionsAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -2362,6 +2765,23 @@ class UsWaWsdotCvrestrictionsAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -2391,6 +2811,7 @@ class UsWaWsdotCvrestrictionsAmqpProducer:
         _feedurl: str,
         _state_route_id: str,
         _bridge_number: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp` message
@@ -2400,6 +2821,7 @@ class UsWaWsdotCvrestrictionsAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _state_route_id (str): Value for placeholder state_route_id in attribute subject
             _bridge_number (str): Value for placeholder bridge_number in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (CommercialVehicleRestriction): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2412,6 +2834,7 @@ class UsWaWsdotCvrestrictionsAmqpProducer:
             "subject":
             "{state_route_id}/{bridge_number}".format(state_route_id=_state_route_id, bridge_number=_bridge_number),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2441,6 +2864,9 @@ class UsWaWsdotCvrestrictionsAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{state_route_id}/{bridge_number}".format(state_route_id=_state_route_id, bridge_number=_bridge_number)
 
@@ -2449,18 +2875,28 @@ class UsWaWsdotCvrestrictionsAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{state_route_id}/{bridge_number}".format(state_route_id=_state_route_id, bridge_number=_bridge_number)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[CommercialVehicleRestriction],
         _feedurl: str,
         _state_route_id: str,
         _bridge_number: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp` messages
@@ -2470,6 +2906,7 @@ class UsWaWsdotCvrestrictionsAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _state_route_id (str): Value for placeholder state_route_id in attribute subject
             _bridge_number (str): Value for placeholder bridge_number in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2478,6 +2915,7 @@ class UsWaWsdotCvrestrictionsAmqpProducer:
                 _feedurl=_feedurl,
                 _state_route_id=_state_route_id,
                 _bridge_number=_bridge_number,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2597,9 +3035,7 @@ class UsWaWsdotBorderAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -2662,6 +3098,32 @@ class UsWaWsdotBorderAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -2687,6 +3149,23 @@ class UsWaWsdotBorderAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -2715,6 +3194,7 @@ class UsWaWsdotBorderAmqpProducer:
         data: BorderCrossing,
         _feedurl: str,
         _crossing_name: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `us.wa.wsdot.border.BorderCrossing.amqp` message
@@ -2723,6 +3203,7 @@ class UsWaWsdotBorderAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _crossing_name (str): Value for placeholder crossing_name in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (BorderCrossing): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2735,6 +3216,7 @@ class UsWaWsdotBorderAmqpProducer:
             "subject":
             "{crossing_name}".format(crossing_name=_crossing_name),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2764,6 +3246,9 @@ class UsWaWsdotBorderAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{crossing_name}".format(crossing_name=_crossing_name)
 
@@ -2772,17 +3257,27 @@ class UsWaWsdotBorderAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{crossing_name}".format(crossing_name=_crossing_name)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[BorderCrossing],
         _feedurl: str,
         _crossing_name: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `us.wa.wsdot.border.BorderCrossing.amqp` messages
@@ -2791,6 +3286,7 @@ class UsWaWsdotBorderAmqpProducer:
             data_array (typing.List[BorderCrossing]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _crossing_name (str): Value for placeholder crossing_name in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -2798,6 +3294,7 @@ class UsWaWsdotBorderAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _crossing_name=_crossing_name,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -2917,9 +3414,7 @@ class UsWaWsdotFerriesAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -2982,6 +3477,32 @@ class UsWaWsdotFerriesAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -3007,6 +3528,23 @@ class UsWaWsdotFerriesAmqpProducer:
         if isinstance(payload, str):
             payload = payload.encode('utf-8')
         return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
 
     @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
@@ -3035,6 +3573,7 @@ class UsWaWsdotFerriesAmqpProducer:
         data: VesselLocation,
         _feedurl: str,
         _vessel_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `us.wa.wsdot.ferries.VesselLocation.amqp` message
@@ -3043,6 +3582,7 @@ class UsWaWsdotFerriesAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _vessel_id (str): Value for placeholder vessel_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (VesselLocation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3055,6 +3595,7 @@ class UsWaWsdotFerriesAmqpProducer:
             "subject":
             "{vessel_id}".format(vessel_id=_vessel_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3084,6 +3625,9 @@ class UsWaWsdotFerriesAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{vessel_id}".format(vessel_id=_vessel_id)
 
@@ -3092,17 +3636,27 @@ class UsWaWsdotFerriesAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{vessel_id}".format(vessel_id=_vessel_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[VesselLocation],
         _feedurl: str,
         _vessel_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `us.wa.wsdot.ferries.VesselLocation.amqp` messages
@@ -3111,6 +3665,7 @@ class UsWaWsdotFerriesAmqpProducer:
             data_array (typing.List[VesselLocation]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _vessel_id (str): Value for placeholder vessel_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -3118,6 +3673,7 @@ class UsWaWsdotFerriesAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _vessel_id=_vessel_id,
+                _time=_time,
                 content_type=content_type)
     
     

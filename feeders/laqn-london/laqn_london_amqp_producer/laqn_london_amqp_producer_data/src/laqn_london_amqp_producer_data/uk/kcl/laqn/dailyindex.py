@@ -96,6 +96,8 @@ class DailyIndex:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,10 +165,10 @@ class DailyIndex:
             An instance of the dataclass.
         """
         return cls(
-            site_code='fbfdwrulwmrzzgdcunoy',
-            bulletin_date='ajvwzsnrcsqheubgnytj',
-            species_code='blcjfibaqkxleqociehd',
-            air_quality_index=int(74),
+            site_code='lsmdhuncyrtkfosbxyno',
+            bulletin_date='bajeqjkmiwtzuzctkcfy',
+            species_code='jcrqsqosidfenemxrhnu',
+            air_quality_index=int(14),
             air_quality_band=AirQualityBandenum.Low,
             index_source=IndexSourceenum.Measurement
         )

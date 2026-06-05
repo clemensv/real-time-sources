@@ -27,7 +27,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from blitzortung_amqp_producer_amqp_producer import *
 from blitzortung_amqp_producer_data import LightningStroke
-from test_blitzortung_amqp_producer_data_lightningstroke import Test_LightningStroke
+from test_lightningstroke import Test_LightningStroke
 
 
 

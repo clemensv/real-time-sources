@@ -98,6 +98,8 @@ class Solar10Min:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,12 +167,12 @@ class Solar10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='hjckuqwirsopriktmecg',
-            timestamp='nlemhyakugqdjqnwwvwy',
-            quality_level=int(4),
-            global_radiation=float(30.51514400065688),
-            sunshine_duration=float(74.95493906492543),
-            diffuse_radiation=float(47.98940760408264),
-            longwave_radiation=float(12.028736263575778),
-            state='avtiipzpukiqgmlmczzb'
+            station_id='misjdhlwiykpqjgknjoo',
+            timestamp='huzyitcmkqgwcrifetxd',
+            quality_level=int(42),
+            global_radiation=float(72.86144257681786),
+            sunshine_duration=float(17.46119902890633),
+            diffuse_radiation=float(0.3961977026480823),
+            longwave_radiation=float(66.84241330293872),
+            state='fiftfufbehcggwcrkphv'
         )

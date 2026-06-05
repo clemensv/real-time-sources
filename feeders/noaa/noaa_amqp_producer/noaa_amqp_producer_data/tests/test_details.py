@@ -28,9 +28,9 @@ class Test_Details(unittest.TestCase):
         Create instance of Details for testing
         """
         instance = Details(
-            self_='hvtmhpijpdgbwoyhcmfh',
-            region='vxgamepebpqbrxtmstwj',
-            station_id='pbvebxxkzfrcbwsksfod'
+            self_='rmbsseztdtxbmzqssoqp',
+            region='wfchgcjchqwueskfblss',
+            station_id='tpzydgvrnfuajxpjoppj'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_Details(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'hvtmhpijpdgbwoyhcmfh'
+        test_value = 'rmbsseztdtxbmzqssoqp'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     
@@ -47,7 +47,7 @@ class Test_Details(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'vxgamepebpqbrxtmstwj'
+        test_value = 'wfchgcjchqwueskfblss'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -55,7 +55,7 @@ class Test_Details(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'pbvebxxkzfrcbwsksfod'
+        test_value = 'tpzydgvrnfuajxpjoppj'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     

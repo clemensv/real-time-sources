@@ -5,6 +5,7 @@
 Tests for laqn_london_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../laqn_london_amqp_producer_data/src')))
@@ -25,13 +27,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from laqn_london_amqp_producer_amqp_producer import *
 from laqn_london_amqp_producer_data import Site
-from test_laqn_london_amqp_producer_data_site import Test_Site
+from test_site import Test_Site
 from laqn_london_amqp_producer_data import Measurement
-from test_laqn_london_amqp_producer_data_measurement import Test_Measurement
+from test_measurement import Test_Measurement
 from laqn_london_amqp_producer_data import DailyIndex
-from test_laqn_london_amqp_producer_data_dailyindex import Test_DailyIndex
+from test_dailyindex import Test_DailyIndex
 from laqn_london_amqp_producer_data import Species
-from test_laqn_london_amqp_producer_data_species import Test_Species
+from test_species import Test_Species
 
 
 
@@ -237,6 +239,45 @@ class TestUkKclLaqnAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UkKclLaqnAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_site(self, artemis_container):
         """Send and receive a Site message via ActiveMQ Artemis."""
@@ -265,6 +306,7 @@ class TestUkKclLaqnAmqpProducer:
                     _site_code="value",
                     _borough="value",
                     _species_code="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -272,6 +314,7 @@ class TestUkKclLaqnAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -297,6 +340,40 @@ class TestUkKclLaqnAmqpProducer:
                 assert properties.get('species_code') == "{species_code}".format(species_code="value")
         finally:
             producer.close()
+
+    def test_send_site_single_fresh_connection(self, artemis_container):
+        """Send exactly one Site message on a fresh producer connection."""
+        payload = Test_Site.create_instance()
+
+        producer = UkKclLaqnAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_site(
+                data=payload,
+                _site_code="value",
+                _borough="value",
+                _species_code="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.amqp.Site'
+        assert received.body is not None
+        assert received.subject == "{site_code}".format(site_code="value")
+        assert properties.get('borough') == "{borough}".format(borough="value")
+        assert properties.get('species_code') == "{species_code}".format(species_code="value")
     
     def test_send_measurement(self, artemis_container):
         """Send and receive a Measurement message via ActiveMQ Artemis."""
@@ -325,6 +402,7 @@ class TestUkKclLaqnAmqpProducer:
                     _site_code="value",
                     _borough="value",
                     _species_code="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -332,6 +410,7 @@ class TestUkKclLaqnAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -357,6 +436,40 @@ class TestUkKclLaqnAmqpProducer:
                 assert properties.get('species_code') == "{species_code}".format(species_code="value")
         finally:
             producer.close()
+
+    def test_send_measurement_single_fresh_connection(self, artemis_container):
+        """Send exactly one Measurement message on a fresh producer connection."""
+        payload = Test_Measurement.create_instance()
+
+        producer = UkKclLaqnAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_measurement(
+                data=payload,
+                _site_code="value",
+                _borough="value",
+                _species_code="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.amqp.Measurement'
+        assert received.body is not None
+        assert received.subject == "{site_code}".format(site_code="value")
+        assert properties.get('borough') == "{borough}".format(borough="value")
+        assert properties.get('species_code') == "{species_code}".format(species_code="value")
     
     def test_send_daily_index(self, artemis_container):
         """Send and receive a DailyIndex message via ActiveMQ Artemis."""
@@ -385,6 +498,7 @@ class TestUkKclLaqnAmqpProducer:
                     _site_code="value",
                     _borough="value",
                     _species_code="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -392,6 +506,7 @@ class TestUkKclLaqnAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -418,6 +533,40 @@ class TestUkKclLaqnAmqpProducer:
         finally:
             producer.close()
 
+    def test_send_daily_index_single_fresh_connection(self, artemis_container):
+        """Send exactly one DailyIndex message on a fresh producer connection."""
+        payload = Test_DailyIndex.create_instance()
+
+        producer = UkKclLaqnAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_daily_index(
+                data=payload,
+                _site_code="value",
+                _borough="value",
+                _species_code="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.amqp.DailyIndex'
+        assert received.body is not None
+        assert received.subject == "{site_code}".format(site_code="value")
+        assert properties.get('borough') == "{borough}".format(borough="value")
+        assert properties.get('species_code') == "{species_code}".format(species_code="value")
+
 
 
 class TestUkKclLaqnSpeciesAmqpProducer:
@@ -438,6 +587,45 @@ class TestUkKclLaqnSpeciesAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(UkKclLaqnSpeciesAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_species(self, artemis_container):
         """Send and receive a Species message via ActiveMQ Artemis."""
@@ -466,6 +654,7 @@ class TestUkKclLaqnSpeciesAmqpProducer:
                     _species_code="value",
                     _borough="value",
                     _site_code="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -473,6 +662,7 @@ class TestUkKclLaqnSpeciesAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -498,4 +688,38 @@ class TestUkKclLaqnSpeciesAmqpProducer:
                 assert properties.get('site_code') == "{site_code}".format(site_code="value")
         finally:
             producer.close()
+
+    def test_send_species_single_fresh_connection(self, artemis_container):
+        """Send exactly one Species message on a fresh producer connection."""
+        payload = Test_Species.create_instance()
+
+        producer = UkKclLaqnSpeciesAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_species(
+                data=payload,
+                _species_code="value",
+                _borough="value",
+                _site_code="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.species.amqp.Species'
+        assert received.body is not None
+        assert received.subject == "{species_code}".format(species_code="value")
+        assert properties.get('borough') == "{borough}".format(borough="value")
+        assert properties.get('site_code') == "{site_code}".format(site_code="value")
 

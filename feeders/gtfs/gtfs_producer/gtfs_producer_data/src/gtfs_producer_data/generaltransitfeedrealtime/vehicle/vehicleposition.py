@@ -11,10 +11,10 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
-from gtfs_producer_data.generaltransitfeedrealtime.vehicle.position import Position
 from gtfs_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
+from gtfs_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
 from typing import Any
+from gtfs_producer_data.generaltransitfeedrealtime.vehicle.position import Position
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -108,6 +108,8 @@ class VehiclePosition:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -178,10 +180,10 @@ class VehiclePosition:
             trip=None,
             vehicle=None,
             position=None,
-            current_stop_sequence=int(92),
-            stop_id='ujrbopdrajgcxzkuwprm',
+            current_stop_sequence=int(67),
+            stop_id='yxyygtovoqixgrgemhdc',
             current_status=None,
-            timestamp=int(7),
+            timestamp=int(54),
             congestion_level=None,
             occupancy_status=None
         )

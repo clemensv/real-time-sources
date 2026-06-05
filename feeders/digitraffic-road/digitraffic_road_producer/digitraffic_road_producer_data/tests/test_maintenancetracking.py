@@ -28,13 +28,13 @@ class Test_MaintenanceTracking(unittest.TestCase):
         Create instance of MaintenanceTracking for testing
         """
         instance = MaintenanceTracking(
-            domain='merdtyqtnshipcdqwswf',
-            time=int(35),
-            source='emqjbgsspjqrrggrwmok',
-            tasks=['lyiisrggnfotkzouctip'],
-            x=float(89.67540381376187),
-            y=float(3.582368335275954),
-            direction=float(99.63456323795602)
+            domain='bdtqcgdtmcvfdfloiuxo',
+            time=int(50),
+            source='inyduwfyenxbiutyhjlk',
+            tasks=['fyysykdfpjujiuccwkrm'],
+            x=float(15.129539018552796),
+            y=float(78.96174862678018),
+            direction=float(82.4945036723031)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_MaintenanceTracking(unittest.TestCase):
         """
         Test domain property
         """
-        test_value = 'merdtyqtnshipcdqwswf'
+        test_value = 'bdtqcgdtmcvfdfloiuxo'
         self.instance.domain = test_value
         self.assertEqual(self.instance.domain, test_value)
     
@@ -51,7 +51,7 @@ class Test_MaintenanceTracking(unittest.TestCase):
         """
         Test time property
         """
-        test_value = int(35)
+        test_value = int(50)
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -59,7 +59,7 @@ class Test_MaintenanceTracking(unittest.TestCase):
         """
         Test source property
         """
-        test_value = 'emqjbgsspjqrrggrwmok'
+        test_value = 'inyduwfyenxbiutyhjlk'
         self.instance.source = test_value
         self.assertEqual(self.instance.source, test_value)
     
@@ -67,7 +67,7 @@ class Test_MaintenanceTracking(unittest.TestCase):
         """
         Test tasks property
         """
-        test_value = ['lyiisrggnfotkzouctip']
+        test_value = ['fyysykdfpjujiuccwkrm']
         self.instance.tasks = test_value
         self.assertEqual(self.instance.tasks, test_value)
     
@@ -75,7 +75,7 @@ class Test_MaintenanceTracking(unittest.TestCase):
         """
         Test x property
         """
-        test_value = float(89.67540381376187)
+        test_value = float(15.129539018552796)
         self.instance.x = test_value
         self.assertEqual(self.instance.x, test_value)
     
@@ -83,7 +83,7 @@ class Test_MaintenanceTracking(unittest.TestCase):
         """
         Test y property
         """
-        test_value = float(3.582368335275954)
+        test_value = float(78.96174862678018)
         self.instance.y = test_value
         self.assertEqual(self.instance.y, test_value)
     
@@ -91,7 +91,7 @@ class Test_MaintenanceTracking(unittest.TestCase):
         """
         Test direction property
         """
-        test_value = float(99.63456323795602)
+        test_value = float(82.4945036723031)
         self.instance.direction = test_value
         self.assertEqual(self.instance.direction, test_value)
     

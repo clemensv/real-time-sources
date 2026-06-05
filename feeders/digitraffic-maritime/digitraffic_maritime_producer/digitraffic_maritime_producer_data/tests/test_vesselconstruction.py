@@ -29,11 +29,11 @@ class Test_VesselConstruction(unittest.TestCase):
         Create instance of VesselConstruction for testing
         """
         instance = VesselConstruction(
-            vessel_type_code=int(49),
-            vessel_type_name='qgjtmksaawxaxhoqualf',
-            ice_class_code='odffbjecseffyaofeeqt',
+            vessel_type_code=int(20),
+            vessel_type_name='nhulscxmphrmidnbqxdu',
+            ice_class_code='bzvmavzkojtskwfbvbek',
             ice_class_issue_date=datetime.datetime.now(datetime.timezone.utc),
-            ice_class_issue_place='crjfamdcldlfjhdnerfo',
+            ice_class_issue_place='rwkyvynclcgbdipyssav',
             ice_class_end_date=datetime.datetime.now(datetime.timezone.utc),
             double_bottom=False,
             inert_gas_system=False,
@@ -46,7 +46,7 @@ class Test_VesselConstruction(unittest.TestCase):
         """
         Test vessel_type_code property
         """
-        test_value = int(49)
+        test_value = int(20)
         self.instance.vessel_type_code = test_value
         self.assertEqual(self.instance.vessel_type_code, test_value)
     
@@ -54,7 +54,7 @@ class Test_VesselConstruction(unittest.TestCase):
         """
         Test vessel_type_name property
         """
-        test_value = 'qgjtmksaawxaxhoqualf'
+        test_value = 'nhulscxmphrmidnbqxdu'
         self.instance.vessel_type_name = test_value
         self.assertEqual(self.instance.vessel_type_name, test_value)
     
@@ -62,7 +62,7 @@ class Test_VesselConstruction(unittest.TestCase):
         """
         Test ice_class_code property
         """
-        test_value = 'odffbjecseffyaofeeqt'
+        test_value = 'bzvmavzkojtskwfbvbek'
         self.instance.ice_class_code = test_value
         self.assertEqual(self.instance.ice_class_code, test_value)
     
@@ -78,7 +78,7 @@ class Test_VesselConstruction(unittest.TestCase):
         """
         Test ice_class_issue_place property
         """
-        test_value = 'crjfamdcldlfjhdnerfo'
+        test_value = 'rwkyvynclcgbdipyssav'
         self.instance.ice_class_issue_place = test_value
         self.assertEqual(self.instance.ice_class_issue_place, test_value)
     

@@ -12,10 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from ptwc_tsunami_producer_data.ptwclevelenum import PtwcLevelenum
 from ptwc_tsunami_producer_data.categoryenum import CategoryEnum
 from ptwc_tsunami_producer_data.basinenum import BasinEnum
 from ptwc_tsunami_producer_data.feedenum import FeedEnum
+from ptwc_tsunami_producer_data.ptwclevelenum import PtwcLevelenum
 import datetime
 
 
@@ -23,7 +23,7 @@ import datetime
 @dataclass
 class TsunamiBulletin:
     """
-    A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Contains seismic event details and tsunami threat assessment parsed from NOAA Atom feeds.
+    A tsunami bulletin from the US National Tsunami Warning Center (NTWC) or the Pacific Tsunami Warning Center (PTWC). Bulletins indicate seismic events and their tsunami threat assessment, parsed from the NOAA Atom feeds at tsunami.gov.
     
     Attributes:
         bulletin_id (str)
@@ -118,6 +118,8 @@ class TsunamiBulletin:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -185,19 +187,19 @@ class TsunamiBulletin:
             An instance of the dataclass.
         """
         return cls(
-            bulletin_id='lirqvyrcyzizgkyrqfaf',
+            bulletin_id='bigiwlzpelkxhyohxhog',
             feed=FeedEnum.PAAQ,
-            center='xahdqvultofwucswcbcx',
-            title='etdljvwtlfhlsxroeudy',
+            center='gprpyxkldnsbxqfnwiqy',
+            title='kxaaumzkblauwncfhcvj',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            latitude=float(89.27991425738895),
-            longitude=float(14.180255777003525),
+            latitude=float(79.54115307547934),
+            longitude=float(8.376079045369734),
             category=CategoryEnum.Warning,
-            magnitude='lqdudyxmuofcoitnipns',
-            affected_region='yzlkwxvisjjbxaomfkkq',
-            note='ykreyhaihjlprmepzwki',
-            bulletin_url='ykmbccmdiweufnzirzyk',
-            cap_url='zqdjhldwunhaxbnyjhvf',
+            magnitude='vqhhocbdkpslcumevpfz',
+            affected_region='sjdsbhokdhjhestfcaky',
+            note='cvnbirbtjbyisgmbkbtk',
+            bulletin_url='wcezhstszhvdlgwriquf',
+            cap_url='ufktmfztlsytgdifvwjd',
             basin=BasinEnum.pacific,
             ptwc_level=PtwcLevelenum.warning
         )

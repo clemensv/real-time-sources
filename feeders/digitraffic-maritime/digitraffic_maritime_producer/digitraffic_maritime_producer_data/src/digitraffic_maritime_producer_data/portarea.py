@@ -17,7 +17,7 @@ import json
 @dataclass
 class PortArea:
     """
-    PortArea
+    A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels.
     
     Attributes:
         port_area_code (str)
@@ -90,6 +90,8 @@ class PortArea:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class PortArea:
             An instance of the dataclass.
         """
         return cls(
-            port_area_code='kgswixxzbwraibvuqzdr',
-            port_area_name='loyovkgvnrnkkniyrwft',
-            longitude=float(0.4879849221234078),
-            latitude=float(33.080346237373924)
+            port_area_code='nvhckeugruhawflezyry',
+            port_area_name='ubuwutpzdqkuejuelmvx',
+            longitude=float(66.45275091056759),
+            latitude=float(61.92369280726757)
         )

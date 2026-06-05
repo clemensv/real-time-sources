@@ -88,6 +88,8 @@ class Berth:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -155,7 +157,7 @@ class Berth:
             An instance of the dataclass.
         """
         return cls(
-            port_area_code='ajyraggjommpyybtvwuf',
-            berth_code='daypkqceastqrmmzkkei',
-            berth_name='jnhqkqnlyapbxmgsgnox'
+            port_area_code='gwffzjybfygkhvqwdyzj',
+            berth_code='osguhyretvtinycpsqbl',
+            berth_name='fszxvhxtwmvyegdjjakx'
         )

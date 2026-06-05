@@ -28,13 +28,13 @@ class Test_WaterTemperature(unittest.TestCase):
         Create instance of WaterTemperature for testing
         """
         instance = WaterTemperature(
-            station_id='haqjftztucwdpgmmtsqm',
-            timestamp='nxlpyhciudscfhqgkzcu',
-            value=float(29.550271309865693),
+            station_id='odwtqgginazthbjgghkc',
+            timestamp='lbhbmemxfbfycwzxgszz',
+            value=float(35.419680221139075),
             max_temp_exceeded=False,
-            min_temp_exceeded=False,
-            rate_of_change_exceeded=True,
-            region='bsmpnrdwzjvxdgnixrpc'
+            min_temp_exceeded=True,
+            rate_of_change_exceeded=False,
+            region='kqwboaxptytjfexsiokw'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'haqjftztucwdpgmmtsqm'
+        test_value = 'odwtqgginazthbjgghkc'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'nxlpyhciudscfhqgkzcu'
+        test_value = 'lbhbmemxfbfycwzxgszz'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(29.550271309865693)
+        test_value = float(35.419680221139075)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -75,7 +75,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test min_temp_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.min_temp_exceeded = test_value
         self.assertEqual(self.instance.min_temp_exceeded, test_value)
     
@@ -83,7 +83,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = True
+        test_value = False
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     
@@ -91,19 +91,10 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'bsmpnrdwzjvxdgnixrpc'
+        test_value = 'kqwboaxptytjfexsiokw'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = WaterTemperature.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

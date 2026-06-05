@@ -106,6 +106,8 @@ class WarningBulletin:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -173,15 +175,15 @@ class WarningBulletin:
             An instance of the dataclass.
         """
         return cls(
-            warning_id='fkkqjzmgeogftwcizdvd',
-            warning_url='nzykpdgvpxpowbafcxyo',
-            feed_url='sdfcxsuivuucogjvvdfq',
-            feed_title='tkmtxrlfomrkpaxzjdam',
-            title='ubnyoktodrzssvlmwnhg',
+            warning_id='gainratfwvralfgqzvld',
+            warning_url='csxxaujzmtdicobdgtem',
+            feed_url='hqzazpvkxjgovrlqyngl',
+            feed_title='towixfkewbioofleskgm',
+            title='sotxuayuaclsbrvvbpkm',
             published_at=datetime.datetime.now(datetime.timezone.utc),
-            issued_local_time_text='eiurnldlgphpgkcquyiv',
-            warning_type='dxyljmiogspvqifdszql',
-            affected_area_text='tgjhsmzndvzhekyldhaa',
-            severity='lasgqsgqygnzskrluggg',
-            state='ltigouvprqywoopjhzuf'
+            issued_local_time_text='qyovmhuhqtqikummtxei',
+            warning_type='fvxkypoqzlcclwziejos',
+            affected_area_text='kpfmndaqvwvipaxcrijx',
+            severity='ijtypuwysitubsgaatsn',
+            state='orkyexcvabnmfnalrovp'
         )

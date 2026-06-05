@@ -115,6 +115,8 @@ class OceanStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -182,15 +184,15 @@ class OceanStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='vbkehmbfijqfvllsujtg',
-            name='wsekdaxdqloahechbclq',
+            station_id='ncxlvwpsfnqppngfswww',
+            name='xvodtvpuliuoqxzekarl',
             country=CountryEnum.DNK,
-            owner='rqgofrqbzpefbmohfcjr',
-            type='lwetazwyaszrnsbuayyo',
-            status='edqskmenvzonzpldndlz',
-            parameter_id=['dhlsrntmzxtppkthsoor', 'kazjiiegnhbgdiqdbjsi', 'olccpujvxtdrprkgfzxs', 'vrspbjpezujmobypagja', 'tmyzuaenvxexesdyhycv'],
-            latitude=float(93.10596335321148),
-            longitude=float(18.85900877187462),
+            owner='nskkdowvtewlbutibogl',
+            type='eihscsawwufxtehqjobt',
+            status='jxkqeqqsrwoourcriigj',
+            parameter_id=['rgvsmoxnngokftwhpkju', 'cxlarelxppcjtuzprwqt', 'xtdakclyidavnvpfepup', 'htvwuwjmucitwjjcrnrh'],
+            latitude=float(24.062914292219883),
+            longitude=float(47.85847709901353),
             valid_from=datetime.datetime.now(datetime.timezone.utc),
             valid_to=datetime.datetime.now(datetime.timezone.utc),
             operation_from=datetime.datetime.now(datetime.timezone.utc),

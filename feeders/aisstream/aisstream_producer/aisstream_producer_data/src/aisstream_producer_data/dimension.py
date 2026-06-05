@@ -90,6 +90,8 @@ class Dimension:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class Dimension:
             An instance of the dataclass.
         """
         return cls(
-            A=int(42),
-            B=int(22),
-            C=int(97),
-            D=int(97)
+            A=int(12),
+            B=int(46),
+            C=int(55),
+            D=int(65)
         )

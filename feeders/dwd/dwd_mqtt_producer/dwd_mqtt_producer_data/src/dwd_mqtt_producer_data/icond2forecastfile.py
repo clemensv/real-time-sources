@@ -112,6 +112,8 @@ class IconD2ForecastFile:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -179,17 +181,17 @@ class IconD2ForecastFile:
             An instance of the dataclass.
         """
         return cls(
-            file_url='jnaggijtkqyxizqnytts',
-            model='cpiofhjxkskzzursqpri',
-            file_name='jsbqggdaceirhotvlchi',
-            run='aabmzxoojynwwnvzukzl',
-            forecast_hour=int(59),
-            parameter='uvgxljhqyyprvcohbxnl',
-            level_type='sexbcsuqmhmchtdoejef',
-            level='bpnehcbkxrlkboyfkuai',
-            modified='ekdfrmzwqsilyhxquqzz',
-            size_bytes=int(33),
-            state='eucsvapeupjimftdwfyx',
-            variable='alifvyweniagobvggphy',
-            file_id='lgvwsykbcloonlnexppz'
+            file_url='mxwlijlinkjwniavqtft',
+            model='cswfydyfsugzyrztdcul',
+            file_name='wmxdnhborddjbqvundlx',
+            run='mvfwcdaixytgokjcpfue',
+            forecast_hour=int(3),
+            parameter='udiywspmqnvxpfbasiwj',
+            level_type='yobpftpjtiyuwamyfqgb',
+            level='lykaoaaaogwgagysftuv',
+            modified='mmuglsxmxeibzfubxnfh',
+            size_bytes=int(52),
+            state='xjdkpeblqpqqwlarlfjc',
+            variable='pbtepwegjofkrvakdtin',
+            file_id='dthexdqhoounmzbcyezv'
         )

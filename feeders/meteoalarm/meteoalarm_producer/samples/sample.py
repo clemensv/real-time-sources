@@ -34,10 +34,11 @@ from confluent_kafka import Producer as KafkaProducer
 
 from meteoalarm_producer_kafka_producer.producer import MeteoalarmWarningsEventProducer
 from meteoalarm_producer_kafka_producer.producer import MeteoalarmWarningsMqttEventProducer
+from meteoalarm_producer_kafka_producer.producer import MeteoalarmWarningsAmqpEventProducer
 
 # imports for the data classes for each event
 
-from meteoalarm_producer_data.weatherwarning import WeatherWarning
+from meteoalarm_producer_data import WeatherWarning
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -80,12 +81,28 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Meteoalarm.Warnings.mqtt.WeatherWarning' event to Kafka topic.
     await meteoalarm_warnings_mqtt_event_producer.send_meteoalarm_warnings_mqtt_weather_warning(_identifier = 'TODO: replace me', data = _weather_warning)
     print(f"Sent 'Meteoalarm.Warnings.mqtt.WeatherWarning' event: {_weather_warning.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        meteoalarm_warnings_amqp_event_producer = MeteoalarmWarningsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        meteoalarm_warnings_amqp_event_producer = MeteoalarmWarningsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Meteoalarm.Warnings.amqp.WeatherWarning ----
+    # TODO: Supply event data for the Meteoalarm.Warnings.amqp.WeatherWarning event
+    _weather_warning = WeatherWarning()
+
+    # sends the 'Meteoalarm.Warnings.amqp.WeatherWarning' event to Kafka topic.
+    await meteoalarm_warnings_amqp_event_producer.send_meteoalarm_warnings_amqp_weather_warning(_identifier = 'TODO: replace me', data = _weather_warning)
+    print(f"Sent 'Meteoalarm.Warnings.amqp.WeatherWarning' event: {_weather_warning.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

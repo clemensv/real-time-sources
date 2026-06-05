@@ -20,10 +20,10 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from xceed_producer_kafka_producer.producer import XceedEventProducer
 from xceed_producer_data import Event
-from test_xceed_producer_data_event import Test_Event
+from test_event import Test_Event
 from xceed_producer_kafka_producer.producer import XceedAdmissionsEventProducer
 from xceed_producer_data import EventAdmission
-from test_xceed_producer_data_eventadmission import Test_EventAdmission
+from test_eventadmission import Test_EventAdmission
 from xceed_producer_kafka_producer.producer import XceedMqttEventProducer
 from xceed_producer_kafka_producer.producer import XceedAmqpEventProducer
 from xceed_producer_kafka_producer.producer import XceedAdmissionsMqttEventProducer
@@ -74,17 +74,17 @@ def test_xceed_xceedevent(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -107,11 +107,12 @@ def test_xceed_xceedevent(kafka_emulator):
     producer_instance = XceedEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Event.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_xceed_event(_feedurl = f'test_{i}', _event_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_xceed_event(_feedurl = f'test_{i}', _event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -137,17 +138,17 @@ def test_xceed_admissions_xceedeventadmission(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -170,11 +171,12 @@ def test_xceed_admissions_xceedeventadmission(kafka_emulator):
     producer_instance = XceedAdmissionsEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_EventAdmission.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_xceed_event_admission(_feedurl = f'test_{i}', _event_id = f'test_{i}', _admission_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_xceed_event_admission(_feedurl = f'test_{i}', _event_id = f'test_{i}', _admission_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -200,17 +202,17 @@ def test_xceed_mqtt_xceedmqttevent(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -233,11 +235,12 @@ def test_xceed_mqtt_xceedmqttevent(kafka_emulator):
     producer_instance = XceedMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Event.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_xceed_mqtt_event(_feedurl = f'test_{i}', _event_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_xceed_mqtt_event(_feedurl = f'test_{i}', _event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -261,17 +264,17 @@ def test_xceed_amqp_xceedamqpevent(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -294,11 +297,12 @@ def test_xceed_amqp_xceedamqpevent(kafka_emulator):
     producer_instance = XceedAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Event.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_xceed_amqp_event(_feedurl = f'test_{i}', _event_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_xceed_amqp_event(_feedurl = f'test_{i}', _event_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -322,17 +326,17 @@ def test_xceed_admissions_mqtt_xceedadmissionsmqtteventadmission(kafka_emulator)
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -355,11 +359,12 @@ def test_xceed_admissions_mqtt_xceedadmissionsmqtteventadmission(kafka_emulator)
     producer_instance = XceedAdmissionsMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_EventAdmission.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_xceed_admissions_mqtt_event_admission(_feedurl = f'test_{i}', _event_id = f'test_{i}', _admission_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_xceed_admissions_mqtt_event_admission(_feedurl = f'test_{i}', _event_id = f'test_{i}', _admission_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -383,17 +388,17 @@ def test_xceed_admissions_amqp_xceedadmissionsamqpeventadmission(kafka_emulator)
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -416,11 +421,12 @@ def test_xceed_admissions_amqp_xceedadmissionsamqpeventadmission(kafka_emulator)
     producer_instance = XceedAdmissionsAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_EventAdmission.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_xceed_admissions_amqp_event_admission(_feedurl = f'test_{i}', _event_id = f'test_{i}', _admission_id = f'test_{i}', data = event_data)
-
+        producer_instance.send_xceed_admissions_amqp_event_admission(_feedurl = f'test_{i}', _event_id = f'test_{i}', _admission_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 

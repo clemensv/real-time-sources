@@ -104,6 +104,8 @@ class MonitoringSite:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class MonitoringSite:
             An instance of the dataclass.
         """
         return cls(
-            site_number='xoytffddtnrdwnoftbbr',
-            site_name='sqagszrjdexaxhcnsfvj',
-            agency_code='wjjfrwqgimbmohnfqnqb',
-            latitude=float(55.54077976253584),
-            longitude=float(14.1561052775661),
-            site_type='zszytfbaceqxyfjuejus',
-            state_code='vnwjgnmmtgugxdzyuzng',
-            county_code='chpmysstwwffrkdtxefg',
-            huc_code='tpbypwgaaqslhfeqykvj',
-            state='lscjejjufrbvtuywgass',
-            parameter_code='nwvwixtiogjpzrlofwac'
+            site_number='cvyxbpgqjkwqruzoqlmd',
+            site_name='zbkjreyqrujsyvjetctt',
+            agency_code='wkbjhfdxfqnrqxoxdrls',
+            latitude=float(1.9952963028393111),
+            longitude=float(43.913745604631984),
+            site_type='hnqhzuvnfpptyveylizd',
+            state_code='byunqeadlffitqtlkpyz',
+            county_code='eteykljltemkqvowxjkf',
+            huc_code='bbmwgwxfnjmpptpthdms',
+            state='pyjpcyhmpubtnxacuxmi',
+            parameter_code='fesxvkntszivrpdqrcal'
         )

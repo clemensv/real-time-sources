@@ -95,6 +95,8 @@ class Observation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -162,10 +164,10 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            province='fkqgxhuryzcgdqrxahzf',
-            community_name='xourzllmlpjcjxvpkbpr',
-            cgndb_code='qxobhuzfshlvazcehweh',
-            observation_datetime='oggoozvzmpzjppccizij',
-            aqhi=float(33.56061736972495),
+            province='lfrunjejxjjvkcokiwuc',
+            community_name='ackmrskxqrfcinaqqcaq',
+            cgndb_code='nqxgfbibqkunboqyrmum',
+            observation_datetime='mzlejmtkscsgfxelgvjr',
+            aqhi=float(82.47501478272284),
             aqhi_category=AqhiCategoryenum.Low
         )

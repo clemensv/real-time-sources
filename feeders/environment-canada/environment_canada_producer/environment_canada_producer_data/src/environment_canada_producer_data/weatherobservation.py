@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class WeatherObservation:
     """
-    Weather observation from an Environment Canada SWOB station. Fields are extracted from the verbose SWOB-ML record (200+ raw fields). The core meteorological parameters retained include temperature, humidity, dew point, pressure (station and sea-level), wind, precipitation, visibility, snow depth, cloud cover, pressure tendency, and 24-hour temperature extremes.
+    A current environmental measurement from Environment and Climate Change Canada (ECCC). It carries current weather observations when the upstream feed reports a new or refreshed value.
     
     Attributes:
         msc_id (str)
@@ -44,6 +44,7 @@ class WeatherObservation:
         wind_gust_1hr (typing.Optional[float])
         precipitation_24hr (typing.Optional[float])
         altimeter_setting (typing.Optional[float])
+        province (typing.Optional[str])
     """
     
     
@@ -69,6 +70,7 @@ class WeatherObservation:
     wind_gust_1hr: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_gust_1hr"))
     precipitation_24hr: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation_24hr"))
     altimeter_setting: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="altimeter_setting"))
+    province: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="province"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherObservation':
@@ -128,6 +130,8 @@ class WeatherObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -195,26 +199,27 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            msc_id='urcntkdboaorqwzatamd',
-            station_name='gzhtxljducwhhvlkjdhq',
+            msc_id='ueoajlwodmsnhgqueybw',
+            station_name='xpdiyjefzwdajpqwtwpb',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            air_temperature=float(88.97115443765004),
-            dew_point=float(6.8226453592269865),
+            air_temperature=float(5.27018921657314),
+            dew_point=float(16.464605721452262),
             relative_humidity=int(18),
-            station_pressure=float(88.63048957125815),
-            wind_speed=float(36.289832247550855),
-            wind_direction=int(88),
-            wind_gust=float(48.729894763016404),
-            precipitation_1hr=float(4.975445817434332),
-            mean_sea_level_pressure=float(70.7454493007607),
-            visibility=float(45.566401762757444),
-            snow_depth=float(48.41991204686737),
-            total_cloud_cover=int(15),
-            pressure_tendency_3hr=float(40.87212339298342),
-            max_temperature_24hr=float(8.678449753146289),
-            min_temperature_24hr=float(57.67855904308094),
-            wind_speed_1hr=float(89.88444648080514),
-            wind_gust_1hr=float(11.207232062334317),
-            precipitation_24hr=float(55.96822823815215),
-            altimeter_setting=float(38.90164375699599)
+            station_pressure=float(88.16212348121788),
+            wind_speed=float(28.27232250601257),
+            wind_direction=int(60),
+            wind_gust=float(79.06981970973776),
+            precipitation_1hr=float(13.838261598632117),
+            mean_sea_level_pressure=float(73.79402939686794),
+            visibility=float(7.366123419976889),
+            snow_depth=float(41.833598660544126),
+            total_cloud_cover=int(100),
+            pressure_tendency_3hr=float(44.752744722160706),
+            max_temperature_24hr=float(30.54983798776949),
+            min_temperature_24hr=float(89.08252170593),
+            wind_speed_1hr=float(25.968993163849273),
+            wind_gust_1hr=float(84.60538301015809),
+            precipitation_24hr=float(67.66836282122934),
+            altimeter_setting=float(74.46095274685607),
+            province='osxomzikvlybbefdwiyt'
         )

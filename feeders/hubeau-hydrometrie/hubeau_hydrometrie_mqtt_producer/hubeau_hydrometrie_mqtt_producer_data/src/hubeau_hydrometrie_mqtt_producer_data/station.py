@@ -104,6 +104,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            code_station='yiwncruotckjisshxpkt',
-            libelle_station='ljwmhpqrmejdatffxpgg',
-            code_site='oygyhclyofmupapvsxkv',
-            longitude_station=float(0.7046190633766991),
-            latitude_station=float(39.359071788248755),
-            libelle_cours_eau='qfvyznaqxjkhvfyeekyx',
-            libelle_commune='eifadytmtojmvzmemteu',
-            code_departement='btigrmlpwjphqylbxlyb',
-            en_service=True,
-            date_ouverture_station='cksyaiktojuxnrniqehb',
-            basin='kbqywohuwphajzbpsany'
+            code_station='gyuakbtepkbbvkmemduu',
+            libelle_station='mmunnxzqsgwaygpdjvst',
+            code_site='uxcnfzpwdbuaagkibnmx',
+            longitude_station=float(45.00384452720386),
+            latitude_station=float(78.26459777405225),
+            libelle_cours_eau='rkparttzmzbtbbsbedjc',
+            libelle_commune='dqbqckwrvkvtzieqxuso',
+            code_departement='tqjzmdueeaomtkunqdgk',
+            en_service=False,
+            date_ouverture_station='aldlwnysveqsurunvmpd',
+            basin='tuofsbrhxppdobykaoew'
         )

@@ -28,15 +28,15 @@ class Test_Wind(unittest.TestCase):
         Create instance of Wind for testing
         """
         instance = Wind(
-            station_id='odfzwkusprkklmkyqvnz',
-            timestamp='uywafitjxsklmfzaofwh',
-            speed=float(84.69937859237533),
-            direction_degrees='hffsdqdsqiayedecqnkc',
-            direction_text='lxetzhwifofttaodbqvh',
-            gusts=float(46.23888073773066),
-            max_wind_speed_exceeded=False,
-            rate_of_change_exceeded=False,
-            region='caetgmpfhlffoehdhrrd'
+            station_id='hfghgdhivuxvcryqahje',
+            timestamp='wqsqcyendeglqxhwoqde',
+            speed=float(70.08570755160662),
+            direction_degrees='bgnxlhcbhjthzstpwzmy',
+            direction_text='mrcuytgrxcfqnhzjiwlr',
+            gusts=float(45.38522966165803),
+            max_wind_speed_exceeded=True,
+            rate_of_change_exceeded=True,
+            region='inaqqpnmeukdhmyulzyv'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'odfzwkusprkklmkyqvnz'
+        test_value = 'hfghgdhivuxvcryqahje'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'uywafitjxsklmfzaofwh'
+        test_value = 'wqsqcyendeglqxhwoqde'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -61,7 +61,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(84.69937859237533)
+        test_value = float(70.08570755160662)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     
@@ -69,7 +69,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test direction_degrees property
         """
-        test_value = 'hffsdqdsqiayedecqnkc'
+        test_value = 'bgnxlhcbhjthzstpwzmy'
         self.instance.direction_degrees = test_value
         self.assertEqual(self.instance.direction_degrees, test_value)
     
@@ -77,7 +77,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test direction_text property
         """
-        test_value = 'lxetzhwifofttaodbqvh'
+        test_value = 'mrcuytgrxcfqnhzjiwlr'
         self.instance.direction_text = test_value
         self.assertEqual(self.instance.direction_text, test_value)
     
@@ -85,7 +85,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test gusts property
         """
-        test_value = float(46.23888073773066)
+        test_value = float(45.38522966165803)
         self.instance.gusts = test_value
         self.assertEqual(self.instance.gusts, test_value)
     
@@ -93,7 +93,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test max_wind_speed_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.max_wind_speed_exceeded = test_value
         self.assertEqual(self.instance.max_wind_speed_exceeded, test_value)
     
@@ -101,7 +101,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     
@@ -109,19 +109,10 @@ class Test_Wind(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'caetgmpfhlffoehdhrrd'
+        test_value = 'inaqqpnmeukdhmyulzyv'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Wind.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

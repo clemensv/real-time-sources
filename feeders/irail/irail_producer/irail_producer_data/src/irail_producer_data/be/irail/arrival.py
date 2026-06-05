@@ -1,41 +1,43 @@
 """ Arrival dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
+from irail_producer_data.be.irail.occupancyenum import OccupancyEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class Arrival:
     """
-    A single scheduled arrival at a Belgian railway station with real-time status.
+    A single scheduled arrival at a Belgian railway station with real-time status. Represents a train service reaching the station at a scheduled time, possibly with a delay. The arrival is identified by the combination of station, date, and vehicle identifier encoded in the connection URI.
+    
     Attributes:
-        origin_station_id (str): Nine-digit UIC-derived numeric identifier of the origin station.
-        origin_name (str): Display name of the origin station.
-        scheduled_time (str): Scheduled arrival time in ISO 8601 UTC.
-        delay_seconds (int): Current delay in seconds.
-        is_canceled (bool): True if this arrival has been canceled.
-        has_arrived (bool): True if the train has already arrived.
-        is_extra_stop (bool): True if this stop is not part of the original schedule.
-        vehicle_id (str): Full iRail vehicle identifier.
-        vehicle_short_name (str): Human-readable short name of the train service.
-        vehicle_type (str): NMBS train service type abbreviation.
-        vehicle_number (str): Numeric part of the vehicle identifier.
-        platform (typing.Optional[str]): Platform number. Null if not assigned.
-        is_normal_platform (bool): True if the platform is the normally scheduled one.
-        occupancy (str): Crowd-sourced occupancy estimate: low, medium, high, or unknown.
-        connection_uri (str): Stable linked-data URI uniquely identifying this arrival."""
+        origin_station_id (str)
+        origin_name (str)
+        scheduled_time (str)
+        delay_seconds (int)
+        is_canceled (bool)
+        has_arrived (bool)
+        is_extra_stop (bool)
+        vehicle_id (str)
+        vehicle_short_name (str)
+        vehicle_type (str)
+        vehicle_number (str)
+        platform (typing.Optional[str])
+        is_normal_platform (bool)
+        occupancy (OccupancyEnum)
+        connection_uri (str)
+    """
+    
     
     origin_station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="origin_station_id"))
     origin_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="origin_name"))
@@ -50,30 +52,8 @@ class Arrival:
     vehicle_number: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vehicle_number"))
     platform: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="platform"))
     is_normal_platform: bool=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="is_normal_platform"))
-    occupancy: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="occupancy"))
+    occupancy: OccupancyEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="occupancy"))
     connection_uri: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="connection_uri"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Arrival\", \"doc\": \"A single scheduled arrival at a Belgian railway station with real-time status.\", \"fields\": [{\"name\": \"origin_station_id\", \"type\": \"string\", \"doc\": \"Nine-digit UIC-derived numeric identifier of the origin station.\"}, {\"name\": \"origin_name\", \"type\": \"string\", \"doc\": \"Display name of the origin station.\"}, {\"name\": \"scheduled_time\", \"type\": \"string\", \"doc\": \"Scheduled arrival time in ISO 8601 UTC.\"}, {\"name\": \"delay_seconds\", \"type\": \"int\", \"doc\": \"Current delay in seconds.\"}, {\"name\": \"is_canceled\", \"type\": \"boolean\", \"doc\": \"True if this arrival has been canceled.\"}, {\"name\": \"has_arrived\", \"type\": \"boolean\", \"doc\": \"True if the train has already arrived.\"}, {\"name\": \"is_extra_stop\", \"type\": \"boolean\", \"doc\": \"True if this stop is not part of the original schedule.\"}, {\"name\": \"vehicle_id\", \"type\": \"string\", \"doc\": \"Full iRail vehicle identifier.\"}, {\"name\": \"vehicle_short_name\", \"type\": \"string\", \"doc\": \"Human-readable short name of the train service.\"}, {\"name\": \"vehicle_type\", \"type\": \"string\", \"doc\": \"NMBS train service type abbreviation.\"}, {\"name\": \"vehicle_number\", \"type\": \"string\", \"doc\": \"Numeric part of the vehicle identifier.\"}, {\"name\": \"platform\", \"type\": [\"null\", \"string\"], \"doc\": \"Platform number. Null if not assigned.\", \"default\": null}, {\"name\": \"is_normal_platform\", \"type\": \"boolean\", \"doc\": \"True if the platform is the normally scheduled one.\"}, {\"name\": \"occupancy\", \"type\": \"string\", \"doc\": \"Crowd-sourced occupancy estimate: low, medium, high, or unknown.\"}, {\"name\": \"connection_uri\", \"type\": \"string\", \"doc\": \"Stable linked-data URI uniquely identifying this arrival.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.origin_station_id=str(self.origin_station_id)
-        self.origin_name=str(self.origin_name)
-        self.scheduled_time=str(self.scheduled_time)
-        self.delay_seconds=int(self.delay_seconds)
-        self.is_canceled=bool(self.is_canceled)
-        self.has_arrived=bool(self.has_arrived)
-        self.is_extra_stop=bool(self.is_extra_stop)
-        self.vehicle_id=str(self.vehicle_id)
-        self.vehicle_short_name=str(self.vehicle_short_name)
-        self.vehicle_type=str(self.vehicle_type)
-        self.vehicle_number=str(self.vehicle_number)
-        self.platform=str(self.platform) if self.platform else None
-        self.is_normal_platform=bool(self.is_normal_platform)
-        self.occupancy=str(self.occupancy)
-        self.connection_uri=str(self.connection_uri)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Arrival':
@@ -84,7 +64,7 @@ class Arrival:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -103,7 +83,7 @@ class Arrival:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -117,8 +97,6 @@ class Arrival:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -131,16 +109,12 @@ class Arrival:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,10 +139,6 @@ class Arrival:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -194,18 +164,6 @@ class Arrival:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return Arrival.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -213,5 +171,30 @@ class Arrival:
                 return Arrival.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Arrival':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            origin_station_id='xbslsifnzyhwypgojfyq',
+            origin_name='fpexafpwssgytknocnhu',
+            scheduled_time='zlsspotyekrnddrfbtkv',
+            delay_seconds=int(20),
+            is_canceled=True,
+            has_arrived=True,
+            is_extra_stop=True,
+            vehicle_id='surcataahtmeclboannp',
+            vehicle_short_name='ppdxwxnhaltfafabvmsy',
+            vehicle_type='ngghgpmlqwzhinfzyeqg',
+            vehicle_number='djfanhruzfjktqiztois',
+            platform='xsjmcazhryzsoizcdpcp',
+            is_normal_platform=True,
+            occupancy=OccupancyEnum.low,
+            connection_uri='vvlwkrvosualsmspixve'
+        )
