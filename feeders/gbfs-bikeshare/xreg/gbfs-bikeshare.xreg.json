@@ -1,0 +1,676 @@
+{
+  "endpoints": {
+    "org.gbfs.System.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "gbfs-bikeshare",
+          "key": "{system_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.gbfs.kafka.system"
+      ],
+      "description": "Kafka producer endpoint for GBFS system metadata CloudEvents on the `gbfs-bikeshare` topic keyed by `{system_id}`."
+    },
+    "org.gbfs.Stations.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "gbfs-bikeshare",
+          "key": "{system_id}/{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.gbfs.kafka.stations"
+      ],
+      "description": "Kafka producer endpoint for GBFS station reference and station-status CloudEvents on the `gbfs-bikeshare` topic keyed by `{system_id}/{station_id}`."
+    },
+    "org.gbfs.FreeBikes.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "gbfs-bikeshare",
+          "key": "{system_id}/{bike_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.gbfs.kafka.free_bikes"
+      ],
+      "description": "Kafka producer endpoint for GBFS free-bike position CloudEvents on the `gbfs-bikeshare` topic keyed by `{system_id}/{bike_id}`."
+    },
+    "org.gbfs.Mqtt": {
+      "usage": ["producer"],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.gbfs.mqtt.system",
+        "#/messagegroups/org.gbfs.mqtt.stations",
+        "#/messagegroups/org.gbfs.mqtt.free_bikes"
+      ],
+      "description": "MQTT 5.0 producer endpoint for GBFS CloudEvents using the mobility Unified Namespace topic hierarchy."
+    },
+    "org.gbfs.Amqp": {
+      "usage": ["producer"],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/gbfs-bikeshare"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.gbfs.amqp.system",
+        "#/messagegroups/org.gbfs.amqp.stations",
+        "#/messagegroups/org.gbfs.amqp.free_bikes"
+      ],
+      "description": "AMQP 1.0 producer endpoint for GBFS CloudEvents on the configured broker address."
+    }
+  },
+  "messagegroups": {
+    "org.gbfs.system": {
+      "messages": {
+        "org.gbfs.SystemInformation": {
+          "name": "SystemInformation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data describing one GBFS system as published in `system_information.json`, including the public system name, operator, customer-facing URL, timezone, and support metadata. Emitted at bridge startup and on reference refresh so consumers can join station and vehicle telemetry against stable system metadata.",
+          "envelopemetadata": {
+            "type": { "value": "org.gbfs.SystemInformation" },
+            "source": {
+              "value": "{feed_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{system_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.gbfs.jstruct/schemas/org.gbfs.SystemInformation"
+        }
+      },
+      "description": "Transport-neutral GBFS system reference events keyed by the stable GBFS `system_id`."
+    },
+    "org.gbfs.stations": {
+      "messages": {
+        "org.gbfs.StationInformation": {
+          "name": "StationInformation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data for one dock-based GBFS station from `station_information.json`. The event carries the stable station identifier, public name, WGS 84 coordinates, docking capacity, and optional address / regional context so consumers can interpret real-time availability telemetry.",
+          "envelopemetadata": {
+            "type": { "value": "org.gbfs.StationInformation" },
+            "source": {
+              "value": "{feed_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{system_id}/{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.gbfs.jstruct/schemas/org.gbfs.StationInformation"
+        },
+        "org.gbfs.StationStatus": {
+          "name": "StationStatus",
+          "envelope": "CloudEvents/1.0",
+          "description": "Real-time station availability telemetry from `station_status.json`. Each event describes the current rentable-bike count, dock availability, operating flags, and the upstream `last_reported` timestamp for one GBFS station.",
+          "envelopemetadata": {
+            "type": { "value": "org.gbfs.StationStatus" },
+            "source": {
+              "value": "{feed_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{system_id}/{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.gbfs.jstruct/schemas/org.gbfs.StationStatus"
+        }
+      },
+      "description": "Transport-neutral GBFS station reference and station-status events keyed by `{system_id}/{station_id}`."
+    },
+    "org.gbfs.free_bikes": {
+      "messages": {
+        "org.gbfs.FreeBikeStatus": {
+          "name": "FreeBikeStatus",
+          "envelope": "CloudEvents/1.0",
+          "description": "Real-time dockless vehicle telemetry from `free_bike_status.json` (renamed `vehicle_status.json` in GBFS v3). Each event carries the last known location, reservation and disablement state, optional vehicle type reference, and optional remaining range for a single rentable vehicle that is not currently in an active trip.",
+          "envelopemetadata": {
+            "type": { "value": "org.gbfs.FreeBikeStatus" },
+            "source": {
+              "value": "{feed_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{system_id}/{bike_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.gbfs.jstruct/schemas/org.gbfs.FreeBikeStatus"
+        }
+      },
+      "description": "Transport-neutral GBFS free-bike telemetry events keyed by `{system_id}/{bike_id}`."
+    },
+    "org.gbfs.kafka.system": {
+      "description": "Kafka bindings for GBFS system reference events.",
+      "messages": {
+        "org.gbfs.kafka.SystemInformation": {
+          "name": "SystemInformation",
+          "basemessageuri": "/messagegroups/org.gbfs.system/messages/org.gbfs.SystemInformation",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{system_id}"
+          }
+        }
+      }
+    },
+    "org.gbfs.kafka.stations": {
+      "description": "Kafka bindings for GBFS station reference and station-status events.",
+      "messages": {
+        "org.gbfs.kafka.StationInformation": {
+          "name": "StationInformation",
+          "basemessageuri": "/messagegroups/org.gbfs.stations/messages/org.gbfs.StationInformation",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{system_id}/{station_id}"
+          }
+        },
+        "org.gbfs.kafka.StationStatus": {
+          "name": "StationStatus",
+          "basemessageuri": "/messagegroups/org.gbfs.stations/messages/org.gbfs.StationStatus",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{system_id}/{station_id}"
+          }
+        }
+      }
+    },
+    "org.gbfs.kafka.free_bikes": {
+      "description": "Kafka bindings for GBFS free-bike telemetry events.",
+      "messages": {
+        "org.gbfs.kafka.FreeBikeStatus": {
+          "name": "FreeBikeStatus",
+          "basemessageuri": "/messagegroups/org.gbfs.free_bikes/messages/org.gbfs.FreeBikeStatus",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{system_id}/{bike_id}"
+          }
+        }
+      }
+    },
+    "org.gbfs.mqtt.system": {
+      "description": "MQTT 5 bindings for GBFS system reference events.",
+      "messages": {
+        "org.gbfs.mqtt.SystemInformation": {
+          "name": "SystemInformation",
+          "basemessageuri": "/messagegroups/org.gbfs.system/messages/org.gbfs.SystemInformation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "mobility/gbfs/{system_id}/system",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "org.gbfs.mqtt.stations": {
+      "description": "MQTT 5 bindings for GBFS station reference and availability events.",
+      "messages": {
+        "org.gbfs.mqtt.StationInformation": {
+          "name": "StationInformation",
+          "basemessageuri": "/messagegroups/org.gbfs.stations/messages/org.gbfs.StationInformation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "mobility/gbfs/{system_id}/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "org.gbfs.mqtt.StationStatus": {
+          "name": "StationStatus",
+          "basemessageuri": "/messagegroups/org.gbfs.stations/messages/org.gbfs.StationStatus",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "mobility/gbfs/{system_id}/{station_id}/status",
+            "qos": 0,
+            "retain": false
+          }
+        }
+      }
+    },
+    "org.gbfs.mqtt.free_bikes": {
+      "description": "MQTT 5 bindings for GBFS free-bike position events.",
+      "messages": {
+        "org.gbfs.mqtt.FreeBikeStatus": {
+          "name": "FreeBikeStatus",
+          "basemessageuri": "/messagegroups/org.gbfs.free_bikes/messages/org.gbfs.FreeBikeStatus",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "mobility/gbfs/{system_id}/{bike_id}/position",
+            "qos": 0,
+            "retain": false
+          }
+        }
+      }
+    },
+    "org.gbfs.amqp.system": {
+      "description": "AMQP 1.0 bindings for GBFS system reference events.",
+      "messages": {
+        "org.gbfs.amqp.SystemInformation": {
+          "name": "SystemInformation",
+          "basemessageuri": "/messagegroups/org.gbfs.system/messages/org.gbfs.SystemInformation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{system_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for one GBFS system."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{system_id}",
+                "description": "Partition key mirrors the GBFS system identity."
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.amqp.stations": {
+      "description": "AMQP 1.0 bindings for GBFS station reference and station-status events.",
+      "messages": {
+        "org.gbfs.amqp.StationInformation": {
+          "name": "StationInformation",
+          "basemessageuri": "/messagegroups/org.gbfs.stations/messages/org.gbfs.StationInformation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{system_id}/{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for one GBFS station."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{system_id}/{station_id}",
+                "description": "Partition key mirrors the GBFS station identity."
+              }
+            }
+          }
+        },
+        "org.gbfs.amqp.StationStatus": {
+          "name": "StationStatus",
+          "basemessageuri": "/messagegroups/org.gbfs.stations/messages/org.gbfs.StationStatus",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{system_id}/{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for one GBFS station."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{system_id}/{station_id}",
+                "description": "Partition key mirrors the GBFS station identity."
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.gbfs.amqp.free_bikes": {
+      "description": "AMQP 1.0 bindings for GBFS free-bike telemetry events.",
+      "messages": {
+        "org.gbfs.amqp.FreeBikeStatus": {
+          "name": "FreeBikeStatus",
+          "basemessageuri": "/messagegroups/org.gbfs.free_bikes/messages/org.gbfs.FreeBikeStatus",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{system_id}/{bike_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject for one dockless vehicle."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{system_id}/{bike_id}",
+                "description": "Partition key mirrors the GBFS vehicle identity."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "org.gbfs.jstruct": {
+      "schemas": {
+        "org.gbfs.StationInformation": {
+          "name": "StationInformation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/gbfs/StationInformation/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "StationInformation",
+                "description": "Dock-based station reference data from the GBFS `station_information.json` feed. Each record identifies one station in a bikeshare or scooter-share system and provides the stable station identifier, customer-facing name, WGS 84 coordinates, docking capacity, and optional regional or address context.",
+                "required": [
+                  "system_id",
+                  "station_id",
+                  "name",
+                  "lat",
+                  "lon"
+                ],
+                "properties": {
+                  "system_id": {
+                    "type": "string",
+                    "description": "Stable identifier for the GBFS system that publishes this station. The bridge resolves it from `system_information.system_id`, or from operator configuration when a custom label is supplied. It is the first component of the CloudEvents subject and Kafka key."
+                  },
+                  "station_id": {
+                    "type": "string",
+                    "description": "Unique station identifier within the GBFS system, sourced from the `station_id` field in `station_information.json`. This identifier is stable across feed refreshes and forms the second component of the CloudEvents subject and Kafka key."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Public-facing station name from `station_information.json`. GBFS recommends mixed-case, human-readable names suitable for maps, screens, and accessibility tooling."
+                  },
+                  "short_name": {
+                    "type": ["string", "null"],
+                    "description": "Optional short station name or numbering code from the `short_name` field in `station_information.json`, such as a kiosk number or abbreviated label used on maps or in the operator app."
+                  },
+                  "lat": {
+                    "type": "double",
+                    "description": "WGS 84 latitude of the station in decimal degrees from `station_information.json`. GBFS recommends six decimal places of precision for latitude / longitude coordinates.",
+                    "unit": "degree",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "lon": {
+                    "type": "double",
+                    "description": "WGS 84 longitude of the station in decimal degrees from `station_information.json`. Positive values are east of the prime meridian and negative values are west.",
+                    "unit": "degree",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  "capacity": {
+                    "type": ["integer", "null"],
+                    "description": "Total number of docking points or parking capacity published for the station in `station_information.json`. When omitted upstream, the bridge emits null rather than inventing a capacity."
+                  },
+                  "region_id": {
+                    "type": ["string", "null"],
+                    "description": "Optional region identifier from the `region_id` field in `station_information.json`. When present, it links the station to a region published in `system_regions.json`."
+                  },
+                  "address": {
+                    "type": ["string", "null"],
+                    "description": "Optional street address from the `address` field in `station_information.json`, as supplied by the operator for customer navigation."
+                  },
+                  "post_code": {
+                    "type": ["string", "null"],
+                    "description": "Optional postal or ZIP code from the `post_code` field in `station_information.json`."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "org.gbfs.StationStatus": {
+          "name": "StationStatus",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/gbfs/StationStatus/v1",
+                "$uses": [
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "StationStatus",
+                "description": "Near-real-time station availability data from the GBFS `station_status.json` feed. Each record reports the current inventory of rentable vehicles and available docks together with boolean operating flags and the upstream `last_reported` timestamp for the station.",
+                "required": [
+                  "system_id",
+                  "station_id",
+                  "num_bikes_available",
+                  "is_installed",
+                  "is_renting",
+                  "is_returning",
+                  "last_reported"
+                ],
+                "properties": {
+                  "system_id": {
+                    "type": "string",
+                    "description": "Stable identifier for the GBFS system that publishes this station status record."
+                  },
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable station identifier from the `station_id` field in `station_status.json`, matching the corresponding `StationInformation` event."
+                  },
+                  "num_bikes_available": {
+                    "type": "integer",
+                    "description": "Current number of rentable bikes or vehicles available at the station from the `num_bikes_available` field in `station_status.json`."
+                  },
+                  "num_docks_available": {
+                    "type": ["integer", "null"],
+                    "description": "Current number of empty docks or parking spaces available for return at the station from `num_docks_available`. Some operators omit this field, in which case the bridge emits null."
+                  },
+                  "num_ebikes_available": {
+                    "type": ["integer", "null"],
+                    "description": "Current number of electric bikes available at the station from `num_ebikes_available` when the operator distinguishes e-bikes from the aggregate bike count."
+                  },
+                  "is_installed": {
+                    "type": "boolean",
+                    "description": "Boolean flag indicating whether the station is physically installed, normalized from the GBFS `is_installed` value."
+                  },
+                  "is_renting": {
+                    "type": "boolean",
+                    "description": "Boolean flag indicating whether the station is currently accepting rentals, normalized from the GBFS `is_renting` value."
+                  },
+                  "is_returning": {
+                    "type": "boolean",
+                    "description": "Boolean flag indicating whether the station is currently accepting vehicle returns, normalized from the GBFS `is_returning` value."
+                  },
+                  "last_reported": {
+                    "type": "integer",
+                    "description": "POSIX timestamp from the GBFS `last_reported` field representing when the operator backend last received a status update for this station."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "org.gbfs.FreeBikeStatus": {
+          "name": "FreeBikeStatus",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/gbfs/FreeBikeStatus/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "FreeBikeStatus",
+                "description": "Dockless vehicle telemetry from the GBFS `free_bike_status.json` feed, which is renamed `vehicle_status.json` in GBFS v3. Each record describes a currently available vehicle that is not in an active rental and can include location, reservation state, disablement state, vehicle type reference, and remaining electric range.",
+                "required": [
+                  "system_id",
+                  "bike_id",
+                  "is_reserved",
+                  "is_disabled"
+                ],
+                "properties": {
+                  "system_id": {
+                    "type": "string",
+                    "description": "Stable identifier for the GBFS system that publishes this dockless-vehicle status record."
+                  },
+                  "bike_id": {
+                    "type": "string",
+                    "description": "Unique vehicle identifier from the `bike_id` field in `free_bike_status.json`. This value is stable for the vehicle within the system and forms the second component of the CloudEvents subject and Kafka key."
+                  },
+                  "lat": {
+                    "type": ["double", "null"],
+                    "description": "Optional WGS 84 latitude in decimal degrees for the vehicle's current position. GBFS allows free-bike records without coordinates when precise location is not published.",
+                    "unit": "degree",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "lon": {
+                    "type": ["double", "null"],
+                    "description": "Optional WGS 84 longitude in decimal degrees for the vehicle's current position.",
+                    "unit": "degree",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  "is_reserved": {
+                    "type": "boolean",
+                    "description": "Boolean flag from `is_reserved` indicating whether the vehicle is currently reserved for a customer and therefore not immediately rentable by others."
+                  },
+                  "is_disabled": {
+                    "type": "boolean",
+                    "description": "Boolean flag from `is_disabled` indicating whether the vehicle is disabled or otherwise unavailable for rental."
+                  },
+                  "vehicle_type_id": {
+                    "type": ["string", "null"],
+                    "description": "Optional vehicle-type identifier from `vehicle_type_id`, used by operators that publish multiple vehicle classes such as e-bikes or scooters."
+                  },
+                  "current_range_meters": {
+                    "type": ["double", "null"],
+                    "description": "Optional remaining electric range in meters from `current_range_meters`, typically published for electric vehicles.",
+                    "unit": "meter"
+                  },
+                  "last_reported": {
+                    "type": ["integer", "null"],
+                    "description": "Optional POSIX timestamp from the `last_reported` field representing the last time the operator backend received a telemetry update for this vehicle."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "org.gbfs.SystemInformation": {
+          "name": "SystemInformation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/gbfs/SystemInformation/v1",
+                "$uses": [
+                  "JSONStructureValidation"
+                ],
+                "type": "object",
+                "name": "SystemInformation",
+                "description": "Reference data from the GBFS `system_information.json` feed. Each record describes one bikeshare or shared-micromobility system, including the stable `system_id`, public name, operator, website, timezone, language, and customer support metadata.",
+                "required": [
+                  "system_id",
+                  "name",
+                  "timezone"
+                ],
+                "properties": {
+                  "system_id": {
+                    "type": "string",
+                    "description": "Stable identifier for the GBFS system from the `system_id` field in `system_information.json`, or a configured override when the user supplies `GBFS_SYSTEM_IDS` to relabel systems consistently across deployments."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Public system display name from the `name` field in `system_information.json`, such as the brand name shown in the operator app and on the website."
+                  },
+                  "operator": {
+                    "type": ["string", "null"],
+                    "description": "Optional operator company or agency name from the `operator` field in `system_information.json`."
+                  },
+                  "url": {
+                    "type": ["string", "null"],
+                    "description": "Optional public website URL from the `url` field in `system_information.json`."
+                  },
+                  "timezone": {
+                    "type": "string",
+                    "description": "IANA timezone identifier from the `timezone` field in `system_information.json`, such as `America/New_York` or `Europe/London`."
+                  },
+                  "language": {
+                    "type": ["string", "null"],
+                    "description": "Optional BCP-47 language tag from the `language` field in `system_information.json`, representing the primary language used in this dataset."
+                  },
+                  "phone_number": {
+                    "type": ["string", "null"],
+                    "description": "Optional customer-service phone number from the `phone_number` field in `system_information.json`."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

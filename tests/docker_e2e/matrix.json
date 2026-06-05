@@ -1464,6 +1464,24 @@
       "module": "tokyo_docomo_bikeshare_amqp"
     },
     {
+      "dir": "feeders/gbfs-bikeshare",
+      "image": "gbfs-bikeshare-kafka",
+      "file": "Dockerfile",
+      "module": "gbfs_bikeshare"
+    },
+    {
+      "dir": "feeders/gbfs-bikeshare",
+      "image": "gbfs-bikeshare-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "gbfs_bikeshare_mqtt"
+    },
+    {
+      "dir": "feeders/gbfs-bikeshare",
+      "image": "gbfs-bikeshare-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "gbfs_bikeshare_amqp"
+    },
+    {
       "dir": "feeders/wsdot",
       "image": "wsdot-mqtt",
       "file": "Dockerfile.mqtt",
@@ -3629,6 +3647,27 @@
       "file": "Dockerfile.amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestTokyoDocomoBikeshareAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/gbfs-bikeshare",
+      "image": "gbfs-bikeshare-kafka",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestGbfsBikeshareDockerFlow"
+    },
+    {
+      "dir": "feeders/gbfs-bikeshare",
+      "image": "gbfs-bikeshare-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestGbfsBikeshareMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/gbfs-bikeshare",
+      "image": "gbfs-bikeshare-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestGbfsBikeshareAmqpDockerFlow"
     },
     {
       "dir": "feeders/wsdot",

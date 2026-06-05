@@ -733,6 +733,13 @@ class TestTokyoDocomoBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
     expected_types = {'JP.ODPT.DocomoBikeshare.BikeshareSystem', 'JP.ODPT.DocomoBikeshare.BikeshareStation', 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus'}
     expected_count = 3
 
+class TestGbfsBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
+    source_dir = "gbfs-bikeshare"
+    image = "gbfs-bikeshare-amqp"
+    env = {"GBFS_FEEDS": "https://gbfs.citibikenyc.com/gbfs/gbfs.json", "ONCE_MODE": "true"}
+    expected_types = {'org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'}
+    expected_count = 3
+
 class TestWSDOTAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "wsdot"
     image = "wsdot-amqp"

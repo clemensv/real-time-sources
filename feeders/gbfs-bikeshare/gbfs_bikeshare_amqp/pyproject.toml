@@ -1,0 +1,24 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "gbfs_bikeshare_amqp"
+version = "0.1.0"
+description = "AMQP feeder for configurable GBFS bikeshare systems."
+authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+packages = [{ include = "gbfs_bikeshare_amqp" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+python-qpid-proton = ">=0.40.0"
+azure-identity = ">=1.17.0"
+gbfs_bikeshare_core = { path = "../gbfs_bikeshare_core" }
+gbfs_bikeshare_amqp_producer_data = { path = "../gbfs_bikeshare_amqp_producer/gbfs_bikeshare_amqp_producer_data" }
+gbfs_bikeshare_amqp_producer_amqp_producer = { path = "../gbfs_bikeshare_amqp_producer/gbfs_bikeshare_amqp_producer_amqp_producer" }
+
+[tool.poetry.scripts]
+gbfs-bikeshare-amqp = "gbfs_bikeshare_amqp.app:main"
