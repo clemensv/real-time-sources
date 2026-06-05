@@ -3,7 +3,7 @@
 Reference material for the `fabric-notebook-deployment` skill. Pure
 implementation detail — no policy. The policy lives in `SKILL.md`.
 
-## Canonical "Run Cell" (thread-isolated asyncio)
+## Canonical "Run Cell" (thread-isolated asyncio, continuous mode)
 
 Every bridge `main()` in this repo calls `asyncio.run(...)`. The Fabric
 notebook kernel already owns the asyncio loop, so the call raises:
@@ -15,6 +15,11 @@ RuntimeError: asyncio.run() cannot be called from a running event loop
 Solution: run the bridge in a worker thread that owns its own loop. The
 worker also captures the exception so it can be re-raised on the main thread
 and surfaced via `notebookutils.notebook.exit("FAIL: …")`.
+
+**Continuous mode** (preferred for real-time sources): the feeder polls
+at its native cadence for `RUN_DURATION` seconds (default 3300 = 55 min),
+then exits. The Fabric scheduler (60 min) restarts it as a safety net.
+This amortizes the ~65-70 s cold-start overhead across the full run.
 
 ```python
 import os, pathlib, sys, traceback, datetime
@@ -33,7 +38,7 @@ with open(LOG_PATH, 'w', encoding='utf-8') as f:
     f.write('')
 
 try:
-    _log('Starting feeder cycle')
+    _log('Starting feeder (continuous mode)')
     pathlib.Path(STATE_FILE).parent.mkdir(parents=True, exist_ok=True)
     os.environ['STATE_FILE']       = STATE_FILE
     os.environ['POLLING_INTERVAL'] = str(POLLING_INTERVAL)
@@ -47,7 +52,7 @@ try:
     argv_backup = sys.argv
     try:
         sys.argv = ['<source>', 'feed', '--once'] if ONCE_MODE else ['<source>', 'feed']
-        _log(f'Running feeder.main() with argv={sys.argv}')
+        _log(f'Running feeder.main() with argv={sys.argv}, duration={RUN_DURATION}s')
         import threading
         _err = []
         def _worker():
@@ -57,8 +62,10 @@ try:
                 _err.append(e)
         t = threading.Thread(target=_worker, daemon=True)
         t.start()
-        t.join()
-        if _err:
+        t.join(timeout=RUN_DURATION)
+        if t.is_alive():
+            _log(f'Run duration {RUN_DURATION}s reached; exiting cleanly.')
+        elif _err:
             raise _err[0]
     finally:
         sys.argv = argv_backup
@@ -78,6 +85,13 @@ except Exception as exc:
         pass
     raise
 ```
+
+**Key difference from single-shot mode:** `t.join(timeout=RUN_DURATION)`
+instead of `t.join()`. The daemon thread is abandoned on timeout — its
+asyncio loop dies with the thread. No explicit cancellation is needed.
+
+For single-shot mode (`ONCE_MODE = True`), the feeder passes `--once`
+and exits after one poll cycle; use `t.join()` with no timeout.
 
 ## Canonical "CS Lookup Cell" (public Topology API)
 
@@ -115,11 +129,12 @@ os.environ['CONNECTION_STRING'] = conn['accessKeys']['primaryConnectionString']
 
 | Scenario | Flags |
 |----------|-------|
-| First-ever deploy | _(none)_ |
+| First-ever deploy (continuous mode) | _(none)_ — defaults to 60-min schedule |
+| First-ever deploy (single-shot mode) | `-ScheduleIntervalMinutes 15` (or per source cadence) |
 | Notebook-only change, env unchanged | `-SkipEnvironment` |
 | Inspect deploy without scheduling | `-NoSchedule -NoTriggerNow` |
 | Two Lakehouses in workspace | `-DefaultLakehouse <name>` |
-| Tighter cadence | `-ScheduleIntervalMinutes 5` (range 5–60) |
+| Override schedule interval | `-ScheduleIntervalMinutes <5-60>` |
 
 ## OneLake Log Read (PowerShell)
 

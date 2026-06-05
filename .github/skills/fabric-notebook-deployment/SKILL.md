@@ -106,7 +106,8 @@ Four cells, in this order:
 
 1. **Markdown intro** — what the notebook does, link to source README.
 2. **Parameters** (`parameters` tag) — `EVENTSTREAM_NAME`, `STATE_FILE`,
-   `POLLING_INTERVAL`, `ONCE_MODE`, `WORKSPACE_ID`. No `CONNECTION_STRING`.
+   `POLLING_INTERVAL`, `RUN_DURATION`, `ONCE_MODE`, `WORKSPACE_ID`.
+   No `CONNECTION_STRING`.
 3. **CS lookup** — `notebookutils.credentials.getToken('pbi')` → list ES →
    get topology → get source connection. ~15 lines using the Topology API.
    Sets `os.environ['CONNECTION_STRING']`.
@@ -116,6 +117,64 @@ Four cells, in this order:
    the end.
 
 See `references/fabric-notebook-runbook.md` for the exact cell sources.
+
+## Continuous Polling Mode (preferred for real-time sources)
+
+The default deployment model is **continuous polling**: the notebook runs
+the feeder's native poll loop for a fixed duration (`RUN_DURATION`,
+default 3300 s = 55 min), then exits cleanly. The Fabric scheduler
+(set to 60 min) serves only as a restart safety net — it is NOT the
+polling cadence.
+
+**Why continuous > single-shot batch:**
+
+- Fabric cold-starts a fresh Python kernel per scheduled invocation
+  (~65–70 s overhead: compute allocation + environment activation).
+- For a 30 s polling source, a 5-min schedule wastes 20% of wall-clock
+  time on startup. A 1-min schedule is ~50% overhead.
+- Continuous mode amortizes the cold start across 55 minutes of actual
+  work. The effective overhead drops to ~2%.
+
+**Parameters for continuous mode:**
+
+```python
+POLLING_INTERVAL = 30    # native source cadence (seconds)
+RUN_DURATION     = 3300  # exit after 55 min (scheduler restarts at 60 min)
+ONCE_MODE        = False # False = continuous loop
+```
+
+**Run cell pattern (continuous):**
+
+```python
+sys.argv = ['<source>', 'feed']   # no --once flag
+t = threading.Thread(target=_worker, daemon=True)
+t.start()
+t.join(timeout=RUN_DURATION)      # ← key difference from single-shot
+if t.is_alive():
+    _log(f'Run duration {RUN_DURATION}s reached; exiting cleanly.')
+elif _err:
+    raise _err[0]
+```
+
+The daemon thread is abandoned on timeout — the feeder's asyncio loop
+dies with the thread. No explicit cancellation is needed.
+
+**Schedule configuration (safety net):**
+
+```json
+{ "type": "Cron", "interval": 60 }
+```
+
+Set to 60 min regardless of source cadence. The scheduler's only job is
+to restart the notebook if it exits (timeout, crash, or capacity
+reclaim). The actual polling frequency is controlled by
+`POLLING_INTERVAL` inside the running notebook.
+
+**When to use single-shot instead:**
+
+- Sources that genuinely run once and exit (one-off data loads, daily
+  digests with >1 h cadence). These keep `ONCE_MODE = True` and
+  `t.join()` (no timeout).
 
 ## Diagnosing Failures
 
