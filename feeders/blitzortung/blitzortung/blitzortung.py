@@ -409,6 +409,35 @@ class BlitzortungBridge:
         )
         self._count_since_flush = 0
 
+    def emit_mock_corpus(self, count: int = 3) -> int:
+        """Emit synthetic lightning strokes for deterministic E2E testing.
+
+        Builds raw upstream-shaped stroke frames and runs them through the
+        same normalize, dedupe, and emit path as live data, then flushes, so
+        the Docker Kafka flow test does not depend on sporadic live lightning
+        activity. Returns the number of strokes emitted.
+        """
+
+        base_time_ms = int(datetime(2024, 1, 1, tzinfo=timezone.utc).timestamp() * 1000)
+        emitted = 0
+        for index in range(count):
+            stroke = {
+                "src": self._source_mask,
+                "id": 9_000_000_000 + index,
+                "time": base_time_ms + index,
+                "lat": 50.0 + index * 0.1,
+                "lon": 8.0 + index * 0.1,
+                "srv": 1,
+                "del": 0,
+                "dev": 1000.0,
+                "sta": {"100": 0, "101": 1},
+            }
+            if self._handle_stroke(stroke):
+                emitted += 1
+        self.flush()
+        logger.info("Mock mode: emitted %d synthetic Blitzortung strokes", emitted)
+        return emitted
+
 
 def probe_live_feed(
     *,
@@ -532,6 +561,13 @@ def main() -> int:
         type=str,
         default=os.getenv("BLITZORTUNG_USER_AGENT", DEFAULT_USER_AGENT),
     )
+    feed_parser.add_argument(
+        "--mock",
+        action="store_true",
+        default=parse_bool(os.getenv("BLITZORTUNG_MOCK"), default=False),
+        help="Emit a synthetic corpus of strokes to Kafka and exit without "
+             "connecting to the live Blitzortung feed (deterministic E2E tests).",
+    )
 
     probe_parser = subparsers.add_parser("probe", help="Print live strokes without Kafka")
     probe_parser.add_argument("--ws-urls", type=str, default=os.getenv("BLITZORTUNG_WS_URLS"))
@@ -617,6 +653,14 @@ def main() -> int:
             dedupe_size=args.dedupe_size,
             user_agent=args.user_agent,
         )
+
+        if args.mock:
+            logger.info("Mock mode: emitting synthetic Blitzortung corpus and exiting")
+            try:
+                bridge.emit_mock_corpus()
+            finally:
+                bridge.flush()
+            return 0
 
         try:
             bridge.run()

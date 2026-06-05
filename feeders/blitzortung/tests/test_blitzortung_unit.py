@@ -130,6 +130,33 @@ class TestBridge:
         assert call.kwargs["_stroke_id"] == "2341268"
         assert call.kwargs["_event_time"] == "2026-04-08T08:41:00.093000Z"
 
+    def test_emit_mock_corpus(self, tmp_path: Path) -> None:
+        event_producer = MagicMock()
+        kafka_producer = MagicMock()
+        state_store = StateStore(str(tmp_path / "state.json"), dedupe_size=10)
+
+        with patch(
+            "blitzortung.blitzortung.LightningStroke.from_serializer_dict",
+            side_effect=lambda payload: type("Stroke", (), payload)(),
+        ):
+            bridge = BlitzortungBridge(
+                event_producer,
+                kafka_producer,
+                state_store=state_store,
+                ws_urls=["wss://example.invalid/"],
+                bbox=(90.0, 180.0, -90.0, -180.0),
+                include_stations=True,
+                flush_interval=100,
+                dedupe_size=10,
+            )
+            emitted = bridge.emit_mock_corpus(count=3)
+
+        assert emitted == 3
+        assert (
+            event_producer.send_blitzortung_lightning_lightning_stroke.call_count == 3
+        )
+        kafka_producer.flush.assert_called()
+
     def test_handle_message_ignores_handshake_frame(self, tmp_path: Path) -> None:
         bridge = BlitzortungBridge(
             MagicMock(),
