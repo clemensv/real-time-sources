@@ -2395,13 +2395,12 @@ class TestGbfsBikeshareDockerFlow:
             reference_types=['org.gbfs.SystemInformation', 'org.gbfs.StationInformation'],
             telemetry_types=['org.gbfs.StationStatus'],
             required_exact_types=['org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'],
+            command=['python', '-m', 'gbfs_bikeshare', 'feed', '--mock'],
             extra_env={
-                'GBFS_FEEDS': 'https://gbfs.citibikenyc.com/gbfs/gbfs.json',
-                'ONCE_MODE': 'true',
                 'KAFKA_ENABLE_TLS': 'false',
             },
             min_messages=3,
-            timeout=300,
+            timeout=120,
         )
 
 

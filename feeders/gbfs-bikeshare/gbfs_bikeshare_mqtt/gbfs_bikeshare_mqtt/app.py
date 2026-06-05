@@ -15,7 +15,7 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 from paho.mqtt.packettypes import PacketTypes
 from paho.mqtt.properties import Properties
 
-from gbfs_bikeshare_core import load_state, parse_bool, parse_feed_configuration, save_state
+from gbfs_bikeshare_core import build_offline_client_and_feeds, load_state, parse_bool, parse_feed_configuration, save_state
 from gbfs_bikeshare_core.acquisition import (
     GbfsSourceClient,
     FreeBikeStatusRecord,
@@ -131,10 +131,16 @@ async def _entra_token_refresh_loop(client: mqtt.Client, host: str, port: int, a
 
 
 async def feed(args: argparse.Namespace) -> None:
-    configured_feeds = parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids)
+    mock_mode = getattr(args, "mock", False)
     host, port, tls = _parse_broker_settings(args)
     state = load_state(args.state_file)
-    client = GbfsSourceClient()
+    if mock_mode:
+        logger.info("--mock mode: using deterministic offline GBFS corpus (no network access)")
+        client, configured_feeds = build_offline_client_and_feeds()
+        args.once = True
+    else:
+        configured_feeds = parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids)
+        client = GbfsSourceClient()
     sources = discover_sources(client, configured_feeds)
     if not sources:
         raise SystemExit("No GBFS feeds could be discovered successfully.")
@@ -229,6 +235,7 @@ def build_parser() -> argparse.ArgumentParser:
     feed_parser.add_argument("--reference-refresh-interval", type=int, default=int(os.getenv("REFERENCE_REFRESH_INTERVAL", "3600")))
     feed_parser.add_argument("--state-file", default=os.getenv("STATE_FILE", DEFAULT_STATE_FILE))
     feed_parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
+    feed_parser.add_argument("--mock", action="store_true", default=parse_bool(os.getenv("GBFS_MOCK"), default=False), help="Emit a deterministic offline GBFS corpus once (no network); for CI flow tests")
     feed_parser.add_argument("--mqtt-broker-url", default=os.getenv("MQTT_BROKER_URL"))
     feed_parser.add_argument("--mqtt-host", default=os.getenv("MQTT_HOST"))
     feed_parser.add_argument("--mqtt-port", type=int, default=int(os.getenv("MQTT_PORT", "1883")))

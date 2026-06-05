@@ -211,6 +211,35 @@ def test_fetch_free_bike_status_allows_null_location():
 
 
 @pytest.mark.unit
+def test_offline_mock_corpus_round_trips_reference_and_telemetry():
+    from gbfs_bikeshare_core.acquisition import discover_sources as _discover
+    from gbfs_bikeshare_core.samples import MOCK_SYSTEM_ID, build_offline_client_and_feeds
+
+    client, feeds = build_offline_client_and_feeds()
+    sources = _discover(client, feeds)
+    assert len(sources) == 1
+    source = sources[0]
+    assert source.system_id == MOCK_SYSTEM_ID
+
+    system = client.fetch_system_information(source)
+    assert system is not None
+    system_record, _ = system
+    assert system_record.system_id == MOCK_SYSTEM_ID
+
+    stations, station_feed_url = client.fetch_station_information(source)
+    assert station_feed_url is not None
+    assert len(stations) == 3
+
+    statuses, _, _ = client.fetch_station_status(source)
+    assert len(statuses) == 3
+    assert statuses[0].is_renting is True
+
+    bikes, _, _ = client.fetch_free_bike_status(source)
+    assert len(bikes) == 2
+    assert bikes[1].current_range_meters is None
+
+
+@pytest.mark.unit
 def test_dedupe_helpers_only_publish_on_change():
     source = GbfsSource(SAMPLE_DISCOVERY_URL, "sample-system", {"station_status": SAMPLE_STATION_STATUS_URL, "free_bike_status": SAMPLE_FREE_BIKE_URL}, "en")
     client = _client()
