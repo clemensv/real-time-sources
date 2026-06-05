@@ -15,13 +15,13 @@ requests = ">=2.34.2"
 confluent-kafka = ">=2.14.2"
 cloudevents = ">=1.12.1,<2.0.0"
 dataclasses-json = ">=0.6.7"
-avro = ">=1.11.3"
+avro = ">=1.12.1"
 tfl_road_traffic_producer_data = { path = "tfl_road_traffic_producer/tfl_road_traffic_producer_data" }
 tfl_road_traffic_producer_kafka_producer = { path = "tfl_road_traffic_producer/tfl_road_traffic_producer_kafka_producer" }
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
-testcontainers = ">=4.8.1"
+pytest = ">=9.0.3"
+testcontainers = ">=4.14.2"
 
 [tool.poetry.scripts]
 tfl-road-traffic = "tfl_road_traffic:main"

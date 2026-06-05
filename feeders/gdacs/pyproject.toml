@@ -20,9 +20,9 @@ gdacs_producer_data = { path = "gdacs_producer/gdacs_producer_data" }
 gdacs_producer_kafka_producer = { path = "gdacs_producer/gdacs_producer_kafka_producer" }
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 pytest-asyncio = ">=0.24.0"
-pytest-cov = ">=7.0.0"
+pytest-cov = ">=7.1.0"
 flake8 = ">=7.1.1"
 pylint = ">=3.2.7"
 

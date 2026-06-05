@@ -16,13 +16,13 @@ requests = ">=2.34.2"
 confluent-kafka = ">=2.14.2"
 cloudevents = ">=1.12.1,<2.0.0"
 dataclasses_json = ">=0.6.7"
-avro = ">=1.11.3"
+avro = ">=1.12.1"
 entur_norway_producer_data = {path = "entur_norway_producer/entur_norway_producer_data"}
 entur_norway_producer_kafka_producer = {path = "entur_norway_producer/entur_norway_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
-pytest-cov = ">=5.0.0"
+pytest = ">=9.0.3"
+pytest-cov = ">=7.1.0"
 requests-mock = ">=1.12.1"
 
 [tool.poetry.scripts]

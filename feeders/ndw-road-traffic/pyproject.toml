@@ -21,8 +21,8 @@ ndw_road_traffic_producer_data = { path = "ndw_road_traffic_producer/ndw_road_tr
 ndw_road_traffic_producer_kafka_producer = { path = "ndw_road_traffic_producer/ndw_road_traffic_producer_kafka_producer" }
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
-testcontainers = ">=4.8.1"
+pytest = ">=9.0.3"
+testcontainers = ">=4.14.2"
 
 [tool.poetry.scripts]
 ndw-road-traffic = "ndw_road_traffic:main"
