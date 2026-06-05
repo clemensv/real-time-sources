@@ -1,5 +1,5 @@
 from enum import Enum
-_ServiceAvailability_members = []
+
 
 class ServiceAvailability(Enum):
     """
@@ -9,28 +9,23 @@ class ServiceAvailability(Enum):
     SERVICE_AVAILABLE = 'SERVICE_AVAILABLE'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int|str) -> 'ServiceAvailability':
+    def from_ordinal(cls, ordinal: int | str) -> 'ServiceAvailability':
         """
         Get enum member by ordinal
 
         Args:
-            ordinal (int| str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
+            ordinal (int | str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
 
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _ServiceAvailability_members
-        # pylint: enable=global-statement
-
         if ordinal is None:
             raise ValueError("ordinal must not be None")
         if isinstance(ordinal, str) and ordinal.isdigit():
             ordinal = int(ordinal)
-        if not _ServiceAvailability_members:
-            _ServiceAvailability_members = list(cls)
-        if 0 <= int(ordinal) < len(_ServiceAvailability_members):
-            return _ServiceAvailability_members[ordinal]
+        members = list(cls)
+        if 0 <= int(ordinal) < len(members):
+            return members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -45,11 +40,5 @@ class ServiceAvailability(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _ServiceAvailability_members
-        # pylint: enable=global-statement
-        
-        if not _ServiceAvailability_members:
-            _ServiceAvailability_members = list(cls)
-        return _ServiceAvailability_members.index(member)
-_ServiceAvailability_members = list(ServiceAvailability)
+        members = list(cls)
+        return members.index(member)

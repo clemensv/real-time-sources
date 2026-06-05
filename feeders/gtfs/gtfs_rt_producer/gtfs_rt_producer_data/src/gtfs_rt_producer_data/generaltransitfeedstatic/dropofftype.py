@@ -1,5 +1,5 @@
 from enum import Enum
-_DropOffType_members = []
+
 
 class DropOffType(Enum):
     """
@@ -11,28 +11,23 @@ class DropOffType(Enum):
     COORDINATE_WITH_DRIVER = 'COORDINATE_WITH_DRIVER'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int|str) -> 'DropOffType':
+    def from_ordinal(cls, ordinal: int | str) -> 'DropOffType':
         """
         Get enum member by ordinal
 
         Args:
-            ordinal (int| str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
+            ordinal (int | str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
 
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _DropOffType_members
-        # pylint: enable=global-statement
-
         if ordinal is None:
             raise ValueError("ordinal must not be None")
         if isinstance(ordinal, str) and ordinal.isdigit():
             ordinal = int(ordinal)
-        if not _DropOffType_members:
-            _DropOffType_members = list(cls)
-        if 0 <= int(ordinal) < len(_DropOffType_members):
-            return _DropOffType_members[ordinal]
+        members = list(cls)
+        if 0 <= int(ordinal) < len(members):
+            return members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -47,11 +42,5 @@ class DropOffType(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _DropOffType_members
-        # pylint: enable=global-statement
-        
-        if not _DropOffType_members:
-            _DropOffType_members = list(cls)
-        return _DropOffType_members.index(member)
-_DropOffType_members = list(DropOffType)
+        members = list(cls)
+        return members.index(member)

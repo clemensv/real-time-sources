@@ -1,5 +1,5 @@
 from enum import Enum
-_Timepoint_members = []
+
 
 class Timepoint(Enum):
     """
@@ -9,28 +9,23 @@ class Timepoint(Enum):
     EXACT = 'EXACT'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int|str) -> 'Timepoint':
+    def from_ordinal(cls, ordinal: int | str) -> 'Timepoint':
         """
         Get enum member by ordinal
 
         Args:
-            ordinal (int| str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
+            ordinal (int | str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
 
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _Timepoint_members
-        # pylint: enable=global-statement
-
         if ordinal is None:
             raise ValueError("ordinal must not be None")
         if isinstance(ordinal, str) and ordinal.isdigit():
             ordinal = int(ordinal)
-        if not _Timepoint_members:
-            _Timepoint_members = list(cls)
-        if 0 <= int(ordinal) < len(_Timepoint_members):
-            return _Timepoint_members[ordinal]
+        members = list(cls)
+        if 0 <= int(ordinal) < len(members):
+            return members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -45,11 +40,5 @@ class Timepoint(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _Timepoint_members
-        # pylint: enable=global-statement
-        
-        if not _Timepoint_members:
-            _Timepoint_members = list(cls)
-        return _Timepoint_members.index(member)
-_Timepoint_members = list(Timepoint)
+        members = list(cls)
+        return members.index(member)

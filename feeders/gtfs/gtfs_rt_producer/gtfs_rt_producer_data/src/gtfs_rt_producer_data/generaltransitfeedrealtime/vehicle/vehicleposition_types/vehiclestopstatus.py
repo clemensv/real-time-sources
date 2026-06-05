@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class VehicleStopStatus(Enum):
     """
     A VehicleStopStatus enum.
@@ -9,31 +10,25 @@ class VehicleStopStatus(Enum):
     IN_TRANSIT_TO = 'IN_TRANSIT_TO'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int|str) -> 'VehicleStopStatus':
+    def from_ordinal(cls, ordinal: int | str) -> 'VehicleStopStatus':
         """
         Get enum member by ordinal
 
         Args:
-            ordinal (int| str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
+            ordinal (int | str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
 
         Returns:
             The enum member corresponding to the ordinal.
         """
-
         if ordinal is None:
             raise ValueError("ordinal must not be None")
         if isinstance(ordinal, str) and ordinal.isdigit():
             ordinal = int(ordinal)
-        if isinstance(ordinal, int):
-            if ordinal == 0:
-                return VehicleStopStatus.INCOMING_AT
-            elif ordinal == 1:
-                return VehicleStopStatus.STOPPED_AT
-            elif ordinal == 2:
-                return VehicleStopStatus.IN_TRANSIT_TO
-            raise ValueError("Ordinal not found in enum")
+        members = list(cls)
+        if 0 <= int(ordinal) < len(members):
+            return members[ordinal]
         else:
-            raise ValueError("Ordinal must be an integer or a string representation of an integer")
+            raise IndexError("Ordinal out of range for enum")
 
     @classmethod
     def to_ordinal(cls, member: 'VehicleStopStatus') -> int:
@@ -46,11 +41,5 @@ class VehicleStopStatus(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        
-        if member == VehicleStopStatus.INCOMING_AT:
-            return 0
-        if member == VehicleStopStatus.STOPPED_AT:
-            return 1
-        if member == VehicleStopStatus.IN_TRANSIT_TO:
-            return 2
-        raise ValueError("Member not found in enum")
+        members = list(cls)
+        return members.index(member)

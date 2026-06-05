@@ -1,5 +1,5 @@
 from enum import Enum
-_PickupType_members = []
+
 
 class PickupType(Enum):
     """
@@ -11,28 +11,23 @@ class PickupType(Enum):
     COORDINATE_WITH_DRIVER = 'COORDINATE_WITH_DRIVER'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int|str) -> 'PickupType':
+    def from_ordinal(cls, ordinal: int | str) -> 'PickupType':
         """
         Get enum member by ordinal
 
         Args:
-            ordinal (int| str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
+            ordinal (int | str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
 
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _PickupType_members
-        # pylint: enable=global-statement
-
         if ordinal is None:
             raise ValueError("ordinal must not be None")
         if isinstance(ordinal, str) and ordinal.isdigit():
             ordinal = int(ordinal)
-        if not _PickupType_members:
-            _PickupType_members = list(cls)
-        if 0 <= int(ordinal) < len(_PickupType_members):
-            return _PickupType_members[ordinal]
+        members = list(cls)
+        if 0 <= int(ordinal) < len(members):
+            return members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -47,11 +42,5 @@ class PickupType(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _PickupType_members
-        # pylint: enable=global-statement
-        
-        if not _PickupType_members:
-            _PickupType_members = list(cls)
-        return _PickupType_members.index(member)
-_PickupType_members = list(PickupType)
+        members = list(cls)
+        return members.index(member)
