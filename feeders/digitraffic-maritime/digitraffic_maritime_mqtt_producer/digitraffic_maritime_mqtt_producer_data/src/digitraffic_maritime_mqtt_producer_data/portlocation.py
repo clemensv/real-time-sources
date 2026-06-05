@@ -102,6 +102,8 @@ class PortLocation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,12 +171,12 @@ class PortLocation:
             An instance of the dataclass.
         """
         return cls(
-            locode='iqofrjhvmblnvrvjtoyj',
+            locode='pyxbueqcltbocusjfvkb',
             data_updated_time=datetime.datetime.now(datetime.timezone.utc),
-            location_name='tmqeezgalwojysbjnwmi',
-            country='cucvionvrdttmgystaxk',
-            longitude=float(44.664777816376336),
-            latitude=float(50.953927760762156),
+            location_name='exnjbtqlvmphfmtmpfgq',
+            country='ybivoyuieouyhjnsewox',
+            longitude=float(56.33215430133794),
+            latitude=float(78.10933741497091),
             port_areas=[None, None, None, None, None],
-            berths=[None, None, None]
+            berths=[None]
         )

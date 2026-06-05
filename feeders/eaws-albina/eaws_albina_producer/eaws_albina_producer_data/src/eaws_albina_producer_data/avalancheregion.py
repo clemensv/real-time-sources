@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class AvalancheRegion:
     """
-    Reference record describing an EAWS region (or super-region) the bridge is configured to observe. Emitted at startup so that downstream consumers know the regional context even in summer months when no daily bulletins are published.
+    Reference event describing an EAWS region (or super-region) that the bridge is configured to observe. Emitted at bridge startup and whenever the configured region set changes. Acts as the catalog backbone for downstream consumers, ensuring the regional context is available even outside the avalanche season when no bulletins are being published.
     
     Attributes:
         region_id (str)
@@ -92,6 +92,8 @@ class AvalancheRegion:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,8 +161,8 @@ class AvalancheRegion:
             An instance of the dataclass.
         """
         return cls(
-            region_id='mjdccevuetqkeuwakhjg',
-            lang='icnxardjklmjbgnqakui',
+            region_id='xvtvwgxeysjhafsicgoi',
+            lang='hsusrijisixncyqozlmi',
             configured_at=datetime.datetime.now(datetime.timezone.utc),
-            bulletin_base_url='ftgxgsoywubkrzqjmemi'
+            bulletin_base_url='rbojgsxbrmjnuzvdhwuh'
         )

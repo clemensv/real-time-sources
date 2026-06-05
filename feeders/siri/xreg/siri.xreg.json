@@ -1,0 +1,466 @@
+{
+  "endpoints": {
+    "org.siri.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "siri",
+          "key": "{operator_ref}/{vehicle_ref}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.siri.kafka"
+      ],
+      "description": "Kafka producer endpoint for generic SIRI CloudEvents on the `siri` topic. Vehicle telemetry uses `{operator_ref}/{vehicle_ref}` and operator reference records use `{operator_ref}` as their stable identity."
+    },
+    "org.siri.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.siri.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for generic SIRI CloudEvents using a transit-oriented Unified Namespace topic tree."
+    },
+    "org.siri.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/siri"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.siri.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for generic SIRI CloudEvents on the configured broker address."
+    }
+  },
+  "messagegroups": {
+    "org.siri": {
+      "description": "Events from configurable SIRI-compatible transit feeds covering distinct operators and live vehicle positions extracted from VehicleMonitoring payloads.",
+      "messages": {
+        "org.siri.VehiclePosition": {
+          "name": "VehiclePosition",
+          "envelope": "CloudEvents/1.0",
+          "description": "One current SIRI VehicleActivity observation from a configured provider feed. Each event represents the latest monitored vehicle journey state for one physical vehicle at one poll cycle.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.siri.VehiclePosition"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_ref}/{vehicle_ref}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.siri.jstruct/schemas/org.siri.VehiclePosition"
+        },
+        "org.siri.Operator": {
+          "name": "Operator",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference record for one operator code observed in the configured SIRI feed. The bridge extracts distinct operators from the same upstream payloads that supply telemetry so consumers can build operator context without a separate metadata call.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.siri.Operator"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{operator_ref}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.siri.jstruct/schemas/org.siri.Operator"
+        }
+      }
+    },
+    "org.siri.kafka": {
+      "description": "Kafka variant of the generic SIRI events. Vehicle telemetry is partitioned by stable operator and vehicle identity; operator reference records use the stable operator code.",
+      "messages": {
+        "org.siri.kafka.VehiclePosition": {
+          "name": "VehiclePosition",
+          "basemessageuri": "/messagegroups/org.siri/messages/org.siri.VehiclePosition",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{operator_ref}/{vehicle_ref}"
+          }
+        },
+        "org.siri.kafka.Operator": {
+          "name": "Operator",
+          "basemessageuri": "/messagegroups/org.siri/messages/org.siri.Operator",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{operator_ref}"
+          }
+        }
+      }
+    },
+    "org.siri.mqtt": {
+      "description": "MQTT 5 variant of the generic SIRI events using a transit Unified Namespace hierarchy keyed by operator and vehicle identity.",
+      "messages": {
+        "org.siri.mqtt.VehiclePosition": {
+          "name": "VehiclePosition",
+          "basemessageuri": "/messagegroups/org.siri/messages/org.siri.VehiclePosition",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/siri/{operator_ref}/{vehicle_ref}/position",
+            "qos": 0,
+            "retain": false
+          }
+        },
+        "org.siri.mqtt.Operator": {
+          "name": "Operator",
+          "basemessageuri": "/messagegroups/org.siri/messages/org.siri.Operator",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "transit/siri/{operator_ref}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "org.siri.amqp": {
+      "description": "AMQP 1.0 variant of the generic SIRI events for queue-oriented consumers and Azure Service Bus / Event Hubs.",
+      "messages": {
+        "org.siri.amqp.VehiclePosition": {
+          "name": "VehiclePosition",
+          "basemessageuri": "/messagegroups/org.siri/messages/org.siri.VehiclePosition",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_ref}/{vehicle_ref}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key for vehicle telemetry."
+              }
+            },
+            "application-properties": {
+              "operator_ref": {
+                "type": "uritemplate",
+                "value": "{operator_ref}",
+                "description": "Operator code copied into AMQP application properties so Service Bus subscriptions can filter by operator without inspecting the JSON payload."
+              },
+              "vehicle_ref": {
+                "type": "uritemplate",
+                "value": "{vehicle_ref}",
+                "description": "Vehicle fleet number copied into AMQP application properties for broker-side routing or filtering."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{operator_ref}/{vehicle_ref}",
+                "description": "Service Bus / Event Hubs partition key matching the stable vehicle CloudEvent subject."
+              }
+            }
+          }
+        },
+        "org.siri.amqp.Operator": {
+          "name": "Operator",
+          "basemessageuri": "/messagegroups/org.siri/messages/org.siri.Operator",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{operator_ref}",
+                "description": "AMQP message subject matching the CloudEvent subject for operator reference events."
+              }
+            },
+            "application-properties": {
+              "operator_ref": {
+                "type": "uritemplate",
+                "value": "{operator_ref}",
+                "description": "Operator code copied into AMQP application properties for broker-side routing or filtering."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{operator_ref}",
+                "description": "Service Bus / Event Hubs partition key matching the stable operator CloudEvent subject."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "org.siri.jstruct": {
+      "schemas": {
+        "org.siri.VehiclePosition": {
+          "name": "VehiclePosition",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/siri/VehiclePosition/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "name": "VehiclePosition",
+                "type": "object",
+                "description": "Normalized payload for one SIRI 2.0 VehicleActivity element emitted by a configured provider feed. The bridge emits one event per monitored vehicle activity in each poll cycle, keyed by the stable operator code and vehicle reference.",
+                "properties": {
+                  "operator_ref": {
+                    "type": "string",
+                    "altnames": {
+                      "xml": ["OperatorRef"]
+                    },
+                    "description": "Operator identifier from `MonitoredVehicleJourney/OperatorRef`. The exact coding scheme depends on the configured provider, but the value remains the stable operator identity used for reference records, CloudEvents subjects, Kafka keys, MQTT topic segments, and AMQP routing properties."
+                  },
+                  "vehicle_ref": {
+                    "type": "string",
+                    "altnames": {
+                      "xml": ["VehicleRef"]
+                    },
+                    "description": "Operator-scoped vehicle identifier from `MonitoredVehicleJourney/VehicleRef`. Usually the fleet number or run identifier configured in the operator AVL system. Combined with `operator_ref` it forms the stable vehicle identity for CloudEvents subjects and transport routing."
+                  },
+                  "line_ref": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["LineRef"]
+                    },
+                    "description": "Service or route identifier from `MonitoredVehicleJourney/LineRef`. Providers use this value to align the monitored vehicle journey with published line or trip definitions. Null when the source omits a line identifier for the monitored journey."
+                  },
+                  "direction_ref": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["DirectionRef"]
+                    },
+                    "description": "Direction label from `MonitoredVehicleJourney/DirectionRef`, such as `inbound` or `outbound`. Providers use this together with line and dated journey references to align live positions with the scheduled journey pattern."
+                  },
+                  "published_line_name": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["PublishedLineName"]
+                    },
+                    "description": "Public-facing route label from `MonitoredVehicleJourney/PublishedLineName`, for example `T12`. This is the human-readable service number or line name shown to passengers."
+                  },
+                  "origin_ref": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["OriginRef"]
+                    },
+                    "description": "Stop reference from `MonitoredVehicleJourney/OriginRef` naming the first advertised stop of the monitored journey. Null when the provider omits the origin stop code."
+                  },
+                  "origin_name": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["OriginName"]
+                    },
+                    "description": "Human-readable stop name from `MonitoredVehicleJourney/OriginName` for the first advertised stop of the monitored journey."
+                  },
+                  "destination_ref": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["DestinationRef"]
+                    },
+                    "description": "Stop reference from `MonitoredVehicleJourney/DestinationRef` naming the last advertised stop of the monitored journey."
+                  },
+                  "destination_name": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["DestinationName"]
+                    },
+                    "description": "Human-readable stop name from `MonitoredVehicleJourney/DestinationName` for the final advertised destination of the monitored journey."
+                  },
+                  "longitude": {
+                    "type": ["double", "null"],
+                    "unit": "deg",
+                    "symbol": "°",
+                    "altnames": {
+                      "xml": ["VehicleLocation/Longitude"]
+                    },
+                    "description": "WGS84 longitude from `MonitoredVehicleJourney/VehicleLocation/Longitude` expressed in decimal degrees. Positive values are east of Greenwich. Null when the AVL feed does not provide a usable vehicle location.",
+                    "minimum": -180,
+                    "maximum": 180
+                  },
+                  "latitude": {
+                    "type": ["double", "null"],
+                    "unit": "deg",
+                    "symbol": "°",
+                    "altnames": {
+                      "xml": ["VehicleLocation/Latitude"]
+                    },
+                    "description": "WGS84 latitude from `MonitoredVehicleJourney/VehicleLocation/Latitude` expressed in decimal degrees. Positive values are north of the equator. Null when the AVL feed does not provide a usable vehicle location.",
+                    "minimum": -90,
+                    "maximum": 90
+                  },
+                  "bearing": {
+                    "type": ["integer", "null"],
+                    "unit": "deg",
+                    "symbol": "°",
+                    "altnames": {
+                      "xml": ["Bearing"]
+                    },
+                    "description": "Vehicle heading from `MonitoredVehicleJourney/Bearing` in whole degrees clockwise from true north. Null when the AVL producer omits heading information.",
+                    "minimum": 0,
+                    "maximum": 360
+                  },
+                  "recorded_at_time": {
+                    "type": "datetime",
+                    "altnames": {
+                      "xml": ["RecordedAtTime"]
+                    },
+                    "description": "Timestamp from `VehicleActivity/RecordedAtTime` stating when the AVL system recorded this vehicle activity snapshot. Encoded as an ISO 8601 / RFC 3339 date-time string with an explicit UTC offset."
+                  },
+                  "valid_until_time": {
+                    "type": ["datetime", "null"],
+                    "altnames": {
+                      "xml": ["ValidUntilTime"]
+                    },
+                    "description": "Expiry timestamp from `VehicleActivity/ValidUntilTime` after which consumers should treat the vehicle activity as stale if it has not been refreshed by a newer message."
+                  },
+                  "block_ref": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["BlockRef"]
+                    },
+                    "description": "Block or duty identifier from `MonitoredVehicleJourney/BlockRef` describing the operational vehicle block used by the operator scheduling system."
+                  },
+                  "vehicle_journey_ref": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["VehicleJourneyRef"]
+                    },
+                    "description": "Vehicle journey identifier from `MonitoredVehicleJourney/VehicleJourneyRef` used within the operator AVL system to refer to the monitored trip instance."
+                  },
+                  "origin_aimed_departure_time": {
+                    "type": ["datetime", "null"],
+                    "altnames": {
+                      "xml": ["OriginAimedDepartureTime"]
+                    },
+                    "description": "Scheduled departure time from `MonitoredVehicleJourney/OriginAimedDepartureTime` for the origin stop of the monitored journey, encoded as an ISO 8601 / RFC 3339 date-time string."
+                  },
+                  "data_frame_ref": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["DataFrameRef"]
+                    },
+                    "description": "Service day identifier from `MonitoredVehicleJourney/FramedVehicleJourneyRef/DataFrameRef`. Providers typically use this value to pair the live journey with the scheduled service-day context."
+                  },
+                  "dated_vehicle_journey_ref": {
+                    "type": ["string", "null"],
+                    "altnames": {
+                      "xml": ["DatedVehicleJourneyRef"]
+                    },
+                    "description": "Dated journey identifier from `MonitoredVehicleJourney/FramedVehicleJourneyRef/DatedVehicleJourneyRef`. This value disambiguates the scheduled journey instance within the service day defined by `data_frame_ref`."
+                  },
+                  "item_identifier": {
+                    "type": "string",
+                    "altnames": {
+                      "xml": ["ItemIdentifier"]
+                    },
+                    "description": "Unique `VehicleActivity/ItemIdentifier` value assigned by the upstream SIRI payload. The bridge uses this field for deduplication so repeated snapshots of the same unchanged vehicle activity are not re-emitted."
+                  }
+                },
+                "required": [
+                  "operator_ref",
+                  "vehicle_ref",
+                  "line_ref",
+                  "direction_ref",
+                  "published_line_name",
+                  "origin_ref",
+                  "origin_name",
+                  "destination_ref",
+                  "destination_name",
+                  "longitude",
+                  "latitude",
+                  "bearing",
+                  "recorded_at_time",
+                  "valid_until_time",
+                  "block_ref",
+                  "vehicle_journey_ref",
+                  "origin_aimed_departure_time",
+                  "data_frame_ref",
+                  "dated_vehicle_journey_ref",
+                  "item_identifier"
+                ]
+              }
+            }
+          }
+        },
+        "org.siri.Operator": {
+          "name": "Operator",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/siri/Operator/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "name": "Operator",
+                "type": "object",
+                "description": "Reference payload for a distinct operator code observed in a configured SIRI feed. The bridge emits these records so telemetry consumers can keep operator identity in-stream instead of consulting a separate registry out of band.",
+                "properties": {
+                  "operator_ref": {
+                    "type": "string",
+                    "altnames": {
+                      "xml": ["OperatorRef"]
+                    },
+                    "description": "Operator identifier from `MonitoredVehicleJourney/OperatorRef`. This is the stable identity of the operator reference event and the prefix of every vehicle subject emitted by the source."
+                  }
+                },
+                "required": [
+                  "operator_ref"
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

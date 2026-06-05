@@ -101,6 +101,8 @@ class Volcano:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -168,13 +170,13 @@ class Volcano:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='cxgsaytfelmnrpldrvwq',
-            name_jp='hsrnaowritaawyhwqzss',
-            name_en='awbpbcfeprpipfzutkmi',
-            latitude=float(73.65359499570123),
-            longitude=float(0.8299254811214851),
-            elevation_m=float(22.479399722620574),
-            level_operation=True,
-            prefecture='mfiactpqikhyxkqgpyac',
-            event=EventEnum.eruption
+            volcano_code='zfivepycbrrqcohvncze',
+            name_jp='yzfxpajdswokmhsgaoff',
+            name_en='kbwojexyijutdtgfuqpj',
+            latitude=float(62.35354740564968),
+            longitude=float(36.01725448406229),
+            elevation_m=float(21.90798814600292),
+            level_operation=False,
+            prefecture='nnqzydaiytnklbtgdbjc',
+            event=EventEnum.warning
         )

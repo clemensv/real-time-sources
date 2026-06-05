@@ -1,18 +1,18 @@
 """ DeforestationAlert dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
+from inpe_deter_brazil_producer_data.br.inpe.deter.biomeenum import BiomeEnum
+from inpe_deter_brazil_producer_data.br.inpe.deter.classslugenum import ClassSlugenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -20,25 +20,28 @@ import avro.io
 class DeforestationAlert:
     """
     INPE DETER deforestation alert for Amazon and Cerrado biomes.
+    
     Attributes:
-        alert_id (str): Stable reference ID from INPE (gid).
-        biome (str): Biome of the alert: amazon or cerrado.
-        classname (str): Deforestation class: DESMATAMENTO_CR, DEGRADACAO, MINERACAO, CS_DESORDENADO, etc.
-        view_date (str): Observation date in YYYY-MM-DD format.
-        satellite (str): Satellite name (CBERS-4, Amazonia-1, etc.).
-        sensor (str): Sensor name (AWFI, WFI, MSI).
-        area_km2 (float): Area of the deforestation polygon in square kilometers.
-        municipality (typing.Optional[str]): Municipality name.
-        state_code (typing.Optional[str]): Brazilian state code (UF), e.g. PA, MT, when provided by INPE; null when omitted. The topic-safe state_slug field is used for MQTT routing.
-        state_slug (str): Lowercased Brazilian state code (UF), e.g. pa, mt, used as a topic-safe MQTT routing axis; unknown when INPE omits or publishes an unsupported UF.
-        class_slug (str): Lowercase-kebab normalized DETER class used as a topic-safe MQTT routing axis; unknown when the class is omitted or outside the supported DETER vocabulary.
-        path_row (typing.Optional[str]): Satellite path/row identifier.
-        publish_month (typing.Optional[str]): Publication month in YYYY-MM-DD format.
-        centroid_latitude (float): Latitude of the polygon centroid in decimal degrees.
-        centroid_longitude (float): Longitude of the polygon centroid in decimal degrees."""
+        alert_id (str)
+        biome (BiomeEnum)
+        classname (str)
+        view_date (str)
+        satellite (str)
+        sensor (str)
+        area_km2 (float)
+        municipality (typing.Optional[str])
+        state_code (typing.Optional[str])
+        path_row (typing.Optional[str])
+        publish_month (typing.Optional[str])
+        centroid_latitude (float)
+        centroid_longitude (float)
+        state_slug (typing.Optional[str])
+        class_slug (typing.Optional[ClassSlugenum])
+    """
+    
     
     alert_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="alert_id"))
-    biome: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="biome"))
+    biome: BiomeEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="biome"))
     classname: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="classname"))
     view_date: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="view_date"))
     satellite: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="satellite"))
@@ -46,34 +49,12 @@ class DeforestationAlert:
     area_km2: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_km2"))
     municipality: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="municipality"))
     state_code: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state_code"))
-    state_slug: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state_slug"))
-    class_slug: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="class_slug"))
     path_row: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="path_row"))
     publish_month: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="publish_month"))
     centroid_latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="centroid_latitude"))
     centroid_longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="centroid_longitude"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"DeforestationAlert\", \"namespace\": \"BR.INPE.DETER\", \"doc\": \"INPE DETER deforestation alert for Amazon and Cerrado biomes.\", \"fields\": [{\"name\": \"alert_id\", \"type\": \"string\", \"doc\": \"Stable reference ID from INPE (gid).\"}, {\"name\": \"biome\", \"type\": \"string\", \"doc\": \"Biome of the alert: amazon or cerrado.\"}, {\"name\": \"classname\", \"type\": \"string\", \"doc\": \"Deforestation class: DESMATAMENTO_CR, DEGRADACAO, MINERACAO, CS_DESORDENADO, etc.\"}, {\"name\": \"view_date\", \"type\": \"string\", \"doc\": \"Observation date in YYYY-MM-DD format.\"}, {\"name\": \"satellite\", \"type\": \"string\", \"doc\": \"Satellite name (CBERS-4, Amazonia-1, etc.).\"}, {\"name\": \"sensor\", \"type\": \"string\", \"doc\": \"Sensor name (AWFI, WFI, MSI).\"}, {\"name\": \"area_km2\", \"type\": \"double\", \"doc\": \"Area of the deforestation polygon in square kilometers.\"}, {\"name\": \"municipality\", \"type\": [\"string\", \"null\"], \"doc\": \"Municipality name.\"}, {\"name\": \"state_code\", \"type\": [\"string\", \"null\"], \"doc\": \"Brazilian state code (UF), e.g. PA, MT, when provided by INPE; null when omitted. The topic-safe state_slug field is used for MQTT routing.\"}, {\"name\": \"state_slug\", \"type\": \"string\", \"doc\": \"Lowercased Brazilian state code (UF), e.g. pa, mt, used as a topic-safe MQTT routing axis; unknown when INPE omits or publishes an unsupported UF.\", \"default\": \"unknown\"}, {\"name\": \"class_slug\", \"type\": \"string\", \"doc\": \"Lowercase-kebab normalized DETER class used as a topic-safe MQTT routing axis; unknown when the class is omitted or outside the supported DETER vocabulary.\", \"default\": \"unknown\"}, {\"name\": \"path_row\", \"type\": [\"string\", \"null\"], \"doc\": \"Satellite path/row identifier.\"}, {\"name\": \"publish_month\", \"type\": [\"string\", \"null\"], \"doc\": \"Publication month in YYYY-MM-DD format.\"}, {\"name\": \"centroid_latitude\", \"type\": \"double\", \"doc\": \"Latitude of the polygon centroid in decimal degrees.\"}, {\"name\": \"centroid_longitude\", \"type\": \"double\", \"doc\": \"Longitude of the polygon centroid in decimal degrees.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.alert_id=str(self.alert_id)
-        self.biome=str(self.biome)
-        self.classname=str(self.classname)
-        self.view_date=str(self.view_date)
-        self.satellite=str(self.satellite)
-        self.sensor=str(self.sensor)
-        self.area_km2=float(self.area_km2)
-        self.municipality=str(self.municipality) if self.municipality else None
-        self.state_code=str(self.state_code) if self.state_code else None
-        self.state_slug=str(self.state_slug)
-        self.class_slug=str(self.class_slug)
-        self.path_row=str(self.path_row) if self.path_row else None
-        self.publish_month=str(self.publish_month) if self.publish_month else None
-        self.centroid_latitude=float(self.centroid_latitude)
-        self.centroid_longitude=float(self.centroid_longitude)
+    state_slug: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state_slug"))
+    class_slug: typing.Optional[ClassSlugenum]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="class_slug"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'DeforestationAlert':
@@ -84,7 +65,7 @@ class DeforestationAlert:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -103,7 +84,7 @@ class DeforestationAlert:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -117,8 +98,6 @@ class DeforestationAlert:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -131,16 +110,12 @@ class DeforestationAlert:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,10 +140,6 @@ class DeforestationAlert:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -194,18 +165,6 @@ class DeforestationAlert:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return DeforestationAlert.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -213,5 +172,30 @@ class DeforestationAlert:
                 return DeforestationAlert.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'DeforestationAlert':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            alert_id='rhujvuvwleejaoppiffm',
+            biome=BiomeEnum.amazon,
+            classname='iuvponrmvfzhokcbcdlu',
+            view_date='eoghpfpsogvekokhhbsx',
+            satellite='rrfrehdknfeiedwrqmtj',
+            sensor='prqdhwaxzectolcnanvo',
+            area_km2=float(9.903586242688178),
+            municipality='wvthbprsyygqmurpqhis',
+            state_code='jbhcfeiwuufvbaaahsam',
+            path_row='yoxhhrjdzoyckonnnclt',
+            publish_month='crpxmcpfzxieotzgdjkg',
+            centroid_latitude=float(9.446509095879286),
+            centroid_longitude=float(92.92348301699293),
+            state_slug='rsbxgzhqpzkrbstypsuz',
+            class_slug=ClassSlugenum.desmatamento_cr
+        )

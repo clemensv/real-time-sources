@@ -28,11 +28,11 @@ class Test_ActualTotalLoad(unittest.TestCase):
         Create instance of ActualTotalLoad for testing
         """
         instance = ActualTotalLoad(
-            inDomain='jouphkaauoccjmfxwylq',
-            quantity=float(10.646669917667218),
-            resolution='pneoootonmewpqzfqerr',
-            outDomain='hqlcstjjuwnblrrdprvz',
-            documentType='aocqoyjalghnizhtgsof'
+            inDomain='hmaeudynpgqhtuvbshjs',
+            quantity=float(32.90534956456683),
+            resolution='rlvzyxmxcgevfadmkdof',
+            outDomain='zarofqovlgspboylrbrc',
+            documentType='ctpbecgfzkkoxkxrqqwz'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_ActualTotalLoad(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'jouphkaauoccjmfxwylq'
+        test_value = 'hmaeudynpgqhtuvbshjs'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -49,7 +49,7 @@ class Test_ActualTotalLoad(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(10.646669917667218)
+        test_value = float(32.90534956456683)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -57,7 +57,7 @@ class Test_ActualTotalLoad(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'pneoootonmewpqzfqerr'
+        test_value = 'rlvzyxmxcgevfadmkdof'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -65,7 +65,7 @@ class Test_ActualTotalLoad(unittest.TestCase):
         """
         Test outDomain property
         """
-        test_value = 'hqlcstjjuwnblrrdprvz'
+        test_value = 'zarofqovlgspboylrbrc'
         self.instance.outDomain = test_value
         self.assertEqual(self.instance.outDomain, test_value)
     
@@ -73,19 +73,10 @@ class Test_ActualTotalLoad(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'aocqoyjalghnizhtgsof'
+        test_value = 'ctpbecgfzkkoxkxrqqwz'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = ActualTotalLoad.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

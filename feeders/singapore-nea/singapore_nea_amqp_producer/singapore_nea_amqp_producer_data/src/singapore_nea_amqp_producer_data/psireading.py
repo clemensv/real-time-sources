@@ -114,6 +114,8 @@ class PSIReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -181,19 +183,19 @@ class PSIReading:
             An instance of the dataclass.
         """
         return cls(
-            region='mmwaxqnnnhvcjzfrpinw',
+            region='ecegdhhkibhiaqcxtwtx',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
             update_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            psi_twenty_four_hourly=int(99),
-            o3_sub_index=int(27),
-            pm10_sub_index=int(47),
-            pm10_twenty_four_hourly=int(56),
-            pm25_sub_index=int(4),
-            pm25_twenty_four_hourly=int(91),
-            co_sub_index=int(45),
-            co_eight_hour_max=int(90),
-            so2_sub_index=int(52),
-            so2_twenty_four_hourly=int(50),
-            no2_one_hour_max=int(35),
-            o3_eight_hour_max=int(50)
+            psi_twenty_four_hourly=int(49),
+            o3_sub_index=int(74),
+            pm10_sub_index=int(54),
+            pm10_twenty_four_hourly=int(25),
+            pm25_sub_index=int(66),
+            pm25_twenty_four_hourly=int(70),
+            co_sub_index=int(28),
+            co_eight_hour_max=int(96),
+            so2_sub_index=int(97),
+            so2_twenty_four_hourly=int(12),
+            no2_one_hour_max=int(1),
+            o3_eight_hour_max=int(74)
         )

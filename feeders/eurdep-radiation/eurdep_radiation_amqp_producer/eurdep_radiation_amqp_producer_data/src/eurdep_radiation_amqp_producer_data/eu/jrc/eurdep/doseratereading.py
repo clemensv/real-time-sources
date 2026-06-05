@@ -102,6 +102,8 @@ class DoseRateReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,14 +171,14 @@ class DoseRateReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='xhtfkgvxfiigihtnxuhf',
-            name='heboiyfixteowtlrwqqs',
-            value=float(97.49943703981727),
-            unit='cmajdsbtcmilrdvjitwc',
-            start_measure='phbdgpfgpdsjgpehqkwd',
-            end_measure='qdocoxeiqwadvgdwcuto',
-            nuclide='gleaxsupcvqtrqwcqwpd',
-            duration='vsvroiilwiugjswkcagd',
-            validated=int(36),
-            country='mjsevmgccgixudxjmlsg'
+            station_id='qqdpybxppgtkhfnondez',
+            name='rsioyfbyiimuatmdfuqe',
+            value=float(57.24731366272816),
+            unit='ozjwxrlnwqaaayrwnnot',
+            start_measure='tbgnaqplvhehsbqklnjp',
+            end_measure='njwppmksossfdtiqaibo',
+            nuclide='nbmhuvqgtcpkosnydpoh',
+            duration='hhpiknqgovdknwfpiodc',
+            validated=int(63),
+            country='szkpnzanagblitcqychv'
         )

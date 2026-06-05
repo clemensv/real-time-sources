@@ -1,5 +1,5 @@
 from enum import Enum
-_BikesAllowed_members = []
+
 
 class BikesAllowed(Enum):
     """
@@ -10,28 +10,23 @@ class BikesAllowed(Enum):
     BICYCLE_NOT_ALLOWED = 'BICYCLE_NOT_ALLOWED'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int|str) -> 'BikesAllowed':
+    def from_ordinal(cls, ordinal: int | str) -> 'BikesAllowed':
         """
         Get enum member by ordinal
 
         Args:
-            ordinal (int| str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
+            ordinal (int | str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
 
         Returns:
             The enum member corresponding to the ordinal.
         """
-        # pylint: disable=global-statement
-        global _BikesAllowed_members
-        # pylint: enable=global-statement
-
         if ordinal is None:
             raise ValueError("ordinal must not be None")
         if isinstance(ordinal, str) and ordinal.isdigit():
             ordinal = int(ordinal)
-        if not _BikesAllowed_members:
-            _BikesAllowed_members = list(cls)
-        if 0 <= int(ordinal) < len(_BikesAllowed_members):
-            return _BikesAllowed_members[ordinal]
+        members = list(cls)
+        if 0 <= int(ordinal) < len(members):
+            return members[ordinal]
         else:
             raise IndexError("Ordinal out of range for enum")
 
@@ -46,11 +41,5 @@ class BikesAllowed(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        # pylint: disable=global-statement
-        global _BikesAllowed_members
-        # pylint: enable=global-statement
-        
-        if not _BikesAllowed_members:
-            _BikesAllowed_members = list(cls)
-        return _BikesAllowed_members.index(member)
-_BikesAllowed_members = list(BikesAllowed)
+        members = list(cls)
+        return members.index(member)

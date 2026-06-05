@@ -1,12 +1,58 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
 import json
+import re
 import uuid
 import typing
-from datetime import datetime
+from datetime import datetime, timezone
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 from dwd_pollenflug_producer_data import Region
 from dwd_pollenflug_producer_data import PollenForecast
 
@@ -41,7 +87,15 @@ class DEDWDPollenflugEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_de_dwd_pollenflug_region(self,_region_id : str, data: Region, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_de_dwd_pollenflug_region(self,_region_id : str, data: Region, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
         """
         Sends the 'DE.DWD.Pollenflug.Region' event to the Kafka topic
 
@@ -49,6 +103,7 @@ class DEDWDPollenflugEventProducer:
             _region_id(str):  Value for placeholder region_id in attribute subject
             data: (Region): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Region], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{region_id}'
@@ -60,6 +115,7 @@ class DEDWDPollenflugEventProducer:
              "subject":"{region_id}".format(region_id = _region_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -67,13 +123,13 @@ class DEDWDPollenflugEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_de_dwd_pollenflug_pollen_forecast(self,_region_id : str, data: PollenForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PollenForecast], str]=None) -> None:
+    def send_de_dwd_pollenflug_pollen_forecast(self,_region_id : str, data: PollenForecast, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PollenForecast], str]=None) -> None:
         """
         Sends the 'DE.DWD.Pollenflug.PollenForecast' event to the Kafka topic
 
@@ -81,6 +137,7 @@ class DEDWDPollenflugEventProducer:
             _region_id(str):  Value for placeholder region_id in attribute subject
             data: (PollenForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, PollenForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{region_id}'
@@ -92,6 +149,7 @@ class DEDWDPollenflugEventProducer:
              "subject":"{region_id}".format(region_id = _region_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -99,7 +157,7 @@ class DEDWDPollenflugEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -187,7 +245,15 @@ class DEDWDPollenflugMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_de_dwd_pollenflug_mqtt_region(self,_region_id : str, data: Region, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_de_dwd_pollenflug_mqtt_region(self,_region_id : str, data: Region, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
         """
         Sends the 'DE.DWD.Pollenflug.mqtt.Region' event to the Kafka topic
 
@@ -195,6 +261,7 @@ class DEDWDPollenflugMqttEventProducer:
             _region_id(str):  Value for placeholder region_id in attribute subject
             data: (Region): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Region], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -205,6 +272,7 @@ class DEDWDPollenflugMqttEventProducer:
              "subject":"{region_id}".format(region_id = _region_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -212,13 +280,13 @@ class DEDWDPollenflugMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_de_dwd_pollenflug_mqtt_pollen_forecast(self,_region_id : str, _pollen_type : str, data: PollenForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PollenForecast], str]=None) -> None:
+    def send_de_dwd_pollenflug_mqtt_pollen_forecast(self,_region_id : str, _pollen_type : str, data: PollenForecast, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PollenForecast], str]=None) -> None:
         """
         Sends the 'DE.DWD.Pollenflug.mqtt.PollenForecast' event to the Kafka topic
 
@@ -227,6 +295,7 @@ class DEDWDPollenflugMqttEventProducer:
             _pollen_type(str):  Value for placeholder pollen_type in attribute subject
             data: (PollenForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, PollenForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -237,6 +306,7 @@ class DEDWDPollenflugMqttEventProducer:
              "subject":"{region_id}/{pollen_type}".format(region_id = _region_id,pollen_type = _pollen_type)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -244,7 +314,7 @@ class DEDWDPollenflugMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -332,7 +402,15 @@ class DEDWDPollenflugAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_de_dwd_pollenflug_amqp_region(self,_region_id : str, data: Region, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_de_dwd_pollenflug_amqp_region(self,_region_id : str, data: Region, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Region], str]=None) -> None:
         """
         Sends the 'DE.DWD.Pollenflug.amqp.Region' event to the Kafka topic
 
@@ -340,6 +418,7 @@ class DEDWDPollenflugAmqpEventProducer:
             _region_id(str):  Value for placeholder region_id in attribute subject
             data: (Region): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Region], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -350,6 +429,7 @@ class DEDWDPollenflugAmqpEventProducer:
              "subject":"{region_id}".format(region_id = _region_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -357,13 +437,13 @@ class DEDWDPollenflugAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_de_dwd_pollenflug_amqp_pollen_forecast(self,_region_id : str, _pollen_type : str, data: PollenForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PollenForecast], str]=None) -> None:
+    def send_de_dwd_pollenflug_amqp_pollen_forecast(self,_region_id : str, _pollen_type : str, data: PollenForecast, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, PollenForecast], str]=None) -> None:
         """
         Sends the 'DE.DWD.Pollenflug.amqp.PollenForecast' event to the Kafka topic
 
@@ -372,6 +452,7 @@ class DEDWDPollenflugAmqpEventProducer:
             _pollen_type(str):  Value for placeholder pollen_type in attribute subject
             data: (PollenForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, PollenForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -382,6 +463,7 @@ class DEDWDPollenflugAmqpEventProducer:
              "subject":"{region_id}/{pollen_type}".format(region_id = _region_id,pollen_type = _pollen_type)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -389,7 +471,7 @@ class DEDWDPollenflugAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()

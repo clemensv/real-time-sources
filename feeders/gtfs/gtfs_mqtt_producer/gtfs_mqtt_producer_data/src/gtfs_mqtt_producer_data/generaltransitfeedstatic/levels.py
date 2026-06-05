@@ -88,6 +88,8 @@ class Levels:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -155,7 +157,7 @@ class Levels:
             An instance of the dataclass.
         """
         return cls(
-            levelId='wzurfsxmjyslmdilyxqc',
-            levelIndex=float(93.17037283464569),
-            levelName='tvyqtnvtbxkoxtcbqpzh'
+            levelId='eepjysbazqyxgupgmulp',
+            levelIndex=float(4.85251541764673),
+            levelName='drxpjeslzopbdgvdxynu'
         )

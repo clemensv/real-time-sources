@@ -20,14 +20,14 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetEventProducer
 from luchtmeetnet_nl_producer_data import Station
-from test_luchtmeetnet_nl_producer_data_station import Test_Station
+from test_station import Test_Station
 from luchtmeetnet_nl_producer_data import Measurement
-from test_luchtmeetnet_nl_producer_data_measurement import Test_Measurement
+from test_measurement import Test_Measurement
 from luchtmeetnet_nl_producer_data import LKI
-from test_luchtmeetnet_nl_producer_data_lki import Test_LKI
+from test_lki import Test_LKI
 from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetComponentsEventProducer
 from luchtmeetnet_nl_producer_data import Component
-from test_luchtmeetnet_nl_producer_data_component import Test_Component
+from test_component import Test_Component
 from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetMqttEventProducer
 from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetAmqpEventProducer
 from luchtmeetnet_nl_producer_kafka_producer.producer import NlRivmLuchtmeetnetComponentsMqttEventProducer
@@ -114,7 +114,8 @@ def test_nl_rivm_luchtmeetnet_nlrivmluchtmeetnetstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_station(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_station(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -177,7 +178,8 @@ def test_nl_rivm_luchtmeetnet_nlrivmluchtmeetnetmeasurement(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_measurement(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_measurement(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -240,7 +242,8 @@ def test_nl_rivm_luchtmeetnet_nlrivmluchtmeetnetlki(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_lki(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_lki(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -303,7 +306,8 @@ def test_nl_rivm_luchtmeetnet_components_nlrivmluchtmeetnetcomponentscomponent(k
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_components_component(_formula = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_components_component(_formula = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -366,7 +370,8 @@ def test_nl_rivm_luchtmeetnet_mqtt_nlrivmluchtmeetnetmqttstation(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_mqtt_station(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_mqtt_station(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -427,7 +432,8 @@ def test_nl_rivm_luchtmeetnet_mqtt_nlrivmluchtmeetnetmqttmeasurement(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_mqtt_measurement(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_mqtt_measurement(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -488,7 +494,8 @@ def test_nl_rivm_luchtmeetnet_mqtt_nlrivmluchtmeetnetmqttlki(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_mqtt_lki(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_mqtt_lki(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -549,7 +556,8 @@ def test_nl_rivm_luchtmeetnet_amqp_nlrivmluchtmeetnetamqpstation(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_amqp_station(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_amqp_station(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -610,7 +618,8 @@ def test_nl_rivm_luchtmeetnet_amqp_nlrivmluchtmeetnetamqpmeasurement(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_amqp_measurement(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_amqp_measurement(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -671,7 +680,8 @@ def test_nl_rivm_luchtmeetnet_amqp_nlrivmluchtmeetnetamqplki(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_amqp_lki(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_amqp_lki(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -732,7 +742,8 @@ def test_nl_rivm_luchtmeetnet_components_mqtt_nlrivmluchtmeetnetcomponentsmqttco
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_components_mqtt_component(_formula = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_components_mqtt_component(_formula = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -793,7 +804,8 @@ def test_nl_rivm_luchtmeetnet_components_amqp_nlrivmluchtmeetnetcomponentsamqpco
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_rivm_luchtmeetnet_components_amqp_component(_formula = f'test_{i}', data = event_data)
+        producer_instance.send_nl_rivm_luchtmeetnet_components_amqp_component(_formula = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

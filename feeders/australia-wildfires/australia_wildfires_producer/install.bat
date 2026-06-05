@@ -1,0 +1,2 @@
+pip install .\australia_wildfires_producer_data
+pip install .\australia_wildfires_producer_kafka_producer

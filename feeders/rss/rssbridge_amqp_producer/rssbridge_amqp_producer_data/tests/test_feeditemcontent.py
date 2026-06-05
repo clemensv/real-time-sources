@@ -28,10 +28,10 @@ class Test_FeedItemContent(unittest.TestCase):
         Create instance of FeedItemContent for testing
         """
         instance = FeedItemContent(
-            value='bgenfrfqpitktkdnnfxp',
-            type='ovusnprfsmvboqukebjw',
-            language='jafbjufmgxzvsvqgizgb',
-            base='adqixqdywxwhufucguqq'
+            value='ytfyttwcdnrqkdwpnanw',
+            type='zdocpkjmhhenxcujcoto',
+            language='lqkofluprqlibkvoyfgp',
+            base='jmxesvvnimyguvprlxxu'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_FeedItemContent(unittest.TestCase):
         """
         Test value property
         """
-        test_value = 'bgenfrfqpitktkdnnfxp'
+        test_value = 'ytfyttwcdnrqkdwpnanw'
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -48,7 +48,7 @@ class Test_FeedItemContent(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'ovusnprfsmvboqukebjw'
+        test_value = 'zdocpkjmhhenxcujcoto'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -56,7 +56,7 @@ class Test_FeedItemContent(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'jafbjufmgxzvsvqgizgb'
+        test_value = 'lqkofluprqlibkvoyfgp'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -64,7 +64,7 @@ class Test_FeedItemContent(unittest.TestCase):
         """
         Test base property
         """
-        test_value = 'adqixqdywxwhufucguqq'
+        test_value = 'jmxesvvnimyguvprlxxu'
         self.instance.base = test_value
         self.assertEqual(self.instance.base, test_value)
     

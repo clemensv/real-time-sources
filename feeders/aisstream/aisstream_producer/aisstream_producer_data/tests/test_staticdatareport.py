@@ -30,12 +30,12 @@ class Test_StaticDataReport(unittest.TestCase):
         Create instance of StaticDataReport for testing
         """
         instance = StaticDataReport(
-            MessageID=int(36),
-            RepeatIndicator=int(64),
-            UserID=int(48),
-            Valid=True,
-            Reserved=int(44),
-            PartNumber=True,
+            MessageID=int(26),
+            RepeatIndicator=int(45),
+            UserID=int(89),
+            Valid=False,
+            Reserved=int(90),
+            PartNumber=False,
             ReportA=None,
             ReportB=None
         )
@@ -46,7 +46,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(36)
+        test_value = int(26)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -54,7 +54,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(64)
+        test_value = int(45)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -62,7 +62,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(48)
+        test_value = int(89)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -70,7 +70,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = True
+        test_value = False
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -78,7 +78,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test Reserved property
         """
-        test_value = int(44)
+        test_value = int(90)
         self.instance.Reserved = test_value
         self.assertEqual(self.instance.Reserved, test_value)
     
@@ -86,7 +86,7 @@ class Test_StaticDataReport(unittest.TestCase):
         """
         Test PartNumber property
         """
-        test_value = True
+        test_value = False
         self.instance.PartNumber = test_value
         self.assertEqual(self.instance.PartNumber, test_value)
     

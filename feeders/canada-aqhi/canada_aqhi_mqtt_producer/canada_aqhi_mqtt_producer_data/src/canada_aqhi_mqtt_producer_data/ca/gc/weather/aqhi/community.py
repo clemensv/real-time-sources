@@ -96,6 +96,8 @@ class Community:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class Community:
             An instance of the dataclass.
         """
         return cls(
-            province='xqntvbtqknvpjzptmebv',
-            community_name='mkmgqiuaawsnblikjear',
-            cgndb_code='uiqiurpuoblhhvkwvbvx',
-            latitude=float(6.460594033035449),
-            longitude=float(16.497704267112233),
-            observation_url='becxowpmrpfhxvcigfrv',
-            forecast_url='gvwlmvhboromkvutvdpv'
+            province='aunmxtrvudmamkblnvda',
+            community_name='mlsdcrapkyuaqpkizmra',
+            cgndb_code='cacnhsfqdyhnijwpomvg',
+            latitude=float(22.885583175009806),
+            longitude=float(21.93041248067815),
+            observation_url='yopyinuuxzlvxlxfkfga',
+            forecast_url='dabbrtgtdscgityeloft'
         )

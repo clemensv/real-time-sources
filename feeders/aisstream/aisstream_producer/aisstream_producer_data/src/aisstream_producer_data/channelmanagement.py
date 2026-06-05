@@ -116,6 +116,8 @@ class ChannelManagement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -183,20 +185,20 @@ class ChannelManagement:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(74),
-            RepeatIndicator=int(78),
-            UserID=int(41),
+            MessageID=int(79),
+            RepeatIndicator=int(4),
+            UserID=int(54),
             Valid=False,
-            Spare1=int(38),
-            ChannelA=int(71),
-            ChannelB=int(40),
-            TxRxMode=int(62),
+            Spare1=int(43),
+            ChannelA=int(59),
+            ChannelB=int(53),
+            TxRxMode=int(39),
             LowPower=False,
             Area=None,
             Unicast=None,
-            IsAddressed=False,
-            BwA=True,
-            BwB=False,
-            TransitionalZoneSize=int(98),
-            Spare4=int(45)
+            IsAddressed=True,
+            BwA=False,
+            BwB=True,
+            TransitionalZoneSize=int(23),
+            Spare4=int(66)
         )

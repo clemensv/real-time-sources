@@ -21,7 +21,7 @@ import datetime
 @dataclass
 class PortCall:
     """
-    Port call update from Digitraffic's Portnet-backed port-call API. Each event represents one vessel visit plan or update keyed by the Digitraffic port call identifier and carries the vessel identity, routing context, assigned agents, and berth-area timing details.
+    A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels.
     
     Attributes:
         port_call_id (int)
@@ -128,6 +128,8 @@ class PortCall:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -195,25 +197,25 @@ class PortCall:
             An instance of the dataclass.
         """
         return cls(
-            port_call_id=int(36),
+            port_call_id=int(94),
             updated_at=datetime.datetime.now(datetime.timezone.utc),
-            customs_reference='jhhzqvwobrymwyezisfp',
-            port_to_visit='emhbifxjonspwbhripks',
-            previous_port='eaoxrtuifzvqjqrxdgud',
-            next_port='ecmrxqfdrqisirqufeav',
-            mmsi=int(21),
-            imo_lloyds=int(49),
-            vessel_name='rkjgvoqkoqjoxbnpkyyf',
-            vessel_name_prefix='gnxjtxdjtbdldvvjxzng',
-            radio_call_sign='czjdumjlnkcfkjvqetzx',
-            nationality='hhygilhedrvofjxjbkvg',
-            vessel_type_code=int(10),
-            domestic_traffic_arrival=True,
+            customs_reference='prpqqdrxrcwbystmvcuj',
+            port_to_visit='cmxwzmxdwkjhotuutmvu',
+            previous_port='oxgznnfcxpahbqwdezsu',
+            next_port='qosniurqysmvrljlzriu',
+            mmsi=int(63),
+            imo_lloyds=int(63),
+            vessel_name='brqilqeglmqnnyehrmne',
+            vessel_name_prefix='uotmbkjjnmijntdmbqsv',
+            radio_call_sign='dzkhnuqertpznksgfspf',
+            nationality='fkafikqwlgejjytxkbal',
+            vessel_type_code=int(2),
+            domestic_traffic_arrival=False,
             domestic_traffic_departure=False,
             arrival_with_cargo=False,
-            not_loading=False,
-            discharge=int(99),
-            current_security_level=int(66),
-            agents=[None, None, None, None, None],
-            port_areas=[None]
+            not_loading=True,
+            discharge=int(6),
+            current_security_level=int(60),
+            agents=[None, None, None, None],
+            port_areas=[None, None, None]
         )

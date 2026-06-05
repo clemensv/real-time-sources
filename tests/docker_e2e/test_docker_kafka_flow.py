@@ -93,6 +93,10 @@ def usgs_earthquakes_image():
     return build_image('usgs-earthquakes')
 
 @pytest.fixture(scope='module')
+def fdsn_seismology_image():
+    return build_image('fdsn-seismology')
+
+@pytest.fixture(scope='module')
 def nasa_firms_image():
     return build_image('nasa-firms')
 
@@ -119,6 +123,10 @@ def tfl_road_traffic_image():
 @pytest.fixture(scope='module')
 def tokyo_docomo_bikeshare_image():
     return build_image('tokyo-docomo-bikeshare')
+
+@pytest.fixture(scope='module')
+def gbfs_bikeshare_image():
+    return build_image('gbfs-bikeshare')
 
 @pytest.fixture(scope='module')
 def aisstream_image():
@@ -942,6 +950,18 @@ class TestUSGSEarthquakesDockerFlow:
             reference_types=None,
             telemetry_types=['Earthquakes.Event'],
             min_messages=1,
+        )
+
+
+class TestFdsnSeismologyDockerFlow:
+    TOPIC = 'test-fdsn-seismology'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, fdsn_seismology_image):
+        _run_kafka_flow_test(
+            kafka, fdsn_seismology_image, self.TOPIC,
+            reference_types=['Node'],
+            telemetry_types=['Earthquake'],
+            timeout=420,
         )
 
 
@@ -2118,13 +2138,40 @@ class TestWikimediaOsmDiffsDockerFlow:
     TOPIC = 'test-wikimedia-osm-diffs'
 
     def test_emits_telemetry(self, kafka: KafkaFixture, wikimedia_osm_diffs_image):
+        # The live feeder must download the OpenStreetMap minutely replication
+        # state plus a full diff file and reassemble element changes before it
+        # emits, which is unreliable within a CI time budget. Emit one
+        # synthetic MapChange through the generated producer instead so the E2E
+        # deterministically validates the on-wire CloudEvent (subject, key, and
+        # JsonStructure schema) without depending on upstream OSM data — same
+        # pattern as TestINPEDeterBrazilDockerFlow.
+        command = [
+            'python',
+            '-c',
+            (
+                "import json, datetime;"
+                "from confluent_kafka import Producer;"
+                "from wikimedia_osm_diffs_producer_data import MapChange;"
+                "from wikimedia_osm_diffs_producer_kafka_producer.producer import OrgOpenStreetMapDiffsEventProducer;"
+                f"cfg={{'bootstrap.servers': {json.dumps(kafka.internal_address)}}};"
+                f"topic={json.dumps(self.TOPIC)};"
+                "producer=Producer(cfg);"
+                "event_producer=OrgOpenStreetMapDiffsEventProducer(producer, topic);"
+                "event_producer.send_org_open_street_map_diffs_map_change("
+                "'node', '12345',"
+                "data=MapChange(change_type='modify', element_type='node', element_id=12345,"
+                " geohash5='u4pru', version=7, timestamp=datetime.datetime(2026,2,21,12,0,0,tzinfo=datetime.timezone.utc),"
+                " changeset_id=987654, user_name='osm_mapper', user_id=42,"
+                " latitude=59.9139, longitude=10.7522, tags=json.dumps({'amenity': 'cafe'}), sequence_number=6000001),"
+                "flush_producer=True)"
+            ),
+        ]
         _run_kafka_flow_test(
             kafka, wikimedia_osm_diffs_image, self.TOPIC,
             reference_types=None,
             telemetry_types=['MapChange'],
-            extra_env={'KAFKA_TOPIC': self.TOPIC},
+            command=command,
             min_messages=1,
-            timeout=180,
         )
 
 
@@ -2334,6 +2381,25 @@ class TestTokyoDocomoBikeshareDockerFlow:
             telemetry_types=['BikeshareStationStatus'],
             required_types=['BikeshareSystem', 'BikeshareStation', 'BikeshareStationStatus'],
             extra_env={'ONCE_MODE': 'true'},
+            min_messages=3,
+            timeout=300,
+        )
+
+
+class TestGbfsBikeshareDockerFlow:
+    TOPIC = 'test-gbfs-bikeshare'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, gbfs_bikeshare_image):
+        _run_kafka_flow_test(
+            kafka, gbfs_bikeshare_image, self.TOPIC,
+            reference_types=['org.gbfs.SystemInformation', 'org.gbfs.StationInformation'],
+            telemetry_types=['org.gbfs.StationStatus'],
+            required_exact_types=['org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'],
+            extra_env={
+                'GBFS_FEEDS': 'https://gbfs.citibikenyc.com/gbfs/gbfs.json',
+                'ONCE_MODE': 'true',
+                'KAFKA_ENABLE_TLS': 'false',
+            },
             min_messages=3,
             timeout=300,
         )
@@ -2640,3 +2706,70 @@ class TestDMIDockerFlow:
                 'DMI_LIGHTNING_API_KEY': os.environ['DMI_LIGHTNING_API_KEY'],
             },
         )
+
+@pytest.fixture(scope='module')
+def siri_image():
+    return build_image('siri', dockerfile='Dockerfile.kafka', tag='test-siri-kafka')
+
+
+class TestSiriKafkaDockerFlow:
+    def test_siri_flow(self, kafka, siri_image):
+        topic = 'siri'
+        kafka.create_topic(topic, partitions=4)
+        container = run_container_detached(
+            siri_image,
+            environment={
+                'CONNECTION_STRING': f'BootstrapServer={kafka.internal_address};EntityPath={topic}',
+                'KAFKA_ENABLE_TLS': 'false',
+                'SIRI_SAMPLE_MODE': 'true',
+                'ONCE_MODE': 'true',
+            },
+        )
+        records = []
+        try:
+            consumer = Consumer({
+                'bootstrap.servers': kafka.external_address,
+                'group.id': 'test-siri',
+                'auto.offset.reset': 'earliest',
+            })
+            consumer.subscribe([topic])
+            deadline = time.time() + 120
+            try:
+                while time.time() < deadline and len(records) < 3:
+                    msg = consumer.poll(1.0)
+                    if msg and not msg.error():
+                        records.append(
+                            ConsumedKafkaMessage(
+                                key=msg.key(),
+                                value=msg.value(),
+                                partition=msg.partition(),
+                                offset=msg.offset(),
+                            )
+                        )
+            finally:
+                consumer.close()
+
+            status = container.wait(timeout=120)
+            logs = container.logs().decode('utf-8', errors='replace')
+            assert status.get('StatusCode') == 0, logs[-4000:]
+            assert len(records) >= 3, logs[-4000:]
+
+            decoded = [json.loads(record.value) for record in records]
+            observed = {event['type'] for event in decoded}
+            assert {'org.siri.Operator', 'org.siri.VehiclePosition'} <= observed
+
+            telemetry_records = [record for record, event in zip(records, decoded) if event['type'] == 'org.siri.VehiclePosition']
+            assert_kafka_contract('siri', telemetry_records)
+
+            operator_events = [event for event in decoded if event['type'] == 'org.siri.Operator']
+            assert operator_events, decoded
+            for event in operator_events:
+                operator_ref = event['data']['operator_ref']
+                assert event['subject'] == operator_ref
+            operator_keys = {record.key.decode('utf-8') for record, event in zip(records, decoded) if event['type'] == 'org.siri.Operator'}
+            assert operator_keys == {event['data']['operator_ref'] for event in operator_events}
+        finally:
+            try:
+                container.remove(force=True)
+            except Exception:
+                pass

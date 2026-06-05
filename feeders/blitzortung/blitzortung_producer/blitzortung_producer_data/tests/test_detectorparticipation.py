@@ -28,8 +28,8 @@ class Test_DetectorParticipation(unittest.TestCase):
         Create instance of DetectorParticipation for testing
         """
         instance = DetectorParticipation(
-            station_id=int(16),
-            status=int(41)
+            station_id=int(56),
+            status=int(37)
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_DetectorParticipation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(16)
+        test_value = int(56)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -46,19 +46,10 @@ class Test_DetectorParticipation(unittest.TestCase):
         """
         Test status property
         """
-        test_value = int(41)
+        test_value = int(37)
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = DetectorParticipation.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

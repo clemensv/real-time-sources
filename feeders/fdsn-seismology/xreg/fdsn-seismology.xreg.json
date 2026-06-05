@@ -1,0 +1,441 @@
+{
+  "$schema": "https://xregistry.io/schema/xregistry_messaging_catalog.json",
+  "specversion": "1.0-rc1",
+  "name": "FDSN Seismology",
+  "documentation": "Federated FDSN event-service bridge over seven pre-configured earthquake nodes (EMSC, GFZ, INGV, ETHZ/SED, RESIF, IPGP, NIEP). Upstream surface reviewed from the FDSN Event WADL plus live node probes: query (kept, telemetry), catalogs (dropped as duplicate index metadata), contributors (dropped as duplicate contributor listings), version (dropped as operational metadata), and application.wadl (dropped as static service description). The feeder emits node reference records and earthquake telemetry on a single topic family.",
+  "endpoints": {
+    "org.fdsn.event.Kafka": {
+      "usage": ["producer"],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "fdsn-seismology",
+          "key": "{contributor}/{event_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.fdsn.event.kafka"
+      ],
+      "description": "Kafka producer endpoint for FDSN seismology CloudEvents on the `fdsn-seismology` topic. Each message carries its own stable per-family Kafka key template in the Kafka transport message group."
+    },
+    "org.fdsn.event.Mqtt": {
+      "usage": ["producer"],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.fdsn.event.mqtt"
+      ],
+      "description": "MQTT 5.0 producer endpoint for FDSN seismology CloudEvents under a seismology/fdsn/... topic tree."
+    },
+    "org.fdsn.event.Amqp": {
+      "usage": ["producer"],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/fdsn-seismology"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.fdsn.event.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for FDSN seismology CloudEvents on one configured broker address."
+    }
+  },
+  "messagegroups": {
+    "org.fdsn.event": {
+      "description": "Reference metadata for configured FDSN nodes and earthquake detections fetched from those nodes using the standard FDSN Event web-service query interface.",
+      "messages": {
+        "org.fdsn.event.Earthquake": {
+          "name": "Earthquake",
+          "envelope": "CloudEvents/1.0",
+          "description": "Telemetry event representing one earthquake detection record returned by an FDSN Event web-service node in the standard pipe-delimited text format.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.fdsn.event.Earthquake"
+            },
+            "source": {
+              "value": "{node_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{contributor}/{event_id}",
+              "type": "uritemplate"
+            },
+            "time": {
+              "value": "{time}",
+              "type": "timestamp"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.jstruct/schemas/org.fdsn.event.Earthquake"
+        },
+        "org.fdsn.event.Node": {
+          "name": "Node",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference-data event for one pre-configured FDSN event-service node that this feeder can poll.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.fdsn.event.Node"
+            },
+            "source": {
+              "value": "{base_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{node_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.fdsn.event.jstruct/schemas/org.fdsn.event.Node"
+        }
+      }
+    },
+    "org.fdsn.event.kafka": {
+      "description": "Kafka transport variant for the FDSN seismology source. Earthquake and node records share the same topic but retain their own stable key models.",
+      "messages": {
+        "org.fdsn.event.kafka.Earthquake": {
+          "name": "Earthquake",
+          "basemessageuri": "/messagegroups/org.fdsn.event/messages/org.fdsn.event.Earthquake",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{contributor}/{event_id}"
+          }
+        },
+        "org.fdsn.event.kafka.Node": {
+          "name": "Node",
+          "basemessageuri": "/messagegroups/org.fdsn.event/messages/org.fdsn.event.Node",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{node_id}"
+          }
+        }
+      }
+    },
+    "org.fdsn.event.mqtt": {
+      "description": "MQTT 5.0 transport variant for the FDSN seismology source using a seismology/fdsn/... topic hierarchy.",
+      "messages": {
+        "org.fdsn.event.mqtt.Earthquake": {
+          "name": "Earthquake",
+          "basemessageuri": "/messagegroups/org.fdsn.event/messages/org.fdsn.event.Earthquake",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "seismology/fdsn/{contributor}/{event_id}",
+            "qos": 1,
+            "retain": false
+          }
+        },
+        "org.fdsn.event.mqtt.Node": {
+          "name": "Node",
+          "basemessageuri": "/messagegroups/org.fdsn.event/messages/org.fdsn.event.Node",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "seismology/fdsn/{node_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "org.fdsn.event.amqp": {
+      "description": "AMQP 1.0 transport variant for the FDSN seismology source. AMQP message subject mirrors the CloudEvent subject for each event family.",
+      "messages": {
+        "org.fdsn.event.amqp.Earthquake": {
+          "name": "Earthquake",
+          "basemessageuri": "/messagegroups/org.fdsn.event/messages/org.fdsn.event.Earthquake",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{contributor}/{event_id}",
+                "description": "AMQP message subject matching the earthquake CloudEvent subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "contributor": {
+                "type": "uritemplate",
+                "value": "{contributor}",
+                "description": "Contributor code supplied as an AMQP application property for broker-side filtering by data origin."
+              }
+            }
+          }
+        },
+        "org.fdsn.event.amqp.Node": {
+          "name": "Node",
+          "basemessageuri": "/messagegroups/org.fdsn.event/messages/org.fdsn.event.Node",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{node_id}",
+                "description": "AMQP message subject matching the node CloudEvent subject and Kafka key."
+              }
+            },
+            "application-properties": {
+              "node_id": {
+                "type": "uritemplate",
+                "value": "{node_id}",
+                "description": "Node identifier supplied as an AMQP application property for broker-side filtering."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "org.fdsn.event.jstruct": {
+      "schemas": {
+        "org.fdsn.event.Earthquake": {
+          "name": "Earthquake",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/fdsn/event/Earthquake/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "name": "Earthquake",
+                "$root": "#/definitions/org/fdsn/event/Earthquake",
+                "definitions": {
+                  "org": {
+                    "fdsn": {
+                      "event": {
+                        "Earthquake": {
+                          "name": "Earthquake",
+                          "type": "object",
+                          "description": "Preferred-origin earthquake event record returned by an FDSN Event web-service node in text format. The record carries origin time, hypocenter, magnitude, provenance, and human-readable region metadata for one seismic event.",
+                          "properties": {
+                            "event_id": {
+                              "type": "string",
+                              "description": "Unique identifier assigned by the contributing institution, e.g. '20260604_0000095' or 'gfz2026kvsq'.",
+                              "altnames": {
+                                "json": ["EventID"]
+                              },
+                              "minLength": 1
+                            },
+                            "time": {
+                              "type": "datetime",
+                              "description": "Origin time of the seismic event in ISO 8601 UTC format as reported by the authoritative source.",
+                              "altnames": {
+                                "json": ["Time"]
+                              }
+                            },
+                            "latitude": {
+                              "type": "double",
+                              "description": "Epicenter latitude in decimal degrees, WGS84 datum, range -90 to 90.",
+                              "altnames": {
+                                "json": ["Latitude"]
+                              },
+                              "unit": "degree",
+                              "symbol": "°",
+                              "minimum": -90,
+                              "maximum": 90
+                            },
+                            "longitude": {
+                              "type": "double",
+                              "description": "Epicenter longitude in decimal degrees, WGS84 datum, range -180 to 180.",
+                              "altnames": {
+                                "json": ["Longitude"]
+                              },
+                              "unit": "degree",
+                              "symbol": "°",
+                              "minimum": -180,
+                              "maximum": 180
+                            },
+                            "depth_km": {
+                              "type": ["double", "null"],
+                              "description": "Hypocentral depth in kilometers below the Earth's surface; null if unconstrained.",
+                              "altnames": {
+                                "json": ["Depth/km"]
+                              },
+                              "unit": "kilometer",
+                              "symbol": "km"
+                            },
+                            "author": {
+                              "type": ["string", "null"],
+                              "description": "Agency or analyst who computed the preferred origin solution, e.g. 'EMSC', 'GFZ', 'SURVEY-INGV'.",
+                              "altnames": {
+                                "json": ["Author"]
+                              }
+                            },
+                            "catalog": {
+                              "type": ["string", "null"],
+                              "description": "Name of the event catalog this earthquake belongs to, e.g. 'EMSC-RTS', 'SED'.",
+                              "altnames": {
+                                "json": ["Catalog"]
+                              }
+                            },
+                            "contributor": {
+                              "type": "string",
+                              "description": "Short code of the institution that contributed this event record to the FDSN node, e.g. 'CSN', 'GFZ', 'EMSC'.",
+                              "altnames": {
+                                "json": ["Contributor"]
+                              },
+                              "minLength": 1
+                            },
+                            "contributor_id": {
+                              "type": ["string", "null"],
+                              "description": "Contributor's internal identifier for this event, may differ from event_id.",
+                              "altnames": {
+                                "json": ["ContributorID"]
+                              }
+                            },
+                            "magnitude_type": {
+                              "type": ["string", "null"],
+                              "description": "Scale used for the preferred magnitude: 'ML' (local), 'mb' (body-wave), 'Mw' (moment), 'Ms' (surface), 'm' (unspecified).",
+                              "altnames": {
+                                "json": ["MagType"]
+                              }
+                            },
+                            "magnitude": {
+                              "type": ["double", "null"],
+                              "description": "Preferred magnitude value on the scale indicated by magnitude_type; null if no magnitude computed.",
+                              "altnames": {
+                                "json": ["Magnitude"]
+                              }
+                            },
+                            "magnitude_author": {
+                              "type": ["string", "null"],
+                              "description": "Agency that computed the preferred magnitude, may differ from the origin author.",
+                              "altnames": {
+                                "json": ["MagAuthor"]
+                              }
+                            },
+                            "event_location_name": {
+                              "type": ["string", "null"],
+                              "description": "Human-readable geographic description of the epicenter region, typically a Flinn-Engdahl region name.",
+                              "altnames": {
+                                "json": ["EventLocationName"]
+                              }
+                            },
+                            "event_type": {
+                              "type": ["string", "null"],
+                              "description": "Seismological event classification: 'earthquake', 'quarry blast', 'explosion', 'induced or triggered event', etc.",
+                              "altnames": {
+                                "json": ["EventType"]
+                              }
+                            },
+                            "node_url": {
+                              "type": "uri",
+                              "description": "Base URL of the FDSN node that served this event record, identifying the data source."
+                            }
+                          },
+                          "required": [
+                            "event_id",
+                            "time",
+                            "latitude",
+                            "longitude",
+                            "contributor",
+                            "node_url"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "org.fdsn.event.Node": {
+          "name": "Node",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/fdsn/event/Node/v1",
+                "$uses": [
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "name": "Node",
+                "$root": "#/definitions/org/fdsn/event/Node",
+                "definitions": {
+                  "org": {
+                    "fdsn": {
+                      "event": {
+                        "Node": {
+                          "name": "Node",
+                          "type": "object",
+                          "description": "Reference-data record describing one pre-configured FDSN Event web-service node that the feeder polls for earthquake detections.",
+                          "properties": {
+                            "node_id": {
+                              "type": "string",
+                              "description": "Short identifier for the FDSN node, e.g. 'emsc', 'gfz', 'ingv', 'ethz', 'resif'.",
+                              "minLength": 1
+                            },
+                            "name": {
+                              "type": "string",
+                              "description": "Full institution name operating the FDSN event service.",
+                              "minLength": 1
+                            },
+                            "base_url": {
+                              "type": "uri",
+                              "description": "Base URL for the FDSN event web service endpoint, e.g. 'https://seismicportal.eu/fdsnws/event/1/'."
+                            },
+                            "coverage": {
+                              "type": "string",
+                              "description": "Geographic or magnitude coverage description, e.g. 'Global aggregator', 'Italy + Mediterranean'.",
+                              "minLength": 1
+                            },
+                            "country": {
+                              "type": ["string", "null"],
+                              "description": "ISO 3166-1 alpha-2 country code of the operating institution.",
+                              "pattern": "^[A-Z]{2}$"
+                            }
+                          },
+                          "required": [
+                            "node_id",
+                            "name",
+                            "base_url",
+                            "coverage"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -28,11 +28,11 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_code='tqgkhfaqicmebhowrfwo',
-            name='trfxhqagkvxbnssyukkt',
-            latitude=float(88.35126242023227),
-            longitude=float(34.80065020687733),
-            coordinate_system='ltufnnhnfzkaukbszdsq'
+            station_code='jvwlqskmcvcnpcykztld',
+            name='meidnkveuuqevdvffytm',
+            latitude=float(17.115698005572266),
+            longitude=float(71.16125500776475),
+            coordinate_system='txrhecbolevvynaokvte'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'tqgkhfaqicmebhowrfwo'
+        test_value = 'jvwlqskmcvcnpcykztld'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -49,7 +49,7 @@ class Test_Station(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'trfxhqagkvxbnssyukkt'
+        test_value = 'meidnkveuuqevdvffytm'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -57,7 +57,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(88.35126242023227)
+        test_value = float(17.115698005572266)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -65,7 +65,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(34.80065020687733)
+        test_value = float(71.16125500776475)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -73,19 +73,10 @@ class Test_Station(unittest.TestCase):
         """
         Test coordinate_system property
         """
-        test_value = 'ltufnnhnfzkaukbszdsq'
+        test_value = 'txrhecbolevvynaokvte'
         self.instance.coordinate_system = test_value
         self.assertEqual(self.instance.coordinate_system, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Station.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

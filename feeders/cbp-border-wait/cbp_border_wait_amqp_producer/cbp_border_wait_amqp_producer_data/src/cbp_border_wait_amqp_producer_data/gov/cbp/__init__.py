@@ -1,3 +1,3 @@
-from .borderwait import BorderSlugenum, WaitTime, Port
+from .borderwait import BorderSlugenum, Port, WaitTime
 
-__all__ = ["BorderSlugenum", "WaitTime", "Port"]
+__all__ = ["BorderSlugenum", "Port", "WaitTime"]

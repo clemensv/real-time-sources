@@ -41,9 +41,9 @@ from tokyo_docomo_bikeshare_producer_kafka_producer.producer import JPODPTDocomo
 
 # imports for the data classes for each event
 
-from tokyo_docomo_bikeshare_producer_data.bikesharesystem import BikeshareSystem
-from tokyo_docomo_bikeshare_producer_data.bikesharestation import BikeshareStation
-from tokyo_docomo_bikeshare_producer_data.bikesharestationstatus import BikeshareStationStatus
+from tokyo_docomo_bikeshare_producer_data import BikeshareSystem
+from tokyo_docomo_bikeshare_producer_data import BikeshareStation
+from tokyo_docomo_bikeshare_producer_data import BikeshareStationStatus
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -179,7 +179,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

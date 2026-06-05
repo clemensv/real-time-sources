@@ -124,6 +124,8 @@ class WeatherObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -191,24 +193,24 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_code='rbrhnwrpxferysjlhada',
+            station_code='kbtysvrusfilbksvqtle',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            precip_quantity=float(8.837468746379562),
-            temp_dry_shelter_avg=float(78.35811544903251),
-            temp_grass_pt100_avg=float(2.0134275301082805),
-            temp_soil_avg=float(77.49206327707907),
-            temp_soil_avg_5cm=float(77.29005307859428),
-            temp_soil_avg_10cm=float(15.532212984901816),
-            temp_soil_avg_20cm=float(60.890111967811166),
-            temp_soil_avg_50cm=float(87.16701981645815),
-            wind_speed_10m=float(45.08813037224117),
-            wind_speed_avg_30m=float(59.24407038648481),
-            wind_direction=float(12.301560244291188),
-            wind_gusts_speed=float(38.36708344112614),
-            humidity_rel_shelter_avg=float(84.02043666071536),
-            pressure=float(80.95415578030722),
-            sun_duration=float(73.86533918821236),
-            short_wave_from_sky_avg=float(60.776374499912),
-            sun_int_avg=float(18.626084532024777),
-            region='zqdkfzjkcrpvbcqcjptk'
+            precip_quantity=float(5.004353892737323),
+            temp_dry_shelter_avg=float(45.469432055189564),
+            temp_grass_pt100_avg=float(21.000391762618353),
+            temp_soil_avg=float(80.14639914462485),
+            temp_soil_avg_5cm=float(22.80339474747448),
+            temp_soil_avg_10cm=float(76.30326871569028),
+            temp_soil_avg_20cm=float(88.5871634194935),
+            temp_soil_avg_50cm=float(58.23054960640083),
+            wind_speed_10m=float(24.709956025741665),
+            wind_speed_avg_30m=float(86.5363032117595),
+            wind_direction=float(11.554810291001106),
+            wind_gusts_speed=float(33.41910397812491),
+            humidity_rel_shelter_avg=float(51.34763560363941),
+            pressure=float(25.907324279098976),
+            sun_duration=float(47.471776210990754),
+            short_wave_from_sky_avg=float(61.39538632635202),
+            sun_int_avg=float(12.786978668420856),
+            region='elmojczpeaooddndqbgk'
         )

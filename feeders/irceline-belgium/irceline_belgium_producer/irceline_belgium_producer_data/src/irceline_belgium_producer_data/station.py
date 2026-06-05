@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station:
     """
-    Reference data describing one IRCELINE monitoring station from the GET /stations collection. The bridge maps the upstream GeoJSON feature to stable English field names and ignores the third coordinate element, which is the literal string 'NaN' in the live payloads.
+    A reference record published by Belgium's IRCELINE interregional environment agency. It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
         station_id (str)
@@ -90,6 +90,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='gauksjgymxnocbcpxekg',
-            label='jemjkknydcjbiepkgfgy',
-            latitude=float(25.86545622753573),
-            longitude=float(50.724997074570645)
+            station_id='lgwpnakbsoyvpuuruyca',
+            label='qlnsatuncjqiakulsqqn',
+            latitude=float(91.28626343808727),
+            longitude=float(27.65723869892763)
         )

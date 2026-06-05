@@ -1,18 +1,16 @@
 """ StationBoard dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 from irail_producer_data.be.irail.departure import Departure
 
 
@@ -20,31 +18,22 @@ from irail_producer_data.be.irail.departure import Departure
 @dataclass
 class StationBoard:
     """
-    Real-time departure board for a Belgian railway station.
+    A real-time departure board snapshot for a Belgian railway station from the iRail liveboard API. Contains all currently scheduled departures from the station with real-time delay information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each event replaces the previous board state for the same station.
+    
     Attributes:
-        station_id (str): Nine-digit UIC-derived numeric identifier of the station.
-        station_name (str): Display name of the station.
-        retrieved_at (str): ISO 8601 UTC timestamp when this board was retrieved.
-        departure_count (int): Number of departures in this board snapshot.
-        departures (typing.List[Departure]): Array of departure entries on the station board."""
+        station_id (str)
+        station_name (str)
+        retrieved_at (str)
+        departure_count (int)
+        departures (typing.List[Departure])
+    """
+    
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
     retrieved_at: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="retrieved_at"))
     departure_count: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="departure_count"))
     departures: typing.List[Departure]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="departures"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"StationBoard\", \"namespace\": \"be.irail\", \"doc\": \"Real-time departure board for a Belgian railway station.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\", \"doc\": \"Nine-digit UIC-derived numeric identifier of the station.\"}, {\"name\": \"station_name\", \"type\": \"string\", \"doc\": \"Display name of the station.\"}, {\"name\": \"retrieved_at\", \"type\": \"string\", \"doc\": \"ISO 8601 UTC timestamp when this board was retrieved.\"}, {\"name\": \"departure_count\", \"type\": \"int\", \"doc\": \"Number of departures in this board snapshot.\"}, {\"name\": \"departures\", \"type\": {\"type\": \"array\", \"items\": {\"type\": \"record\", \"name\": \"Departure\", \"doc\": \"A single scheduled departure from a Belgian railway station with real-time status.\", \"fields\": [{\"name\": \"destination_station_id\", \"type\": \"string\", \"doc\": \"Nine-digit UIC-derived numeric identifier of the destination station.\"}, {\"name\": \"destination_name\", \"type\": \"string\", \"doc\": \"Display name of the destination station.\"}, {\"name\": \"scheduled_time\", \"type\": \"string\", \"doc\": \"Scheduled departure time in ISO 8601 UTC.\"}, {\"name\": \"delay_seconds\", \"type\": \"int\", \"doc\": \"Current delay in seconds.\"}, {\"name\": \"is_canceled\", \"type\": \"boolean\", \"doc\": \"True if this departure has been canceled.\"}, {\"name\": \"has_left\", \"type\": \"boolean\", \"doc\": \"True if the train has already departed.\"}, {\"name\": \"is_extra_stop\", \"type\": \"boolean\", \"doc\": \"True if this stop is not part of the original schedule.\"}, {\"name\": \"vehicle_id\", \"type\": \"string\", \"doc\": \"Full iRail vehicle identifier.\"}, {\"name\": \"vehicle_short_name\", \"type\": \"string\", \"doc\": \"Human-readable short name of the train service.\"}, {\"name\": \"vehicle_type\", \"type\": \"string\", \"doc\": \"NMBS train service type abbreviation.\"}, {\"name\": \"vehicle_number\", \"type\": \"string\", \"doc\": \"Numeric part of the vehicle identifier.\"}, {\"name\": \"platform\", \"type\": [\"null\", \"string\"], \"doc\": \"Platform number. Null if not assigned.\", \"default\": null}, {\"name\": \"is_normal_platform\", \"type\": \"boolean\", \"doc\": \"True if the platform is the normally scheduled one.\"}, {\"name\": \"occupancy\", \"type\": \"string\", \"doc\": \"Crowd-sourced occupancy estimate: low, medium, high, or unknown.\"}, {\"name\": \"departure_connection_uri\", \"type\": \"string\", \"doc\": \"Stable linked-data URI uniquely identifying this departure.\"}]}}, \"doc\": \"Array of departure entries on the station board.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_id=str(self.station_id)
-        self.station_name=str(self.station_name)
-        self.retrieved_at=str(self.retrieved_at)
-        self.departure_count=int(self.departure_count)
-        self.departures=self.departures if isinstance(self.departures, list) else [v if isinstance(v, Departure) else Departure.from_serializer_dict(v) if v else None for v in self.departures] if self.departures else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'StationBoard':
@@ -55,7 +44,7 @@ class StationBoard:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -74,7 +63,7 @@ class StationBoard:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -88,8 +77,6 @@ class StationBoard:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -102,16 +89,12 @@ class StationBoard:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -136,10 +119,6 @@ class StationBoard:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -165,18 +144,6 @@ class StationBoard:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return StationBoard.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -184,5 +151,20 @@ class StationBoard:
                 return StationBoard.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'StationBoard':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            station_id='pfuytwkeojsplqvnqxxl',
+            station_name='lolhtwogkmhznflclkzi',
+            retrieved_at='tszdruewdmewcflogmwv',
+            departure_count=int(39),
+            departures=[None, None]
+        )

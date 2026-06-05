@@ -92,6 +92,8 @@ class Position:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class Position:
             An instance of the dataclass.
         """
         return cls(
-            latitude=float(39.21941025411433),
-            longitude=float(36.27977117131596),
-            bearing=float(12.699527320643023),
-            odometer=float(89.65468419632344),
-            speed=float(38.28026674044433)
+            latitude=float(83.9442339245959),
+            longitude=float(73.77049502735488),
+            bearing=float(44.36345386047965),
+            odometer=float(75.80260805943695),
+            speed=float(18.413242382572914)
         )

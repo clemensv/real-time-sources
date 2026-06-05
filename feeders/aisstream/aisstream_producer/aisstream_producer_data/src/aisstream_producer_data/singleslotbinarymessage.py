@@ -103,6 +103,8 @@ class SingleSlotBinaryMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -170,14 +172,14 @@ class SingleSlotBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(70),
-            RepeatIndicator=int(56),
-            UserID=int(18),
+            MessageID=int(91),
+            RepeatIndicator=int(62),
+            UserID=int(27),
             Valid=True,
             DestinationIDValid=True,
-            ApplicationIDValid=False,
-            DestinationID=int(46),
-            Spare=int(74),
+            ApplicationIDValid=True,
+            DestinationID=int(9),
+            Spare=int(44),
             ApplicationID=None,
-            Payload='foogibkxbaklneareyjl'
+            Payload='sbtgokppwyzuqgbrbcck'
         )

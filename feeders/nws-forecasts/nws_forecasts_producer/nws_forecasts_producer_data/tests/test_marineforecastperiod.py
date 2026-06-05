@@ -28,8 +28,8 @@ class Test_MarineForecastPeriod(unittest.TestCase):
         Create instance of MarineForecastPeriod for testing
         """
         instance = MarineForecastPeriod(
-            period_name='algdjgqyjmccepiyfiuf',
-            forecast_text='ehfttlpfqbgjahncdfzk'
+            period_name='snsjuanlogpsuqffkmtb',
+            forecast_text='mhkxmgaxswvevrpylprd'
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_MarineForecastPeriod(unittest.TestCase):
         """
         Test period_name property
         """
-        test_value = 'algdjgqyjmccepiyfiuf'
+        test_value = 'snsjuanlogpsuqffkmtb'
         self.instance.period_name = test_value
         self.assertEqual(self.instance.period_name, test_value)
     
@@ -46,7 +46,7 @@ class Test_MarineForecastPeriod(unittest.TestCase):
         """
         Test forecast_text property
         """
-        test_value = 'ehfttlpfqbgjahncdfzk'
+        test_value = 'mhkxmgaxswvevrpylprd'
         self.instance.forecast_text = test_value
         self.assertEqual(self.instance.forecast_text, test_value)
     

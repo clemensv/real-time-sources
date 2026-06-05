@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import jma_bosai_volcano_mqtt_producer_data
 from jma_bosai_volcano_mqtt_producer_data import Volcano
-from test_jma_bosai_volcano_mqtt_producer_data_volcano import Test_Volcano
+from test_volcano import Test_Volcano
 from jma_bosai_volcano_mqtt_producer_data import VolcanicWarning
-from test_jma_bosai_volcano_mqtt_producer_data_volcanicwarning import Test_VolcanicWarning
+from test_volcanicwarning import Test_VolcanicWarning
 from jma_bosai_volcano_mqtt_producer_data import VolcanicEruption
-from test_jma_bosai_volcano_mqtt_producer_data_volcaniceruption import Test_VolcanicEruption
+from test_volcaniceruption import Test_VolcanicEruption
 from jma_bosai_volcano_mqtt_producer_mqtt_client import JPJMAVolcanoMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -94,6 +95,7 @@ async def test_jp_jma_volcano_mqtt_jp_jma_volcano_mqtt_volcano_py(mosquitto_brok
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             volcano_code=f"test_volcano_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -160,6 +162,7 @@ async def test_jp_jma_volcano_mqtt_jp_jma_volcano_mqtt_volcanic_warning_py(mosqu
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             volcano_code=f"test_volcano_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -226,6 +229,7 @@ async def test_jp_jma_volcano_mqtt_jp_jma_volcano_mqtt_volcanic_eruption_py(mosq
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             volcano_code=f"test_volcano_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

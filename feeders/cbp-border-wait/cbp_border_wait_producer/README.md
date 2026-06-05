@@ -17,7 +17,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - GovCbpBorderwaitEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    GovCbpBorderwaitMqttEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    GovCbpBorderwaitMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    GovCbpBorderwaitAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +47,10 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - GovCbpBorderwaitMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- GovCbpBorderwaitAmqpProducersolution for event-driven applications.
 
 
 
@@ -236,6 +242,43 @@ gov_cbp_borderwait_mqtt_dispatcher.gov_cbp_borderwait_port_async = gov_cbp_borde
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### GovCbpBorderwaitAmqpProducer- `data`: The event data of type `cbp_border_wait_producer_data.Port`.
+
+
+
+Producer for `gov.cbp.borderwait.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def gov_cbp_borderwait_port_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Port) -> None:
+
+```python    # Process the event data
+
+GovCbpBorderwaitAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+gov_cbp_borderwait_amqp_dispatcher.gov_cbp_borderwait_port_async = gov_cbp_borderwait_port_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -333,6 +376,43 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 gov_cbp_borderwait_mqtt_dispatcher.gov_cbp_borderwait_wait_time_async = gov_cbp_borderwait_wait_time_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### GovCbpBorderwaitAmqpProducer- `data`: The event data of type `cbp_border_wait_producer_data.WaitTime`.
+
+
+
+Producer for `gov.cbp.borderwait.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def gov_cbp_borderwait_wait_time_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WaitTime) -> None:
+
+```python    # Process the event data
+
+GovCbpBorderwaitAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+gov_cbp_borderwait_amqp_dispatcher.gov_cbp_borderwait_wait_time_async = gov_cbp_borderwait_wait_time_event
 
 **Parameters:**```
 
@@ -746,6 +826,43 @@ gov_cbp_borderwait_mqtt_dispatcher.gov_cbp_borderwait_mqtt_port_async = gov_cbp_
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### GovCbpBorderwaitAmqpProducer- `data`: The event data of type `cbp_border_wait_producer_data.Port`.
+
+
+
+Producer for `gov.cbp.borderwait.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def gov_cbp_borderwait_mqtt_port_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Port) -> None:
+
+```python    # Process the event data
+
+GovCbpBorderwaitAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+gov_cbp_borderwait_amqp_dispatcher.gov_cbp_borderwait_mqtt_port_async = gov_cbp_borderwait_mqtt_port_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -845,6 +962,44 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 gov_cbp_borderwait_mqtt_dispatcher.gov_cbp_borderwait_mqtt_wait_time_async = gov_cbp_borderwait_mqtt_wait_time_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### GovCbpBorderwaitAmqpProducer- `data`: The event data of type `cbp_border_wait_producer_data.WaitTime`.
+
+
+
+Producer for `gov.cbp.borderwait.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def gov_cbp_borderwait_mqtt_wait_time_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WaitTime) ->
+None:
+
+```python    # Process the event data
+
+GovCbpBorderwaitAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+gov_cbp_borderwait_amqp_dispatcher.gov_cbp_borderwait_mqtt_wait_time_async = gov_cbp_borderwait_mqtt_wait_time_event
 
 **Parameters:**```
 
@@ -1053,6 +1208,593 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_gov_cbp_borderwait_mqtt_wait_time_batch(```
+
+    messages=[
+
+        WaitTime(...),Initializes the runner with a Kafka consumer.
+
+        WaitTime(...),
+
+        WaitTime(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### GovCbpBorderwaitAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`GovCbpBorderwaitAmqpEventDispatcher` handles events for the gov.cbp.borderwait.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from cbp_border_wait_producer import GovCbpBorderwaitProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = GovCbpBorderwaitProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_gov_cbp_borderwait_port(```python
+
+    data=Port(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The GovCbpBorderwaitAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = GovCbpBorderwaitProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `gov_cbp_borderwait_amqp_port_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'gov_cbp_borderwait_amqp_port_async:  Callable[[ConsumerRecord, CloudEvent, Port],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `gov.cbp.borderwait.amqp.Port`: Reference data for a US Customs and Border Protection land
+border port of entry. The CBP Border Wait Time system covers approximately 81 ports along the US-Canada and US-Mexico
+borders. Each port record identifies the crossing name, operating hours, border (Canadian or Mexican), and current
+operational status. Emitted at bridge startup and periodically refreshed.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### GovCbpBorderwaitProducer- `data`: The event data of type `cbp_border_wait_producer_data.Port`.
+
+
+
+Producer for `gov.cbp.borderwait` message group.Example:
+
+
+
+#### Constructor```python
+
+async def gov_cbp_borderwait_amqp_port_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Port) -> None:
+
+```python    # Process the event data
+
+GovCbpBorderwaitProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+gov_cbp_borderwait_dispatcher.gov_cbp_borderwait_amqp_port_async = gov_cbp_borderwait_amqp_port_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### GovCbpBorderwaitMqttProducer- `data`: The event data of type `cbp_border_wait_producer_data.Port`.
+
+
+
+Producer for `gov.cbp.borderwait.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def gov_cbp_borderwait_amqp_port_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Port) -> None:
+
+```python    # Process the event data
+
+GovCbpBorderwaitMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+gov_cbp_borderwait_mqtt_dispatcher.gov_cbp_borderwait_amqp_port_async = gov_cbp_borderwait_amqp_port_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### GovCbpBorderwaitAmqpProducer- `data`: The event data of type `cbp_border_wait_producer_data.Port`.
+
+
+
+Producer for `gov.cbp.borderwait.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def gov_cbp_borderwait_amqp_port_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Port) -> None:
+
+```python    # Process the event data
+
+GovCbpBorderwaitAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+gov_cbp_borderwait_amqp_dispatcher.gov_cbp_borderwait_amqp_port_async = gov_cbp_borderwait_amqp_port_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `gov_cbp_borderwait_amqp_wait_time_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'gov_cbp_borderwait_amqp_wait_time_async:  Callable[[ConsumerRecord, CloudEvent,
+WaitTime], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `gov.cbp.borderwait.amqp.WaitTime`: Current wait times at a US land border port of entry,
+flattened from the CBP nested lane structure. Reports delay in minutes and number of open lanes for each combination of
+traveler category (passenger vehicle, pedestrian, commercial vehicle) and lane type (standard, SENTRI/NEXUS, Ready Lane,
+FAST). Wait times are updated approximately every hour by CBP officers at each port.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### GovCbpBorderwaitProducer- `data`: The event data of type `cbp_border_wait_producer_data.WaitTime`.
+
+
+
+Producer for `gov.cbp.borderwait` message group.Example:
+
+
+
+#### Constructor```python
+
+async def gov_cbp_borderwait_amqp_wait_time_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WaitTime) ->
+None:
+
+```python    # Process the event data
+
+GovCbpBorderwaitProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+gov_cbp_borderwait_dispatcher.gov_cbp_borderwait_amqp_wait_time_async = gov_cbp_borderwait_amqp_wait_time_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### GovCbpBorderwaitMqttProducer- `data`: The event data of type `cbp_border_wait_producer_data.WaitTime`.
+
+
+
+Producer for `gov.cbp.borderwait.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def gov_cbp_borderwait_amqp_wait_time_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WaitTime) ->
+None:
+
+```python    # Process the event data
+
+GovCbpBorderwaitMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+gov_cbp_borderwait_mqtt_dispatcher.gov_cbp_borderwait_amqp_wait_time_async = gov_cbp_borderwait_amqp_wait_time_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### GovCbpBorderwaitAmqpProducer- `data`: The event data of type `cbp_border_wait_producer_data.WaitTime`.
+
+
+
+Producer for `gov.cbp.borderwait.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def gov_cbp_borderwait_amqp_wait_time_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WaitTime) ->
+None:
+
+```python    # Process the event data
+
+GovCbpBorderwaitAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+gov_cbp_borderwait_amqp_dispatcher.gov_cbp_borderwait_amqp_wait_time_async = gov_cbp_borderwait_amqp_wait_time_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_gov_cbp_borderwait_amqp_port`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_gov_cbp_borderwait_amqp_port(
+
+    self,##### `_process_event`
+
+    data: Port,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `gov.cbp.borderwait.amqp.Port` message. Reference data for a US Customs and Border Protection land border
+port of entry. The CBP Border Wait Time system covers approximately 81 ports along the US-Canada and US-Mexico borders.
+Each port record identifies the crossing name, operating hours, border (Canadian or Mexican), and current operational
+status. Emitted at bridge startup and periodically refreshed.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Port`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_gov_cbp_borderwait_amqp_port(
+
+    data=Port(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `gov.cbp.borderwait.amqp.Port` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_gov_cbp_borderwait_amqp_port_batch(```
+
+    messages=[
+
+        Port(...),Initializes the runner with a Kafka consumer.
+
+        Port(...),
+
+        Port(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_gov_cbp_borderwait_amqp_wait_time`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_gov_cbp_borderwait_amqp_wait_time(
+
+    self,##### `_process_event`
+
+    data: WaitTime,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `gov.cbp.borderwait.amqp.WaitTime` message. Current wait times at a US land border port of entry,
+flattened from the CBP nested lane structure. Reports delay in minutes and number of open lanes for each combination of
+traveler category (passenger vehicle, pedestrian, commercial vehicle) and lane type (standard, SENTRI/NEXUS, Ready Lane,
+FAST). Wait times are updated approximately every hour by CBP officers at each port.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WaitTime`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_gov_cbp_borderwait_amqp_wait_time(
+
+    data=WaitTime(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `gov.cbp.borderwait.amqp.WaitTime` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_gov_cbp_borderwait_amqp_wait_time_batch(```
 
     messages=[
 

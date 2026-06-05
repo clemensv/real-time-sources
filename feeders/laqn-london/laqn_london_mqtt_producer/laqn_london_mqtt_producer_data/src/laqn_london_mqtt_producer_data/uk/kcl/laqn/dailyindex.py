@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from laqn_london_mqtt_producer_data.uk.kcl.laqn.indexsourceenum import IndexSourceenum
 from laqn_london_mqtt_producer_data.uk.kcl.laqn.airqualitybandenum import AirQualityBandenum
+from laqn_london_mqtt_producer_data.uk.kcl.laqn.indexsourceenum import IndexSourceenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -96,6 +96,8 @@ class DailyIndex:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,10 +165,10 @@ class DailyIndex:
             An instance of the dataclass.
         """
         return cls(
-            site_code='nedycaihsrakjwkfzehl',
-            bulletin_date='dazkkogviolkdmwrrjrc',
-            species_code='hrvhtgvbcysdbhxokciz',
-            air_quality_index=int(57),
+            site_code='hegxhepmysfahnfwxkyn',
+            bulletin_date='tprswmliylxgemysakzt',
+            species_code='ixmybeuqxrspvzninyyr',
+            air_quality_index=int(62),
             air_quality_band=AirQualityBandenum.Low,
             index_source=IndexSourceenum.Measurement
         )

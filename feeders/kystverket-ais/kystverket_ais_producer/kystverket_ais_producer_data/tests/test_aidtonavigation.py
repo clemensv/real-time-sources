@@ -29,19 +29,19 @@ class Test_AidToNavigation(unittest.TestCase):
         Create instance of AidToNavigation for testing
         """
         instance = AidToNavigation(
-            mmsi='ggsadlvyqxjrolpoovlj',
-            flag='fjkdwdgraxabjhxezimy',
-            ship_type='ntjtgimnpfnqdeomvvkc',
-            geohash5='zoqemofnykudcedtvkna',
+            mmsi='ymcpscgqisbuooitydmf',
+            flag='pwciuibscnsjwxbkives',
+            ship_type='nzodnljjtbumtefhkube',
+            geohash5='iedxcskzsffihccjubgr',
             msg_type=MsgTypeenum.position_report,
-            name='lqfoinbouoidzfdgchqj',
-            aid_type=int(96),
-            latitude=float(53.87349212328557),
-            longitude=float(75.83176118480073),
-            position_accuracy=int(77),
-            timestamp='heyxtdjzcohtkthygvvi',
-            station_id='epcobpnjkfeeszvgxrqr',
-            ais_msg_type=int(24)
+            name='jomturljbpvzxvcjqzax',
+            aid_type=int(66),
+            latitude=float(75.18932461117164),
+            longitude=float(84.78947712059392),
+            position_accuracy=int(39),
+            timestamp='wfuhohejwbaxxarjemel',
+            station_id='jqfdpogwtcfdekzstjxb',
+            ais_msg_type=int(72)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = 'ggsadlvyqxjrolpoovlj'
+        test_value = 'ymcpscgqisbuooitydmf'
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -58,7 +58,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test flag property
         """
-        test_value = 'fjkdwdgraxabjhxezimy'
+        test_value = 'pwciuibscnsjwxbkives'
         self.instance.flag = test_value
         self.assertEqual(self.instance.flag, test_value)
     
@@ -66,7 +66,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test ship_type property
         """
-        test_value = 'ntjtgimnpfnqdeomvvkc'
+        test_value = 'nzodnljjtbumtefhkube'
         self.instance.ship_type = test_value
         self.assertEqual(self.instance.ship_type, test_value)
     
@@ -74,7 +74,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test geohash5 property
         """
-        test_value = 'zoqemofnykudcedtvkna'
+        test_value = 'iedxcskzsffihccjubgr'
         self.instance.geohash5 = test_value
         self.assertEqual(self.instance.geohash5, test_value)
     
@@ -90,7 +90,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'lqfoinbouoidzfdgchqj'
+        test_value = 'jomturljbpvzxvcjqzax'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -98,7 +98,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test aid_type property
         """
-        test_value = int(96)
+        test_value = int(66)
         self.instance.aid_type = test_value
         self.assertEqual(self.instance.aid_type, test_value)
     
@@ -106,7 +106,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(53.87349212328557)
+        test_value = float(75.18932461117164)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -114,7 +114,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(75.83176118480073)
+        test_value = float(84.78947712059392)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -122,7 +122,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test position_accuracy property
         """
-        test_value = int(77)
+        test_value = int(39)
         self.instance.position_accuracy = test_value
         self.assertEqual(self.instance.position_accuracy, test_value)
     
@@ -130,7 +130,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'heyxtdjzcohtkthygvvi'
+        test_value = 'wfuhohejwbaxxarjemel'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -138,7 +138,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'epcobpnjkfeeszvgxrqr'
+        test_value = 'jqfdpogwtcfdekzstjxb'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -146,7 +146,7 @@ class Test_AidToNavigation(unittest.TestCase):
         """
         Test ais_msg_type property
         """
-        test_value = int(24)
+        test_value = int(72)
         self.instance.ais_msg_type = test_value
         self.assertEqual(self.instance.ais_msg_type, test_value)
     

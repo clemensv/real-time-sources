@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import jma_japan_mqtt_producer_data
 from jma_japan_mqtt_producer_data import WeatherBulletin
-from test_jma_japan_mqtt_producer_data_weatherbulletin import Test_WeatherBulletin
+from test_weatherbulletin import Test_WeatherBulletin
 from jma_japan_mqtt_producer_mqtt_client import JpGoJmaWeatherBulletinsMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -90,6 +91,7 @@ async def test_jp_go_jma_weatherbulletins_mqtt_jp_go_jma_weather_bulletins_mqtt_
             topic=test_topic,
             office=f"test_office_{i}",
             bulletin_id=f"test_bulletin_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

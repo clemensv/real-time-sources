@@ -102,6 +102,8 @@ class VesselConstruction:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,11 +171,11 @@ class VesselConstruction:
             An instance of the dataclass.
         """
         return cls(
-            vessel_type_code=int(64),
-            vessel_type_name='qdxgudnsbavohwkqxqdd',
-            ice_class_code='rnhpcfkhpjcbhubyaxtb',
+            vessel_type_code=int(79),
+            vessel_type_name='invoaxbzvuwcqfesreyz',
+            ice_class_code='ivxthlsuydlpizgiepty',
             ice_class_issue_date=datetime.datetime.now(datetime.timezone.utc),
-            ice_class_issue_place='kzbbhokhtjqsqxkhrjyt',
+            ice_class_issue_place='ajjgleuaibbtohtkjoni',
             ice_class_end_date=datetime.datetime.now(datetime.timezone.utc),
             double_bottom=False,
             inert_gas_system=True,

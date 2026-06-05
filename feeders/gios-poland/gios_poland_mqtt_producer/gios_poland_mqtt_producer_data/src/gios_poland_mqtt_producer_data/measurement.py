@@ -94,6 +94,8 @@ class Measurement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,9 +163,9 @@ class Measurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(43),
-            sensor_id=int(26),
-            sensor_code='ubxyafcclhhcffjlnmax',
+            station_id=int(55),
+            sensor_id=int(48),
+            sensor_code='zoaplzebqydduksfigfa',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(21.869998024143044)
+            value=float(14.327105743910018)
         )

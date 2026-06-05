@@ -104,6 +104,8 @@ class DemandForecast:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -172,13 +174,13 @@ class DemandForecast:
         """
         return cls(
             date=datetime.date.today(),
-            time='kafeqbyzxldwskejpukl',
+            time='tzufaxxxwcggtnhhtzdn',
             datetime=datetime.datetime.now(datetime.timezone.utc),
             datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            forecast_demand_mw=float(11.443472765181905),
-            forecast_demand_jp_unit_value=int(18),
-            usage_pct=float(61.08591580248146),
-            supply_capacity_mw=float(66.56002110289538),
-            supply_capacity_jp_unit_value=int(49),
-            area_code='yulreyktgzrbgqdvqacm'
+            forecast_demand_mw=float(77.88461003411845),
+            forecast_demand_jp_unit_value=int(3),
+            usage_pct=float(49.82626343645234),
+            supply_capacity_mw=float(63.253038432611994),
+            supply_capacity_jp_unit_value=int(91),
+            area_code='mcncgabtoavugrhfgeip'
         )

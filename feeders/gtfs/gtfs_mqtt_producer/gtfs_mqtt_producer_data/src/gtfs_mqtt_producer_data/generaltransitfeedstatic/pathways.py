@@ -106,6 +106,8 @@ class Pathways:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -173,16 +175,16 @@ class Pathways:
             An instance of the dataclass.
         """
         return cls(
-            pathwayId='dluqutmxukcunpevtcad',
-            fromStopId='sjptrnzdeeijdxvaarzb',
-            toStopId='kfndanwpzalureufgapf',
-            pathwayMode=int(53),
-            isBidirectional=int(99),
-            length=float(0.5229957481978631),
-            traversalTime=int(8),
-            stairCount=int(60),
-            maxSlope=float(86.0044215928633),
-            minWidth=float(79.04676782250381),
-            signpostedAs='jkucbupzkoshrwhesrab',
-            reversedSignpostedAs='umjkzvqtcfnpxhdgkqpe'
+            pathwayId='hogizywbedgusrxnpfmw',
+            fromStopId='qnxafmobcmfcongmbcnl',
+            toStopId='qykyakqlrohkxejgakbf',
+            pathwayMode=int(98),
+            isBidirectional=int(10),
+            length=float(94.16571357101394),
+            traversalTime=int(43),
+            stairCount=int(92),
+            maxSlope=float(69.97489118977583),
+            minWidth=float(82.51061716828785),
+            signpostedAs='kmjgxcrtjyqkkezcxbqy',
+            reversedSignpostedAs='bflejzkbacwkgkzclblh'
         )

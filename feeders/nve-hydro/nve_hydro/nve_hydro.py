@@ -11,8 +11,8 @@ from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from confluent_kafka import Producer
 
-from nve_hydro_producer_data.no.nve.hydrology.station import Station
-from nve_hydro_producer_data.no.nve.hydrology.waterlevelobservation import WaterLevelObservation
+from nve_hydro_producer_data import Station
+from nve_hydro_producer_data import WaterLevelObservation
 from nve_hydro_producer_kafka_producer.producer import NONVEHydrologyEventProducer
 
 logger = logging.getLogger(__name__)

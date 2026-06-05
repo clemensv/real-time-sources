@@ -94,6 +94,8 @@ class Station2:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -162,9 +164,9 @@ class Station2:
         """
         return cls(
             Valid=True,
-            Spare1=int(24),
-            StationID=int(13),
+            Spare1=int(79),
+            StationID=int(97),
             MessageID=int(96),
-            SlotOffset=int(86),
-            Spare2=int(46)
+            SlotOffset=int(52),
+            Spare2=int(42)
         )

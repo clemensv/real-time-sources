@@ -20,7 +20,7 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from nifc_usa_wildfires_producer_kafka_producer.producer import GovNIFCWildfiresEventProducer
 from nifc_usa_wildfires_producer_data import WildfireIncident
-from test_nifc_usa_wildfires_producer_data_wildfireincident import Test_WildfireIncident
+from test_wildfireincident import Test_WildfireIncident
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -103,7 +103,8 @@ def test_gov_nifc_wildfires_govnifcwildfireswildfireincident(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_nifc_wildfires_wildfire_incident(_source_uri = f'test_{i}', _irwin_id = f'test_{i}', _modified_on_datetime = f'test_{i}', data = event_data)
+        producer_instance.send_gov_nifc_wildfires_wildfire_incident(_source_uri = f'test_{i}', _irwin_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

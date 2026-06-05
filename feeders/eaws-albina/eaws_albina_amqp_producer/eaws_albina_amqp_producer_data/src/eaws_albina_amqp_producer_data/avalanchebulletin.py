@@ -119,6 +119,8 @@ class AvalancheBulletin:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -186,21 +188,21 @@ class AvalancheBulletin:
             An instance of the dataclass.
         """
         return cls(
-            region_id='cwplvwxhmodvqhigoztq',
-            region_name='amvnrzeyounpfsqynzyp',
-            bulletin_id='zumlqhlvtoevzknwoxnb',
+            region_id='xhsuygnrydefhzulgnmz',
+            region_name='qmqxlrydljyccohcjacz',
+            bulletin_id='ktuznhlrqvrnvgxlxphb',
             publication_time=datetime.datetime.now(datetime.timezone.utc),
             valid_time_start=datetime.datetime.now(datetime.timezone.utc),
             valid_time_end=datetime.datetime.now(datetime.timezone.utc),
-            lang='bqewitwhtncdqwnuvzwk',
+            lang='awycaaswujaadrkvjgvr',
             max_danger_rating=MaxDangerRatingenum.low,
-            max_danger_rating_value=int(57),
-            danger_ratings_json='dtkggzgnfomwybskfqzo',
-            avalanche_problems_json='shfduvruuijvclpboaqz',
-            tendency_type='ewynklagnbhhaxxdyjge',
-            danger_patterns_json='glhmnsapsusluzrykrsf',
-            avalanche_activity_highlights='nriviavjfenfxafpgryt',
-            snowpack_structure_comment='yzcodmollmujhtgowvii',
-            country='rbcsyellnzcecmnpqzrq',
-            danger_level='ghtkjvuwgruenffopdti'
+            max_danger_rating_value=int(94),
+            danger_ratings_json='fdzypiaraxtohydzxoim',
+            avalanche_problems_json='fuduzgrpgsbzmxapqbfg',
+            tendency_type='ggaoanwbbicvyhhryhqf',
+            danger_patterns_json='hxpkxwfxvzihcpwwmyqa',
+            avalanche_activity_highlights='nlrmiumxgxasdjfgzcbn',
+            snowpack_structure_comment='gckooxmpvtpcxuwuhghy',
+            country='znxfncvyypdnlkelwzgq',
+            danger_level='wmpfdrjpoovtbksxepoo'
         )

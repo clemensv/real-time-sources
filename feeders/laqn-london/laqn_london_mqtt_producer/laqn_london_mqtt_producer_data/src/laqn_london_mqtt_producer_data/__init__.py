@@ -1,3 +1,3 @@
-from .uk import AirQualityBandenum, IndexSourceenum, DailyIndex, Measurement, Species, SiteTypeenum, Site
+from .uk import SiteTypeenum, Site, AirQualityBandenum, IndexSourceenum, DailyIndex, Measurement, Species
 
-__all__ = ["AirQualityBandenum", "IndexSourceenum", "DailyIndex", "Measurement", "Species", "SiteTypeenum", "Site"]
+__all__ = ["SiteTypeenum", "Site", "AirQualityBandenum", "IndexSourceenum", "DailyIndex", "Measurement", "Species"]

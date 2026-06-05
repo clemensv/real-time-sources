@@ -4,6 +4,7 @@ import re
 import typing
 from typing import Callable, Awaitable, Optional, Dict, List
 import asyncio
+from datetime import datetime, timezone
 import paho.mqtt.client as mqtt
 try:
     # paho-mqtt 2.x exposes MQTT5 Properties for the PUBLISH packet type.
@@ -31,6 +32,51 @@ from wsdot_mqtt_producer_data import VesselLocation
 
 # URI template regex pattern
 _URI_TEMPLATE_PATTERN = re.compile(r'\{([A-Za-z0-9_]+)\}')
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 
 def _topic_to_mqtt_wildcard(topic: str) -> str:
@@ -372,6 +418,7 @@ class UsWaWsdotTrafficMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'us.wa.wsdot.traffic.TrafficFlowStation.mqtt' event to an MQTT topic.
@@ -386,6 +433,7 @@ class UsWaWsdotTrafficMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/{region}/flow/{flow_data_id}/info"
@@ -403,6 +451,7 @@ class UsWaWsdotTrafficMqttMqttClient(_ClientBase):
              "subject":"{flow_data_id}".format(flow_data_id = flow_data_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -451,6 +500,7 @@ class UsWaWsdotTrafficMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'us.wa.wsdot.traffic.TrafficFlowReading.mqtt' event to an MQTT topic.
@@ -465,6 +515,7 @@ class UsWaWsdotTrafficMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/{region}/flow/{flow_data_id}/reading"
@@ -482,6 +533,7 @@ class UsWaWsdotTrafficMqttMqttClient(_ClientBase):
              "subject":"{flow_data_id}".format(flow_data_id = flow_data_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -694,6 +746,7 @@ class UsWaWsdotTraveltimesMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'us.wa.wsdot.traveltimes.TravelTimeRoute.mqtt' event to an MQTT topic.
@@ -708,6 +761,7 @@ class UsWaWsdotTraveltimesMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/{region}/travel-times/{travel_time_id}/info"
@@ -725,6 +779,7 @@ class UsWaWsdotTraveltimesMqttMqttClient(_ClientBase):
              "subject":"{travel_time_id}".format(travel_time_id = travel_time_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -937,6 +992,7 @@ class UsWaWsdotMountainpassMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'us.wa.wsdot.mountainpass.MountainPassCondition.mqtt' event to an MQTT topic.
@@ -951,6 +1007,7 @@ class UsWaWsdotMountainpassMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/{region}/mountain-passes/{mountain_pass_id}/info"
@@ -968,6 +1025,7 @@ class UsWaWsdotMountainpassMqttMqttClient(_ClientBase):
              "subject":"{mountain_pass_id}".format(mountain_pass_id = mountain_pass_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1195,6 +1253,7 @@ class UsWaWsdotWeatherMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'us.wa.wsdot.weather.WeatherStation.mqtt' event to an MQTT topic.
@@ -1209,6 +1268,7 @@ class UsWaWsdotWeatherMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/{region}/flow-stations/{station_id}/info"
@@ -1226,6 +1286,7 @@ class UsWaWsdotWeatherMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1274,6 +1335,7 @@ class UsWaWsdotWeatherMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'us.wa.wsdot.weather.WeatherReading.mqtt' event to an MQTT topic.
@@ -1288,6 +1350,7 @@ class UsWaWsdotWeatherMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/{region}/flow-stations/{station_id}/reading"
@@ -1305,6 +1368,7 @@ class UsWaWsdotWeatherMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1517,6 +1581,7 @@ class UsWaWsdotTollsMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'us.wa.wsdot.tolls.TollRate.mqtt' event to an MQTT topic.
@@ -1531,6 +1596,7 @@ class UsWaWsdotTollsMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/{region}/tolls/{trip_name}/rate"
@@ -1548,6 +1614,7 @@ class UsWaWsdotTollsMqttMqttClient(_ClientBase):
              "subject":"{trip_name}".format(trip_name = trip_name)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1761,6 +1828,7 @@ class UsWaWsdotCvrestrictionsMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.mqtt' event to an MQTT topic.
@@ -1776,6 +1844,7 @@ class UsWaWsdotCvrestrictionsMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/{region}/bridges/{state_route_id}/{bridge_number}/info"
@@ -1794,6 +1863,7 @@ class UsWaWsdotCvrestrictionsMqttMqttClient(_ClientBase):
              "subject":"{state_route_id}/{bridge_number}".format(state_route_id = state_route_id,bridge_number = bridge_number)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -2006,6 +2076,7 @@ class UsWaWsdotBorderMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'us.wa.wsdot.border.BorderCrossing.mqtt' event to an MQTT topic.
@@ -2020,6 +2091,7 @@ class UsWaWsdotBorderMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/{region}/border-crossings/{crossing_name}/info"
@@ -2037,6 +2109,7 @@ class UsWaWsdotBorderMqttMqttClient(_ClientBase):
              "subject":"{crossing_name}".format(crossing_name = crossing_name)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -2249,6 +2322,7 @@ class UsWaWsdotFerriesMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'us.wa.wsdot.ferries.VesselLocation.mqtt' event to an MQTT topic.
@@ -2263,6 +2337,7 @@ class UsWaWsdotFerriesMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/{region}/vessels/{vessel_id}/location"
@@ -2280,6 +2355,7 @@ class UsWaWsdotFerriesMqttMqttClient(_ClientBase):
              "subject":"{vessel_id}".format(vessel_id = vessel_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's

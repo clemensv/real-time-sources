@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_volcano_mqtt_producer_data.eruptiontypeenum import EruptionTypeenum
 from jma_bosai_volcano_mqtt_producer_data.eventenum import EventEnum
+from jma_bosai_volcano_mqtt_producer_data.eruptiontypeenum import EruptionTypeenum
 import datetime
 
 
@@ -126,6 +126,8 @@ class VolcanicEruption:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,24 +195,24 @@ class VolcanicEruption:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='lzigvueaqyjkokljngmz',
-            event_id='lrxcvthkguiudpgepuio',
+            volcano_code='rigejvjvhkzhitfeotum',
+            event_id='dcaejxkhiwiiianxkoin',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_type=EruptionTypeenum.ERUPTION,
-            crater_name='gterfdqokdrsyhhzctyk',
-            colored_plume_height_m=float(56.37202192304811),
-            white_plume_height_m=float(75.0698064315252),
-            maximum_plume_height_since_start_m=float(50.919715080458786),
-            plume_direction='qbabycnpwqibkhcszzsf',
-            ash_dispersal_direction='ardzrcibpyahtbgklzpf',
+            crater_name='ewetzhftzaujrhxdqvxk',
+            colored_plume_height_m=float(25.40712289516239),
+            white_plume_height_m=float(72.9606060295931),
+            maximum_plume_height_since_start_m=float(78.54801400806058),
+            plume_direction='bpckckzmetpginnlpufp',
+            ash_dispersal_direction='okpheplfqphzjiiupmwi',
             pyroclastic_flow_observed=False,
-            plume_amount_jp='douhxlnjpvemecqjiode',
-            description='gddsmgbqdietmamgbbpv',
-            info_type_jp='fgikekcyngmleyxvtfyy',
-            area_codes=['amsoqdyuwfuoiswzxoqk', 'pdvvtihurhucuzywzvwq', 'aftsakretfwydlsavpqm', 'iqbekiapbyoeatwjegvu', 'zzhofwagvplpufxguyku'],
-            prefecture='axnzcmsvlbymlgmhjwgq',
-            event=EventEnum.eruption
+            plume_amount_jp='uvcycuichzgohbgzlhwh',
+            description='htdvxumbwnoycizqnybx',
+            info_type_jp='hkymcjhaztclomqicunw',
+            area_codes=['atpkyhfyvcvhbvuegdot', 'qfxdjdxstzdzswfkdwxj', 'axcwnvovihfbdmqhsohe', 'ldyxykgtyvopbyifggrf', 'jfhcslysmwqypfurqwuv'],
+            prefecture='fdwhhgwliqkqcyklmuek',
+            event=EventEnum.info
         )

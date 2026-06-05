@@ -1,18 +1,16 @@
 """ Attributions dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -20,18 +18,21 @@ import avro.io
 class Attributions:
     """
     Provides information about the attributions.
+    
     Attributes:
-        attributionId (typing.Optional[str]): Identifies an attribution for the dataset.
-        agencyId (typing.Optional[str]): Identifies the agency associated with the attribution.
-        routeId (typing.Optional[str]): Identifies the route associated with the attribution.
-        tripId (typing.Optional[str]): Identifies the trip associated with the attribution.
-        organizationName (str): Name of the organization associated with the attribution.
-        isProducer (typing.Optional[int]): Indicates if the organization is a producer.
-        isOperator (typing.Optional[int]): Indicates if the organization is an operator.
-        isAuthority (typing.Optional[int]): Indicates if the organization is an authority.
-        attributionUrl (typing.Optional[str]): URL of a web page about the attribution.
-        attributionEmail (typing.Optional[str]): Email address associated with the attribution.
-        attributionPhone (typing.Optional[str]): Phone number associated with the attribution."""
+        attributionId (typing.Optional[str])
+        agencyId (typing.Optional[str])
+        routeId (typing.Optional[str])
+        tripId (typing.Optional[str])
+        organizationName (str)
+        isProducer (typing.Optional[int])
+        isOperator (typing.Optional[int])
+        isAuthority (typing.Optional[int])
+        attributionUrl (typing.Optional[str])
+        attributionEmail (typing.Optional[str])
+        attributionPhone (typing.Optional[str])
+    """
+    
     
     attributionId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="attributionId"))
     agencyId: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="agencyId"))
@@ -44,24 +45,6 @@ class Attributions:
     attributionUrl: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="attributionUrl"))
     attributionEmail: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="attributionEmail"))
     attributionPhone: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="attributionPhone"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Attributions\", \"namespace\": \"GeneralTransitFeedStatic\", \"doc\": \"Provides information about the attributions.\", \"fields\": [{\"name\": \"attributionId\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Identifies an attribution for the dataset.\"}, {\"name\": \"agencyId\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Identifies the agency associated with the attribution.\"}, {\"name\": \"routeId\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Identifies the route associated with the attribution.\"}, {\"name\": \"tripId\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Identifies the trip associated with the attribution.\"}, {\"name\": \"organizationName\", \"type\": \"string\", \"doc\": \"Name of the organization associated with the attribution.\"}, {\"name\": \"isProducer\", \"type\": [\"null\", \"int\"], \"default\": null, \"doc\": \"Indicates if the organization is a producer.\"}, {\"name\": \"isOperator\", \"type\": [\"null\", \"int\"], \"default\": null, \"doc\": \"Indicates if the organization is an operator.\"}, {\"name\": \"isAuthority\", \"type\": [\"null\", \"int\"], \"default\": null, \"doc\": \"Indicates if the organization is an authority.\"}, {\"name\": \"attributionUrl\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"URL of a web page about the attribution.\"}, {\"name\": \"attributionEmail\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Email address associated with the attribution.\"}, {\"name\": \"attributionPhone\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Phone number associated with the attribution.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.attributionId=str(self.attributionId) if self.attributionId else None
-        self.agencyId=str(self.agencyId) if self.agencyId else None
-        self.routeId=str(self.routeId) if self.routeId else None
-        self.tripId=str(self.tripId) if self.tripId else None
-        self.organizationName=str(self.organizationName)
-        self.isProducer=int(self.isProducer) if self.isProducer else None
-        self.isOperator=int(self.isOperator) if self.isOperator else None
-        self.isAuthority=int(self.isAuthority) if self.isAuthority else None
-        self.attributionUrl=str(self.attributionUrl) if self.attributionUrl else None
-        self.attributionEmail=str(self.attributionEmail) if self.attributionEmail else None
-        self.attributionPhone=str(self.attributionPhone) if self.attributionPhone else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Attributions':
@@ -72,7 +55,7 @@ class Attributions:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -91,7 +74,7 @@ class Attributions:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -105,8 +88,6 @@ class Attributions:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -119,16 +100,12 @@ class Attributions:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -153,10 +130,6 @@ class Attributions:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -182,18 +155,6 @@ class Attributions:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return Attributions.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -201,5 +162,26 @@ class Attributions:
                 return Attributions.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Attributions':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            attributionId='pzcssbhvfkxtxgiriaag',
+            agencyId='xyjfglegcrhtgspdnfws',
+            routeId='lwiszuacdhhirjvkeuwy',
+            tripId='oduxnvayrpodksnyweed',
+            organizationName='mkgfizfiymgcualhqwav',
+            isProducer=int(47),
+            isOperator=int(60),
+            isAuthority=int(24),
+            attributionUrl='fndslseusqvvpcwehvlz',
+            attributionEmail='htwyysuzvwkkksfsjfaa',
+            attributionPhone='kxksjwmojejskxbytshh'
+        )

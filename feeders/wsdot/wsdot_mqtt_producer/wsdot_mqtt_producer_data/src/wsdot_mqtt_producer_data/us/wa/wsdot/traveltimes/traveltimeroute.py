@@ -120,6 +120,8 @@ class TravelTimeRoute:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -187,23 +189,23 @@ class TravelTimeRoute:
             An instance of the dataclass.
         """
         return cls(
-            travel_time_id='fruhpqewmjslmjyggtlw',
-            name='imqcdkfngeheiqwaygru',
-            description='uizdmmyzanrjurzbnnoc',
-            distance=float(75.6391741927556),
-            average_time=int(62),
-            current_time=int(93),
-            time_updated='xidgqbnqyyprwfxmdbkd',
-            start_description='qubhmkfaxlwrjuwbnvzg',
-            start_road_name='nqteyjsiquhbbkkcebke',
-            start_direction='zsaiawmgqlebyrwoanvs',
-            start_milepost=float(70.37720180290151),
-            start_latitude=float(12.99326198229701),
-            start_longitude=float(85.52292689096528),
-            end_description='pklscjwnrhoxvteuvwuh',
-            end_road_name='cndonksxzakxmtcyjbxx',
-            end_direction='yupozyonuplmajaeoucc',
-            end_milepost=float(42.03644685012653),
-            end_latitude=float(57.19816224339952),
-            end_longitude=float(69.78936299286568)
+            travel_time_id='alagbjjxgxpjhizwavim',
+            name='xvbrqnciatziyuvtmoks',
+            description='mpxpmrfzwcwkukycdhwh',
+            distance=float(15.118490083720982),
+            average_time=int(87),
+            current_time=int(23),
+            time_updated='kxglypyagkwkpjpszywo',
+            start_description='ujivwnaxdpscipdytbnp',
+            start_road_name='yepqcypnbnmjsoaqdjkg',
+            start_direction='lkphrzatyjalrqbeyehw',
+            start_milepost=float(7.813481566459801),
+            start_latitude=float(72.79398963268775),
+            start_longitude=float(59.693646335783846),
+            end_description='ylawdprlcyrayzoejbws',
+            end_road_name='ifzgxvbsbszjscvqmrdl',
+            end_direction='njhtlxjclvgasujzekrp',
+            end_milepost=float(86.83145688775052),
+            end_latitude=float(37.7028750946676),
+            end_longitude=float(78.16933644183524)
         )

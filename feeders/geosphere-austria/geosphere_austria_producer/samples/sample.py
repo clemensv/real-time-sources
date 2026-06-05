@@ -33,11 +33,13 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from geosphere_austria_producer_kafka_producer.producer import AtGeosphereTawesEventProducer
+from geosphere_austria_producer_kafka_producer.producer import AtGeosphereTawesMqttEventProducer
+from geosphere_austria_producer_kafka_producer.producer import AtGeosphereTawesAmqpEventProducer
 
 # imports for the data classes for each event
 
-from geosphere_austria_producer_data.weatherstation import WeatherStation
-from geosphere_austria_producer_data.weatherobservation import WeatherObservation
+from geosphere_austria_producer_data import WeatherStation
+from geosphere_austria_producer_data import WeatherObservation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,12 +74,60 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'at.geosphere.tawes.WeatherObservation' event to Kafka topic.
     await at_geosphere_tawes_event_producer.send_at_geosphere_tawes_weather_observation(_station_id = 'TODO: replace me', data = _weather_observation)
     print(f"Sent 'at.geosphere.tawes.WeatherObservation' event: {_weather_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        at_geosphere_tawes_mqtt_event_producer = AtGeosphereTawesMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        at_geosphere_tawes_mqtt_event_producer = AtGeosphereTawesMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- at.geosphere.tawes.mqtt.WeatherStation ----
+    # TODO: Supply event data for the at.geosphere.tawes.mqtt.WeatherStation event
+    _weather_station = WeatherStation()
+
+    # sends the 'at.geosphere.tawes.mqtt.WeatherStation' event to Kafka topic.
+    await at_geosphere_tawes_mqtt_event_producer.send_at_geosphere_tawes_mqtt_weather_station(_station_id = 'TODO: replace me', data = _weather_station)
+    print(f"Sent 'at.geosphere.tawes.mqtt.WeatherStation' event: {_weather_station.to_json()}")
+
+    # ---- at.geosphere.tawes.mqtt.WeatherObservation ----
+    # TODO: Supply event data for the at.geosphere.tawes.mqtt.WeatherObservation event
+    _weather_observation = WeatherObservation()
+
+    # sends the 'at.geosphere.tawes.mqtt.WeatherObservation' event to Kafka topic.
+    await at_geosphere_tawes_mqtt_event_producer.send_at_geosphere_tawes_mqtt_weather_observation(_station_id = 'TODO: replace me', data = _weather_observation)
+    print(f"Sent 'at.geosphere.tawes.mqtt.WeatherObservation' event: {_weather_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        at_geosphere_tawes_amqp_event_producer = AtGeosphereTawesAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        at_geosphere_tawes_amqp_event_producer = AtGeosphereTawesAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- at.geosphere.tawes.amqp.WeatherStation ----
+    # TODO: Supply event data for the at.geosphere.tawes.amqp.WeatherStation event
+    _weather_station = WeatherStation()
+
+    # sends the 'at.geosphere.tawes.amqp.WeatherStation' event to Kafka topic.
+    await at_geosphere_tawes_amqp_event_producer.send_at_geosphere_tawes_amqp_weather_station(_station_id = 'TODO: replace me', data = _weather_station)
+    print(f"Sent 'at.geosphere.tawes.amqp.WeatherStation' event: {_weather_station.to_json()}")
+
+    # ---- at.geosphere.tawes.amqp.WeatherObservation ----
+    # TODO: Supply event data for the at.geosphere.tawes.amqp.WeatherObservation event
+    _weather_observation = WeatherObservation()
+
+    # sends the 'at.geosphere.tawes.amqp.WeatherObservation' event to Kafka topic.
+    await at_geosphere_tawes_amqp_event_producer.send_at_geosphere_tawes_amqp_weather_observation(_station_id = 'TODO: replace me', data = _weather_observation)
+    print(f"Sent 'at.geosphere.tawes.amqp.WeatherObservation' event: {_weather_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

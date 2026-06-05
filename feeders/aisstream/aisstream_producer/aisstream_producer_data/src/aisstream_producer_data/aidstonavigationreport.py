@@ -121,6 +121,8 @@ class AidsToNavigationReport:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -188,23 +190,23 @@ class AidsToNavigationReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(51),
-            RepeatIndicator=int(84),
-            UserID=int(91),
+            MessageID=int(13),
+            RepeatIndicator=int(54),
+            UserID=int(49),
             Valid=False,
-            Type=int(15),
-            Name='opkzytqfonsitmjbylcy',
-            PositionAccuracy=False,
-            Longitude=float(42.871218705469694),
-            Latitude=float(17.995401783225528),
+            Type=int(69),
+            Name='vpkjenplkzvynpbfpzrl',
+            PositionAccuracy=True,
+            Longitude=float(71.13633157066023),
+            Latitude=float(62.326171178251656),
             Dimension=None,
-            Fixtype=int(89),
-            Timestamp=int(62),
+            Fixtype=int(38),
+            Timestamp=int(76),
             OffPosition=False,
-            AtoN=int(36),
-            Raim=False,
+            AtoN=int(92),
+            Raim=True,
             VirtualAtoN=False,
-            AssignedMode=True,
-            Spare=False,
-            NameExtension='vawqhqpoxhxjztkqvewd'
+            AssignedMode=False,
+            Spare=True,
+            NameExtension='raxqelmtgspgtjkzccee'
         )

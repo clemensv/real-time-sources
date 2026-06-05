@@ -120,6 +120,8 @@ class TravelTimeRoute:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -187,23 +189,23 @@ class TravelTimeRoute:
             An instance of the dataclass.
         """
         return cls(
-            travel_time_id='preoonnshuyvxnwpeuua',
-            name='gllsdizseldrckrwixid',
-            description='zpfdmsdfiaanuatydfow',
-            distance=float(15.121423501867481),
-            average_time=int(21),
-            current_time=int(75),
-            time_updated='lebguaivbkekwlfydajq',
-            start_description='jgzbdoafpvporwyicrjl',
-            start_road_name='hgjcbvmhpfruwnuqzzzu',
-            start_direction='rirondxgwiwcgsiswpax',
-            start_milepost=float(92.83678925849802),
-            start_latitude=float(40.086699307003926),
-            start_longitude=float(8.828602147601949),
-            end_description='vqlotsdnqyahcgghhxqv',
-            end_road_name='cxthlcjfgwqfbglupfqj',
-            end_direction='thbgvipbyiakacwynnla',
-            end_milepost=float(11.97691387553872),
-            end_latitude=float(77.22813944989541),
-            end_longitude=float(25.45237124362871)
+            travel_time_id='tzcmetzcwrpofmwdwwft',
+            name='dbgmyqrfciczyxxxnkxr',
+            description='qofuxhdgbhsgvskihgmh',
+            distance=float(83.69142680865541),
+            average_time=int(32),
+            current_time=int(23),
+            time_updated='tfnzokkhkvamvhlxdjvq',
+            start_description='fpcjhwsukquvwmxfqlkv',
+            start_road_name='opztnfdgojraymyfnsim',
+            start_direction='qmagmpomszueqybhxfrz',
+            start_milepost=float(27.863161481911636),
+            start_latitude=float(29.36154990196925),
+            start_longitude=float(52.79318623946022),
+            end_description='nbcetxtyxilkzjutxvpm',
+            end_road_name='jgbbhwejocxgukhnzjlb',
+            end_direction='prjvmszazejxwltfyjtv',
+            end_milepost=float(7.741522077872453),
+            end_latitude=float(43.61526760066757),
+            end_longitude=float(82.85860978949876)
         )

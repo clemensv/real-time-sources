@@ -1,12 +1,58 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
 import json
+import re
 import uuid
 import typing
-from datetime import datetime
+from datetime import datetime, timezone
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 from entsoe_producer_data import DayAheadPrices
 from entsoe_producer_data import ActualTotalLoad
 from entsoe_producer_data import LoadForecastMargin
@@ -50,7 +96,15 @@ class EuEntsoeTransparencyByDomainEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_eu_entsoe_transparency_day_ahead_prices(self,_in_domain : str, data: DayAheadPrices, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DayAheadPrices], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_eu_entsoe_transparency_day_ahead_prices(self,_in_domain : str, data: DayAheadPrices, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DayAheadPrices], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.DayAheadPrices' event to the Kafka topic
 
@@ -58,6 +112,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (DayAheadPrices): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, DayAheadPrices], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}'
@@ -70,6 +125,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -77,13 +133,13 @@ class EuEntsoeTransparencyByDomainEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_actual_total_load(self,_in_domain : str, data: ActualTotalLoad, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualTotalLoad], str]=None) -> None:
+    def send_eu_entsoe_transparency_actual_total_load(self,_in_domain : str, data: ActualTotalLoad, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualTotalLoad], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ActualTotalLoad' event to the Kafka topic
 
@@ -91,6 +147,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (ActualTotalLoad): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ActualTotalLoad], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}'
@@ -103,6 +160,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -110,13 +168,13 @@ class EuEntsoeTransparencyByDomainEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_load_forecast_margin(self,_in_domain : str, data: LoadForecastMargin, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LoadForecastMargin], str]=None) -> None:
+    def send_eu_entsoe_transparency_load_forecast_margin(self,_in_domain : str, data: LoadForecastMargin, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LoadForecastMargin], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.LoadForecastMargin' event to the Kafka topic
 
@@ -124,6 +182,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (LoadForecastMargin): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, LoadForecastMargin], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}'
@@ -136,6 +195,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -143,13 +203,13 @@ class EuEntsoeTransparencyByDomainEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_generation_forecast(self,_in_domain : str, data: GenerationForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GenerationForecast], str]=None) -> None:
+    def send_eu_entsoe_transparency_generation_forecast(self,_in_domain : str, data: GenerationForecast, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GenerationForecast], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.GenerationForecast' event to the Kafka topic
 
@@ -157,6 +217,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (GenerationForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, GenerationForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}'
@@ -169,6 +230,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -176,13 +238,13 @@ class EuEntsoeTransparencyByDomainEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_reservoir_filling_information(self,_in_domain : str, data: ReservoirFillingInformation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ReservoirFillingInformation], str]=None) -> None:
+    def send_eu_entsoe_transparency_reservoir_filling_information(self,_in_domain : str, data: ReservoirFillingInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ReservoirFillingInformation], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ReservoirFillingInformation' event to the Kafka topic
 
@@ -190,6 +252,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (ReservoirFillingInformation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ReservoirFillingInformation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}'
@@ -202,6 +265,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -209,13 +273,13 @@ class EuEntsoeTransparencyByDomainEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_actual_generation(self,_in_domain : str, data: ActualGeneration, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGeneration], str]=None) -> None:
+    def send_eu_entsoe_transparency_actual_generation(self,_in_domain : str, data: ActualGeneration, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGeneration], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ActualGeneration' event to the Kafka topic
 
@@ -223,6 +287,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (ActualGeneration): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ActualGeneration], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}'
@@ -235,6 +300,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -242,7 +308,7 @@ class EuEntsoeTransparencyByDomainEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -330,7 +396,15 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_eu_entsoe_transparency_actual_generation_per_type(self,_in_domain : str, _psr_type : str, data: ActualGenerationPerType, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGenerationPerType], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_eu_entsoe_transparency_actual_generation_per_type(self,_in_domain : str, _psr_type : str, data: ActualGenerationPerType, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGenerationPerType], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ActualGenerationPerType' event to the Kafka topic
 
@@ -339,6 +413,7 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (ActualGenerationPerType): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ActualGenerationPerType], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}/{psrType}'
@@ -351,6 +426,7 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -358,13 +434,13 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_wind_solar_forecast(self,_in_domain : str, _psr_type : str, data: WindSolarForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarForecast], str]=None) -> None:
+    def send_eu_entsoe_transparency_wind_solar_forecast(self,_in_domain : str, _psr_type : str, data: WindSolarForecast, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarForecast], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.WindSolarForecast' event to the Kafka topic
 
@@ -373,6 +449,7 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (WindSolarForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WindSolarForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}/{psrType}'
@@ -385,6 +462,7 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -392,13 +470,13 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_wind_solar_generation(self,_in_domain : str, _psr_type : str, data: WindSolarGeneration, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarGeneration], str]=None) -> None:
+    def send_eu_entsoe_transparency_wind_solar_generation(self,_in_domain : str, _psr_type : str, data: WindSolarGeneration, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarGeneration], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.WindSolarGeneration' event to the Kafka topic
 
@@ -407,6 +485,7 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (WindSolarGeneration): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WindSolarGeneration], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}/{psrType}'
@@ -419,6 +498,7 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -426,13 +506,13 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_installed_generation_capacity_per_type(self,_in_domain : str, _psr_type : str, data: InstalledGenerationCapacityPerType, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]=None) -> None:
+    def send_eu_entsoe_transparency_installed_generation_capacity_per_type(self,_in_domain : str, _psr_type : str, data: InstalledGenerationCapacityPerType, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.InstalledGenerationCapacityPerType' event to the Kafka topic
 
@@ -441,6 +521,7 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (InstalledGenerationCapacityPerType): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}/{psrType}'
@@ -453,6 +534,7 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -460,7 +542,7 @@ class EuEntsoeTransparencyByDomainPsrTypeEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -548,7 +630,15 @@ class EuEntsoeTransparencyCrossBorderEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_eu_entsoe_transparency_cross_border_physical_flows(self,_in_domain : str, _out_domain : str, data: CrossBorderPhysicalFlows, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CrossBorderPhysicalFlows], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_eu_entsoe_transparency_cross_border_physical_flows(self,_in_domain : str, _out_domain : str, data: CrossBorderPhysicalFlows, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CrossBorderPhysicalFlows], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.CrossBorderPhysicalFlows' event to the Kafka topic
 
@@ -557,6 +647,7 @@ class EuEntsoeTransparencyCrossBorderEventProducer:
             _out_domain(str):  Value for placeholder outDomain in attribute subject
             data: (CrossBorderPhysicalFlows): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, CrossBorderPhysicalFlows], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{inDomain}/{outDomain}'
@@ -569,6 +660,7 @@ class EuEntsoeTransparencyCrossBorderEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -576,7 +668,7 @@ class EuEntsoeTransparencyCrossBorderEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -664,7 +756,15 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices(self,_in_domain : str, data: DayAheadPrices, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DayAheadPrices], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices(self,_in_domain : str, data: DayAheadPrices, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DayAheadPrices], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices' event to the Kafka topic
 
@@ -672,6 +772,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (DayAheadPrices): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, DayAheadPrices], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -683,6 +784,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -690,13 +792,13 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_mqtt_actual_total_load(self,_in_domain : str, data: ActualTotalLoad, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualTotalLoad], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_mqtt_actual_total_load(self,_in_domain : str, data: ActualTotalLoad, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualTotalLoad], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad' event to the Kafka topic
 
@@ -704,6 +806,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (ActualTotalLoad): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ActualTotalLoad], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -715,6 +818,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -722,13 +826,13 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin(self,_in_domain : str, data: LoadForecastMargin, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LoadForecastMargin], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin(self,_in_domain : str, data: LoadForecastMargin, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LoadForecastMargin], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin' event to the Kafka topic
 
@@ -736,6 +840,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (LoadForecastMargin): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, LoadForecastMargin], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -747,6 +852,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -754,13 +860,13 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_mqtt_generation_forecast(self,_in_domain : str, data: GenerationForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GenerationForecast], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_mqtt_generation_forecast(self,_in_domain : str, data: GenerationForecast, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GenerationForecast], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast' event to the Kafka topic
 
@@ -768,6 +874,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (GenerationForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, GenerationForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -779,6 +886,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -786,13 +894,13 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information(self,_in_domain : str, data: ReservoirFillingInformation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ReservoirFillingInformation], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information(self,_in_domain : str, data: ReservoirFillingInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ReservoirFillingInformation], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation' event to the Kafka topic
 
@@ -800,6 +908,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (ReservoirFillingInformation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ReservoirFillingInformation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -811,6 +920,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -818,13 +928,13 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_mqtt_actual_generation(self,_in_domain : str, data: ActualGeneration, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGeneration], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_mqtt_actual_generation(self,_in_domain : str, data: ActualGeneration, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGeneration], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration' event to the Kafka topic
 
@@ -832,6 +942,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (ActualGeneration): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ActualGeneration], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -843,6 +954,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -850,7 +962,7 @@ class EuEntsoeTransparencyByDomainMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -938,7 +1050,15 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type(self,_in_domain : str, _psr_type : str, data: ActualGenerationPerType, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGenerationPerType], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type(self,_in_domain : str, _psr_type : str, data: ActualGenerationPerType, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGenerationPerType], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType' event to the Kafka topic
 
@@ -947,6 +1067,7 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (ActualGenerationPerType): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ActualGenerationPerType], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -958,6 +1079,7 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -965,13 +1087,13 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast(self,_in_domain : str, _psr_type : str, data: WindSolarForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarForecast], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast(self,_in_domain : str, _psr_type : str, data: WindSolarForecast, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarForecast], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast' event to the Kafka topic
 
@@ -980,6 +1102,7 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (WindSolarForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WindSolarForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -991,6 +1114,7 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -998,13 +1122,13 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation(self,_in_domain : str, _psr_type : str, data: WindSolarGeneration, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarGeneration], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation(self,_in_domain : str, _psr_type : str, data: WindSolarGeneration, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarGeneration], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration' event to the Kafka topic
 
@@ -1013,6 +1137,7 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (WindSolarGeneration): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WindSolarGeneration], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1024,6 +1149,7 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1031,13 +1157,13 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type(self,_in_domain : str, _psr_type : str, data: InstalledGenerationCapacityPerType, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type(self,_in_domain : str, _psr_type : str, data: InstalledGenerationCapacityPerType, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType' event to the Kafka topic
 
@@ -1046,6 +1172,7 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (InstalledGenerationCapacityPerType): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1057,6 +1184,7 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1064,7 +1192,7 @@ class EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -1152,7 +1280,15 @@ class EuEntsoeTransparencyCrossBorderMqttEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows(self,_in_domain : str, _out_domain : str, data: CrossBorderPhysicalFlows, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CrossBorderPhysicalFlows], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows(self,_in_domain : str, _out_domain : str, data: CrossBorderPhysicalFlows, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CrossBorderPhysicalFlows], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows' event to the Kafka topic
 
@@ -1161,6 +1297,7 @@ class EuEntsoeTransparencyCrossBorderMqttEventProducer:
             _out_domain(str):  Value for placeholder outDomain in attribute subject
             data: (CrossBorderPhysicalFlows): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, CrossBorderPhysicalFlows], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1172,6 +1309,7 @@ class EuEntsoeTransparencyCrossBorderMqttEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1179,7 +1317,7 @@ class EuEntsoeTransparencyCrossBorderMqttEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -1267,7 +1405,15 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_eu_entsoe_transparency_by_domain_amqp_day_ahead_prices(self,_in_domain : str, data: DayAheadPrices, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DayAheadPrices], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_eu_entsoe_transparency_by_domain_amqp_day_ahead_prices(self,_in_domain : str, data: DayAheadPrices, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, DayAheadPrices], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices' event to the Kafka topic
 
@@ -1275,6 +1421,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (DayAheadPrices): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, DayAheadPrices], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1286,6 +1433,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1293,13 +1441,13 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_amqp_actual_total_load(self,_in_domain : str, data: ActualTotalLoad, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualTotalLoad], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_amqp_actual_total_load(self,_in_domain : str, data: ActualTotalLoad, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualTotalLoad], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad' event to the Kafka topic
 
@@ -1307,6 +1455,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (ActualTotalLoad): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ActualTotalLoad], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1318,6 +1467,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1325,13 +1475,13 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_amqp_load_forecast_margin(self,_in_domain : str, data: LoadForecastMargin, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LoadForecastMargin], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_amqp_load_forecast_margin(self,_in_domain : str, data: LoadForecastMargin, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LoadForecastMargin], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin' event to the Kafka topic
 
@@ -1339,6 +1489,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (LoadForecastMargin): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, LoadForecastMargin], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1350,6 +1501,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1357,13 +1509,13 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_amqp_generation_forecast(self,_in_domain : str, data: GenerationForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GenerationForecast], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_amqp_generation_forecast(self,_in_domain : str, data: GenerationForecast, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, GenerationForecast], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.amqp.GenerationForecast' event to the Kafka topic
 
@@ -1371,6 +1523,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (GenerationForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, GenerationForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1382,6 +1535,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1389,13 +1543,13 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information(self,_in_domain : str, data: ReservoirFillingInformation, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ReservoirFillingInformation], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information(self,_in_domain : str, data: ReservoirFillingInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ReservoirFillingInformation], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation' event to the Kafka topic
 
@@ -1403,6 +1557,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (ReservoirFillingInformation): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ReservoirFillingInformation], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1414,6 +1569,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1421,13 +1577,13 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_amqp_actual_generation(self,_in_domain : str, data: ActualGeneration, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGeneration], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_amqp_actual_generation(self,_in_domain : str, data: ActualGeneration, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGeneration], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomain.amqp.ActualGeneration' event to the Kafka topic
 
@@ -1435,6 +1591,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
             _in_domain(str):  Value for placeholder inDomain in attribute subject
             data: (ActualGeneration): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ActualGeneration], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1446,6 +1603,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1453,7 +1611,7 @@ class EuEntsoeTransparencyByDomainAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -1541,7 +1699,15 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type(self,_in_domain : str, _psr_type : str, data: ActualGenerationPerType, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGenerationPerType], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type(self,_in_domain : str, _psr_type : str, data: ActualGenerationPerType, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, ActualGenerationPerType], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType' event to the Kafka topic
 
@@ -1550,6 +1716,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (ActualGenerationPerType): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, ActualGenerationPerType], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1561,6 +1728,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1568,13 +1736,13 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast(self,_in_domain : str, _psr_type : str, data: WindSolarForecast, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarForecast], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast(self,_in_domain : str, _psr_type : str, data: WindSolarForecast, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarForecast], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast' event to the Kafka topic
 
@@ -1583,6 +1751,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (WindSolarForecast): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WindSolarForecast], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1594,6 +1763,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1601,13 +1771,13 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation(self,_in_domain : str, _psr_type : str, data: WindSolarGeneration, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarGeneration], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation(self,_in_domain : str, _psr_type : str, data: WindSolarGeneration, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WindSolarGeneration], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration' event to the Kafka topic
 
@@ -1616,6 +1786,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (WindSolarGeneration): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, WindSolarGeneration], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1627,6 +1798,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1634,13 +1806,13 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type(self,_in_domain : str, _psr_type : str, data: InstalledGenerationCapacityPerType, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]=None) -> None:
+    def send_eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type(self,_in_domain : str, _psr_type : str, data: InstalledGenerationCapacityPerType, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType' event to the Kafka topic
 
@@ -1649,6 +1821,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
             _psr_type(str):  Value for placeholder psrType in attribute subject
             data: (InstalledGenerationCapacityPerType): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, InstalledGenerationCapacityPerType], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1660,6 +1833,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1667,7 +1841,7 @@ class EuEntsoeTransparencyByDomainPsrTypeAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -1755,7 +1929,15 @@ class EuEntsoeTransparencyCrossBorderAmqpEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows(self,_in_domain : str, _out_domain : str, data: CrossBorderPhysicalFlows, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CrossBorderPhysicalFlows], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows(self,_in_domain : str, _out_domain : str, data: CrossBorderPhysicalFlows, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, CrossBorderPhysicalFlows], str]=None) -> None:
         """
         Sends the 'eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows' event to the Kafka topic
 
@@ -1764,6 +1946,7 @@ class EuEntsoeTransparencyCrossBorderAmqpEventProducer:
             _out_domain(str):  Value for placeholder outDomain in attribute subject
             data: (CrossBorderPhysicalFlows): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, CrossBorderPhysicalFlows], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
         """
@@ -1775,6 +1958,7 @@ class EuEntsoeTransparencyCrossBorderAmqpEventProducer:
              "datacontenttype":"application/json"
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
             message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
@@ -1782,7 +1966,7 @@ class EuEntsoeTransparencyCrossBorderAmqpEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()

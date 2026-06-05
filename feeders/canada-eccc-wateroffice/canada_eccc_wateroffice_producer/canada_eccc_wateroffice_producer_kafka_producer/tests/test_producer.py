@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from canada_eccc_wateroffice_producer_kafka_producer.producer import CAGovECCCHydroEventProducer
 from canada_eccc_wateroffice_producer_data import Station
-from test_canada_eccc_wateroffice_producer_data_station import Test_Station
+from test_station import Test_Station
 from canada_eccc_wateroffice_producer_data import Observation
-from test_canada_eccc_wateroffice_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from canada_eccc_wateroffice_producer_kafka_producer.producer import CAGovECCCHydroMqttEventProducer
 from canada_eccc_wateroffice_producer_kafka_producer.producer import CAGovECCCHydroAmqpEventProducer
 
@@ -107,7 +107,8 @@ def test_ca_gov_eccc_hydro_cagoveccchydrostation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gov_eccc_hydro_station(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gov_eccc_hydro_station(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_ca_gov_eccc_hydro_cagoveccchydroobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gov_eccc_hydro_observation(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gov_eccc_hydro_observation(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_ca_gov_eccc_hydro_mqtt_cagoveccchydromqttstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gov_eccc_hydro_mqtt_station(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gov_eccc_hydro_mqtt_station(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_ca_gov_eccc_hydro_mqtt_cagoveccchydromqttobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gov_eccc_hydro_mqtt_observation(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gov_eccc_hydro_mqtt_observation(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_ca_gov_eccc_hydro_amqp_cagoveccchydroamqpstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gov_eccc_hydro_amqp_station(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gov_eccc_hydro_amqp_station(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_ca_gov_eccc_hydro_amqp_cagoveccchydroamqpobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gov_eccc_hydro_amqp_observation(_station_number = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gov_eccc_hydro_amqp_observation(_station_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

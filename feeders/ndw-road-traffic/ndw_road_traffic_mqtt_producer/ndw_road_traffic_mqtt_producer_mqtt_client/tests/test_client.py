@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,31 +17,31 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import ndw_road_traffic_mqtt_producer_data
 from ndw_road_traffic_mqtt_producer_data import PointMeasurementSite
-from test_ndw_road_traffic_mqtt_producer_data_pointmeasurementsite import Test_PointMeasurementSite
+from test_pointmeasurementsite import Test_PointMeasurementSite
 from ndw_road_traffic_mqtt_producer_data import RouteMeasurementSite
-from test_ndw_road_traffic_mqtt_producer_data_routemeasurementsite import Test_RouteMeasurementSite
+from test_routemeasurementsite import Test_RouteMeasurementSite
 from ndw_road_traffic_mqtt_producer_data import TrafficObservation
-from test_ndw_road_traffic_mqtt_producer_data_trafficobservation import Test_TrafficObservation
+from test_trafficobservation import Test_TrafficObservation
 from ndw_road_traffic_mqtt_producer_data import TravelTimeObservation
-from test_ndw_road_traffic_mqtt_producer_data_traveltimeobservation import Test_TravelTimeObservation
+from test_traveltimeobservation import Test_TravelTimeObservation
 from ndw_road_traffic_mqtt_producer_data import DripSign
-from test_ndw_road_traffic_mqtt_producer_data_dripsign import Test_DripSign
+from test_dripsign import Test_DripSign
 from ndw_road_traffic_mqtt_producer_data import DripDisplayState
-from test_ndw_road_traffic_mqtt_producer_data_dripdisplaystate import Test_DripDisplayState
+from test_dripdisplaystate import Test_DripDisplayState
 from ndw_road_traffic_mqtt_producer_data import MsiSign
-from test_ndw_road_traffic_mqtt_producer_data_msisign import Test_MsiSign
+from test_msisign import Test_MsiSign
 from ndw_road_traffic_mqtt_producer_data import MsiDisplayState
-from test_ndw_road_traffic_mqtt_producer_data_msidisplaystate import Test_MsiDisplayState
+from test_msidisplaystate import Test_MsiDisplayState
 from ndw_road_traffic_mqtt_producer_data import Roadwork
-from test_ndw_road_traffic_mqtt_producer_data_roadwork import Test_Roadwork
+from test_roadwork import Test_Roadwork
 from ndw_road_traffic_mqtt_producer_data import BridgeOpening
-from test_ndw_road_traffic_mqtt_producer_data_bridgeopening import Test_BridgeOpening
+from test_bridgeopening import Test_BridgeOpening
 from ndw_road_traffic_mqtt_producer_data import TemporaryClosure
-from test_ndw_road_traffic_mqtt_producer_data_temporaryclosure import Test_TemporaryClosure
+from test_temporaryclosure import Test_TemporaryClosure
 from ndw_road_traffic_mqtt_producer_data import TemporarySpeedLimit
-from test_ndw_road_traffic_mqtt_producer_data_temporaryspeedlimit import Test_TemporarySpeedLimit
+from test_temporaryspeedlimit import Test_TemporarySpeedLimit
 from ndw_road_traffic_mqtt_producer_data import SafetyRelatedMessage
-from test_ndw_road_traffic_mqtt_producer_data_safetyrelatedmessage import Test_SafetyRelatedMessage
+from test_safetyrelatedmessage import Test_SafetyRelatedMessage
 from ndw_road_traffic_mqtt_producer_mqtt_client import NLNDWAVGMqttMqttClient
 from ndw_road_traffic_mqtt_producer_mqtt_client import NLNDWDRIPMqttMqttClient
 from ndw_road_traffic_mqtt_producer_mqtt_client import NLNDWMSIMqttMqttClient
@@ -116,6 +117,7 @@ async def test_nl_ndw_avg_mqtt_nl_ndw_avg_point_measurement_site_mqtt_py(mosquit
         await publisher_client.publish_nl_ndw_avg_point_measurement_site_mqtt(
             topic=test_topic,
             measurement_site_id=f"test_measurement_site_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -181,6 +183,7 @@ async def test_nl_ndw_avg_mqtt_nl_ndw_avg_route_measurement_site_mqtt_py(mosquit
         await publisher_client.publish_nl_ndw_avg_route_measurement_site_mqtt(
             topic=test_topic,
             measurement_site_id=f"test_measurement_site_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -246,6 +249,7 @@ async def test_nl_ndw_avg_mqtt_nl_ndw_avg_traffic_observation_mqtt_py(mosquitto_
         await publisher_client.publish_nl_ndw_avg_traffic_observation_mqtt(
             topic=test_topic,
             measurement_site_id=f"test_measurement_site_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -311,6 +315,7 @@ async def test_nl_ndw_avg_mqtt_nl_ndw_avg_travel_time_observation_mqtt_py(mosqui
         await publisher_client.publish_nl_ndw_avg_travel_time_observation_mqtt(
             topic=test_topic,
             measurement_site_id=f"test_measurement_site_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -380,6 +385,7 @@ async def test_nl_ndw_drip_mqtt_nl_ndw_drip_drip_sign_mqtt_py(mosquitto_broker):
             topic=test_topic,
             vms_controller_id=f"test_vms_controller_id_{i}",
             vms_index=f"test_vms_index_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -446,6 +452,7 @@ async def test_nl_ndw_drip_mqtt_nl_ndw_drip_drip_display_state_mqtt_py(mosquitto
             topic=test_topic,
             vms_controller_id=f"test_vms_controller_id_{i}",
             vms_index=f"test_vms_index_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -514,6 +521,7 @@ async def test_nl_ndw_msi_mqtt_nl_ndw_msi_msi_sign_mqtt_py(mosquitto_broker):
         await publisher_client.publish_nl_ndw_msi_msi_sign_mqtt(
             topic=test_topic,
             sign_id=f"test_sign_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -579,6 +587,7 @@ async def test_nl_ndw_msi_mqtt_nl_ndw_msi_msi_display_state_mqtt_py(mosquitto_br
         await publisher_client.publish_nl_ndw_msi_msi_display_state_mqtt(
             topic=test_topic,
             sign_id=f"test_sign_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -647,6 +656,7 @@ async def test_nl_ndw_situations_mqtt_nl_ndw_situations_roadwork_mqtt_py(mosquit
         await publisher_client.publish_nl_ndw_situations_roadwork_mqtt(
             topic=test_topic,
             situation_record_id=f"test_situation_record_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -712,6 +722,7 @@ async def test_nl_ndw_situations_mqtt_nl_ndw_situations_bridge_opening_mqtt_py(m
         await publisher_client.publish_nl_ndw_situations_bridge_opening_mqtt(
             topic=test_topic,
             situation_record_id=f"test_situation_record_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -777,6 +788,7 @@ async def test_nl_ndw_situations_mqtt_nl_ndw_situations_temporary_closure_mqtt_p
         await publisher_client.publish_nl_ndw_situations_temporary_closure_mqtt(
             topic=test_topic,
             situation_record_id=f"test_situation_record_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -842,6 +854,7 @@ async def test_nl_ndw_situations_mqtt_nl_ndw_situations_temporary_speed_limit_mq
         await publisher_client.publish_nl_ndw_situations_temporary_speed_limit_mqtt(
             topic=test_topic,
             situation_record_id=f"test_situation_record_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -907,6 +920,7 @@ async def test_nl_ndw_situations_mqtt_nl_ndw_situations_safety_related_message_m
         await publisher_client.publish_nl_ndw_situations_safety_related_message_mqtt(
             topic=test_topic,
             situation_record_id=f"test_situation_record_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

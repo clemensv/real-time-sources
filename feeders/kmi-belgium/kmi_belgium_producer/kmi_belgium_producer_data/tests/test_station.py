@@ -28,9 +28,10 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_code='imlbfvxoococltdirguy',
-            latitude=float(40.885871966967876),
-            longitude=float(77.529440174647)
+            station_code='tnytciideeppykmnsvut',
+            latitude=float(74.85185347677432),
+            longitude=float(22.423198296849513),
+            region='myhjldxjhjauntqyhhxr'
         )
         return instance
 
@@ -39,7 +40,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_code property
         """
-        test_value = 'imlbfvxoococltdirguy'
+        test_value = 'tnytciideeppykmnsvut'
         self.instance.station_code = test_value
         self.assertEqual(self.instance.station_code, test_value)
     
@@ -47,7 +48,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(40.885871966967876)
+        test_value = float(74.85185347677432)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -55,9 +56,17 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(77.529440174647)
+        test_value = float(22.423198296849513)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
+    
+    def test_region_property(self):
+        """
+        Test region property
+        """
+        test_value = 'myhjldxjhjauntqyhhxr'
+        self.instance.region = test_value
+        self.assertEqual(self.instance.region, test_value)
     
     def test_to_byte_array_json(self):
         """

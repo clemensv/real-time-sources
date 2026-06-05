@@ -103,7 +103,8 @@ def test_jp_jma_quake_jpjmaquakeearthquakereport(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_quake_earthquake_report(_feedurl = f'test_{i}', _event_id = f'test_{i}', _serial = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_quake_earthquake_report(_feedurl = f'test_{i}', _event_id = f'test_{i}', _serial = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

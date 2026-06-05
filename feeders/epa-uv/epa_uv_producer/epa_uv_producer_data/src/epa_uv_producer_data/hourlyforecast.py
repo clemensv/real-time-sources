@@ -96,6 +96,8 @@ class HourlyForecast:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class HourlyForecast:
             An instance of the dataclass.
         """
         return cls(
-            location_id='otzfaojtbagfodbrwjpk',
-            city='xndurnhipyfnpoewteik',
-            state='jfiilbgkznlunuhizprj',
-            forecast_datetime='wkiexiouqytxmmubukqz',
-            uv_index=int(75),
-            city_slug='sxzgxrefopedzhqrdekz',
-            forecast_hour='nwzbnckfqhjcysgpaxcf'
+            location_id='uetglbvcceyfpueflsxi',
+            city='qkfvmtxhzqgpadqdoxnj',
+            state='otcjwxdrizfadcdjtimt',
+            forecast_datetime='xoyougihactvluzmzlff',
+            uv_index=int(27),
+            city_slug='aubpspwyuudrldivmuqe',
+            forecast_hour='wumtemdfrgwejbcmxukv'
         )

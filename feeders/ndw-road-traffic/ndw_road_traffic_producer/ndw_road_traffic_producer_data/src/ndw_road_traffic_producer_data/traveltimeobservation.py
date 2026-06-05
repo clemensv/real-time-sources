@@ -96,6 +96,8 @@ class TravelTimeObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class TravelTimeObservation:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='pqjvasajeutguloqkrao',
-            measurement_time='kjtgbjhznkraidpafydj',
-            duration=float(62.73081167121588),
-            reference_duration=float(10.232053655716811),
-            accuracy=float(44.19805156493953),
-            data_quality=float(63.127847312381135),
-            number_of_input_values=int(21)
+            measurement_site_id='qvqyamdqdulpbvrkflwy',
+            measurement_time='dwuyeyeknygpptdkxbgu',
+            duration=float(42.69152078626145),
+            reference_duration=float(69.69270675646453),
+            accuracy=float(1.755913208213733),
+            data_quality=float(15.546553616173298),
+            number_of_input_values=int(16)
         )

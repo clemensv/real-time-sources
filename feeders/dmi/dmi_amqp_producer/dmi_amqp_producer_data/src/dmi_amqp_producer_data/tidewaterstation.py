@@ -101,6 +101,8 @@ class TidewaterStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -168,12 +170,12 @@ class TidewaterStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='zdjqrmhpwlqmqhgemdyi',
-            name='aknjfkhuzhhiegeeszpf',
+            station_id='omvpbtaodjdamowbokna',
+            name='kgbypdkencnwdtvnnaqh',
             country=CountryEnum.DNK,
-            owner='feqdgqfgivuywhsevxao',
-            latitude=float(60.27770079479714),
-            longitude=float(26.496653691830474),
+            owner='zpvqblijsemnfkcrzkgs',
+            latitude=float(2.286552801493247),
+            longitude=float(8.425603118131853),
             valid_from=datetime.datetime.now(datetime.timezone.utc),
             valid_to=datetime.datetime.now(datetime.timezone.utc)
         )

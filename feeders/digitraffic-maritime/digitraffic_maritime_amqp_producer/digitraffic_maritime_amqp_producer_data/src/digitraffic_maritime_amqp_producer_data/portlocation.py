@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from digitraffic_maritime_amqp_producer_data.berth import Berth
 from digitraffic_maritime_amqp_producer_data.portarea import PortArea
+from digitraffic_maritime_amqp_producer_data.berth import Berth
 import datetime
 
 
@@ -102,6 +102,8 @@ class PortLocation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,12 +171,12 @@ class PortLocation:
             An instance of the dataclass.
         """
         return cls(
-            locode='gscacgsicvstdfmikean',
+            locode='arrxgbkmucitfiycymyf',
             data_updated_time=datetime.datetime.now(datetime.timezone.utc),
-            location_name='rimupumxampzqaetwxun',
-            country='mvbziwjxixhygvgomzvm',
-            longitude=float(43.31234194211165),
-            latitude=float(48.03387861315874),
-            port_areas=[None, None, None, None, None],
-            berths=[None, None]
+            location_name='ojkhqbrbcasiasnpuqah',
+            country='ncshtelhmtgicarlsvyq',
+            longitude=float(42.57524962701867),
+            latitude=float(1.862348502959199),
+            port_areas=[None, None, None, None],
+            berths=[None, None, None, None]
         )

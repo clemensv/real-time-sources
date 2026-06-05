@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import sensor_community_mqtt_producer_data
 from sensor_community_mqtt_producer_data import SensorInfo
-from test_sensor_community_mqtt_producer_data_sensorinfo import Test_SensorInfo
+from test_sensorinfo import Test_SensorInfo
 from sensor_community_mqtt_producer_data import SensorReading
-from test_sensor_community_mqtt_producer_data_sensorreading import Test_SensorReading
+from test_sensorreading import Test_SensorReading
 from sensor_community_mqtt_producer_mqtt_client import IoSensorCommunityMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -92,6 +93,7 @@ async def test_io_sensor_community_mqtt_io_sensor_community_mqtt_sensor_info_py(
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             sensor_id=f"test_sensor_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -158,6 +160,7 @@ async def test_io_sensor_community_mqtt_io_sensor_community_mqtt_sensor_reading_
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             sensor_id=f"test_sensor_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

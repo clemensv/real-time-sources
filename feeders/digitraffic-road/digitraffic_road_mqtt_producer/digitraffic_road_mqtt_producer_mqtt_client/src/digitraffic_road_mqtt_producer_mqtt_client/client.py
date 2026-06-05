@@ -4,6 +4,7 @@ import re
 import typing
 from typing import Callable, Awaitable, Optional, Dict, List
 import asyncio
+from datetime import datetime, timezone
 import paho.mqtt.client as mqtt
 try:
     # paho-mqtt 2.x exposes MQTT5 Properties for the PUBLISH packet type.
@@ -28,6 +29,51 @@ from digitraffic_road_mqtt_producer_data import MaintenanceTaskType
 
 # URI template regex pattern
 _URI_TEMPLATE_PATTERN = re.compile(r'\{([A-Za-z0-9_]+)\}')
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 
 def _topic_to_mqtt_wildcard(topic: str) -> str:
@@ -488,6 +534,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'fi.digitraffic.road.mqtt.TmsSensorData' event to an MQTT topic.
@@ -501,6 +548,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (0).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/tms-sensor-data"
@@ -517,6 +565,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
              "subject":"{station_id}/{sensor_id}".format(station_id = station_id,sensor_id = sensor_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -564,6 +613,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'fi.digitraffic.road.mqtt.WeatherSensorData' event to an MQTT topic.
@@ -577,6 +627,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (0).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/fi/fintraffic/digitraffic-road/{station_id}/{sensor_id}/weather-sensor-data"
@@ -593,6 +644,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
              "subject":"{station_id}/{sensor_id}".format(station_id = station_id,sensor_id = sensor_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -639,6 +691,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'fi.digitraffic.road.mqtt.TrafficAnnouncement' event to an MQTT topic.
@@ -651,6 +704,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/traffic-announcement"
@@ -666,6 +720,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
              "subject":"{situation_id}".format(situation_id = situation_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -712,6 +767,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'fi.digitraffic.road.mqtt.RoadWork' event to an MQTT topic.
@@ -724,6 +780,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/road-work"
@@ -739,6 +796,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
              "subject":"{situation_id}".format(situation_id = situation_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -785,6 +843,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'fi.digitraffic.road.mqtt.WeightRestriction' event to an MQTT topic.
@@ -797,6 +856,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/weight-restriction"
@@ -812,6 +872,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
              "subject":"{situation_id}".format(situation_id = situation_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -858,6 +919,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'fi.digitraffic.road.mqtt.ExemptedTransport' event to an MQTT topic.
@@ -870,6 +932,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/fi/fintraffic/digitraffic-road/messages/{situation_id}/exempted-transport"
@@ -885,6 +948,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
              "subject":"{situation_id}".format(situation_id = situation_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -931,6 +995,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'fi.digitraffic.road.mqtt.MaintenanceTracking' event to an MQTT topic.
@@ -943,6 +1008,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (0).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/fi/fintraffic/digitraffic-road/maintenance/{domain}/tracking"
@@ -958,6 +1024,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
              "subject":"{domain}".format(domain = domain)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1004,6 +1071,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'fi.digitraffic.road.mqtt.TmsStation' event to an MQTT topic.
@@ -1016,6 +1084,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/tms-station"
@@ -1031,6 +1100,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1077,6 +1147,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'fi.digitraffic.road.mqtt.WeatherStation' event to an MQTT topic.
@@ -1089,6 +1160,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/fi/fintraffic/digitraffic-road/stations/{station_id}/weather-station"
@@ -1104,6 +1176,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1150,6 +1223,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'fi.digitraffic.road.mqtt.MaintenanceTaskType' event to an MQTT topic.
@@ -1162,6 +1236,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "traffic/fi/fintraffic/digitraffic-road/maintenance-tasks/{task_id}/task-type"
@@ -1177,6 +1252,7 @@ class FiDigitrafficRoadMqttMqttClient(_ClientBase):
              "subject":"{task_id}".format(task_id = task_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's

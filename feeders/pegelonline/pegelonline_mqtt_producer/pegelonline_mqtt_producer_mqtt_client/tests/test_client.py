@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import pegelonline_mqtt_producer_data
 from pegelonline_mqtt_producer_data import Station
-from test_pegelonline_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from pegelonline_mqtt_producer_data import CurrentMeasurement
-from test_pegelonline_mqtt_producer_data_currentmeasurement import Test_CurrentMeasurement
+from test_currentmeasurement import Test_CurrentMeasurement
 from pegelonline_mqtt_producer_mqtt_client import DeWsvPegelonlineMqttMqttClient
 
 @pytest_asyncio.fixture

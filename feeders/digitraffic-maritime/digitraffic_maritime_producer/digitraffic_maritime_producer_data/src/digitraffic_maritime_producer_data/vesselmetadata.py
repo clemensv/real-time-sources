@@ -17,7 +17,7 @@ import json
 @dataclass
 class VesselMetadata:
     """
-    AIS vessel static and voyage data from Digitraffic MQTT stream. Represents decoded AIS message type 5/24 data.
+    A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
     
     Attributes:
         mmsi (typing.Optional[int])
@@ -110,6 +110,8 @@ class VesselMetadata:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -177,18 +179,18 @@ class VesselMetadata:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(79),
-            timestamp=int(11),
-            name='fznswqwadrmamgxdecet',
-            callSign='fpmuyxsxubfrwsjhzzas',
-            imo=int(80),
-            type=int(50),
-            draught=int(90),
-            eta=int(96),
-            destination='tnoqskculoisgexsezaf',
-            posType=int(89),
-            refA=int(63),
-            refB=int(19),
-            refC=int(28),
-            refD=int(29)
+            mmsi=int(90),
+            timestamp=int(43),
+            name='jqfjfpubivwpanfdtxau',
+            callSign='lczezjgwawmtkqekfamx',
+            imo=int(41),
+            type=int(91),
+            draught=int(40),
+            eta=int(90),
+            destination='inlokvzfkghvohjijten',
+            posType=int(98),
+            refA=int(68),
+            refB=int(56),
+            refC=int(99),
+            refD=int(42)
         )

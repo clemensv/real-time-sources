@@ -17,7 +17,7 @@ import json
 @dataclass
 class TrafficMessage:
     """
-    Traffic message from the Finnish national road network operated by Fintraffic, delivered in real time via the Digitraffic MQTT stream at wss://tie.digitraffic.fi/mqtt on topic traffic-message-v3/simple/{situationType}. Traffic messages describe situations such as accidents, road works, weight restrictions, and exempted transports. Each message carries a stable situation identifier (GUID), a version counter, and one or more announcements with location, timing, and descriptive detail. The MQTT payload is gzip-compressed and base64-encoded Simple JSON derived from the GeoJSON-based Digitraffic traffic-message API. See https://www.digitraffic.fi/en/road-traffic/ for the full API documentation and situation type taxonomy.
+    A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
     
     Attributes:
         situation_id (str)
@@ -124,6 +124,8 @@ class TrafficMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -191,25 +193,25 @@ class TrafficMessage:
             An instance of the dataclass.
         """
         return cls(
-            situation_id='nmresqlnuzfclsirpkzu',
-            situation_type='bykybozubehcpdmpbuza',
-            traffic_announcement_type='aqhzdwsbfgjzkpmwcpaj',
-            version=int(28),
-            release_time='semhaxygxdlhxycobxls',
-            version_time='wbxxyrxfezwnugbdqkdk',
-            title='ynsknvnujscmeaprdbgg',
-            language='eciyxvfcbhtrecuuiazz',
-            sender='sdtpqtpdocikunseukzs',
-            location_description='hcxxltyshlvfyhqzvxsk',
-            start_time='eyzfcydxiouitgxvzthf',
-            end_time='cxxgagczzfozlmghfshm',
-            features_json='eaxfstzfqfcaqfeasmmw',
-            road_work_phases_json='yxufmromcrlkjftutajv',
-            comment='jxokorouhkcvcsbxklfp',
-            additional_information='qtonckeqqmqcgketkcvk',
-            contact_phone='vgdhcamcgtprvkrqhrly',
-            contact_email='nhldpyhtkonqkotncoei',
-            announcements_json='djswnnpryqeifcjudhgf',
-            geometry_type='jqnllyckucvnzevsmkol',
-            geometry_coordinates_json='hifyymwvtyrzpitjhjmo'
+            situation_id='czuzjnpdjhdffadkxxlp',
+            situation_type='oujtewtpyajxrsfdeccg',
+            traffic_announcement_type='fddfskjzpqjscglsvomp',
+            version=int(58),
+            release_time='uygoqigcqpcnaeclkanz',
+            version_time='xaxbworfyiwlvojmvatv',
+            title='jaktdaulddrjkjjtoqkx',
+            language='qsmfhdklcytkiodpulrl',
+            sender='vgfcdrjapvrzfemmbljg',
+            location_description='fyrlceinehwvazrdxnkt',
+            start_time='anozujhzpvbzepxtkuyu',
+            end_time='vmrrbgahedkanpadzlpe',
+            features_json='kwkomegqhhwfpyziqvid',
+            road_work_phases_json='gqjydmdzisjbtdeyffaz',
+            comment='zytxjiycuvnjfbhfuycf',
+            additional_information='qdjbevqnbunodslaohaf',
+            contact_phone='undjrdbrsdfaujxzhcbb',
+            contact_email='fjkgdscqvvnlxevnbqrs',
+            announcements_json='mmofzjedwkrrftjswyre',
+            geometry_type='emapbymqfbkqmjhunhjy',
+            geometry_coordinates_json='wkgjmypxncvggxydmphg'
         )

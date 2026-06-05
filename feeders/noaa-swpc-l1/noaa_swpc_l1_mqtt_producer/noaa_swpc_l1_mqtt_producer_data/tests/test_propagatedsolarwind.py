@@ -33,16 +33,16 @@ class Test_PropagatedSolarWind(unittest.TestCase):
             spacecraft=SpacecraftEnum.dscovr,
             time_tag=datetime.datetime.now(datetime.timezone.utc),
             propagated_time_tag=datetime.datetime.now(datetime.timezone.utc),
-            speed=float(5.558668437398506),
-            density=float(62.94574797362339),
-            temperature=float(0.7914285355932194),
-            bx=float(44.69680497856778),
-            by=float(61.99502183512816),
-            bz=float(78.94089671800664),
-            bt=float(0.3098683041697692),
-            vx=float(70.76053083900699),
-            vy=float(59.38954904468948),
-            vz=float(36.41199377039281)
+            speed=float(8.823189008869715),
+            density=float(51.474375084457414),
+            temperature=float(79.78689455464963),
+            bx=float(14.672562510264186),
+            by=float(9.433013600333028),
+            bz=float(84.42431063445126),
+            bt=float(48.64065570803619),
+            vx=float(25.30081911895835),
+            vy=float(11.097632669450242),
+            vz=float(14.961304533050612)
         )
         return instance
 
@@ -75,7 +75,7 @@ class Test_PropagatedSolarWind(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(5.558668437398506)
+        test_value = float(8.823189008869715)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     
@@ -83,7 +83,7 @@ class Test_PropagatedSolarWind(unittest.TestCase):
         """
         Test density property
         """
-        test_value = float(62.94574797362339)
+        test_value = float(51.474375084457414)
         self.instance.density = test_value
         self.assertEqual(self.instance.density, test_value)
     
@@ -91,7 +91,7 @@ class Test_PropagatedSolarWind(unittest.TestCase):
         """
         Test temperature property
         """
-        test_value = float(0.7914285355932194)
+        test_value = float(79.78689455464963)
         self.instance.temperature = test_value
         self.assertEqual(self.instance.temperature, test_value)
     
@@ -99,7 +99,7 @@ class Test_PropagatedSolarWind(unittest.TestCase):
         """
         Test bx property
         """
-        test_value = float(44.69680497856778)
+        test_value = float(14.672562510264186)
         self.instance.bx = test_value
         self.assertEqual(self.instance.bx, test_value)
     
@@ -107,7 +107,7 @@ class Test_PropagatedSolarWind(unittest.TestCase):
         """
         Test by property
         """
-        test_value = float(61.99502183512816)
+        test_value = float(9.433013600333028)
         self.instance.by = test_value
         self.assertEqual(self.instance.by, test_value)
     
@@ -115,7 +115,7 @@ class Test_PropagatedSolarWind(unittest.TestCase):
         """
         Test bz property
         """
-        test_value = float(78.94089671800664)
+        test_value = float(84.42431063445126)
         self.instance.bz = test_value
         self.assertEqual(self.instance.bz, test_value)
     
@@ -123,7 +123,7 @@ class Test_PropagatedSolarWind(unittest.TestCase):
         """
         Test bt property
         """
-        test_value = float(0.3098683041697692)
+        test_value = float(48.64065570803619)
         self.instance.bt = test_value
         self.assertEqual(self.instance.bt, test_value)
     
@@ -131,7 +131,7 @@ class Test_PropagatedSolarWind(unittest.TestCase):
         """
         Test vx property
         """
-        test_value = float(70.76053083900699)
+        test_value = float(25.30081911895835)
         self.instance.vx = test_value
         self.assertEqual(self.instance.vx, test_value)
     
@@ -139,7 +139,7 @@ class Test_PropagatedSolarWind(unittest.TestCase):
         """
         Test vy property
         """
-        test_value = float(59.38954904468948)
+        test_value = float(11.097632669450242)
         self.instance.vy = test_value
         self.assertEqual(self.instance.vy, test_value)
     
@@ -147,7 +147,7 @@ class Test_PropagatedSolarWind(unittest.TestCase):
         """
         Test vz property
         """
-        test_value = float(36.41199377039281)
+        test_value = float(14.961304533050612)
         self.instance.vz = test_value
         self.assertEqual(self.instance.vz, test_value)
     

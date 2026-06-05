@@ -86,6 +86,8 @@ class MarineForecastPeriod:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -153,6 +155,6 @@ class MarineForecastPeriod:
             An instance of the dataclass.
         """
         return cls(
-            period_name='algdjgqyjmccepiyfiuf',
-            forecast_text='ehfttlpfqbgjahncdfzk'
+            period_name='snsjuanlogpsuqffkmtb',
+            forecast_text='mhkxmgaxswvevrpylprd'
         )

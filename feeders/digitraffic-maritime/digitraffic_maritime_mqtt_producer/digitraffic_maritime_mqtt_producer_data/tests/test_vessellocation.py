@@ -28,17 +28,17 @@ class Test_VesselLocation(unittest.TestCase):
         Create instance of VesselLocation for testing
         """
         instance = VesselLocation(
-            mmsi=int(85),
-            time=int(66),
-            sog=float(56.798095633002745),
-            cog=float(98.8732356802654),
-            navStat=int(34),
-            rot=int(41),
-            posAcc=False,
-            raim=True,
-            heading=int(96),
-            lon=float(37.041974123310325),
-            lat=float(36.45946242375342)
+            mmsi=int(10),
+            time=int(23),
+            sog=float(8.052048218918461),
+            cog=float(90.67813062943559),
+            navStat=int(72),
+            rot=int(22),
+            posAcc=True,
+            raim=False,
+            heading=int(57),
+            lon=float(52.161552284812196),
+            lat=float(81.34233254467836)
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(85)
+        test_value = int(10)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -55,7 +55,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test time property
         """
-        test_value = int(66)
+        test_value = int(23)
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -63,7 +63,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test sog property
         """
-        test_value = float(56.798095633002745)
+        test_value = float(8.052048218918461)
         self.instance.sog = test_value
         self.assertEqual(self.instance.sog, test_value)
     
@@ -71,7 +71,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test cog property
         """
-        test_value = float(98.8732356802654)
+        test_value = float(90.67813062943559)
         self.instance.cog = test_value
         self.assertEqual(self.instance.cog, test_value)
     
@@ -79,7 +79,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test navStat property
         """
-        test_value = int(34)
+        test_value = int(72)
         self.instance.navStat = test_value
         self.assertEqual(self.instance.navStat, test_value)
     
@@ -87,7 +87,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test rot property
         """
-        test_value = int(41)
+        test_value = int(22)
         self.instance.rot = test_value
         self.assertEqual(self.instance.rot, test_value)
     
@@ -95,7 +95,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test posAcc property
         """
-        test_value = False
+        test_value = True
         self.instance.posAcc = test_value
         self.assertEqual(self.instance.posAcc, test_value)
     
@@ -103,7 +103,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test raim property
         """
-        test_value = True
+        test_value = False
         self.instance.raim = test_value
         self.assertEqual(self.instance.raim, test_value)
     
@@ -111,7 +111,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test heading property
         """
-        test_value = int(96)
+        test_value = int(57)
         self.instance.heading = test_value
         self.assertEqual(self.instance.heading, test_value)
     
@@ -119,7 +119,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test lon property
         """
-        test_value = float(37.041974123310325)
+        test_value = float(52.161552284812196)
         self.instance.lon = test_value
         self.assertEqual(self.instance.lon, test_value)
     
@@ -127,7 +127,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(36.45946242375342)
+        test_value = float(81.34233254467836)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     

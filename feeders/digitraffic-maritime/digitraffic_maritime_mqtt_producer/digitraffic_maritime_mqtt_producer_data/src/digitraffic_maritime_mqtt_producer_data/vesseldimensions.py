@@ -108,6 +108,8 @@ class VesselDimensions:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -175,16 +177,16 @@ class VesselDimensions:
             An instance of the dataclass.
         """
         return cls(
-            tonnage_certificate_issuer='ibdjiotlfbnjmlhkcfli',
+            tonnage_certificate_issuer='vxxeyggnxpoyoxnqorgx',
             date_of_issue=datetime.datetime.now(datetime.timezone.utc),
-            gross_tonnage=int(69),
-            net_tonnage=int(64),
-            dead_weight=int(34),
-            length=float(21.53253380653912),
-            overall_length=float(72.03534286972659),
-            height=float(77.97463595382425),
-            breadth=float(44.90397505526605),
-            draught=float(9.038415000774968),
-            max_speed=float(21.325899806473934),
-            engine_power='aoglotcbgoppaftbztcb'
+            gross_tonnage=int(20),
+            net_tonnage=int(98),
+            dead_weight=int(58),
+            length=float(84.05364995122241),
+            overall_length=float(12.55863987413246),
+            height=float(98.54162983223085),
+            breadth=float(31.475820846564297),
+            draught=float(37.66380581863745),
+            max_speed=float(1.7410426061241435),
+            engine_power='bkbvosvjnsrbdxttgulj'
         )

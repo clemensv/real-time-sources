@@ -17,7 +17,7 @@ import json
 @dataclass
 class StaticVoyageData:
     """
-    StaticVoyageData
+    A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
     
     Attributes:
         mmsi (int)
@@ -116,6 +116,8 @@ class StaticVoyageData:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -183,21 +185,21 @@ class StaticVoyageData:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(97),
-            imo_number=int(44),
-            callsign='ehkoqprkhznuanhsofxy',
-            ship_name='fgptslisbkxofissaljd',
-            ship_type=int(13),
-            dimension_to_bow=int(38),
-            dimension_to_stern=int(43),
-            dimension_to_port=int(13),
-            dimension_to_starboard=int(62),
-            draught=float(39.516944831297074),
-            destination='nhloeungkczxefjmiwnn',
-            eta_month=int(78),
-            eta_day=int(67),
-            eta_hour=int(90),
-            eta_minute=int(20),
-            timestamp='etbpfijbcxvctxsudlav',
-            station_id='clepgfffghaugdibznon'
+            mmsi=int(29),
+            imo_number=int(70),
+            callsign='mnvwtxmnuexwcktnkybc',
+            ship_name='uxdizvtpjhanrffqrsym',
+            ship_type=int(18),
+            dimension_to_bow=int(40),
+            dimension_to_stern=int(30),
+            dimension_to_port=int(100),
+            dimension_to_starboard=int(24),
+            draught=float(22.624905331858535),
+            destination='jcnkpaoyleasflrrrenk',
+            eta_month=int(12),
+            eta_day=int(43),
+            eta_hour=int(26),
+            eta_minute=int(29),
+            timestamp='uadrjzeltnuoprlyhdqn',
+            station_id='ifvseyzlmiqmeyfpuorg'
         )

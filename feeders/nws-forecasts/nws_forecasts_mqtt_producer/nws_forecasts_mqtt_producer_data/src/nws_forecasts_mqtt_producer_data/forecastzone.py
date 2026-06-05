@@ -113,6 +113,8 @@ class ForecastZone:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -180,18 +182,18 @@ class ForecastZone:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='lwzcvsjwuqasqzqaxtyp',
+            zone_id='yrvrccrasfqrtpzmqwnd',
             zone_type=ZoneTypeenum.public,
-            name='qmbvwehgeaduzqjssrco',
-            state='kpvqnsjnnomlknmxgrxd',
-            forecast_office_url='ejbrvfigutudgjdgtbdf',
-            grid_identifier='dsvkmukidryjugaqrklg',
-            awips_location_identifier='uwyzrucefwccdizpdxwd',
-            cwa_ids=['zyufvthljcavsefoptrf'],
-            forecast_office_urls=['yjlnljaveymxsarjqwap', 'hqmqqdapqcftfkauvmyt'],
-            time_zones=['tanumangwvjwwtdwzemi', 'xldyntilyoxcrjswleqz', 'ikgpifixkswmjjbitvxe', 'sbpgaucwjixglrbkphfs', 'hbnoxamefitrvbhrplbi'],
-            observation_station_ids=['tsavnsukaqkqmltcwzuw', 'kpqdyqnyckijkgcqyodg', 'xhtwkbuyqawlxjdxezuw'],
-            radar_station='vtqsoxvvzowtymfdnuyn',
+            name='kwuipzmtentaucjvtmzc',
+            state='ycmeasayzsjwlabbmrqk',
+            forecast_office_url='oguzsyegcxjuwuzulxte',
+            grid_identifier='xjcdbqvpaonnkyuseste',
+            awips_location_identifier='cibwwwkzxnlwdcxtawbr',
+            cwa_ids=['kkwxmokyeqbfpcercfcx', 'gfahfnrkhqulamlyzuas', 'hacoybezdklrksornvai', 'pblelnvquiphzhcfvkmh', 'zucshrqrnstnijzpzbpr'],
+            forecast_office_urls=['efwrwhnwiyqjvktpkinf'],
+            time_zones=['hizdafkfkuiljxivkmbv', 'sjltpqpatqpopyeqlkqt'],
+            observation_station_ids=['onzpkyeulauluttnhqaq', 'gxdmwrsujeqtqjuhwgiv', 'inejscqgfmazyoiodikn', 'zzgqvauhcqoseatrryba', 'feyttzgcwgcgqdylwskz'],
+            radar_station='crohomftpqbwrxhvuazv',
             effective_date=datetime.datetime.now(datetime.timezone.utc),
             expiration_date=datetime.datetime.now(datetime.timezone.utc)
         )

@@ -14,15 +14,62 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
 from datetime import datetime, timezone
 from urllib.parse import quote_plus
 from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -485,9 +532,7 @@ class FrGouvTransportBisonFuteTrafficFlowAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -550,6 +595,32 @@ class FrGouvTransportBisonFuteTrafficFlowAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -620,6 +691,7 @@ class FrGouvTransportBisonFuteTrafficFlowAmqpProducer:
         data: TrafficFlowMeasurement,
         _feedurl: str,
         _site_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `fr.gouv.transport.bison_fute.TrafficFlowMeasurement.amqp` message
@@ -628,6 +700,7 @@ class FrGouvTransportBisonFuteTrafficFlowAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _site_id (str): Value for placeholder site_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (TrafficFlowMeasurement): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -640,6 +713,7 @@ class FrGouvTransportBisonFuteTrafficFlowAmqpProducer:
             "subject":
             "{site_id}".format(site_id=_site_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -694,12 +768,13 @@ class FrGouvTransportBisonFuteTrafficFlowAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[TrafficFlowMeasurement],
         _feedurl: str,
         _site_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `fr.gouv.transport.bison_fute.TrafficFlowMeasurement.amqp` messages
@@ -708,6 +783,7 @@ class FrGouvTransportBisonFuteTrafficFlowAmqpProducer:
             data_array (typing.List[TrafficFlowMeasurement]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _site_id (str): Value for placeholder site_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -715,6 +791,7 @@ class FrGouvTransportBisonFuteTrafficFlowAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _site_id=_site_id,
+                _time=_time,
                 content_type=content_type)
     
     
@@ -834,9 +911,7 @@ class FrGouvTransportBisonFuteRoadEventAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -899,6 +974,32 @@ class FrGouvTransportBisonFuteRoadEventAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -969,6 +1070,7 @@ class FrGouvTransportBisonFuteRoadEventAmqpProducer:
         data: RoadEvent,
         _feedurl: str,
         _situation_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `fr.gouv.transport.bison_fute.RoadEvent.amqp` message
@@ -977,6 +1079,7 @@ class FrGouvTransportBisonFuteRoadEventAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _situation_id (str): Value for placeholder situation_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -989,6 +1092,7 @@ class FrGouvTransportBisonFuteRoadEventAmqpProducer:
             "subject":
             "{situation_id}".format(situation_id=_situation_id),
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1043,12 +1147,13 @@ class FrGouvTransportBisonFuteRoadEventAmqpProducer:
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_amqp_batch(self,
         data_array: typing.List[RoadEvent],
         _feedurl: str,
         _situation_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `fr.gouv.transport.bison_fute.RoadEvent.amqp` messages
@@ -1057,6 +1162,7 @@ class FrGouvTransportBisonFuteRoadEventAmqpProducer:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _feedurl (str): Value for placeholder feedurl in attribute source
             _situation_id (str): Value for placeholder situation_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1064,6 +1170,7 @@ class FrGouvTransportBisonFuteRoadEventAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _situation_id=_situation_id,
+                _time=_time,
                 content_type=content_type)
     
     

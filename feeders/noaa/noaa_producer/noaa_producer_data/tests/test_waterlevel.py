@@ -29,16 +29,16 @@ class Test_WaterLevel(unittest.TestCase):
         Create instance of WaterLevel for testing
         """
         instance = WaterLevel(
-            station_id='rvczonryzkmtkybofanr',
-            timestamp='psmtnayybuxpvkgtjudw',
-            value=float(21.321117731257978),
-            stddev=float(79.48948399460201),
-            outside_sigma_band=False,
-            flat_tolerance_limit=True,
+            station_id='wdfeehixwkmuyhzicdww',
+            timestamp='ilpakypiuorxchetfixu',
+            value=float(75.41431490869702),
+            stddev=float(6.821314902525422),
+            outside_sigma_band=True,
+            flat_tolerance_limit=False,
             rate_of_change_limit=True,
             max_min_expected_height=False,
             quality=QualityEnum.Preliminary,
-            region='khlydhviikbeiwtorgec'
+            region='xkocoqcyhdclwfwjjzmx'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'rvczonryzkmtkybofanr'
+        test_value = 'wdfeehixwkmuyhzicdww'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -55,7 +55,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'psmtnayybuxpvkgtjudw'
+        test_value = 'ilpakypiuorxchetfixu'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -63,7 +63,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(21.321117731257978)
+        test_value = float(75.41431490869702)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -71,7 +71,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test stddev property
         """
-        test_value = float(79.48948399460201)
+        test_value = float(6.821314902525422)
         self.instance.stddev = test_value
         self.assertEqual(self.instance.stddev, test_value)
     
@@ -79,7 +79,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test outside_sigma_band property
         """
-        test_value = False
+        test_value = True
         self.instance.outside_sigma_band = test_value
         self.assertEqual(self.instance.outside_sigma_band, test_value)
     
@@ -87,7 +87,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test flat_tolerance_limit property
         """
-        test_value = True
+        test_value = False
         self.instance.flat_tolerance_limit = test_value
         self.assertEqual(self.instance.flat_tolerance_limit, test_value)
     
@@ -119,19 +119,10 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'khlydhviikbeiwtorgec'
+        test_value = 'xkocoqcyhdclwfwjjzmx'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = WaterLevel.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

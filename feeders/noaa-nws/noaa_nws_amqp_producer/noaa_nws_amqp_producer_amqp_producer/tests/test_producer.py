@@ -5,6 +5,7 @@
 Tests for noaa_nws_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa_nws_amqp_producer_data/src')))
@@ -25,11 +27,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from noaa_nws_amqp_producer_amqp_producer import *
 from noaa_nws_amqp_producer_data import WeatherAlert
-from test_noaa_nws_amqp_producer_data_weatheralert import Test_WeatherAlert
+from test_weatheralert import Test_WeatherAlert
 from noaa_nws_amqp_producer_data import ObservationStation
-from test_noaa_nws_amqp_producer_data_observationstation import Test_ObservationStation
+from test_observationstation import Test_ObservationStation
 from noaa_nws_amqp_producer_data import WeatherObservation
-from test_noaa_nws_amqp_producer_data_weatherobservation import Test_WeatherObservation
+from test_weatherobservation import Test_WeatherObservation
 
 
 
@@ -235,6 +237,45 @@ class TestMicrosoftOpenDataUSNOAANWSAlertsAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(MicrosoftOpenDataUSNOAANWSAlertsAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_weather_alert(self, artemis_container):
         """Send and receive a WeatherAlert message via ActiveMQ Artemis."""
@@ -264,6 +305,7 @@ class TestMicrosoftOpenDataUSNOAANWSAlertsAmqpProducer:
                     _severity="value",
                     _event_type="value",
                     _alert_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -271,6 +313,7 @@ class TestMicrosoftOpenDataUSNOAANWSAlertsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -295,6 +338,39 @@ class TestMicrosoftOpenDataUSNOAANWSAlertsAmqpProducer:
         finally:
             producer.close()
 
+    def test_send_weather_alert_single_fresh_connection(self, artemis_container):
+        """Send exactly one WeatherAlert message on a fresh producer connection."""
+        payload = Test_WeatherAlert.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANWSAlertsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_weather_alert(
+                data=payload,
+                _state="value",
+                _severity="value",
+                _event_type="value",
+                _alert_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert'
+        assert received.body is not None
+        assert received.subject == "{state}/{severity}/{event_type}/{alert_id}".format(state="value", severity="value", event_type="value", alert_id="value")
+
 
 
 class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
@@ -315,6 +391,45 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(MicrosoftOpenDataUSNOAANWSObservationsAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_observation_station(self, artemis_container):
         """Send and receive a ObservationStation message via ActiveMQ Artemis."""
@@ -343,6 +458,7 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
                     _station_id="value",
                     _state="value",
                     _zone_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -350,6 +466,7 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -375,6 +492,40 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
                 assert properties.get('zone_id') == "{zone_id}".format(zone_id="value")
         finally:
             producer.close()
+
+    def test_send_observation_station_single_fresh_connection(self, artemis_container):
+        """Send exactly one ObservationStation message on a fresh producer connection."""
+        payload = Test_ObservationStation.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANWSObservationsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_observation_station(
+                data=payload,
+                _station_id="value",
+                _state="value",
+                _zone_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('state') == "{state}".format(state="value")
+        assert properties.get('zone_id') == "{zone_id}".format(zone_id="value")
     
     def test_send_weather_observation(self, artemis_container):
         """Send and receive a WeatherObservation message via ActiveMQ Artemis."""
@@ -403,6 +554,7 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
                     _station_id="value",
                     _state="value",
                     _zone_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -410,6 +562,7 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -435,4 +588,38 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
                 assert properties.get('zone_id') == "{zone_id}".format(zone_id="value")
         finally:
             producer.close()
+
+    def test_send_weather_observation_single_fresh_connection(self, artemis_container):
+        """Send exactly one WeatherObservation message on a fresh producer connection."""
+        payload = Test_WeatherObservation.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANWSObservationsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_weather_observation(
+                data=payload,
+                _station_id="value",
+                _state="value",
+                _zone_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('state') == "{state}".format(state="value")
+        assert properties.get('zone_id') == "{zone_id}".format(zone_id="value")
 

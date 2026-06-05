@@ -96,6 +96,8 @@ class ControllerPosition:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class ControllerPosition:
             An instance of the dataclass.
         """
         return cls(
-            cid=int(22),
-            callsign='qcnwzurajzdiuxtizhej',
-            frequency='umwlpkanlylnrbakpmix',
-            facility=int(66),
-            rating=int(57),
-            text_atis='cfvqflcpqacfzbzmarfv',
-            last_updated='udhkvvfvowawvfybvhep'
+            cid=int(81),
+            callsign='qkivxwfcpgxdkvfiamyz',
+            frequency='mbgrcbwbftdcvgdpghnv',
+            facility=int(24),
+            rating=int(64),
+            text_atis='npwiapuhwieravfmmcki',
+            last_updated='whoxxqijefgulwurvess'
         )

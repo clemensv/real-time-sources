@@ -141,10 +141,10 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`timestamp`** (string, required): Time when the provider recorded or published the value.
 - **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`pressure_station_level`** (null or double, optional): Reference details for a station, monitoring site, or reporting area in the DWD Weather source.
-- **`air_temperature_2m`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`air_temperature_5cm`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`relative_humidity`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`dew_point_temperature`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`air_temperature_2m`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`air_temperature_5cm`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`relative_humidity`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`dew_point_temperature`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
@@ -195,8 +195,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
 - **`timestamp`** (string, required): Time when the provider recorded or published the value.
 - **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`precipitation_height`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`precipitation_indicator`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`precipitation_height`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`precipitation_indicator`** (null or int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
@@ -244,8 +244,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
 - **`timestamp`** (string, required): Time when the provider recorded or published the value.
 - **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`wind_speed`** (double, optional): Wind speed reported by the station.
-- **`wind_direction`** (double, optional): Wind direction reported by the station.
+- **`wind_speed`** (null or double, optional): Wind speed reported by the station.
+- **`wind_direction`** (null or double, optional): Wind direction reported by the station.
 - **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
@@ -293,10 +293,10 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
 - **`timestamp`** (string, required): Time when the provider recorded or published the value.
 - **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`global_radiation`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`sunshine_duration`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`diffuse_radiation`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`longwave_radiation`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`global_radiation`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`sunshine_duration`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`diffuse_radiation`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`longwave_radiation`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
@@ -397,9 +397,9 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
 - **`timestamp`** (string, required): Time when the provider recorded or published the value.
 - **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`wind_speed_maximum`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`wind_speed_minimum`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`wind_direction_at_maximum`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`wind_speed_maximum`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`wind_speed_minimum`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`wind_direction_at_maximum`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 
@@ -448,8 +448,8 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 - **`station_id`** (string, required): Stable identifier assigned by the upstream provider for the station or monitoring site.
 - **`timestamp`** (string, required): Time when the provider recorded or published the value.
 - **`quality_level`** (int32, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`air_temperature_maximum_2m`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
-- **`air_temperature_minimum_5cm`** (double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`air_temperature_maximum_2m`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
+- **`air_temperature_minimum_5cm`** (null or double, optional): Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source.
 - **`state`** (null or string, optional): Normalized routing field 'state' added for MQTT/AMQP subscriber filtering.
 #### Example payload
 

@@ -94,6 +94,8 @@ class BuoyDartMeasurement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,9 +163,9 @@ class BuoyDartMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='kyjykkzbicewefjsxkuc',
+            station_id='xvdeagxuuapkaohxcwag',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            measurement_type_code=int(82),
-            water_column_height=float(18.253653437102592),
-            region='fnosupcyucljdwmvhemm'
+            measurement_type_code=int(50),
+            water_column_height=float(65.22558333458578),
+            region='gayyxcfdoijiymrimrmj'
         )

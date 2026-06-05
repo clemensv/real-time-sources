@@ -100,6 +100,8 @@ class GnssBroadcastBinaryMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class GnssBroadcastBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(36),
-            RepeatIndicator=int(92),
-            UserID=int(94),
-            Valid=False,
-            Spare1=int(50),
-            Longitude=float(86.97697841436121),
-            Latitude=float(44.57103008114082),
-            Spare2=int(16),
-            Data='ebjlhdlsocyxuojikdqa'
+            MessageID=int(91),
+            RepeatIndicator=int(17),
+            UserID=int(5),
+            Valid=True,
+            Spare1=int(5),
+            Longitude=float(24.898946084179297),
+            Latitude=float(94.79227450923283),
+            Spare2=int(82),
+            Data='rqfcimkwsvlqpqggmukf'
         )

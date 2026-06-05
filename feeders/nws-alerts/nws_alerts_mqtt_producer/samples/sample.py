@@ -39,12 +39,40 @@ import signal
 from nws_alerts_mqtt_producer_data import *
 from nws_alerts_mqtt_producer_mqtt_client.client import NWSAlertsMqttProducer, NWSAlertsMqttDispatcher
 
-async def handle_nws_weather_alert_mqtt(mqtt_msg,cloud_event, nws_weather_alert_mqtt_data):
-    """ Handles the NWS.WeatherAlert.mqtt message """
-    print(f"Received NWS.WeatherAlert.mqtt on topic {mqtt_msg.topic}")
+async def handle_nws_weather_alert_minor_mqtt(mqtt_msg,cloud_event, nws_weather_alert_minor_mqtt_data):
+    """ Handles the NWS.WeatherAlert.Minor.mqtt message """
+    print(f"Received NWS.WeatherAlert.Minor.mqtt on topic {mqtt_msg.topic}")
     if cloud_event:
         print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
-    print(f"  Data: {nws_weather_alert_mqtt_data}")
+    print(f"  Data: {nws_weather_alert_minor_mqtt_data}")
+
+async def handle_nws_weather_alert_moderate_mqtt(mqtt_msg,cloud_event, nws_weather_alert_moderate_mqtt_data):
+    """ Handles the NWS.WeatherAlert.Moderate.mqtt message """
+    print(f"Received NWS.WeatherAlert.Moderate.mqtt on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {nws_weather_alert_moderate_mqtt_data}")
+
+async def handle_nws_weather_alert_severe_mqtt(mqtt_msg,cloud_event, nws_weather_alert_severe_mqtt_data):
+    """ Handles the NWS.WeatherAlert.Severe.mqtt message """
+    print(f"Received NWS.WeatherAlert.Severe.mqtt on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {nws_weather_alert_severe_mqtt_data}")
+
+async def handle_nws_weather_alert_extreme_mqtt(mqtt_msg,cloud_event, nws_weather_alert_extreme_mqtt_data):
+    """ Handles the NWS.WeatherAlert.Extreme.mqtt message """
+    print(f"Received NWS.WeatherAlert.Extreme.mqtt on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {nws_weather_alert_extreme_mqtt_data}")
+
+async def handle_nws_weather_alert_unknown_mqtt(mqtt_msg,cloud_event, nws_weather_alert_unknown_mqtt_data):
+    """ Handles the NWS.WeatherAlert.Unknown.mqtt message """
+    print(f"Received NWS.WeatherAlert.Unknown.mqtt on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {nws_weather_alert_unknown_mqtt_data}")
 
 async def main(broker_host, broker_port, topic, username=None, password=None):
     """ Main function for MQTT client """

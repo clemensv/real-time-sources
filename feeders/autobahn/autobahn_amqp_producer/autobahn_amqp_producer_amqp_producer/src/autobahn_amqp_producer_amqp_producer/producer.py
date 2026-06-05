@@ -14,14 +14,62 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
+from datetime import datetime, timezone
 from urllib.parse import quote_plus
-from proton import Message
+from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -36,7 +84,7 @@ import hmac
 import logging
 import time as _cbs_time
 from urllib.parse import quote
-from proton import Endpoint, symbol
+from proton import Endpoint
 from proton.handlers import MessagingHandler
 from proton.reactor import Container, AtLeastOnce
 
@@ -487,9 +535,7 @@ class DEAutobahnAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -552,6 +598,32 @@ class DEAutobahnAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -579,6 +651,23 @@ class DEAutobahnAmqpProducer:
         return payload
 
     @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
         CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
@@ -604,8 +693,8 @@ class DEAutobahnAmqpProducer:
     def send_roadwork_appeared(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.RoadworkAppeared` message
@@ -613,8 +702,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -627,8 +716,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -658,6 +748,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -667,18 +760,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_roadwork_appeared_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.RoadworkAppeared` messages
@@ -686,7 +788,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -694,7 +796,7 @@ class DEAutobahnAmqpProducer:
             self.send_roadwork_appeared(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -702,8 +804,8 @@ class DEAutobahnAmqpProducer:
     def send_roadwork_updated(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.RoadworkUpdated` message
@@ -711,8 +813,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -725,8 +827,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -756,6 +859,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -765,18 +871,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_roadwork_updated_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.RoadworkUpdated` messages
@@ -784,7 +899,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -792,7 +907,7 @@ class DEAutobahnAmqpProducer:
             self.send_roadwork_updated(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -800,8 +915,8 @@ class DEAutobahnAmqpProducer:
     def send_roadwork_resolved(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.RoadworkResolved` message
@@ -809,8 +924,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -823,8 +938,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -854,6 +970,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -863,18 +982,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_roadwork_resolved_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.RoadworkResolved` messages
@@ -882,7 +1010,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -890,7 +1018,7 @@ class DEAutobahnAmqpProducer:
             self.send_roadwork_resolved(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -898,8 +1026,8 @@ class DEAutobahnAmqpProducer:
     def send_short_term_roadwork_appeared(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ShortTermRoadworkAppeared` message
@@ -907,8 +1035,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -921,8 +1049,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -952,6 +1081,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -961,18 +1093,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_short_term_roadwork_appeared_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ShortTermRoadworkAppeared` messages
@@ -980,7 +1121,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -988,7 +1129,7 @@ class DEAutobahnAmqpProducer:
             self.send_short_term_roadwork_appeared(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -996,8 +1137,8 @@ class DEAutobahnAmqpProducer:
     def send_short_term_roadwork_updated(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ShortTermRoadworkUpdated` message
@@ -1005,8 +1146,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1019,8 +1160,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1050,6 +1192,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -1059,18 +1204,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_short_term_roadwork_updated_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ShortTermRoadworkUpdated` messages
@@ -1078,7 +1232,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -1086,7 +1240,7 @@ class DEAutobahnAmqpProducer:
             self.send_short_term_roadwork_updated(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -1094,8 +1248,8 @@ class DEAutobahnAmqpProducer:
     def send_short_term_roadwork_resolved(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ShortTermRoadworkResolved` message
@@ -1103,8 +1257,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1117,8 +1271,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1148,6 +1303,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -1157,18 +1315,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_short_term_roadwork_resolved_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ShortTermRoadworkResolved` messages
@@ -1176,7 +1343,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -1184,7 +1351,7 @@ class DEAutobahnAmqpProducer:
             self.send_short_term_roadwork_resolved(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -1192,8 +1359,8 @@ class DEAutobahnAmqpProducer:
     def send_closure_appeared(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ClosureAppeared` message
@@ -1201,8 +1368,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1215,8 +1382,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1246,6 +1414,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -1255,18 +1426,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_closure_appeared_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ClosureAppeared` messages
@@ -1274,7 +1454,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -1282,7 +1462,7 @@ class DEAutobahnAmqpProducer:
             self.send_closure_appeared(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -1290,8 +1470,8 @@ class DEAutobahnAmqpProducer:
     def send_closure_updated(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ClosureUpdated` message
@@ -1299,8 +1479,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1313,8 +1493,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1344,6 +1525,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -1353,18 +1537,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_closure_updated_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ClosureUpdated` messages
@@ -1372,7 +1565,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -1380,7 +1573,7 @@ class DEAutobahnAmqpProducer:
             self.send_closure_updated(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -1388,8 +1581,8 @@ class DEAutobahnAmqpProducer:
     def send_closure_resolved(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ClosureResolved` message
@@ -1397,8 +1590,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1411,8 +1604,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1442,6 +1636,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -1451,18 +1648,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_closure_resolved_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ClosureResolved` messages
@@ -1470,7 +1676,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -1478,7 +1684,7 @@ class DEAutobahnAmqpProducer:
             self.send_closure_resolved(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -1486,8 +1692,8 @@ class DEAutobahnAmqpProducer:
     def send_entry_exit_closure_appeared(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.EntryExitClosureAppeared` message
@@ -1495,8 +1701,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1509,8 +1715,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1540,6 +1747,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -1549,18 +1759,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_entry_exit_closure_appeared_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.EntryExitClosureAppeared` messages
@@ -1568,7 +1787,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -1576,7 +1795,7 @@ class DEAutobahnAmqpProducer:
             self.send_entry_exit_closure_appeared(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -1584,8 +1803,8 @@ class DEAutobahnAmqpProducer:
     def send_entry_exit_closure_updated(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.EntryExitClosureUpdated` message
@@ -1593,8 +1812,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1607,8 +1826,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1638,6 +1858,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -1647,18 +1870,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_entry_exit_closure_updated_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.EntryExitClosureUpdated` messages
@@ -1666,7 +1898,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -1674,7 +1906,7 @@ class DEAutobahnAmqpProducer:
             self.send_entry_exit_closure_updated(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -1682,8 +1914,8 @@ class DEAutobahnAmqpProducer:
     def send_entry_exit_closure_resolved(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.EntryExitClosureResolved` message
@@ -1691,8 +1923,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1705,8 +1937,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1736,6 +1969,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -1745,18 +1981,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_entry_exit_closure_resolved_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.EntryExitClosureResolved` messages
@@ -1764,7 +2009,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -1772,7 +2017,7 @@ class DEAutobahnAmqpProducer:
             self.send_entry_exit_closure_resolved(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -1780,8 +2025,8 @@ class DEAutobahnAmqpProducer:
     def send_warning_appeared(self,
         data: WarningEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.WarningAppeared` message
@@ -1789,8 +2034,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (WarningEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1803,8 +2048,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1834,6 +2080,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -1843,18 +2092,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_warning_appeared_batch(self,
         data_array: typing.List[WarningEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.WarningAppeared` messages
@@ -1862,7 +2120,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[WarningEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -1870,7 +2128,7 @@ class DEAutobahnAmqpProducer:
             self.send_warning_appeared(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -1878,8 +2136,8 @@ class DEAutobahnAmqpProducer:
     def send_warning_updated(self,
         data: WarningEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.WarningUpdated` message
@@ -1887,8 +2145,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (WarningEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1901,8 +2159,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -1932,6 +2191,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -1941,18 +2203,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_warning_updated_batch(self,
         data_array: typing.List[WarningEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.WarningUpdated` messages
@@ -1960,7 +2231,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[WarningEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -1968,7 +2239,7 @@ class DEAutobahnAmqpProducer:
             self.send_warning_updated(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -1976,8 +2247,8 @@ class DEAutobahnAmqpProducer:
     def send_warning_resolved(self,
         data: WarningEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.WarningResolved` message
@@ -1985,8 +2256,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (WarningEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -1999,8 +2270,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2030,6 +2302,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -2039,18 +2314,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_warning_resolved_batch(self,
         data_array: typing.List[WarningEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.WarningResolved` messages
@@ -2058,7 +2342,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[WarningEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -2066,7 +2350,7 @@ class DEAutobahnAmqpProducer:
             self.send_warning_resolved(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -2074,8 +2358,8 @@ class DEAutobahnAmqpProducer:
     def send_weight_limit35_restriction_appeared(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.WeightLimit35RestrictionAppeared` message
@@ -2083,8 +2367,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2097,8 +2381,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2128,6 +2413,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -2137,18 +2425,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_weight_limit35_restriction_appeared_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.WeightLimit35RestrictionAppeared` messages
@@ -2156,7 +2453,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -2164,7 +2461,7 @@ class DEAutobahnAmqpProducer:
             self.send_weight_limit35_restriction_appeared(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -2172,8 +2469,8 @@ class DEAutobahnAmqpProducer:
     def send_weight_limit35_restriction_updated(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.WeightLimit35RestrictionUpdated` message
@@ -2181,8 +2478,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2195,8 +2492,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2226,6 +2524,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -2235,18 +2536,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_weight_limit35_restriction_updated_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.WeightLimit35RestrictionUpdated` messages
@@ -2254,7 +2564,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -2262,7 +2572,7 @@ class DEAutobahnAmqpProducer:
             self.send_weight_limit35_restriction_updated(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -2270,8 +2580,8 @@ class DEAutobahnAmqpProducer:
     def send_weight_limit35_restriction_resolved(self,
         data: RoadEvent,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.WeightLimit35RestrictionResolved` message
@@ -2279,8 +2589,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (RoadEvent): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2293,8 +2603,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2324,6 +2635,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -2333,18 +2647,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_weight_limit35_restriction_resolved_batch(self,
         data_array: typing.List[RoadEvent],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.WeightLimit35RestrictionResolved` messages
@@ -2352,7 +2675,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[RoadEvent]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -2360,7 +2683,7 @@ class DEAutobahnAmqpProducer:
             self.send_weight_limit35_restriction_resolved(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -2368,8 +2691,8 @@ class DEAutobahnAmqpProducer:
     def send_webcam_appeared(self,
         data: Webcam,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.WebcamAppeared` message
@@ -2377,8 +2700,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Webcam): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2391,8 +2714,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2422,6 +2746,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -2431,18 +2758,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_webcam_appeared_batch(self,
         data_array: typing.List[Webcam],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.WebcamAppeared` messages
@@ -2450,7 +2786,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[Webcam]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -2458,7 +2794,7 @@ class DEAutobahnAmqpProducer:
             self.send_webcam_appeared(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -2466,8 +2802,8 @@ class DEAutobahnAmqpProducer:
     def send_webcam_updated(self,
         data: Webcam,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.WebcamUpdated` message
@@ -2475,8 +2811,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Webcam): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2489,8 +2825,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2520,6 +2857,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -2529,18 +2869,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_webcam_updated_batch(self,
         data_array: typing.List[Webcam],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.WebcamUpdated` messages
@@ -2548,7 +2897,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[Webcam]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -2556,7 +2905,7 @@ class DEAutobahnAmqpProducer:
             self.send_webcam_updated(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -2564,8 +2913,8 @@ class DEAutobahnAmqpProducer:
     def send_webcam_resolved(self,
         data: Webcam,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.WebcamResolved` message
@@ -2573,8 +2922,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (Webcam): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2587,8 +2936,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2618,6 +2968,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -2627,18 +2980,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_webcam_resolved_batch(self,
         data_array: typing.List[Webcam],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.WebcamResolved` messages
@@ -2646,7 +3008,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[Webcam]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -2654,7 +3016,7 @@ class DEAutobahnAmqpProducer:
             self.send_webcam_resolved(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -2662,8 +3024,8 @@ class DEAutobahnAmqpProducer:
     def send_parking_lorry_appeared(self,
         data: ParkingLorry,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ParkingLorryAppeared` message
@@ -2671,8 +3033,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ParkingLorry): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2685,8 +3047,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2716,6 +3079,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -2725,18 +3091,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_parking_lorry_appeared_batch(self,
         data_array: typing.List[ParkingLorry],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ParkingLorryAppeared` messages
@@ -2744,7 +3119,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[ParkingLorry]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -2752,7 +3127,7 @@ class DEAutobahnAmqpProducer:
             self.send_parking_lorry_appeared(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -2760,8 +3135,8 @@ class DEAutobahnAmqpProducer:
     def send_parking_lorry_updated(self,
         data: ParkingLorry,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ParkingLorryUpdated` message
@@ -2769,8 +3144,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ParkingLorry): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2783,8 +3158,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2814,6 +3190,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -2823,18 +3202,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_parking_lorry_updated_batch(self,
         data_array: typing.List[ParkingLorry],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ParkingLorryUpdated` messages
@@ -2842,7 +3230,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[ParkingLorry]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -2850,7 +3238,7 @@ class DEAutobahnAmqpProducer:
             self.send_parking_lorry_updated(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -2858,8 +3246,8 @@ class DEAutobahnAmqpProducer:
     def send_parking_lorry_resolved(self,
         data: ParkingLorry,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ParkingLorryResolved` message
@@ -2867,8 +3255,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ParkingLorry): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2881,8 +3269,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -2912,6 +3301,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -2921,18 +3313,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_parking_lorry_resolved_batch(self,
         data_array: typing.List[ParkingLorry],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ParkingLorryResolved` messages
@@ -2940,7 +3341,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[ParkingLorry]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -2948,7 +3349,7 @@ class DEAutobahnAmqpProducer:
             self.send_parking_lorry_resolved(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -2956,8 +3357,8 @@ class DEAutobahnAmqpProducer:
     def send_electric_charging_station_appeared(self,
         data: ChargingStation,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ElectricChargingStationAppeared` message
@@ -2965,8 +3366,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -2979,8 +3380,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3010,6 +3412,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -3019,18 +3424,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_electric_charging_station_appeared_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ElectricChargingStationAppeared` messages
@@ -3038,7 +3452,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -3046,7 +3460,7 @@ class DEAutobahnAmqpProducer:
             self.send_electric_charging_station_appeared(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -3054,8 +3468,8 @@ class DEAutobahnAmqpProducer:
     def send_electric_charging_station_updated(self,
         data: ChargingStation,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ElectricChargingStationUpdated` message
@@ -3063,8 +3477,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3077,8 +3491,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3108,6 +3523,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -3117,18 +3535,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_electric_charging_station_updated_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ElectricChargingStationUpdated` messages
@@ -3136,7 +3563,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -3144,7 +3571,7 @@ class DEAutobahnAmqpProducer:
             self.send_electric_charging_station_updated(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -3152,8 +3579,8 @@ class DEAutobahnAmqpProducer:
     def send_electric_charging_station_resolved(self,
         data: ChargingStation,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.ElectricChargingStationResolved` message
@@ -3161,8 +3588,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3175,8 +3602,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3206,6 +3634,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -3215,18 +3646,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_electric_charging_station_resolved_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.ElectricChargingStationResolved` messages
@@ -3234,7 +3674,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -3242,7 +3682,7 @@ class DEAutobahnAmqpProducer:
             self.send_electric_charging_station_resolved(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -3250,8 +3690,8 @@ class DEAutobahnAmqpProducer:
     def send_strong_electric_charging_station_appeared(self,
         data: ChargingStation,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.StrongElectricChargingStationAppeared` message
@@ -3259,8 +3699,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3273,8 +3713,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3304,6 +3745,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -3313,18 +3757,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_strong_electric_charging_station_appeared_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.StrongElectricChargingStationAppeared` messages
@@ -3332,7 +3785,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -3340,7 +3793,7 @@ class DEAutobahnAmqpProducer:
             self.send_strong_electric_charging_station_appeared(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -3348,8 +3801,8 @@ class DEAutobahnAmqpProducer:
     def send_strong_electric_charging_station_updated(self,
         data: ChargingStation,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.StrongElectricChargingStationUpdated` message
@@ -3357,8 +3810,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3371,8 +3824,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3402,6 +3856,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -3411,18 +3868,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_strong_electric_charging_station_updated_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.StrongElectricChargingStationUpdated` messages
@@ -3430,7 +3896,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -3438,7 +3904,7 @@ class DEAutobahnAmqpProducer:
             self.send_strong_electric_charging_station_updated(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     
@@ -3446,8 +3912,8 @@ class DEAutobahnAmqpProducer:
     def send_strong_electric_charging_station_resolved(self,
         data: ChargingStation,
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `DE.Autobahn.amqp.StrongElectricChargingStationResolved` message
@@ -3455,8 +3921,8 @@ class DEAutobahnAmqpProducer:
         
         Args:
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
             _road (str): Value for AMQP protocol option placeholder road
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (ChargingStation): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
@@ -3469,8 +3935,9 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            None,  # Will be auto-generated
+            "{event_time}",
         }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
         # Remove None values
         attributes = {k: v for k, v in attributes.items() if v is not None}
@@ -3500,6 +3967,9 @@ class DEAutobahnAmqpProducer:
             amqp_msg.content_type = content_type
             if headers:
                 amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{identifier}".format(identifier=_identifier)
 
@@ -3509,18 +3979,27 @@ class DEAutobahnAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{identifier}".format(identifier=_identifier)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_strong_electric_charging_station_resolved_batch(self,
         data_array: typing.List[ChargingStation],
         _identifier: str,
-        _event_time: str,
         _road: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `DE.Autobahn.amqp.StrongElectricChargingStationResolved` messages
@@ -3528,7 +4007,7 @@ class DEAutobahnAmqpProducer:
         Args:
             data_array (typing.List[ChargingStation]): Array of message data objects
             _identifier (str): Value for placeholder identifier in attribute subject
-            _event_time (str): Value for placeholder event_time in attribute time
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _road (str): Value for AMQP protocol option placeholder road
             content_type (str): The content type of the message data
         """
@@ -3536,7 +4015,7 @@ class DEAutobahnAmqpProducer:
             self.send_strong_electric_charging_station_resolved(
                 data=data,
                 _identifier=_identifier,
-                _event_time=_event_time,
+                _time=_time,
                 _road=_road,
                 content_type=content_type)
     

@@ -99,6 +99,8 @@ class MetObsObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -166,11 +168,11 @@ class MetObsObservation:
             An instance of the dataclass.
         """
         return cls(
-            observation_id='isoawzfxjgkufnmypvrs',
-            station_id='colaldgqzmmsqhzxuhlw',
-            parameter_id=ParameterIdenum.temp_dry,
+            observation_id='vxbrynvtdmaktngefdme',
+            station_id='sexbqtesoujgmsyuxsxl',
+            parameter_id=ParameterIdenum.sealev_dvr,
             observed=datetime.datetime.now(datetime.timezone.utc),
-            value=float(2.7515563278366795),
-            latitude=float(91.78728340204947),
-            longitude=float(16.461100950202333)
+            value=float(75.34293440782103),
+            latitude=float(44.91012479105216),
+            longitude=float(98.27538367737452)
         )

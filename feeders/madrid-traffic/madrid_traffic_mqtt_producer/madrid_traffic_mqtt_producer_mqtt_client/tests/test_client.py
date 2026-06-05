@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import madrid_traffic_mqtt_producer_data
 from madrid_traffic_mqtt_producer_data import MeasurementPoint
-from test_madrid_traffic_mqtt_producer_data_measurementpoint import Test_MeasurementPoint
+from test_measurementpoint import Test_MeasurementPoint
 from madrid_traffic_mqtt_producer_data import TrafficReading
-from test_madrid_traffic_mqtt_producer_data_trafficreading import Test_TrafficReading
+from test_trafficreading import Test_TrafficReading
 from madrid_traffic_mqtt_producer_mqtt_client import EsMadridInformoMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_es_madrid_informo_mqtt_es_madrid_informo_measurement_point_mqtt_p
         await publisher_client.publish_es_madrid_informo_measurement_point_mqtt(
             topic=test_topic,
             sensor_id=f"test_sensor_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -156,6 +158,7 @@ async def test_es_madrid_informo_mqtt_es_madrid_informo_traffic_reading_mqtt_py(
         await publisher_client.publish_es_madrid_informo_traffic_reading_mqtt(
             topic=test_topic,
             sensor_id=f"test_sensor_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

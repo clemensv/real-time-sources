@@ -82,10 +82,10 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Switzerland" title="Switzerland" src="https://flagcdn.com/20x15/ch.png" width="20" height="15"></picture> &nbsp;<b>BAFU Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~300 stations, FOEN</sub></summary>
+<details><summary><picture><img align="middle" alt="Switzerland â€” ~300 stations" title="Switzerland â€” ~300 stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>BAFU Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Switzerland â€” ~300 stations, FOEN</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Switzerland" title="Switzerland" src="https://flagcdn.com/20x15/ch.png" width="20" height="15"></picture> &nbsp;Switzerland</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Switzerland â€” ~300 stations" title="Switzerland â€” ~300 stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Switzerland â€” ~300 stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -93,7 +93,7 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~300 stations, FOEN
+Switzerland â€” ~300 stations, FOEN
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WaterLevelObservation</code></sub>
 
@@ -107,10 +107,10 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Canada" title="Canada" src="https://flagcdn.com/20x15/ca.png" width="20" height="15"></picture> &nbsp;<b>Canada ECCC Water Office</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~2,100 hydrometric stations, ECCC/WSC</sub></summary>
+<details><summary><picture><img align="middle" alt="Canada â€” ~2" title="Canada â€” ~2" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Canada ECCC Water Office</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Canada â€” ~2,100 hydrometric stations, ECCC/WSC</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Canada" title="Canada" src="https://flagcdn.com/20x15/ca.png" width="20" height="15"></picture> &nbsp;Canada</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Canada â€” ~2" title="Canada â€” ~2" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Canada â€” ~2</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>stations/{station_number}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -118,7 +118,7 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~2,100 hydrometric stations, ECCC/WSC
+Canada â€” ~2,100 hydrometric stations, ECCC/WSC
 
 <sub><b>📍 keyed by</b> <code>stations/{station_number}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>Observation</code></sub>
 
@@ -132,10 +132,10 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="California" title="California" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>CDEC Reservoirs</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~2,600 stations, DWR</sub></summary>
+<details><summary><picture><img align="middle" alt="California â€” ~2" title="California â€” ~2" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>CDEC Reservoirs</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;California â€” ~2,600 stations, DWR</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="California" title="California" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;California</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="California â€” ~2" title="California â€” ~2" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;California â€” ~2</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}/{sensor_num}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -143,7 +143,7 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~2,600 stations, DWR
+California â€” ~2,600 stations, DWR
 
 <sub><b>📍 keyed by</b> <code>{station_id}/{sensor_num}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>ReservoirReading</code></sub>
 
@@ -157,10 +157,10 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Czech Republic" title="Czech Republic" src="https://flagcdn.com/20x15/cz.png" width="20" height="15"></picture> &nbsp;<b>CHMI Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;CHMU</sub></summary>
+<details><summary><picture><img align="middle" alt="Czech Republic â€” CHMU" title="Czech Republic â€” CHMU" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>CHMI Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Czech Republic â€” CHMU</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Czech Republic" title="Czech Republic" src="https://flagcdn.com/20x15/cz.png" width="20" height="15"></picture> &nbsp;Czech Republic</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Czech Republic â€” CHMU" title="Czech Republic â€” CHMU" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Czech Republic â€” CHMU</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -168,7 +168,7 @@ _The catalog below is rendered from `catalog.json`. Click a category to expand. 
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-CHMU
+Czech Republic â€” CHMU
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WaterLevelObservation</code></sub>
 
@@ -182,10 +182,10 @@ CHMU
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;<b>German Waters</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;12 state portals, ~2,724 stations</sub></summary>
+<details><summary><picture><img align="middle" alt="Germany â€” 12 state portals" title="Germany â€” 12 state portals" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>German Waters</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Germany â€” 12 state portals, ~2,724 stations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;Germany</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany â€” 12 state portals" title="Germany â€” 12 state portals" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Germany â€” 12 state portals</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -193,7 +193,7 @@ CHMU
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-12 state portals, ~2,724 stations
+Germany â€” 12 state portals, ~2,724 stations
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WaterLevelObservation</code></sub>
 
@@ -207,10 +207,10 @@ CHMU
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="France" title="France" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"></picture> &nbsp;<b>Hub'Eau Hydrometrie</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~6,300 stations</sub></summary>
+<details><summary><picture><img align="middle" alt="France â€” ~6" title="France â€” ~6" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Hub'Eau Hydrometrie</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;France â€” ~6,300 stations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="France" title="France" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"></picture> &nbsp;France</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="France â€” ~6" title="France â€” ~6" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;France â€” ~6</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{code_station}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -218,7 +218,7 @@ CHMU
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~6,300 stations
+France â€” ~6,300 stations
 
 <sub><b>📍 keyed by</b> <code>{code_station}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>Observation</code></sub>
 
@@ -232,10 +232,10 @@ CHMU
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Poland" title="Poland" src="https://flagcdn.com/20x15/pl.png" width="20" height="15"></picture> &nbsp;<b>IMGW Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;IMGW-PIB</sub></summary>
+<details><summary><picture><img align="middle" alt="Poland â€” IMGW-PIB" title="Poland â€” IMGW-PIB" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>IMGW Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Poland â€” IMGW-PIB</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Poland" title="Poland" src="https://flagcdn.com/20x15/pl.png" width="20" height="15"></picture> &nbsp;Poland</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Poland â€” IMGW-PIB" title="Poland â€” IMGW-PIB" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Poland â€” IMGW-PIB</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -243,7 +243,7 @@ CHMU
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-IMGW-PIB
+Poland â€” IMGW-PIB
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WaterLevelObservation</code></sub>
 
@@ -257,10 +257,10 @@ IMGW-PIB
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Ireland" title="Ireland" src="https://flagcdn.com/20x15/ie.png" width="20" height="15"></picture> &nbsp;<b>Ireland OPW Water Level</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~500 OPW hydrometric stations</sub></summary>
+<details><summary><picture><img align="middle" alt="Ireland â€” ~500 OPW hydrometric stations" title="Ireland â€” ~500 OPW hydrometric stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Ireland OPW Water Level</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Ireland â€” ~500 OPW hydrometric stations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Ireland" title="Ireland" src="https://flagcdn.com/20x15/ie.png" width="20" height="15"></picture> &nbsp;Ireland</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Ireland â€” ~500 OPW hydrometric stations" title="Ireland â€” ~500 OPW hydrometric stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Ireland â€” ~500 OPW hydrometric stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_ref}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -268,7 +268,7 @@ IMGW-PIB
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~500 OPW hydrometric stations
+Ireland â€” ~500 OPW hydrometric stations
 
 <sub><b>📍 keyed by</b> <code>{station_ref}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WaterLevelReading</code></sub>
 
@@ -282,10 +282,10 @@ IMGW-PIB
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Washington State / Puget Sound" title="Washington State / Puget Sound" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>King County Marine</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;buoy and mooring telemetry</sub></summary>
+<details><summary><picture><img align="middle" alt="Washington State / Puget Sound â€” buoy and mooring telemetry" title="Washington State / Puget Sound â€” buoy and mooring telemetry" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>King County Marine</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Washington State / Puget Sound â€” buoy and mooring telemetry</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Washington State / Puget Sound" title="Washington State / Puget Sound" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;Washington State / Puget Sound</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Washington State / Puget Sound â€” buoy and mooring telemetry" title="Washington State / Puget Sound â€” buoy and mooring telemetry" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Washington State / Puget Sound â€” buoy and mooring telemetry</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -293,7 +293,7 @@ IMGW-PIB
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-buoy and mooring telemetry
+Washington State / Puget Sound â€” buoy and mooring telemetry
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WaterQualityReading</code></sub>
 
@@ -307,10 +307,10 @@ buoy and mooring telemetry
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Nepal" title="Nepal" src="https://flagcdn.com/20x15/np.png" width="20" height="15"></picture> &nbsp;<b>Nepal BIPAD Hydrology</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Himalayan river basins, BIPAD</sub></summary>
+<details><summary><picture><img align="middle" alt="Nepal â€” Himalayan river basins" title="Nepal â€” Himalayan river basins" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Nepal BIPAD Hydrology</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Nepal â€” Himalayan river basins, BIPAD</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Nepal" title="Nepal" src="https://flagcdn.com/20x15/np.png" width="20" height="15"></picture> &nbsp;Nepal</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Nepal â€” Himalayan river basins" title="Nepal â€” Himalayan river basins" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Nepal â€” Himalayan river basins</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -318,7 +318,7 @@ buoy and mooring telemetry
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-Himalayan river basins, BIPAD
+Nepal â€” Himalayan river basins, BIPAD
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>RiverStation</code>, <code>WaterLevelReading</code></sub>
 
@@ -332,10 +332,10 @@ Himalayan river basins, BIPAD
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>NOAA NDBC</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;buoy observations</sub></summary>
+<details><summary><picture><img align="middle" alt="United States â€” buoy observations" title="United States â€” buoy observations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NOAA NDBC</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United States â€” buoy observations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;United States</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States â€” buoy observations" title="United States â€” buoy observations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United States â€” buoy observations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">9 type(s)</td></tr>
@@ -343,7 +343,7 @@ Himalayan river basins, BIPAD
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-buoy observations
+United States â€” buoy observations
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>BuoyObservation</code>, <code>BuoyStation</code>, <code>BuoySolarRadiationObservation</code>, <code>BuoyOceanographicObservation</code>, <code>BuoyDartMeasurement</code>, <code>BuoyContinuousWindObservation</code>, <code>BuoySupplementalMeasurement</code>, <code>BuoyDetailedWaveSummary</code>, <code>BuoyHourlyRainMeasurement</code></sub>
 
@@ -357,10 +357,10 @@ buoy observations
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>NOAA Tides & Currents</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~3,000 stations</sub></summary>
+<details><summary><picture><img align="middle" alt="United States â€” ~3" title="United States â€” ~3" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NOAA Tides & Currents</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United States â€” ~3,000 stations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;United States</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States â€” ~3" title="United States â€” ~3" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United States â€” ~3</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">13 type(s)</td></tr>
@@ -368,7 +368,7 @@ buoy observations
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~3,000 stations
+United States â€” ~3,000 stations
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>WaterLevel</code>, <code>Predictions</code>, <code>AirPressure</code>, <code>AirTemperature</code>, <code>WaterTemperature</code>, <code>Wind</code>, <code>Humidity</code>, <code>Conductivity</code>, <code>Salinity</code>, <code>Station</code>, <code>Visibility</code>, <code>Currents</code>, <code>CurrentPredictions</code></sub>
 
@@ -382,10 +382,10 @@ buoy observations
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Norway" title="Norway" src="https://flagcdn.com/20x15/no.png" width="20" height="15"></picture> &nbsp;<b>NVE Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;NVE (requires free API key)</sub></summary>
+<details><summary><picture><img align="middle" alt="Norway â€” NVE (requires free API key)" title="Norway â€” NVE (requires free API key)" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NVE Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Norway â€” NVE (requires free API key)</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Norway" title="Norway" src="https://flagcdn.com/20x15/no.png" width="20" height="15"></picture> &nbsp;Norway</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Norway â€” NVE (requires free API key)" title="Norway â€” NVE (requires free API key)" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Norway â€” NVE (requires free API key)</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -393,7 +393,7 @@ buoy observations
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-NVE (requires free API key)
+Norway â€” NVE (requires free API key)
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WaterLevelObservation</code></sub>
 
@@ -407,10 +407,10 @@ NVE (requires free API key)
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;<b>Pegelonline</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;federal waterways, ~3,000 stations</sub></summary>
+<details><summary><picture><img align="middle" alt="Germany â€” federal waterways" title="Germany â€” federal waterways" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Pegelonline</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Germany â€” federal waterways, ~3,000 stations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;Germany</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany â€” federal waterways" title="Germany â€” federal waterways" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Germany â€” federal waterways</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -418,7 +418,7 @@ NVE (requires free API key)
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-federal waterways, ~3,000 stations
+Germany â€” federal waterways, ~3,000 stations
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>CurrentMeasurement</code></sub>
 
@@ -432,10 +432,10 @@ federal waterways, ~3,000 stations
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Netherlands" title="Netherlands" src="https://flagcdn.com/20x15/nl.png" width="20" height="15"></picture> &nbsp;<b>RWS Waterwebservices</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~785 stations</sub></summary>
+<details><summary><picture><img align="middle" alt="Netherlands â€” ~785 stations" title="Netherlands â€” ~785 stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>RWS Waterwebservices</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Netherlands â€” ~785 stations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Netherlands" title="Netherlands" src="https://flagcdn.com/20x15/nl.png" width="20" height="15"></picture> &nbsp;Netherlands</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Netherlands â€” ~785 stations" title="Netherlands â€” ~785 stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Netherlands â€” ~785 stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_code}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -443,7 +443,7 @@ federal waterways, ~3,000 stations
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~785 stations
+Netherlands â€” ~785 stations
 
 <sub><b>📍 keyed by</b> <code>{station_code}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WaterLevelObservation</code></sub>
 
@@ -457,10 +457,10 @@ federal waterways, ~3,000 stations
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Sweden" title="Sweden" src="https://flagcdn.com/20x15/se.png" width="20" height="15"></picture> &nbsp;<b>SMHI Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;SMHI</sub></summary>
+<details><summary><picture><img align="middle" alt="Sweden â€” SMHI" title="Sweden â€” SMHI" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>SMHI Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Sweden â€” SMHI</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Sweden" title="Sweden" src="https://flagcdn.com/20x15/se.png" width="20" height="15"></picture> &nbsp;Sweden</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Sweden â€” SMHI" title="Sweden â€” SMHI" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Sweden â€” SMHI</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -468,7 +468,7 @@ federal waterways, ~3,000 stations
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-SMHI
+Sweden â€” SMHI
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>DischargeObservation</code></sub>
 
@@ -482,10 +482,10 @@ SMHI
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Western US & Alaska" title="Western US & Alaska" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>SNOTEL Snow</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~900 snowpack stations, NRCS</sub></summary>
+<details><summary><picture><img align="middle" alt="Western US & Alaska â€” ~900 snowpack stations" title="Western US & Alaska â€” ~900 snowpack stations" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>SNOTEL Snow</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Western US & Alaska â€” ~900 snowpack stations, NRCS</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Western US & Alaska" title="Western US & Alaska" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;Western US & Alaska</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Western US & Alaska â€” ~900 snowpack stations" title="Western US & Alaska â€” ~900 snowpack stations" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;Western US & Alaska â€” ~900 snowpack stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_triplet}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -493,7 +493,7 @@ SMHI
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~900 snowpack stations, NRCS
+Western US & Alaska â€” ~900 snowpack stations, NRCS
 
 <sub><b>📍 keyed by</b> <code>{station_triplet}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>SnowObservation</code></sub>
 
@@ -507,10 +507,10 @@ SMHI
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Finland" title="Finland" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;<b>SYKE Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;SYKE</sub></summary>
+<details><summary><picture><img align="middle" alt="Finland â€” SYKE" title="Finland â€” SYKE" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>SYKE Hydro</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Finland â€” SYKE</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Finland" title="Finland" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;Finland</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Finland â€” SYKE" title="Finland â€” SYKE" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Finland â€” SYKE</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -518,7 +518,7 @@ SMHI
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-SYKE
+Finland â€” SYKE
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WaterLevelObservation</code></sub>
 
@@ -532,10 +532,10 @@ SYKE
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="England" title="England" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;<b>UK EA Flood Monitoring</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~4,000 stations</sub></summary>
+<details><summary><picture><img align="middle" alt="England â€” ~4" title="England â€” ~4" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;<b>UK EA Flood Monitoring</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;England â€” ~4,000 stations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="England" title="England" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;England</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="England â€” ~4" title="England â€” ~4" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;England â€” ~4</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_reference}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -543,7 +543,7 @@ SYKE
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~4,000 stations
+England â€” ~4,000 stations
 
 <sub><b>📍 keyed by</b> <code>{station_reference}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>Reading</code></sub>
 
@@ -557,10 +557,10 @@ SYKE
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>USGS Instantaneous Values</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~1.5M stations</sub></summary>
+<details><summary><picture><img align="middle" alt="United States â€” ~1.5M stations" title="United States â€” ~1.5M stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>USGS Instantaneous Values</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United States â€” ~1.5M stations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;United States</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States â€” ~1.5M stations" title="United States â€” ~1.5M stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United States â€” ~1.5M stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{agency_cd}/{site_no}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -568,7 +568,7 @@ SYKE
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~1.5M stations
+United States â€” ~1.5M stations
 
 <sub><b>📍 keyed by</b> <code>{agency_cd}/{site_no}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Site</code></sub>
 
@@ -582,10 +582,10 @@ SYKE
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>USGS NWIS Water Quality</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~3,000 continuous WQ sites</sub></summary>
+<details><summary><picture><img align="middle" alt="United States â€” ~3" title="United States â€” ~3" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>USGS NWIS Water Quality</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United States â€” ~3,000 continuous WQ sites</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;United States</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States â€” ~3" title="United States â€” ~3" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United States â€” ~3</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{site_number}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -593,7 +593,7 @@ SYKE
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~3,000 continuous WQ sites
+United States â€” ~3,000 continuous WQ sites
 
 <sub><b>📍 keyed by</b> <code>{site_number}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>MonitoringSite</code></sub>
 
@@ -607,10 +607,10 @@ SYKE
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Belgium / Flanders" title="Belgium / Flanders" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;<b>Waterinfo VMM</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~1,785 stations</sub></summary>
+<details><summary><picture><img align="middle" alt="Belgium / Flanders â€” ~1" title="Belgium / Flanders â€” ~1" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;<b>Waterinfo VMM</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Belgium / Flanders â€” ~1,785 stations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Belgium / Flanders" title="Belgium / Flanders" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;Belgium / Flanders</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Belgium / Flanders â€” ~1" title="Belgium / Flanders â€” ~1" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;Belgium / Flanders â€” ~1</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_no}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -618,7 +618,7 @@ SYKE
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~1,785 stations
+Belgium / Flanders â€” ~1,785 stations
 
 <sub><b>📍 keyed by</b> <code>{station_no}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WaterLevelReading</code></sub>
 
@@ -639,10 +639,10 @@ SYKE
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>AviationWeather.gov</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;METAR, SIGMET advisories</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” METAR" title="Global â€” METAR" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>AviationWeather.gov</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” METAR, SIGMET advisories</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” METAR" title="Global â€” METAR" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;Global â€” METAR</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{icao_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">3 type(s)</td></tr>
@@ -650,7 +650,7 @@ SYKE
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-METAR, SIGMET advisories
+Global â€” METAR, SIGMET advisories
 
 <sub><b>📍 keyed by</b> <code>{icao_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>Metar</code>, <code>Sigmet</code></sub>
 
@@ -664,10 +664,10 @@ METAR, SIGMET advisories
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Blitzortung</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;community lightning strokes, seconds latency</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” community lightning strokes" title="Global â€” community lightning strokes" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Blitzortung</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” community lightning strokes, seconds latency</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” community lightning strokes" title="Global â€” community lightning strokes" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” community lightning strokes</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{source_id}/{stroke_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -675,7 +675,7 @@ METAR, SIGMET advisories
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-community lightning strokes, seconds latency
+Global â€” community lightning strokes, seconds latency
 
 <sub><b>📍 keyed by</b> <code>{source_id}/{stroke_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>LightningStroke</code></sub>
 
@@ -689,10 +689,10 @@ community lightning strokes, seconds latency
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Australia" title="Australia" src="https://flagcdn.com/20x15/au.png" width="20" height="15"></picture> &nbsp;<b>BOM Australia</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~8 capital city airports, half-hourly obs</sub></summary>
+<details><summary><picture><img align="middle" alt="Australia â€” ~8 capital city airports" title="Australia â€” ~8 capital city airports" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>BOM Australia</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Australia â€” ~8 capital city airports, half-hourly obs</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Australia" title="Australia" src="https://flagcdn.com/20x15/au.png" width="20" height="15"></picture> &nbsp;Australia</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Australia â€” ~8 capital city airports" title="Australia â€” ~8 capital city airports" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Australia â€” ~8 capital city airports</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_wmo}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -700,7 +700,7 @@ community lightning strokes, seconds latency
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~8 capital city airports, half-hourly obs
+Australia â€” ~8 capital city airports, half-hourly obs
 
 <sub><b>📍 keyed by</b> <code>{station_wmo}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WeatherObservation</code></sub>
 
@@ -714,10 +714,10 @@ community lightning strokes, seconds latency
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Denmark" title="Denmark" src="https://flagcdn.com/20x15/dk.png" width="20" height="15"></picture> &nbsp;<b>DMI</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;DMI observation triad (metObs + oceanObs + lightning)</sub></summary>
+<details><summary><picture><img align="middle" alt="Denmark â€” DMI observation triad (metObs + oceanObs + lightning)" title="Denmark â€” DMI observation triad (metObs + oceanObs + lightning)" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>DMI</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Denmark â€” DMI observation triad (metObs + oceanObs + lightning)</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Denmark" title="Denmark" src="https://flagcdn.com/20x15/dk.png" width="20" height="15"></picture> &nbsp;Denmark</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Denmark â€” DMI observation triad (metObs + oceanObs + lightning)" title="Denmark â€” DMI observation triad (metObs + oceanObs + lightning)" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Denmark â€” DMI observation triad (metObs + oceanObs + lightning)</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><i>n/a</i></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -725,7 +725,7 @@ community lightning strokes, seconds latency
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-DMI observation triad (metObs + oceanObs + lightning)
+Denmark â€” DMI observation triad (metObs + oceanObs + lightning)
 
 <sub><b>📍 keyed by</b> <i>n/a</i> &nbsp; · &nbsp; <b>📦 events</b> <code>MetObsStation</code>, <code>MetObsObservation</code></sub>
 
@@ -739,10 +739,10 @@ DMI observation triad (metObs + oceanObs + lightning)
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;<b>DWD</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~1,450 stations, observations and CAP alerts</sub></summary>
+<details><summary><picture><img align="middle" alt="Germany â€” ~1" title="Germany â€” ~1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>DWD</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Germany â€” ~1,450 stations, observations and CAP alerts</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;Germany</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany â€” ~1" title="Germany â€” ~1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Germany â€” ~1</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">8 type(s)</td></tr>
@@ -750,7 +750,7 @@ DMI observation triad (metObs + oceanObs + lightning)
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~1,450 stations, observations and CAP alerts
+Germany â€” ~1,450 stations, observations and CAP alerts
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>StationMetadata</code>, <code>AirTemperature10Min</code>, <code>Precipitation10Min</code>, <code>Wind10Min</code>, <code>Solar10Min</code>, <code>HourlyObservation</code>, <code>ExtremeWind10Min</code>, <code>ExtremeTemperature10Min</code></sub>
 
@@ -764,10 +764,10 @@ DMI observation triad (metObs + oceanObs + lightning)
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;<b>DWD Pollenflug</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;daily pollen forecasts, 27 regions</sub></summary>
+<details><summary><picture><img align="middle" alt="Germany â€” daily pollen forecasts" title="Germany â€” daily pollen forecasts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>DWD Pollenflug</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Germany â€” daily pollen forecasts, 27 regions</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;Germany</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany â€” daily pollen forecasts" title="Germany â€” daily pollen forecasts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Germany â€” daily pollen forecasts</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{region_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -775,7 +775,7 @@ DMI observation triad (metObs + oceanObs + lightning)
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-daily pollen forecasts, 27 regions
+Germany â€” daily pollen forecasts, 27 regions
 
 <sub><b>📍 keyed by</b> <code>{region_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Region</code>, <code>PollenForecast</code></sub>
 
@@ -789,10 +789,10 @@ daily pollen forecasts, 27 regions
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Canada" title="Canada" src="https://flagcdn.com/20x15/ca.png" width="20" height="15"></picture> &nbsp;<b>Environment Canada</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~963 SWOB stations, hourly obs</sub></summary>
+<details><summary><picture><img align="middle" alt="Canada â€” ~963 SWOB stations" title="Canada â€” ~963 SWOB stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Environment Canada</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Canada â€” ~963 SWOB stations, hourly obs</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Canada" title="Canada" src="https://flagcdn.com/20x15/ca.png" width="20" height="15"></picture> &nbsp;Canada</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Canada â€” ~963 SWOB stations" title="Canada â€” ~963 SWOB stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Canada â€” ~963 SWOB stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{msc_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -800,7 +800,7 @@ daily pollen forecasts, 27 regions
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~963 SWOB stations, hourly obs
+Canada â€” ~963 SWOB stations, hourly obs
 
 <sub><b>📍 keyed by</b> <code>{msc_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WeatherObservation</code></sub>
 
@@ -814,10 +814,10 @@ daily pollen forecasts, 27 regions
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Austria" title="Austria" src="https://flagcdn.com/20x15/at.png" width="20" height="15"></picture> &nbsp;<b>GeoSphere Austria</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~280 TAWES stations, 10-min obs</sub></summary>
+<details><summary><picture><img align="middle" alt="Austria â€” ~280 TAWES stations" title="Austria â€” ~280 TAWES stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>GeoSphere Austria</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Austria â€” ~280 TAWES stations, 10-min obs</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Austria" title="Austria" src="https://flagcdn.com/20x15/at.png" width="20" height="15"></picture> &nbsp;Austria</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Austria â€” ~280 TAWES stations" title="Austria â€” ~280 TAWES stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Austria â€” ~280 TAWES stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -825,7 +825,7 @@ daily pollen forecasts, 27 regions
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~280 TAWES stations, 10-min obs
+Austria â€” ~280 TAWES stations, 10-min obs
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>WeatherStation</code>, <code>WeatherObservation</code></sub>
 
@@ -839,10 +839,10 @@ daily pollen forecasts, 27 regions
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Hong Kong" title="Hong Kong" src="https://flagcdn.com/20x15/hk.png" width="20" height="15"></picture> &nbsp;<b>HKO Hong Kong</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;27 temp stations, 18 rainfall districts</sub></summary>
+<details><summary><picture><img align="middle" alt="Hong Kong â€” 27 temp stations" title="Hong Kong â€” 27 temp stations" src="https://flagcdn.com/20x15/hk.png" width="20" height="15"></picture> &nbsp;<b>HKO Hong Kong</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Hong Kong â€” 27 temp stations, 18 rainfall districts</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Hong Kong" title="Hong Kong" src="https://flagcdn.com/20x15/hk.png" width="20" height="15"></picture> &nbsp;Hong Kong</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Hong Kong â€” 27 temp stations" title="Hong Kong â€” 27 temp stations" src="https://flagcdn.com/20x15/hk.png" width="20" height="15"></picture> &nbsp;Hong Kong â€” 27 temp stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{place_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -850,7 +850,7 @@ daily pollen forecasts, 27 regions
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-27 temp stations, 18 rainfall districts
+Hong Kong â€” 27 temp stations, 18 rainfall districts
 
 <sub><b>📍 keyed by</b> <code>{place_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WeatherObservation</code></sub>
 
@@ -864,10 +864,10 @@ daily pollen forecasts, 27 regions
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;<b>JMA Bosai AMeDAS</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~1,300 AMeDAS stations, 10-min observations via Bosai JSON API</sub></summary>
+<details><summary><picture><img align="middle" alt="Japan â€” ~1" title="Japan â€” ~1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>JMA Bosai AMeDAS</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Japan â€” ~1,300 AMeDAS stations, 10-min observations via Bosai JSON API</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;Japan</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan â€” ~1" title="Japan â€” ~1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Japan â€” ~1</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>jp.jma.amedas/{station_code}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -875,7 +875,7 @@ daily pollen forecasts, 27 regions
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~1,300 AMeDAS stations, 10-min observations via Bosai JSON API
+Japan â€” ~1,300 AMeDAS stations, 10-min observations via Bosai JSON API
 
 <sub><b>📍 keyed by</b> <code>jp.jma.amedas/{station_code}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>Observation</code></sub>
 
@@ -889,10 +889,10 @@ daily pollen forecasts, 27 regions
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;<b>JMA Japan</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;weather bulletins, warnings, forecasts</sub></summary>
+<details><summary><picture><img align="middle" alt="Japan â€” weather bulletins" title="Japan â€” weather bulletins" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>JMA Japan</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Japan â€” weather bulletins, warnings, forecasts</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;Japan</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan â€” weather bulletins" title="Japan â€” weather bulletins" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Japan â€” weather bulletins</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{bulletin_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -900,7 +900,7 @@ daily pollen forecasts, 27 regions
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-weather bulletins, warnings, forecasts
+Japan â€” weather bulletins, warnings, forecasts
 
 <sub><b>📍 keyed by</b> <code>{bulletin_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>WeatherBulletin</code></sub>
 
@@ -914,10 +914,10 @@ weather bulletins, warnings, forecasts
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Belgium" title="Belgium" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;<b>KMI Belgium</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~14 AWS stations, 10-min observations</sub></summary>
+<details><summary><picture><img align="middle" alt="Belgium â€” ~14 AWS stations" title="Belgium â€” ~14 AWS stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>KMI Belgium</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Belgium â€” ~14 AWS stations, 10-min observations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Belgium" title="Belgium" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;Belgium</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Belgium â€” ~14 AWS stations" title="Belgium â€” ~14 AWS stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Belgium â€” ~14 AWS stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_code}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -925,7 +925,7 @@ weather bulletins, warnings, forecasts
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~14 AWS stations, 10-min observations
+Belgium â€” ~14 AWS stations, 10-min observations
 
 <sub><b>📍 keyed by</b> <code>{station_code}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WeatherObservation</code></sub>
 
@@ -939,10 +939,10 @@ weather bulletins, warnings, forecasts
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;<b>Meteoalarm</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;37 countries, severe weather warnings</sub></summary>
+<details><summary><picture><img align="middle" alt="Europe â€” 37 countries" title="Europe â€” 37 countries" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Meteoalarm</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Europe â€” 37 countries, severe weather warnings</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;Europe</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe â€” 37 countries" title="Europe â€” 37 countries" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Europe â€” 37 countries</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{identifier}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -950,12 +950,12 @@ weather bulletins, warnings, forecasts
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-37 countries, severe weather warnings
+Europe â€” 37 countries, severe weather warnings
 
 <sub><b>📍 keyed by</b> <code>{identifier}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>WeatherWarning</code></sub>
 
 <sub><b>DEPLOY</b></sub><br>
-[![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fmeteoalarm%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fmeteoalarm%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fmeteoalarm%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#meteoalarm/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#meteoalarm/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-meteoalarm)
+[![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fmeteoalarm%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fmeteoalarm%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fmeteoalarm%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fmeteoalarm%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fmeteoalarm%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#meteoalarm/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#meteoalarm/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-meteoalarm)
 
 <sub>📘 <a href="feeders/meteoalarm/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/meteoalarm/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/meteoalarm/CONTAINER.md">CONTAINER</a> &nbsp;·&nbsp; ↗ <a href="https://meteoalarm.org/">meteoalarm.org</a></sub>
 
@@ -964,10 +964,10 @@ weather bulletins, warnings, forecasts
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NOAA GOES / SWPC</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;space weather, solar wind, K-index</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” space weather" title="Global â€” space weather" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>NOAA GOES / SWPC</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” space weather, solar wind, K-index</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” space weather" title="Global â€” space weather" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;Global â€” space weather</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{product_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -975,7 +975,7 @@ weather bulletins, warnings, forecasts
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-space weather, solar wind, K-index
+Global â€” space weather, solar wind, K-index
 
 <sub><b>📍 keyed by</b> <code>{product_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>SpaceWeatherAlert</code></sub>
 
@@ -989,10 +989,10 @@ space weather, solar wind, K-index
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>NOAA NWS</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;weather alerts, CAP</sub></summary>
+<details><summary><picture><img align="middle" alt="United States â€” weather alerts" title="United States â€” weather alerts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NOAA NWS</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United States â€” weather alerts, CAP</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;United States</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States â€” weather alerts" title="United States â€” weather alerts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United States â€” weather alerts</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{alert_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1000,7 +1000,7 @@ space weather, solar wind, K-index
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-weather alerts, CAP
+United States â€” weather alerts, CAP
 
 <sub><b>📍 keyed by</b> <code>{alert_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>WeatherAlert</code></sub>
 
@@ -1014,10 +1014,10 @@ weather alerts, CAP
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NOAA SWPC L1</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact lead time</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” L1 propagated solar wind (DSCOVR/ACE)" title="Global â€” L1 propagated solar wind (DSCOVR/ACE)" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>NOAA SWPC L1</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30â€“60 min Earth-impact lead time</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” L1 propagated solar wind (DSCOVR/ACE)" title="Global â€” L1 propagated solar wind (DSCOVR/ACE)" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;Global â€” L1 propagated solar wind (DSCOVR/ACE)</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{spacecraft}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1025,7 +1025,7 @@ weather alerts, CAP
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact lead time
+Global â€” L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30â€“60 min Earth-impact lead time
 
 <sub><b>📍 keyed by</b> <code>{spacecraft}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>PropagatedSolarWind</code></sub>
 
@@ -1039,10 +1039,10 @@ L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact l
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>NWS CAP Alerts</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;active alerts via api.weather.gov</sub></summary>
+<details><summary><picture><img align="middle" alt="United States â€” active alerts via api.weather.gov" title="United States â€” active alerts via api.weather.gov" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NWS CAP Alerts</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United States â€” active alerts via api.weather.gov</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;United States</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States â€” active alerts via api.weather.gov" title="United States â€” active alerts via api.weather.gov" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United States â€” active alerts via api.weather.gov</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{alert_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1050,7 +1050,7 @@ L1 propagated solar wind (DSCOVR/ACE), 1-min cadence, 30–60 min Earth-impact l
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-active alerts via api.weather.gov
+United States â€” active alerts via api.weather.gov
 
 <sub><b>📍 keyed by</b> <code>{alert_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>WeatherAlert</code></sub>
 
@@ -1064,10 +1064,10 @@ active alerts via api.weather.gov
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>NWS Forecast Zones</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;configurable land and marine forecast zones</sub></summary>
+<details><summary><picture><img align="middle" alt="United States â€” configurable land and marine forecast zones" title="United States â€” configurable land and marine forecast zones" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NWS Forecast Zones</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United States â€” configurable land and marine forecast zones</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;United States</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States â€” configurable land and marine forecast zones" title="United States â€” configurable land and marine forecast zones" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United States â€” configurable land and marine forecast zones</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{zone_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">3 type(s)</td></tr>
@@ -1075,7 +1075,7 @@ active alerts via api.weather.gov
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-configurable land and marine forecast zones
+United States â€” configurable land and marine forecast zones
 
 <sub><b>📍 keyed by</b> <code>{zone_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>ForecastZone</code>, <code>LandZoneForecast</code>, <code>MarineZoneForecast</code></sub>
 
@@ -1089,10 +1089,10 @@ configurable land and marine forecast zones
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Singapore" title="Singapore" src="https://flagcdn.com/20x15/sg.png" width="20" height="15"></picture> &nbsp;<b>Singapore NEA</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;62 weather stations + 5 air-quality regions</sub></summary>
+<details><summary><picture><img align="middle" alt="Singapore â€” 62 weather stations + 5 air-quality regions" title="Singapore â€” 62 weather stations + 5 air-quality regions" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Singapore NEA</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Singapore â€” 62 weather stations + 5 air-quality regions</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Singapore" title="Singapore" src="https://flagcdn.com/20x15/sg.png" width="20" height="15"></picture> &nbsp;Singapore</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Singapore â€” 62 weather stations + 5 air-quality regions" title="Singapore â€” 62 weather stations + 5 air-quality regions" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Singapore â€” 62 weather stations + 5 air-quality regions</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1100,7 +1100,7 @@ configurable land and marine forecast zones
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-62 weather stations + 5 air-quality regions
+Singapore â€” 62 weather stations + 5 air-quality regions
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WeatherObservation</code></sub>
 
@@ -1114,10 +1114,10 @@ configurable land and marine forecast zones
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Sweden" title="Sweden" src="https://flagcdn.com/20x15/se.png" width="20" height="15"></picture> &nbsp;<b>SMHI Weather</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~232 stations, hourly obs</sub></summary>
+<details><summary><picture><img align="middle" alt="Sweden â€” ~232 stations" title="Sweden â€” ~232 stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>SMHI Weather</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Sweden â€” ~232 stations, hourly obs</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Sweden" title="Sweden" src="https://flagcdn.com/20x15/se.png" width="20" height="15"></picture> &nbsp;Sweden</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Sweden â€” ~232 stations" title="Sweden â€” ~232 stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Sweden â€” ~232 stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1125,7 +1125,7 @@ configurable land and marine forecast zones
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~232 stations, hourly obs
+Sweden â€” ~232 stations, hourly obs
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>WeatherObservation</code></sub>
 
@@ -1146,10 +1146,10 @@ configurable land and marine forecast zones
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Canada" title="Canada" src="https://flagcdn.com/20x15/ca.png" width="20" height="15"></picture> &nbsp;<b>Canada AQHI</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;community AQHI observations and forecasts</sub></summary>
+<details><summary><picture><img align="middle" alt="Canada â€” community AQHI observations and forecasts" title="Canada â€” community AQHI observations and forecasts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Canada AQHI</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Canada â€” community AQHI observations and forecasts</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Canada" title="Canada" src="https://flagcdn.com/20x15/ca.png" width="20" height="15"></picture> &nbsp;Canada</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Canada â€” community AQHI observations and forecasts" title="Canada â€” community AQHI observations and forecasts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Canada â€” community AQHI observations and forecasts</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{province}/{community_name}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">3 type(s)</td></tr>
@@ -1157,7 +1157,7 @@ configurable land and marine forecast zones
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-community AQHI observations and forecasts
+Canada â€” community AQHI observations and forecasts
 
 <sub><b>📍 keyed by</b> <code>{province}/{community_name}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Community</code>, <code>Observation</code>, <code>Forecast</code></sub>
 
@@ -1171,10 +1171,10 @@ community AQHI observations and forecasts
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United Kingdom" title="United Kingdom" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;<b>Defra AURN</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;300+ monitoring locations, hourly pollutants</sub></summary>
+<details><summary><picture><img align="middle" alt="United Kingdom â€” 300+ monitoring locations" title="United Kingdom â€” 300+ monitoring locations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Defra AURN</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United Kingdom â€” 300+ monitoring locations, hourly pollutants</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United Kingdom" title="United Kingdom" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;United Kingdom</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United Kingdom â€” 300+ monitoring locations" title="United Kingdom â€” 300+ monitoring locations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United Kingdom â€” 300+ monitoring locations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1182,7 +1182,7 @@ community AQHI observations and forecasts
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-300+ monitoring locations, hourly pollutants
+United Kingdom â€” 300+ monitoring locations, hourly pollutants
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code></sub>
 
@@ -1196,10 +1196,10 @@ community AQHI observations and forecasts
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>EPA UV Index</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;city-scoped hourly and daily UV forecasts</sub></summary>
+<details><summary><picture><img align="middle" alt="United States â€” city-scoped hourly and daily UV forecasts" title="United States â€” city-scoped hourly and daily UV forecasts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>EPA UV Index</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United States â€” city-scoped hourly and daily UV forecasts</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;United States</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States â€” city-scoped hourly and daily UV forecasts" title="United States â€” city-scoped hourly and daily UV forecasts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United States â€” city-scoped hourly and daily UV forecasts</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{location_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1207,7 +1207,7 @@ community AQHI observations and forecasts
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-city-scoped hourly and daily UV forecasts
+United States â€” city-scoped hourly and daily UV forecasts
 
 <sub><b>📍 keyed by</b> <code>{location_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>HourlyForecast</code>, <code>DailyForecast</code></sub>
 
@@ -1221,10 +1221,10 @@ city-scoped hourly and daily UV forecasts
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Finland" title="Finland" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;<b>FMI Finland</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;hourly air quality observations via FMI WFS</sub></summary>
+<details><summary><picture><img align="middle" alt="Finland â€” hourly air quality observations via FMI WFS" title="Finland â€” hourly air quality observations via FMI WFS" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>FMI Finland</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Finland â€” hourly air quality observations via FMI WFS</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Finland" title="Finland" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;Finland</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Finland â€” hourly air quality observations via FMI WFS" title="Finland â€” hourly air quality observations via FMI WFS" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Finland â€” hourly air quality observations via FMI WFS</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{fmisid}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1232,7 +1232,7 @@ city-scoped hourly and daily UV forecasts
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-hourly air quality observations via FMI WFS
+Finland â€” hourly air quality observations via FMI WFS
 
 <sub><b>📍 keyed by</b> <code>{fmisid}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>Observation</code></sub>
 
@@ -1246,10 +1246,10 @@ hourly air quality observations via FMI WFS
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Poland" title="Poland" src="https://flagcdn.com/20x15/pl.png" width="20" height="15"></picture> &nbsp;<b>GIOŚ Poland</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~250 stations, hourly pollutants + AQI</sub></summary>
+<details><summary><picture><img align="middle" alt="Poland â€” ~250 stations" title="Poland â€” ~250 stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>GIOÅš Poland</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Poland â€” ~250 stations, hourly pollutants + AQI</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Poland" title="Poland" src="https://flagcdn.com/20x15/pl.png" width="20" height="15"></picture> &nbsp;Poland</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Poland â€” ~250 stations" title="Poland â€” ~250 stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Poland â€” ~250 stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><i>n/a</i></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">4 type(s)</td></tr>
@@ -1257,7 +1257,7 @@ hourly air quality observations via FMI WFS
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~250 stations, hourly pollutants + AQI
+Poland â€” ~250 stations, hourly pollutants + AQI
 
 <sub><b>📍 keyed by</b> <i>n/a</i> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>Sensor</code>, <code>Measurement</code>, <code>AirQualityIndex</code></sub>
 
@@ -1271,10 +1271,10 @@ hourly air quality observations via FMI WFS
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Hong Kong" title="Hong Kong" src="https://flagcdn.com/20x15/hk.png" width="20" height="15"></picture> &nbsp;<b>Hong Kong EPD AQHI</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;18 AQHI stations, hourly health index</sub></summary>
+<details><summary><picture><img align="middle" alt="Hong Kong â€” 18 AQHI stations" title="Hong Kong â€” 18 AQHI stations" src="https://flagcdn.com/20x15/hk.png" width="20" height="15"></picture> &nbsp;<b>Hong Kong EPD AQHI</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Hong Kong â€” 18 AQHI stations, hourly health index</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Hong Kong" title="Hong Kong" src="https://flagcdn.com/20x15/hk.png" width="20" height="15"></picture> &nbsp;Hong Kong</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Hong Kong â€” 18 AQHI stations" title="Hong Kong â€” 18 AQHI stations" src="https://flagcdn.com/20x15/hk.png" width="20" height="15"></picture> &nbsp;Hong Kong â€” 18 AQHI stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1282,7 +1282,7 @@ hourly air quality observations via FMI WFS
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-18 AQHI stations, hourly health index
+Hong Kong â€” 18 AQHI stations, hourly health index
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>AQHIReading</code></sub>
 
@@ -1296,10 +1296,10 @@ hourly air quality observations via FMI WFS
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Belgium" title="Belgium" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;<b>IRCELINE Belgium</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;station, timeseries, and hourly observations</sub></summary>
+<details><summary><picture><img align="middle" alt="Belgium â€” station" title="Belgium â€” station" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>IRCELINE Belgium</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Belgium â€” station, timeseries, and hourly observations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Belgium" title="Belgium" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;Belgium</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Belgium â€” station" title="Belgium â€” station" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Belgium â€” station</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1307,7 +1307,7 @@ hourly air quality observations via FMI WFS
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-station, timeseries, and hourly observations
+Belgium â€” station, timeseries, and hourly observations
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code></sub>
 
@@ -1321,7 +1321,7 @@ station, timeseries, and hourly observations
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="London" title="London" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;<b>LAQN London</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;site metadata, species, hourly measurements</sub></summary>
+<details><summary><picture><img align="middle" alt="London" title="London" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;<b>LAQN London</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;London, UK â€” site metadata, species, hourly measurements</sub></summary>
 
 <table align="right">
 <tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="London" title="London" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;London</td></tr>
@@ -1332,7 +1332,7 @@ station, timeseries, and hourly observations
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-site metadata, species, hourly measurements
+London, UK â€” site metadata, species, hourly measurements
 
 <sub><b>📍 keyed by</b> <code>{site_code}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Site</code>, <code>Measurement</code>, <code>DailyIndex</code></sub>
 
@@ -1346,10 +1346,10 @@ site metadata, species, hourly measurements
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Netherlands" title="Netherlands" src="https://flagcdn.com/20x15/nl.png" width="20" height="15"></picture> &nbsp;<b>Luchtmeetnet Netherlands</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;station measurements, components, LKI index</sub></summary>
+<details><summary><picture><img align="middle" alt="Netherlands â€” station measurements" title="Netherlands â€” station measurements" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Luchtmeetnet Netherlands</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Netherlands â€” station measurements, components, LKI index</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Netherlands" title="Netherlands" src="https://flagcdn.com/20x15/nl.png" width="20" height="15"></picture> &nbsp;Netherlands</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Netherlands â€” station measurements" title="Netherlands â€” station measurements" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Netherlands â€” station measurements</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_number}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">3 type(s)</td></tr>
@@ -1357,7 +1357,7 @@ site metadata, species, hourly measurements
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-station measurements, components, LKI index
+Netherlands â€” station measurements, components, LKI index
 
 <sub><b>📍 keyed by</b> <code>{station_number}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>Measurement</code>, <code>LKI</code></sub>
 
@@ -1371,10 +1371,10 @@ station measurements, components, LKI index
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Sensor.Community</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;citizen air sensors, PM and climate readings</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” citizen air sensors" title="Global â€” citizen air sensors" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Sensor.Community</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” citizen air sensors, PM and climate readings</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” citizen air sensors" title="Global â€” citizen air sensors" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” citizen air sensors</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{sensor_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1382,7 +1382,7 @@ station measurements, components, LKI index
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-citizen air sensors, PM and climate readings
+Global â€” citizen air sensors, PM and climate readings
 
 <sub><b>📍 keyed by</b> <code>{sensor_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>SensorInfo</code>, <code>SensorReading</code></sub>
 
@@ -1396,10 +1396,10 @@ citizen air sensors, PM and climate readings
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;<b>UBA AirData</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;stations, pollutant components, hourly measures</sub></summary>
+<details><summary><picture><img align="middle" alt="Germany â€” stations" title="Germany â€” stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>UBA AirData</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Germany â€” stations, pollutant components, hourly measures</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;Germany</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany â€” stations" title="Germany â€” stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Germany â€” stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1407,7 +1407,7 @@ citizen air sensors, PM and climate readings
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-stations, pollutant components, hourly measures
+Germany â€” stations, pollutant components, hourly measures
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>Measure</code></sub>
 
@@ -1421,10 +1421,10 @@ stations, pollutant components, hourly measures
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Belgium / Wallonia" title="Belgium / Wallonia" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;<b>Wallonia ISSeP</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;low-cost air quality sensors</sub></summary>
+<details><summary><picture><img align="middle" alt="Belgium / Wallonia â€” low-cost air quality sensors" title="Belgium / Wallonia â€” low-cost air quality sensors" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;<b>Wallonia ISSeP</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Belgium / Wallonia â€” low-cost air quality sensors</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Belgium / Wallonia" title="Belgium / Wallonia" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;Belgium / Wallonia</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Belgium / Wallonia â€” low-cost air quality sensors" title="Belgium / Wallonia â€” low-cost air quality sensors" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;Belgium / Wallonia â€” low-cost air quality sensors</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{configuration_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1432,7 +1432,7 @@ stations, pollutant components, hourly measures
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-low-cost air quality sensors
+Belgium / Wallonia â€” low-cost air quality sensors
 
 <sub><b>📍 keyed by</b> <code>{configuration_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>SensorConfiguration</code>, <code>Observation</code></sub>
 
@@ -1448,15 +1448,15 @@ low-cost air quality sensors
 
 </details>
 
-<details open><summary><b>🚨 Disaster Alerts and Civil Protection</b> &nbsp;<sub>13 sources</sub></summary>
+<details open><summary><b>🚨 Disaster Alerts and Civil Protection</b> &nbsp;<sub>14 sources</sub></summary>
 
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Australia" title="Australia" src="https://flagcdn.com/20x15/au.png" width="20" height="15"></picture> &nbsp;<b>Australian Wildfires</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;NSW, QLD, VIC bushfire incidents</sub></summary>
+<details><summary><picture><img align="middle" alt="Australia â€” NSW" title="Australia â€” NSW" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Australian Wildfires</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Australia â€” NSW, QLD, VIC bushfire incidents</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Australia" title="Australia" src="https://flagcdn.com/20x15/au.png" width="20" height="15"></picture> &nbsp;Australia</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Australia â€” NSW" title="Australia â€” NSW" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Australia â€” NSW</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{state}/{incident_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1464,7 +1464,7 @@ low-cost air quality sensors
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-NSW, QLD, VIC bushfire incidents
+Australia â€” NSW, QLD, VIC bushfire incidents
 
 <sub><b>📍 keyed by</b> <code>{state}/{incident_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>FireIncident</code></sub>
 
@@ -1478,10 +1478,10 @@ NSW, QLD, VIC bushfire incidents
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="European Alps" title="European Alps" src="https://flagcdn.com/20x15/at.png" width="20" height="15"></picture> &nbsp;<b>EAWS ALBINA Avalanche</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;daily avalanche bulletins, CAAMLv6</sub></summary>
+<details><summary><picture><img align="middle" alt="European Alps â€” daily avalanche bulletins" title="European Alps â€” daily avalanche bulletins" src="https://flagcdn.com/20x15/at.png" width="20" height="15"></picture> &nbsp;<b>EAWS ALBINA Avalanche</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;European Alps â€” daily avalanche bulletins, CAAMLv6</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="European Alps" title="European Alps" src="https://flagcdn.com/20x15/at.png" width="20" height="15"></picture> &nbsp;European Alps</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="European Alps â€” daily avalanche bulletins" title="European Alps â€” daily avalanche bulletins" src="https://flagcdn.com/20x15/at.png" width="20" height="15"></picture> &nbsp;European Alps â€” daily avalanche bulletins</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{region_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1489,7 +1489,7 @@ NSW, QLD, VIC bushfire incidents
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-daily avalanche bulletins, CAAMLv6
+European Alps â€” daily avalanche bulletins, CAAMLv6
 
 <sub><b>📍 keyed by</b> <code>{region_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>AvalancheRegion</code>, <code>AvalancheBulletin</code></sub>
 
@@ -1503,10 +1503,35 @@ daily avalanche bulletins, CAAMLv6
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>GDACS</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;earthquakes, floods, cyclones, volcanoes, droughts</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” federated earthquake detections" title="Global â€” federated earthquake detections" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>FDSN Seismology</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” federated earthquake detections, 7 FDSN nodes</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” federated earthquake detections" title="Global â€” federated earthquake detections" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” federated earthquake detections</td></tr>
+<tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
+<tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{contributor}/{event_id}</code></td></tr>
+<tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
+<tr><td valign="middle">✅</td><td valign="middle"><b>Build</b></td><td valign="middle"><a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml">passing</a></td></tr>
+<tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
+</table>
+
+Global â€” federated earthquake detections, 7 FDSN nodes
+
+<sub><b>📍 keyed by</b> <code>{contributor}/{event_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Earthquake</code>, <code>Node</code></sub>
+
+<sub><b>DEPLOY</b></sub><br>
+[![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ffdsn-seismology%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ffdsn-seismology%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ffdsn-seismology%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ffdsn-seismology%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Ffdsn-seismology%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#fdsn-seismology/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#fdsn-seismology/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-fdsn-seismology)
+
+<sub>📘 <a href="feeders/fdsn-seismology/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/fdsn-seismology/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/fdsn-seismology/CONTAINER.md">CONTAINER</a> &nbsp;·&nbsp; ↗ <a href="https://www.fdsn.org/webservices/">fdsn.org</a></sub>
+
+</details>
+
+</td></tr>
+<tr><td>
+
+<details><summary><picture><img align="middle" alt="Global â€” earthquakes" title="Global â€” earthquakes" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>GDACS</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” earthquakes, floods, cyclones, volcanoes, droughts</sub></summary>
+
+<table align="right">
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” earthquakes" title="Global â€” earthquakes" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” earthquakes</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{event_type}/{event_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1514,7 +1539,7 @@ daily avalanche bulletins, CAAMLv6
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-earthquakes, floods, cyclones, volcanoes, droughts
+Global â€” earthquakes, floods, cyclones, volcanoes, droughts
 
 <sub><b>📍 keyed by</b> <code>{event_type}/{event_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>DisasterAlert</code></sub>
 
@@ -1528,10 +1553,10 @@ earthquakes, floods, cyclones, volcanoes, droughts
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Brazil" title="Brazil" src="https://flagcdn.com/20x15/br.png" width="20" height="15"></picture> &nbsp;<b>INPE DETER Brazil</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Amazon & Cerrado deforestation alerts</sub></summary>
+<details><summary><picture><img align="middle" alt="Brazil â€” Amazon & Cerrado deforestation alerts" title="Brazil â€” Amazon & Cerrado deforestation alerts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>INPE DETER Brazil</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Brazil â€” Amazon & Cerrado deforestation alerts</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Brazil" title="Brazil" src="https://flagcdn.com/20x15/br.png" width="20" height="15"></picture> &nbsp;Brazil</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Brazil â€” Amazon & Cerrado deforestation alerts" title="Brazil â€” Amazon & Cerrado deforestation alerts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Brazil â€” Amazon & Cerrado deforestation alerts</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{biome}/{alert_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1539,7 +1564,7 @@ earthquakes, floods, cyclones, volcanoes, droughts
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-Amazon & Cerrado deforestation alerts
+Brazil â€” Amazon & Cerrado deforestation alerts
 
 <sub><b>📍 keyed by</b> <code>{biome}/{alert_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>DeforestationAlert</code></sub>
 
@@ -1553,10 +1578,10 @@ Amazon & Cerrado deforestation alerts
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;<b>JMA Bosai Quake</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)</sub></summary>
+<details><summary><picture><img align="middle" alt="Japan â€” JMA earthquake bulletins (hypocenter" title="Japan â€” JMA earthquake bulletins (hypocenter" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>JMA Bosai Quake</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Japan â€” JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;Japan</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan â€” JMA earthquake bulletins (hypocenter" title="Japan â€” JMA earthquake bulletins (hypocenter" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Japan â€” JMA earthquake bulletins (hypocenter</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>jp.jma.quake/{event_id}/{serial}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1564,7 +1589,7 @@ Amazon & Cerrado deforestation alerts
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)
+Japan â€” JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)
 
 <sub><b>📍 keyed by</b> <code>jp.jma.quake/{event_id}/{serial}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>EarthquakeReport</code></sub>
 
@@ -1578,10 +1603,10 @@ JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;<b>JMA Bosai Volcano</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-4-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;111 volcanoes, alert levels, eruption observations</sub></summary>
+<details><summary><picture><img align="middle" alt="Japan â€” 111 volcanoes" title="Japan â€” 111 volcanoes" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>JMA Bosai Volcano</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-4-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Japan â€” 111 volcanoes, alert levels, eruption observations</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;Japan</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan â€” 111 volcanoes" title="Japan â€” 111 volcanoes" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Japan â€” 111 volcanoes</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>jp.jma.volcano/{volcano_code}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">3 type(s)</td></tr>
@@ -1589,7 +1614,7 @@ JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-111 volcanoes, alert levels, eruption observations
+Japan â€” 111 volcanoes, alert levels, eruption observations
 
 <sub><b>📍 keyed by</b> <code>jp.jma.volcano/{volcano_code}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Volcano</code>, <code>VolcanicWarning</code>, <code>VolcanicEruption</code></sub>
 
@@ -1603,10 +1628,10 @@ JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;<b>JMA Bosai Warning & Tsunami</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;per-prefecture weather warnings + tsunami alerts</sub></summary>
+<details><summary><picture><img align="middle" alt="Japan â€” per-prefecture weather warnings + tsunami alerts" title="Japan â€” per-prefecture weather warnings + tsunami alerts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>JMA Bosai Warning & Tsunami</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Japan â€” per-prefecture weather warnings + tsunami alerts</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan" title="Japan" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;Japan</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan â€” per-prefecture weather warnings + tsunami alerts" title="Japan â€” per-prefecture weather warnings + tsunami alerts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Japan â€” per-prefecture weather warnings + tsunami alerts</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>jp.jma.warning/{office_code}/{area_code}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1614,7 +1639,7 @@ JMA earthquake bulletins (hypocenter, magnitude, JMA intensity)
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-per-prefecture weather warnings + tsunami alerts
+Japan â€” per-prefecture weather warnings + tsunami alerts
 
 <sub><b>📍 keyed by</b> <code>jp.jma.warning/{office_code}/{area_code}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Office</code>, <code>WeatherWarning</code></sub>
 
@@ -1628,10 +1653,10 @@ per-prefecture weather warnings + tsunami alerts
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NASA FIRMS Active Fire</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;active fire & thermal anomaly detections (VIIRS/MODIS), OSINT</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” active fire & thermal anomaly detections (VIIRS/MODIS)" title="Global â€” active fire & thermal anomaly detections (VIIRS/MODIS)" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NASA FIRMS Active Fire</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” active fire & thermal anomaly detections (VIIRS/MODIS), OSINT</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” active fire & thermal anomaly detections (VIIRS/MODIS)" title="Global â€” active fire & thermal anomaly detections (VIIRS/MODIS)" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” active fire & thermal anomaly detections (VIIRS/MODIS)</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{source}/{record_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1639,7 +1664,7 @@ per-prefecture weather warnings + tsunami alerts
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-active fire & thermal anomaly detections (VIIRS/MODIS), OSINT
+Global â€” active fire & thermal anomaly detections (VIIRS/MODIS), OSINT
 
 <sub><b>📍 keyed by</b> <code>{source}/{record_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>FireDetection</code>, <code>DataAvailability</code></sub>
 
@@ -1653,10 +1678,10 @@ active fire & thermal anomaly detections (VIIRS/MODIS), OSINT
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>NIFC USA Wildfires</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;active wildfire incidents, NIFC</sub></summary>
+<details><summary><picture><img align="middle" alt="United States â€” active wildfire incidents" title="United States â€” active wildfire incidents" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NIFC USA Wildfires</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United States â€” active wildfire incidents, NIFC</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;United States</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States â€” active wildfire incidents" title="United States â€” active wildfire incidents" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United States â€” active wildfire incidents</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{irwin_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1664,7 +1689,7 @@ active fire & thermal anomaly detections (VIIRS/MODIS), OSINT
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-active wildfire incidents, NIFC
+United States â€” active wildfire incidents, NIFC
 
 <sub><b>📍 keyed by</b> <code>{irwin_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>WildfireIncident</code></sub>
 
@@ -1678,10 +1703,10 @@ active wildfire incidents, NIFC
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;<b>NINA/BBK</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;MOWAS, KATWARN, BIWAPP, DWD, LHP, Police</sub></summary>
+<details><summary><picture><img align="middle" alt="Germany â€” MOWAS" title="Germany â€” MOWAS" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NINA/BBK</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Germany â€” MOWAS, KATWARN, BIWAPP, DWD, LHP, Police</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;Germany</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany â€” MOWAS" title="Germany â€” MOWAS" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Germany â€” MOWAS</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{warning_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1689,7 +1714,7 @@ active wildfire incidents, NIFC
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-MOWAS, KATWARN, BIWAPP, DWD, LHP, Police
+Germany â€” MOWAS, KATWARN, BIWAPP, DWD, LHP, Police
 
 <sub><b>📍 keyed by</b> <code>{warning_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>CivilWarning</code></sub>
 
@@ -1703,10 +1728,10 @@ MOWAS, KATWARN, BIWAPP, DWD, LHP, Police
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Pacific and Atlantic" title="Pacific and Atlantic" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>PTWC Tsunami</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;NOAA tsunami bulletins</sub></summary>
+<details><summary><picture><img align="middle" alt="Pacific and Atlantic â€” NOAA tsunami bulletins" title="Pacific and Atlantic â€” NOAA tsunami bulletins" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>PTWC Tsunami</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Pacific and Atlantic â€” NOAA tsunami bulletins</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Pacific and Atlantic" title="Pacific and Atlantic" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Pacific and Atlantic</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Pacific and Atlantic â€” NOAA tsunami bulletins" title="Pacific and Atlantic â€” NOAA tsunami bulletins" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Pacific and Atlantic â€” NOAA tsunami bulletins</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{bulletin_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1714,7 +1739,7 @@ MOWAS, KATWARN, BIWAPP, DWD, LHP, Police
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-NOAA tsunami bulletins
+Pacific and Atlantic â€” NOAA tsunami bulletins
 
 <sub><b>📍 keyed by</b> <code>{bulletin_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>TsunamiBulletin</code></sub>
 
@@ -1728,7 +1753,7 @@ NOAA tsunami bulletins
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Seattle" title="Seattle" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>Seattle Fire 911</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;real-time fire dispatch incidents</sub></summary>
+<details><summary><picture><img align="middle" alt="Seattle" title="Seattle" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>Seattle Fire 911</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Seattle, WA â€” real-time fire dispatch incidents</sub></summary>
 
 <table align="right">
 <tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Seattle" title="Seattle" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;Seattle</td></tr>
@@ -1739,7 +1764,7 @@ NOAA tsunami bulletins
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-real-time fire dispatch incidents
+Seattle, WA â€” real-time fire dispatch incidents
 
 <sub><b>📍 keyed by</b> <code>{incident_number}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Incident</code></sub>
 
@@ -1753,10 +1778,10 @@ real-time fire dispatch incidents
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>USGS Earthquakes</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;seismic events</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” seismic events" title="Global â€” seismic events" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>USGS Earthquakes</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” seismic events</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” seismic events" title="Global â€” seismic events" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;Global â€” seismic events</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{net}/{code}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1764,7 +1789,7 @@ real-time fire dispatch incidents
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-seismic events
+Global â€” seismic events
 
 <sub><b>📍 keyed by</b> <code>{net}/{code}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Event</code></sub>
 
@@ -1785,10 +1810,10 @@ seismic events
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;<b>BfS ODL</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~1,700 stations, hourly gamma dose rate</sub></summary>
+<details><summary><picture><img align="middle" alt="Germany â€” ~1" title="Germany â€” ~1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>BfS ODL</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Germany â€” ~1,700 stations, hourly gamma dose rate</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;Germany</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany â€” ~1" title="Germany â€” ~1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Germany â€” ~1</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1796,7 +1821,7 @@ seismic events
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~1,700 stations, hourly gamma dose rate
+Germany â€” ~1,700 stations, hourly gamma dose rate
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>DoseRateMeasurement</code></sub>
 
@@ -1810,10 +1835,10 @@ seismic events
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;<b>EURDEP Radiation</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~5,500 stations, 39 countries, gamma dose</sub></summary>
+<details><summary><picture><img align="middle" alt="Europe â€” ~5" title="Europe â€” ~5" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>EURDEP Radiation</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Europe â€” ~5,500 stations, 39 countries, gamma dose</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;Europe</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe â€” ~5" title="Europe â€” ~5" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Europe â€” ~5</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1821,7 +1846,7 @@ seismic events
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~5,500 stations, 39 countries, gamma dose
+Europe â€” ~5,500 stations, 39 countries, gamma dose
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>DoseRateReading</code></sub>
 
@@ -1835,10 +1860,10 @@ seismic events
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>USGS Geomagnetism</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;14 observatories, 1-min geomagnetic field</sub></summary>
+<details><summary><picture><img align="middle" alt="United States â€” 14 observatories" title="United States â€” 14 observatories" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>USGS Geomagnetism</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United States â€” 14 observatories, 1-min geomagnetic field</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States" title="United States" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;United States</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United States â€” 14 observatories" title="United States â€” 14 observatories" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United States â€” 14 observatories</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{iaga_code}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1846,7 +1871,7 @@ seismic events
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-14 observatories, 1-min geomagnetic field
+United States â€” 14 observatories, 1-min geomagnetic field
 
 <sub><b>📍 keyed by</b> <code>{iaga_code}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Observatory</code>, <code>MagneticFieldReading</code></sub>
 
@@ -1867,10 +1892,10 @@ seismic events
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>AISStream</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;AIS via WebSocket, ~200 km from shore</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” AIS via WebSocket" title="Global â€” AIS via WebSocket" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>AISStream</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” AIS via WebSocket, ~200 km from shore</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” AIS via WebSocket" title="Global â€” AIS via WebSocket" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” AIS via WebSocket</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{UserID}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">23 type(s)</td></tr>
@@ -1878,7 +1903,7 @@ seismic events
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-AIS via WebSocket, ~200 km from shore
+Global â€” AIS via WebSocket, ~200 km from shore
 
 <sub><b>📍 keyed by</b> <code>{UserID}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>PositionReport</code>, <code>ShipStaticData</code>, <code>StandardClassBPositionReport</code>, <code>ExtendedClassBPositionReport</code>, <code>AidsToNavigationReport</code>, <code>StaticDataReport</code>, <code>BaseStationReport</code>, <code>SafetyBroadcastMessage</code>, <code>StandardSearchAndRescueAircraftReport</code>, <code>LongRangeAisBroadcastMessage</code>, <code>AddressedSafetyMessage</code>, <code>AddressedBinaryMessage</code>, <code>AssignedModeCommand</code>, <code>BinaryAcknowledge</code>, <code>BinaryBroadcastMessage</code>, <code>ChannelManagement</code>, <code>CoordinatedUTCInquiry</code>, <code>DataLinkManagementMessage</code>, <code>GnssBroadcastBinaryMessage</code>, <code>GroupAssignmentCommand</code>, <code>Interrogation</code>, <code>MultiSlotBinaryMessage</code>, <code>SingleSlotBinaryMessage</code></sub>
 
@@ -1892,10 +1917,10 @@ AIS via WebSocket, ~200 km from shore
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Finland / Baltic Sea" title="Finland / Baltic Sea" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;<b>Digitraffic Maritime</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;AIS via MQTT</sub></summary>
+<details><summary><picture><img align="middle" alt="Finland / Baltic Sea â€” AIS via MQTT" title="Finland / Baltic Sea â€” AIS via MQTT" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;<b>Digitraffic Maritime</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Finland / Baltic Sea â€” AIS via MQTT</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Finland / Baltic Sea" title="Finland / Baltic Sea" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;Finland / Baltic Sea</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Finland / Baltic Sea â€” AIS via MQTT" title="Finland / Baltic Sea â€” AIS via MQTT" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;Finland / Baltic Sea â€” AIS via MQTT</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{mmsi}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -1903,7 +1928,7 @@ AIS via WebSocket, ~200 km from shore
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-AIS via MQTT
+Finland / Baltic Sea â€” AIS via MQTT
 
 <sub><b>📍 keyed by</b> <code>{mmsi}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>VesselLocation</code>, <code>VesselMetadata</code></sub>
 
@@ -1917,10 +1942,10 @@ AIS via MQTT
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Norway / Svalbard" title="Norway / Svalbard" src="https://flagcdn.com/20x15/no.png" width="20" height="15"></picture> &nbsp;<b>Kystverket AIS</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;raw TCP AIS, ~34 msg/s</sub></summary>
+<details><summary><picture><img align="middle" alt="Norway / Svalbard â€” raw TCP AIS" title="Norway / Svalbard â€” raw TCP AIS" src="https://flagcdn.com/20x15/no.png" width="20" height="15"></picture> &nbsp;<b>Kystverket AIS</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Norway / Svalbard â€” raw TCP AIS, ~34 msg/s</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Norway / Svalbard" title="Norway / Svalbard" src="https://flagcdn.com/20x15/no.png" width="20" height="15"></picture> &nbsp;Norway / Svalbard</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Norway / Svalbard â€” raw TCP AIS" title="Norway / Svalbard â€” raw TCP AIS" src="https://flagcdn.com/20x15/no.png" width="20" height="15"></picture> &nbsp;Norway / Svalbard â€” raw TCP AIS</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{mmsi}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">7 type(s)</td></tr>
@@ -1928,7 +1953,7 @@ AIS via MQTT
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-raw TCP AIS, ~34 msg/s
+Norway / Svalbard â€” raw TCP AIS, ~34 msg/s
 
 <sub><b>📍 keyed by</b> <code>{mmsi}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>PositionReportClassA</code>, <code>StaticVoyageData</code>, <code>PositionReportClassB</code>, <code>StaticDataClassB</code>, <code>AidToNavigation</code>, <code>PositionReport</code>, <code>ShipStatic</code></sub>
 
@@ -1949,10 +1974,10 @@ raw TCP AIS, ~34 msg/s
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Local" title="Local" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Mode-S</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;ADS-B via dump1090 receivers</sub></summary>
+<details><summary><picture><img align="middle" alt="Local â€” ADS-B via dump1090 receivers" title="Local â€” ADS-B via dump1090 receivers" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Mode-S</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Local â€” ADS-B via dump1090 receivers</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Local" title="Local" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Local</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Local â€” ADS-B via dump1090 receivers" title="Local â€” ADS-B via dump1090 receivers" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Local â€” ADS-B via dump1090 receivers</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{icao24}/{receiver_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">6 type(s)</td></tr>
@@ -1960,7 +1985,7 @@ raw TCP AIS, ~34 msg/s
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-ADS-B via dump1090 receivers
+Local â€” ADS-B via dump1090 receivers
 
 <sub><b>📍 keyed by</b> <code>{icao24}/{receiver_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>ADSB</code>, <code>AltitudeReply</code>, <code>IdentityReply</code>, <code>AcquisitionReply</code>, <code>CommBAltitude</code>, <code>CommBIdentity</code></sub>
 
@@ -1974,10 +1999,10 @@ ADS-B via dump1090 receivers
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>VATSIM</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;virtual aviation network, pilots & controllers</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” virtual aviation network" title="Global â€” virtual aviation network" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>VATSIM</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” virtual aviation network, pilots & controllers</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” virtual aviation network" title="Global â€” virtual aviation network" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” virtual aviation network</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{callsign}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -1985,7 +2010,7 @@ ADS-B via dump1090 receivers
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-virtual aviation network, pilots & controllers
+Global â€” virtual aviation network, pilots & controllers
 
 <sub><b>📍 keyed by</b> <code>{callsign}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>PilotPosition</code></sub>
 
@@ -2006,10 +2031,10 @@ virtual aviation network, pilots & controllers
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;<b>Autobahn</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;roadworks, warnings, closures, webcams</sub></summary>
+<details><summary><picture><img align="middle" alt="Germany â€” roadworks" title="Germany â€” roadworks" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Autobahn</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Germany â€” roadworks, warnings, closures, webcams</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany" title="Germany" src="https://flagcdn.com/20x15/de.png" width="20" height="15"></picture> &nbsp;Germany</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Germany â€” roadworks" title="Germany â€” roadworks" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Germany â€” roadworks</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{identifier}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">30 type(s)</td></tr>
@@ -2017,7 +2042,7 @@ virtual aviation network, pilots & controllers
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-roadworks, warnings, closures, webcams
+Germany â€” roadworks, warnings, closures, webcams
 
 <sub><b>📍 keyed by</b> <code>{identifier}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>RoadworkAppeared</code>, <code>RoadworkUpdated</code>, <code>RoadworkResolved</code>, <code>ShortTermRoadworkAppeared</code>, <code>ShortTermRoadworkUpdated</code>, <code>ShortTermRoadworkResolved</code>, <code>WarningAppeared</code>, <code>WarningUpdated</code>, <code>WarningResolved</code>, <code>ClosureAppeared</code>, <code>ClosureUpdated</code>, <code>ClosureResolved</code>, <code>EntryExitClosureAppeared</code>, <code>EntryExitClosureUpdated</code>, <code>EntryExitClosureResolved</code>, <code>WeightLimit35RestrictionAppeared</code>, <code>WeightLimit35RestrictionUpdated</code>, <code>WeightLimit35RestrictionResolved</code>, <code>ParkingLorryAppeared</code>, <code>ParkingLorryUpdated</code>, <code>ParkingLorryResolved</code>, <code>ElectricChargingStationAppeared</code>, <code>ElectricChargingStationUpdated</code>, <code>ElectricChargingStationResolved</code>, <code>StrongElectricChargingStationAppeared</code>, <code>StrongElectricChargingStationUpdated</code>, <code>StrongElectricChargingStationResolved</code>, <code>WebcamAppeared</code>, <code>WebcamUpdated</code>, <code>WebcamResolved</code></sub>
 
@@ -2031,10 +2056,10 @@ roadworks, warnings, closures, webcams
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Finland" title="Finland" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;<b>Digitraffic Road</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;TMS sensors, road weather, traffic messages</sub></summary>
+<details><summary><picture><img align="middle" alt="Finland â€” TMS sensors" title="Finland â€” TMS sensors" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Digitraffic Road</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Finland â€” TMS sensors, road weather, traffic messages</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Finland" title="Finland" src="https://flagcdn.com/20x15/fi.png" width="20" height="15"></picture> &nbsp;Finland</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Finland â€” TMS sensors" title="Finland â€” TMS sensors" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Finland â€” TMS sensors</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}/{sensor_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -2042,7 +2067,7 @@ roadworks, warnings, closures, webcams
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-TMS sensors, road weather, traffic messages
+Finland â€” TMS sensors, road weather, traffic messages
 
 <sub><b>📍 keyed by</b> <code>{station_id}/{sensor_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>TmsSensorData</code>, <code>WeatherSensorData</code></sub>
 
@@ -2056,10 +2081,10 @@ TMS sensors, road weather, traffic messages
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="France" title="France" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"></picture> &nbsp;<b>French Road Traffic</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;national road network, DATEX II</sub></summary>
+<details><summary><picture><img align="middle" alt="France â€” national road network" title="France â€” national road network" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>French Road Traffic</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;France â€” national road network, DATEX II</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="France" title="France" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"></picture> &nbsp;France</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="France â€” national road network" title="France â€” national road network" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;France â€” national road network</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{site_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -2067,7 +2092,7 @@ TMS sensors, road weather, traffic messages
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-national road network, DATEX II
+France â€” national road network, DATEX II
 
 <sub><b>📍 keyed by</b> <code>{site_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>TrafficFlowMeasurement</code></sub>
 
@@ -2081,10 +2106,10 @@ national road network, DATEX II
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>GTFS Realtime</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-4-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;1,000+ transit agencies, vehicles, trips, alerts</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” 1" title="Global â€” 1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>GTFS Realtime</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-4-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” 1,000+ transit agencies, vehicles, trips, alerts</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” 1" title="Global â€” 1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” 1</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{agencyid}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">3 type(s)</td></tr>
@@ -2092,7 +2117,7 @@ national road network, DATEX II
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-1,000+ transit agencies, vehicles, trips, alerts
+Global â€” 1,000+ transit agencies, vehicles, trips, alerts
 
 <sub><b>📍 keyed by</b> <code>{agencyid}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>VehiclePosition</code>, <code>TripUpdate</code>, <code>Alert</code></sub>
 
@@ -2106,7 +2131,7 @@ national road network, DATEX II
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Madrid" title="Madrid" src="https://flagcdn.com/20x15/es.png" width="20" height="15"></picture> &nbsp;<b>Madrid Traffic</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~4,000 sensors, Informo</sub></summary>
+<details><summary><picture><img align="middle" alt="Madrid" title="Madrid" src="https://flagcdn.com/20x15/es.png" width="20" height="15"></picture> &nbsp;<b>Madrid Traffic</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Madrid, Spain â€” ~4,000 sensors, Informo</sub></summary>
 
 <table align="right">
 <tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Madrid" title="Madrid" src="https://flagcdn.com/20x15/es.png" width="20" height="15"></picture> &nbsp;Madrid</td></tr>
@@ -2117,7 +2142,7 @@ national road network, DATEX II
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~4,000 sensors, Informo
+Madrid, Spain â€” ~4,000 sensors, Informo
 
 <sub><b>📍 keyed by</b> <code>{sensor_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>MeasurementPoint</code>, <code>TrafficReading</code></sub>
 
@@ -2131,10 +2156,10 @@ national road network, DATEX II
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Netherlands" title="Netherlands" src="https://flagcdn.com/20x15/nl.png" width="20" height="15"></picture> &nbsp;<b>NDW Road Traffic</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;national road traffic, DATEX II XML</sub></summary>
+<details><summary><picture><img align="middle" alt="Netherlands â€” national road traffic" title="Netherlands â€” national road traffic" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>NDW Road Traffic</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Netherlands â€” national road traffic, DATEX II XML</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Netherlands" title="Netherlands" src="https://flagcdn.com/20x15/nl.png" width="20" height="15"></picture> &nbsp;Netherlands</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Netherlands â€” national road traffic" title="Netherlands â€” national road traffic" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Netherlands â€” national road traffic</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>measurement-sites/{measurement_site_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">4 type(s)</td></tr>
@@ -2142,7 +2167,7 @@ national road network, DATEX II
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-national road traffic, DATEX II XML
+Netherlands â€” national road traffic, DATEX II XML
 
 <sub><b>📍 keyed by</b> <code>measurement-sites/{measurement_site_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>PointMeasurementSite</code>, <code>RouteMeasurementSite</code>, <code>TrafficObservation</code>, <code>TravelTimeObservation</code></sub>
 
@@ -2156,10 +2181,10 @@ national road traffic, DATEX II XML
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="North America" title="North America" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>Nextbus</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;public transit arrivals</sub></summary>
+<details><summary><picture><img align="middle" alt="North America â€” public transit arrivals" title="North America â€” public transit arrivals" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>Nextbus</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;North America â€” public transit arrivals</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="North America" title="North America" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;North America</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="North America â€” public transit arrivals" title="North America â€” public transit arrivals" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;North America â€” public transit arrivals</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><i>n/a</i></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">4 type(s)</td></tr>
@@ -2167,7 +2192,7 @@ national road traffic, DATEX II XML
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-public transit arrivals
+North America â€” public transit arrivals
 
 <sub><b>📍 keyed by</b> <i>n/a</i> &nbsp; · &nbsp; <b>📦 events</b> <code>VehiclePosition</code>, <code>RouteConfig</code>, <code>Schedule</code>, <code>Message</code></sub>
 
@@ -2181,10 +2206,10 @@ public transit arrivals
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Paris" title="Paris" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"></picture> &nbsp;<b>Paris Bicycle Counters</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~141 counting stations, hourly counts</sub></summary>
+<details><summary><picture><img align="middle" alt="Paris â€” ~141 counting stations" title="Paris â€” ~141 counting stations" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"></picture> &nbsp;<b>Paris Bicycle Counters</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Paris â€” ~141 counting stations, hourly counts</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Paris" title="Paris" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"></picture> &nbsp;Paris</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Paris â€” ~141 counting stations" title="Paris â€” ~141 counting stations" src="https://flagcdn.com/20x15/fr.png" width="20" height="15"></picture> &nbsp;Paris â€” ~141 counting stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{counter_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -2192,7 +2217,7 @@ public transit arrivals
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~141 counting stations, hourly counts
+Paris â€” ~141 counting stations, hourly counts
 
 <sub><b>📍 keyed by</b> <code>{counter_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Counter</code>, <code>BicycleCount</code></sub>
 
@@ -2206,7 +2231,7 @@ public transit arrivals
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Seattle" title="Seattle" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>Seattle Street Closures</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;permit-driven street closure windows</sub></summary>
+<details><summary><picture><img align="middle" alt="Seattle" title="Seattle" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>Seattle Street Closures</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Seattle, WA â€” permit-driven street closure windows</sub></summary>
 
 <table align="right">
 <tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Seattle" title="Seattle" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;Seattle</td></tr>
@@ -2217,7 +2242,7 @@ public transit arrivals
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-permit-driven street closure windows
+Seattle, WA â€” permit-driven street closure windows
 
 <sub><b>📍 keyed by</b> <code>{closure_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>StreetClosure</code></sub>
 
@@ -2231,7 +2256,7 @@ permit-driven street closure windows
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="London" title="London" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;<b>TfL Road Traffic</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;road corridor status and disruptions</sub></summary>
+<details><summary><picture><img align="middle" alt="London" title="London" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;<b>TfL Road Traffic</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;London, UK â€” road corridor status and disruptions</sub></summary>
 
 <table align="right">
 <tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="London" title="London" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;London</td></tr>
@@ -2242,7 +2267,7 @@ permit-driven street closure windows
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-road corridor status and disruptions
+London, UK â€” road corridor status and disruptions
 
 <sub><b>📍 keyed by</b> <code>roads/{road_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>RoadCorridor</code>, <code>RoadStatus</code></sub>
 
@@ -2256,7 +2281,7 @@ road corridor status and disruptions
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Tokyo" title="Tokyo" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;<b>Tokyo Docomo Bikeshare</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-2-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;1,794 stations, GBFS 2.3 via ODPT</sub></summary>
+<details><summary><picture><img align="middle" alt="Tokyo" title="Tokyo" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;<b>Tokyo Docomo Bikeshare</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-2-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Tokyo, Japan â€” 1,794 stations, GBFS 2.3 via ODPT</sub></summary>
 
 <table align="right">
 <tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Tokyo" title="Tokyo" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;Tokyo</td></tr>
@@ -2267,7 +2292,7 @@ road corridor status and disruptions
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-1,794 stations, GBFS 2.3 via ODPT
+Tokyo, Japan â€” 1,794 stations, GBFS 2.3 via ODPT
 
 <sub><b>📍 keyed by</b> <code>{system_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>BikeshareSystem</code></sub>
 
@@ -2281,10 +2306,10 @@ road corridor status and disruptions
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="US borders" title="US borders" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>US CBP Border Wait</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~81 ports of entry</sub></summary>
+<details><summary><picture><img align="middle" alt="US borders â€” ~81 ports of entry" title="US borders â€” ~81 ports of entry" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>US CBP Border Wait</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;US borders â€” ~81 ports of entry</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="US borders" title="US borders" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;US borders</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="US borders â€” ~81 ports of entry" title="US borders â€” ~81 ports of entry" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;US borders â€” ~81 ports of entry</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{port_number}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -2292,7 +2317,7 @@ road corridor status and disruptions
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~81 ports of entry
+US borders â€” ~81 ports of entry
 
 <sub><b>📍 keyed by</b> <code>{port_number}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Port</code>, <code>WaitTime</code></sub>
 
@@ -2306,10 +2331,10 @@ road corridor status and disruptions
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Washington State" title="Washington State" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;<b>WSDOT</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~1,000 traffic flow sensors (requires free key)</sub></summary>
+<details><summary><picture><img align="middle" alt="Washington State â€” ~1" title="Washington State â€” ~1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>WSDOT</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Washington State â€” ~1,000 traffic flow sensors (requires free key)</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Washington State" title="Washington State" src="https://flagcdn.com/20x15/us.png" width="20" height="15"></picture> &nbsp;Washington State</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Washington State â€” ~1" title="Washington State â€” ~1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Washington State â€” ~1</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{flow_data_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -2317,7 +2342,7 @@ road corridor status and disruptions
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~1,000 traffic flow sensors (requires free key)
+Washington State â€” ~1,000 traffic flow sensors (requires free key)
 
 <sub><b>📍 keyed by</b> <code>{flow_data_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>TrafficFlowStation</code>, <code>TrafficFlowReading</code></sub>
 
@@ -2338,10 +2363,10 @@ road corridor status and disruptions
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Norway" title="Norway" src="https://flagcdn.com/20x15/no.png" width="20" height="15"></picture> &nbsp;<b>Entur Norway</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;national real-time transit, SIRI ET/VM/SX</sub></summary>
+<details><summary><picture><img align="middle" alt="Norway â€” national real-time transit" title="Norway â€” national real-time transit" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Entur Norway</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-3-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Norway â€” national real-time transit, SIRI ET/VM/SX</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Norway" title="Norway" src="https://flagcdn.com/20x15/no.png" width="20" height="15"></picture> &nbsp;Norway</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Norway â€” national real-time transit" title="Norway â€” national real-time transit" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Norway â€” national real-time transit</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>journeys/{operating_day}/{service_journey_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">3 type(s)</td></tr>
@@ -2349,7 +2374,7 @@ road corridor status and disruptions
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-national real-time transit, SIRI ET/VM/SX
+Norway â€” national real-time transit, SIRI ET/VM/SX
 
 <sub><b>📍 keyed by</b> <code>journeys/{operating_day}/{service_journey_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>DatedServiceJourney</code>, <code>EstimatedVehicleJourney</code>, <code>MonitoredVehicleJourney</code></sub>
 
@@ -2363,10 +2388,10 @@ national real-time transit, SIRI ET/VM/SX
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Belgium" title="Belgium" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;<b>iRail</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;~600 NMBS/SNCB stations, departures, delays</sub></summary>
+<details><summary><picture><img align="middle" alt="Belgium â€” ~600 NMBS/SNCB stations" title="Belgium â€” ~600 NMBS/SNCB stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>iRail</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Belgium â€” ~600 NMBS/SNCB stations, departures, delays</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Belgium" title="Belgium" src="https://flagcdn.com/20x15/be.png" width="20" height="15"></picture> &nbsp;Belgium</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Belgium â€” ~600 NMBS/SNCB stations" title="Belgium â€” ~600 NMBS/SNCB stations" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Belgium â€” ~600 NMBS/SNCB stations</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{station_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">3 type(s)</td></tr>
@@ -2374,7 +2399,7 @@ national real-time transit, SIRI ET/VM/SX
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-~600 NMBS/SNCB stations, departures, delays
+Belgium â€” ~600 NMBS/SNCB stations, departures, delays
 
 <sub><b>📍 keyed by</b> <code>{station_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Station</code>, <code>StationBoard</code>, <code>ArrivalBoard</code></sub>
 
@@ -2395,10 +2420,10 @@ national real-time transit, SIRI ET/VM/SX
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;<b>Xceed</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;clubs, bars, parties, festivals — event schedules</sub></summary>
+<details><summary><picture><img align="middle" alt="Europe â€” clubs" title="Europe â€” clubs" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Xceed</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Europe â€” clubs, bars, parties, festivals â€” event schedules</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;Europe</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe â€” clubs" title="Europe â€” clubs" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Europe â€” clubs</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{event_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -2406,7 +2431,7 @@ national real-time transit, SIRI ET/VM/SX
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-clubs, bars, parties, festivals — event schedules
+Europe â€” clubs, bars, parties, festivals â€” event schedules
 
 <sub><b>📍 keyed by</b> <code>{event_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Event</code></sub>
 
@@ -2427,10 +2452,10 @@ clubs, bars, parties, festivals — event schedules
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="United Kingdom" title="United Kingdom" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;<b>Carbon Intensity UK</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-2-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;national grid carbon intensity</sub></summary>
+<details><summary><picture><img align="middle" alt="United Kingdom â€” national grid carbon intensity" title="United Kingdom â€” national grid carbon intensity" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Carbon Intensity UK</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;United Kingdom â€” national grid carbon intensity</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United Kingdom" title="United Kingdom" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;United Kingdom</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="United Kingdom â€” national grid carbon intensity" title="United Kingdom â€” national grid carbon intensity" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;United Kingdom â€” national grid carbon intensity</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{period_from}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -2438,12 +2463,12 @@ clubs, bars, parties, festivals — event schedules
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-national grid carbon intensity
+United Kingdom â€” national grid carbon intensity
 
 <sub><b>📍 keyed by</b> <code>{period_from}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Intensity</code>, <code>GenerationMix</code></sub>
 
 <sub><b>DEPLOY</b></sub><br>
-[![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#carbon-intensity/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#carbon-intensity/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-carbon-intensity)
+[![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcarbon-intensity%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#carbon-intensity/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#carbon-intensity/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-carbon-intensity)
 
 <sub>📘 <a href="feeders/carbon-intensity/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/carbon-intensity/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/carbon-intensity/CONTAINER.md">CONTAINER</a> &nbsp;·&nbsp; ↗ <a href="https://carbonintensity.org.uk/">carbonintensity.org.uk</a></sub>
 
@@ -2452,10 +2477,10 @@ national grid carbon intensity
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Great Britain" title="Great Britain" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;<b>Elexon BMRS</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;electricity market, generation, demand</sub></summary>
+<details><summary><picture><img align="middle" alt="Great Britain â€” electricity market" title="Great Britain â€” electricity market" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;<b>Elexon BMRS</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Great Britain â€” electricity market, generation, demand</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Great Britain" title="Great Britain" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;Great Britain</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Great Britain â€” electricity market" title="Great Britain â€” electricity market" src="https://flagcdn.com/20x15/gb.png" width="20" height="15"></picture> &nbsp;Great Britain â€” electricity market</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{settlement_period}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">3 type(s)</td></tr>
@@ -2463,7 +2488,7 @@ national grid carbon intensity
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-electricity market, generation, demand
+Great Britain â€” electricity market, generation, demand
 
 <sub><b>📍 keyed by</b> <code>{settlement_period}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>GenerationMix</code>, <code>DemandOutturn</code>, <code>Info</code></sub>
 
@@ -2477,10 +2502,10 @@ electricity market, generation, demand
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Denmark" title="Denmark" src="https://flagcdn.com/20x15/dk.png" width="20" height="15"></picture> &nbsp;<b>Energi Data Service</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;power system, spot prices, CO₂</sub></summary>
+<details><summary><picture><img align="middle" alt="Denmark â€” power system" title="Denmark â€” power system" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Energi Data Service</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Denmark â€” power system, spot prices, COâ‚‚</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Denmark" title="Denmark" src="https://flagcdn.com/20x15/dk.png" width="20" height="15"></picture> &nbsp;Denmark</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Denmark â€” power system" title="Denmark â€” power system" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Denmark â€” power system</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{price_area}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">3 type(s)</td></tr>
@@ -2488,7 +2513,7 @@ electricity market, generation, demand
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-power system, spot prices, CO₂
+Denmark â€” power system, spot prices, COâ‚‚
 
 <sub><b>📍 keyed by</b> <code>{price_area}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>PowerSystemSnapshot</code>, <code>SpotPrice</code>, <code>Info</code></sub>
 
@@ -2502,10 +2527,10 @@ power system, spot prices, CO₂
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;<b>Energy-Charts</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;40+ countries, electricity generation & prices</sub></summary>
+<details><summary><picture><img align="middle" alt="Europe â€” 40+ countries" title="Europe â€” 40+ countries" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Energy-Charts</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Europe â€” 40+ countries, electricity generation & prices</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;Europe</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe â€” 40+ countries" title="Europe â€” 40+ countries" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Europe â€” 40+ countries</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{country}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">4 type(s)</td></tr>
@@ -2513,7 +2538,7 @@ power system, spot prices, CO₂
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-40+ countries, electricity generation & prices
+Europe â€” 40+ countries, electricity generation & prices
 
 <sub><b>📍 keyed by</b> <code>{country}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>PublicPower</code>, <code>SpotPrice</code>, <code>GridSignal</code>, <code>Info</code></sub>
 
@@ -2527,10 +2552,10 @@ power system, spot prices, CO₂
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;<b>ENTSO-E</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;electricity generation, prices, load, flows (requires token)</sub></summary>
+<details><summary><picture><img align="middle" alt="Europe â€” electricity generation" title="Europe â€” electricity generation" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>ENTSO-E</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Europe â€” electricity generation, prices, load, flows (requires token)</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;Europe</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe â€” electricity generation" title="Europe â€” electricity generation" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Europe â€” electricity generation</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{inDomain}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">6 type(s)</td></tr>
@@ -2538,7 +2563,7 @@ power system, spot prices, CO₂
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-electricity generation, prices, load, flows (requires token)
+Europe â€” electricity generation, prices, load, flows (requires token)
 
 <sub><b>📍 keyed by</b> <code>{inDomain}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>DayAheadPrices</code>, <code>ActualTotalLoad</code>, <code>LoadForecastMargin</code>, <code>GenerationForecast</code>, <code>ReservoirFillingInformation</code>, <code>ActualGeneration</code></sub>
 
@@ -2552,10 +2577,10 @@ electricity generation, prices, load, flows (requires token)
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Japan / Kanto" title="Japan / Kanto" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;<b>TEPCO Denkiyoho</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;TEPCO electricity supply, hourly forecast, 5-min actuals + solar</sub></summary>
+<details><summary><picture><img align="middle" alt="Japan / Kanto â€” TEPCO electricity supply" title="Japan / Kanto â€” TEPCO electricity supply" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;<b>TEPCO Denkiyoho</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Japan / Kanto â€” TEPCO electricity supply, hourly forecast, 5-min actuals + solar</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan / Kanto" title="Japan / Kanto" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;Japan / Kanto</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Japan / Kanto â€” TEPCO electricity supply" title="Japan / Kanto â€” TEPCO electricity supply" src="https://flagcdn.com/20x15/jp.png" width="20" height="15"></picture> &nbsp;Japan / Kanto â€” TEPCO electricity supply</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{area_code}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">5 type(s)</td></tr>
@@ -2563,7 +2588,7 @@ electricity generation, prices, load, flows (requires token)
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-TEPCO electricity supply, hourly forecast, 5-min actuals + solar
+Japan / Kanto â€” TEPCO electricity supply, hourly forecast, 5-min actuals + solar
 
 <sub><b>📍 keyed by</b> <code>{area_code}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>SupplyCapacity</code>, <code>PeakDemandForecast</code>, <code>DemandActual</code>, <code>DemandForecast</code>, <code>Info</code></sub>
 
@@ -2584,10 +2609,10 @@ TEPCO electricity supply, hourly forecast, 5-min actuals + solar
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Bluesky Firehose</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;posts, likes, reposts, follows</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” posts" title="Global â€” posts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Bluesky Firehose</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” posts, likes, reposts, follows</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” posts" title="Global â€” posts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” posts</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{did}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">6 type(s)</td></tr>
@@ -2595,7 +2620,7 @@ TEPCO electricity supply, hourly forecast, 5-min actuals + solar
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-posts, likes, reposts, follows
+Global â€” posts, likes, reposts, follows
 
 <sub><b>📍 keyed by</b> <code>{did}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Post</code>, <code>Like</code>, <code>Repost</code>, <code>Follow</code>, <code>Block</code>, <code>Profile</code></sub>
 
@@ -2609,10 +2634,10 @@ posts, likes, reposts, follows
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>OpenStreetMap Diffs</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;OSM minutely replication diffs</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” OSM minutely replication diffs" title="Global â€” OSM minutely replication diffs" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>OpenStreetMap Diffs</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” OSM minutely replication diffs</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” OSM minutely replication diffs" title="Global â€” OSM minutely replication diffs" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” OSM minutely replication diffs</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{element_type}/{element_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -2620,7 +2645,7 @@ posts, likes, reposts, follows
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-OSM minutely replication diffs
+Global â€” OSM minutely replication diffs
 
 <sub><b>📍 keyed by</b> <code>{element_type}/{element_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>MapChange</code></sub>
 
@@ -2634,10 +2659,10 @@ OSM minutely replication diffs
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Any" title="Any" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>RSS Feeds</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;configurable RSS/Atom feed URLs or OPML files</sub></summary>
+<details><summary><picture><img align="middle" alt="Any â€” configurable RSS/Atom feed URLs or OPML files" title="Any â€” configurable RSS/Atom feed URLs or OPML files" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>RSS Feeds</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Any â€” configurable RSS/Atom feed URLs or OPML files</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Any" title="Any" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Any</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Any â€” configurable RSS/Atom feed URLs or OPML files" title="Any â€” configurable RSS/Atom feed URLs or OPML files" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Any â€” configurable RSS/Atom feed URLs or OPML files</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{item_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -2645,7 +2670,7 @@ OSM minutely replication diffs
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-configurable RSS/Atom feed URLs or OPML files
+Any â€” configurable RSS/Atom feed URLs or OPML files
 
 <sub><b>📍 keyed by</b> <code>{item_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>FeedItem</code></sub>
 
@@ -2659,10 +2684,10 @@ configurable RSS/Atom feed URLs or OPML files
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Wikimedia EventStreams</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Wikipedia, Wikidata, Commons recent changes</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” Wikipedia" title="Global â€” Wikipedia" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Wikimedia EventStreams</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” Wikipedia, Wikidata, Commons recent changes</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” Wikipedia" title="Global â€” Wikipedia" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” Wikipedia</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{event_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -2670,7 +2695,7 @@ configurable RSS/Atom feed URLs or OPML files
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-Wikipedia, Wikidata, Commons recent changes
+Global â€” Wikipedia, Wikidata, Commons recent changes
 
 <sub><b>📍 keyed by</b> <code>{event_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>RecentChange</code></sub>
 
@@ -2691,10 +2716,10 @@ Wikipedia, Wikidata, Commons recent changes
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;<b>Billetto</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;pan-European ticketed public events</sub></summary>
+<details><summary><picture><img align="middle" alt="Europe â€” pan-European ticketed public events" title="Europe â€” pan-European ticketed public events" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Billetto</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Europe â€” pan-European ticketed public events</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;Europe</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe â€” pan-European ticketed public events" title="Europe â€” pan-European ticketed public events" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Europe â€” pan-European ticketed public events</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{event_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -2702,7 +2727,7 @@ Wikipedia, Wikidata, Commons recent changes
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-pan-European ticketed public events
+Europe â€” pan-European ticketed public events
 
 <sub><b>📍 keyed by</b> <code>{event_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Event</code></sub>
 
@@ -2716,10 +2741,10 @@ pan-European ticketed public events
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;<b>Fienta</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;ticketed public events with sale-status signals</sub></summary>
+<details><summary><picture><img align="middle" alt="Europe â€” ticketed public events with sale-status signals" title="Europe â€” ticketed public events with sale-status signals" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Fienta</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Europe â€” ticketed public events with sale-status signals</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;Europe</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe â€” ticketed public events with sale-status signals" title="Europe â€” ticketed public events with sale-status signals" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Europe â€” ticketed public events with sale-status signals</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{event_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -2727,7 +2752,7 @@ pan-European ticketed public events
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-ticketed public events with sale-status signals
+Europe â€” ticketed public events with sale-status signals
 
 <sub><b>📍 keyed by</b> <code>{event_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Event</code>, <code>EventSaleStatus</code></sub>
 
@@ -2741,10 +2766,10 @@ ticketed public events with sale-status signals
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Ticketmaster</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;concerts, sports, theater, arts via Discovery API</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” concerts" title="Global â€” concerts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>Ticketmaster</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-1-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” concerts, sports, theater, arts via Discovery API</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” concerts" title="Global â€” concerts" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” concerts</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{event_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -2752,7 +2777,7 @@ ticketed public events with sale-status signals
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-concerts, sports, theater, arts via Discovery API
+Global â€” concerts, sports, theater, arts via Discovery API
 
 <sub><b>📍 keyed by</b> <code>{event_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Event</code></sub>
 
@@ -2773,10 +2798,10 @@ concerts, sports, theater, arts via Discovery API
 <table width="100%">
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>GraceDB</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;LIGO/Virgo/KAGRA gravitational wave candidates</sub></summary>
+<details><summary><picture><img align="middle" alt="Global â€” LIGO/Virgo/KAGRA gravitational wave candidates" title="Global â€” LIGO/Virgo/KAGRA gravitational wave candidates" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>GraceDB</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global â€” LIGO/Virgo/KAGRA gravitational wave candidates</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global â€” LIGO/Virgo/KAGRA gravitational wave candidates" title="Global â€” LIGO/Virgo/KAGRA gravitational wave candidates" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global â€” LIGO/Virgo/KAGRA gravitational wave candidates</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{superevent_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
@@ -2784,7 +2809,7 @@ concerts, sports, theater, arts via Discovery API
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-LIGO/Virgo/KAGRA gravitational wave candidates
+Global â€” LIGO/Virgo/KAGRA gravitational wave candidates
 
 <sub><b>📍 keyed by</b> <code>{superevent_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>Superevent</code></sub>
 
@@ -2792,6 +2817,61 @@ LIGO/Virgo/KAGRA gravitational wave candidates
 [![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgracedb%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgracedb%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgracedb%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-BYO%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgracedb%2Fazure-template-amqp.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgracedb%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgracedb%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#gracedb/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#gracedb/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-gracedb)
 
 <sub>📘 <a href="feeders/gracedb/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/gracedb/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/gracedb/CONTAINER.md">CONTAINER</a> &nbsp;·&nbsp; ↗ <a href="https://gracedb.ligo.org/">gracedb.ligo.org</a></sub>
+
+</details>
+
+</td></tr>
+</table>
+
+</details>
+
+<details open><summary><b>📂 Other</b> &nbsp;<sub>2 sources</sub></summary>
+
+<table width="100%">
+<tr><td>
+
+<details><summary><picture><img align="middle" alt="Global - user-configured GBFS micromobility systems" title="Global - user-configured GBFS micromobility systems" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>GBFS Bikeshare</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Global - user-configured GBFS micromobility systems</sub></summary>
+
+<table align="right">
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global - user-configured GBFS micromobility systems" title="Global - user-configured GBFS micromobility systems" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global - user-configured GBFS micromobility systems</td></tr>
+<tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
+<tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{system_id}</code></td></tr>
+<tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
+<tr><td valign="middle">✅</td><td valign="middle"><b>Build</b></td><td valign="middle"><a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml">passing</a></td></tr>
+</table>
+
+Global - user-configured GBFS micromobility systems
+
+<sub><b>📍 keyed by</b> <code>{system_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>SystemInformation</code></sub>
+
+<sub><b>DEPLOY</b></sub><br>
+[![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgbfs-bikeshare%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgbfs-bikeshare%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgbfs-bikeshare%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgbfs-bikeshare%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fgbfs-bikeshare%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#gbfs-bikeshare/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#gbfs-bikeshare/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-gbfs-bikeshare)
+
+<sub>📘 <a href="feeders/gbfs-bikeshare/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/gbfs-bikeshare/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/gbfs-bikeshare/CONTAINER.md">CONTAINER</a></sub>
+
+</details>
+
+</td></tr>
+<tr><td>
+
+<details><summary><picture><img align="middle" alt="UK/EU" title="UK/EU" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>SIRI</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;SIRI VehicleMonitoring real-time bus positions</sub></summary>
+
+<table align="right">
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="UK/EU" title="UK/EU" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;UK/EU</td></tr>
+<tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
+<tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{operator_ref}/{vehicle_ref}</code></td></tr>
+<tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
+<tr><td valign="middle">✅</td><td valign="middle"><b>Build</b></td><td valign="middle"><a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml">passing</a></td></tr>
+</table>
+
+SIRI VehicleMonitoring real-time bus positions
+
+<sub><b>📍 keyed by</b> <code>{operator_ref}/{vehicle_ref}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>VehiclePosition</code>, <code>Operator</code></sub>
+
+<sub><b>DEPLOY</b></sub><br>
+[![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fsiri%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fsiri%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fsiri%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fsiri%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fsiri%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#siri/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#siri/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-siri)
+
+<sub>📘 <a href="feeders/siri/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/siri/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/siri/CONTAINER.md">CONTAINER</a></sub>
 
 </details>
 

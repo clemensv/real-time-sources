@@ -164,6 +164,8 @@ The producer constructor accepts:
 
 
 ##### `send_station()`
+A reference record from King County Metro marine feeds for a station, stop, route, site, or other transport resource. It
+gives consumers stable identifiers and labels needed to interpret realtime updates.
 
 **Parameters:**
 - `data` (Station): The message data object
@@ -182,6 +184,8 @@ Send multiple Station messages in sequence.
 
 
 ##### `send_water_quality_reading()`
+A transport update from King County Metro marine feeds. It carries marine transit schedule and status updates for King
+County water-taxi routes and sailings.
 
 **Parameters:**
 - `data` (WaterQualityReading): The message data object

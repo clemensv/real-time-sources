@@ -4,8 +4,8 @@ Reuses the upstream HTTP client logic from the existing ``bfs_odl`` Kafka
 bridge and pushes CloudEvents into MQTT 5.0 using the xrcg-generated
 :class:`DeBfsOdlMqttMqttClient`.
 
-Topic tree: ``radiation/ch/bfs/bfs-odl/{canton}/{station_id}/{info|dose-rate}``.
-``{canton}`` is derived from the first two digits of the station Kennziffer
+Topic tree: ``radiation/de/bfs/bfs-odl/{state}/{station_id}/{info|dose-rate}``.
+``{state}`` is derived from the first two digits of the station Kennziffer
 (AGS administrative-region code) and normalized to a lowercase kebab-case slug.
 """
 
@@ -30,7 +30,7 @@ from bfs_odl_mqtt_producer_mqtt_client.client import DeBfsOdlMqttMqttClient
 logger = logging.getLogger(__name__)
 
 # AGS first-two-digit code → Bundesland name
-_AGS_TO_CANTON: Dict[str, str] = {
+_AGS_TO_STATE: Dict[str, str] = {
     "01": "schleswig-holstein",
     "02": "hamburg",
     "03": "niedersachsen",
@@ -73,20 +73,20 @@ def _uns_slug(value: str) -> str:
     return slug or "unknown"
 
 
-def _canton_from_station_id(station_id: str) -> str:
+def _state_from_station_id(station_id: str) -> str:
     """Derive the Bundesland slug from a BfS station Kennziffer (AGS prefix)."""
     prefix = station_id[:2] if len(station_id) >= 2 else ""
-    return _AGS_TO_CANTON.get(prefix, "unknown")
+    return _AGS_TO_STATE.get(prefix, "unknown")
 
 
-def _build_station(feature: Dict[str, Any], canton: str) -> Station:
+def _build_station(feature: Dict[str, Any], state: str) -> Station:
     """Build MQTT Station dataclass from a WFS GeoJSON feature."""
     props = feature["properties"]
     geom = feature.get("geometry") or {}
     coords = geom.get("coordinates", [None, None])
     return Station(
         station_id=props["kenn"],
-        canton=canton,
+        state=state,
         station_code=props.get("id", ""),
         name=props.get("name", ""),
         postal_code=props.get("plz", ""),
@@ -99,12 +99,12 @@ def _build_station(feature: Dict[str, Any], canton: str) -> Station:
     )
 
 
-def _build_measurement(feature: Dict[str, Any], canton: str) -> DoseRateMeasurement:
+def _build_measurement(feature: Dict[str, Any], state: str) -> DoseRateMeasurement:
     """Build MQTT DoseRateMeasurement dataclass from a WFS GeoJSON feature."""
     props = feature["properties"]
     return DoseRateMeasurement(
         station_id=props["kenn"],
-        canton=canton,
+        state=state,
         start_measure=props.get("start_measure", ""),
         end_measure=props.get("end_measure", ""),
         value=props.get("value"),
@@ -128,13 +128,13 @@ async def _publish_stations(
     for feature in stations:
         props = feature.get("properties", {})
         station_id = props.get("kenn", "")
-        canton = _canton_from_station_id(station_id)
+        state = _state_from_station_id(station_id)
         try:
             await mqtt_client.publish_de_bfs_odl_mqtt_station(
                 feedurl=FEED_URL,
                 station_id=station_id,
-                canton=canton,
-                data=_build_station(feature, canton),
+                state=state,
+                data=_build_station(feature, state),
             )
         except Exception as exc:
             logger.error("Error publishing station %s: %s", station_id, exc)
@@ -152,13 +152,13 @@ async def _publish_measurements(
         end_measure = props.get("end_measure", "")
         if station_id in previous_readings and previous_readings[station_id] == end_measure:
             continue
-        canton = _canton_from_station_id(station_id)
+        state = _state_from_station_id(station_id)
         try:
             await mqtt_client.publish_de_bfs_odl_mqtt_dose_rate_measurement(
                 feedurl=FEED_URL,
                 station_id=station_id,
-                canton=canton,
-                data=_build_measurement(feature, canton),
+                state=state,
+                data=_build_measurement(feature, state),
             )
             sent += 1
             previous_readings[station_id] = end_measure
@@ -204,7 +204,7 @@ async def feed(
     await mqtt_client.connect(broker_host, broker_port)
 
     stations, sample_measurements = _sample_features() if os.getenv("BFS_ODL_SAMPLE_MODE", "").lower() in ("1", "true", "yes") else (api.fetch_stations(), None)
-    logger.info("Publishing %d station info events under radiation/ch/bfs/bfs-odl/...", len(stations))
+    logger.info("Publishing %d station info events under radiation/de/bfs/bfs-odl/...", len(stations))
     await _publish_stations(mqtt_client, stations)
     logger.info("Finished publishing station catalog")
 

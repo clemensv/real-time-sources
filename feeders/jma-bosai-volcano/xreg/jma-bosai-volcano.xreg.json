@@ -379,86 +379,9 @@
                   },
                   "alert_level_code": {
                     "type": "string",
-                    "description": "JMA volcanic warning code from warning.json. Enum symbols CODE_02, CODE_03, CODE_04, CODE_11, CODE_12, CODE_13, CODE_22, CODE_23, CODE_36, CODE_43, CODE_44, CODE_45, and CODE_49 correspond via altenums.json to observed live JMA wire codes 02, 03, 04, 11, 12, 13, 22, 23, 36, 43, 44, 45, and 49. JMA explains eruption alert levels as indicators combining volcanic activity state, area requiring caution, and expected disaster-prevention actions. Labels for CODE_11/CODE_12/CODE_13 are from JMA eruption alert level guidance; CODE_22/CODE_23/CODE_36 are target-volcano warning labels observed in live warning.json; CODE_02/CODE_03/CODE_04/CODE_43/CODE_44/CODE_45/CODE_49 labels are taken from live warning.json item name fields because the Bosai JSON feed publishes those public JMA labels directly.",
-                    "altenums": {
-                      "json": {
-                        "CODE_02": "02",
-                        "CODE_03": "03",
-                        "CODE_04": "04",
-                        "CODE_11": "11",
-                        "CODE_12": "12",
-                        "CODE_13": "13",
-                        "CODE_22": "22",
-                        "CODE_23": "23",
-                        "CODE_36": "36",
-                        "CODE_43": "43",
-                        "CODE_44": "44",
-                        "CODE_45": "45",
-                        "CODE_49": "49"
-                      },
-                      "lang:ja": {
-                        "CODE_02": "火口周辺警報",
-                        "CODE_03": "噴火警報（周辺海域）",
-                        "CODE_04": "噴火予報：警報解除",
-                        "CODE_11": "活動火山であることに留意",
-                        "CODE_12": "火口周辺規制",
-                        "CODE_13": "入山規制",
-                        "CODE_22": "火口周辺危険",
-                        "CODE_23": "入山危険",
-                        "CODE_36": "周辺海域警戒",
-                        "CODE_43": "火口周辺警報：入山規制等",
-                        "CODE_44": "噴火警報（周辺海域）：周辺海域警戒",
-                        "CODE_45": "活火山であることに留意",
-                        "CODE_49": "火口周辺警報：火口周辺警戒"
-                      },
-                      "lang:en": {
-                        "CODE_02": "Crater-area warning",
-                        "CODE_03": "Eruption warning for surrounding sea area",
-                        "CODE_04": "Eruption forecast: warning lifted",
-                        "CODE_11": "Active volcano; pay attention",
-                        "CODE_12": "Crater area restriction",
-                        "CODE_13": "Mountain access restriction",
-                        "CODE_22": "Crater vicinity danger",
-                        "CODE_23": "Mountain access danger",
-                        "CODE_36": "Surrounding waters warning for submarine or island volcanoes",
-                        "CODE_43": "Crater-area warning: entry restrictions and similar measures",
-                        "CODE_44": "Eruption warning for surrounding sea area: surrounding sea area warning",
-                        "CODE_45": "Active volcano; pay attention",
-                        "CODE_49": "Crater-area warning: caution around the crater"
-                      }
-                    },
-                    "enum": [
-                      "CODE_02",
-                      "CODE_03",
-                      "CODE_04",
-                      "CODE_11",
-                      "CODE_12",
-                      "CODE_13",
-                      "CODE_22",
-                      "CODE_23",
-                      "CODE_36",
-                      "CODE_43",
-                      "CODE_44",
-                      "CODE_45",
-                      "CODE_49"
-                    ],
+                    "description": "Raw JMA volcanic warning code as published in the `code` field of warning.json, emitted verbatim as a string. JMA's volcanic warning codes form an OPEN, upstream-controlled vocabulary that changes with volcanic activity, so this field is intentionally not constrained to a closed enum; consumers should treat any unlisted code as a valid JMA code and rely on the sibling `alert_level_name` field for the human-readable label JMA publishes alongside each code. Known codes observed in the live feed and JMA eruption-alert-level guidance: `02` = Crater-area warning (火口周辺警報); `03` = Eruption warning for surrounding sea area (噴火警報（周辺海域）); `04` = Eruption forecast, warning lifted (噴火予報：警報解除); `11` = Active volcano, pay attention (活動火山であることに留意); `12` = Crater area restriction (火口周辺規制); `13` = Mountain access restriction (入山規制); `22` = Crater vicinity danger (火口周辺危険); `23` = Mountain access danger (入山危険); `36` = Surrounding waters warning for submarine or island volcanoes (周辺海域警戒); `43` = Crater-area warning, entry restrictions (火口周辺警報：入山規制等); `44` = Eruption warning for surrounding sea area, sea-area warning (噴火警報（周辺海域）：周辺海域警戒); `45` = Active volcano, pay attention (活火山であることに留意); `49` = Crater-area warning, caution around the crater (火口周辺警報：火口周辺警戒). Labels for codes 11/12/13 are from JMA eruption-alert-level guidance; the remaining labels are taken from the live warning.json item `name` fields, which the Bosai JSON feed publishes directly.",
                     "altnames": {
                       "json": "code"
-                    },
-                    "descriptions": {
-                      "CODE_02": "Provider value `CODE_02` for this coded alert field.",
-                      "CODE_03": "Provider value `CODE_03` for this coded alert field.",
-                      "CODE_04": "Provider value `CODE_04` for this coded alert field.",
-                      "CODE_11": "Provider value `CODE_11` for this coded alert field.",
-                      "CODE_12": "Provider value `CODE_12` for this coded alert field.",
-                      "CODE_13": "Provider value `CODE_13` for this coded alert field.",
-                      "CODE_22": "Provider value `CODE_22` for this coded alert field.",
-                      "CODE_23": "Provider value `CODE_23` for this coded alert field.",
-                      "CODE_36": "Provider value `CODE_36` for this coded alert field.",
-                      "CODE_43": "Provider value `CODE_43` for this coded alert field.",
-                      "CODE_44": "Provider value `CODE_44` for this coded alert field.",
-                      "CODE_45": "Provider value `CODE_45` for this coded alert field.",
-                      "CODE_49": "Provider value `CODE_49` for this coded alert field."
                     }
                   },
                   "alert_level_name": {

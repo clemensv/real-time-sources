@@ -31,11 +31,11 @@ class Test_Intensity(unittest.TestCase):
         instance = Intensity(
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            forecast=int(1),
-            actual=int(21),
-            index='gckxeunuoyupoyfnocom',
-            region='icrzlojuituyupxmytun',
-            ce_id='xgzxoekrhgujwdwsaagb'
+            forecast=int(32),
+            actual=int(2),
+            index='bjamazeabtlnjbiuzkkr',
+            region='jljodxuibccbxxedomdq',
+            ce_id='gyjrqmmmznqdsddrczlw'
         )
         return instance
 
@@ -60,7 +60,7 @@ class Test_Intensity(unittest.TestCase):
         """
         Test forecast property
         """
-        test_value = int(1)
+        test_value = int(32)
         self.instance.forecast = test_value
         self.assertEqual(self.instance.forecast, test_value)
     
@@ -68,7 +68,7 @@ class Test_Intensity(unittest.TestCase):
         """
         Test actual property
         """
-        test_value = int(21)
+        test_value = int(2)
         self.instance.actual = test_value
         self.assertEqual(self.instance.actual, test_value)
     
@@ -76,7 +76,7 @@ class Test_Intensity(unittest.TestCase):
         """
         Test index property
         """
-        test_value = 'gckxeunuoyupoyfnocom'
+        test_value = 'bjamazeabtlnjbiuzkkr'
         self.instance.index = test_value
         self.assertEqual(self.instance.index, test_value)
     
@@ -84,7 +84,7 @@ class Test_Intensity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'icrzlojuituyupxmytun'
+        test_value = 'jljodxuibccbxxedomdq'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -92,7 +92,7 @@ class Test_Intensity(unittest.TestCase):
         """
         Test ce_id property
         """
-        test_value = 'xgzxoekrhgujwdwsaagb'
+        test_value = 'gyjrqmmmznqdsddrczlw'
         self.instance.ce_id = test_value
         self.assertEqual(self.instance.ce_id, test_value)
     

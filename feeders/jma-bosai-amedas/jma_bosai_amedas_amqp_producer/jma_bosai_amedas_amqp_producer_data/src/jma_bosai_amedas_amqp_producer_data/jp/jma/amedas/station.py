@@ -108,6 +108,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -175,16 +177,16 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_code='urrjthokrkcnsvtvxoox',
-            kj_name='webzujemnxorxwlisgol',
-            kana='bdfrjmpeomqgqzobvwbf',
-            en_name='guxqnqnicopntailirao',
-            latitude=float(48.96361881990623),
-            longitude=float(35.655463742661084),
-            altitude_m=float(41.75961902156307),
+            station_code='xlpzdisfggevxkoslbri',
+            kj_name='moupiekzvqekyquppipc',
+            kana='mxhaytznbnidrtbfazul',
+            en_name='cplwplixphzmnqrqamaf',
+            latitude=float(50.96908477629722),
+            longitude=float(12.757036849471348),
+            altitude_m=float(34.07722638658548),
             station_type=StationTypeenum.A,
-            elems_bitmask='vmzkinmqvtpbdmmjybtr',
-            enabled_measurements=['keeiljmxmyevjtvjcuma'],
-            prefecture='ricdlhsxurvrmyxvyqge',
+            elems_bitmask='yrjlwfikrgxbiscnmags',
+            enabled_measurements=['oykvmdhtlvwyyxkcxyvw'],
+            prefecture='yryvpgwruqvdwjpicllw',
             event=EventEnum.info
         )

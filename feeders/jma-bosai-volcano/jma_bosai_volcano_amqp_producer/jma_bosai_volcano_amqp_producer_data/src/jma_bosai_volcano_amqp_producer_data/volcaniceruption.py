@@ -126,6 +126,8 @@ class VolcanicEruption:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,24 +195,24 @@ class VolcanicEruption:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='jrrsnslrnnnmhqawgcvw',
-            event_id='ghqaofkjbzbcjotelgsa',
+            volcano_code='ssfgtewcddfmegwyvxox',
+            event_id='bgflpsvddcvszlvpxfsg',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_type=EruptionTypeenum.ERUPTION,
-            crater_name='ukkiczjraoeaswerphzc',
-            colored_plume_height_m=float(47.05538019663956),
-            white_plume_height_m=float(25.435564727700864),
-            maximum_plume_height_since_start_m=float(40.842542338847075),
-            plume_direction='fxozihwnwmtjwxnphqwr',
-            ash_dispersal_direction='bpzsiaawybpyletbluzc',
+            crater_name='nznpjzinxveltosarclf',
+            colored_plume_height_m=float(53.284611816224746),
+            white_plume_height_m=float(5.929864310083044),
+            maximum_plume_height_since_start_m=float(81.96575172926698),
+            plume_direction='egpiwlraqcqmpwimjnni',
+            ash_dispersal_direction='qzepcerltjfwjdbuapfq',
             pyroclastic_flow_observed=True,
-            plume_amount_jp='hsxqciirxcpaiwaaldao',
-            description='mbdwdmohdtqczzyrisjo',
-            info_type_jp='xyifgjmoynkyydcxhieo',
-            area_codes=['gsvokdlfvpnpquguoyxh', 'wrhoqfuwmaouoyuhbhyu', 'aqwelgijbujgudkpwgdv', 'vqvuedexsdndixvbhciw'],
-            prefecture='xzuosbhhvsmjampswugb',
+            plume_amount_jp='hcjurpdxlsmekheykuxk',
+            description='wxlniccfoznrukvgzeqz',
+            info_type_jp='lezsdlxljkkzsrgstahc',
+            area_codes=['dzjoskghccbvwbskxgea', 'dfrfeyhyuztnxpolpemm'],
+            prefecture='wwwuchtteuudyeobkjfh',
             event=EventEnum.warning
         )

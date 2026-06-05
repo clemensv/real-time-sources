@@ -36,7 +36,7 @@ from nifc_usa_wildfires_producer_kafka_producer.producer import GovNIFCWildfires
 
 # imports for the data classes for each event
 
-from nifc_usa_wildfires_producer_data.wildfireincident import WildfireIncident
+from nifc_usa_wildfires_producer_data import WildfireIncident
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -61,14 +61,14 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _wildfire_incident = WildfireIncident()
 
     # sends the 'Gov.NIFC.Wildfires.WildfireIncident' event to Kafka topic.
-    await gov_nifcwildfires_event_producer.send_gov_nifc_wildfires_wildfire_incident(_source_uri = 'TODO: replace me', _irwin_id = 'TODO: replace me', _modified_on_datetime = 'TODO: replace me', data = _wildfire_incident)
+    await gov_nifcwildfires_event_producer.send_gov_nifc_wildfires_wildfire_incident(_source_uri = 'TODO: replace me', _irwin_id = 'TODO: replace me', data = _wildfire_incident)
     print(f"Sent 'Gov.NIFC.Wildfires.WildfireIncident' event: {_wildfire_incident.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

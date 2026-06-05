@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from snotel_producer_kafka_producer.producer import GovUsdaNrcsSnotelEventProducer
 from snotel_producer_data import Station
-from test_snotel_producer_data_station import Test_Station
+from test_station import Test_Station
 from snotel_producer_data import SnowObservation
-from test_snotel_producer_data_snowobservation import Test_SnowObservation
+from test_snowobservation import Test_SnowObservation
 from snotel_producer_kafka_producer.producer import GovUsdaNrcsSnotelMqttEventProducer
 from snotel_producer_kafka_producer.producer import GovUsdaNrcsSnotelAmqpEventProducer
 
@@ -107,7 +107,8 @@ def test_gov_usda_nrcs_snotel_govusdanrcssnotelstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_usda_nrcs_snotel_station(_station_triplet = f'test_{i}', data = event_data)
+        producer_instance.send_gov_usda_nrcs_snotel_station(_station_triplet = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_gov_usda_nrcs_snotel_govusdanrcssnotelsnowobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_usda_nrcs_snotel_snow_observation(_station_triplet = f'test_{i}', data = event_data)
+        producer_instance.send_gov_usda_nrcs_snotel_snow_observation(_station_triplet = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_gov_usda_nrcs_snotel_mqtt_govusdanrcssnotelmqttstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_usda_nrcs_snotel_mqtt_station(_station_triplet = f'test_{i}', data = event_data)
+        producer_instance.send_gov_usda_nrcs_snotel_mqtt_station(_station_triplet = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_gov_usda_nrcs_snotel_mqtt_govusdanrcssnotelmqttsnowobservation(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_usda_nrcs_snotel_mqtt_snow_observation(_station_triplet = f'test_{i}', data = event_data)
+        producer_instance.send_gov_usda_nrcs_snotel_mqtt_snow_observation(_station_triplet = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_gov_usda_nrcs_snotel_amqp_govusdanrcssnotelamqpstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_usda_nrcs_snotel_amqp_station(_station_triplet = f'test_{i}', data = event_data)
+        producer_instance.send_gov_usda_nrcs_snotel_amqp_station(_station_triplet = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_gov_usda_nrcs_snotel_amqp_govusdanrcssnotelamqpsnowobservation(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_gov_usda_nrcs_snotel_amqp_snow_observation(_station_triplet = f'test_{i}', data = event_data)
+        producer_instance.send_gov_usda_nrcs_snotel_amqp_snow_observation(_station_triplet = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

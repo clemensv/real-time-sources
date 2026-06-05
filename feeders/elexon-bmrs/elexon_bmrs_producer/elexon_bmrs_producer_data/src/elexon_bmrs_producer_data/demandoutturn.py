@@ -20,7 +20,7 @@ import datetime
 class DemandOutturn:
     """
     Half-hourly demand outturn for the GB electricity transmission system from the Elexon BMRS API. Each record represents one settlement period and contains the initial national demand outturn (INDO) and initial transmission system demand outturn (ITSDO) in megawatts (MW). Sourced from the BMRS /demand/outturn endpoint. Published under CC-BY 4.0 licence by Elexon.
-
+    
     Attributes:
         settlement_period (int)
         settlement_date (str)
@@ -29,8 +29,8 @@ class DemandOutturn:
         initial_demand_outturn_mw (typing.Optional[float])
         initial_transmission_system_demand_outturn_mw (typing.Optional[float])
     """
-
-
+    
+    
     settlement_period: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="settlement_period"))
     settlement_date: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="settlement_date"))
     start_time: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="start_time", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
@@ -42,10 +42,10 @@ class DemandOutturn:
     def from_serializer_dict(cls, data: dict) -> 'DemandOutturn':
         """
         Converts a dictionary to a dataclass instance.
-
+        
         Args:
             data: The dictionary to convert to a dataclass.
-
+        
         Returns:
             The dataclass representation of the dataclass.
         """
@@ -64,7 +64,7 @@ class DemandOutturn:
     def _dict_resolver(self, data):
         """
         Helps resolving the Enum values to their actual values and fixes the key names.
-        """
+        """ 
         def _resolve_enum(v):
             if isinstance(v, enum.Enum):
                 return v.value
@@ -76,7 +76,7 @@ class DemandOutturn:
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
-
+        
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
@@ -85,17 +85,19 @@ class DemandOutturn:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
         Returns:
-            The byte array representation of the dataclass.
+            The byte array representation of the dataclass.        
         """
         content_type = content_type_string.split(';')[0].strip()
         result = None
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -115,10 +117,10 @@ class DemandOutturn:
     def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['DemandOutturn']:
         """
         Converts the data to a dataclass based on the content type string.
-
+        
         Args:
             data: The data to convert to a dataclass.
-            content_type_string: The content type string to convert the data to.
+            content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
@@ -142,7 +144,7 @@ class DemandOutturn:
                 raise NotImplementedError('Data is not of a supported type for gzip decompression')
             with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
                 data = gzip_file.read()
-
+        
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
         if base_content_type == 'application/json':
@@ -158,15 +160,15 @@ class DemandOutturn:
     def create_instance(cls) -> 'DemandOutturn':
         """
         Creates an instance of the dataclass with test values.
-
+        
         Returns:
             An instance of the dataclass.
         """
         return cls(
-            settlement_period=int(2),
-            settlement_date='qspugzzoyvrtcbwvyujv',
+            settlement_period=int(83),
+            settlement_date='lrnogefujswbsvahaseq',
             start_time=datetime.datetime.now(datetime.timezone.utc),
             publish_time=datetime.datetime.now(datetime.timezone.utc),
-            initial_demand_outturn_mw=float(44.61456066406928),
-            initial_transmission_system_demand_outturn_mw=float(73.69313498869057)
+            initial_demand_outturn_mw=float(16.67813654078405),
+            initial_transmission_system_demand_outturn_mw=float(14.543269037083695)
         )

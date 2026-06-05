@@ -28,14 +28,14 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_id='ztbaakyyjdsaxedrzktb',
-            station_name='biiexlycritghfsuvrgx',
-            dataset_id='ypkydjedziympbzypzpb',
-            dataset_name='wmiwquwtacioocjvpwsn',
-            dataset_url='advqhsubqxcwklwidezk',
-            sensor_level='rrzzcmgdioefiukzmpaf',
-            latitude=float(47.319628562454305),
-            longitude=float(88.84606888249795)
+            station_id='lbjtdosmsopgbwcrwnhr',
+            station_name='zclxukwiramhxdplmlzl',
+            dataset_id='jedlelczslspoornxgrb',
+            dataset_name='erdsqgaubaleijzjkoeq',
+            dataset_url='xkzenhdjmnmpmmjofviz',
+            sensor_level='vbyjwvsxhkoevfqnhlbc',
+            latitude=float(48.87617909416462),
+            longitude=float(29.37018227255621)
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ztbaakyyjdsaxedrzktb'
+        test_value = 'lbjtdosmsopgbwcrwnhr'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'biiexlycritghfsuvrgx'
+        test_value = 'zclxukwiramhxdplmlzl'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -60,7 +60,7 @@ class Test_Station(unittest.TestCase):
         """
         Test dataset_id property
         """
-        test_value = 'ypkydjedziympbzypzpb'
+        test_value = 'jedlelczslspoornxgrb'
         self.instance.dataset_id = test_value
         self.assertEqual(self.instance.dataset_id, test_value)
     
@@ -68,7 +68,7 @@ class Test_Station(unittest.TestCase):
         """
         Test dataset_name property
         """
-        test_value = 'wmiwquwtacioocjvpwsn'
+        test_value = 'erdsqgaubaleijzjkoeq'
         self.instance.dataset_name = test_value
         self.assertEqual(self.instance.dataset_name, test_value)
     
@@ -76,7 +76,7 @@ class Test_Station(unittest.TestCase):
         """
         Test dataset_url property
         """
-        test_value = 'advqhsubqxcwklwidezk'
+        test_value = 'xkzenhdjmnmpmmjofviz'
         self.instance.dataset_url = test_value
         self.assertEqual(self.instance.dataset_url, test_value)
     
@@ -84,7 +84,7 @@ class Test_Station(unittest.TestCase):
         """
         Test sensor_level property
         """
-        test_value = 'rrzzcmgdioefiukzmpaf'
+        test_value = 'vbyjwvsxhkoevfqnhlbc'
         self.instance.sensor_level = test_value
         self.assertEqual(self.instance.sensor_level, test_value)
     
@@ -92,7 +92,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(47.319628562454305)
+        test_value = float(48.87617909416462)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -100,7 +100,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(88.84606888249795)
+        test_value = float(29.37018227255621)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

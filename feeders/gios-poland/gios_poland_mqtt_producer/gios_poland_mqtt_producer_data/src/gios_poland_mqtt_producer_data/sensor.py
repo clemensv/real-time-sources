@@ -94,6 +94,8 @@ class Sensor:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class Sensor:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id=int(15),
-            station_id=int(43),
-            parameter_name='illtlnktgrfxqpkjcswp',
-            parameter_formula='kjaxnrdksaqdcrzxirzv',
-            parameter_code='bqoliejqtdkhwfdcvaab',
-            parameter_id=int(13)
+            sensor_id=int(62),
+            station_id=int(28),
+            parameter_name='wnrtsdfeqrrsvjdzgwss',
+            parameter_formula='vtndnvigggfthalfqoit',
+            parameter_code='eedvbjsbknhlwemozbvv',
+            parameter_id=int(80)
         )

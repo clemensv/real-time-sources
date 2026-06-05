@@ -33,10 +33,12 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeedsEventProducer
+from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeedsMqttEventProducer
+from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeedsAmqpEventProducer
 
 # imports for the data classes for each event
 
-from rssbridge_producer_data.feeditem import FeedItem
+from rssbridge_producer_data import FeedItem
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -63,12 +65,44 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'Microsoft.OpenData.RssFeeds.FeedItem' event to Kafka topic.
     await microsoft_open_data_rss_feeds_event_producer.send_microsoft_open_data_rss_feeds_feed_item(_sourceurl = 'TODO: replace me', _item_id = 'TODO: replace me', data = _feed_item)
     print(f"Sent 'Microsoft.OpenData.RssFeeds.FeedItem' event: {_feed_item.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_rss_feeds_mqtt_event_producer = MicrosoftOpenDataRssFeedsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_rss_feeds_mqtt_event_producer = MicrosoftOpenDataRssFeedsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Microsoft.OpenData.RssFeeds.mqtt.FeedItem ----
+    # TODO: Supply event data for the Microsoft.OpenData.RssFeeds.mqtt.FeedItem event
+    _feed_item = FeedItem()
+
+    # sends the 'Microsoft.OpenData.RssFeeds.mqtt.FeedItem' event to Kafka topic.
+    await microsoft_open_data_rss_feeds_mqtt_event_producer.send_microsoft_open_data_rss_feeds_mqtt_feed_item(_sourceurl = 'TODO: replace me', _item_id = 'TODO: replace me', data = _feed_item)
+    print(f"Sent 'Microsoft.OpenData.RssFeeds.mqtt.FeedItem' event: {_feed_item.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        microsoft_open_data_rss_feeds_amqp_event_producer = MicrosoftOpenDataRssFeedsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        microsoft_open_data_rss_feeds_amqp_event_producer = MicrosoftOpenDataRssFeedsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Microsoft.OpenData.RssFeeds.amqp.FeedItem ----
+    # TODO: Supply event data for the Microsoft.OpenData.RssFeeds.amqp.FeedItem event
+    _feed_item = FeedItem()
+
+    # sends the 'Microsoft.OpenData.RssFeeds.amqp.FeedItem' event to Kafka topic.
+    await microsoft_open_data_rss_feeds_amqp_event_producer.send_microsoft_open_data_rss_feeds_amqp_feed_item(_sourceurl = 'TODO: replace me', _item_id = 'TODO: replace me', data = _feed_item)
+    print(f"Sent 'Microsoft.OpenData.RssFeeds.amqp.FeedItem' event: {_feed_item.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

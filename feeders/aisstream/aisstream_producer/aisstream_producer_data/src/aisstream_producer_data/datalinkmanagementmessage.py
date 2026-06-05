@@ -94,6 +94,8 @@ class DataLinkManagementMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class DataLinkManagementMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(71),
-            RepeatIndicator=int(13),
-            UserID=int(31),
+            MessageID=int(88),
+            RepeatIndicator=int(86),
+            UserID=int(92),
             Valid=True,
-            Spare=int(35),
-            Data={'izeqcowptnjqimnkbssn': 'wkbuvdheycpvervcokvl'}
+            Spare=int(65),
+            Data={'hthrsgahdwbtjmpcaraw': 'rvogygpcdlvofcwdgkcl', 'dbfetzasmxxdcgaoulga': 'vxwfbvniultyzizrlgdn', 'kuqbzpzntkboqxgjelpy': 'jrixbwdqqvxtjylydtsf', 'vnjstppvcmdzmyyqbxkw': 'bhpuqcxxsrnsnbnvmckh'}
         )

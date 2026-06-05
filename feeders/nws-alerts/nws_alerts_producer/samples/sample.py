@@ -38,7 +38,7 @@ from nws_alerts_producer_kafka_producer.producer import NWSAlertsAmqpEventProduc
 
 # imports for the data classes for each event
 
-from nws_alerts_producer_data.weatheralert import WeatherAlert
+from nws_alerts_producer_data import WeatherAlert
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -74,13 +74,45 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
         kafka_producer = KafkaProducer(json.loads(producer_config))
         nwsalerts_mqtt_event_producer = NWSAlertsMqttEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- NWS.WeatherAlert.mqtt ----
-    # TODO: Supply event data for the NWS.WeatherAlert.mqtt event
+    # ---- NWS.WeatherAlert.Minor.mqtt ----
+    # TODO: Supply event data for the NWS.WeatherAlert.Minor.mqtt event
     _weather_alert = WeatherAlert()
 
-    # sends the 'NWS.WeatherAlert.mqtt' event to Kafka topic.
-    await nwsalerts_mqtt_event_producer.send_nws_weather_alert_mqtt(_alert_id = 'TODO: replace me', data = _weather_alert)
-    print(f"Sent 'NWS.WeatherAlert.mqtt' event: {_weather_alert.to_json()}")
+    # sends the 'NWS.WeatherAlert.Minor.mqtt' event to Kafka topic.
+    await nwsalerts_mqtt_event_producer.send_nws_weather_alert_minor_mqtt(_alert_id = 'TODO: replace me', data = _weather_alert)
+    print(f"Sent 'NWS.WeatherAlert.Minor.mqtt' event: {_weather_alert.to_json()}")
+
+    # ---- NWS.WeatherAlert.Moderate.mqtt ----
+    # TODO: Supply event data for the NWS.WeatherAlert.Moderate.mqtt event
+    _weather_alert = WeatherAlert()
+
+    # sends the 'NWS.WeatherAlert.Moderate.mqtt' event to Kafka topic.
+    await nwsalerts_mqtt_event_producer.send_nws_weather_alert_moderate_mqtt(_alert_id = 'TODO: replace me', data = _weather_alert)
+    print(f"Sent 'NWS.WeatherAlert.Moderate.mqtt' event: {_weather_alert.to_json()}")
+
+    # ---- NWS.WeatherAlert.Severe.mqtt ----
+    # TODO: Supply event data for the NWS.WeatherAlert.Severe.mqtt event
+    _weather_alert = WeatherAlert()
+
+    # sends the 'NWS.WeatherAlert.Severe.mqtt' event to Kafka topic.
+    await nwsalerts_mqtt_event_producer.send_nws_weather_alert_severe_mqtt(_alert_id = 'TODO: replace me', data = _weather_alert)
+    print(f"Sent 'NWS.WeatherAlert.Severe.mqtt' event: {_weather_alert.to_json()}")
+
+    # ---- NWS.WeatherAlert.Extreme.mqtt ----
+    # TODO: Supply event data for the NWS.WeatherAlert.Extreme.mqtt event
+    _weather_alert = WeatherAlert()
+
+    # sends the 'NWS.WeatherAlert.Extreme.mqtt' event to Kafka topic.
+    await nwsalerts_mqtt_event_producer.send_nws_weather_alert_extreme_mqtt(_alert_id = 'TODO: replace me', data = _weather_alert)
+    print(f"Sent 'NWS.WeatherAlert.Extreme.mqtt' event: {_weather_alert.to_json()}")
+
+    # ---- NWS.WeatherAlert.Unknown.mqtt ----
+    # TODO: Supply event data for the NWS.WeatherAlert.Unknown.mqtt event
+    _weather_alert = WeatherAlert()
+
+    # sends the 'NWS.WeatherAlert.Unknown.mqtt' event to Kafka topic.
+    await nwsalerts_mqtt_event_producer.send_nws_weather_alert_unknown_mqtt(_alert_id = 'TODO: replace me', data = _weather_alert)
+    print(f"Sent 'NWS.WeatherAlert.Unknown.mqtt' event: {_weather_alert.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
         # or an Azure Event Hubs connection string
@@ -90,19 +122,51 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
         kafka_producer = KafkaProducer(json.loads(producer_config))
         nwsalerts_amqp_event_producer = NWSAlertsAmqpEventProducer(kafka_producer, topic, 'binary')
 
-    # ---- NWS.WeatherAlert.amqp ----
-    # TODO: Supply event data for the NWS.WeatherAlert.amqp event
+    # ---- NWS.Alerts.amqp.WeatherAlertMinor ----
+    # TODO: Supply event data for the NWS.Alerts.amqp.WeatherAlertMinor event
     _weather_alert = WeatherAlert()
 
-    # sends the 'NWS.WeatherAlert.amqp' event to Kafka topic.
-    await nwsalerts_amqp_event_producer.send_nws_weather_alert_amqp(_alert_id = 'TODO: replace me', data = _weather_alert)
-    print(f"Sent 'NWS.WeatherAlert.amqp' event: {_weather_alert.to_json()}")
+    # sends the 'NWS.Alerts.amqp.WeatherAlertMinor' event to Kafka topic.
+    await nwsalerts_amqp_event_producer.send_nws_alerts_amqp_weather_alert_minor(_alert_id = 'TODO: replace me', data = _weather_alert)
+    print(f"Sent 'NWS.Alerts.amqp.WeatherAlertMinor' event: {_weather_alert.to_json()}")
+
+    # ---- NWS.Alerts.amqp.WeatherAlertModerate ----
+    # TODO: Supply event data for the NWS.Alerts.amqp.WeatherAlertModerate event
+    _weather_alert = WeatherAlert()
+
+    # sends the 'NWS.Alerts.amqp.WeatherAlertModerate' event to Kafka topic.
+    await nwsalerts_amqp_event_producer.send_nws_alerts_amqp_weather_alert_moderate(_alert_id = 'TODO: replace me', data = _weather_alert)
+    print(f"Sent 'NWS.Alerts.amqp.WeatherAlertModerate' event: {_weather_alert.to_json()}")
+
+    # ---- NWS.Alerts.amqp.WeatherAlertSevere ----
+    # TODO: Supply event data for the NWS.Alerts.amqp.WeatherAlertSevere event
+    _weather_alert = WeatherAlert()
+
+    # sends the 'NWS.Alerts.amqp.WeatherAlertSevere' event to Kafka topic.
+    await nwsalerts_amqp_event_producer.send_nws_alerts_amqp_weather_alert_severe(_alert_id = 'TODO: replace me', data = _weather_alert)
+    print(f"Sent 'NWS.Alerts.amqp.WeatherAlertSevere' event: {_weather_alert.to_json()}")
+
+    # ---- NWS.Alerts.amqp.WeatherAlertExtreme ----
+    # TODO: Supply event data for the NWS.Alerts.amqp.WeatherAlertExtreme event
+    _weather_alert = WeatherAlert()
+
+    # sends the 'NWS.Alerts.amqp.WeatherAlertExtreme' event to Kafka topic.
+    await nwsalerts_amqp_event_producer.send_nws_alerts_amqp_weather_alert_extreme(_alert_id = 'TODO: replace me', data = _weather_alert)
+    print(f"Sent 'NWS.Alerts.amqp.WeatherAlertExtreme' event: {_weather_alert.to_json()}")
+
+    # ---- NWS.Alerts.amqp.WeatherAlertUnknown ----
+    # TODO: Supply event data for the NWS.Alerts.amqp.WeatherAlertUnknown event
+    _weather_alert = WeatherAlert()
+
+    # sends the 'NWS.Alerts.amqp.WeatherAlertUnknown' event to Kafka topic.
+    await nwsalerts_amqp_event_producer.send_nws_alerts_amqp_weather_alert_unknown(_alert_id = 'TODO: replace me', data = _weather_alert)
+    print(f"Sent 'NWS.Alerts.amqp.WeatherAlertUnknown' event: {_weather_alert.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

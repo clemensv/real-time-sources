@@ -11,9 +11,9 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.trip.vehicledescriptor import VehicleDescriptor
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.trip.tripdescriptor import TripDescriptor
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate import StopTimeUpdate
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.trip.vehicledescriptor import VehicleDescriptor
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -34,7 +34,7 @@ class TripUpdate:
     trip: TripDescriptor=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trip"))
     vehicle: typing.Optional[VehicleDescriptor]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vehicle"))
     stop_time_update: typing.List[StopTimeUpdate]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="stop_time_update"))
-    timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
+    timestamp: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     delay: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="delay"))
 
     @classmethod
@@ -48,6 +48,8 @@ class TripUpdate:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'timestamp' in data and isinstance(data['timestamp'], str):
+            data['timestamp'] = int(data['timestamp'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -58,6 +60,8 @@ class TripUpdate:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'timestamp' in asdict_result and asdict_result['timestamp'] is not None:
+            asdict_result['timestamp'] = str(asdict_result['timestamp'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -95,6 +99,8 @@ class TripUpdate:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -164,7 +170,7 @@ class TripUpdate:
         return cls(
             trip=None,
             vehicle=None,
-            stop_time_update=[None, None, None, None, None],
-            timestamp=int(86),
-            delay=int(42)
+            stop_time_update=[None, None, None, None],
+            timestamp=int(49),
+            delay=int(18)
         )

@@ -92,6 +92,8 @@ class Species:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class Species:
             An instance of the dataclass.
         """
         return cls(
-            species_code='oddetshfwfnwtvpgfqpn',
-            species_name='wmadqhbsfjouwhfovaqd',
-            description='ertkxolxhfeqagoqhjki',
-            health_effect='gdolsztkfqcfpmgrcmkc',
-            link='uzvkhgkxkvtlnmrmrfwj'
+            species_code='grpzzrfzysixmjxvqxrr',
+            species_name='wajcgbnvfewqqfizcfvk',
+            description='ascrgfrcyowujyhktsgm',
+            health_effect='zazaolpxadstjbwzcteg',
+            link='hqiimnlxffdnaxshyifr'
         )

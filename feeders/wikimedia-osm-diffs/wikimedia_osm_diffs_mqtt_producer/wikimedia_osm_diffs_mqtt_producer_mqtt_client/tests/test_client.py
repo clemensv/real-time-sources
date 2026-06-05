@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -92,6 +93,7 @@ async def test_org_openstreetmap_diffs_mqtt_org_open_street_map_diffs_mqtt_node_
             topic=test_topic,
             geohash5=f"test_geohash5_{i}",
             element_id=f"test_element_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -158,6 +160,7 @@ async def test_org_openstreetmap_diffs_mqtt_org_open_street_map_diffs_mqtt_way_p
             topic=test_topic,
             geohash5=f"test_geohash5_{i}",
             element_id=f"test_element_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -224,6 +227,7 @@ async def test_org_openstreetmap_diffs_mqtt_org_open_street_map_diffs_mqtt_relat
             topic=test_topic,
             geohash5=f"test_geohash5_{i}",
             element_id=f"test_element_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -288,6 +292,7 @@ async def test_org_openstreetmap_diffs_mqtt_org_open_street_map_diffs_mqtt_repli
     for i in range(5):
         await publisher_client.publish_org_open_street_map_diffs_mqtt_replication_state(
             topic=test_topic,
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

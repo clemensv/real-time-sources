@@ -33,10 +33,12 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from jma_japan_producer_kafka_producer.producer import JpGoJmaWeatherBulletinsEventProducer
+from jma_japan_producer_kafka_producer.producer import JpGoJmaWeatherBulletinsMqttEventProducer
+from jma_japan_producer_kafka_producer.producer import JpGoJmaWeatherBulletinsAmqpEventProducer
 
 # imports for the data classes for each event
 
-from jma_japan_producer_data.weatherbulletin import WeatherBulletin
+from jma_japan_producer_data import WeatherBulletin
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -63,12 +65,44 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'jp.go.jma.WeatherBulletin' event to Kafka topic.
     await jp_go_jma_weather_bulletins_event_producer.send_jp_go_jma_weather_bulletin(_bulletin_id = 'TODO: replace me', data = _weather_bulletin)
     print(f"Sent 'jp.go.jma.WeatherBulletin' event: {_weather_bulletin.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        jp_go_jma_weather_bulletins_mqtt_event_producer = JpGoJmaWeatherBulletinsMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        jp_go_jma_weather_bulletins_mqtt_event_producer = JpGoJmaWeatherBulletinsMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- jp.go.jma.WeatherBulletins.mqtt.WeatherBulletin ----
+    # TODO: Supply event data for the jp.go.jma.WeatherBulletins.mqtt.WeatherBulletin event
+    _weather_bulletin = WeatherBulletin()
+
+    # sends the 'jp.go.jma.WeatherBulletins.mqtt.WeatherBulletin' event to Kafka topic.
+    await jp_go_jma_weather_bulletins_mqtt_event_producer.send_jp_go_jma_weather_bulletins_mqtt_weather_bulletin(_office = 'TODO: replace me', _bulletin_id = 'TODO: replace me', data = _weather_bulletin)
+    print(f"Sent 'jp.go.jma.WeatherBulletins.mqtt.WeatherBulletin' event: {_weather_bulletin.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        jp_go_jma_weather_bulletins_amqp_event_producer = JpGoJmaWeatherBulletinsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        jp_go_jma_weather_bulletins_amqp_event_producer = JpGoJmaWeatherBulletinsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- jp.go.jma.WeatherBulletins.amqp.WeatherBulletin ----
+    # TODO: Supply event data for the jp.go.jma.WeatherBulletins.amqp.WeatherBulletin event
+    _weather_bulletin = WeatherBulletin()
+
+    # sends the 'jp.go.jma.WeatherBulletins.amqp.WeatherBulletin' event to Kafka topic.
+    await jp_go_jma_weather_bulletins_amqp_event_producer.send_jp_go_jma_weather_bulletins_amqp_weather_bulletin(_office = 'TODO: replace me', _bulletin_id = 'TODO: replace me', data = _weather_bulletin)
+    print(f"Sent 'jp.go.jma.WeatherBulletins.amqp.WeatherBulletin' event: {_weather_bulletin.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

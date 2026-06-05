@@ -1,3 +1,3 @@
-from .fmi import Observation, Station
+from .fmi import Station, Observation
 
-__all__ = ["Observation", "Station"]
+__all__ = ["Station", "Observation"]

@@ -103,6 +103,8 @@ class AddressedBinaryMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -170,14 +172,14 @@ class AddressedBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(96),
-            RepeatIndicator=int(89),
-            UserID=int(9),
+            MessageID=int(51),
+            RepeatIndicator=int(0),
+            UserID=int(51),
             Valid=False,
-            Sequenceinteger=int(47),
-            DestinationID=int(61),
-            Retransmission=False,
-            Spare=False,
+            Sequenceinteger=int(2),
+            DestinationID=int(78),
+            Retransmission=True,
+            Spare=True,
             ApplicationID=None,
-            BinaryData='yozsaxqwqekqhpvbwxqi'
+            BinaryData='qbnphfxnitxqfdlfgfnf'
         )

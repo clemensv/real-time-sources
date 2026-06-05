@@ -1,16 +1,58 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
 import json
+import re
 import uuid
 import typing
-from datetime import datetime
+from datetime import datetime, timezone
 from confluent_kafka import Producer, KafkaException, Message
 from cloudevents.kafka import to_binary, to_structured, KafkaMessage
 from cloudevents.http import CloudEvent
 
-def _compact_json_dumps(obj, **kwargs):
-    """Serialize to JSON without whitespace for compact wire format."""
-    return json.dumps(obj, separators=(',', ':'))
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 from gtfs_rt_producer_data import VehiclePosition
 from gtfs_rt_producer_data import TripUpdate
 from gtfs_rt_producer_data import Alert
@@ -74,7 +116,15 @@ class GeneralTransitFeedRealTimeEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_general_transit_feed_real_time_vehicle_vehicle_position(self,_feedurl : str, _agencyid : str, data: VehiclePosition, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, VehiclePosition], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_general_transit_feed_real_time_vehicle_vehicle_position(self,_feedurl : str, _agencyid : str, data: VehiclePosition, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, VehiclePosition], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition' event to the Kafka topic
 
@@ -83,6 +133,7 @@ class GeneralTransitFeedRealTimeEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (VehiclePosition): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, VehiclePosition], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -95,20 +146,21 @@ class GeneralTransitFeedRealTimeEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_real_time_trip_trip_update(self,_feedurl : str, _agencyid : str, data: TripUpdate, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, TripUpdate], str]=None) -> None:
+    def send_general_transit_feed_real_time_trip_trip_update(self,_feedurl : str, _agencyid : str, data: TripUpdate, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, TripUpdate], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedRealTime.Trip.TripUpdate' event to the Kafka topic
 
@@ -117,6 +169,7 @@ class GeneralTransitFeedRealTimeEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (TripUpdate): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, TripUpdate], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -129,20 +182,21 @@ class GeneralTransitFeedRealTimeEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_real_time_alert_alert(self,_feedurl : str, _agencyid : str, data: Alert, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Alert], str]=None) -> None:
+    def send_general_transit_feed_real_time_alert_alert(self,_feedurl : str, _agencyid : str, data: Alert, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Alert], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedRealTime.Alert.Alert' event to the Kafka topic
 
@@ -151,6 +205,7 @@ class GeneralTransitFeedRealTimeEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Alert): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Alert], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -163,14 +218,15 @@ class GeneralTransitFeedRealTimeEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -258,7 +314,15 @@ class GeneralTransitFeedStaticEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
-    def send_general_transit_feed_static_agency(self,_feedurl : str, _agencyid : str, data: Agency, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Agency], str]=None) -> None:
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    def send_general_transit_feed_static_agency(self,_feedurl : str, _agencyid : str, data: Agency, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Agency], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Agency' event to the Kafka topic
 
@@ -267,6 +331,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Agency): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Agency], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -279,20 +344,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_areas(self,_feedurl : str, _agencyid : str, data: Areas, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Areas], str]=None) -> None:
+    def send_general_transit_feed_static_areas(self,_feedurl : str, _agencyid : str, data: Areas, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Areas], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Areas' event to the Kafka topic
 
@@ -301,6 +367,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Areas): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Areas], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -313,20 +380,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_attributions(self,_feedurl : str, _agencyid : str, data: Attributions, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Attributions], str]=None) -> None:
+    def send_general_transit_feed_static_attributions(self,_feedurl : str, _agencyid : str, data: Attributions, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Attributions], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Attributions' event to the Kafka topic
 
@@ -335,6 +403,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Attributions): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Attributions], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -347,20 +416,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_booking_rules(self,_feedurl : str, _agencyid : str, data: BookingRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BookingRules], str]=None) -> None:
+    def send_general_transit_feed_booking_rules(self,_feedurl : str, _agencyid : str, data: BookingRules, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, BookingRules], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeed.BookingRules' event to the Kafka topic
 
@@ -369,6 +439,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (BookingRules): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, BookingRules], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -381,20 +452,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_fare_attributes(self,_feedurl : str, _agencyid : str, data: FareAttributes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareAttributes], str]=None) -> None:
+    def send_general_transit_feed_static_fare_attributes(self,_feedurl : str, _agencyid : str, data: FareAttributes, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareAttributes], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.FareAttributes' event to the Kafka topic
 
@@ -403,6 +475,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (FareAttributes): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, FareAttributes], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -415,20 +488,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_fare_leg_rules(self,_feedurl : str, _agencyid : str, data: FareLegRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareLegRules], str]=None) -> None:
+    def send_general_transit_feed_static_fare_leg_rules(self,_feedurl : str, _agencyid : str, data: FareLegRules, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareLegRules], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.FareLegRules' event to the Kafka topic
 
@@ -437,6 +511,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (FareLegRules): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, FareLegRules], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -449,20 +524,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_fare_media(self,_feedurl : str, _agencyid : str, data: FareMedia, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareMedia], str]=None) -> None:
+    def send_general_transit_feed_static_fare_media(self,_feedurl : str, _agencyid : str, data: FareMedia, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareMedia], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.FareMedia' event to the Kafka topic
 
@@ -471,6 +547,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (FareMedia): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, FareMedia], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -483,20 +560,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_fare_products(self,_feedurl : str, _agencyid : str, data: FareProducts, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareProducts], str]=None) -> None:
+    def send_general_transit_feed_static_fare_products(self,_feedurl : str, _agencyid : str, data: FareProducts, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareProducts], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.FareProducts' event to the Kafka topic
 
@@ -505,6 +583,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (FareProducts): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, FareProducts], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -517,20 +596,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_fare_rules(self,_feedurl : str, _agencyid : str, data: FareRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareRules], str]=None) -> None:
+    def send_general_transit_feed_static_fare_rules(self,_feedurl : str, _agencyid : str, data: FareRules, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareRules], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.FareRules' event to the Kafka topic
 
@@ -539,6 +619,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (FareRules): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, FareRules], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -551,20 +632,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_fare_transfer_rules(self,_feedurl : str, _agencyid : str, data: FareTransferRules, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareTransferRules], str]=None) -> None:
+    def send_general_transit_feed_static_fare_transfer_rules(self,_feedurl : str, _agencyid : str, data: FareTransferRules, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FareTransferRules], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.FareTransferRules' event to the Kafka topic
 
@@ -573,6 +655,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (FareTransferRules): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, FareTransferRules], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -585,20 +668,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_feed_info(self,_feedurl : str, _agencyid : str, data: FeedInfo, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FeedInfo], str]=None) -> None:
+    def send_general_transit_feed_static_feed_info(self,_feedurl : str, _agencyid : str, data: FeedInfo, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FeedInfo], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.FeedInfo' event to the Kafka topic
 
@@ -607,6 +691,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (FeedInfo): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, FeedInfo], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -619,20 +704,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_frequencies(self,_feedurl : str, _agencyid : str, data: Frequencies, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Frequencies], str]=None) -> None:
+    def send_general_transit_feed_static_frequencies(self,_feedurl : str, _agencyid : str, data: Frequencies, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Frequencies], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Frequencies' event to the Kafka topic
 
@@ -641,6 +727,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Frequencies): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Frequencies], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -653,20 +740,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_levels(self,_feedurl : str, _agencyid : str, data: Levels, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Levels], str]=None) -> None:
+    def send_general_transit_feed_static_levels(self,_feedurl : str, _agencyid : str, data: Levels, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Levels], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Levels' event to the Kafka topic
 
@@ -675,6 +763,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Levels): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Levels], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -687,20 +776,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_location_geo_json(self,_feedurl : str, _agencyid : str, data: LocationGeoJson, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGeoJson], str]=None) -> None:
+    def send_general_transit_feed_static_location_geo_json(self,_feedurl : str, _agencyid : str, data: LocationGeoJson, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGeoJson], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.LocationGeoJson' event to the Kafka topic
 
@@ -709,6 +799,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (LocationGeoJson): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, LocationGeoJson], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -721,20 +812,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_location_groups(self,_feedurl : str, _agencyid : str, data: LocationGroups, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGroups], str]=None) -> None:
+    def send_general_transit_feed_static_location_groups(self,_feedurl : str, _agencyid : str, data: LocationGroups, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGroups], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.LocationGroups' event to the Kafka topic
 
@@ -743,6 +835,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (LocationGroups): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, LocationGroups], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -755,20 +848,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_location_group_stores(self,_feedurl : str, _agencyid : str, data: LocationGroupStores, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGroupStores], str]=None) -> None:
+    def send_general_transit_feed_static_location_group_stores(self,_feedurl : str, _agencyid : str, data: LocationGroupStores, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, LocationGroupStores], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.LocationGroupStores' event to the Kafka topic
 
@@ -777,6 +871,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (LocationGroupStores): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, LocationGroupStores], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -789,20 +884,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_networks(self,_feedurl : str, _agencyid : str, data: Networks, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Networks], str]=None) -> None:
+    def send_general_transit_feed_static_networks(self,_feedurl : str, _agencyid : str, data: Networks, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Networks], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Networks' event to the Kafka topic
 
@@ -811,6 +907,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Networks): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Networks], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -823,20 +920,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_pathways(self,_feedurl : str, _agencyid : str, data: Pathways, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Pathways], str]=None) -> None:
+    def send_general_transit_feed_static_pathways(self,_feedurl : str, _agencyid : str, data: Pathways, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Pathways], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Pathways' event to the Kafka topic
 
@@ -845,6 +943,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Pathways): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Pathways], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -857,20 +956,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_route_networks(self,_feedurl : str, _agencyid : str, data: RouteNetworks, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RouteNetworks], str]=None) -> None:
+    def send_general_transit_feed_static_route_networks(self,_feedurl : str, _agencyid : str, data: RouteNetworks, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, RouteNetworks], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.RouteNetworks' event to the Kafka topic
 
@@ -879,6 +979,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (RouteNetworks): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, RouteNetworks], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -891,20 +992,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_routes(self,_feedurl : str, _agencyid : str, data: Routes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Routes], str]=None) -> None:
+    def send_general_transit_feed_static_routes(self,_feedurl : str, _agencyid : str, data: Routes, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Routes], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Routes' event to the Kafka topic
 
@@ -913,6 +1015,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Routes): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Routes], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -925,20 +1028,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_shapes(self,_feedurl : str, _agencyid : str, data: Shapes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Shapes], str]=None) -> None:
+    def send_general_transit_feed_static_shapes(self,_feedurl : str, _agencyid : str, data: Shapes, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Shapes], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Shapes' event to the Kafka topic
 
@@ -947,6 +1051,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Shapes): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Shapes], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -959,20 +1064,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_stop_areas(self,_feedurl : str, _agencyid : str, data: StopAreas, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StopAreas], str]=None) -> None:
+    def send_general_transit_feed_static_stop_areas(self,_feedurl : str, _agencyid : str, data: StopAreas, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StopAreas], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.StopAreas' event to the Kafka topic
 
@@ -981,6 +1087,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (StopAreas): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, StopAreas], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -993,20 +1100,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_stops(self,_feedurl : str, _agencyid : str, data: Stops, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Stops], str]=None) -> None:
+    def send_general_transit_feed_static_stops(self,_feedurl : str, _agencyid : str, data: Stops, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Stops], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Stops' event to the Kafka topic
 
@@ -1015,6 +1123,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Stops): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Stops], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -1027,20 +1136,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_stop_times(self,_feedurl : str, _agencyid : str, data: StopTimes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StopTimes], str]=None) -> None:
+    def send_general_transit_feed_static_stop_times(self,_feedurl : str, _agencyid : str, data: StopTimes, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StopTimes], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.StopTimes' event to the Kafka topic
 
@@ -1049,6 +1159,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (StopTimes): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, StopTimes], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -1061,20 +1172,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_timeframes(self,_feedurl : str, _agencyid : str, data: Timeframes, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Timeframes], str]=None) -> None:
+    def send_general_transit_feed_static_timeframes(self,_feedurl : str, _agencyid : str, data: Timeframes, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Timeframes], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Timeframes' event to the Kafka topic
 
@@ -1083,6 +1195,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Timeframes): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Timeframes], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -1095,20 +1208,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_transfers(self,_feedurl : str, _agencyid : str, data: Transfers, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Transfers], str]=None) -> None:
+    def send_general_transit_feed_static_transfers(self,_feedurl : str, _agencyid : str, data: Transfers, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Transfers], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Transfers' event to the Kafka topic
 
@@ -1117,6 +1231,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Transfers): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Transfers], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -1129,20 +1244,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_translations(self,_feedurl : str, _agencyid : str, data: Translations, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Translations], str]=None) -> None:
+    def send_general_transit_feed_static_translations(self,_feedurl : str, _agencyid : str, data: Translations, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Translations], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Translations' event to the Kafka topic
 
@@ -1151,6 +1267,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Translations): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Translations], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -1163,20 +1280,21 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
 
-    def send_general_transit_feed_static_trips(self,_feedurl : str, _agencyid : str, data: Trips, content_type: str = "application/json", flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Trips], str]=None) -> None:
+    def send_general_transit_feed_static_trips(self,_feedurl : str, _agencyid : str, data: Trips, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, Trips], str]=None) -> None:
         """
         Sends the 'GeneralTransitFeedStatic.Trips' event to the Kafka topic
 
@@ -1185,6 +1303,7 @@ class GeneralTransitFeedStaticEventProducer:
             _agencyid(str):  Value for placeholder agencyid in attribute subject
             data: (Trips): The event data to be sent
             content_type (str): The content type that the event data shall be sent with
+            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             flush_producer(bool): Whether to flush the producer after sending the event (default: True)
             key_mapper(Callable[[CloudEvent, Trips], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
                 The default key is derived from the xRegistry Kafka key declaration '{agencyid}'
@@ -1197,14 +1316,15 @@ class GeneralTransitFeedStaticEventProducer:
              "subject":"{agencyid}".format(agencyid = _agencyid)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         event = CloudEvent.create(attributes, data)
         if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), envelope_marshaller=_compact_json_dumps, key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
             message.headers["content-type"] = b"application/cloudevents+json"
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()

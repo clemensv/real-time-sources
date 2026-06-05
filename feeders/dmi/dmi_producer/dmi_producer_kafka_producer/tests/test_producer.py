@@ -20,23 +20,23 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from dmi_producer_kafka_producer.producer import DkDmiMetObsKafkaEventProducer
 from dmi_producer_data import MetObsStation
-from test_dmi_producer_data_metobsstation import Test_MetObsStation
+from test_metobsstation import Test_MetObsStation
 from dmi_producer_data import MetObsObservation
-from test_dmi_producer_data_metobsobservation import Test_MetObsObservation
+from test_metobsobservation import Test_MetObsObservation
 from dmi_producer_kafka_producer.producer import DkDmiOceanObsKafkaEventProducer
 from dmi_producer_data import OceanStation
-from test_dmi_producer_data_oceanstation import Test_OceanStation
+from test_oceanstation import Test_OceanStation
 from dmi_producer_data import TidewaterStation
-from test_dmi_producer_data_tidewaterstation import Test_TidewaterStation
+from test_tidewaterstation import Test_TidewaterStation
 from dmi_producer_data import OceanObservation
-from test_dmi_producer_data_oceanobservation import Test_OceanObservation
+from test_oceanobservation import Test_OceanObservation
 from dmi_producer_data import TidewaterPrediction
-from test_dmi_producer_data_tidewaterprediction import Test_TidewaterPrediction
+from test_tidewaterprediction import Test_TidewaterPrediction
 from dmi_producer_kafka_producer.producer import DkDmiLightningKafkaEventProducer
 from dmi_producer_data import LightningSensor
-from test_dmi_producer_data_lightningsensor import Test_LightningSensor
+from test_lightningsensor import Test_LightningSensor
 from dmi_producer_data import LightningStrike
-from test_dmi_producer_data_lightningstrike import Test_LightningStrike
+from test_lightningstrike import Test_LightningStrike
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -119,7 +119,8 @@ def test_dk_dmi_metobs_kafka_dkdmimetobskafkastation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_dmi_met_obs_kafka_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_dk_dmi_met_obs_kafka_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -182,7 +183,8 @@ def test_dk_dmi_metobs_kafka_dkdmimetobskafkaobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_dmi_met_obs_kafka_observation(_feedurl = f'test_{i}', _station_id = f'test_{i}', _parameter_id = f'test_{i}', data = event_data)
+        producer_instance.send_dk_dmi_met_obs_kafka_observation(_feedurl = f'test_{i}', _station_id = f'test_{i}', _parameter_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -245,7 +247,8 @@ def test_dk_dmi_oceanobs_kafka_dkdmioceanobskafkastation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_dmi_ocean_obs_kafka_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_dk_dmi_ocean_obs_kafka_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -308,7 +311,8 @@ def test_dk_dmi_oceanobs_kafka_dkdmioceanobskafkatidewaterstation(kafka_emulator
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_dmi_ocean_obs_kafka_tidewater_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_dk_dmi_ocean_obs_kafka_tidewater_station(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -371,7 +375,8 @@ def test_dk_dmi_oceanobs_kafka_dkdmioceanobskafkaobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_dmi_ocean_obs_kafka_observation(_feedurl = f'test_{i}', _station_id = f'test_{i}', _parameter_id = f'test_{i}', data = event_data)
+        producer_instance.send_dk_dmi_ocean_obs_kafka_observation(_feedurl = f'test_{i}', _station_id = f'test_{i}', _parameter_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -434,7 +439,8 @@ def test_dk_dmi_oceanobs_kafka_dkdmioceanobskafkatidewaterprediction(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_dmi_ocean_obs_kafka_tidewater_prediction(_feedurl = f'test_{i}', _station_id = f'test_{i}', data = event_data)
+        producer_instance.send_dk_dmi_ocean_obs_kafka_tidewater_prediction(_feedurl = f'test_{i}', _station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -497,7 +503,8 @@ def test_dk_dmi_lightning_kafka_dkdmilightningkafkasensor(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_dmi_lightning_kafka_sensor(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', data = event_data)
+        producer_instance.send_dk_dmi_lightning_kafka_sensor(_feedurl = f'test_{i}', _sensor_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -560,7 +567,8 @@ def test_dk_dmi_lightning_kafka_dkdmilightningkafkastrike(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_dk_dmi_lightning_kafka_strike(_feedurl = f'test_{i}', _strike_id = f'test_{i}', data = event_data)
+        producer_instance.send_dk_dmi_lightning_kafka_strike(_feedurl = f'test_{i}', _strike_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

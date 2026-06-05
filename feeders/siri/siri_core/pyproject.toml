@@ -1,0 +1,15 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "siri_core"
+version = "0.1.0"
+description = "Transport-agnostic acquisition and config for the generic SIRI feeder."
+authors = []
+packages = [{ include = "siri_core" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+urllib3 = ">=2.2.2"

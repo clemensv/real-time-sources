@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import hko_hong_kong_mqtt_producer_data
 from hko_hong_kong_mqtt_producer_data import Station
-from test_hko_hong_kong_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from hko_hong_kong_mqtt_producer_data import WeatherObservation
-from test_hko_hong_kong_mqtt_producer_data_weatherobservation import Test_WeatherObservation
+from test_weatherobservation import Test_WeatherObservation
 from hko_hong_kong_mqtt_producer_mqtt_client import HKGovHKOWeatherMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_hk_gov_hko_weather_mqtt_hk_gov_hko_weather_mqtt_station_py(mosqui
         await publisher_client.publish_hk_gov_hko_weather_mqtt_station(
             topic=test_topic,
             place_id=f"test_place_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -156,6 +158,7 @@ async def test_hk_gov_hko_weather_mqtt_hk_gov_hko_weather_mqtt_weather_observati
         await publisher_client.publish_hk_gov_hko_weather_mqtt_weather_observation(
             topic=test_topic,
             place_id=f"test_place_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

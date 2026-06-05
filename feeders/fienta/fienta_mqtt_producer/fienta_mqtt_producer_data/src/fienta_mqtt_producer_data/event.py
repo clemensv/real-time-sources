@@ -130,6 +130,8 @@ class Event:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -197,28 +199,28 @@ class Event:
             An instance of the dataclass.
         """
         return cls(
-            event_id='qtqijtpkuyjhwlcpqtad',
-            name='bfyubvwbhlrxcniwcoti',
-            start='hjovsvyeaaqjhszgodwt',
-            end='hakelkfdmnzksjqlfbqy',
-            duration_text='alrmembexmattsklynfl',
-            time_notes='aadrvijxugulgpzqumgw',
-            event_status='usxkpphogdwbqhymmyhi',
-            sale_status='ctcvdnwroyrpgkpygbhq',
-            attendance_mode='suukvarqpfjyemtcigmj',
-            venue_name='ykzcufblqbzdbtruqosb',
-            venue_id='dpzvppznowlgyenlwuqo',
-            address='neqpdcbvlokxtqwbffjy',
-            postal_code='eamxjpcyowozlcajcfab',
-            description='bymupsysggloghhpxzwx',
-            url='lxikymdywsnxdmrxfxym',
-            buy_tickets_url='hbynwbrjvfkuyspinhkq',
-            image_url='hwwhvjzrwdwkgxkkmjwo',
-            image_small_url='sdkvqzugjokqkmrpfemu',
-            series_id='szwngsfheabqzzqklozu',
-            organizer_name='byqptbnbayzxvpfrjjlf',
-            organizer_phone='uzqnmmyrenvjzrmufnin',
-            organizer_email='tnmgkpjnloojygiufkyb',
-            organizer_id=int(21),
-            categories=['anefngesqxmmonaqusut', 'ggsgndejrkknizesaypu', 'sxtxlvfrfdohgzajnkfx', 'bhbnaduljagoufsecpqo', 'mmrnjczprhcvcrqtsjnw']
+            event_id='oszoxeqnieeoylidhrhu',
+            name='cfggjrfhhbiauqyclxpa',
+            start='azctqamsrondaezssfxw',
+            end='tvmctsztxhesjvckfodq',
+            duration_text='zuyzyqlbprocnastjirj',
+            time_notes='eypbuefdfafejxipixss',
+            event_status='zbtfqeyhisqivwtqlcln',
+            sale_status='dvokgxvscdwuvxuvizfa',
+            attendance_mode='aoiihrbanbmimhwfyazf',
+            venue_name='ahfvverfbvelqjagbkbc',
+            venue_id='fsuzozdvqupugfvpowbg',
+            address='ctahsjwtilpxucpmqjsj',
+            postal_code='durlmfxgdvutyhvjngnq',
+            description='cufbuzgjapiuniqigvzq',
+            url='yxfbfjipviwdlpageipy',
+            buy_tickets_url='iccdhmacgabcvdjpytwq',
+            image_url='bgcmepnxeldojrloyclz',
+            image_small_url='jerbvrjvrpoownuyebpl',
+            series_id='adbmushyzstkomuzaldc',
+            organizer_name='vsyiolxukbjnhhstawbc',
+            organizer_phone='tvfiasxqxftzjborivhz',
+            organizer_email='ogsvhesruliixwspchaj',
+            organizer_id=int(33),
+            categories=['mmxmsyjhvyqsbpydnwtd']
         )

@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 class Effect(Enum):
     """
     What is the effect of this problem on the affected entity.
@@ -15,43 +16,25 @@ class Effect(Enum):
     STOP_MOVED = 'STOP_MOVED'
 
     @classmethod
-    def from_ordinal(cls, ordinal: int|str) -> 'Effect':
+    def from_ordinal(cls, ordinal: int | str) -> 'Effect':
         """
         Get enum member by ordinal
 
         Args:
-            ordinal (int| str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
+            ordinal (int | str): The ordinal of the enum member. This can be an integer or a string representation of an integer.
 
         Returns:
             The enum member corresponding to the ordinal.
         """
-
         if ordinal is None:
             raise ValueError("ordinal must not be None")
         if isinstance(ordinal, str) and ordinal.isdigit():
             ordinal = int(ordinal)
-        if isinstance(ordinal, int):
-            if ordinal == 1:
-                return Effect.NO_SERVICE
-            elif ordinal == 2:
-                return Effect.REDUCED_SERVICE
-            elif ordinal == 3:
-                return Effect.SIGNIFICANT_DELAYS
-            elif ordinal == 4:
-                return Effect.DETOUR
-            elif ordinal == 5:
-                return Effect.ADDITIONAL_SERVICE
-            elif ordinal == 6:
-                return Effect.MODIFIED_SERVICE
-            elif ordinal == 7:
-                return Effect.OTHER_EFFECT
-            elif ordinal == 8:
-                return Effect.UNKNOWN_EFFECT
-            elif ordinal == 9:
-                return Effect.STOP_MOVED
-            raise ValueError("Ordinal not found in enum")
+        members = list(cls)
+        if 0 <= int(ordinal) < len(members):
+            return members[ordinal]
         else:
-            raise ValueError("Ordinal must be an integer or a string representation of an integer")
+            raise IndexError("Ordinal out of range for enum")
 
     @classmethod
     def to_ordinal(cls, member: 'Effect') -> int:
@@ -64,23 +47,5 @@ class Effect(Enum):
         Returns:
             The ordinal of the enum member.
         """
-        
-        if member == Effect.NO_SERVICE:
-            return 1
-        if member == Effect.REDUCED_SERVICE:
-            return 2
-        if member == Effect.SIGNIFICANT_DELAYS:
-            return 3
-        if member == Effect.DETOUR:
-            return 4
-        if member == Effect.ADDITIONAL_SERVICE:
-            return 5
-        if member == Effect.MODIFIED_SERVICE:
-            return 6
-        if member == Effect.OTHER_EFFECT:
-            return 7
-        if member == Effect.UNKNOWN_EFFECT:
-            return 8
-        if member == Effect.STOP_MOVED:
-            return 9
-        raise ValueError("Member not found in enum")
+        members = list(cls)
+        return members.index(member)

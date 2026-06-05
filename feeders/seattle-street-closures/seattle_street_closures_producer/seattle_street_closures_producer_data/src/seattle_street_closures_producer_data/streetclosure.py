@@ -120,6 +120,8 @@ class StreetClosure:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -187,23 +189,23 @@ class StreetClosure:
             An instance of the dataclass.
         """
         return cls(
-            closure_id='nltufhalmvfrrfbkloqf',
-            permit_number='zaurkebegalxwwqqxpdu',
-            permit_type='jvqfokgchnksdsrqcdnn',
-            project_name='gsqwebausiazqvcjfoox',
-            project_description='ykndrlphufgxwamxbvlq',
-            start_date='zwomytmueofidstvjexj',
-            end_date='snxlsycuiccrvvqidhtu',
-            sunday='jeoygjmxxljrrefiyzzu',
-            monday='rijhunivcdajwfrhhnmh',
-            tuesday='gdgxuuslzjnkaapcvwne',
-            wednesday='ewxzqmrpgqhlekaoirki',
-            thursday='xiizdvghhhjumvmizzzm',
-            friday='icoghvaijukvspmsirbh',
-            saturday='vodatuhsmxpfhrgiivyw',
-            street_on='lkbzalkgrepjgegghulx',
-            street_from='hvwuookwvpandzommsnc',
-            street_to='yckgcapydmnmnntlagiz',
-            segkey='ggfckvedyikzlhxbjsio',
-            geometry_json='bsrkpwjhcbtvrjcgumun'
+            closure_id='bezppsuupdhafmghlmvn',
+            permit_number='eaticjsirhlgwmwteekk',
+            permit_type='ncrbdlnivgyhgctgpxsz',
+            project_name='pwuuwkckkimbwhzoifdy',
+            project_description='hzzsyhnmpoqmgspvzaug',
+            start_date='cgwyvogzcdraccwikhmc',
+            end_date='ylsgxspuyjnjalajfkca',
+            sunday='bjwifgozlleqzuodxdop',
+            monday='umlkxsbheoyiciwichel',
+            tuesday='czqyiwdfrpsvjlgwguev',
+            wednesday='iinixtxhblwsxzybyaam',
+            thursday='iesmllwumzfkbqglpmea',
+            friday='trraxcpglxkrfkhbjqsj',
+            saturday='dazoxgjoymtlxpdgmkph',
+            street_on='rrwjwaxorebyjqlonftl',
+            street_from='wkbygpetwghblmtgzqoy',
+            street_to='tfifpmchrlfdcxtxuaye',
+            segkey='ujicrvvmehwdxuucoiyq',
+            geometry_json='ewowlscvkkqjgcclyfvw'
         )

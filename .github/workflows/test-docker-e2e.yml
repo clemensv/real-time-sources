@@ -21,8 +21,14 @@ jobs:
     name: Discover affected feeders
     runs-on: ubuntu-latest
     outputs:
-      build_matrix: ${{ steps.compute.outputs.build_matrix }}
-      flow_matrix: ${{ steps.compute.outputs.flow_matrix }}
+      build_matrix_0: ${{ steps.compute.outputs.build_matrix_0 }}
+      build_matrix_1: ${{ steps.compute.outputs.build_matrix_1 }}
+      build_matrix_2: ${{ steps.compute.outputs.build_matrix_2 }}
+      build_matrix_3: ${{ steps.compute.outputs.build_matrix_3 }}
+      flow_matrix_0: ${{ steps.compute.outputs.flow_matrix_0 }}
+      flow_matrix_1: ${{ steps.compute.outputs.flow_matrix_1 }}
+      flow_matrix_2: ${{ steps.compute.outputs.flow_matrix_2 }}
+      flow_matrix_3: ${{ steps.compute.outputs.flow_matrix_3 }}
       full_run: ${{ steps.compute.outputs.full_run }}
       reason: ${{ steps.compute.outputs.reason }}
     steps:
@@ -62,55 +68,24 @@ jobs:
         run: python tests/docker_e2e/discover_matrix.py
 
   docker-build:
-    name: Docker Build & Import
+    name: Build shard ${{ matrix.shard }}
     needs: discover
-    if: ${{ needs.discover.outputs.build_matrix != '' && fromJson(needs.discover.outputs.build_matrix).include[0] != null }}
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      max-parallel: 20
-      matrix: ${{ fromJson(needs.discover.outputs.build_matrix) }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Build Docker image
-        run: |
-          docker build -t test-${{ matrix.image || matrix.module }} -f ./${{ matrix.dir }}/${{ matrix.file || 'Dockerfile' }} ./${{ matrix.dir }}
-
-      - name: Verify module imports
-        run: |
-          docker run --rm test-${{ matrix.image || matrix.module }} \
-            python -c "import ${{ matrix.module }}; print('OK')"
+      matrix:
+        shard: [0, 1, 2, 3]
+    uses: ./.github/workflows/_docker-build-shard.yml
+    with:
+      matrix: ${{ needs.discover.outputs[format('build_matrix_{0}', matrix.shard)] }}
 
   docker-kafka-flow:
-    name: Docker Kafka Flow
-    needs: [discover, docker-build]
-    if: ${{ always() && needs.docker-build.result != 'failure' && needs.discover.outputs.flow_matrix != '' && fromJson(needs.discover.outputs.flow_matrix).include[0] != null }}
-    runs-on: ubuntu-latest
+    name: Flow shard ${{ matrix.shard }}
+    needs: discover
     strategy:
       fail-fast: false
-      max-parallel: 20
-      matrix: ${{ fromJson(needs.discover.outputs.flow_matrix) }}
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: '3.12'
-          cache: 'pip'
-
-      - name: Install test dependencies
-        run: pip install -r tests/docker_e2e/requirements.txt
-
-      - name: Run Kafka flow test
-        run: |
-          pytest tests/docker_e2e/${{ matrix.test_file || 'test_docker_kafka_flow.py' }} \
-            -v --timeout=600 \
-            -k "${{ matrix.test_class }}" \
-            --tb=long
-        timeout-minutes: 10
-        env:
-          WSDOT_ACCESS_CODE: ${{ secrets.WSDOT_ACCESS_CODE }}
+      matrix:
+        shard: [0, 1, 2, 3]
+    uses: ./.github/workflows/_docker-flow-shard.yml
+    with:
+      matrix: ${{ needs.discover.outputs[format('flow_matrix_{0}', matrix.shard)] }}
+    secrets: inherit

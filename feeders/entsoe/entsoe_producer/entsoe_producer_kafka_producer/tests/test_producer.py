@@ -20,29 +20,29 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyByDomainEventProducer
 from entsoe_producer_data import DayAheadPrices
-from test_entsoe_producer_data_dayaheadprices import Test_DayAheadPrices
+from test_dayaheadprices import Test_DayAheadPrices
 from entsoe_producer_data import ActualTotalLoad
-from test_entsoe_producer_data_actualtotalload import Test_ActualTotalLoad
+from test_actualtotalload import Test_ActualTotalLoad
 from entsoe_producer_data import LoadForecastMargin
-from test_entsoe_producer_data_loadforecastmargin import Test_LoadForecastMargin
+from test_loadforecastmargin import Test_LoadForecastMargin
 from entsoe_producer_data import GenerationForecast
-from test_entsoe_producer_data_generationforecast import Test_GenerationForecast
+from test_generationforecast import Test_GenerationForecast
 from entsoe_producer_data import ReservoirFillingInformation
-from test_entsoe_producer_data_reservoirfillinginformation import Test_ReservoirFillingInformation
+from test_reservoirfillinginformation import Test_ReservoirFillingInformation
 from entsoe_producer_data import ActualGeneration
-from test_entsoe_producer_data_actualgeneration import Test_ActualGeneration
+from test_actualgeneration import Test_ActualGeneration
 from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyByDomainPsrTypeEventProducer
 from entsoe_producer_data import ActualGenerationPerType
-from test_entsoe_producer_data_actualgenerationpertype import Test_ActualGenerationPerType
+from test_actualgenerationpertype import Test_ActualGenerationPerType
 from entsoe_producer_data import WindSolarForecast
-from test_entsoe_producer_data_windsolarforecast import Test_WindSolarForecast
+from test_windsolarforecast import Test_WindSolarForecast
 from entsoe_producer_data import WindSolarGeneration
-from test_entsoe_producer_data_windsolargeneration import Test_WindSolarGeneration
+from test_windsolargeneration import Test_WindSolarGeneration
 from entsoe_producer_data import InstalledGenerationCapacityPerType
-from test_entsoe_producer_data_installedgenerationcapacitypertype import Test_InstalledGenerationCapacityPerType
+from test_installedgenerationcapacitypertype import Test_InstalledGenerationCapacityPerType
 from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyCrossBorderEventProducer
 from entsoe_producer_data import CrossBorderPhysicalFlows
-from test_entsoe_producer_data_crossborderphysicalflows import Test_CrossBorderPhysicalFlows
+from test_crossborderphysicalflows import Test_CrossBorderPhysicalFlows
 from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyByDomainMqttEventProducer
 from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyByDomainPsrTypeMqttEventProducer
 from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyCrossBorderMqttEventProducer
@@ -131,7 +131,8 @@ def test_eu_entsoe_transparency_bydomain_euentsoetransparencydayaheadprices(kafk
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_day_ahead_prices(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_day_ahead_prices(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -194,7 +195,8 @@ def test_eu_entsoe_transparency_bydomain_euentsoetransparencyactualtotalload(kaf
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_actual_total_load(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_actual_total_load(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -257,7 +259,8 @@ def test_eu_entsoe_transparency_bydomain_euentsoetransparencyloadforecastmargin(
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_load_forecast_margin(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_load_forecast_margin(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -320,7 +323,8 @@ def test_eu_entsoe_transparency_bydomain_euentsoetransparencygenerationforecast(
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_generation_forecast(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_generation_forecast(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -383,7 +387,8 @@ def test_eu_entsoe_transparency_bydomain_euentsoetransparencyreservoirfillinginf
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_reservoir_filling_information(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_reservoir_filling_information(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -446,7 +451,8 @@ def test_eu_entsoe_transparency_bydomain_euentsoetransparencyactualgeneration(ka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_actual_generation(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_actual_generation(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -509,7 +515,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_euentsoetransparencyactualgenera
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_actual_generation_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_actual_generation_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -572,7 +579,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_euentsoetransparencywindsolarfor
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_wind_solar_forecast(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_wind_solar_forecast(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -635,7 +643,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_euentsoetransparencywindsolargen
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_wind_solar_generation(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_wind_solar_generation(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -698,7 +707,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_euentsoetransparencyinstalledgen
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_installed_generation_capacity_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_installed_generation_capacity_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -761,7 +771,8 @@ def test_eu_entsoe_transparency_crossborder_euentsoetransparencycrossborderphysi
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_cross_border_physical_flows(_in_domain = f'test_{i}', _out_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_cross_border_physical_flows(_in_domain = f'test_{i}', _out_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -824,7 +835,8 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttda
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_day_ahead_prices(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -885,7 +897,8 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttac
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_actual_total_load(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_actual_total_load(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -946,7 +959,8 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttlo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_load_forecast_margin(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1007,7 +1021,8 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttge
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_generation_forecast(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_generation_forecast(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1068,7 +1083,8 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttre
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_reservoir_filling_information(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1129,7 +1145,8 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttac
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_actual_generation(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_mqtt_actual_generation(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1190,7 +1207,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_euentsoetransparencybydomai
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_actual_generation_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1251,7 +1269,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_euentsoetransparencybydomai
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_forecast(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1312,7 +1331,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_euentsoetransparencybydomai
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_wind_solar_generation(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1373,7 +1393,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_euentsoetransparencybydomai
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_mqtt_installed_generation_capacity_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1434,7 +1455,8 @@ def test_eu_entsoe_transparency_crossborder_mqtt_euentsoetransparencycrossborder
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows(_in_domain = f'test_{i}', _out_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_cross_border_mqtt_cross_border_physical_flows(_in_domain = f'test_{i}', _out_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1495,7 +1517,8 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqpda
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_day_ahead_prices(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_day_ahead_prices(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1556,7 +1579,8 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqpac
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_actual_total_load(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_actual_total_load(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1617,7 +1641,8 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqplo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_load_forecast_margin(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_load_forecast_margin(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1678,7 +1703,8 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqpge
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_generation_forecast(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_generation_forecast(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1739,7 +1765,8 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqpre
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_reservoir_filling_information(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1800,7 +1827,8 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqpac
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_actual_generation(_in_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_amqp_actual_generation(_in_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1861,7 +1889,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_amqp_euentsoetransparencybydomai
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_amqp_actual_generation_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1922,7 +1951,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_amqp_euentsoetransparencybydomai
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_forecast(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1983,7 +2013,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_amqp_euentsoetransparencybydomai
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_amqp_wind_solar_generation(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2044,7 +2075,8 @@ def test_eu_entsoe_transparency_bydomainpsrtype_amqp_euentsoetransparencybydomai
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_by_domain_psr_type_amqp_installed_generation_capacity_per_type(_in_domain = f'test_{i}', _psr_type = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2105,7 +2137,8 @@ def test_eu_entsoe_transparency_crossborder_amqp_euentsoetransparencycrossborder
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows(_in_domain = f'test_{i}', _out_domain = f'test_{i}', data = event_data)
+        producer_instance.send_eu_entsoe_transparency_cross_border_amqp_cross_border_physical_flows(_in_domain = f'test_{i}', _out_domain = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

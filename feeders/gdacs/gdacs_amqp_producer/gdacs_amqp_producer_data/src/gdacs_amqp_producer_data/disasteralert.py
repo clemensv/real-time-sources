@@ -13,8 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
 from gdacs_amqp_producer_data.alertcolorenum import AlertColorenum
-from gdacs_amqp_producer_data.eventtypeenum import EventTypeenum
 from gdacs_amqp_producer_data.alertlevelenum import AlertLevelenum
+from gdacs_amqp_producer_data.eventtypeenum import EventTypeenum
 import datetime
 
 
@@ -147,6 +147,8 @@ class DisasterAlert:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -215,33 +217,33 @@ class DisasterAlert:
         """
         return cls(
             event_type=EventTypeenum.EQ,
-            event_id='mizssaibinzaglufbbga',
-            episode_id='ksylbwquklhbjckfbbee',
+            event_id='potqugkshdbjyathsjwl',
+            episode_id='jiwafuwoimlzmivuccpt',
             alert_level=AlertLevelenum.Green,
-            alert_score=float(40.611096674719334),
-            episode_alert_level='hdhbqmvgnhwegzcvqhfb',
-            episode_alert_score=float(79.77148349141096),
-            event_name='lwavzoskjahtkryqdxos',
-            severity_value=float(83.37461175408578),
-            severity_unit='tjszskpowdhafxyeghfj',
-            severity_text='znwtocokugixyuvgvzch',
-            country='qodkelxotrctyiuzqyid',
-            iso3='yehqgkxxtsijsfespapr',
-            latitude=float(17.205823632718207),
-            longitude=float(44.18688100814748),
+            alert_score=float(32.52228211467681),
+            episode_alert_level='hnjluxessmxtdzolxkcp',
+            episode_alert_score=float(97.5425640563413),
+            event_name='bqypxbybappnftyfqybk',
+            severity_value=float(55.964029044128),
+            severity_unit='hxxhhvhtovszloawymvt',
+            severity_text='xbtxnnbwahvefbtbdxgo',
+            country='pwkokkuwltobrjfvcbmg',
+            iso3='bbarrokwufykymrvmyvt',
+            latitude=float(7.560307058916238),
+            longitude=float(90.50881214592098),
             from_date=datetime.datetime.now(datetime.timezone.utc),
             to_date=datetime.datetime.now(datetime.timezone.utc),
-            population_value=float(40.736662970256376),
-            population_unit='jvhefuvrijkoaofbgkix',
-            vulnerability=float(50.54863913948018),
-            bbox_min_lon=float(4.268421192315852),
-            bbox_max_lon=float(12.49251197445711),
-            bbox_min_lat=float(42.85746956818933),
-            bbox_max_lat=float(20.373038983692314),
-            is_current=False,
-            version=int(6),
-            description='omkcigwmwyjwrwfvijkt',
-            link='wqxlrkxkzdcgoegecnoz',
+            population_value=float(93.12791596730186),
+            population_unit='aqkxblahylwrbuykwyqg',
+            vulnerability=float(67.50811538496521),
+            bbox_min_lon=float(66.43897150984827),
+            bbox_max_lon=float(62.233958003709056),
+            bbox_min_lat=float(78.2338706080196),
+            bbox_max_lat=float(13.991942880203789),
+            is_current=True,
+            version=int(31),
+            description='jedintqwbymfesbduksw',
+            link='iaekqxbrsiwgahldacse',
             pub_date=datetime.datetime.now(datetime.timezone.utc),
             alert_color=AlertColorenum.green
         )

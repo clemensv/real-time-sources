@@ -17,18 +17,20 @@ import json
 @dataclass
 class Station:
     """
-    Reference metadata for a KMI/RMI automatic weather station derived from the latest aws:aws_10min observation features published through the public WFS service.
+    A reference record published by the Royal Meteorological Institute of Belgium (KMI/IRM). It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
         station_code (str)
         latitude (float)
         longitude (float)
+        region (typing.Optional[str])
     """
     
     
     station_code: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_code"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    region: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="region"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -88,6 +90,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -155,7 +159,8 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_code='imlbfvxoococltdirguy',
-            latitude=float(40.885871966967876),
-            longitude=float(77.529440174647)
+            station_code='tnytciideeppykmnsvut',
+            latitude=float(74.85185347677432),
+            longitude=float(22.423198296849513),
+            region='myhjldxjhjauntqyhhxr'
         )

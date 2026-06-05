@@ -169,6 +169,8 @@ The producer constructor accepts:
 
 
 ##### `send_position_report()`
+A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-
+equipped vessels in Norwegian waters.
 
 **Parameters:**
 - `data` (PositionReport): The message data object
@@ -187,6 +189,8 @@ Send multiple PositionReport messages in sequence.
 
 
 ##### `send_ship_static()`
+A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-
+equipped vessels in Norwegian waters.
 
 **Parameters:**
 - `data` (ShipStatic): The message data object
@@ -205,6 +209,8 @@ Send multiple ShipStatic messages in sequence.
 
 
 ##### `send_aid_to_navigation()`
+A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-
+equipped vessels in Norwegian waters.
 
 **Parameters:**
 - `data` (AidToNavigation): The message data object

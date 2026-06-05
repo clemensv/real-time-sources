@@ -1,3 +1,4 @@
-from .blitzortung import DetectorParticipation, LightningStroke
+from .detectorparticipation import DetectorParticipation
+from .lightningstroke import LightningStroke
 
 __all__ = ["DetectorParticipation", "LightningStroke"]

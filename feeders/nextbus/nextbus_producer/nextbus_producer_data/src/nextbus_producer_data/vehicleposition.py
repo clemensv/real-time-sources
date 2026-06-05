@@ -98,6 +98,8 @@ class VehiclePosition:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,12 +167,12 @@ class VehiclePosition:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='ttwkaosflzqytdcjgmxn',
-            route_tag='qhommtxjaayociozxkrv',
-            vehicle_id='vyqpplmimgukjmrlmkhh',
-            stop_or_vehicle_id='jwkoledjaxedtwicjmhk',
-            event_type='omloxtkamnqenhcalcwn',
-            lat='ohihojhnoucsogfigzel',
-            lon='clnrehyauctnblakxlpg',
-            timestamp=float(67.05413570235396)
+            agency_id='rooxvrrkpcppyxfrnhvn',
+            route_tag='nqnyohywhbgddwyagexl',
+            vehicle_id='qgbtnwbwnybdpgrkmvtg',
+            stop_or_vehicle_id='yuxmzlzsgcmkkeianecx',
+            event_type='mzpnzfnohkveqzxwntne',
+            lat='xmksfqhbhluefgueuiev',
+            lon='jhnrmpowezqaemewkjkh',
+            timestamp=float(65.51307541398606)
         )

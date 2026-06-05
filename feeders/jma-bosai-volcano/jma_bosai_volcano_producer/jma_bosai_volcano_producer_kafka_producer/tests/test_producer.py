@@ -20,11 +20,11 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from jma_bosai_volcano_producer_kafka_producer.producer import JPJMAVolcanoEventProducer
 from jma_bosai_volcano_producer_data import Volcano
-from test_jma_bosai_volcano_producer_data_volcano import Test_Volcano
+from test_volcano import Test_Volcano
 from jma_bosai_volcano_producer_data import VolcanicWarning
-from test_jma_bosai_volcano_producer_data_volcanicwarning import Test_VolcanicWarning
+from test_volcanicwarning import Test_VolcanicWarning
 from jma_bosai_volcano_producer_data import VolcanicEruption
-from test_jma_bosai_volcano_producer_data_volcaniceruption import Test_VolcanicEruption
+from test_volcaniceruption import Test_VolcanicEruption
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -107,7 +107,8 @@ def test_jp_jma_volcano_jpjmavolcanovolcano(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_volcano_volcano(_feedurl = f'test_{i}', _volcano_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_volcano_volcano(_feedurl = f'test_{i}', _volcano_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_jp_jma_volcano_jpjmavolcanovolcanicwarning(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_volcano_volcanic_warning(_feedurl = f'test_{i}', _volcano_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_volcano_volcanic_warning(_feedurl = f'test_{i}', _volcano_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_jp_jma_volcano_jpjmavolcanovolcaniceruption(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_volcano_volcanic_eruption(_feedurl = f'test_{i}', _volcano_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_volcano_volcanic_eruption(_feedurl = f'test_{i}', _volcano_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

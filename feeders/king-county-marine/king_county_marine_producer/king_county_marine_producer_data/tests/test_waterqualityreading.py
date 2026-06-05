@@ -28,31 +28,31 @@ class Test_WaterQualityReading(unittest.TestCase):
         Create instance of WaterQualityReading for testing
         """
         instance = WaterQualityReading(
-            station_id='tublnpexyrzspsaxqfst',
-            station_name='xitgjjcqwkmeehwmzopq',
-            observation_time='ldpfqjuurxsrxpapjeav',
-            water_temperature_c=float(89.65096389184995),
-            conductivity_s_m=float(1.9407997651795017),
-            pressure_dbar=float(56.685835689068696),
-            dissolved_oxygen_mg_l=float(56.09791216263967),
-            ph=float(13.328003329203419),
-            chlorophyll_ug_l=float(36.17557359337435),
-            turbidity_ntu=float(61.84827466182596),
-            chlorophyll_stddev_ug_l=float(99.08940496853124),
-            turbidity_stddev_ntu=float(9.083339953186309),
-            salinity_psu=float(61.34525599979717),
-            specific_conductivity_s_m=float(41.210401593544034),
-            dissolved_oxygen_saturation_pct=float(3.6532277962213144),
-            nitrate_umol=float(60.56080965687668),
-            nitrate_mg_l=float(23.740589217673282),
-            wind_direction_deg=float(41.46516957067495),
-            wind_speed_m_s=float(36.343872742320684),
-            photosynthetically_active_radiation_umol_s_m2=float(7.493467423099586),
-            air_temperature_f=float(73.18740340735278),
-            air_humidity_pct=float(89.11720542972023),
-            air_pressure_in_hg=float(36.0685800452656),
-            system_battery_v=float(45.10171758705025),
-            sensor_battery_v=float(37.28448813234388)
+            station_id='bufcldqjwfgcyqrqhlpl',
+            station_name='euilewlumwbksjsbruob',
+            observation_time='gfsmrbdjhbnbcajiggqo',
+            water_temperature_c=float(48.833944731416025),
+            conductivity_s_m=float(94.48687144702633),
+            pressure_dbar=float(86.4539598858465),
+            dissolved_oxygen_mg_l=float(24.689938614225525),
+            ph=float(42.79260846854016),
+            chlorophyll_ug_l=float(80.47731806327928),
+            turbidity_ntu=float(72.72126144567194),
+            chlorophyll_stddev_ug_l=float(86.3800424896999),
+            turbidity_stddev_ntu=float(74.44188620776873),
+            salinity_psu=float(31.081127782892636),
+            specific_conductivity_s_m=float(30.507461407445657),
+            dissolved_oxygen_saturation_pct=float(59.028333204882244),
+            nitrate_umol=float(74.25767188176835),
+            nitrate_mg_l=float(67.97926694860654),
+            wind_direction_deg=float(82.7763944664903),
+            wind_speed_m_s=float(69.6548897529295),
+            photosynthetically_active_radiation_umol_s_m2=float(2.6457254321984647),
+            air_temperature_f=float(41.75780531288028),
+            air_humidity_pct=float(31.554022653262372),
+            air_pressure_in_hg=float(52.72830711295986),
+            system_battery_v=float(89.2931815139086),
+            sensor_battery_v=float(38.28737621393727)
         )
         return instance
 
@@ -61,7 +61,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'tublnpexyrzspsaxqfst'
+        test_value = 'bufcldqjwfgcyqrqhlpl'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -69,7 +69,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'xitgjjcqwkmeehwmzopq'
+        test_value = 'euilewlumwbksjsbruob'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -77,7 +77,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test observation_time property
         """
-        test_value = 'ldpfqjuurxsrxpapjeav'
+        test_value = 'gfsmrbdjhbnbcajiggqo'
         self.instance.observation_time = test_value
         self.assertEqual(self.instance.observation_time, test_value)
     
@@ -85,7 +85,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test water_temperature_c property
         """
-        test_value = float(89.65096389184995)
+        test_value = float(48.833944731416025)
         self.instance.water_temperature_c = test_value
         self.assertEqual(self.instance.water_temperature_c, test_value)
     
@@ -93,7 +93,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test conductivity_s_m property
         """
-        test_value = float(1.9407997651795017)
+        test_value = float(94.48687144702633)
         self.instance.conductivity_s_m = test_value
         self.assertEqual(self.instance.conductivity_s_m, test_value)
     
@@ -101,7 +101,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test pressure_dbar property
         """
-        test_value = float(56.685835689068696)
+        test_value = float(86.4539598858465)
         self.instance.pressure_dbar = test_value
         self.assertEqual(self.instance.pressure_dbar, test_value)
     
@@ -109,7 +109,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test dissolved_oxygen_mg_l property
         """
-        test_value = float(56.09791216263967)
+        test_value = float(24.689938614225525)
         self.instance.dissolved_oxygen_mg_l = test_value
         self.assertEqual(self.instance.dissolved_oxygen_mg_l, test_value)
     
@@ -117,7 +117,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test ph property
         """
-        test_value = float(13.328003329203419)
+        test_value = float(42.79260846854016)
         self.instance.ph = test_value
         self.assertEqual(self.instance.ph, test_value)
     
@@ -125,7 +125,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test chlorophyll_ug_l property
         """
-        test_value = float(36.17557359337435)
+        test_value = float(80.47731806327928)
         self.instance.chlorophyll_ug_l = test_value
         self.assertEqual(self.instance.chlorophyll_ug_l, test_value)
     
@@ -133,7 +133,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test turbidity_ntu property
         """
-        test_value = float(61.84827466182596)
+        test_value = float(72.72126144567194)
         self.instance.turbidity_ntu = test_value
         self.assertEqual(self.instance.turbidity_ntu, test_value)
     
@@ -141,7 +141,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test chlorophyll_stddev_ug_l property
         """
-        test_value = float(99.08940496853124)
+        test_value = float(86.3800424896999)
         self.instance.chlorophyll_stddev_ug_l = test_value
         self.assertEqual(self.instance.chlorophyll_stddev_ug_l, test_value)
     
@@ -149,7 +149,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test turbidity_stddev_ntu property
         """
-        test_value = float(9.083339953186309)
+        test_value = float(74.44188620776873)
         self.instance.turbidity_stddev_ntu = test_value
         self.assertEqual(self.instance.turbidity_stddev_ntu, test_value)
     
@@ -157,7 +157,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test salinity_psu property
         """
-        test_value = float(61.34525599979717)
+        test_value = float(31.081127782892636)
         self.instance.salinity_psu = test_value
         self.assertEqual(self.instance.salinity_psu, test_value)
     
@@ -165,7 +165,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test specific_conductivity_s_m property
         """
-        test_value = float(41.210401593544034)
+        test_value = float(30.507461407445657)
         self.instance.specific_conductivity_s_m = test_value
         self.assertEqual(self.instance.specific_conductivity_s_m, test_value)
     
@@ -173,7 +173,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test dissolved_oxygen_saturation_pct property
         """
-        test_value = float(3.6532277962213144)
+        test_value = float(59.028333204882244)
         self.instance.dissolved_oxygen_saturation_pct = test_value
         self.assertEqual(self.instance.dissolved_oxygen_saturation_pct, test_value)
     
@@ -181,7 +181,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test nitrate_umol property
         """
-        test_value = float(60.56080965687668)
+        test_value = float(74.25767188176835)
         self.instance.nitrate_umol = test_value
         self.assertEqual(self.instance.nitrate_umol, test_value)
     
@@ -189,7 +189,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test nitrate_mg_l property
         """
-        test_value = float(23.740589217673282)
+        test_value = float(67.97926694860654)
         self.instance.nitrate_mg_l = test_value
         self.assertEqual(self.instance.nitrate_mg_l, test_value)
     
@@ -197,7 +197,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test wind_direction_deg property
         """
-        test_value = float(41.46516957067495)
+        test_value = float(82.7763944664903)
         self.instance.wind_direction_deg = test_value
         self.assertEqual(self.instance.wind_direction_deg, test_value)
     
@@ -205,7 +205,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test wind_speed_m_s property
         """
-        test_value = float(36.343872742320684)
+        test_value = float(69.6548897529295)
         self.instance.wind_speed_m_s = test_value
         self.assertEqual(self.instance.wind_speed_m_s, test_value)
     
@@ -213,7 +213,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test photosynthetically_active_radiation_umol_s_m2 property
         """
-        test_value = float(7.493467423099586)
+        test_value = float(2.6457254321984647)
         self.instance.photosynthetically_active_radiation_umol_s_m2 = test_value
         self.assertEqual(self.instance.photosynthetically_active_radiation_umol_s_m2, test_value)
     
@@ -221,7 +221,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test air_temperature_f property
         """
-        test_value = float(73.18740340735278)
+        test_value = float(41.75780531288028)
         self.instance.air_temperature_f = test_value
         self.assertEqual(self.instance.air_temperature_f, test_value)
     
@@ -229,7 +229,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test air_humidity_pct property
         """
-        test_value = float(89.11720542972023)
+        test_value = float(31.554022653262372)
         self.instance.air_humidity_pct = test_value
         self.assertEqual(self.instance.air_humidity_pct, test_value)
     
@@ -237,7 +237,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test air_pressure_in_hg property
         """
-        test_value = float(36.0685800452656)
+        test_value = float(52.72830711295986)
         self.instance.air_pressure_in_hg = test_value
         self.assertEqual(self.instance.air_pressure_in_hg, test_value)
     
@@ -245,7 +245,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test system_battery_v property
         """
-        test_value = float(45.10171758705025)
+        test_value = float(89.2931815139086)
         self.instance.system_battery_v = test_value
         self.assertEqual(self.instance.system_battery_v, test_value)
     
@@ -253,7 +253,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test sensor_battery_v property
         """
-        test_value = float(37.28448813234388)
+        test_value = float(38.28737621393727)
         self.instance.sensor_battery_v = test_value
         self.assertEqual(self.instance.sensor_battery_v, test_value)
     

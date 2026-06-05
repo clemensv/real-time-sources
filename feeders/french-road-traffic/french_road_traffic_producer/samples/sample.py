@@ -41,7 +41,8 @@ from french_road_traffic_producer_kafka_producer.producer import FrGouvTransport
 
 # imports for the data classes for each event
 
-from french_road_traffic_producer_data import TrafficFlowMeasurement, RoadEvent
+from french_road_traffic_producer_data import TrafficFlowMeasurement
+from french_road_traffic_producer_data import RoadEvent
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """

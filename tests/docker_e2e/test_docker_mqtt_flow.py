@@ -793,7 +793,7 @@ class TestBfsOdlMqttDockerFlow:
                 pass
 
         messages = _collect_messages_topic(
-            '127.0.0.1', mosquitto_bfs_odl['host_port'], 'radiation/ch/bfs/bfs-odl/#',
+            '127.0.0.1', mosquitto_bfs_odl['host_port'], 'radiation/de/bfs/bfs-odl/#',
             timeout=40.0,
         )
         assert messages, 'No retained messages received from broker'
@@ -826,7 +826,7 @@ class TestBfsOdlMqttDockerFlow:
         assert info_payload is not None, f"info payload not parseable: {info_msgs[0]['payload']!r}"
         assert dose_payload is not None, f"dose-rate payload not parseable: {dose_msgs[0]['payload']!r}"
         assert 'station_id' in info_payload, info_payload
-        assert 'canton' in info_payload, info_payload
+        assert 'state' in info_payload, info_payload
         assert 'station_id' in dose_payload, dose_payload
         assert 'value' in dose_payload, dose_payload
 
@@ -2363,7 +2363,7 @@ class TestAisstreamMqttDockerFlow:
 
 def _load_kystverket_ais_mqtt_schemas() -> Dict[str, Dict[str, Any]]:
     """Return ``{type_value: jstruct_schema}`` for all 3 kystverket-ais MQTT families."""
-    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'kystverket-ais', 'xreg', 'ais.xreg.json')
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'kystverket-ais', 'xreg', 'kystverket-ais.xreg.json')
     with open(xreg_path, 'r', encoding='utf-8') as fh:
         manifest = json.load(fh)
     schemagroup = manifest['schemagroups']['NO.Kystverket.AIS.jstruct']
@@ -4617,13 +4617,19 @@ def _assert_mqtt_contract_messages(project_dir: str, messages: List[Dict[str, An
         observed_by_type.setdefault(ce_type, []).append(sample)
         observed_by_topic_leaf.setdefault((contract['topic'].rsplit('/', 1)[-1], contract['retain']), []).append(sample)
 
-    for contract in contracts.values():
+    for ce_type, contract in contracts.items():
         key = (contract['topic'].rsplit('/', 1)[-1], contract['retain'])
         if project_dir == 'usgs-iv' and key in {('info', True), ('timeseries', True), ('observation', True)}:
             continue
         # digitraffic-maritime: stream mode emits AIS location only (metadata arrives every 6 min — skipped with ONCE_MODE);
         # port-call families are tested via the Kafka E2E test
         if project_dir == 'digitraffic-maritime' and key in {('metadata', True), ('port-call', False), ('vessel-details', True), ('port-location', True)}:
+            continue
+        leaf = contract['topic'].rsplit('/', 1)[-1]
+        if '{' in leaf and '}' in leaf:
+            assert ce_type in observed_by_type, f"No MQTT message observed for contract {ce_type} ({contract['topic']})"
+            if contract['retain']:
+                assert any(m['retain'] for m in observed_by_type[ce_type]), f"No retained message observed for {contract['topic']}"
             continue
         assert key in observed_by_topic_leaf, f"No MQTT message observed for topic leaf/retain contract {key} ({contract['topic']})"
         if contract['retain']:
@@ -4701,6 +4707,11 @@ def usgs_earthquakes_mqtt_image():
     return build_image('usgs-earthquakes', dockerfile='Dockerfile.mqtt', tag='test-usgs-earthquakes-mqtt')
 
 
+@pytest.fixture(scope='module')
+def fdsn_seismology_mqtt_image():
+    return build_image('fdsn-seismology', dockerfile='Dockerfile.mqtt', tag='test-fdsn-seismology-mqtt')
+
+
 @pytest.fixture()
 def mosquitto_usgs_earthquakes():
     container, network, host_port = _generic_mosquitto('usgs-earthquakes-mqtt-e2e', 'usgs-earthquakes-mqtt-e2e-broker')
@@ -4716,6 +4727,23 @@ def mosquitto_usgs_earthquakes():
 class TestUSGSEarthquakesMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_usgs_earthquakes, usgs_earthquakes_mqtt_image):
         _run_mqtt_contract_flow('usgs-earthquakes', usgs_earthquakes_mqtt_image, mosquitto_usgs_earthquakes, timeout=420)
+
+
+@pytest.fixture()
+def mosquitto_fdsn_seismology():
+    container, network, host_port = _generic_mosquitto('fdsn-seismology-mqtt-e2e', 'fdsn-seismology-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'fdsn-seismology-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+
+class TestFdsnSeismologyMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_fdsn_seismology, fdsn_seismology_mqtt_image):
+        _run_mqtt_contract_flow('fdsn-seismology', fdsn_seismology_mqtt_image, mosquitto_fdsn_seismology, timeout=420)
 
 
 @pytest.fixture(scope='module')
@@ -5534,6 +5562,31 @@ class TestTokyoDocomoBikeshareMqttDockerFlow:
         _run_mqtt_contract_flow('tokyo-docomo-bikeshare', tokyo_docomo_bikeshare_mqtt_image, mosquitto_tokyo_docomo_bikeshare, timeout=240)
 
 @pytest.fixture(scope='module')
+def gbfs_bikeshare_mqtt_image():
+    return build_image('gbfs-bikeshare', dockerfile='Dockerfile.mqtt', tag='test-gbfs-bikeshare-mqtt')
+
+@pytest.fixture()
+def mosquitto_gbfs_bikeshare():
+    container, network, host_port = _generic_mosquitto('gbfs-bikeshare-mqtt-e2e', 'gbfs-bikeshare-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'gbfs-bikeshare-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestGbfsBikeshareMqttDockerFlow:
+    def test_emits_mqtt_uns_topics(self, mosquitto_gbfs_bikeshare, gbfs_bikeshare_mqtt_image):
+        _run_mqtt_contract_flow(
+            'gbfs-bikeshare',
+            gbfs_bikeshare_mqtt_image,
+            mosquitto_gbfs_bikeshare,
+            extra_env={'GBFS_FEEDS': 'https://gbfs.citibikenyc.com/gbfs/gbfs.json', 'ONCE_MODE': 'true'},
+            timeout=240,
+        )
+
+@pytest.fixture(scope='module')
 def wsdot_mqtt_image():
     return build_image('wsdot', dockerfile='Dockerfile.mqtt', tag='test-wsdot-mqtt')
 
@@ -6213,3 +6266,61 @@ def mosquitto_digitraffic_road():
 class TestDigitrafficRoadMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_digitraffic_road, digitraffic_road_mqtt_image):
         _run_mqtt_contract_flow('digitraffic-road', digitraffic_road_mqtt_image, mosquitto_digitraffic_road, extra_env={'DIGITRAFFIC_ROAD_MOCK': 'true'}, timeout=300)
+
+class TestSiriMqttDockerFlow:
+    def test_emits_expected_mqtt_topics(self):
+        client = docker.from_env()
+        broker, network, host_port = _generic_mosquitto('siri-mqtt-e2e', 'siri-mqtt-e2e-broker')
+        subscriber = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        messages = []
+
+        def on_message(_client, _userdata, msg):
+            props = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+            try:
+                payload = json.loads(msg.payload)
+            except Exception:
+                payload = None
+            messages.append({'topic': msg.topic, 'user_properties': props, 'payload': payload, 'retain': bool(msg.retain)})
+
+        subscriber.on_message = on_message
+        subscriber.connect('127.0.0.1', host_port, 30)
+        subscriber.subscribe('transit/siri/#', qos=1)
+        subscriber.loop_start()
+        try:
+            image = build_image('siri', dockerfile='Dockerfile.mqtt', tag='test-siri-mqtt')
+            feeder = client.containers.run(
+                image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={
+                    'MQTT_BROKER_URL': 'mqtt://siri-mqtt-e2e-broker:1883',
+                    'SIRI_SAMPLE_MODE': 'true',
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            result = feeder.wait(timeout=240)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            feeder.remove(force=True)
+            assert result.get('StatusCode') == 0, logs[-4000:]
+            deadline = time.time() + 10
+            while time.time() < deadline and len(messages) < 4:
+                time.sleep(0.5)
+            assert len(messages) >= 4, messages
+            topics = [m['topic'] for m in messages]
+            assert any(t.endswith('/info') for t in topics), topics
+            assert any(t.endswith('/position') for t in topics), topics
+            for msg in messages:
+                for required in ('id', 'source', 'type', 'subject', 'specversion'):
+                    assert required in msg['user_properties'], msg
+        finally:
+            subscriber.loop_stop()
+            subscriber.disconnect()
+            try: broker.kill()
+            except docker.errors.APIError: pass
+            try: network.remove()
+            except docker.errors.APIError: pass

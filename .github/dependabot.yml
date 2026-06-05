@@ -20,3 +20,11 @@ updates:
       - "/feeders/**"
     schedule:
       interval: "weekly"
+    ignore:
+      # The generated CloudEvents producers and bridges target the
+      # cloudevents 1.x API surface (cloudevents.http/conversion/kafka).
+      # The repo convention pins `cloudevents>=1.12.1,<2.0.0` fleet-wide;
+      # do not let Dependabot push individual feeders to 2.x and split
+      # the fleet. Re-evaluate as a deliberate, fleet-wide migration.
+      - dependency-name: "cloudevents"
+        update-types: ["version-update:semver-major"]
