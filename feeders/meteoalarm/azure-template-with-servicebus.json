@@ -38,35 +38,35 @@
       "minLength": 1,
       "maxLength": 50,
       "metadata": {
-        "description": "Queue, topic, or link target address."
+        "description": "AMQP node (queue / topic) name (default meteoalarm)."
       }
     },
     "meteoalarmConnectionString": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional feeder-prefixed alias for a Kafka/Event Hubs style connection string. Leave empty for the AMQP companion deployment."
+        "description": "Feeder-prefixed alias for CONNECTION_STRING; useful in Azure templates and orchestrators that standardize source-local settings."
       }
     },
     "meteoalarmStateFile": {
       "type": "string",
       "defaultValue": "/mnt/bridge-state/meteoalarm_state.json",
       "metadata": {
-        "description": "Path inside the container where the feeder-prefixed Meteoalarm dedupe state file is mounted."
+        "description": "Optional path for source dedupe/checkpoint state, when the feeder maintains local state."
       }
     },
     "meteoalarmPollInterval": {
       "type": "string",
       "defaultValue": "300",
       "metadata": {
-        "description": "Polling interval in seconds for the Meteoalarm AMQP companion."
+        "description": "Source polling interval in seconds, when supported by the feeder."
       }
     },
     "meteoalarmCountries": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional comma-separated ISO country code filter for the Meteoalarm warnings to ingest. Leave empty for all countries."
+        "description": "Comma-separated ISO country codes to limit which Meteoalarm national warning feeds are polled."
       }
     },
     "meteoalarmMock": {
@@ -77,7 +77,7 @@
         "true"
       ],
       "metadata": {
-        "description": "Enable built-in Meteoalarm sample events for offline AMQP validation instead of polling the live upstream."
+        "description": "Emit built-in sample events for Docker E2E and offline validation."
       }
     },
     "imageName": {

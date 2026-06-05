@@ -324,17 +324,27 @@ def parse_markdown_env_table(path: Path) -> tuple[dict[str, str], set[str]]:
             continue
         env_names = extract_env_names(cells[variable_idx])
         desc_text, is_required = clean_description(cells[description_idx])
+        variable_cell_text = collapse_whitespace(strip_markdown(cells[variable_idx]))
         if env_names and desc_text:
             for env_name in env_names:
                 descriptions.setdefault(env_name, desc_text)
                 if is_required:
                     required.add(env_name)
             previous_vars = env_names
-        elif previous_vars and desc_text:
+        elif previous_vars and desc_text and not variable_cell_text:
+            # Only a blank variable cell indicates a wrapped continuation of the
+            # previous row's description. Rows with a non-env-var label in the
+            # variable cell (e.g. "topic prefix", "QoS default") are distinct
+            # entries, not continuations, and must not be concatenated onto the
+            # previous environment variable's description.
             for env_name in previous_vars:
                 descriptions[env_name] = truncate_description(f"{descriptions.get(env_name, '')} {desc_text}")
                 if is_required:
                     required.add(env_name)
+        elif variable_cell_text and not env_names:
+            # A labeled row that is not an environment variable terminates any
+            # active continuation run so later blank rows do not attach to it.
+            previous_vars = []
     return descriptions, required
 
 

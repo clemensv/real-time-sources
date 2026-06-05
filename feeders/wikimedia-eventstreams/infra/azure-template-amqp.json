@@ -38,7 +38,7 @@
       "minLength": 1,
       "maxLength": 50,
       "metadata": {
-        "description": "Address. See feeders/wikimedia-eventstreams/CONTAINER.md for details."
+        "description": "AMQP node (queue / topic) name (default wikimedia-eventstreams)."
       }
     },
     "imageName": {

@@ -9,7 +9,7 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Event Hubs / Fabric connection string"
+        "description": "Feeder-prefixed alias for CONNECTION_STRING; useful in Azure templates and orchestrators that standardize source-local settings."
       }
     },
     "containerGroupName": {
@@ -25,7 +25,7 @@
       "type": "string",
       "defaultValue": "/mnt/bridge-state/meteoalarm_state.json",
       "metadata": {
-        "description": "Path inside the container where the Kafka bridge persists Meteoalarm dedupe state."
+        "description": "State file (default: ~/.meteoalarm_state.json)"
       }
     },
     "location": {
