@@ -12,8 +12,6 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-import avro.schema
-import avro.io
 import datetime
 
 
@@ -21,7 +19,7 @@ import datetime
 @dataclass
 class WaterLevelObservation:
     """
-    WaterLevelObservation
+    Measurement payload for water level and discharge observations in the NVE Hydrology source.
     
     Attributes:
         station_id (str)
@@ -33,10 +31,6 @@ class WaterLevelObservation:
         discharge_unit (typing.Optional[str])
         discharge_timestamp (typing.Optional[datetime.datetime])
     """
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.parse(
-        "{\"type\": \"record\", \"name\": \"WaterLevelObservation\", \"doc\": \"WaterLevelObservation\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"river_name\", \"type\": \"string\", \"doc\": \"Name of the river the station observes (NVE HydAPI 'riverName' field, in Norwegian 'Vassdrag', e.g. 'Glomma', 'Drammenselva'). Sourced by the bridge from the station catalog (https://hydapi.nve.no/api/v1/Stations) and propagated onto every observation so subscribers do not need an out-of-band catalog join to route by river. Used as the {river_name} segment of the MQTT/UNS topic and normalized to lowercase kebab-case before publishing.\"}, {\"name\": \"water_level\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"water_level_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"water_level_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}, {\"name\": \"discharge\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"discharge_unit\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"discharge_timestamp\", \"type\": [\"null\", {\"type\": \"string\", \"logicalType\": \"timestamp-millis\"}], \"default\": null}]}"
-    )
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
@@ -60,43 +54,6 @@ class WaterLevelObservation:
             The dataclass representation of the dataclass.
         """
         return cls(**data)
-    @classmethod
-    def from_avro_dict(cls, data: dict) -> 'WaterLevelObservation':
-        """
-        Converts a dictionary from Avro deserialization to a dataclass instance.
-        Handles conversion of string representations back to Python types for
-        extended logical types.
-        
-        Args:
-            data: The dictionary from Avro deserialization.
-        
-        Returns:
-            The dataclass representation.
-        """
-        # Convert string values back to Python types for Avro string-based logical types
-        converted = data.copy()
-        if 'station_id' in converted and converted['station_id'] is not None:
-            value = converted['station_id']
-        if 'river_name' in converted and converted['river_name'] is not None:
-            value = converted['river_name']
-        if 'water_level' in converted and converted['water_level'] is not None:
-            value = converted['water_level']
-        if 'water_level_unit' in converted and converted['water_level_unit'] is not None:
-            value = converted['water_level_unit']
-        if 'water_level_timestamp' in converted and converted['water_level_timestamp'] is not None:
-            value = converted['water_level_timestamp']
-            if isinstance(value, str):
-                converted['water_level_timestamp'] = datetime.datetime.fromisoformat(value)
-        if 'discharge' in converted and converted['discharge'] is not None:
-            value = converted['discharge']
-        if 'discharge_unit' in converted and converted['discharge_unit'] is not None:
-            value = converted['discharge_unit']
-        if 'discharge_timestamp' in converted and converted['discharge_timestamp'] is not None:
-            value = converted['discharge_timestamp']
-            if isinstance(value, str):
-                converted['discharge_timestamp'] = datetime.datetime.fromisoformat(value)
-        
-        return cls(**converted)
 
     def to_serializer_dict(self) -> dict:
         """
@@ -120,30 +77,6 @@ class WaterLevelObservation:
             return k[:-1] if k.endswith('_') else k
         return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
 
-    def to_avro_dict(self) -> dict:
-        """
-        Converts the dataclass to a dictionary suitable for Avro serialization.
-        Handles conversion of Python types to Avro-compatible string representations
-        for extended logical types.
-
-        Returns:
-            The dictionary representation suitable for Avro serialization.
-        """
-        result = self.to_serializer_dict()
-        converted = result.copy()
-        
-        # Convert specific fields based on their source types
-        if 'water_level_timestamp' in converted and converted['water_level_timestamp'] is not None:
-            value = converted['water_level_timestamp']
-            if isinstance(value, datetime.datetime):
-                converted['water_level_timestamp'] = value.isoformat()
-        if 'discharge_timestamp' in converted and converted['discharge_timestamp'] is not None:
-            value = converted['discharge_timestamp']
-            if isinstance(value, datetime.datetime):
-                converted['discharge_timestamp'] = value.isoformat()
-        
-        return converted
-
     def to_byte_array(self, content_type_string: str) -> bytes:
         """
         Converts the dataclass to a byte array based on the content type string.
@@ -152,8 +85,6 @@ class WaterLevelObservation:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
                     'application/json': Encodes the data to JSON format.
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
 
@@ -165,17 +96,12 @@ class WaterLevelObservation:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            # Convert to Avro binary format using the embedded schema
-            writer = avro.io.DatumWriter(self.AvroType)
-            with io.BytesIO() as stream:
-                encoder = avro.io.BinaryEncoder(stream)
-                writer.write(self.to_avro_dict(), encoder)
-                result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -201,8 +127,6 @@ class WaterLevelObservation:
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
                     'application/json': Attempts to decode the data from JSON encoded format.
-                    'avro/binary': Attempts to decode the data from Avro binary format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
         Returns:
@@ -227,16 +151,6 @@ class WaterLevelObservation:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            if isinstance(data, bytes):
-                # Decode from Avro binary format using the embedded schema
-                reader = avro.io.DatumReader(cls.AvroType)
-                with io.BytesIO(data) as stream:
-                    decoder = avro.io.BinaryDecoder(stream)
-                    _record = reader.read(decoder)
-                    return WaterLevelObservation.from_avro_dict(_record)
-            else:
-                raise NotImplementedError('Data is not of a supported type for Avro deserialization')
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -255,12 +169,12 @@ class WaterLevelObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='skqatkygudfgwhgwfrxf',
-            river_name='hzjtnqdeuldimaagdduh',
-            water_level=float(50.39257426775529),
-            water_level_unit='mqnyvtjxalycmjdrerxx',
+            station_id='ncgmzlccohlzwqttlvkl',
+            river_name='tfaouhtcmzjirzmbumiv',
+            water_level=float(65.69159674959528),
+            water_level_unit='towuhurtkswgukmuwqrt',
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(33.66719592910775),
-            discharge_unit='qagdjsnvhqalmyzvdkbj',
+            discharge=float(98.02271428416304),
+            discharge_unit='cjpvhhfbamrbajsrktxo',
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc)
         )

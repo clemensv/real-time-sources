@@ -90,6 +90,8 @@ class GoesXrayFlux:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class GoesXrayFlux:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='ufqljplgtjfgzuqklcut',
-            satellite=int(97),
-            flux=float(57.61790791633615),
-            energy='abuncsfyaqxtmwusfvrf'
+            time_tag='vjdhydxysjxqmzhvpqpr',
+            satellite=int(84),
+            flux=float(49.77449131810959),
+            energy='txjqfswpkgcmrexolbvz'
         )

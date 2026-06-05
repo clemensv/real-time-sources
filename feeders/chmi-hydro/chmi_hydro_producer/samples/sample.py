@@ -34,11 +34,12 @@ from confluent_kafka import Producer as KafkaProducer
 
 from chmi_hydro_producer_kafka_producer.producer import CZGovCHMIHydroEventProducer
 from chmi_hydro_producer_kafka_producer.producer import CZGovCHMIHydroMqttEventProducer
+from chmi_hydro_producer_kafka_producer.producer import CZGovCHMIHydroAmqpEventProducer
 
 # imports for the data classes for each event
 
-from chmi_hydro_producer_data.station import Station
-from chmi_hydro_producer_data.waterlevelobservation import WaterLevelObservation
+from chmi_hydro_producer_data import Station
+from chmi_hydro_producer_data import WaterLevelObservation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -97,12 +98,36 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation' event to Kafka topic.
     await czgov_chmihydro_mqtt_event_producer.send_cz_gov_chmi_hydro_mqtt_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
     print(f"Sent 'CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation' event: {_water_level_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        czgov_chmihydro_amqp_event_producer = CZGovCHMIHydroAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        czgov_chmihydro_amqp_event_producer = CZGovCHMIHydroAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- CZ.Gov.CHMI.Hydro.amqp.Station ----
+    # TODO: Supply event data for the CZ.Gov.CHMI.Hydro.amqp.Station event
+    _station = Station()
+
+    # sends the 'CZ.Gov.CHMI.Hydro.amqp.Station' event to Kafka topic.
+    await czgov_chmihydro_amqp_event_producer.send_cz_gov_chmi_hydro_amqp_station(_station_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'CZ.Gov.CHMI.Hydro.amqp.Station' event: {_station.to_json()}")
+
+    # ---- CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation ----
+    # TODO: Supply event data for the CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation event
+    _water_level_observation = WaterLevelObservation()
+
+    # sends the 'CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation' event to Kafka topic.
+    await czgov_chmihydro_amqp_event_producer.send_cz_gov_chmi_hydro_amqp_water_level_observation(_station_id = 'TODO: replace me', data = _water_level_observation)
+    print(f"Sent 'CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation' event: {_water_level_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

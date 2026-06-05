@@ -12,10 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from digitraffic_maritime_producer_data.vesseldimensions import VesselDimensions
+from digitraffic_maritime_producer_data.vesselsystem import VesselSystem
 from digitraffic_maritime_producer_data.vesselregistration import VesselRegistration
 from digitraffic_maritime_producer_data.vesselconstruction import VesselConstruction
-from digitraffic_maritime_producer_data.vesselsystem import VesselSystem
+from digitraffic_maritime_producer_data.vesseldimensions import VesselDimensions
 import datetime
 
 
@@ -23,7 +23,7 @@ import datetime
 @dataclass
 class VesselDetails:
     """
-    Reference record from Digitraffic's Port Call vessel-details API. Each event represents the current known metadata for one vessel entity keyed by Digitraffic's stable vessel identifier and includes identity, construction, dimensions, registration, and contact details sourced from Portnet.
+    A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
     
     Attributes:
         vessel_id (int)
@@ -114,6 +114,8 @@ class VesselDetails:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -181,15 +183,15 @@ class VesselDetails:
             An instance of the dataclass.
         """
         return cls(
-            vessel_id=int(38),
+            vessel_id=int(53),
             updated_at=datetime.datetime.now(datetime.timezone.utc),
-            mmsi=int(86),
-            name='kdscrbpclhgicigudmjr',
-            name_prefix='lgglpjrkfjgstmegmksd',
-            imo_lloyds=int(38),
-            radio_call_sign='ivydhizbfuwneizezied',
-            radio_call_sign_type='skeegephvjsurhpkqzah',
-            data_source='ljbuxdfanbryvxejvrzx',
+            mmsi=int(7),
+            name='graxjvescudzzrtrfspi',
+            name_prefix='zrslmwagzpxnpcqjhnzp',
+            imo_lloyds=int(27),
+            radio_call_sign='ihfuumwqmsqjumweisso',
+            radio_call_sign_type='wcopvewjdvquxtrojqzi',
+            data_source='gntogqmqqpdvoyuinxbv',
             vessel_construction=None,
             vessel_dimensions=None,
             vessel_registration=None,

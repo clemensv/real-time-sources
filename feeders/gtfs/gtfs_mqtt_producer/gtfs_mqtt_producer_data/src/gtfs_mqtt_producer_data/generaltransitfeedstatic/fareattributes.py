@@ -100,6 +100,8 @@ class FareAttributes:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,11 +169,11 @@ class FareAttributes:
             An instance of the dataclass.
         """
         return cls(
-            fareId='hgbxeuxlwxdjjzpckocw',
-            price=float(50.477525092244115),
-            currencyType='puaxcesijxggbbnueecj',
-            paymentMethod=int(89),
-            transfers=int(23),
-            agencyId='olqpruqhavblcumxyodv',
-            transferDuration=int(74)
+            fareId='mnwetuxkbjtklnjacuah',
+            price=float(47.06648786799592),
+            currencyType='mtcpxchhgfkqxoegdedh',
+            paymentMethod=int(75),
+            transfers=int(42),
+            agencyId='quqqwpdwlcywwzkhorol',
+            transferDuration=int(19)
         )

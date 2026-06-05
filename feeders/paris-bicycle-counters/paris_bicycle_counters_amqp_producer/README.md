@@ -193,7 +193,6 @@ observations when the upstream feed reports a new or refreshed value.
 - `data` (BicycleCount): The message data object
 - `_counter_id` (str): Value for placeholder counter_id in attribute subject
 - `_ce_id` (str): Value for placeholder ce_id in attribute id
-- `_date` (str): Value for placeholder date in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_bicycle_count_batch()`
@@ -204,7 +203,6 @@ Send multiple BicycleCount messages in sequence.
 - `data_array` (List[BicycleCount]): Array of message data objects
 - `_counter_id` (str): Value for placeholder counter_id in attribute subject
 - `_ce_id` (str): Value for placeholder ce_id in attribute id
-- `_date` (str): Value for placeholder date in attribute time
 - `content_type` (str): Content type of the message data
 
 

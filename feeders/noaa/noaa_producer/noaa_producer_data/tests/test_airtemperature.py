@@ -28,13 +28,13 @@ class Test_AirTemperature(unittest.TestCase):
         Create instance of AirTemperature for testing
         """
         instance = AirTemperature(
-            station_id='icibksriwoaitexythfy',
-            timestamp='graiugmywrznfrmlfwoq',
-            value=float(16.96613342400316),
+            station_id='fvqxhggayicrrjuvdyou',
+            timestamp='hkktqzenfygnelstglgq',
+            value=float(12.603691454891697),
             max_temp_exceeded=False,
             min_temp_exceeded=False,
             rate_of_change_exceeded=False,
-            region='kfuzwldbkrbrdaiswevz'
+            region='lemkzeltvrcfnktbilzg'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_AirTemperature(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'icibksriwoaitexythfy'
+        test_value = 'fvqxhggayicrrjuvdyou'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_AirTemperature(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'graiugmywrznfrmlfwoq'
+        test_value = 'hkktqzenfygnelstglgq'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_AirTemperature(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(16.96613342400316)
+        test_value = float(12.603691454891697)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -91,19 +91,10 @@ class Test_AirTemperature(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'kfuzwldbkrbrdaiswevz'
+        test_value = 'lemkzeltvrcfnktbilzg'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = AirTemperature.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

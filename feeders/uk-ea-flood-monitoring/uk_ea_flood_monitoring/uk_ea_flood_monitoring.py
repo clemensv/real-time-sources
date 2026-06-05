@@ -13,8 +13,8 @@ import logging
 from typing import Dict, List, Any
 import argparse
 import requests
-from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.station import Station
-from uk_ea_flood_monitoring_producer_data.uk.gov.environment.ea.floodmonitoring.reading import Reading
+from uk_ea_flood_monitoring_producer_data import Station
+from uk_ea_flood_monitoring_producer_data import Reading
 from uk_ea_flood_monitoring_producer_kafka_producer.producer import UKGovEnvironmentEAFloodMonitoringEventProducer
 
 if sys.gettrace() is not None:

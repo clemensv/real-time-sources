@@ -20,11 +20,11 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from canada_aqhi_producer_kafka_producer.producer import CaGcWeatherAqhiEventProducer
 from canada_aqhi_producer_data import Community
-from test_canada_aqhi_producer_data_community import Test_Community
+from test_community import Test_Community
 from canada_aqhi_producer_data import Observation
-from test_canada_aqhi_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from canada_aqhi_producer_data import Forecast
-from test_canada_aqhi_producer_data_forecast import Test_Forecast
+from test_forecast import Test_Forecast
 from canada_aqhi_producer_kafka_producer.producer import CaGcWeatherAqhiMqttEventProducer
 from canada_aqhi_producer_kafka_producer.producer import CaGcWeatherAqhiAmqpEventProducer
 
@@ -109,7 +109,8 @@ def test_ca_gc_weather_aqhi_cagcweatheraqhicommunity(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gc_weather_aqhi_community(_province = f'test_{i}', _community_name = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gc_weather_aqhi_community(_province = f'test_{i}', _community_name = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -172,7 +173,8 @@ def test_ca_gc_weather_aqhi_cagcweatheraqhiobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gc_weather_aqhi_observation(_province = f'test_{i}', _community_name = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gc_weather_aqhi_observation(_province = f'test_{i}', _community_name = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -235,7 +237,8 @@ def test_ca_gc_weather_aqhi_cagcweatheraqhiforecast(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gc_weather_aqhi_forecast(_province = f'test_{i}', _community_name = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gc_weather_aqhi_forecast(_province = f'test_{i}', _community_name = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -298,7 +301,8 @@ def test_ca_gc_weather_aqhi_mqtt_cagcweatheraqhimqttcommunity(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gc_weather_aqhi_mqtt_community(_province = f'test_{i}', _community_name = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gc_weather_aqhi_mqtt_community(_province = f'test_{i}', _community_name = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -359,7 +363,8 @@ def test_ca_gc_weather_aqhi_mqtt_cagcweatheraqhimqttobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gc_weather_aqhi_mqtt_observation(_province = f'test_{i}', _community_name = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gc_weather_aqhi_mqtt_observation(_province = f'test_{i}', _community_name = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -420,7 +425,8 @@ def test_ca_gc_weather_aqhi_mqtt_cagcweatheraqhimqttforecast(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gc_weather_aqhi_mqtt_forecast(_province = f'test_{i}', _community_name = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gc_weather_aqhi_mqtt_forecast(_province = f'test_{i}', _community_name = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -481,7 +487,8 @@ def test_ca_gc_weather_aqhi_amqp_cagcweatheraqhiamqpcommunity(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gc_weather_aqhi_amqp_community(_province = f'test_{i}', _community_name = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gc_weather_aqhi_amqp_community(_province = f'test_{i}', _community_name = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -542,7 +549,8 @@ def test_ca_gc_weather_aqhi_amqp_cagcweatheraqhiamqpobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gc_weather_aqhi_amqp_observation(_province = f'test_{i}', _community_name = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gc_weather_aqhi_amqp_observation(_province = f'test_{i}', _community_name = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -603,7 +611,8 @@ def test_ca_gc_weather_aqhi_amqp_cagcweatheraqhiamqpforecast(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_ca_gc_weather_aqhi_amqp_forecast(_province = f'test_{i}', _community_name = f'test_{i}', data = event_data)
+        producer_instance.send_ca_gc_weather_aqhi_amqp_forecast(_province = f'test_{i}', _community_name = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

@@ -90,6 +90,8 @@ class FeedItemTitle:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class FeedItemTitle:
             An instance of the dataclass.
         """
         return cls(
-            value='leqxmflkjkmzjegysfmk',
-            type='jibkuaqkirlcagqhxcnc',
-            language='fraarwmkyxqiarzdmqjz',
-            base='seumzmyoyobfkhftiqvv'
+            value='xokswzuxhrcsarmtmonx',
+            type='azbmvlivonvvpljffuze',
+            language='figuwtfepeuiygjueuiq',
+            base='pawghpzhoketfyegumen'
         )

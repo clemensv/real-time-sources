@@ -111,6 +111,8 @@ class LightningStroke:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -178,16 +180,16 @@ class LightningStroke:
             An instance of the dataclass.
         """
         return cls(
-            source_id=int(60),
-            stroke_id='ogatxieavzhgjigmmpxm',
-            event_time='jrojffrbyjezxmilgane',
-            event_timestamp_ms=int(3),
-            latitude=float(19.231271958363482),
-            longitude=float(75.6146682745974),
-            server_id=int(5),
-            server_delay_ms=int(51),
-            accuracy_diameter_m=float(18.569081515521056),
+            source_id=int(59),
+            stroke_id='azudezgtphemfxdszbpf',
+            event_time='dhpdcroszznolwlefppo',
+            event_timestamp_ms=int(9),
+            latitude=float(33.650447215949185),
+            longitude=float(73.21096440502828),
+            server_id=int(9),
+            server_delay_ms=int(36),
+            accuracy_diameter_m=float(56.20322392030764),
             detector_participations=[None, None, None, None],
-            geohash5='pcsoklhpkdskkgubwtjp',
-            geohash7='ufpazshouoqfrszvsggl'
+            geohash5='imqhbsuarmjyuvypkfha',
+            geohash7='vwhgmzebhselbavnalqa'
         )

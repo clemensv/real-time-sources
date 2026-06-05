@@ -112,6 +112,8 @@ class WeatherReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -179,19 +181,19 @@ class WeatherReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='xafmnlexbjruewbqrvod',
-            station_name='ruzwilutidrudyumitwx',
-            reading_time='rqghnxneawrulnokgcgb',
-            temperature_in_fahrenheit=float(66.32256799731023),
-            precipitation_in_inches=float(80.08510557033676),
-            wind_speed_in_mph=float(80.59975292532314),
-            wind_gust_speed_in_mph=float(22.247799585844607),
-            wind_direction=int(25),
-            wind_direction_cardinal='yvniujtxirlgqwnbfamn',
-            barometric_pressure=float(20.106738660658397),
-            relative_humidity=int(10),
-            visibility=float(79.2494695956647),
-            sky_coverage='vuirgyaswkcvqjjkvkhb',
-            latitude=float(17.305465465935455),
-            longitude=float(66.44056977127454)
+            station_id='kammoqgtirpbhwkeuvem',
+            station_name='amblvbyrzqhkoatzyvzi',
+            reading_time='vmnnbyghrssygqtmucus',
+            temperature_in_fahrenheit=float(40.64539498370593),
+            precipitation_in_inches=float(84.42992537725664),
+            wind_speed_in_mph=float(60.79185117240843),
+            wind_gust_speed_in_mph=float(59.9066873725834),
+            wind_direction=int(21),
+            wind_direction_cardinal='mmoxpdchewsgmqjcqgaw',
+            barometric_pressure=float(61.17646202819918),
+            relative_humidity=int(59),
+            visibility=float(54.034639670871755),
+            sky_coverage='xpsmkybxjkiovgjgiqkk',
+            latitude=float(22.76461427460178),
+            longitude=float(19.264075030501726)
         )

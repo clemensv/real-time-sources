@@ -97,6 +97,8 @@ class BinaryBroadcastMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -164,11 +166,11 @@ class BinaryBroadcastMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(20),
-            RepeatIndicator=int(46),
-            UserID=int(5),
-            Valid=True,
-            Spare=int(8),
+            MessageID=int(16),
+            RepeatIndicator=int(41),
+            UserID=int(99),
+            Valid=False,
+            Spare=int(23),
             ApplicationID=None,
-            BinaryData='jkxkjzehvwkdsecnvrqg'
+            BinaryData='wvfoninvwandzsfalknc'
         )

@@ -44,17 +44,17 @@ from entsoe_producer_kafka_producer.producer import EuEntsoeTransparencyCrossBor
 
 # imports for the data classes for each event
 
-from entsoe_producer_data.dayaheadprices import DayAheadPrices
-from entsoe_producer_data.actualtotalload import ActualTotalLoad
-from entsoe_producer_data.loadforecastmargin import LoadForecastMargin
-from entsoe_producer_data.generationforecast import GenerationForecast
-from entsoe_producer_data.reservoirfillinginformation import ReservoirFillingInformation
-from entsoe_producer_data.actualgeneration import ActualGeneration
-from entsoe_producer_data.actualgenerationpertype import ActualGenerationPerType
-from entsoe_producer_data.windsolarforecast import WindSolarForecast
-from entsoe_producer_data.windsolargeneration import WindSolarGeneration
-from entsoe_producer_data.installedgenerationcapacitypertype import InstalledGenerationCapacityPerType
-from entsoe_producer_data.crossborderphysicalflows import CrossBorderPhysicalFlows
+from entsoe_producer_data import DayAheadPrices
+from entsoe_producer_data import ActualTotalLoad
+from entsoe_producer_data import LoadForecastMargin
+from entsoe_producer_data import GenerationForecast
+from entsoe_producer_data import ReservoirFillingInformation
+from entsoe_producer_data import ActualGeneration
+from entsoe_producer_data import ActualGenerationPerType
+from entsoe_producer_data import WindSolarForecast
+from entsoe_producer_data import WindSolarGeneration
+from entsoe_producer_data import InstalledGenerationCapacityPerType
+from entsoe_producer_data import CrossBorderPhysicalFlows
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -406,7 +406,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

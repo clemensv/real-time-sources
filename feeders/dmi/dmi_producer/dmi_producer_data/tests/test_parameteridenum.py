@@ -29,7 +29,7 @@ class Test_ParameterIdenum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(ParameterIdenum.sealev_dvr.value, "sealev_dvr")
-        self.assertEqual(ParameterIdenum.sealev_ln.value, "sealev_ln")
-        self.assertEqual(ParameterIdenum.sea_reg.value, "sea_reg")
-        self.assertEqual(ParameterIdenum.tw.value, "tw")
+        self.assertEqual(ParameterIdenum.sealev_dvr.value, 'sealev_dvr')
+        self.assertEqual(ParameterIdenum.sealev_ln.value, 'sealev_ln')
+        self.assertEqual(ParameterIdenum.sea_reg.value, 'sea_reg')
+        self.assertEqual(ParameterIdenum.tw.value, 'tw')

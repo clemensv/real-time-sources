@@ -102,6 +102,8 @@ class RoadStatus:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,13 +171,13 @@ class RoadStatus:
             An instance of the dataclass.
         """
         return cls(
-            road_id='bqowwakvwpgeqpbstmng',
-            display_name='nearfwpubahgxvaijbka',
-            status_severity='sfvguxdjxugddbojnyfk',
-            status_severity_description='fdizlxxbkehjghfbikrn',
-            bounds='toukbyecynlhzojisbnd',
-            envelope='cuangynckltluwdysxxe',
-            url='pladvjuwgihelezncjov',
+            road_id='rrrqiineuwhjuvznveyr',
+            display_name='pqpsurmrydfojlikwldp',
+            status_severity='lwqjryfpbaaakfycdrov',
+            status_severity_description='moziihhgjzotasruxngj',
+            bounds='wcpqejzqexpeelclmtlp',
+            envelope='dzkabqzezhglljotaowm',
+            url='rhjllndtxuhrrkpvtmxt',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
             status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )

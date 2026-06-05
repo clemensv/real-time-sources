@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import uba_airdata_mqtt_producer_data
 from uba_airdata_mqtt_producer_data import Station
-from test_uba_airdata_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from uba_airdata_mqtt_producer_data import Measure
-from test_uba_airdata_mqtt_producer_data_measure import Test_Measure
+from test_measure import Test_Measure
 from uba_airdata_mqtt_producer_data import Component
-from test_uba_airdata_mqtt_producer_data_component import Test_Component
+from test_component import Test_Component
 from uba_airdata_mqtt_producer_mqtt_client import DeUbaAirdataMqttMqttClient
 from uba_airdata_mqtt_producer_mqtt_client import DeUbaAirdataComponentsMqttMqttClient
 
@@ -95,6 +96,7 @@ async def test_de_uba_airdata_mqtt_de_uba_airdata_mqtt_station_py(mosquitto_brok
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -161,6 +163,7 @@ async def test_de_uba_airdata_mqtt_de_uba_airdata_mqtt_measure_py(mosquitto_brok
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -230,6 +233,7 @@ async def test_de_uba_airdata_components_mqtt_de_uba_airdata_components_mqtt_com
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             component_id=f"test_component_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

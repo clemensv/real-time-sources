@@ -13,8 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
 from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 from typing import Any
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -100,6 +100,8 @@ class Alert:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,8 +169,8 @@ class Alert:
             An instance of the dataclass.
         """
         return cls(
-            active_period=[None],
-            informed_entity=[None, None, None, None, None],
+            active_period=[None, None, None],
+            informed_entity=[None, None, None],
             cause=None,
             effect=None,
             url=None,

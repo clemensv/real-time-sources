@@ -29,13 +29,13 @@ class Test_RoadCorridor(unittest.TestCase):
         Create instance of RoadCorridor for testing
         """
         instance = RoadCorridor(
-            road_id='xptshoyfpbwzmtdhtcxg',
-            display_name='spkdgtknqlmqbhlooruo',
-            status_severity='vzntzuvmjtslpoqatwsa',
-            status_severity_description='bfhxlptcrbokkvgddgsz',
-            bounds='ofmprkmvcqcafcyugmuh',
-            envelope='lilzqjzvwpdqgpwadlmz',
-            url='tpsefyyfqpnqqscwvipe',
+            road_id='yeydyiuiipwhwvhxdrwn',
+            display_name='zlufxfmtjxkblxlkeglb',
+            status_severity='kanhkfgnioeekqrrtwpt',
+            status_severity_description='fdjubhwgivyhpiagmhew',
+            bounds='myyxbjwoqgjskyxmgnbd',
+            envelope='aanfmncujglfpawraocm',
+            url='lrsdwxyviyjyrbuasgzx',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
             status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )
@@ -46,7 +46,7 @@ class Test_RoadCorridor(unittest.TestCase):
         """
         Test road_id property
         """
-        test_value = 'xptshoyfpbwzmtdhtcxg'
+        test_value = 'yeydyiuiipwhwvhxdrwn'
         self.instance.road_id = test_value
         self.assertEqual(self.instance.road_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_RoadCorridor(unittest.TestCase):
         """
         Test display_name property
         """
-        test_value = 'spkdgtknqlmqbhlooruo'
+        test_value = 'zlufxfmtjxkblxlkeglb'
         self.instance.display_name = test_value
         self.assertEqual(self.instance.display_name, test_value)
     
@@ -62,7 +62,7 @@ class Test_RoadCorridor(unittest.TestCase):
         """
         Test status_severity property
         """
-        test_value = 'vzntzuvmjtslpoqatwsa'
+        test_value = 'kanhkfgnioeekqrrtwpt'
         self.instance.status_severity = test_value
         self.assertEqual(self.instance.status_severity, test_value)
     
@@ -70,7 +70,7 @@ class Test_RoadCorridor(unittest.TestCase):
         """
         Test status_severity_description property
         """
-        test_value = 'bfhxlptcrbokkvgddgsz'
+        test_value = 'fdjubhwgivyhpiagmhew'
         self.instance.status_severity_description = test_value
         self.assertEqual(self.instance.status_severity_description, test_value)
     
@@ -78,7 +78,7 @@ class Test_RoadCorridor(unittest.TestCase):
         """
         Test bounds property
         """
-        test_value = 'ofmprkmvcqcafcyugmuh'
+        test_value = 'myyxbjwoqgjskyxmgnbd'
         self.instance.bounds = test_value
         self.assertEqual(self.instance.bounds, test_value)
     
@@ -86,7 +86,7 @@ class Test_RoadCorridor(unittest.TestCase):
         """
         Test envelope property
         """
-        test_value = 'lilzqjzvwpdqgpwadlmz'
+        test_value = 'aanfmncujglfpawraocm'
         self.instance.envelope = test_value
         self.assertEqual(self.instance.envelope, test_value)
     
@@ -94,7 +94,7 @@ class Test_RoadCorridor(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'tpsefyyfqpnqqscwvipe'
+        test_value = 'lrsdwxyviyjyrbuasgzx'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     

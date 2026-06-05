@@ -135,7 +135,7 @@ class MqttToAmqpAdapter:
         compact_publish = re.sub(r"[^a-z0-9]", "", publish_norm.lower())
         for name, method in self._send_methods.items():
             params = inspect.signature(method).parameters
-            required_route = {p for p in params if p.startswith("_")}
+            required_route = {p for p, _param in params.items() if p.startswith("_") and _param.default is inspect.Parameter.empty}
             if not required_route <= route_keys:
                 continue
             method_words = set(re.split(r"_+", name))

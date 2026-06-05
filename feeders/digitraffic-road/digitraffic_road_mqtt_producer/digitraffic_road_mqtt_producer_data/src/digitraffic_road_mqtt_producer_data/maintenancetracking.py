@@ -96,6 +96,8 @@ class MaintenanceTracking:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class MaintenanceTracking:
             An instance of the dataclass.
         """
         return cls(
-            domain='vjirilgvreyyizfzrkfu',
-            time=int(14),
-            source='xheipawjaolxhysovczf',
-            tasks=['qekmtrososzjwcbtaaqk', 'lyxpozzqwxsrlumgbgjb', 'twsowzfkgwpepovwvvqg'],
-            x=float(16.012464443488174),
-            y=float(7.139815261878324),
-            direction=float(71.84001085265362)
+            domain='lgsotcmawnhbxfpztoez',
+            time=int(59),
+            source='tsuiytrmawvtcmewopqz',
+            tasks=['lzbnycbffigcltkccftk', 'kccziesbgtrekryloesp'],
+            x=float(66.35519219115724),
+            y=float(45.84570042978486),
+            direction=float(44.27967514387681)
         )

@@ -29,11 +29,11 @@ class Test_ArrivalBoard(unittest.TestCase):
         Create instance of ArrivalBoard for testing
         """
         instance = ArrivalBoard(
-            station_id='lwlmzuwpihhvioaodspz',
-            station_name='iqgrpnroeippvbzvkqin',
-            retrieved_at='aeulmdvxgbdwcfnzkavj',
-            arrival_count=int(73),
-            arrivals=[None, None, None]
+            station_id='fvbrxkcuuusgohftnbvf',
+            station_name='shaxhxabwkywnkdhblem',
+            retrieved_at='uhcxjkyzzudwsdjdmdrb',
+            arrival_count=int(65),
+            arrivals=[None, None]
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_ArrivalBoard(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'lwlmzuwpihhvioaodspz'
+        test_value = 'fvbrxkcuuusgohftnbvf'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_ArrivalBoard(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'iqgrpnroeippvbzvkqin'
+        test_value = 'shaxhxabwkywnkdhblem'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -58,7 +58,7 @@ class Test_ArrivalBoard(unittest.TestCase):
         """
         Test retrieved_at property
         """
-        test_value = 'aeulmdvxgbdwcfnzkavj'
+        test_value = 'uhcxjkyzzudwsdjdmdrb'
         self.instance.retrieved_at = test_value
         self.assertEqual(self.instance.retrieved_at, test_value)
     
@@ -66,7 +66,7 @@ class Test_ArrivalBoard(unittest.TestCase):
         """
         Test arrival_count property
         """
-        test_value = int(73)
+        test_value = int(65)
         self.instance.arrival_count = test_value
         self.assertEqual(self.instance.arrival_count, test_value)
     
@@ -74,7 +74,7 @@ class Test_ArrivalBoard(unittest.TestCase):
         """
         Test arrivals property
         """
-        test_value = [None, None, None]
+        test_value = [None, None]
         self.instance.arrivals = test_value
         self.assertEqual(self.instance.arrivals, test_value)
     

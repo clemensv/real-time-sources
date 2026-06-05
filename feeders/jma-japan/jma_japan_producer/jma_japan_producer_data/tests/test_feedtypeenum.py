@@ -29,5 +29,5 @@ class Test_FeedTypeenum(unittest.TestCase):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(FeedTypeenum.regular.value, "regular")
-        self.assertEqual(FeedTypeenum.extra.value, "extra")
+        self.assertEqual(FeedTypeenum.regular.value, 'regular')
+        self.assertEqual(FeedTypeenum.extra.value, 'extra')

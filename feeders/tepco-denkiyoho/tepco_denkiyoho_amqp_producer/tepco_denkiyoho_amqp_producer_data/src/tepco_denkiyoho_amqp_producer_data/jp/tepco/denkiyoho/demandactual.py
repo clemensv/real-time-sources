@@ -110,6 +110,8 @@ class DemandActual:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -178,16 +180,16 @@ class DemandActual:
         """
         return cls(
             date=datetime.date.today(),
-            time='rryxthwqaozjvgdzidjk',
+            time='uzhooomhfdyltomowhxr',
             datetime=datetime.datetime.now(datetime.timezone.utc),
             datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            actual_demand_mw=float(0.5493089937004147),
-            actual_demand_jp_unit_value=int(34),
-            solar_generation_mw=float(40.59635283702278),
-            solar_generation_jp_unit_value=int(73),
-            solar_share_pct=float(99.64148475990501),
-            usage_pct=float(97.6331940945172),
-            supply_capacity_mw=float(65.74552110109755),
-            supply_capacity_jp_unit_value=int(87),
-            area_code='ydgiwkgbahrpxzwphqlt'
+            actual_demand_mw=float(79.14778796369202),
+            actual_demand_jp_unit_value=int(98),
+            solar_generation_mw=float(5.627622455493475),
+            solar_generation_jp_unit_value=int(38),
+            solar_share_pct=float(83.05532339405694),
+            usage_pct=float(84.8725552631525),
+            supply_capacity_mw=float(64.22287291199856),
+            supply_capacity_jp_unit_value=int(95),
+            area_code='yofxcqybxgdiigjfjctj'
         )

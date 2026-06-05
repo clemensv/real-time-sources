@@ -1,5 +1,5 @@
+from .components import Component
 from .station import Station
 from .measure import Measure
-from .components import Component
 
-__all__ = ["Station", "Measure", "Component"]
+__all__ = ["Component", "Station", "Measure"]

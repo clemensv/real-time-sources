@@ -29,20 +29,20 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         Create instance of PortCallAreaDetail for testing
         """
         instance = PortCallAreaDetail(
-            port_area_code='zjfdjrkcffdoqttrkcff',
-            port_area_name='rnqllsnchrawdtjcdwej',
-            berth_code='tjjvlevgktzafjoyjeky',
-            berth_name='kiozvjkmkwvaeasxuxuy',
+            port_area_code='mhlgtfycggqiwtaqysuj',
+            port_area_name='ztptdnqjstxikekxwowb',
+            berth_code='mbncvshyndgdxacftjrq',
+            berth_name='ssysbthwnynytmmxfzwl',
             eta=datetime.datetime.now(datetime.timezone.utc),
-            eta_source='zetfwqrpmagmyovglzyb',
+            eta_source='qbnpmqeohzsbefebvens',
             etd=datetime.datetime.now(datetime.timezone.utc),
-            etd_source='hmajajzbstcdgjtlqqwf',
+            etd_source='anzxwyfkpmtbkctpxjlh',
             ata=datetime.datetime.now(datetime.timezone.utc),
-            ata_source='wwuaqylkzoxqttfdwgyg',
+            ata_source='evqbldawajzvlwgsyakf',
             atd=datetime.datetime.now(datetime.timezone.utc),
-            atd_source='lrypfyxqsisevrzmozhv',
-            arrival_draught=float(85.78959931979628),
-            departure_draught=float(26.606757600627063)
+            atd_source='mzgafnwejqlqswxopblz',
+            arrival_draught=float(63.807439918545526),
+            departure_draught=float(97.60282100955212)
         )
         return instance
 
@@ -51,7 +51,7 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         """
         Test port_area_code property
         """
-        test_value = 'zjfdjrkcffdoqttrkcff'
+        test_value = 'mhlgtfycggqiwtaqysuj'
         self.instance.port_area_code = test_value
         self.assertEqual(self.instance.port_area_code, test_value)
     
@@ -59,7 +59,7 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         """
         Test port_area_name property
         """
-        test_value = 'rnqllsnchrawdtjcdwej'
+        test_value = 'ztptdnqjstxikekxwowb'
         self.instance.port_area_name = test_value
         self.assertEqual(self.instance.port_area_name, test_value)
     
@@ -67,7 +67,7 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         """
         Test berth_code property
         """
-        test_value = 'tjjvlevgktzafjoyjeky'
+        test_value = 'mbncvshyndgdxacftjrq'
         self.instance.berth_code = test_value
         self.assertEqual(self.instance.berth_code, test_value)
     
@@ -75,7 +75,7 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         """
         Test berth_name property
         """
-        test_value = 'kiozvjkmkwvaeasxuxuy'
+        test_value = 'ssysbthwnynytmmxfzwl'
         self.instance.berth_name = test_value
         self.assertEqual(self.instance.berth_name, test_value)
     
@@ -91,7 +91,7 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         """
         Test eta_source property
         """
-        test_value = 'zetfwqrpmagmyovglzyb'
+        test_value = 'qbnpmqeohzsbefebvens'
         self.instance.eta_source = test_value
         self.assertEqual(self.instance.eta_source, test_value)
     
@@ -107,7 +107,7 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         """
         Test etd_source property
         """
-        test_value = 'hmajajzbstcdgjtlqqwf'
+        test_value = 'anzxwyfkpmtbkctpxjlh'
         self.instance.etd_source = test_value
         self.assertEqual(self.instance.etd_source, test_value)
     
@@ -123,7 +123,7 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         """
         Test ata_source property
         """
-        test_value = 'wwuaqylkzoxqttfdwgyg'
+        test_value = 'evqbldawajzvlwgsyakf'
         self.instance.ata_source = test_value
         self.assertEqual(self.instance.ata_source, test_value)
     
@@ -139,7 +139,7 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         """
         Test atd_source property
         """
-        test_value = 'lrypfyxqsisevrzmozhv'
+        test_value = 'mzgafnwejqlqswxopblz'
         self.instance.atd_source = test_value
         self.assertEqual(self.instance.atd_source, test_value)
     
@@ -147,7 +147,7 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         """
         Test arrival_draught property
         """
-        test_value = float(85.78959931979628)
+        test_value = float(63.807439918545526)
         self.instance.arrival_draught = test_value
         self.assertEqual(self.instance.arrival_draught, test_value)
     
@@ -155,7 +155,7 @@ class Test_PortCallAreaDetail(unittest.TestCase):
         """
         Test departure_draught property
         """
-        test_value = float(26.606757600627063)
+        test_value = float(97.60282100955212)
         self.instance.departure_draught = test_value
         self.assertEqual(self.instance.departure_draught, test_value)
     

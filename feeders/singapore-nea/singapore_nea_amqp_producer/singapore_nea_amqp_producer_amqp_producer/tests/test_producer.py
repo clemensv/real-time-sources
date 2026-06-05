@@ -5,6 +5,7 @@
 Tests for singapore_nea_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../singapore_nea_amqp_producer_data/src')))
@@ -25,15 +27,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from singapore_nea_amqp_producer_amqp_producer import *
 from singapore_nea_amqp_producer_data import Station
-from test_singapore_nea_amqp_producer_data_station import Test_Station
+from test_station import Test_Station
 from singapore_nea_amqp_producer_data import WeatherObservation
-from test_singapore_nea_amqp_producer_data_weatherobservation import Test_WeatherObservation
+from test_weatherobservation import Test_WeatherObservation
 from singapore_nea_amqp_producer_data import Region
-from test_singapore_nea_amqp_producer_data_region import Test_Region
+from test_region import Test_Region
 from singapore_nea_amqp_producer_data import PSIReading
-from test_singapore_nea_amqp_producer_data_psireading import Test_PSIReading
+from test_psireading import Test_PSIReading
 from singapore_nea_amqp_producer_data import PM25Reading
-from test_singapore_nea_amqp_producer_data_pm25reading import Test_PM25Reading
+from test_pm25reading import Test_PM25Reading
 
 
 
@@ -239,6 +241,45 @@ class TestSGGovNEAWeatherAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(SGGovNEAWeatherAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -267,6 +308,7 @@ class TestSGGovNEAWeatherAmqpProducer:
                     _station_id="value",
                     _region="value",
                     _event="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -274,6 +316,7 @@ class TestSGGovNEAWeatherAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -299,6 +342,40 @@ class TestSGGovNEAWeatherAmqpProducer:
                 assert properties.get('event') == "{event}".format(event="value")
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Station.create_instance()
+
+        producer = SGGovNEAWeatherAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _event="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'SG.Gov.NEA.Weather.Station.amqp'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert properties.get('event') == "{event}".format(event="value")
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -327,6 +404,7 @@ class TestSGGovNEAWeatherAmqpProducer:
                     _station_id="value",
                     _region="value",
                     _event="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -334,6 +412,7 @@ class TestSGGovNEAWeatherAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -360,6 +439,40 @@ class TestSGGovNEAWeatherAmqpProducer:
         finally:
             producer.close()
 
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_WeatherObservation.create_instance()
+
+        producer = SGGovNEAWeatherAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _event="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'SG.Gov.NEA.Weather.WeatherObservation.amqp'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert properties.get('event') == "{event}".format(event="value")
+
 
 
 class TestSGGovNEAAirQualityAmqpProducer:
@@ -380,6 +493,45 @@ class TestSGGovNEAAirQualityAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(SGGovNEAAirQualityAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -408,6 +560,7 @@ class TestSGGovNEAAirQualityAmqpProducer:
                     _region="value",
                     _station_id="value",
                     _event="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -415,6 +568,7 @@ class TestSGGovNEAAirQualityAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -440,6 +594,40 @@ class TestSGGovNEAAirQualityAmqpProducer:
                 assert properties.get('event') == "{event}".format(event="value")
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Region.create_instance()
+
+        producer = SGGovNEAAirQualityAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _region="value",
+                _station_id="value",
+                _event="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'SG.Gov.NEA.AirQuality.Region.amqp'
+        assert received.body is not None
+        assert received.subject == "{region}".format(region="value")
+        assert properties.get('station_id') == "{station_id}".format(station_id="value")
+        assert properties.get('event') == "{event}".format(event="value")
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -468,6 +656,7 @@ class TestSGGovNEAAirQualityAmqpProducer:
                     _region="value",
                     _station_id="value",
                     _event="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -475,6 +664,7 @@ class TestSGGovNEAAirQualityAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -500,6 +690,40 @@ class TestSGGovNEAAirQualityAmqpProducer:
                 assert properties.get('event') == "{event}".format(event="value")
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_PSIReading.create_instance()
+
+        producer = SGGovNEAAirQualityAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _region="value",
+                _station_id="value",
+                _event="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'SG.Gov.NEA.AirQuality.PSIReading.amqp'
+        assert received.body is not None
+        assert received.subject == "{region}".format(region="value")
+        assert properties.get('station_id') == "{station_id}".format(station_id="value")
+        assert properties.get('event') == "{event}".format(event="value")
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -528,6 +752,7 @@ class TestSGGovNEAAirQualityAmqpProducer:
                     _region="value",
                     _station_id="value",
                     _event="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -535,6 +760,7 @@ class TestSGGovNEAAirQualityAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -560,4 +786,38 @@ class TestSGGovNEAAirQualityAmqpProducer:
                 assert properties.get('event') == "{event}".format(event="value")
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_PM25Reading.create_instance()
+
+        producer = SGGovNEAAirQualityAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _region="value",
+                _station_id="value",
+                _event="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'SG.Gov.NEA.AirQuality.PM25Reading.amqp'
+        assert received.body is not None
+        assert received.subject == "{region}".format(region="value")
+        assert properties.get('station_id') == "{station_id}".format(station_id="value")
+        assert properties.get('event') == "{event}".format(event="value")
 

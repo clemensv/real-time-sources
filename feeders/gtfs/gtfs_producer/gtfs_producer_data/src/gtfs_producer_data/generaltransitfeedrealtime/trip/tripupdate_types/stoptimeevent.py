@@ -92,6 +92,8 @@ class StopTimeEvent:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,7 +161,7 @@ class StopTimeEvent:
             An instance of the dataclass.
         """
         return cls(
-            delay=int(60),
-            time=int(98),
-            uncertainty=int(81)
+            delay=int(8),
+            time=int(70),
+            uncertainty=int(45)
         )

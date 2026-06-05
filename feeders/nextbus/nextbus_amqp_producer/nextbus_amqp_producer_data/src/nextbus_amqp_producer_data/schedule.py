@@ -92,6 +92,8 @@ class Schedule:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class Schedule:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='fspougpbrzuhulvboovi',
-            route_tag='bwpegyabbztwajstlsss',
-            stop_or_vehicle_id='xdixsgreljrbmtjlamuu',
-            event_type='ejoduqqvufhsayfjmobr',
-            schedule='ghrszkzhfpqxoiefhtae'
+            agency_id='utwgnuztfqmjkhycyjlu',
+            route_tag='pzlbgdxjmkolleqfakyb',
+            stop_or_vehicle_id='bsguftesyacmzvcsfhng',
+            event_type='wqmirjdzxmzgyenbefqj',
+            schedule='lqaqdtojrvwizwqaenwa'
         )

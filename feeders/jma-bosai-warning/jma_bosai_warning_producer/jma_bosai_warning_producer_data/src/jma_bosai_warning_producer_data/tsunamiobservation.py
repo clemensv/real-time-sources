@@ -99,6 +99,8 @@ class TsunamiObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -166,10 +168,10 @@ class TsunamiObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_code='fdlrzmvlwhoykiosrfaq',
-            station_name_jp='alvwmtdnprwxeemvddnn',
-            station_name_en='feherativffvmwbdbemy',
-            observed_max_wave_height_m=float(99.60043503504409),
+            station_code='fynirrpqzlcmhhqjsyoi',
+            station_name_jp='ybtvmjhlffjxhwsghmcj',
+            station_name_en='pnkccuydyemdnpayujmg',
+            observed_max_wave_height_m=float(69.71518556985636),
             observed_at=datetime.datetime.now(datetime.timezone.utc),
             observed_at_local=datetime.datetime.now(datetime.timezone.utc),
             arrival_status=ArrivalStatusenum.ESTIMATED

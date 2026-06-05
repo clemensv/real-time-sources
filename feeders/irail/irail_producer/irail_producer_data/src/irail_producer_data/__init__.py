@@ -1,3 +1,3 @@
-from .be import Station, Departure, StationBoard, Arrival, ArrivalBoard
+from .be import OccupancyEnum, Arrival, ArrivalBoard, Station, Departure, StationBoard
 
-__all__ = ["Station", "Departure", "StationBoard", "Arrival", "ArrivalBoard"]
+__all__ = ["OccupancyEnum", "Arrival", "ArrivalBoard", "Station", "Departure", "StationBoard"]

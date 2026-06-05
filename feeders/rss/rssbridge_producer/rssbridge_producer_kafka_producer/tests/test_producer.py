@@ -20,7 +20,7 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeedsEventProducer
 from rssbridge_producer_data import FeedItem
-from test_rssbridge_producer_data_feeditem import Test_FeedItem
+from test_feeditem import Test_FeedItem
 from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeedsMqttEventProducer
 from rssbridge_producer_kafka_producer.producer import MicrosoftOpenDataRssFeedsAmqpEventProducer
 

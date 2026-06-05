@@ -131,12 +131,12 @@ producer = DeWsvPegelonlineAmqpProducer(
 # Send a message
 
 producer.send_station(
-    data=object(...),
+    data=Station(...),
     content_type="application/json"
 )
 
 producer.send_current_measurement(
-    data=object(...),
+    data=CurrentMeasurement(...),
     content_type="application/json"
 )
 
@@ -154,15 +154,24 @@ The producer constructor accepts:
 - `port` (int): AMQP broker port (default: 5672, for TLS typically 5671)
 - `username` (Optional[str]): Username for SASL authentication
 - `password` (Optional[str]): Password for SASL authentication
+- `content_mode` (Literal['structured', 'binary']): CloudEvents encoding mode (default: 'structured')
+  - **structured**: Entire CloudEvent as JSON in message body
+  - **binary**: Event data in body, CloudEvents attributes in AMQP application properties
+- `format_type` (str): Content type for structured mode (default: 'application/json')
 
 #### Available Methods
 
 
 
 ##### `send_station()`
+A reference record for one federally administered German inland and coastal gauge published by Germany's Federal
+Waterways and Shipping Administration (WSV). It fires when the bridge publishes or refreshes the station catalog so
+consumers can interpret measurement events.
 
 **Parameters:**
-- `data` (object): The message data object
+- `data` (Station): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_station_batch()`
@@ -170,15 +179,22 @@ The producer constructor accepts:
 Send multiple Station messages in sequence.
 
 **Parameters:**
-- `data_array` (List[object]): Array of message data objects
+- `data_array` (List[Station]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data
 
 
 
 ##### `send_current_measurement()`
+A current measurement from Germany's Federal Waterways and Shipping Administration (WSV) for one monitoring site. It
+carries water level measurements for rivers, canals, and estuaries when the upstream feed reports a new or refreshed
+value.
 
 **Parameters:**
-- `data` (object): The message data object
+- `data` (CurrentMeasurement): The message data object
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_current_measurement_batch()`
@@ -186,7 +202,9 @@ Send multiple Station messages in sequence.
 Send multiple CurrentMeasurement messages in sequence.
 
 **Parameters:**
-- `data_array` (List[object]): Array of message data objects
+- `data_array` (List[CurrentMeasurement]): Array of message data objects
+- `_feedurl` (str): Value for placeholder feedurl in attribute source
+- `_station_id` (str): Value for placeholder station_id in attribute subject
 - `content_type` (str): Content type of the message data
 
 
@@ -222,7 +240,7 @@ class BatchProducer:
         self.producer = producer
         self.semaphore = asyncio.Semaphore(max_concurrency)
 
-    async def send_batch_async(self, data_array: List[object]):
+    async def send_batch_async(self, data_array: List[Station]):
         """Send multiple messages with concurrency control."""
         async def send_one(data):
             async with self.semaphore:
@@ -238,7 +256,7 @@ class BatchProducer:
 producer = DeWsvPegelonlineAmqpProducer(host="localhost", address="my-queue")
 batch_producer = BatchProducer(producer, max_concurrency=20)
 
-data_list = [object(...) for _ in range(100)]
+data_list = [Station(...) for _ in range(100)]
 asyncio.run(batch_producer.send_batch_async(data_list))
 ```
 
@@ -312,7 +330,7 @@ class ResilientProducer:
             **self.kwargs
         )
 
-    def send_with_retry(self, data: object, max_retries: int = 3):
+    def send_with_retry(self, data: Station, max_retries: int = 3):
         """Send message with automatic retry on connection failure."""
         for attempt in range(max_retries):
             try:
@@ -337,6 +355,18 @@ Add extension attributes to CloudEvents:
 
 ```python
 
+
+producer = DeWsvPegelonlineAmqpProducer(host="localhost", address="my-queue")
+
+# CloudEvents extension attributes can be added via metadata
+producer.send_station(
+    data=data,
+    _tenant="contoso",           # Custom extension attribute
+    _deviceid="device-001",      # Custom extension attribute
+    _region="us-west-2",         # Custom extension attribute
+    _priority="high",            # Custom extension attribute
+    content_type="application/json"
+)
 
 ```
 
@@ -366,7 +396,7 @@ from typing import Any
 
 def send_with_retry(
     producer: DeWsvPegelonlineAmqpProducer,
-    data: object,
+    data: Station,
     max_retries: int = 5,
     initial_delay: float = 1.0,
     max_delay: float = 60.0
@@ -415,7 +445,7 @@ class CircuitBreakerProducer:
         self.last_failure_time = None
         self.is_open = False
 
-    def send(self, data: object):
+    def send(self, data: Station):
         """Send message with circuit breaker protection."""
         # Check if circuit breaker is open
         if self.is_open:

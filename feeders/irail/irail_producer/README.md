@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - BeIrailEventDispatcher
+3. [Quick Start](#quick-start)    - BeIrailEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    BeIrailMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    BeIrailAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - BeIrailProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- BeIrailMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- BeIrailAmqpProducersolution for event-driven applications.
 
 
 
@@ -192,6 +204,80 @@ be_irail_dispatcher.be_irail_station_async = be_irail_station_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailMqttProducer- `data`: The event data of type `irail_producer_data.Station`.
+
+
+
+Producer for `be.irail.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrailMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_mqtt_dispatcher.be_irail_station_async = be_irail_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailAmqpProducer- `data`: The event data of type `irail_producer_data.Station`.
+
+
+
+Producer for `be.irail.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrailAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_amqp_dispatcher.be_irail_station_async = be_irail_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -257,6 +343,80 @@ be_irail_dispatcher.be_irail_station_board_async = be_irail_station_board_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailMqttProducer- `data`: The event data of type `irail_producer_data.StationBoard`.
+
+
+
+Producer for `be.irail.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_station_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: StationBoard) -> None:
+
+```python    # Process the event data
+
+BeIrailMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_mqtt_dispatcher.be_irail_station_board_async = be_irail_station_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailAmqpProducer- `data`: The event data of type `irail_producer_data.StationBoard`.
+
+
+
+Producer for `be.irail.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_station_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: StationBoard) -> None:
+
+```python    # Process the event data
+
+BeIrailAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_amqp_dispatcher.be_irail_station_board_async = be_irail_station_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -317,6 +477,80 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 be_irail_dispatcher.be_irail_arrival_board_async = be_irail_arrival_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailMqttProducer- `data`: The event data of type `irail_producer_data.ArrivalBoard`.
+
+
+
+Producer for `be.irail.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_arrival_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ArrivalBoard) -> None:
+
+```python    # Process the event data
+
+BeIrailMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_mqtt_dispatcher.be_irail_arrival_board_async = be_irail_arrival_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailAmqpProducer- `data`: The event data of type `irail_producer_data.ArrivalBoard`.
+
+
+
+Producer for `be.irail.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_arrival_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ArrivalBoard) -> None:
+
+```python    # Process the event data
+
+BeIrailAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_amqp_dispatcher.be_irail_arrival_board_async = be_irail_arrival_board_event
 
 **Parameters:**```
 
@@ -630,6 +864,1672 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_be_irail_arrival_board_batch(```
+
+    messages=[
+
+        ArrivalBoard(...),Initializes the runner with a Kafka consumer.
+
+        ArrivalBoard(...),
+
+        ArrivalBoard(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### BeIrailMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`BeIrailMqttEventDispatcher` handles events for the be.irail.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from irail_producer import BeIrailProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = BeIrailProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_be_irail_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The BeIrailMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = BeIrailProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irail_mqtt_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irail_mqtt_station_async:  Callable[[ConsumerRecord, CloudEvent, Station],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irail.mqtt.Station`: Metadata for a Belgian railway station in the NMBS/SNCB network
+as provided by the iRail API. The Belgian rail network comprises approximately 600 passenger stations. Each station has
+a unique UIC-derived numeric identifier assigned by the NMBS, geographic coordinates, and multilingual names.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailProducer- `data`: The event data of type `irail_producer_data.Station`.
+
+
+
+Producer for `be.irail` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrailProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_dispatcher.be_irail_mqtt_station_async = be_irail_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailMqttProducer- `data`: The event data of type `irail_producer_data.Station`.
+
+
+
+Producer for `be.irail.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrailMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_mqtt_dispatcher.be_irail_mqtt_station_async = be_irail_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailAmqpProducer- `data`: The event data of type `irail_producer_data.Station`.
+
+
+
+Producer for `be.irail.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_mqtt_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrailAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_amqp_dispatcher.be_irail_mqtt_station_async = be_irail_mqtt_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irail_mqtt_station_board_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irail_mqtt_station_board_async:  Callable[[ConsumerRecord, CloudEvent,
+StationBoard], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irail.mqtt.StationBoard`: A real-time departure board snapshot for a Belgian railway
+station from the iRail liveboard API. Contains all currently scheduled departures from the station with real-time delay
+information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled
+periodically and each event replaces the previous board state for the same station.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailProducer- `data`: The event data of type `irail_producer_data.StationBoard`.
+
+
+
+Producer for `be.irail` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_mqtt_station_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: StationBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_dispatcher.be_irail_mqtt_station_board_async = be_irail_mqtt_station_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailMqttProducer- `data`: The event data of type `irail_producer_data.StationBoard`.
+
+
+
+Producer for `be.irail.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_mqtt_station_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: StationBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_mqtt_dispatcher.be_irail_mqtt_station_board_async = be_irail_mqtt_station_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailAmqpProducer- `data`: The event data of type `irail_producer_data.StationBoard`.
+
+
+
+Producer for `be.irail.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_mqtt_station_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: StationBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_amqp_dispatcher.be_irail_mqtt_station_board_async = be_irail_mqtt_station_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irail_mqtt_arrival_board_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irail_mqtt_arrival_board_async:  Callable[[ConsumerRecord, CloudEvent,
+ArrivalBoard], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irail.mqtt.ArrivalBoard`: A real-time arrival board snapshot for a Belgian railway
+station from the iRail liveboard API. Contains all currently scheduled arrivals at the station with real-time delay
+information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled
+periodically and each event replaces the previous arrival-board state for the same station.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailProducer- `data`: The event data of type `irail_producer_data.ArrivalBoard`.
+
+
+
+Producer for `be.irail` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_mqtt_arrival_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ArrivalBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_dispatcher.be_irail_mqtt_arrival_board_async = be_irail_mqtt_arrival_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailMqttProducer- `data`: The event data of type `irail_producer_data.ArrivalBoard`.
+
+
+
+Producer for `be.irail.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_mqtt_arrival_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ArrivalBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_mqtt_dispatcher.be_irail_mqtt_arrival_board_async = be_irail_mqtt_arrival_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailAmqpProducer- `data`: The event data of type `irail_producer_data.ArrivalBoard`.
+
+
+
+Producer for `be.irail.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_mqtt_arrival_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ArrivalBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_amqp_dispatcher.be_irail_mqtt_arrival_board_async = be_irail_mqtt_arrival_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_be_irail_mqtt_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irail_mqtt_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irail.mqtt.Station` message. Metadata for a Belgian railway station in the NMBS/SNCB network as
+provided by the iRail API. The Belgian rail network comprises approximately 600 passenger stations. Each station has a
+unique UIC-derived numeric identifier assigned by the NMBS, geographic coordinates, and multilingual names.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irail_mqtt_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irail.mqtt.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irail_mqtt_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_be_irail_mqtt_station_board`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irail_mqtt_station_board(
+
+    self,##### `_process_event`
+
+    data: StationBoard,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irail.mqtt.StationBoard` message. A real-time departure board snapshot for a Belgian railway station
+from the iRail liveboard API. Contains all currently scheduled departures from the station with real-time delay
+information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled
+periodically and each event replaces the previous board state for the same station.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `StationBoard`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irail_mqtt_station_board(
+
+    data=StationBoard(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irail.mqtt.StationBoard` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irail_mqtt_station_board_batch(```
+
+    messages=[
+
+        StationBoard(...),Initializes the runner with a Kafka consumer.
+
+        StationBoard(...),
+
+        StationBoard(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_be_irail_mqtt_arrival_board`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irail_mqtt_arrival_board(
+
+    self,##### `_process_event`
+
+    data: ArrivalBoard,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irail.mqtt.ArrivalBoard` message. A real-time arrival board snapshot for a Belgian railway station
+from the iRail liveboard API. Contains all currently scheduled arrivals at the station with real-time delay information,
+platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each
+event replaces the previous arrival-board state for the same station.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ArrivalBoard`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irail_mqtt_arrival_board(
+
+    data=ArrivalBoard(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irail.mqtt.ArrivalBoard` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irail_mqtt_arrival_board_batch(```
+
+    messages=[
+
+        ArrivalBoard(...),Initializes the runner with a Kafka consumer.
+
+        ArrivalBoard(...),
+
+        ArrivalBoard(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### BeIrailAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`BeIrailAmqpEventDispatcher` handles events for the be.irail.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from irail_producer import BeIrailProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = BeIrailProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_be_irail_station(```python
+
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The BeIrailAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = BeIrailProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irail_amqp_station_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irail_amqp_station_async:  Callable[[ConsumerRecord, CloudEvent, Station],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irail.amqp.Station`: Metadata for a Belgian railway station in the NMBS/SNCB network
+as provided by the iRail API. The Belgian rail network comprises approximately 600 passenger stations. Each station has
+a unique UIC-derived numeric identifier assigned by the NMBS, geographic coordinates, and multilingual names.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailProducer- `data`: The event data of type `irail_producer_data.Station`.
+
+
+
+Producer for `be.irail` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrailProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_dispatcher.be_irail_amqp_station_async = be_irail_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailMqttProducer- `data`: The event data of type `irail_producer_data.Station`.
+
+
+
+Producer for `be.irail.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrailMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_mqtt_dispatcher.be_irail_amqp_station_async = be_irail_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailAmqpProducer- `data`: The event data of type `irail_producer_data.Station`.
+
+
+
+Producer for `be.irail.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_amqp_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) -> None:
+
+```python    # Process the event data
+
+BeIrailAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_amqp_dispatcher.be_irail_amqp_station_async = be_irail_amqp_station_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irail_amqp_station_board_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irail_amqp_station_board_async:  Callable[[ConsumerRecord, CloudEvent,
+StationBoard], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irail.amqp.StationBoard`: A real-time departure board snapshot for a Belgian railway
+station from the iRail liveboard API. Contains all currently scheduled departures from the station with real-time delay
+information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled
+periodically and each event replaces the previous board state for the same station.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailProducer- `data`: The event data of type `irail_producer_data.StationBoard`.
+
+
+
+Producer for `be.irail` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_amqp_station_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: StationBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_dispatcher.be_irail_amqp_station_board_async = be_irail_amqp_station_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailMqttProducer- `data`: The event data of type `irail_producer_data.StationBoard`.
+
+
+
+Producer for `be.irail.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_amqp_station_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: StationBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_mqtt_dispatcher.be_irail_amqp_station_board_async = be_irail_amqp_station_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailAmqpProducer- `data`: The event data of type `irail_producer_data.StationBoard`.
+
+
+
+Producer for `be.irail.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_amqp_station_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: StationBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_amqp_dispatcher.be_irail_amqp_station_board_async = be_irail_amqp_station_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `be_irail_amqp_arrival_board_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'be_irail_amqp_arrival_board_async:  Callable[[ConsumerRecord, CloudEvent,
+ArrivalBoard], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `be.irail.amqp.ArrivalBoard`: A real-time arrival board snapshot for a Belgian railway
+station from the iRail liveboard API. Contains all currently scheduled arrivals at the station with real-time delay
+information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled
+periodically and each event replaces the previous arrival-board state for the same station.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailProducer- `data`: The event data of type `irail_producer_data.ArrivalBoard`.
+
+
+
+Producer for `be.irail` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_amqp_arrival_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ArrivalBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_dispatcher.be_irail_amqp_arrival_board_async = be_irail_amqp_arrival_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailMqttProducer- `data`: The event data of type `irail_producer_data.ArrivalBoard`.
+
+
+
+Producer for `be.irail.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_amqp_arrival_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ArrivalBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_mqtt_dispatcher.be_irail_amqp_arrival_board_async = be_irail_amqp_arrival_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### BeIrailAmqpProducer- `data`: The event data of type `irail_producer_data.ArrivalBoard`.
+
+
+
+Producer for `be.irail.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def be_irail_amqp_arrival_board_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ArrivalBoard) ->
+None:
+
+```python    # Process the event data
+
+BeIrailAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+be_irail_amqp_dispatcher.be_irail_amqp_arrival_board_async = be_irail_amqp_arrival_board_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_be_irail_amqp_station`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irail_amqp_station(
+
+    self,##### `_process_event`
+
+    data: Station,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irail.amqp.Station` message. Metadata for a Belgian railway station in the NMBS/SNCB network as
+provided by the iRail API. The Belgian rail network comprises approximately 600 passenger stations. Each station has a
+unique UIC-derived numeric identifier assigned by the NMBS, geographic coordinates, and multilingual names.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irail_amqp_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irail.amqp.Station` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irail_amqp_station_batch(```
+
+    messages=[
+
+        Station(...),Initializes the runner with a Kafka consumer.
+
+        Station(...),
+
+        Station(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_be_irail_amqp_station_board`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irail_amqp_station_board(
+
+    self,##### `_process_event`
+
+    data: StationBoard,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irail.amqp.StationBoard` message. A real-time departure board snapshot for a Belgian railway station
+from the iRail liveboard API. Contains all currently scheduled departures from the station with real-time delay
+information, platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled
+periodically and each event replaces the previous board state for the same station.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `StationBoard`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irail_amqp_station_board(
+
+    data=StationBoard(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irail.amqp.StationBoard` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irail_amqp_station_board_batch(```
+
+    messages=[
+
+        StationBoard(...),Initializes the runner with a Kafka consumer.
+
+        StationBoard(...),
+
+        StationBoard(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_be_irail_amqp_arrival_board`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_be_irail_amqp_arrival_board(
+
+    self,##### `_process_event`
+
+    data: ArrivalBoard,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `be.irail.amqp.ArrivalBoard` message. A real-time arrival board snapshot for a Belgian railway station
+from the iRail liveboard API. Contains all currently scheduled arrivals at the station with real-time delay information,
+platform assignments, cancellation status, and crowd-sourced occupancy levels. The board is polled periodically and each
+event replaces the previous arrival-board state for the same station.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ArrivalBoard`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_be_irail_amqp_arrival_board(
+
+    data=ArrivalBoard(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `be.irail.amqp.ArrivalBoard` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_be_irail_amqp_arrival_board_batch(```
 
     messages=[
 

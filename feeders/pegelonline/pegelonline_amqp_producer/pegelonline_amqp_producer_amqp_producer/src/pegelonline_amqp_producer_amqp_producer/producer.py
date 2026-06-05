@@ -14,14 +14,62 @@ import sys
 import typing
 import uuid
 import json
+import re
 import threading
 import queue
 import concurrent.futures
+from datetime import datetime, timezone
 from urllib.parse import quote_plus
-from proton import Message
+from proton import Message, symbol
+from proton.reactor import AtMostOnce
 from proton.utils import BlockingConnection
 from cloudevents.http import CloudEvent
 from cloudevents.conversion import to_binary, to_structured
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 # --- Azure CBS support (azure_cbs_target=servicebus) ---
 # Two CBS auth modes are supported:
@@ -36,7 +84,7 @@ import hmac
 import logging
 import time as _cbs_time
 from urllib.parse import quote
-from proton import Endpoint, symbol
+from proton import Endpoint
 from proton.handlers import MessagingHandler
 from proton.reactor import Container, AtLeastOnce
 
@@ -394,6 +442,8 @@ class _CbsAzureHandler(MessagingHandler):
             if not fut.done():
                 fut.set_exception(exc)
         self._pending.clear()
+from pegelonline_amqp_producer_data import Station
+from pegelonline_amqp_producer_data import CurrentMeasurement
 
 class DeWsvPegelonlineAmqpProducer:
     """
@@ -482,9 +532,7 @@ class DeWsvPegelonlineAmqpProducer:
         if self._cbs_enabled:
             self._init_reactor()
         else:
-            connection_url = self._build_connection_url()
-            self._connection = BlockingConnection(connection_url, timeout=30)
-            self._sender = self._connection.create_sender(self.address)
+            self._init_blocking_sender()
 
     def _init_reactor(self):
         """Start the proton reactor thread and block until CBS handshake completes.
@@ -547,6 +595,32 @@ class DeWsvPegelonlineAmqpProducer:
         fut: "concurrent.futures.Future" = concurrent.futures.Future()
         self._send_queue.put((amqp_msg, fut))
         fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
     
     def _build_connection_url(self) -> str:
         if self.username and self.password:
@@ -574,6 +648,23 @@ class DeWsvPegelonlineAmqpProducer:
         return payload
 
     @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
     def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
         """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
         CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
@@ -597,23 +688,66 @@ class DeWsvPegelonlineAmqpProducer:
     
     
     def send_station(self,
-        data: object,
+        data: Station,
+        _feedurl: str,
         _station_id: str,
         _water_shortname: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `de.wsv.pegelonline.amqp.Station` message
+        A reference record for one federally administered German inland and coastal gauge published by Germany's Federal Waterways and Shipping Administration (WSV). It fires when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.
         
         Args:
-            _station_id (str): Value for AMQP protocol option placeholder station_id
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
             _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
-            data (object): The message data object
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (Station): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Plain AMQP message (non-CloudEvent)
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "de.wsv.pegelonline.Station",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{station_id}".format(station_id=_station_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        amqp_msg = Message(body=byte_data, inferred=True)
-        amqp_msg.content_type = content_type
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -623,53 +757,108 @@ class DeWsvPegelonlineAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_station_batch(self,
-        data_array: typing.List[object],
+        data_array: typing.List[Station],
+        _feedurl: str,
         _station_id: str,
         _water_shortname: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `de.wsv.pegelonline.amqp.Station` messages
         
         Args:
-            data_array (typing.List[object]): Array of message data objects
-            _station_id (str): Value for AMQP protocol option placeholder station_id
+            data_array (typing.List[Station]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_station(
                 data=data,
+                _feedurl=_feedurl,
                 _station_id=_station_id,
+                _time=_time,
                 _water_shortname=_water_shortname,
                 content_type=content_type)
     
     
     def send_current_measurement(self,
-        data: object,
+        data: CurrentMeasurement,
+        _feedurl: str,
         _station_id: str,
         _water_shortname: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send the `de.wsv.pegelonline.amqp.CurrentMeasurement` message
+        A current measurement from Germany's Federal Waterways and Shipping Administration (WSV) for one monitoring site. It carries water level measurements for rivers, canals, and estuaries when the upstream feed reports a new or refreshed value.
         
         Args:
-            _station_id (str): Value for AMQP protocol option placeholder station_id
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
             _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
-            data (object): The message data object
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (CurrentMeasurement): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
         """
-        # Plain AMQP message (non-CloudEvent)
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "de.wsv.pegelonline.CurrentMeasurement",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{station_id}".format(station_id=_station_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
         byte_data = self._serialize_payload(data, content_type)
-        amqp_msg = Message(body=byte_data, inferred=True)
-        amqp_msg.content_type = content_type
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
         amqp_msg.subject = "{station_id}".format(station_id=_station_id)
 
@@ -679,31 +868,43 @@ class DeWsvPegelonlineAmqpProducer:
             if amqp_msg.properties is None:
                 amqp_msg.properties = {}
             amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
         
         # Send message
         if getattr(self, "_handler", None) is not None:
             self._send_via_reactor(amqp_msg)
         else:
-            self._sender.send(amqp_msg)
+            self._send_via_blocking_sender(amqp_msg)
     
     def send_current_measurement_batch(self,
-        data_array: typing.List[object],
+        data_array: typing.List[CurrentMeasurement],
+        _feedurl: str,
         _station_id: str,
         _water_shortname: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
         Send multiple `de.wsv.pegelonline.amqp.CurrentMeasurement` messages
         
         Args:
-            data_array (typing.List[object]): Array of message data objects
-            _station_id (str): Value for AMQP protocol option placeholder station_id
+            data_array (typing.List[CurrentMeasurement]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             _water_shortname (str): Value for AMQP protocol option placeholder water_shortname
             content_type (str): The content type of the message data
         """
         for data in data_array:
             self.send_current_measurement(
                 data=data,
+                _feedurl=_feedurl,
                 _station_id=_station_id,
+                _time=_time,
                 _water_shortname=_water_shortname,
                 content_type=content_type)
     

@@ -20,12 +20,12 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnStationsEventProducer
 from defra_aurn_producer_data import Station
-from test_defra_aurn_producer_data_station import Test_Station
+from test_station import Test_Station
 from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnTimeseriesEventProducer
 from defra_aurn_producer_data import Timeseries
-from test_defra_aurn_producer_data_timeseries import Test_Timeseries
+from test_timeseries import Test_Timeseries
 from defra_aurn_producer_data import Observation
-from test_defra_aurn_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnStationsMqttEventProducer
 from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnStationsAmqpEventProducer
 from defra_aurn_producer_kafka_producer.producer import UkGovDefraAurnTimeseriesMqttEventProducer
@@ -112,7 +112,8 @@ def test_uk_gov_defra_aurn_stations_ukgovdefraaurnstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_defra_aurn_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_defra_aurn_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -175,7 +176,8 @@ def test_uk_gov_defra_aurn_timeseries_ukgovdefraaurntimeseries(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_defra_aurn_timeseries(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_defra_aurn_timeseries(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -238,7 +240,8 @@ def test_uk_gov_defra_aurn_timeseries_ukgovdefraaurnobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_defra_aurn_observation(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_defra_aurn_observation(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -301,7 +304,8 @@ def test_uk_gov_defra_aurn_stations_mqtt_ukgovdefraaurnstationsmqttstation(kafka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_defra_aurn_stations_mqtt_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_defra_aurn_stations_mqtt_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -362,7 +366,8 @@ def test_uk_gov_defra_aurn_stations_amqp_ukgovdefraaurnstationsamqpstation(kafka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_defra_aurn_stations_amqp_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_defra_aurn_stations_amqp_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -423,7 +428,8 @@ def test_uk_gov_defra_aurn_timeseries_mqtt_ukgovdefraaurntimeseriesmqtttimeserie
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_defra_aurn_timeseries_mqtt_timeseries(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_defra_aurn_timeseries_mqtt_timeseries(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -484,7 +490,8 @@ def test_uk_gov_defra_aurn_timeseries_mqtt_ukgovdefraaurntimeseriesmqttobservati
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_defra_aurn_timeseries_mqtt_observation(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_defra_aurn_timeseries_mqtt_observation(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -545,7 +552,8 @@ def test_uk_gov_defra_aurn_timeseries_amqp_ukgovdefraaurntimeseriesamqptimeserie
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_defra_aurn_timeseries_amqp_timeseries(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_defra_aurn_timeseries_amqp_timeseries(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -606,7 +614,8 @@ def test_uk_gov_defra_aurn_timeseries_amqp_ukgovdefraaurntimeseriesamqpobservati
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_gov_defra_aurn_timeseries_amqp_observation(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_uk_gov_defra_aurn_timeseries_amqp_observation(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

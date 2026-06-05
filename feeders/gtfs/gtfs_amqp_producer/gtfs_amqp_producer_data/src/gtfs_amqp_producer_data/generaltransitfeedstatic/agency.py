@@ -98,6 +98,8 @@ class Agency:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,12 +167,12 @@ class Agency:
             An instance of the dataclass.
         """
         return cls(
-            agencyId='ryuqmcvfontchzcifhdw',
-            agencyName='qxjtpzifclduphcmtizx',
-            agencyUrl='elbaestrtyrpnfxsjffu',
-            agencyTimezone='ogiufitlnxejssputmys',
-            agencyLang='ekztxtxobqokopnnvbxb',
-            agencyPhone='qtrjryifivhvloyqrlti',
-            agencyFareUrl='njoyxpribykuoxamnsra',
-            agencyEmail='ktvvujcciwqfhshapzcc'
+            agencyId='ikjsaqisxdykoqldekjx',
+            agencyName='pnxifkorwcnwfvcuxboa',
+            agencyUrl='xtczlhjzcchqeeroyhpa',
+            agencyTimezone='nnftldgdbvyygxjexqov',
+            agencyLang='jzpxtrjbjjgoidncxdis',
+            agencyPhone='mnjgltxnzwftqiivcqfk',
+            agencyFareUrl='ktcwyphqhcfvqpjuwqky',
+            agencyEmail='ahibdcfqohmxkddewrkd'
         )

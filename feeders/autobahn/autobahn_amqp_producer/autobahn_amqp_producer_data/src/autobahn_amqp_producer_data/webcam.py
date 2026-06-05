@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -126,6 +126,8 @@ class Webcam:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,24 +195,24 @@ class Webcam:
             An instance of the dataclass.
         """
         return cls(
-            identifier='jtozduakoeenybetxzje',
-            road='siezsgyjvpfjwpoathcf',
-            road_ids=['ogyjufhganitorszyefd', 'qeszamiksozxuftpbhzt'],
+            identifier='eycccmxxthqunfloerap',
+            road='wweffafahcbljvuydyrf',
+            road_ids=['qfabgwwwxzyyhppikmwl', 'tmehixvsumwihigeqnon', 'sogcqwlfviztsxsxqtqp', 'xkllzgmsroecglwpbyhz', 'fiokcoclcqwarauyqpgf'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
-            title='borsslsbkrhnuylinihw',
-            subtitle='iutxivmxtdujbrxvvzdn',
+            display_type=DisplayTypeenum.ROADWORKS,
+            title='huwmrvyivusjussiambm',
+            subtitle='ixzckzkdotqwdjrvzroc',
             description_lines=None,
             future=False,
-            is_blocked=False,
-            icon='xgfvuvggwdfrpqcabtzw',
-            extent='gnazlbhaqqpqbvhnoubf',
-            point='fxzzssemshlzgdqfzzvp',
-            coordinate_lat=float(85.98439096336121),
-            coordinate_lon=float(84.71081851106477),
-            route_recommendation_json='atknqdnwrsgoerefpiqk',
+            is_blocked=True,
+            icon='rlyntxgfxinleyhwpfjy',
+            extent='xmekzmnomymbzlzewmox',
+            point='keyrkeftrvmuptccabyp',
+            coordinate_lat=float(67.50649788759588),
+            coordinate_lon=float(93.92657507439095),
+            route_recommendation_json='acwdwrltgtnoltitpqky',
             footer_lines=None,
-            operator_name='gnijvimiomtsijdqdoym',
-            image_url='qaqmcvgqvkfclogheayd',
-            stream_url='wlkunmgsbeedonpbqtkl'
+            operator_name='zfxajflqulejasqmawxf',
+            image_url='rpxoclyylcpipcqkmpoc',
+            stream_url='sqovcjwnkqunrzbtuzgu'
         )

@@ -100,6 +100,8 @@ class BuoySupplementalMeasurement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,12 +169,12 @@ class BuoySupplementalMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='mzahaeqvtujkjpxshtss',
+            station_id='ozjetenjojojbdiopusp',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            lowest_pressure=float(29.609918602409046),
-            lowest_pressure_time_code='lsayctbpacbdkxsvszpk',
-            highest_wind_speed=float(18.023335811196727),
-            highest_wind_direction=float(86.95954763455414),
-            highest_wind_time_code='timkduyqmumpfbxrfkub',
-            region='nbulirnybkztmhshlvhb'
+            lowest_pressure=float(53.13524080418945),
+            lowest_pressure_time_code='kljdjwvoahexuydgjisg',
+            highest_wind_speed=float(20.594885324578772),
+            highest_wind_direction=float(23.82508501060341),
+            highest_wind_time_code='fbpxlesoncodpmrjryjw',
+            region='yqetnxazvhfeixgwosvu'
         )

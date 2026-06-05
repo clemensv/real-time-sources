@@ -96,6 +96,8 @@ class WaterTemperature:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class WaterTemperature:
             An instance of the dataclass.
         """
         return cls(
-            station_id='arzpkxfsabdxnotdbezo',
-            timestamp='gfwglfposvcwvmrgwyop',
-            value=float(89.2340149593168),
+            station_id='hywinecpvafykeweuuqx',
+            timestamp='ftfispzynsyazsvscbxq',
+            value=float(13.571775569605737),
             max_temp_exceeded=True,
             min_temp_exceeded=True,
             rate_of_change_exceeded=False,
-            region='kifxnjrhtzcqxkqhnwlz'
+            region='huptekjouamyjaypmtzm'
         )

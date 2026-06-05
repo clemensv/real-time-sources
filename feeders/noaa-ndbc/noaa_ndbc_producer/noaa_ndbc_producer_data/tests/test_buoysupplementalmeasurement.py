@@ -29,14 +29,14 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         Create instance of BuoySupplementalMeasurement for testing
         """
         instance = BuoySupplementalMeasurement(
-            station_id='cfmbbnhyfetxadjvxlor',
+            station_id='wpbhnfgqmslxqpbnuosc',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            lowest_pressure=float(10.767155100906367),
-            lowest_pressure_time_code='yeerzmzxbtupokeayxed',
-            highest_wind_speed=float(27.13729584622562),
-            highest_wind_direction=float(66.69639230130664),
-            highest_wind_time_code='ceuubrmjjtqhxiwcrbda',
-            region='zvrbznjrbjdomhplvxdd'
+            lowest_pressure=float(13.339877519235232),
+            lowest_pressure_time_code='kttlydhnxfbkgcnketqy',
+            highest_wind_speed=float(86.24742274411699),
+            highest_wind_direction=float(18.099601520073726),
+            highest_wind_time_code='dwksxcaxkdnskfdnfvbe',
+            region='luscqezocqwxwhofpzwq'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'cfmbbnhyfetxadjvxlor'
+        test_value = 'wpbhnfgqmslxqpbnuosc'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -61,7 +61,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test lowest_pressure property
         """
-        test_value = float(10.767155100906367)
+        test_value = float(13.339877519235232)
         self.instance.lowest_pressure = test_value
         self.assertEqual(self.instance.lowest_pressure, test_value)
     
@@ -69,7 +69,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test lowest_pressure_time_code property
         """
-        test_value = 'yeerzmzxbtupokeayxed'
+        test_value = 'kttlydhnxfbkgcnketqy'
         self.instance.lowest_pressure_time_code = test_value
         self.assertEqual(self.instance.lowest_pressure_time_code, test_value)
     
@@ -77,7 +77,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test highest_wind_speed property
         """
-        test_value = float(27.13729584622562)
+        test_value = float(86.24742274411699)
         self.instance.highest_wind_speed = test_value
         self.assertEqual(self.instance.highest_wind_speed, test_value)
     
@@ -85,7 +85,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test highest_wind_direction property
         """
-        test_value = float(66.69639230130664)
+        test_value = float(18.099601520073726)
         self.instance.highest_wind_direction = test_value
         self.assertEqual(self.instance.highest_wind_direction, test_value)
     
@@ -93,7 +93,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test highest_wind_time_code property
         """
-        test_value = 'ceuubrmjjtqhxiwcrbda'
+        test_value = 'dwksxcaxkdnskfdnfvbe'
         self.instance.highest_wind_time_code = test_value
         self.assertEqual(self.instance.highest_wind_time_code, test_value)
     
@@ -101,19 +101,10 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'zvrbznjrbjdomhplvxdd'
+        test_value = 'luscqezocqwxwhofpzwq'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = BuoySupplementalMeasurement.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

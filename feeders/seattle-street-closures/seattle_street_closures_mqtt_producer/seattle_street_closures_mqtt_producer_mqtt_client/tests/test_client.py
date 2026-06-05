@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import seattle_street_closures_mqtt_producer_data
 from seattle_street_closures_mqtt_producer_data import StreetClosure
-from test_seattle_street_closures_mqtt_producer_data_streetclosure import Test_StreetClosure
+from test_streetclosure import Test_StreetClosure
 from seattle_street_closures_mqtt_producer_mqtt_client import USWASeattleStreetClosuresMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -89,6 +90,7 @@ async def test_us_wa_seattle_streetclosures_mqtt_us_wa_seattle_street_closures_s
         await publisher_client.publish_us_wa_seattle_street_closures_street_closure_mqtt(
             topic=test_topic,
             closure_id=f"test_closure_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

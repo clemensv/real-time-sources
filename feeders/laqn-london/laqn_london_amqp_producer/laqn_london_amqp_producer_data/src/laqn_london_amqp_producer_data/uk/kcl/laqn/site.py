@@ -105,6 +105,8 @@ class Site:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -172,15 +174,15 @@ class Site:
             An instance of the dataclass.
         """
         return cls(
-            site_code='hkkkwycsvwakcutjyedv',
-            site_name='bojiskufaooleenbplkm',
+            site_code='aahvchlsrwljijnqdeev',
+            site_name='yamnnxqzdwcvuvtlwuju',
             site_type=SiteTypeenum.Suburban,
-            local_authority_code='gevxlxekphpjkttpkpxs',
-            local_authority_name='pwefugypikdjhdsvyzvt',
-            latitude=float(7.189228880364107),
-            longitude=float(24.17381493257794),
-            date_opened='yfltwhbpnmzdidurpmbc',
-            date_closed='jvmvnvisgehqcgneozwg',
-            data_owner='gokxcvnomtczhoxstjrz',
-            data_manager='bqprjcxdmtvyswivnqcw'
+            local_authority_code='hwdlmmeklqavjjmjlxao',
+            local_authority_name='faugkgbtsmghuflbkfmf',
+            latitude=float(19.210946179901576),
+            longitude=float(87.9025443637007),
+            date_opened='lwkixfwmiufqkjoigkkw',
+            date_closed='cnjozqgtfjfvsbaynuvb',
+            data_owner='npdfjmfgfgnemigeesgz',
+            data_manager='lbbgklkuiqdpuaaikdci'
         )

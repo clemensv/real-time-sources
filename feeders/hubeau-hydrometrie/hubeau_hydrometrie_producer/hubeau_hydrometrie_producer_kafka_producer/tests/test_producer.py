@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieEventProducer
 from hubeau_hydrometrie_producer_data import Station
-from test_hubeau_hydrometrie_producer_data_station import Test_Station
+from test_station import Test_Station
 from hubeau_hydrometrie_producer_data import Observation
-from test_hubeau_hydrometrie_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieMqttEventProducer
 from hubeau_hydrometrie_producer_kafka_producer.producer import FRGovEaufranceHubEauHydrometrieAmqpEventProducer
 
@@ -107,7 +107,8 @@ def test_fr_gov_eaufrance_hubeau_hydrometrie_frgoveaufrancehubeauhydrometriestat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_station(_code_station = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_station(_code_station = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_fr_gov_eaufrance_hubeau_hydrometrie_frgoveaufrancehubeauhydrometrieobse
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_observation(_code_station = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_observation(_code_station = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_fr_gov_eaufrance_hubeau_hydrometrie_mqtt_frgoveaufrancehubeauhydrometri
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_mqtt_station(_code_station = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_mqtt_station(_code_station = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_fr_gov_eaufrance_hubeau_hydrometrie_mqtt_frgoveaufrancehubeauhydrometri
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_mqtt_observation(_code_station = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_mqtt_observation(_code_station = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_fr_gov_eaufrance_hubeau_hydrometrie_amqp_frgoveaufrancehubeauhydrometri
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_amqp_station(_code_station = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_amqp_station(_code_station = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_fr_gov_eaufrance_hubeau_hydrometrie_amqp_frgoveaufrancehubeauhydrometri
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_amqp_observation(_code_station = f'test_{i}', data = event_data)
+        producer_instance.send_fr_gov_eaufrance_hub_eau_hydrometrie_amqp_observation(_code_station = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

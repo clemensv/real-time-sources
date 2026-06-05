@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,13 +17,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import luchtmeetnet_nl_mqtt_producer_data
 from luchtmeetnet_nl_mqtt_producer_data import Station
-from test_luchtmeetnet_nl_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from luchtmeetnet_nl_mqtt_producer_data import Measurement
-from test_luchtmeetnet_nl_mqtt_producer_data_measurement import Test_Measurement
+from test_measurement import Test_Measurement
 from luchtmeetnet_nl_mqtt_producer_data import LKI
-from test_luchtmeetnet_nl_mqtt_producer_data_lki import Test_LKI
+from test_lki import Test_LKI
 from luchtmeetnet_nl_mqtt_producer_data import Component
-from test_luchtmeetnet_nl_mqtt_producer_data_component import Test_Component
+from test_component import Test_Component
 from luchtmeetnet_nl_mqtt_producer_mqtt_client import NlRivmLuchtmeetnetMqttMqttClient
 from luchtmeetnet_nl_mqtt_producer_mqtt_client import NlRivmLuchtmeetnetComponentsMqttMqttClient
 
@@ -96,6 +97,7 @@ async def test_nl_rivm_luchtmeetnet_mqtt_nl_rivm_luchtmeetnet_mqtt_station_py(mo
         await publisher_client.publish_nl_rivm_luchtmeetnet_mqtt_station(
             topic=test_topic,
             station_number=f"test_station_number_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -161,6 +163,7 @@ async def test_nl_rivm_luchtmeetnet_mqtt_nl_rivm_luchtmeetnet_mqtt_measurement_p
         await publisher_client.publish_nl_rivm_luchtmeetnet_mqtt_measurement(
             topic=test_topic,
             station_number=f"test_station_number_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -226,6 +229,7 @@ async def test_nl_rivm_luchtmeetnet_mqtt_nl_rivm_luchtmeetnet_mqtt_lki_py(mosqui
         await publisher_client.publish_nl_rivm_luchtmeetnet_mqtt_lki(
             topic=test_topic,
             station_number=f"test_station_number_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -294,6 +298,7 @@ async def test_nl_rivm_luchtmeetnet_components_mqtt_nl_rivm_luchtmeetnet_compone
         await publisher_client.publish_nl_rivm_luchtmeetnet_components_mqtt_component(
             topic=test_topic,
             formula=f"test_formula_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

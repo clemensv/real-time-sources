@@ -28,10 +28,10 @@ class Test_Measurement(unittest.TestCase):
         Create instance of Measurement for testing
         """
         instance = Measurement(
-            station_number='havwubufgpvafubunfsw',
-            formula='aanrbshvzkyowvlwwssg',
-            value=float(98.49314831718074),
-            timestamp_measured='hjdlzxwmosakmdtwbbcg'
+            station_number='xvwnovkqyurdoisugymo',
+            formula='tkaeqarhzxpdqdyqviti',
+            value=float(58.578591864514195),
+            timestamp_measured='qacviudrortwusywsyfk'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test station_number property
         """
-        test_value = 'havwubufgpvafubunfsw'
+        test_value = 'xvwnovkqyurdoisugymo'
         self.instance.station_number = test_value
         self.assertEqual(self.instance.station_number, test_value)
     
@@ -48,7 +48,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test formula property
         """
-        test_value = 'aanrbshvzkyowvlwwssg'
+        test_value = 'tkaeqarhzxpdqdyqviti'
         self.instance.formula = test_value
         self.assertEqual(self.instance.formula, test_value)
     
@@ -56,7 +56,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(98.49314831718074)
+        test_value = float(58.578591864514195)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -64,7 +64,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test timestamp_measured property
         """
-        test_value = 'hjdlzxwmosakmdtwbbcg'
+        test_value = 'qacviudrortwusywsyfk'
         self.instance.timestamp_measured = test_value
         self.assertEqual(self.instance.timestamp_measured, test_value)
     

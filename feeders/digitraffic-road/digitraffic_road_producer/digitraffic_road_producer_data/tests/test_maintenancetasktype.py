@@ -28,11 +28,11 @@ class Test_MaintenanceTaskType(unittest.TestCase):
         Create instance of MaintenanceTaskType for testing
         """
         instance = MaintenanceTaskType(
-            task_id='cdgtqpstjmfnmoemjxwe',
-            name_fi='mmswdnxivzueryxfktoh',
-            name_en='izvreaqxlrufakxopkks',
-            name_sv='thwmdxtwxquwzsgtcnfo',
-            data_updated_time='wbpybxbifwxqdsmxxuuv'
+            task_id='vsbdplineffkqxezxxtt',
+            name_fi='vrhwbqkitrqivteyzcxn',
+            name_en='euvrbrehjczoiybiukmo',
+            name_sv='oyskzbsqpcztysmxwelq',
+            data_updated_time='nvymhysgrzutrthlaozq'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_MaintenanceTaskType(unittest.TestCase):
         """
         Test task_id property
         """
-        test_value = 'cdgtqpstjmfnmoemjxwe'
+        test_value = 'vsbdplineffkqxezxxtt'
         self.instance.task_id = test_value
         self.assertEqual(self.instance.task_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_MaintenanceTaskType(unittest.TestCase):
         """
         Test name_fi property
         """
-        test_value = 'mmswdnxivzueryxfktoh'
+        test_value = 'vrhwbqkitrqivteyzcxn'
         self.instance.name_fi = test_value
         self.assertEqual(self.instance.name_fi, test_value)
     
@@ -57,7 +57,7 @@ class Test_MaintenanceTaskType(unittest.TestCase):
         """
         Test name_en property
         """
-        test_value = 'izvreaqxlrufakxopkks'
+        test_value = 'euvrbrehjczoiybiukmo'
         self.instance.name_en = test_value
         self.assertEqual(self.instance.name_en, test_value)
     
@@ -65,7 +65,7 @@ class Test_MaintenanceTaskType(unittest.TestCase):
         """
         Test name_sv property
         """
-        test_value = 'thwmdxtwxquwzsgtcnfo'
+        test_value = 'oyskzbsqpcztysmxwelq'
         self.instance.name_sv = test_value
         self.assertEqual(self.instance.name_sv, test_value)
     
@@ -73,7 +73,7 @@ class Test_MaintenanceTaskType(unittest.TestCase):
         """
         Test data_updated_time property
         """
-        test_value = 'wbpybxbifwxqdsmxxuuv'
+        test_value = 'nvymhysgrzutrthlaozq'
         self.instance.data_updated_time = test_value
         self.assertEqual(self.instance.data_updated_time, test_value)
     

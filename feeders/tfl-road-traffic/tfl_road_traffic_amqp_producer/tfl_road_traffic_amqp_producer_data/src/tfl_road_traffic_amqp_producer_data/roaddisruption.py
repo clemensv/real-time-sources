@@ -133,6 +133,8 @@ class RoadDisruption:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -200,28 +202,28 @@ class RoadDisruption:
             An instance of the dataclass.
         """
         return cls(
-            road_id='giwncpfmmyeczoywxkdh',
-            disruption_id='hohnktgdneiopybwhftn',
-            category='wrcdpyaeyvyoklswjbfl',
-            sub_category='ewuzhvwlgnasorzeywuq',
-            severity='jvcpaissnzcipvwuvhpl',
-            ordinal=int(82),
-            url='pbyuuvnwsvmkivfanyhe',
-            point='bhzspftsjvxnkgczjinv',
-            comments='bmaqzadobauqpipcvckj',
-            current_update='scdjbmhxwgecrqoyhigy',
+            road_id='satiyohliazgvfydwnta',
+            disruption_id='jvskmmyhqbmhifdzyqsx',
+            category='lzwwfpbgionxhilpsigg',
+            sub_category='upgyrckhxbsxnrveveak',
+            severity='bzcfkmpsprvhhffiqrbj',
+            ordinal=int(28),
+            url='umxhkyrwghleqvibogqu',
+            point='maysnrosgvmehegdeivn',
+            comments='epdiqogheczoiwjvyiqa',
+            current_update='fntciouxyusblpxnfinj',
             current_update_datetime=datetime.datetime.now(datetime.timezone.utc),
             corridor_ids=None,
             start_datetime=datetime.datetime.now(datetime.timezone.utc),
             end_datetime=datetime.datetime.now(datetime.timezone.utc),
             last_modified_time=datetime.datetime.now(datetime.timezone.utc),
-            level_of_interest='msfnboqebkqlhealhzyj',
-            location='fbhzhzhietbmiykmpety',
+            level_of_interest='suprtjcilospmopnxyyz',
+            location='dadrztjmxmgkjjqeofut',
             is_provisional=True,
-            has_closures=True,
+            has_closures=False,
             streets=None,
-            geography='bgbklopmoyobwehwkuvm',
-            geometry='pifdgbmgkbxuwpopluei',
-            status='mxvttqpoqwgsuckxuuwb',
+            geography='iqcmdepqsolnxunjilpm',
+            geometry='dmxrbnuodbwbpzziyvoc',
+            status='fubpilmlbepxzyxnfvfi',
             is_active=False
         )

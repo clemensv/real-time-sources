@@ -102,6 +102,8 @@ class Attraction:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,14 +171,14 @@ class Attraction:
             An instance of the dataclass.
         """
         return cls(
-            entity_id='yciodlahkyberasuintz',
-            name='qaryadqvbbmejlfxxgva',
-            url='zwmocqttwlpuveezuadp',
-            locale='ygfafvqnempfhqjpuyok',
-            segment_id='fteqkgdiniuutajpydpj',
-            segment_name='fauysvdvdjwbdxxxuvkc',
-            genre_id='eeqmkhufivtsdqhbebzt',
-            genre_name='jdyiwcdmquesyazfniqo',
-            subgenre_id='elockuttxbtguhgwdobn',
-            subgenre_name='couhpsrizyfaanbqtmnl'
+            entity_id='kicigrmojiykhfxljudf',
+            name='ceiypcgtqnpeoytkxpri',
+            url='hoczplycscwduvkyomnw',
+            locale='madcxjeszsnnmtxgjhdc',
+            segment_id='nudmrmzzzidqjyggycks',
+            segment_name='mrkprzrlzrkdndnammgq',
+            genre_id='hmvzgsukthmkiuynxtnf',
+            genre_name='ztqhtcgsgyatieljvszy',
+            subgenre_id='ikbijisrnsawaeujzpsm',
+            subgenre_name='owibqwhogfjrdkttyacd'
         )

@@ -100,6 +100,8 @@ class Incident:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,12 +169,12 @@ class Incident:
             An instance of the dataclass.
         """
         return cls(
-            incident_number='rgpmzrwdxwkzacayphuw',
-            incident_type='nloumozpqjcbcrbolyrs',
-            incident_datetime='atbocgvcvqwzhakwppgo',
-            address='brazuancrpevgnobdrei',
-            latitude=float(15.302596789248124),
-            longitude=float(64.93710973647391),
-            incident_type_slug='tklyvyiqwljbyxrzzxdy',
+            incident_number='zpapnejwvppeuutbztyz',
+            incident_type='opzczviwncydgpwztajg',
+            incident_datetime='fwzosumpkmgvbhkqqmma',
+            address='vbyoszdpeyjjghlcgtil',
+            latitude=float(6.328061645901961),
+            longitude=float(97.12341381655797),
+            incident_type_slug='smaekzuhwsduzsxpkrgm',
             incident_datetime_utc=datetime.datetime.now(datetime.timezone.utc)
         )

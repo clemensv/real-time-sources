@@ -132,6 +132,8 @@ class PowerSystemSnapshot:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -199,29 +201,29 @@ class PowerSystemSnapshot:
             An instance of the dataclass.
         """
         return cls(
-            minutes1_utc='xnowrijzmkeprydynxfp',
-            minutes1_dk='zvfvrypxrtwhvaahhufx',
-            price_area='gurexpaekulfjjbhnsth',
-            co2_emission=float(54.4221258711454),
-            production_ge_100mw=float(11.058698169942016),
-            production_lt_100mw=float(44.665445003173076),
-            solar_power=float(15.619992328540588),
-            offshore_wind_power=float(94.59295236363306),
-            onshore_wind_power=float(45.89142866667007),
-            exchange_sum=float(90.54510115539541),
-            exchange_dk1_de=float(28.40738006172694),
-            exchange_dk1_nl=float(82.09600085494918),
-            exchange_dk1_gb=float(5.951780748127577),
-            exchange_dk1_no=float(50.33773993746399),
-            exchange_dk1_se=float(78.92350323718263),
-            exchange_dk1_dk2=float(62.88955510978316),
-            exchange_dk2_de=float(99.4419586663112),
-            exchange_dk2_se=float(98.86022886307661),
-            exchange_bornholm_se=float(23.052842691248145),
-            afrr_activated_dk1=float(82.33722429853219),
-            afrr_activated_dk2=float(3.0787929885833343),
-            mfrr_activated_dk1=float(2.1253065503733626),
-            mfrr_activated_dk2=float(37.313401479086835),
-            imbalance_dk1=float(25.836296044703566),
-            imbalance_dk2=float(4.407689944160021)
+            minutes1_utc='wyulkttzahxcvzeyvqcx',
+            minutes1_dk='ftraapnigdfsstvswkep',
+            price_area='wphudlvzhaawcfotfcme',
+            co2_emission=float(31.86729088712783),
+            production_ge_100mw=float(67.19282432419035),
+            production_lt_100mw=float(8.962096639853767),
+            solar_power=float(18.7759095972584),
+            offshore_wind_power=float(16.32918303419848),
+            onshore_wind_power=float(44.43920708140271),
+            exchange_sum=float(4.010063163436439),
+            exchange_dk1_de=float(38.010444589099144),
+            exchange_dk1_nl=float(4.076100023562246),
+            exchange_dk1_gb=float(1.8615523848839577),
+            exchange_dk1_no=float(39.61146266875429),
+            exchange_dk1_se=float(15.016773175112197),
+            exchange_dk1_dk2=float(25.812414005152828),
+            exchange_dk2_de=float(87.0613483459344),
+            exchange_dk2_se=float(96.05745297054696),
+            exchange_bornholm_se=float(67.32727852413788),
+            afrr_activated_dk1=float(92.12219719279308),
+            afrr_activated_dk2=float(35.845061264699766),
+            mfrr_activated_dk1=float(56.14002579703888),
+            mfrr_activated_dk2=float(26.830309570790067),
+            imbalance_dk1=float(75.34437360031447),
+            imbalance_dk2=float(26.86055858060993)
         )

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import elexon_bmrs_mqtt_producer_data
 from elexon_bmrs_mqtt_producer_data import GenerationMix
-from test_elexon_bmrs_mqtt_producer_data_generationmix import Test_GenerationMix
+from test_generationmix import Test_GenerationMix
 from elexon_bmrs_mqtt_producer_data import DemandOutturn
-from test_elexon_bmrs_mqtt_producer_data_demandoutturn import Test_DemandOutturn
+from test_demandoutturn import Test_DemandOutturn
 from elexon_bmrs_mqtt_producer_data import Info
-from test_elexon_bmrs_mqtt_producer_data_info import Test_Info
+from test_info import Test_Info
 from elexon_bmrs_mqtt_producer_mqtt_client import UKCoElexonBMRSMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -93,6 +94,7 @@ async def test_uk_co_elexon_bmrs_mqtt_uk_co_elexon_bmrs_mqtt_generation_mix_py(m
         await publisher_client.publish_uk_co_elexon_bmrs_mqtt_generation_mix(
             topic=test_topic,
             settlement_period=f"test_settlement_period_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -158,6 +160,7 @@ async def test_uk_co_elexon_bmrs_mqtt_uk_co_elexon_bmrs_mqtt_demand_outturn_py(m
         await publisher_client.publish_uk_co_elexon_bmrs_mqtt_demand_outturn(
             topic=test_topic,
             settlement_period=f"test_settlement_period_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -223,6 +226,7 @@ async def test_uk_co_elexon_bmrs_mqtt_uk_co_elexon_bmrs_mqtt_info_py(mosquitto_b
         await publisher_client.publish_uk_co_elexon_bmrs_mqtt_info(
             topic=test_topic,
             settlement_period=f"test_settlement_period_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

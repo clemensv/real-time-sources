@@ -17,7 +17,7 @@ import json
 @dataclass
 class Observation:
     """
-    Air quality observation from one ISSeP Wallonia sensor at a specific moment in time. Includes raw electrochemical gas readings, calibrated ppb and µg/m³ values, particulate matter concentrations, environmental parameters, reference station comparisons, and quality status flags. Negative raw values (e.g. no2=-4) are valid sensor readings and must not be filtered.
+    A current environmental measurement from Wallonia's Institut Scientifique de Service Public (ISSeP). It carries pollutant concentration measurements when the upstream feed reports a new or refreshed value.
     
     Attributes:
         configuration_id (str)
@@ -168,6 +168,8 @@ class Observation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -235,47 +237,47 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            configuration_id='gfulknwbzpfsgwfdytqa',
-            province='dmhbsjhpbitfuvekrvpl',
-            moment='vldnqtcsfjigoedxjlsm',
-            co=int(83),
-            no=int(31),
-            no2=int(88),
-            o3no2=int(60),
-            ppbno=float(38.88104499599242),
-            ppbno_statut=int(93),
-            ppbno2=float(61.155561549765125),
-            ppbno2_statut=int(22),
-            ppbo3=float(47.29630332223245),
-            ppbo3_statut=int(23),
-            ugpcmno=float(76.39859427920483),
-            ugpcmno_statut=int(63),
-            ugpcmno2=float(55.45350484640309),
-            ugpcmno2_statut=int(41),
-            ugpcmo3=float(74.16400076119484),
-            ugpcmo3_statut=int(37),
-            bme_t=float(85.53752025452533),
-            bme_t_statut=int(7),
-            bme_pres=int(28),
-            bme_pres_statut=int(61),
-            bme_rh=float(77.03445825672055),
-            bme_rh_statut=int(57),
-            pm1=float(16.129236434611492),
-            pm1_statut=int(8),
-            pm25=float(43.62485923221633),
+            configuration_id='avdikgpmstgpaxyctnvl',
+            province='tgswgrffgfgrcyxjpjue',
+            moment='hyfobautziqtwpskcsmg',
+            co=int(97),
+            no=int(45),
+            no2=int(63),
+            o3no2=int(42),
+            ppbno=float(48.07706728586882),
+            ppbno_statut=int(8),
+            ppbno2=float(13.995966394747295),
+            ppbno2_statut=int(75),
+            ppbo3=float(59.64535458871351),
+            ppbo3_statut=int(31),
+            ugpcmno=float(1.8719254282610676),
+            ugpcmno_statut=int(82),
+            ugpcmno2=float(80.82555574837116),
+            ugpcmno2_statut=int(49),
+            ugpcmo3=float(74.68869469362225),
+            ugpcmo3_statut=int(43),
+            bme_t=float(29.114673685425764),
+            bme_t_statut=int(67),
+            bme_pres=int(97),
+            bme_pres_statut=int(80),
+            bme_rh=float(62.35208309339232),
+            bme_rh_statut=int(47),
+            pm1=float(79.35840559046001),
+            pm1_statut=int(83),
+            pm25=float(71.06976119152512),
             pm25_statut=int(94),
-            pm4=float(69.19844505740777),
-            pm4_statut=int(84),
-            pm10=float(82.15620356870048),
-            pm10_statut=int(12),
-            vbat=float(66.23211266578703),
-            vbat_statut=int(91),
-            mwh_bat=float(40.04066080529497),
-            mwh_pv=float(95.24381597031412),
-            co_rf=float(95.68347655258395),
-            no_rf=float(62.38572091990584),
-            no2_rf=float(76.05566735261662),
-            o3no2_rf=float(69.69889161695323),
-            o3_rf=float(78.62969919594475),
-            pm10_rf=float(6.339080591731705)
+            pm4=float(7.129313459751263),
+            pm4_statut=int(94),
+            pm10=float(54.989739323024466),
+            pm10_statut=int(59),
+            vbat=float(79.8435714861653),
+            vbat_statut=int(75),
+            mwh_bat=float(87.01808164709682),
+            mwh_pv=float(18.210920614527915),
+            co_rf=float(11.620104594519177),
+            no_rf=float(74.44914415975647),
+            no2_rf=float(40.41838271753738),
+            o3no2_rf=float(54.16904331694128),
+            o3_rf=float(32.12695421685142),
+            pm10_rf=float(60.36114907268666)
         )

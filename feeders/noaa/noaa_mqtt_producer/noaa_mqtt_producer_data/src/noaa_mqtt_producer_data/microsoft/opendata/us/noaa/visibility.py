@@ -96,6 +96,8 @@ class Visibility:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class Visibility:
             An instance of the dataclass.
         """
         return cls(
-            timestamp='uwoqrzcrfldrelgsxyqu',
-            value=float(68.00264515291676),
-            max_visibility_exceeded=True,
-            min_visibility_exceeded=False,
+            timestamp='qsndabewoptfpvhlwyeg',
+            value=float(69.63750648270096),
+            max_visibility_exceeded=False,
+            min_visibility_exceeded=True,
             rate_of_change_exceeded=True,
-            station_id='ahwsweewwrcshwpfvtgg',
-            region='dyvlaepqsguyfbjcpvav'
+            station_id='suhuqduknwivnkjfbnoz',
+            region='yvgvsbwoqadlqmryhkhw'
         )

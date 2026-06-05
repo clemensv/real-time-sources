@@ -33,11 +33,13 @@ from confluent_kafka import Producer as KafkaProducer
 # imports the producer clients for the message group(s)
 
 from hko_hong_kong_producer_kafka_producer.producer import HKGovHKOWeatherEventProducer
+from hko_hong_kong_producer_kafka_producer.producer import HKGovHKOWeatherMqttEventProducer
+from hko_hong_kong_producer_kafka_producer.producer import HKGovHKOWeatherAmqpEventProducer
 
 # imports for the data classes for each event
 
-from hko_hong_kong_producer_data.station import Station
-from hko_hong_kong_producer_data.weatherobservation import WeatherObservation
+from hko_hong_kong_producer_data import Station
+from hko_hong_kong_producer_data import WeatherObservation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -72,12 +74,60 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'HK.Gov.HKO.Weather.WeatherObservation' event to Kafka topic.
     await hkgov_hkoweather_event_producer.send_hk_gov_hko_weather_weather_observation(_place_id = 'TODO: replace me', data = _weather_observation)
     print(f"Sent 'HK.Gov.HKO.Weather.WeatherObservation' event: {_weather_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        hkgov_hkoweather_mqtt_event_producer = HKGovHKOWeatherMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        hkgov_hkoweather_mqtt_event_producer = HKGovHKOWeatherMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- HK.Gov.HKO.Weather.mqtt.Station ----
+    # TODO: Supply event data for the HK.Gov.HKO.Weather.mqtt.Station event
+    _station = Station()
+
+    # sends the 'HK.Gov.HKO.Weather.mqtt.Station' event to Kafka topic.
+    await hkgov_hkoweather_mqtt_event_producer.send_hk_gov_hko_weather_mqtt_station(_place_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'HK.Gov.HKO.Weather.mqtt.Station' event: {_station.to_json()}")
+
+    # ---- HK.Gov.HKO.Weather.mqtt.WeatherObservation ----
+    # TODO: Supply event data for the HK.Gov.HKO.Weather.mqtt.WeatherObservation event
+    _weather_observation = WeatherObservation()
+
+    # sends the 'HK.Gov.HKO.Weather.mqtt.WeatherObservation' event to Kafka topic.
+    await hkgov_hkoweather_mqtt_event_producer.send_hk_gov_hko_weather_mqtt_weather_observation(_place_id = 'TODO: replace me', data = _weather_observation)
+    print(f"Sent 'HK.Gov.HKO.Weather.mqtt.WeatherObservation' event: {_weather_observation.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        hkgov_hkoweather_amqp_event_producer = HKGovHKOWeatherAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        hkgov_hkoweather_amqp_event_producer = HKGovHKOWeatherAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- HK.Gov.HKO.Weather.amqp.Station ----
+    # TODO: Supply event data for the HK.Gov.HKO.Weather.amqp.Station event
+    _station = Station()
+
+    # sends the 'HK.Gov.HKO.Weather.amqp.Station' event to Kafka topic.
+    await hkgov_hkoweather_amqp_event_producer.send_hk_gov_hko_weather_amqp_station(_place_id = 'TODO: replace me', data = _station)
+    print(f"Sent 'HK.Gov.HKO.Weather.amqp.Station' event: {_station.to_json()}")
+
+    # ---- HK.Gov.HKO.Weather.amqp.WeatherObservation ----
+    # TODO: Supply event data for the HK.Gov.HKO.Weather.amqp.WeatherObservation event
+    _weather_observation = WeatherObservation()
+
+    # sends the 'HK.Gov.HKO.Weather.amqp.WeatherObservation' event to Kafka topic.
+    await hkgov_hkoweather_amqp_event_producer.send_hk_gov_hko_weather_amqp_weather_observation(_place_id = 'TODO: replace me', data = _weather_observation)
+    print(f"Sent 'HK.Gov.HKO.Weather.amqp.WeatherObservation' event: {_weather_observation.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

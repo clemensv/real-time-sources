@@ -104,6 +104,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            icao_id='jqcwdhqflurocjqqdzfr',
-            iata_id='fjssygbqzplfimoaugdg',
-            faa_id='hbmdgzvijnkyducksbrd',
-            wmo_id='pnwcmpzunygbxebpoogu',
-            name='ivapfitowaosqqakyuei',
-            latitude=float(40.737439117633954),
-            longitude=float(91.44993523127404),
-            elevation=float(80.77050647707358),
-            state='eewjjsuvuegefzrjebqy',
-            country='wxxgucmozzranqmdfcdx',
-            site_type='hpkfzazuxepgrjkqeche'
+            icao_id='qdwfxmzovachtqqzqcip',
+            iata_id='jxdztffglusaadqluwnv',
+            faa_id='fxnfoojwqhijqbzhwiyv',
+            wmo_id='jtsqrjlandrmyohvqtuv',
+            name='wqiojwdzaznamkfndwqk',
+            latitude=float(1.2224062832896676),
+            longitude=float(16.748130985875743),
+            elevation=float(22.06239788107547),
+            state='szdjjjjalfanrvfbgzlm',
+            country='ztrecyuhemfcekoisfps',
+            site_type='phngqisexwmdpldpioey'
         )

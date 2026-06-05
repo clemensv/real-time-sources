@@ -1,3 +1,3 @@
-from .gov import Observation, Timeseries, Station
+from .gov import Timeseries, Observation, Station
 
-__all__ = ["Observation", "Timeseries", "Station"]
+__all__ = ["Timeseries", "Observation", "Station"]

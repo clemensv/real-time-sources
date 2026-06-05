@@ -28,14 +28,14 @@ class Test_Solar10Min(unittest.TestCase):
         Create instance of Solar10Min for testing
         """
         instance = Solar10Min(
-            station_id='qffcnnffoffphpwskcbh',
-            timestamp='oiosjxslkgkfolsvmqta',
-            quality_level=int(6),
-            global_radiation=float(39.586150541814),
-            sunshine_duration=float(1.591066200296165),
-            diffuse_radiation=float(79.51530645528884),
-            longwave_radiation=float(0.8748711244492613),
-            state='xubniayzmwekpuxsarzu'
+            station_id='qpcdtqxzbkdfdcbtlmxk',
+            timestamp='hldblghmkoqslapguvma',
+            quality_level=int(51),
+            global_radiation=float(79.85677383977402),
+            sunshine_duration=float(88.94205296393243),
+            diffuse_radiation=float(53.566450722227565),
+            longwave_radiation=float(35.23082272638591),
+            state='fjgjwmzyjuipzluruyqh'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_Solar10Min(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'qffcnnffoffphpwskcbh'
+        test_value = 'qpcdtqxzbkdfdcbtlmxk'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_Solar10Min(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'oiosjxslkgkfolsvmqta'
+        test_value = 'hldblghmkoqslapguvma'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -60,7 +60,7 @@ class Test_Solar10Min(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(6)
+        test_value = int(51)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -68,7 +68,7 @@ class Test_Solar10Min(unittest.TestCase):
         """
         Test global_radiation property
         """
-        test_value = float(39.586150541814)
+        test_value = float(79.85677383977402)
         self.instance.global_radiation = test_value
         self.assertEqual(self.instance.global_radiation, test_value)
     
@@ -76,7 +76,7 @@ class Test_Solar10Min(unittest.TestCase):
         """
         Test sunshine_duration property
         """
-        test_value = float(1.591066200296165)
+        test_value = float(88.94205296393243)
         self.instance.sunshine_duration = test_value
         self.assertEqual(self.instance.sunshine_duration, test_value)
     
@@ -84,7 +84,7 @@ class Test_Solar10Min(unittest.TestCase):
         """
         Test diffuse_radiation property
         """
-        test_value = float(79.51530645528884)
+        test_value = float(53.566450722227565)
         self.instance.diffuse_radiation = test_value
         self.assertEqual(self.instance.diffuse_radiation, test_value)
     
@@ -92,7 +92,7 @@ class Test_Solar10Min(unittest.TestCase):
         """
         Test longwave_radiation property
         """
-        test_value = float(0.8748711244492613)
+        test_value = float(35.23082272638591)
         self.instance.longwave_radiation = test_value
         self.assertEqual(self.instance.longwave_radiation, test_value)
     
@@ -100,7 +100,7 @@ class Test_Solar10Min(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'xubniayzmwekpuxsarzu'
+        test_value = 'fjgjwmzyjuipzluruyqh'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     

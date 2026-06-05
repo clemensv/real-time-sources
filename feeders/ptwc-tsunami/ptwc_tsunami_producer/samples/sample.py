@@ -34,10 +34,11 @@ from confluent_kafka import Producer as KafkaProducer
 
 from ptwc_tsunami_producer_kafka_producer.producer import PTWCBulletinsEventProducer
 from ptwc_tsunami_producer_kafka_producer.producer import PTWCBulletinsMqttEventProducer
+from ptwc_tsunami_producer_kafka_producer.producer import PTWCBulletinsAmqpEventProducer
 
 # imports for the data classes for each event
 
-from ptwc_tsunami_producer_data.tsunamibulletin import TsunamiBulletin
+from ptwc_tsunami_producer_data import TsunamiBulletin
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -80,12 +81,28 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'PTWC.Bulletins.mqtt.TsunamiBulletin' event to Kafka topic.
     await ptwcbulletins_mqtt_event_producer.send_ptwc_bulletins_mqtt_tsunami_bulletin(_bulletin_id = 'TODO: replace me', data = _tsunami_bulletin)
     print(f"Sent 'PTWC.Bulletins.mqtt.TsunamiBulletin' event: {_tsunami_bulletin.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        ptwcbulletins_amqp_event_producer = PTWCBulletinsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        ptwcbulletins_amqp_event_producer = PTWCBulletinsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- PTWC.Bulletins.amqp.TsunamiBulletin ----
+    # TODO: Supply event data for the PTWC.Bulletins.amqp.TsunamiBulletin event
+    _tsunami_bulletin = TsunamiBulletin()
+
+    # sends the 'PTWC.Bulletins.amqp.TsunamiBulletin' event to Kafka topic.
+    await ptwcbulletins_amqp_event_producer.send_ptwc_bulletins_amqp_tsunami_bulletin(_bulletin_id = 'TODO: replace me', data = _tsunami_bulletin)
+    print(f"Sent 'PTWC.Bulletins.amqp.TsunamiBulletin' event: {_tsunami_bulletin.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

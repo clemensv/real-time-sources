@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from jma_bosai_amedas_producer_data.jp.jma.amedas.stationtypeenum import StationTypeenum
 from jma_bosai_amedas_producer_data.jp.jma.amedas.eventenum import EventEnum
+from jma_bosai_amedas_producer_data.jp.jma.amedas.stationtypeenum import StationTypeenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -108,6 +108,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -175,16 +177,16 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_code='qhyfdfxjmnmskalzpseg',
-            kj_name='rfrzyqymetqyjsnfugvw',
-            kana='fpixucbdyhdcgqjqvgap',
-            en_name='hllsycxndpwybwrylhec',
-            latitude=float(0.7423788876036785),
-            longitude=float(5.635693202519754),
-            altitude_m=float(90.85940153987151),
+            station_code='wozqidzwtakuyidkvdoc',
+            kj_name='ctjqbojfoeknvwbwcmfg',
+            kana='kpfzitwiggvltiwaaukz',
+            en_name='sjcdslqoxvasqhgjawgf',
+            latitude=float(23.14527835509459),
+            longitude=float(20.268143324087763),
+            altitude_m=float(47.885556589920775),
             station_type=StationTypeenum.A,
-            elems_bitmask='nstrhujwxrhwuvpmfrtt',
-            enabled_measurements=['hlsupexabrzldrbaphtp', 'ydaeglxdftixunvpqwne', 'zbaxpctzypjtwhynmdhs'],
-            prefecture='altalmyfqimvjpfjpgnh',
+            elems_bitmask='tkawcxmwbguuehqebcli',
+            enabled_measurements=['odtpsrcwhyajjvsuyhhg', 'giprbpzdjdlzcsavfyqu'],
+            prefecture='fbockgutvzqterwwbuog',
             event=EventEnum.observation
         )

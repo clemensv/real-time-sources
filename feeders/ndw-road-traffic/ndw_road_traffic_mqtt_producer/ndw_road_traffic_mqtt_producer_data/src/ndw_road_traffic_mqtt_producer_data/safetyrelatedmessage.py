@@ -100,6 +100,8 @@ class SafetyRelatedMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class SafetyRelatedMessage:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='sbgyltrvazdtegiqinch',
-            version_time='izlhernjesvcxkkyndka',
-            validity_status='lhbmnaafykkglpoquynh',
-            start_time='ulyhyjtqzixuiryvifbb',
-            end_time='uxtmxkiureormkunzsce',
-            road_name='xtarrnlqkavfslramlrx',
-            message_type='mjagzmtagqzumqgorxxu',
-            description='bfynnqjzspprbulxslyk',
-            urgency='uglrxmtgkfurkszfczjd'
+            situation_record_id='wtkbkrlewnowlaarhoee',
+            version_time='lmtuijyhnfpkyyvwydsm',
+            validity_status='yqcidaierymdocgxaoib',
+            start_time='vjbcrmeqmtiewjlnbcho',
+            end_time='gmyjbiiubiretfhhwoug',
+            road_name='uipirwxywhkliuanxgos',
+            message_type='gsklpdbohsvbfwscbxuf',
+            description='ynliyabzauapullifzvg',
+            urgency='egeeolssezcuujlawvam'
         )

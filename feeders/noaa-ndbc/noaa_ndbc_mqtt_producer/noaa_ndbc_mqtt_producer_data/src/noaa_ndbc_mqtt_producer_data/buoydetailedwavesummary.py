@@ -110,6 +110,8 @@ class BuoyDetailedWaveSummary:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -177,17 +179,17 @@ class BuoyDetailedWaveSummary:
             An instance of the dataclass.
         """
         return cls(
-            station_id='brgcnombuxpdnnviyrax',
+            station_id='jditlkzberdfdvxdqaeq',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            significant_wave_height=float(18.35189370860234),
-            swell_height=float(76.83683384941135),
-            swell_period=float(1.6261932559902492),
-            wind_wave_height=float(49.1304664398094),
-            wind_wave_period=float(23.45688867861374),
-            swell_direction='ujphikfuozweylcsxfsi',
-            wind_wave_direction='ajxipiqesvwoyyzzbkvy',
-            steepness='xayjpwoikjixrrrnlqlh',
-            average_wave_period=float(77.84241664701759),
-            mean_wave_direction=float(11.422789942646949),
-            region='jimunydbnwvnsszpglfm'
+            significant_wave_height=float(28.339135432661777),
+            swell_height=float(83.87954091202208),
+            swell_period=float(89.66088916452489),
+            wind_wave_height=float(72.21049089975982),
+            wind_wave_period=float(11.075515684561266),
+            swell_direction='zqpmkznpadtvtilaomlk',
+            wind_wave_direction='ywfkakhmyrsnhpabjhvx',
+            steepness='uhqyibaxvdudkcrtxqvk',
+            average_wave_period=float(81.92636273152728),
+            mean_wave_direction=float(4.21805333292683),
+            region='qxcmoswlfvwvernixbsd'
         )

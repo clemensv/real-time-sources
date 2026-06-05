@@ -94,6 +94,8 @@ class BinaryAcknowledge:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class BinaryAcknowledge:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(65),
-            RepeatIndicator=int(78),
-            UserID=int(9),
+            MessageID=int(31),
+            RepeatIndicator=int(81),
+            UserID=int(49),
             Valid=True,
-            Spare=int(93),
-            Destinations={'ksfyzdexeofqidomiifs': 'wnnmubglzlragembkdyw'}
+            Spare=int(97),
+            Destinations={'qrvnpjtxyyazamapymhx': 'ginndmysstyxukkxsuqr', 'lhlwjgiexhvdkcyfgrcn': 'mdumumwqvraetxylzwlv', 'gltlxcnzavopxzbalbjr': 'dkhpxtddfuilvwajudfp', 'ngkojqivhysxgjhqmyzu': 'wizqupmgufjuwkponnft', 'appslvtwbjvaliezzfab': 'hteyjedzviqwswxdrdek'}
         )

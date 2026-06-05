@@ -28,16 +28,16 @@ class Test_Attraction(unittest.TestCase):
         Create instance of Attraction for testing
         """
         instance = Attraction(
-            entity_id='gfqjvqgcqwtianhpjjoh',
-            name='erwcfqovzngdvaejtvgh',
-            url='jyxwahwvjxvnuwpilmen',
-            locale='qcigipkcxcdbaczinznm',
-            segment_id='fcpsrzuxmqgkwngyvskw',
-            segment_name='zdgmscdfrfxxwkqfuiai',
-            genre_id='kvdptjlbbbqbgwuzeivw',
-            genre_name='wsmmqzzzkoweoksjrfvz',
-            subgenre_id='wsexkkiykylfnhcntjax',
-            subgenre_name='lsfyihwtfqatyenmkhon'
+            entity_id='hvhathabvfptjriesvxp',
+            name='emqxnzrlheswrymdxjoi',
+            url='rfjdgoxypliresxfurqf',
+            locale='femomuyvknyaieahxakq',
+            segment_id='aebpgamrsitdifitywgd',
+            segment_name='lvjokknolliyrtcolwtz',
+            genre_id='scsvbspinpqkqfhlnrpi',
+            genre_name='hrtkysgybvzkpdqlvhij',
+            subgenre_id='fayzmcqmjcsxrqxyhzqf',
+            subgenre_name='bajtmlkdyizihksrwqmx'
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_Attraction(unittest.TestCase):
         """
         Test entity_id property
         """
-        test_value = 'gfqjvqgcqwtianhpjjoh'
+        test_value = 'hvhathabvfptjriesvxp'
         self.instance.entity_id = test_value
         self.assertEqual(self.instance.entity_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_Attraction(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'erwcfqovzngdvaejtvgh'
+        test_value = 'emqxnzrlheswrymdxjoi'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -62,7 +62,7 @@ class Test_Attraction(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'jyxwahwvjxvnuwpilmen'
+        test_value = 'rfjdgoxypliresxfurqf'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
@@ -70,7 +70,7 @@ class Test_Attraction(unittest.TestCase):
         """
         Test locale property
         """
-        test_value = 'qcigipkcxcdbaczinznm'
+        test_value = 'femomuyvknyaieahxakq'
         self.instance.locale = test_value
         self.assertEqual(self.instance.locale, test_value)
     
@@ -78,7 +78,7 @@ class Test_Attraction(unittest.TestCase):
         """
         Test segment_id property
         """
-        test_value = 'fcpsrzuxmqgkwngyvskw'
+        test_value = 'aebpgamrsitdifitywgd'
         self.instance.segment_id = test_value
         self.assertEqual(self.instance.segment_id, test_value)
     
@@ -86,7 +86,7 @@ class Test_Attraction(unittest.TestCase):
         """
         Test segment_name property
         """
-        test_value = 'zdgmscdfrfxxwkqfuiai'
+        test_value = 'lvjokknolliyrtcolwtz'
         self.instance.segment_name = test_value
         self.assertEqual(self.instance.segment_name, test_value)
     
@@ -94,7 +94,7 @@ class Test_Attraction(unittest.TestCase):
         """
         Test genre_id property
         """
-        test_value = 'kvdptjlbbbqbgwuzeivw'
+        test_value = 'scsvbspinpqkqfhlnrpi'
         self.instance.genre_id = test_value
         self.assertEqual(self.instance.genre_id, test_value)
     
@@ -102,7 +102,7 @@ class Test_Attraction(unittest.TestCase):
         """
         Test genre_name property
         """
-        test_value = 'wsmmqzzzkoweoksjrfvz'
+        test_value = 'hrtkysgybvzkpdqlvhij'
         self.instance.genre_name = test_value
         self.assertEqual(self.instance.genre_name, test_value)
     
@@ -110,7 +110,7 @@ class Test_Attraction(unittest.TestCase):
         """
         Test subgenre_id property
         """
-        test_value = 'wsexkkiykylfnhcntjax'
+        test_value = 'fayzmcqmjcsxrqxyhzqf'
         self.instance.subgenre_id = test_value
         self.assertEqual(self.instance.subgenre_id, test_value)
     
@@ -118,7 +118,7 @@ class Test_Attraction(unittest.TestCase):
         """
         Test subgenre_name property
         """
-        test_value = 'lsfyihwtfqatyenmkhon'
+        test_value = 'bajtmlkdyizihksrwqmx'
         self.instance.subgenre_name = test_value
         self.assertEqual(self.instance.subgenre_name, test_value)
     

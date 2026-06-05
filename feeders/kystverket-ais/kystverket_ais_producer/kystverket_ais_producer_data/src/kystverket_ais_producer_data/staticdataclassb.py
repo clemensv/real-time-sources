@@ -17,7 +17,7 @@ import json
 @dataclass
 class StaticDataClassB:
     """
-    StaticDataClassB
+    A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
     
     Attributes:
         mmsi (int)
@@ -104,6 +104,8 @@ class StaticDataClassB:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class StaticDataClassB:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(84),
-            part_number=int(43),
-            ship_name='rdfzwlzzqjqlpqvpheei',
-            ship_type=int(74),
-            callsign='ybjbhfggnjzndybkwvpf',
-            dimension_to_bow=int(52),
-            dimension_to_stern=int(29),
-            dimension_to_port=int(98),
-            dimension_to_starboard=int(94),
-            timestamp='sfexscwaevyhwzhxdovb',
-            station_id='skobrujhlozvizstqdve'
+            mmsi=int(80),
+            part_number=int(96),
+            ship_name='laqlcdgcfrmyjcpydmsi',
+            ship_type=int(24),
+            callsign='tupphuaevrbbjqtglpsd',
+            dimension_to_bow=int(7),
+            dimension_to_stern=int(76),
+            dimension_to_port=int(29),
+            dimension_to_starboard=int(84),
+            timestamp='wfaqsmtqcbqpqeucvhmj',
+            station_id='qsxedwlesgaqwkxzbojd'
         )

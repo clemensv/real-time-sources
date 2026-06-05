@@ -30,18 +30,18 @@ class Test_DemandActual(unittest.TestCase):
         """
         instance = DemandActual(
             date=datetime.date.today(),
-            time='dsahtgvovxbdzfrxkfyp',
+            time='yrbegidnigvshwzhoyww',
             datetime=datetime.datetime.now(datetime.timezone.utc),
             datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            actual_demand_mw=float(77.08152324319866),
-            actual_demand_jp_unit_value=int(34),
-            solar_generation_mw=float(37.959101934242135),
-            solar_generation_jp_unit_value=int(98),
-            solar_share_pct=float(70.29520418301958),
-            usage_pct=float(33.76372430659447),
-            supply_capacity_mw=float(36.33270367562046),
-            supply_capacity_jp_unit_value=int(45),
-            area_code='msnsnbdxbswpbbqnywkk'
+            actual_demand_mw=float(93.14731695830241),
+            actual_demand_jp_unit_value=int(62),
+            solar_generation_mw=float(61.89932077843594),
+            solar_generation_jp_unit_value=int(63),
+            solar_share_pct=float(99.62392642557246),
+            usage_pct=float(49.76242885977693),
+            supply_capacity_mw=float(85.3184241481276),
+            supply_capacity_jp_unit_value=int(2),
+            area_code='qyijfulhodgcficivycl'
         )
         return instance
 
@@ -58,7 +58,7 @@ class Test_DemandActual(unittest.TestCase):
         """
         Test time property
         """
-        test_value = 'dsahtgvovxbdzfrxkfyp'
+        test_value = 'yrbegidnigvshwzhoyww'
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -82,7 +82,7 @@ class Test_DemandActual(unittest.TestCase):
         """
         Test actual_demand_mw property
         """
-        test_value = float(77.08152324319866)
+        test_value = float(93.14731695830241)
         self.instance.actual_demand_mw = test_value
         self.assertEqual(self.instance.actual_demand_mw, test_value)
     
@@ -90,7 +90,7 @@ class Test_DemandActual(unittest.TestCase):
         """
         Test actual_demand_jp_unit_value property
         """
-        test_value = int(34)
+        test_value = int(62)
         self.instance.actual_demand_jp_unit_value = test_value
         self.assertEqual(self.instance.actual_demand_jp_unit_value, test_value)
     
@@ -98,7 +98,7 @@ class Test_DemandActual(unittest.TestCase):
         """
         Test solar_generation_mw property
         """
-        test_value = float(37.959101934242135)
+        test_value = float(61.89932077843594)
         self.instance.solar_generation_mw = test_value
         self.assertEqual(self.instance.solar_generation_mw, test_value)
     
@@ -106,7 +106,7 @@ class Test_DemandActual(unittest.TestCase):
         """
         Test solar_generation_jp_unit_value property
         """
-        test_value = int(98)
+        test_value = int(63)
         self.instance.solar_generation_jp_unit_value = test_value
         self.assertEqual(self.instance.solar_generation_jp_unit_value, test_value)
     
@@ -114,7 +114,7 @@ class Test_DemandActual(unittest.TestCase):
         """
         Test solar_share_pct property
         """
-        test_value = float(70.29520418301958)
+        test_value = float(99.62392642557246)
         self.instance.solar_share_pct = test_value
         self.assertEqual(self.instance.solar_share_pct, test_value)
     
@@ -122,7 +122,7 @@ class Test_DemandActual(unittest.TestCase):
         """
         Test usage_pct property
         """
-        test_value = float(33.76372430659447)
+        test_value = float(49.76242885977693)
         self.instance.usage_pct = test_value
         self.assertEqual(self.instance.usage_pct, test_value)
     
@@ -130,7 +130,7 @@ class Test_DemandActual(unittest.TestCase):
         """
         Test supply_capacity_mw property
         """
-        test_value = float(36.33270367562046)
+        test_value = float(85.3184241481276)
         self.instance.supply_capacity_mw = test_value
         self.assertEqual(self.instance.supply_capacity_mw, test_value)
     
@@ -138,7 +138,7 @@ class Test_DemandActual(unittest.TestCase):
         """
         Test supply_capacity_jp_unit_value property
         """
-        test_value = int(45)
+        test_value = int(2)
         self.instance.supply_capacity_jp_unit_value = test_value
         self.assertEqual(self.instance.supply_capacity_jp_unit_value, test_value)
     
@@ -146,7 +146,7 @@ class Test_DemandActual(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'msnsnbdxbswpbbqnywkk'
+        test_value = 'qyijfulhodgcficivycl'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
     

@@ -100,6 +100,8 @@ class PointMeasurementSite:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class PointMeasurementSite:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='mbordkxndzofilvjjbur',
-            name='gschgtifktakjugrrxxq',
-            measurement_site_type='kpewguzxjuoccqkfzgki',
-            period=int(20),
-            latitude=float(76.89319908964355),
-            longitude=float(44.92933810454031),
-            road_name='ranryfiakhiixujdavrb',
-            lane_count=int(12),
-            carriageway_type='mxuusvsnycfpaomxrksm'
+            measurement_site_id='yfizfgdhnuqoaffwnzev',
+            name='fyzvyuxthohpjgqsgxxw',
+            measurement_site_type='jnltmisfskhqbiligljx',
+            period=int(57),
+            latitude=float(41.813171068322205),
+            longitude=float(4.565103635446032),
+            road_name='amllgyqgrzdbqrxsmnkc',
+            lane_count=int(42),
+            carriageway_type='dltdyujhdpnwtkjrfmxc'
         )

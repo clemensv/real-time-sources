@@ -28,10 +28,10 @@ class Test_Station1Msg2(unittest.TestCase):
         Create instance of Station1Msg2 for testing
         """
         instance = Station1Msg2(
-            Valid=False,
-            Spare=int(17),
-            MessageID=int(56),
-            SlotOffset=int(90)
+            Valid=True,
+            Spare=int(7),
+            MessageID=int(3),
+            SlotOffset=int(21)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Station1Msg2(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = False
+        test_value = True
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -48,7 +48,7 @@ class Test_Station1Msg2(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(17)
+        test_value = int(7)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -56,7 +56,7 @@ class Test_Station1Msg2(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(56)
+        test_value = int(3)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -64,7 +64,7 @@ class Test_Station1Msg2(unittest.TestCase):
         """
         Test SlotOffset property
         """
-        test_value = int(90)
+        test_value = int(21)
         self.instance.SlotOffset = test_value
         self.assertEqual(self.instance.SlotOffset, test_value)
     

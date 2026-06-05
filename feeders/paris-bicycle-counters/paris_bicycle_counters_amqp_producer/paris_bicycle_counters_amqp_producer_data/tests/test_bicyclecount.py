@@ -29,13 +29,13 @@ class Test_BicycleCount(unittest.TestCase):
         Create instance of BicycleCount for testing
         """
         instance = BicycleCount(
-            counter_id='orpefptogcqrrdkstnag',
-            counter_name='wpnlpkpvfhjzsapzfzbp',
-            count=int(87),
+            counter_id='oflsngprgtvkrobjjbrd',
+            counter_name='kdomjlfjzxnaahuxzfqg',
+            count=int(72),
             date=datetime.datetime.now(datetime.timezone.utc),
-            longitude=float(91.94550018691938),
-            latitude=float(26.719215032182408),
-            ce_id='gklcekpmtcyvdlmehkkr'
+            longitude=float(32.3787531288889),
+            latitude=float(61.00438416333533),
+            ce_id='bdnptterwjspbzcsifwm'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_BicycleCount(unittest.TestCase):
         """
         Test counter_id property
         """
-        test_value = 'orpefptogcqrrdkstnag'
+        test_value = 'oflsngprgtvkrobjjbrd'
         self.instance.counter_id = test_value
         self.assertEqual(self.instance.counter_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_BicycleCount(unittest.TestCase):
         """
         Test counter_name property
         """
-        test_value = 'wpnlpkpvfhjzsapzfzbp'
+        test_value = 'kdomjlfjzxnaahuxzfqg'
         self.instance.counter_name = test_value
         self.assertEqual(self.instance.counter_name, test_value)
     
@@ -60,7 +60,7 @@ class Test_BicycleCount(unittest.TestCase):
         """
         Test count property
         """
-        test_value = int(87)
+        test_value = int(72)
         self.instance.count = test_value
         self.assertEqual(self.instance.count, test_value)
     
@@ -76,7 +76,7 @@ class Test_BicycleCount(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(91.94550018691938)
+        test_value = float(32.3787531288889)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -84,7 +84,7 @@ class Test_BicycleCount(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(26.719215032182408)
+        test_value = float(61.00438416333533)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -92,7 +92,7 @@ class Test_BicycleCount(unittest.TestCase):
         """
         Test ce_id property
         """
-        test_value = 'gklcekpmtcyvdlmehkkr'
+        test_value = 'bdnptterwjspbzcsifwm'
         self.instance.ce_id = test_value
         self.assertEqual(self.instance.ce_id, test_value)
     

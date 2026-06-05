@@ -175,9 +175,8 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `fi.digitraffic.marine.ais.mqtt.location`: A reference record from Fintraffic
-Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and
-labels needed to interpret realtime updates.
+```Asynchronous handler hook for `fi.digitraffic.marine.ais.mqtt.location`: MQTT transport projection of location using
+the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -221,8 +220,8 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `fi.digitraffic.marine.ais.mqtt.metadata`: A vehicle or vessel update from Fintraffic
-Digitraffic. It reports the latest position, movement, identity, or voyage information available from the upstream feed.
+```Asynchronous handler hook for `fi.digitraffic.marine.ais.mqtt.metadata`: MQTT transport projection of metadata using
+the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -379,8 +378,8 @@ Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `fi.digitraffic.marine.portcall.mqtt.port_call`: A transport update from Fintraffic
-Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime fairways and vessels.
+```Asynchronous handler hook for `fi.digitraffic.marine.portcall.mqtt.port_call`: MQTT transport projection of port_call
+using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -537,9 +536,8 @@ CloudEvent, VesselDetails], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details`: A vehicle or vessel
-update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage information available
-from the upstream feed.
+```Asynchronous handler hook for `fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details`: MQTT transport
+projection of vessel_details using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
@@ -696,9 +694,8 @@ CloudEvent, PortLocation], Awaitable[None]]
 
 make test
 
-```Asynchronous handler hook for `fi.digitraffic.marine.portcall.portlocation.mqtt.port_location`: A reference record
-from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives consumers stable
-identifiers and labels needed to interpret realtime updates.
+```Asynchronous handler hook for `fi.digitraffic.marine.portcall.portlocation.mqtt.port_location`: MQTT transport
+projection of port_location using the same CloudEvent type and payload schema as the base Digitraffic Maritime message.
 
 
 The assigned handler must be a coroutine (`async def`) that accepts the following parameters:

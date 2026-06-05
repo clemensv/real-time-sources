@@ -126,6 +126,8 @@ class VolcanicEruption:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,24 +195,24 @@ class VolcanicEruption:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='yeqgvgklayjphyqcwmrg',
-            event_id='yfhlllmmpwcvhmgavigy',
+            volcano_code='zobkbgdvillvqsudazav',
+            event_id='fakngtoisvbpwutlfcde',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime=datetime.datetime.now(datetime.timezone.utc),
             eruption_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             eruption_type=EruptionTypeenum.ERUPTION,
-            crater_name='xvfdqydpzgnvkwcilaqz',
-            colored_plume_height_m=float(78.32190445232766),
-            white_plume_height_m=float(27.756087446064637),
-            maximum_plume_height_since_start_m=float(41.937956410113216),
-            plume_direction='qtpmuhrarmkdbkvqcqjg',
-            ash_dispersal_direction='wefnyrjnargsdfwrjhxb',
+            crater_name='mhvgmrfmpivsuwthjphd',
+            colored_plume_height_m=float(80.0953917614938),
+            white_plume_height_m=float(33.71603632019542),
+            maximum_plume_height_since_start_m=float(76.9029220100203),
+            plume_direction='zkkrorfcopyyhdsjmbiu',
+            ash_dispersal_direction='ynzcuqovitapetklnnib',
             pyroclastic_flow_observed=False,
-            plume_amount_jp='fcgnisofnygbbobrzvrq',
-            description='kfvyrjabagoifzsiccmr',
-            info_type_jp='rgybtzskohljepaumrcl',
-            area_codes=['qhvmoyxrddybgybovfwc'],
-            prefecture='caxkebyrbvhzfgbzpgdt',
-            event=EventEnum.eruption
+            plume_amount_jp='hgoazizgutwckyvbhetw',
+            description='ptqrymaynfrlivnfxmtn',
+            info_type_jp='kexxqmszwvguaglhyuac',
+            area_codes=['kaeptrtptquulxqxisag'],
+            prefecture='binqnugugatayaohkvdf',
+            event=EventEnum.info
         )

@@ -96,6 +96,8 @@ class Classification:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class Classification:
             An instance of the dataclass.
         """
         return cls(
-            entity_id='jltawdalgunptnqzxswo',
-            name='fmnmqjirjoirpqawzujp',
-            type='jbwomkbfhekmbigpmzci',
-            primary_genre_id='cnvimwofhedzdmtiodjr',
-            primary_genre_name='nyvpdenkuwocwsfsuiym',
-            primary_subgenre_id='occjqbamdjbybflatexe',
-            primary_subgenre_name='vqvpttvhphqcqscwbpnk'
+            entity_id='crmgeevwdpxajiuorbco',
+            name='aeavnklutpxjmposukdc',
+            type='qlfhxnwgixbebzevrnsl',
+            primary_genre_id='bodafprhhixguekedyxc',
+            primary_genre_name='kcmgpjolaaerdkpkovva',
+            primary_subgenre_id='ezopydnhuqbhmphxutsj',
+            primary_subgenre_name='owlkkkmqdfeeeqskmfqr'
         )

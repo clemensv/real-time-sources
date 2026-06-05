@@ -113,6 +113,8 @@ class Stops:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -180,19 +182,19 @@ class Stops:
             An instance of the dataclass.
         """
         return cls(
-            stopId='rmxddyffzsdhqfinltrr',
-            stopCode='qtxnlxmmvecileouselm',
-            stopName='awbcnkvvcnlupoksdipu',
-            ttsStopName='rhxdnayndvtjjqkmwaqk',
-            stopDesc='bzlkbgtxmokfiofqfzwy',
-            stopLat=float(18.97994092929588),
-            stopLon=float(19.704451931912036),
-            zoneId='bktrkphlxhbcyhbdbawl',
-            stopUrl='hibtddvjnsuebcbjsfcf',
+            stopId='joczbqzrsdnoqfldypdu',
+            stopCode='xskhvnlcgjfcmiwdraia',
+            stopName='qacypxttwaojzugnzuqc',
+            ttsStopName='akdxpddatugssgwxtdrq',
+            stopDesc='ngmsmapjyjjlyixynudj',
+            stopLat=float(55.090595389478025),
+            stopLon=float(17.305439007670497),
+            zoneId='lfwbaqcbluxgcaiuords',
+            stopUrl='jiabmpcfjxbeadagzjml',
             locationType=None,
-            parentStation='gteyjzjfvwvoucfbeyrd',
-            stopTimezone='xorbsgvlcqmnahvndihm',
+            parentStation='kctmheqfrufwyxlchtvl',
+            stopTimezone='ddqtkvlswdiqelifdtyt',
             wheelchairBoarding=None,
-            levelId='pqfiwhgqdqqfuvdnfskc',
-            platformCode='txhptynhqkgkzlcykozh'
+            levelId='rhnncinfdpbrejicvxhd',
+            platformCode='zwwkvmwrwbgzjbzezxfc'
         )

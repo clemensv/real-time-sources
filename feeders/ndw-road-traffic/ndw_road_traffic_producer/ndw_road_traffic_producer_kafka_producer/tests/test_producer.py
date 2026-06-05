@@ -20,34 +20,34 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from ndw_road_traffic_producer_kafka_producer.producer import NLNDWAVGEventProducer
 from ndw_road_traffic_producer_data import PointMeasurementSite
-from test_ndw_road_traffic_producer_data_pointmeasurementsite import Test_PointMeasurementSite
+from test_pointmeasurementsite import Test_PointMeasurementSite
 from ndw_road_traffic_producer_data import RouteMeasurementSite
-from test_ndw_road_traffic_producer_data_routemeasurementsite import Test_RouteMeasurementSite
+from test_routemeasurementsite import Test_RouteMeasurementSite
 from ndw_road_traffic_producer_data import TrafficObservation
-from test_ndw_road_traffic_producer_data_trafficobservation import Test_TrafficObservation
+from test_trafficobservation import Test_TrafficObservation
 from ndw_road_traffic_producer_data import TravelTimeObservation
-from test_ndw_road_traffic_producer_data_traveltimeobservation import Test_TravelTimeObservation
+from test_traveltimeobservation import Test_TravelTimeObservation
 from ndw_road_traffic_producer_kafka_producer.producer import NLNDWDRIPEventProducer
 from ndw_road_traffic_producer_data import DripSign
-from test_ndw_road_traffic_producer_data_dripsign import Test_DripSign
+from test_dripsign import Test_DripSign
 from ndw_road_traffic_producer_data import DripDisplayState
-from test_ndw_road_traffic_producer_data_dripdisplaystate import Test_DripDisplayState
+from test_dripdisplaystate import Test_DripDisplayState
 from ndw_road_traffic_producer_kafka_producer.producer import NLNDWMSIEventProducer
 from ndw_road_traffic_producer_data import MsiSign
-from test_ndw_road_traffic_producer_data_msisign import Test_MsiSign
+from test_msisign import Test_MsiSign
 from ndw_road_traffic_producer_data import MsiDisplayState
-from test_ndw_road_traffic_producer_data_msidisplaystate import Test_MsiDisplayState
+from test_msidisplaystate import Test_MsiDisplayState
 from ndw_road_traffic_producer_kafka_producer.producer import NLNDWSituationsEventProducer
 from ndw_road_traffic_producer_data import Roadwork
-from test_ndw_road_traffic_producer_data_roadwork import Test_Roadwork
+from test_roadwork import Test_Roadwork
 from ndw_road_traffic_producer_data import BridgeOpening
-from test_ndw_road_traffic_producer_data_bridgeopening import Test_BridgeOpening
+from test_bridgeopening import Test_BridgeOpening
 from ndw_road_traffic_producer_data import TemporaryClosure
-from test_ndw_road_traffic_producer_data_temporaryclosure import Test_TemporaryClosure
+from test_temporaryclosure import Test_TemporaryClosure
 from ndw_road_traffic_producer_data import TemporarySpeedLimit
-from test_ndw_road_traffic_producer_data_temporaryspeedlimit import Test_TemporarySpeedLimit
+from test_temporaryspeedlimit import Test_TemporarySpeedLimit
 from ndw_road_traffic_producer_data import SafetyRelatedMessage
-from test_ndw_road_traffic_producer_data_safetyrelatedmessage import Test_SafetyRelatedMessage
+from test_safetyrelatedmessage import Test_SafetyRelatedMessage
 from ndw_road_traffic_producer_kafka_producer.producer import NLNDWAVGMqttEventProducer
 from ndw_road_traffic_producer_kafka_producer.producer import NLNDWDRIPMqttEventProducer
 from ndw_road_traffic_producer_kafka_producer.producer import NLNDWMSIMqttEventProducer
@@ -138,7 +138,8 @@ def test_nl_ndw_avg_nlndwavgpointmeasurementsite(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_point_measurement_site(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_point_measurement_site(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -201,7 +202,8 @@ def test_nl_ndw_avg_nlndwavgroutemeasurementsite(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_route_measurement_site(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_route_measurement_site(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -264,7 +266,8 @@ def test_nl_ndw_avg_nlndwavgtrafficobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_traffic_observation(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_traffic_observation(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -327,7 +330,8 @@ def test_nl_ndw_avg_nlndwavgtraveltimeobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_travel_time_observation(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_travel_time_observation(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -390,7 +394,8 @@ def test_nl_ndw_drip_nlndwdripdripsign(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_drip_drip_sign(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_drip_drip_sign(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -453,7 +458,8 @@ def test_nl_ndw_drip_nlndwdripdripdisplaystate(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_drip_drip_display_state(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_drip_drip_display_state(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -516,7 +522,8 @@ def test_nl_ndw_msi_nlndwmsimsisign(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_msi_msi_sign(_sign_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_msi_msi_sign(_sign_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -579,7 +586,8 @@ def test_nl_ndw_msi_nlndwmsimsidisplaystate(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_msi_msi_display_state(_sign_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_msi_msi_display_state(_sign_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -642,7 +650,8 @@ def test_nl_ndw_situations_nlndwsituationsroadwork(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_roadwork(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_roadwork(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -705,7 +714,8 @@ def test_nl_ndw_situations_nlndwsituationsbridgeopening(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_bridge_opening(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_bridge_opening(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -768,7 +778,8 @@ def test_nl_ndw_situations_nlndwsituationstemporaryclosure(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_temporary_closure(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_temporary_closure(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -831,7 +842,8 @@ def test_nl_ndw_situations_nlndwsituationstemporaryspeedlimit(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_temporary_speed_limit(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_temporary_speed_limit(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -894,7 +906,8 @@ def test_nl_ndw_situations_nlndwsituationssafetyrelatedmessage(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_safety_related_message(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_safety_related_message(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -957,7 +970,8 @@ def test_nl_ndw_avg_mqtt_nlndwavgpointmeasurementsitemqtt(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_point_measurement_site_mqtt(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_point_measurement_site_mqtt(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1018,7 +1032,8 @@ def test_nl_ndw_avg_mqtt_nlndwavgroutemeasurementsitemqtt(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_route_measurement_site_mqtt(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_route_measurement_site_mqtt(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1079,7 +1094,8 @@ def test_nl_ndw_avg_mqtt_nlndwavgtrafficobservationmqtt(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_traffic_observation_mqtt(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_traffic_observation_mqtt(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1140,7 +1156,8 @@ def test_nl_ndw_avg_mqtt_nlndwavgtraveltimeobservationmqtt(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_travel_time_observation_mqtt(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_travel_time_observation_mqtt(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1201,7 +1218,8 @@ def test_nl_ndw_drip_mqtt_nlndwdripdripsignmqtt(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_drip_drip_sign_mqtt(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_drip_drip_sign_mqtt(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1262,7 +1280,8 @@ def test_nl_ndw_drip_mqtt_nlndwdripdripdisplaystatemqtt(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_drip_drip_display_state_mqtt(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_drip_drip_display_state_mqtt(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1323,7 +1342,8 @@ def test_nl_ndw_msi_mqtt_nlndwmsimsisignmqtt(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_msi_msi_sign_mqtt(_sign_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_msi_msi_sign_mqtt(_sign_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1384,7 +1404,8 @@ def test_nl_ndw_msi_mqtt_nlndwmsimsidisplaystatemqtt(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_msi_msi_display_state_mqtt(_sign_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_msi_msi_display_state_mqtt(_sign_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1445,7 +1466,8 @@ def test_nl_ndw_situations_mqtt_nlndwsituationsroadworkmqtt(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_roadwork_mqtt(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_roadwork_mqtt(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1506,7 +1528,8 @@ def test_nl_ndw_situations_mqtt_nlndwsituationsbridgeopeningmqtt(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_bridge_opening_mqtt(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_bridge_opening_mqtt(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1567,7 +1590,8 @@ def test_nl_ndw_situations_mqtt_nlndwsituationstemporaryclosuremqtt(kafka_emulat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_temporary_closure_mqtt(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_temporary_closure_mqtt(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1628,7 +1652,8 @@ def test_nl_ndw_situations_mqtt_nlndwsituationstemporaryspeedlimitmqtt(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_temporary_speed_limit_mqtt(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_temporary_speed_limit_mqtt(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1689,7 +1714,8 @@ def test_nl_ndw_situations_mqtt_nlndwsituationssafetyrelatedmessagemqtt(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_safety_related_message_mqtt(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_safety_related_message_mqtt(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1750,7 +1776,8 @@ def test_nl_ndw_avg_amqp_nlndwavgpointmeasurementsiteamqp(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_point_measurement_site_amqp(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_point_measurement_site_amqp(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1811,7 +1838,8 @@ def test_nl_ndw_avg_amqp_nlndwavgroutemeasurementsiteamqp(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_route_measurement_site_amqp(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_route_measurement_site_amqp(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1872,7 +1900,8 @@ def test_nl_ndw_avg_amqp_nlndwavgtrafficobservationamqp(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_traffic_observation_amqp(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_traffic_observation_amqp(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1933,7 +1962,8 @@ def test_nl_ndw_avg_amqp_nlndwavgtraveltimeobservationamqp(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_avg_travel_time_observation_amqp(_measurement_site_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_avg_travel_time_observation_amqp(_measurement_site_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1994,7 +2024,8 @@ def test_nl_ndw_drip_amqp_nlndwdripdripsignamqp(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_drip_drip_sign_amqp(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_drip_drip_sign_amqp(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2055,7 +2086,8 @@ def test_nl_ndw_drip_amqp_nlndwdripdripdisplaystateamqp(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_drip_drip_display_state_amqp(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_drip_drip_display_state_amqp(_vms_controller_id = f'test_{i}', _vms_index = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2116,7 +2148,8 @@ def test_nl_ndw_msi_amqp_nlndwmsimsisignamqp(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_msi_msi_sign_amqp(_sign_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_msi_msi_sign_amqp(_sign_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2177,7 +2210,8 @@ def test_nl_ndw_msi_amqp_nlndwmsimsidisplaystateamqp(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_msi_msi_display_state_amqp(_sign_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_msi_msi_display_state_amqp(_sign_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2238,7 +2272,8 @@ def test_nl_ndw_situations_amqp_nlndwsituationsroadworkamqp(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_roadwork_amqp(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_roadwork_amqp(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2299,7 +2334,8 @@ def test_nl_ndw_situations_amqp_nlndwsituationsbridgeopeningamqp(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_bridge_opening_amqp(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_bridge_opening_amqp(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2360,7 +2396,8 @@ def test_nl_ndw_situations_amqp_nlndwsituationstemporaryclosureamqp(kafka_emulat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_temporary_closure_amqp(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_temporary_closure_amqp(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2421,7 +2458,8 @@ def test_nl_ndw_situations_amqp_nlndwsituationstemporaryspeedlimitamqp(kafka_emu
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_temporary_speed_limit_amqp(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_temporary_speed_limit_amqp(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -2482,7 +2520,8 @@ def test_nl_ndw_situations_amqp_nlndwsituationssafetyrelatedmessageamqp(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_nl_ndw_situations_safety_related_message_amqp(_situation_record_id = f'test_{i}', data = event_data)
+        producer_instance.send_nl_ndw_situations_safety_related_message_amqp(_situation_record_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

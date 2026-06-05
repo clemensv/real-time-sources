@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from autobahn_amqp_producer_data.webcam import Webcam
-from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -31,26 +31,26 @@ class Test_Webcam(unittest.TestCase):
         Create instance of Webcam for testing
         """
         instance = Webcam(
-            identifier='jtozduakoeenybetxzje',
-            road='siezsgyjvpfjwpoathcf',
-            road_ids=['ogyjufhganitorszyefd', 'qeszamiksozxuftpbhzt'],
+            identifier='eycccmxxthqunfloerap',
+            road='wweffafahcbljvuydyrf',
+            road_ids=['qfabgwwwxzyyhppikmwl', 'tmehixvsumwihigeqnon', 'sogcqwlfviztsxsxqtqp', 'xkllzgmsroecglwpbyhz', 'fiokcoclcqwarauyqpgf'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
-            title='borsslsbkrhnuylinihw',
-            subtitle='iutxivmxtdujbrxvvzdn',
+            display_type=DisplayTypeenum.ROADWORKS,
+            title='huwmrvyivusjussiambm',
+            subtitle='ixzckzkdotqwdjrvzroc',
             description_lines=None,
             future=False,
-            is_blocked=False,
-            icon='xgfvuvggwdfrpqcabtzw',
-            extent='gnazlbhaqqpqbvhnoubf',
-            point='fxzzssemshlzgdqfzzvp',
-            coordinate_lat=float(85.98439096336121),
-            coordinate_lon=float(84.71081851106477),
-            route_recommendation_json='atknqdnwrsgoerefpiqk',
+            is_blocked=True,
+            icon='rlyntxgfxinleyhwpfjy',
+            extent='xmekzmnomymbzlzewmox',
+            point='keyrkeftrvmuptccabyp',
+            coordinate_lat=float(67.50649788759588),
+            coordinate_lon=float(93.92657507439095),
+            route_recommendation_json='acwdwrltgtnoltitpqky',
             footer_lines=None,
-            operator_name='gnijvimiomtsijdqdoym',
-            image_url='qaqmcvgqvkfclogheayd',
-            stream_url='wlkunmgsbeedonpbqtkl'
+            operator_name='zfxajflqulejasqmawxf',
+            image_url='rpxoclyylcpipcqkmpoc',
+            stream_url='sqovcjwnkqunrzbtuzgu'
         )
         return instance
 
@@ -59,7 +59,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'jtozduakoeenybetxzje'
+        test_value = 'eycccmxxthqunfloerap'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
     
@@ -67,7 +67,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test road property
         """
-        test_value = 'siezsgyjvpfjwpoathcf'
+        test_value = 'wweffafahcbljvuydyrf'
         self.instance.road = test_value
         self.assertEqual(self.instance.road, test_value)
     
@@ -75,7 +75,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test road_ids property
         """
-        test_value = ['ogyjufhganitorszyefd', 'qeszamiksozxuftpbhzt']
+        test_value = ['qfabgwwwxzyyhppikmwl', 'tmehixvsumwihigeqnon', 'sogcqwlfviztsxsxqtqp', 'xkllzgmsroecglwpbyhz', 'fiokcoclcqwarauyqpgf']
         self.instance.road_ids = test_value
         self.assertEqual(self.instance.road_ids, test_value)
     
@@ -91,7 +91,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test display_type property
         """
-        test_value = DisplayTypeenum.ELECTRIC_CHARGING_STATION
+        test_value = DisplayTypeenum.ROADWORKS
         self.instance.display_type = test_value
         self.assertEqual(self.instance.display_type, test_value)
     
@@ -99,7 +99,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'borsslsbkrhnuylinihw'
+        test_value = 'huwmrvyivusjussiambm'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -107,7 +107,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test subtitle property
         """
-        test_value = 'iutxivmxtdujbrxvvzdn'
+        test_value = 'ixzckzkdotqwdjrvzroc'
         self.instance.subtitle = test_value
         self.assertEqual(self.instance.subtitle, test_value)
     
@@ -131,7 +131,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test is_blocked property
         """
-        test_value = False
+        test_value = True
         self.instance.is_blocked = test_value
         self.assertEqual(self.instance.is_blocked, test_value)
     
@@ -139,7 +139,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test icon property
         """
-        test_value = 'xgfvuvggwdfrpqcabtzw'
+        test_value = 'rlyntxgfxinleyhwpfjy'
         self.instance.icon = test_value
         self.assertEqual(self.instance.icon, test_value)
     
@@ -147,7 +147,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test extent property
         """
-        test_value = 'gnazlbhaqqpqbvhnoubf'
+        test_value = 'xmekzmnomymbzlzewmox'
         self.instance.extent = test_value
         self.assertEqual(self.instance.extent, test_value)
     
@@ -155,7 +155,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test point property
         """
-        test_value = 'fxzzssemshlzgdqfzzvp'
+        test_value = 'keyrkeftrvmuptccabyp'
         self.instance.point = test_value
         self.assertEqual(self.instance.point, test_value)
     
@@ -163,7 +163,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test coordinate_lat property
         """
-        test_value = float(85.98439096336121)
+        test_value = float(67.50649788759588)
         self.instance.coordinate_lat = test_value
         self.assertEqual(self.instance.coordinate_lat, test_value)
     
@@ -171,7 +171,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test coordinate_lon property
         """
-        test_value = float(84.71081851106477)
+        test_value = float(93.92657507439095)
         self.instance.coordinate_lon = test_value
         self.assertEqual(self.instance.coordinate_lon, test_value)
     
@@ -179,7 +179,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test route_recommendation_json property
         """
-        test_value = 'atknqdnwrsgoerefpiqk'
+        test_value = 'acwdwrltgtnoltitpqky'
         self.instance.route_recommendation_json = test_value
         self.assertEqual(self.instance.route_recommendation_json, test_value)
     
@@ -195,7 +195,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test operator_name property
         """
-        test_value = 'gnijvimiomtsijdqdoym'
+        test_value = 'zfxajflqulejasqmawxf'
         self.instance.operator_name = test_value
         self.assertEqual(self.instance.operator_name, test_value)
     
@@ -203,7 +203,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test image_url property
         """
-        test_value = 'qaqmcvgqvkfclogheayd'
+        test_value = 'rpxoclyylcpipcqkmpoc'
         self.instance.image_url = test_value
         self.assertEqual(self.instance.image_url, test_value)
     
@@ -211,7 +211,7 @@ class Test_Webcam(unittest.TestCase):
         """
         Test stream_url property
         """
-        test_value = 'wlkunmgsbeedonpbqtkl'
+        test_value = 'sqovcjwnkqunrzbtuzgu'
         self.instance.stream_url = test_value
         self.assertEqual(self.instance.stream_url, test_value)
     

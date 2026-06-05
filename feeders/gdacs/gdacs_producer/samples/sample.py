@@ -34,10 +34,11 @@ from confluent_kafka import Producer as KafkaProducer
 
 from gdacs_producer_kafka_producer.producer import GDACSAlertsEventProducer
 from gdacs_producer_kafka_producer.producer import GDACSAlertsMqttEventProducer
+from gdacs_producer_kafka_producer.producer import GDACSAlertsAmqpEventProducer
 
 # imports for the data classes for each event
 
-from gdacs_producer_data.disasteralert import DisasterAlert
+from gdacs_producer_data import DisasterAlert
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -80,12 +81,28 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     # sends the 'GDACS.Alerts.mqtt.DisasterAlert' event to Kafka topic.
     await gdacsalerts_mqtt_event_producer.send_gdacs_alerts_mqtt_disaster_alert(_event_type = 'TODO: replace me', _event_id = 'TODO: replace me', data = _disaster_alert)
     print(f"Sent 'GDACS.Alerts.mqtt.DisasterAlert' event: {_disaster_alert.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        gdacsalerts_amqp_event_producer = GDACSAlertsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        gdacsalerts_amqp_event_producer = GDACSAlertsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- GDACS.Alerts.amqp.DisasterAlert ----
+    # TODO: Supply event data for the GDACS.Alerts.amqp.DisasterAlert event
+    _disaster_alert = DisasterAlert()
+
+    # sends the 'GDACS.Alerts.amqp.DisasterAlert' event to Kafka topic.
+    await gdacsalerts_amqp_event_producer.send_gdacs_alerts_amqp_disaster_alert(_event_type = 'TODO: replace me', _event_id = 'TODO: replace me', data = _disaster_alert)
+    print(f"Sent 'GDACS.Alerts.amqp.DisasterAlert' event: {_disaster_alert.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

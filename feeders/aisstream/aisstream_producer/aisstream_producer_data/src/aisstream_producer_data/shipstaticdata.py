@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_producer_data.dimension import Dimension
 from aisstream_producer_data.eta import Eta
+from aisstream_producer_data.dimension import Dimension
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -116,6 +116,8 @@ class ShipStaticData:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -183,20 +185,20 @@ class ShipStaticData:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(41),
-            RepeatIndicator=int(87),
-            UserID=int(35),
+            MessageID=int(4),
+            RepeatIndicator=int(77),
+            UserID=int(81),
             Valid=False,
-            AisVersion=int(90),
-            ImoNumber=int(7),
-            CallSign='msuvllnbvnnoxgjmukoo',
-            Name='fykrcsfpsuberjrrrrig',
-            Type=int(6),
+            AisVersion=int(33),
+            ImoNumber=int(87),
+            CallSign='oqebbziwhayaysnovfcl',
+            Name='rsepcrdxrmwqefitydpn',
+            Type=int(44),
             Dimension=None,
-            FixType=int(67),
+            FixType=int(5),
             Eta=None,
-            MaximumStaticDraught=float(28.148274515794903),
-            Destination='nijzstnpvgxpqyoralcq',
-            Dte=False,
-            Spare=True
+            MaximumStaticDraught=float(78.67312258864874),
+            Destination='wmaicnahqvfqonotgmnn',
+            Dte=True,
+            Spare=False
         )

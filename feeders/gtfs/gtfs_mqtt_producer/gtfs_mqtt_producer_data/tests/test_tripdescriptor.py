@@ -29,11 +29,11 @@ class Test_TripDescriptor(unittest.TestCase):
         Create instance of TripDescriptor for testing
         """
         instance = TripDescriptor(
-            trip_id='showutbrolvkewhwffqg',
-            route_id='zoisetqmzwgobwmagnth',
-            direction_id=int(92),
-            start_time='xwdnwaiuhebxepzneoys',
-            start_date='rktxcgghtlpeipkiqgkv',
+            trip_id='srhspbcwrptgdtwshdpa',
+            route_id='qiapwejguglqgnpnczhm',
+            direction_id=int(84),
+            start_time='pmmcjfnlpryiafgvbzdg',
+            start_date='dezbsfqgsaxhgvrszvhf',
             schedule_relationship=None
         )
         return instance
@@ -43,7 +43,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test trip_id property
         """
-        test_value = 'showutbrolvkewhwffqg'
+        test_value = 'srhspbcwrptgdtwshdpa'
         self.instance.trip_id = test_value
         self.assertEqual(self.instance.trip_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test route_id property
         """
-        test_value = 'zoisetqmzwgobwmagnth'
+        test_value = 'qiapwejguglqgnpnczhm'
         self.instance.route_id = test_value
         self.assertEqual(self.instance.route_id, test_value)
     
@@ -59,7 +59,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test direction_id property
         """
-        test_value = int(92)
+        test_value = int(84)
         self.instance.direction_id = test_value
         self.assertEqual(self.instance.direction_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'xwdnwaiuhebxepzneoys'
+        test_value = 'pmmcjfnlpryiafgvbzdg'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -75,7 +75,7 @@ class Test_TripDescriptor(unittest.TestCase):
         """
         Test start_date property
         """
-        test_value = 'rktxcgghtlpeipkiqgkv'
+        test_value = 'dezbsfqgsaxhgvrszvhf'
         self.instance.start_date = test_value
         self.assertEqual(self.instance.start_date, test_value)
     

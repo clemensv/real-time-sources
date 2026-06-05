@@ -100,6 +100,8 @@ class ObservationStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class ObservationStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='rcfezgvoejrkyabbzkwk',
-            name='erjvntzaelgtdomfpxlq',
-            elevation_m=float(70.62209078118816),
-            time_zone='xyycvwgosdlnjczriclu',
-            forecast_zone='qdrnyadhadqzuclivbmr',
-            county='xlgtwdlwbgmehxolnvjs',
-            fire_weather_zone='rycxxqxwlizxrxdlybqi',
-            state='oftwvbdooytqybnxauem',
-            zone_id='lomodelkzwuqolvwchbt'
+            station_id='okgieguuhrlpnzohylgq',
+            name='ekokqimtsfwqzlszwcdr',
+            elevation_m=float(36.70757721950421),
+            time_zone='wjbbrtrvaxukmqsrcgyg',
+            forecast_zone='cgtcgophnxdxywglkyqw',
+            county='yvdolarpjsuqxtrakobp',
+            fire_weather_zone='fyflvavhilibebxbitsh',
+            state='ofrvlqxlcxuhhwjaqjfz',
+            zone_id='qhbcaxlyypjtoyodujlu'
         )

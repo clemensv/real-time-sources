@@ -20,7 +20,7 @@ import datetime
 @dataclass
 class AvalancheBulletin:
     """
-    AvalancheBulletin
+    An official alert or bulletin from the European Avalanche Warning Services ALBINA feed. It carries avalanche bulletins and danger ratings for the affected area and validity period published by the upstream source.
     
     Attributes:
         region_id (str)
@@ -119,6 +119,8 @@ class AvalancheBulletin:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -186,21 +188,21 @@ class AvalancheBulletin:
             An instance of the dataclass.
         """
         return cls(
-            region_id='ctucuojhuutuiycyzcpj',
-            region_name='rrsalmnyfemwxjtohasn',
-            bulletin_id='yunppijfjhjdqrgcxwbe',
+            region_id='aebgbkohdohyrynibddp',
+            region_name='vbnfrdnqtehiaphyjjkg',
+            bulletin_id='jhpinzdgxxpdrtoebcmb',
             publication_time=datetime.datetime.now(datetime.timezone.utc),
             valid_time_start=datetime.datetime.now(datetime.timezone.utc),
             valid_time_end=datetime.datetime.now(datetime.timezone.utc),
-            lang='qzruzmwdykunajthgiep',
+            lang='wobbosgpzmedrbqxrbat',
             max_danger_rating=MaxDangerRatingenum.low,
-            max_danger_rating_value=int(82),
-            danger_ratings_json='nzfdtlygecvfqeuobiop',
-            avalanche_problems_json='rjnkkkryxcjzgcnjsnci',
-            tendency_type='lbtfbobfisnxkfmwgtzl',
-            danger_patterns_json='zekblwjgugwvmzlplohc',
-            avalanche_activity_highlights='siabujgohkdsfbvrzuqb',
-            snowpack_structure_comment='rruemgcvowhjjwhrkmwf',
-            country='npicpqmygegjudllqitd',
-            danger_level='ujlglfvzdyrhqvpttixl'
+            max_danger_rating_value=int(80),
+            danger_ratings_json='siowsjtxdqtjajsowltc',
+            avalanche_problems_json='brqnfxihpsrztwlwowuk',
+            tendency_type='qephtuwrycdgmioiuugc',
+            danger_patterns_json='sffbaggdoskynvmptwej',
+            avalanche_activity_highlights='xubeaiflsyjmgblzeelk',
+            snowpack_structure_comment='gpwrzuqylirtwnitdrjb',
+            country='nbafpcquculvuchlethp',
+            danger_level='irbmeesakbkjbizknnml'
         )

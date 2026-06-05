@@ -11,14 +11,14 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -142,6 +142,8 @@ class FeedItem:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -209,22 +211,22 @@ class FeedItem:
             An instance of the dataclass.
         """
         return cls(
-            feed_slug='kxuwsemufdbyekwdcwfs',
-            item='pvpdbybxlgtowergqbmh',
+            feed_slug='fimatrxdgqtrdmvqnoka',
+            item='vyhhlywjgjqzbwijzuay',
             author=None,
             publisher=None,
             summary=None,
             title=None,
             source=None,
-            content=[None, None],
+            content=[None],
             enclosures=[None],
-            published=int(83),
-            updated=int(77),
-            created=int(92),
-            expired=int(35),
-            id='xhyicfxyjhaumxqjxxae',
-            license='aqafquooynkmepntyncj',
-            comments='sdlskummhvxxyzsdgkck',
-            contributors=[None],
-            links=[None]
+            published=int(58),
+            updated=int(38),
+            created=int(36),
+            expired=int(40),
+            id='brbbigpbwwrwgczwfngu',
+            license='rwknyrimflqohnpgyejy',
+            comments='ihopprqztixsnbtrqdlc',
+            contributors=[None, None, None, None, None],
+            links=[None, None]
         )

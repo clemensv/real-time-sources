@@ -17,7 +17,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import blitzortung_mqtt_producer_data
 from blitzortung_mqtt_producer_data import LightningStroke
-from test_blitzortung_mqtt_producer_data_lightningstroke import Test_LightningStroke
+from test_lightningstroke import Test_LightningStroke
 from blitzortung_mqtt_producer_mqtt_client import BlitzortungLightningMqttMqttClient
 
 @pytest_asyncio.fixture

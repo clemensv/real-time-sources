@@ -12,14 +12,14 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from nina_bbk_amqp_producer_data.certaintyenum import CertaintyEnum
-from nina_bbk_amqp_producer_data.urgencyenum import UrgencyEnum
-from nina_bbk_amqp_producer_data.scopeenum import ScopeEnum
-from nina_bbk_amqp_producer_data.categoryenum import CategoryEnum
-from nina_bbk_amqp_producer_data.providerenum import ProviderEnum
 from nina_bbk_amqp_producer_data.msgtypeenum import MsgTypeenum
-from nina_bbk_amqp_producer_data.statusenum import StatusEnum
 from nina_bbk_amqp_producer_data.severityenum import SeverityEnum
+from nina_bbk_amqp_producer_data.scopeenum import ScopeEnum
+from nina_bbk_amqp_producer_data.statusenum import StatusEnum
+from nina_bbk_amqp_producer_data.urgencyenum import UrgencyEnum
+from nina_bbk_amqp_producer_data.categoryenum import CategoryEnum
+from nina_bbk_amqp_producer_data.certaintyenum import CertaintyEnum
+from nina_bbk_amqp_producer_data.providerenum import ProviderEnum
 import datetime
 
 
@@ -142,6 +142,8 @@ class CivilWarning:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -209,29 +211,29 @@ class CivilWarning:
             An instance of the dataclass.
         """
         return cls(
-            warning_id='qezozsjhdpxwvmzgtlnk',
+            warning_id='rfjqhqyhomnsvnisnwew',
             provider=ProviderEnum.mowas,
-            version=int(64),
-            sender='raxzgnsibcancenvtcdz',
-            sender_name='wljcbrjzfyddwpuaeapn',
+            version=int(24),
+            sender='prvtdaiwzpnjghsjynvy',
+            sender_name='sclirizqlfgmxqfokmdd',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
             scope=ScopeEnum.Public,
-            references='nsefnfxsgbpsaytlsxcd',
-            event='mgcygpdxhfrwepaqrjqr',
-            event_code='zvignogjbtwlntuvnldr',
+            references='khjfipilsojntzmlyfbg',
+            event='xzozpguxycityavoduoa',
+            event_code='lulkjyoksgqnnwqykqus',
             category=CategoryEnum.Met,
             severity=SeverityEnum.Extreme,
             urgency=UrgencyEnum.Immediate,
             certainty=CertaintyEnum.Observed,
-            headline='blirfhluradoflxqiily',
-            description='ztpiztwfsjjloylkhoyg',
-            instruction='adumtqubexruyzyowlls',
-            web='xxcryxofkmrmwiacmdpq',
-            contact='dyohuafluumzepbanwzx',
-            area_desc='hffjpuuwfpcagemowctc',
-            verwaltungsbereiche='tjfravjvaklsbszpqfiv',
-            language='rqfyfrkawzmdbmspopeb',
-            state='funqorwsrqffuuaznakd'
+            headline='bgtncmuwmovnbkdwjbvy',
+            description='uyorgdigifjfbxcwscwv',
+            instruction='jbkdolsospwugrgxyqkm',
+            web='yvpuudlomgxpmsxjuisg',
+            contact='ssbecicudpgizwsnlowr',
+            area_desc='dyepzshxpgfhpekqvtgd',
+            verwaltungsbereiche='nljrvjxcjeaxtxqgveou',
+            language='ywbfojfaklizmvomncwo',
+            state='vyyirjaicczegxaipxuq'
         )

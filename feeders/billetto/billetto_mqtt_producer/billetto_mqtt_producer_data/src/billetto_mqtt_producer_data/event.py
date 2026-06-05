@@ -122,6 +122,8 @@ class Event:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -189,24 +191,24 @@ class Event:
             An instance of the dataclass.
         """
         return cls(
-            event_id=int(59),
-            title='bvrcggkrrggbijvujsou',
-            description='rxheddpferiravaaoidx',
-            startdate='ykmzmqstmvrtzruviemi',
-            enddate='xlsjdvdmkhyjuxdbfqcw',
-            url='wragapejrijewsjzdayg',
-            image_link='hegeaxkydxrpmmmpilew',
-            status='grbdhvrudxmrzzswzeqq',
-            location_city='evqjcvtqvzdaurvgcisy',
-            location_name='smlmhfnqozootwwdqyan',
-            location_address='zemzpjiseumrqcjicgas',
-            location_zip_code='xznddoqmsazbytapocjd',
-            location_country_code='ujhdbupxxyqsdspwbuch',
-            location_latitude=float(97.06852349318275),
-            location_longitude=float(43.36562399697961),
-            organiser_id=int(10),
-            organiser_name='jjnzsbgucdnodshhjyvo',
-            minimum_price_amount_in_cents=int(84),
-            minimum_price_currency='rlybcypplfyiqtzulfzt',
-            availability='alscdtzmfazwcsjhhyjh'
+            event_id=int(100),
+            title='bxwkfkjsaxmliyoqyeht',
+            description='lgthtdicizbjqkrfuszu',
+            startdate='hfvhiztjpiwskaxrieoc',
+            enddate='bbjpypkvphbxjtpbzhwh',
+            url='vtqusjswdstumxghjiuc',
+            image_link='nawpfzaezzthfsbwwvbo',
+            status='fhyenecvhgmfuakiuyks',
+            location_city='tsmhodoncagoawbbonfd',
+            location_name='xxktzbqviftqfpxapbwh',
+            location_address='qtvdlkxijeonoqlnllif',
+            location_zip_code='gelaypvvovtadiadjlug',
+            location_country_code='jbjeptcvtljkffhuypav',
+            location_latitude=float(12.51689496946029),
+            location_longitude=float(3.678417532802236),
+            organiser_id=int(24),
+            organiser_name='kqipcdrsljyseutmfhvv',
+            minimum_price_amount_in_cents=int(44),
+            minimum_price_currency='uusqanxkqlyhwvdzvxuf',
+            availability='rrhjqhzfvlktcmjqaadf'
         )

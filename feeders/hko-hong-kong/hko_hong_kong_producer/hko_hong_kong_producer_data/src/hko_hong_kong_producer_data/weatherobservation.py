@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class WeatherObservation:
     """
-    Current weather observation for a HKO place from the rhrread endpoint. Temperature from automatic weather stations, rainfall from district-level rain gauges, humidity from HKO headquarters, UV index from King's Park. Fields are null when the place does not report that data type.
+    A current environmental measurement from the Hong Kong Observatory. It carries weather observations when the upstream feed reports a new or refreshed value.
     
     Attributes:
         place_id (str)
@@ -30,6 +30,7 @@ class WeatherObservation:
         humidity (typing.Optional[int])
         uv_index (typing.Optional[float])
         uv_description (typing.Optional[str])
+        district (typing.Optional[str])
     """
     
     
@@ -41,6 +42,7 @@ class WeatherObservation:
     humidity: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="humidity"))
     uv_index: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uv_index"))
     uv_description: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uv_description"))
+    district: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="district"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherObservation':
@@ -100,6 +102,8 @@ class WeatherObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,12 +171,13 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            place_id='tejvyfqnvvuhgchpmkid',
-            place_name='jjhvdhlifpfubjfztmch',
+            place_id='ijdvfeinqddzgvruplgn',
+            place_name='xqrffoaaqubcfvaayhhp',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            temperature=float(8.051079018704844),
-            rainfall_max=float(57.77784324689027),
-            humidity=int(95),
-            uv_index=float(11.009888642992305),
-            uv_description='wxwdnlfrffufilqwldgh'
+            temperature=float(66.10925282905797),
+            rainfall_max=float(60.48638175583591),
+            humidity=int(76),
+            uv_index=float(32.79560746258253),
+            uv_description='ezvwigvgylrovlolcgdz',
+            district='ciixwrgvmwshkllzutcl'
         )

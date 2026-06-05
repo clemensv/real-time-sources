@@ -28,10 +28,10 @@ class Test_GoesElectronFlux(unittest.TestCase):
         Create instance of GoesElectronFlux for testing
         """
         instance = GoesElectronFlux(
-            time_tag='ofqfdlciqheqbbbukpnm',
-            satellite=int(58),
-            flux=float(2.5011144095707705),
-            energy='fgepenheyqjrbnjnblzv'
+            time_tag='faqeljblwigrrqcdgfqs',
+            satellite=int(76),
+            flux=float(28.4470098109624),
+            energy='gvibehmkowbaajtjwcbz'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_GoesElectronFlux(unittest.TestCase):
         """
         Test time_tag property
         """
-        test_value = 'ofqfdlciqheqbbbukpnm'
+        test_value = 'faqeljblwigrrqcdgfqs'
         self.instance.time_tag = test_value
         self.assertEqual(self.instance.time_tag, test_value)
     
@@ -48,7 +48,7 @@ class Test_GoesElectronFlux(unittest.TestCase):
         """
         Test satellite property
         """
-        test_value = int(58)
+        test_value = int(76)
         self.instance.satellite = test_value
         self.assertEqual(self.instance.satellite, test_value)
     
@@ -56,7 +56,7 @@ class Test_GoesElectronFlux(unittest.TestCase):
         """
         Test flux property
         """
-        test_value = float(2.5011144095707705)
+        test_value = float(28.4470098109624)
         self.instance.flux = test_value
         self.assertEqual(self.instance.flux, test_value)
     
@@ -64,19 +64,10 @@ class Test_GoesElectronFlux(unittest.TestCase):
         """
         Test energy property
         """
-        test_value = 'fgepenheyqjrbnjnblzv'
+        test_value = 'gvibehmkowbaajtjwcbz'
         self.instance.energy = test_value
         self.assertEqual(self.instance.energy, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = GoesElectronFlux.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

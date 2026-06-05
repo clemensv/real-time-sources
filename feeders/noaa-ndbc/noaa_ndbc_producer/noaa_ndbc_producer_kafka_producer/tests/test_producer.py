@@ -20,23 +20,23 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANDBCEventProducer
 from noaa_ndbc_producer_data import BuoyObservation
-from test_noaa_ndbc_producer_data_buoyobservation import Test_BuoyObservation
+from test_buoyobservation import Test_BuoyObservation
 from noaa_ndbc_producer_data import BuoyStation
-from test_noaa_ndbc_producer_data_buoystation import Test_BuoyStation
+from test_buoystation import Test_BuoyStation
 from noaa_ndbc_producer_data import BuoySolarRadiationObservation
-from test_noaa_ndbc_producer_data_buoysolarradiationobservation import Test_BuoySolarRadiationObservation
+from test_buoysolarradiationobservation import Test_BuoySolarRadiationObservation
 from noaa_ndbc_producer_data import BuoyOceanographicObservation
-from test_noaa_ndbc_producer_data_buoyoceanographicobservation import Test_BuoyOceanographicObservation
+from test_buoyoceanographicobservation import Test_BuoyOceanographicObservation
 from noaa_ndbc_producer_data import BuoyDartMeasurement
-from test_noaa_ndbc_producer_data_buoydartmeasurement import Test_BuoyDartMeasurement
+from test_buoydartmeasurement import Test_BuoyDartMeasurement
 from noaa_ndbc_producer_data import BuoyContinuousWindObservation
-from test_noaa_ndbc_producer_data_buoycontinuouswindobservation import Test_BuoyContinuousWindObservation
+from test_buoycontinuouswindobservation import Test_BuoyContinuousWindObservation
 from noaa_ndbc_producer_data import BuoySupplementalMeasurement
-from test_noaa_ndbc_producer_data_buoysupplementalmeasurement import Test_BuoySupplementalMeasurement
+from test_buoysupplementalmeasurement import Test_BuoySupplementalMeasurement
 from noaa_ndbc_producer_data import BuoyDetailedWaveSummary
-from test_noaa_ndbc_producer_data_buoydetailedwavesummary import Test_BuoyDetailedWaveSummary
+from test_buoydetailedwavesummary import Test_BuoyDetailedWaveSummary
 from noaa_ndbc_producer_data import BuoyHourlyRainMeasurement
-from test_noaa_ndbc_producer_data_buoyhourlyrainmeasurement import Test_BuoyHourlyRainMeasurement
+from test_buoyhourlyrainmeasurement import Test_BuoyHourlyRainMeasurement
 from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANDBCMqttEventProducer
 from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAANDBCAmqpEventProducer
 
@@ -121,7 +121,8 @@ def test_microsoft_opendata_us_noaa_ndbc_microsoftopendatausnoaandbcbuoyobservat
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -184,7 +185,8 @@ def test_microsoft_opendata_us_noaa_ndbc_microsoftopendatausnoaandbcbuoystation(
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -247,7 +249,8 @@ def test_microsoft_opendata_us_noaa_ndbc_microsoftopendatausnoaandbcbuoysolarrad
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_solar_radiation_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -310,7 +313,8 @@ def test_microsoft_opendata_us_noaa_ndbc_microsoftopendatausnoaandbcbuoyoceanogr
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_oceanographic_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -373,7 +377,8 @@ def test_microsoft_opendata_us_noaa_ndbc_microsoftopendatausnoaandbcbuoydartmeas
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_dart_measurement(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -436,7 +441,8 @@ def test_microsoft_opendata_us_noaa_ndbc_microsoftopendatausnoaandbcbuoycontinuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_continuous_wind_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_continuous_wind_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -499,7 +505,8 @@ def test_microsoft_opendata_us_noaa_ndbc_microsoftopendatausnoaandbcbuoysuppleme
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_supplemental_measurement(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -562,7 +569,8 @@ def test_microsoft_opendata_us_noaa_ndbc_microsoftopendatausnoaandbcbuoydetailed
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_detailed_wave_summary(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_detailed_wave_summary(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -625,7 +633,8 @@ def test_microsoft_opendata_us_noaa_ndbc_microsoftopendatausnoaandbcbuoyhourlyra
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_buoy_hourly_rain_measurement(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -688,7 +697,8 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -749,7 +759,8 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -810,7 +821,8 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_solar_radiation_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -871,7 +883,8 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_oceanographic_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -932,7 +945,8 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_dart_measurement(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -993,7 +1007,8 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_continuous_wind_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1054,7 +1069,8 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_supplemental_measurement(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1115,7 +1131,8 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_detailed_wave_summary(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1176,7 +1193,8 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_mqtt_buoy_hourly_rain_measurement(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1237,7 +1255,8 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1298,7 +1317,8 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1359,7 +1379,8 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_solar_radiation_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1420,7 +1441,8 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_oceanographic_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1481,7 +1503,8 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_dart_measurement(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1542,7 +1565,8 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_continuous_wind_observation(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1603,7 +1627,8 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_supplemental_measurement(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1664,7 +1689,8 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_detailed_wave_summary(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -1725,7 +1751,8 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_microsoft_open_data_us_noaa_ndbc_amqp_buoy_hourly_rain_measurement(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

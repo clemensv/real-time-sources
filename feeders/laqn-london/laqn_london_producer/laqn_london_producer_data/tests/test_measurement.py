@@ -28,10 +28,10 @@ class Test_Measurement(unittest.TestCase):
         Create instance of Measurement for testing
         """
         instance = Measurement(
-            site_code='njrmqtkahulthuetijkd',
-            species_code='woxrijaqexdurcqftoxc',
-            measurement_date_gmt='kbxqmqtcdkwbhkyvtayj',
-            value=float(39.91895851072602)
+            site_code='fsnwhnsvkyxglodaanpw',
+            species_code='riaowqnupjxdwtadaosj',
+            measurement_date_gmt='rejqqjmqrkcjmqmynreu',
+            value=float(25.844156063041158)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test site_code property
         """
-        test_value = 'njrmqtkahulthuetijkd'
+        test_value = 'fsnwhnsvkyxglodaanpw'
         self.instance.site_code = test_value
         self.assertEqual(self.instance.site_code, test_value)
     
@@ -48,7 +48,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test species_code property
         """
-        test_value = 'woxrijaqexdurcqftoxc'
+        test_value = 'riaowqnupjxdwtadaosj'
         self.instance.species_code = test_value
         self.assertEqual(self.instance.species_code, test_value)
     
@@ -56,7 +56,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test measurement_date_gmt property
         """
-        test_value = 'kbxqmqtcdkwbhkyvtayj'
+        test_value = 'rejqqjmqrkcjmqmynreu'
         self.instance.measurement_date_gmt = test_value
         self.assertEqual(self.instance.measurement_date_gmt, test_value)
     
@@ -64,19 +64,10 @@ class Test_Measurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(39.91895851072602)
+        test_value = float(25.844156063041158)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Measurement.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

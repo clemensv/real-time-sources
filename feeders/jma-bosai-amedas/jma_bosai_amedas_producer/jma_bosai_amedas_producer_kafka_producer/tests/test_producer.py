@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from jma_bosai_amedas_producer_kafka_producer.producer import JPJMAAmedasEventProducer
 from jma_bosai_amedas_producer_data import Station
-from test_jma_bosai_amedas_producer_data_station import Test_Station
+from test_station import Test_Station
 from jma_bosai_amedas_producer_data import Observation
-from test_jma_bosai_amedas_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -105,7 +105,8 @@ def test_jp_jma_amedas_jpjmaamedasstation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_amedas_station(_feedurl = f'test_{i}', _station_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_amedas_station(_feedurl = f'test_{i}', _station_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -168,7 +169,8 @@ def test_jp_jma_amedas_jpjmaamedasobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_amedas_observation(_feedurl = f'test_{i}', _station_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_amedas_observation(_feedurl = f'test_{i}', _station_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

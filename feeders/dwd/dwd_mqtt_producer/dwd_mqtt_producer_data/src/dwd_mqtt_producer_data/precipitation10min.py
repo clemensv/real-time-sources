@@ -94,6 +94,8 @@ class Precipitation10Min:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class Precipitation10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='prgjzwqdvqwmayamxaqy',
-            timestamp='jikxjcznfvfxzaedwymb',
-            quality_level=int(6),
-            precipitation_height=float(5.345596740898495),
-            precipitation_indicator=int(78),
-            state='mjedbvxarbujtcrhvnwi'
+            station_id='iufcrgdoyyrgmvnhlnpm',
+            timestamp='ngiadfrlpvgzmwjncqwz',
+            quality_level=int(4),
+            precipitation_height=float(28.35734387422324),
+            precipitation_indicator=int(79),
+            state='lfqqbnrvivtmqzzwnixa'
         )

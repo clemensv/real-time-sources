@@ -142,6 +142,8 @@ class PollenForecast:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -209,34 +211,34 @@ class PollenForecast:
             An instance of the dataclass.
         """
         return cls(
-            region_id='colrmsreoulyqivqfgpx',
-            region_name='gagioffmnqamazkoechm',
-            last_update='izjosiwevsdtaujfpwkw',
-            next_update='dwednsonrowgzdsleadt',
-            sender='ixjqwfjablslrbavsnav',
-            hazel_today='zmxglihjgmzzjdiprnpq',
-            hazel_tomorrow='elgqepqqnpogpzpdixwg',
-            hazel_dayafter_to='wxsuudqaqepanqolzyip',
-            alder_today='zrzorfqhlfehueondyyp',
-            alder_tomorrow='dkclhvgjweivozezxhea',
-            alder_dayafter_to='mtbhbsbabwctfamspjzd',
-            birch_today='qefezmfbotkxajwwgmne',
-            birch_tomorrow='uajjvjjbrobjavneqevd',
-            birch_dayafter_to='aexehaeqnbxicldxygfu',
-            ash_today='nwnnvvmpkfizmjtsznai',
-            ash_tomorrow='bwnfbohxqufblolgwqhe',
-            ash_dayafter_to='wedhjqmsgucqypgjoydd',
-            grasses_today='gfrwmaipuqihtkpoezki',
-            grasses_tomorrow='ihgwdklowttxehpywyuj',
-            grasses_dayafter_to='tpitziwvjwncxvvqbwvx',
-            rye_today='dlzhnvkqlgglugoxnvnb',
-            rye_tomorrow='gvzqbkemmcnubtrditvr',
-            rye_dayafter_to='saehvhahzochnnrbtwzm',
-            mugwort_today='xvftevitlbryhpxwbqog',
-            mugwort_tomorrow='wbagxneempvlnfbnjvfl',
-            mugwort_dayafter_to='jcbgxgfcsetrxbwgzwbs',
-            ragweed_today='pssqieefwmfdyukfkowt',
-            ragweed_tomorrow='eqiqpeqljveminwqsqgw',
-            ragweed_dayafter_to='vwamchijabyrixwmghhf',
-            pollen_type='apyllivndciqrduvvsnf'
+            region_id='napcjoomrrssnwqpwnrf',
+            region_name='ccynsbxbdyniiegihgfw',
+            last_update='yzxjtrwdpondtfezqfno',
+            next_update='iscaxqestgzizaogiakh',
+            sender='ohifnzdclxicluwdshqk',
+            hazel_today='cgjcxmenvocicjkqzwow',
+            hazel_tomorrow='yqbejznmkylndnfcyarp',
+            hazel_dayafter_to='hndtdsdpzpdbkyuxhnha',
+            alder_today='kuwkxknfldqpzcsoygsj',
+            alder_tomorrow='xuyqnqzbckwhmvktsart',
+            alder_dayafter_to='disygemgatyrovpzekbf',
+            birch_today='hgwpehhegwipryxgnmoz',
+            birch_tomorrow='vueunuzmvltarwhsxeok',
+            birch_dayafter_to='rlpyezsckepkswkkhxaa',
+            ash_today='igqavzqdcahwwfqfjazn',
+            ash_tomorrow='honhrbxwgmbanjywehdp',
+            ash_dayafter_to='ditdpkavohbxragpemzg',
+            grasses_today='ptstnburfvsuwszvgmbo',
+            grasses_tomorrow='kjswootzijfsbdiakpjr',
+            grasses_dayafter_to='jqronwovipxmzqgktkbn',
+            rye_today='yudsnhrwjzkrgwgakthq',
+            rye_tomorrow='hipmxjsxzcgnhczgyqyu',
+            rye_dayafter_to='ahyfxriyyhacpechtsha',
+            mugwort_today='tbwzgfzvmuluevttjrba',
+            mugwort_tomorrow='djctujwskoxcskirjsyr',
+            mugwort_dayafter_to='kkuzqvtyvpcaqambegot',
+            ragweed_today='kkuhogmgcmecvmgocwzm',
+            ragweed_tomorrow='cmavuktviztydhjzlall',
+            ragweed_dayafter_to='txeemcxlwermllbhkbmw',
+            pollen_type='kmsxbmbvkcdotjdeggfv'
         )

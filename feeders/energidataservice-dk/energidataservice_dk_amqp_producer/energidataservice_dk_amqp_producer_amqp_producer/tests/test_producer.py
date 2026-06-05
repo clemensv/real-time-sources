@@ -5,6 +5,7 @@
 Tests for energidataservice_dk_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,7 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
-from proton import symbol
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../energidataservice_dk_amqp_producer_data/src')))
@@ -26,11 +27,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from energidataservice_dk_amqp_producer_amqp_producer import *
 from energidataservice_dk_amqp_producer_data import PowerSystemSnapshot
-from test_energidataservice_dk_amqp_producer_data_powersystemsnapshot import Test_PowerSystemSnapshot
+from test_powersystemsnapshot import Test_PowerSystemSnapshot
 from energidataservice_dk_amqp_producer_data import SpotPrice
-from test_energidataservice_dk_amqp_producer_data_spotprice import Test_SpotPrice
+from test_spotprice import Test_SpotPrice
 from energidataservice_dk_amqp_producer_data import Info
-from test_energidataservice_dk_amqp_producer_data_info import Test_Info
+from test_info import Test_Info
 
 
 
@@ -236,6 +237,45 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(DkEnerginetEnergidataserviceAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_power_system_snapshot(self, artemis_container):
         """Send and receive a PowerSystemSnapshot message via ActiveMQ Artemis."""
@@ -262,6 +302,7 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
                 producer.send_power_system_snapshot(
                     data=payload,
                     _price_area="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -294,6 +335,37 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{price_area}".format(price_area="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_power_system_snapshot_single_fresh_connection(self, artemis_container):
+        """Send exactly one PowerSystemSnapshot message on a fresh producer connection."""
+        payload = Test_PowerSystemSnapshot.create_instance()
+
+        producer = DkEnerginetEnergidataserviceAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_power_system_snapshot(
+                data=payload,
+                _price_area="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'dk.energinet.energidataservice.amqp.PowerSystemSnapshot'
+        assert received.body is not None
+        assert received.subject == "{price_area}".format(price_area="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{price_area}".format(price_area="value"))[:128]
     
     def test_send_spot_price(self, artemis_container):
         """Send and receive a SpotPrice message via ActiveMQ Artemis."""
@@ -320,6 +392,7 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
                 producer.send_spot_price(
                     data=payload,
                     _price_area="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -352,6 +425,37 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{price_area}".format(price_area="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_spot_price_single_fresh_connection(self, artemis_container):
+        """Send exactly one SpotPrice message on a fresh producer connection."""
+        payload = Test_SpotPrice.create_instance()
+
+        producer = DkEnerginetEnergidataserviceAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_spot_price(
+                data=payload,
+                _price_area="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'dk.energinet.energidataservice.amqp.SpotPrice'
+        assert received.body is not None
+        assert received.subject == "{price_area}".format(price_area="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{price_area}".format(price_area="value"))[:128]
     
     def test_send_info(self, artemis_container):
         """Send and receive a Info message via ActiveMQ Artemis."""
@@ -378,6 +482,7 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
                 producer.send_info(
                     data=payload,
                     _price_area="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -410,4 +515,35 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("{price_area}".format(price_area="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_info_single_fresh_connection(self, artemis_container):
+        """Send exactly one Info message on a fresh producer connection."""
+        payload = Test_Info.create_instance()
+
+        producer = DkEnerginetEnergidataserviceAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_info(
+                data=payload,
+                _price_area="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'dk.energinet.energidataservice.amqp.Info'
+        assert received.body is not None
+        assert received.subject == "{price_area}".format(price_area="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{price_area}".format(price_area="value"))[:128]
 

@@ -38,31 +38,31 @@ from aisstream_producer_kafka_producer.producer import IOAISstreamAmqpEventProdu
 
 # imports for the data classes for each event
 
-from aisstream_producer_data.positionreport import PositionReport
-from aisstream_producer_data.shipstaticdata import ShipStaticData
-from aisstream_producer_data.standardclassbpositionreport import StandardClassBPositionReport
-from aisstream_producer_data.extendedclassbpositionreport import ExtendedClassBPositionReport
-from aisstream_producer_data.aidstonavigationreport import AidsToNavigationReport
-from aisstream_producer_data.staticdatareport import StaticDataReport
-from aisstream_producer_data.basestationreport import BaseStationReport
-from aisstream_producer_data.safetybroadcastmessage import SafetyBroadcastMessage
-from aisstream_producer_data.standardsearchandrescueaircraftreport import StandardSearchAndRescueAircraftReport
-from aisstream_producer_data.longrangeaisbroadcastmessage import LongRangeAisBroadcastMessage
-from aisstream_producer_data.addressedsafetymessage import AddressedSafetyMessage
-from aisstream_producer_data.addressedbinarymessage import AddressedBinaryMessage
-from aisstream_producer_data.assignedmodecommand import AssignedModeCommand
-from aisstream_producer_data.binaryacknowledge import BinaryAcknowledge
-from aisstream_producer_data.binarybroadcastmessage import BinaryBroadcastMessage
-from aisstream_producer_data.channelmanagement import ChannelManagement
-from aisstream_producer_data.coordinatedutcinquiry import CoordinatedUTCInquiry
-from aisstream_producer_data.datalinkmanagementmessage import DataLinkManagementMessage
-from aisstream_producer_data.gnssbroadcastbinarymessage import GnssBroadcastBinaryMessage
-from aisstream_producer_data.groupassignmentcommand import GroupAssignmentCommand
-from aisstream_producer_data.interrogation import Interrogation
-from aisstream_producer_data.multislotbinarymessage import MultiSlotBinaryMessage
-from aisstream_producer_data.singleslotbinarymessage import SingleSlotBinaryMessage
-from aisstream_producer_data.shipstatic import ShipStatic
-from aisstream_producer_data.aidtonavigation import AidToNavigation
+from aisstream_producer_data import PositionReport
+from aisstream_producer_data import ShipStaticData
+from aisstream_producer_data import StandardClassBPositionReport
+from aisstream_producer_data import ExtendedClassBPositionReport
+from aisstream_producer_data import AidsToNavigationReport
+from aisstream_producer_data import StaticDataReport
+from aisstream_producer_data import BaseStationReport
+from aisstream_producer_data import SafetyBroadcastMessage
+from aisstream_producer_data import StandardSearchAndRescueAircraftReport
+from aisstream_producer_data import LongRangeAisBroadcastMessage
+from aisstream_producer_data import AddressedSafetyMessage
+from aisstream_producer_data import AddressedBinaryMessage
+from aisstream_producer_data import AssignedModeCommand
+from aisstream_producer_data import BinaryAcknowledge
+from aisstream_producer_data import BinaryBroadcastMessage
+from aisstream_producer_data import ChannelManagement
+from aisstream_producer_data import CoordinatedUTCInquiry
+from aisstream_producer_data import DataLinkManagementMessage
+from aisstream_producer_data import GnssBroadcastBinaryMessage
+from aisstream_producer_data import GroupAssignmentCommand
+from aisstream_producer_data import Interrogation
+from aisstream_producer_data import MultiSlotBinaryMessage
+from aisstream_producer_data import SingleSlotBinaryMessage
+from aisstream_producer_data import ShipStatic
+from aisstream_producer_data import AidToNavigation
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -334,7 +334,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

@@ -29,11 +29,11 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            province='hjbfebzwvswmjszewzdg',
-            community_name='gzbhobtatgdhqqawlohq',
-            cgndb_code='yxxntsmniqhpywrsdsac',
-            observation_datetime='iqrqwzrvnvldvmgmuckm',
-            aqhi=float(80.40982146175708),
+            province='asntlntpdsnsbospwkvv',
+            community_name='zomlmdrnamlomzqxwdsc',
+            cgndb_code='bwislpyouumvwfiewnzz',
+            observation_datetime='gohxjawkgnngdnozducq',
+            aqhi=float(18.925537326834096),
             aqhi_category=AqhiCategoryenum.Low
         )
         return instance
@@ -43,7 +43,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'hjbfebzwvswmjszewzdg'
+        test_value = 'asntlntpdsnsbospwkvv'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -51,7 +51,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test community_name property
         """
-        test_value = 'gzbhobtatgdhqqawlohq'
+        test_value = 'zomlmdrnamlomzqxwdsc'
         self.instance.community_name = test_value
         self.assertEqual(self.instance.community_name, test_value)
     
@@ -59,7 +59,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test cgndb_code property
         """
-        test_value = 'yxxntsmniqhpywrsdsac'
+        test_value = 'bwislpyouumvwfiewnzz'
         self.instance.cgndb_code = test_value
         self.assertEqual(self.instance.cgndb_code, test_value)
     
@@ -67,7 +67,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test observation_datetime property
         """
-        test_value = 'iqrqwzrvnvldvmgmuckm'
+        test_value = 'gohxjawkgnngdnozducq'
         self.instance.observation_datetime = test_value
         self.assertEqual(self.instance.observation_datetime, test_value)
     
@@ -75,7 +75,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test aqhi property
         """
-        test_value = float(80.40982146175708)
+        test_value = float(18.925537326834096)
         self.instance.aqhi = test_value
         self.assertEqual(self.instance.aqhi, test_value)
     
@@ -87,15 +87,6 @@ class Test_Observation(unittest.TestCase):
         self.instance.aqhi_category = test_value
         self.assertEqual(self.instance.aqhi_category, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Observation.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

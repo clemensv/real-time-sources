@@ -92,6 +92,8 @@ class Frequencies:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class Frequencies:
             An instance of the dataclass.
         """
         return cls(
-            tripId='sdpksvremofjsdrbityx',
-            startTime='ysidygtohnqprxatsftp',
-            endTime='kzcapmvvgrakkxyxxzdg',
+            tripId='wodntpznntaljrjxunoj',
+            startTime='fsubegqhaephqnasjtjt',
+            endTime='cnhhnwsyehoexwyfuedv',
             headwaySecs=int(9),
-            exactTimes=int(51)
+            exactTimes=int(21)
         )

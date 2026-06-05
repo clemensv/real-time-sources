@@ -138,6 +138,8 @@ class WeatherStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -205,32 +207,32 @@ class WeatherStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(50),
-            name='qilygfozypjlhfaqslvz',
-            names_fi='nbzkicobapwwyelkbgxu',
-            names_sv='lvsldxdbfneqxkkianzj',
-            names_en='ordsflktxlpfmegzlcvx',
-            longitude=float(40.64247589959731),
-            latitude=float(19.119157679403575),
-            altitude=float(90.64358848280496),
-            municipality='dcqpndyjdulvjfijohlq',
-            municipality_code=int(100),
-            province='fvalsbsfxjvgwsupapwj',
-            province_code=int(37),
-            road_number=int(37),
-            road_section=int(78),
-            distance_from_section_start=int(38),
-            carriageway='xolhbzeqsbfqfcnkrihc',
-            side='qfyzouwhihqtnccqzfpn',
-            contract_area='uftwmykbxpdudwdeuvhc',
-            contract_area_code=int(67),
-            station_type='gpqzijsekeevhkersngp',
+            station_id=int(48),
+            name='roishilempolxxvwcwow',
+            names_fi='varwbmvmuyrdwtrztxza',
+            names_sv='niftxrtngoqkmqnersiy',
+            names_en='aquxenoimddftrkkxysx',
+            longitude=float(26.193737120794292),
+            latitude=float(99.39688214994213),
+            altitude=float(65.39583043736918),
+            municipality='zoztyejdwlhaxdkgwlsg',
+            municipality_code=int(2),
+            province='ymlbkcvnhgojzfrksfjf',
+            province_code=int(97),
+            road_number=int(49),
+            road_section=int(61),
+            distance_from_section_start=int(47),
+            carriageway='mcszbzommcmgbondngrx',
+            side='jrbzdshfizxpxgqtlpgb',
+            contract_area='rhnawwotzwwuspheizmd',
+            contract_area_code=int(13),
+            station_type='ejzcxmrvqfcigfarwvuq',
             master=False,
-            collection_status='vktiubyqnnipqnhkqaae',
-            collection_interval=int(85),
-            state='aykefseviitkfoaljhjj',
-            start_time='nnkzabobpvvnveqxpelv',
-            livi_id='kdaqsvcqavgmtdhfapbz',
-            sensors=[int(84), int(90), int(85), int(89), int(54)],
-            data_updated_time='pniisoziuyxiurmgroxo'
+            collection_status='kussdfpmogbfnyvvqcdj',
+            collection_interval=int(70),
+            state='cgovlrulbjriylfbpipj',
+            start_time='bnumkcmjbjimvkkgqjfl',
+            livi_id='jwyikkmlpowpgqlutlch',
+            sensors=[int(89)],
+            data_updated_time='fsjstmhjjkzsjcjnmgbf'
         )

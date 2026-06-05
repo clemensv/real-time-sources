@@ -94,6 +94,8 @@ class SafetyBroadcastMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class SafetyBroadcastMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(39),
-            RepeatIndicator=int(87),
-            UserID=int(51),
-            Valid=False,
-            Spare=int(79),
-            Text='bxguoklortqdhudglzha'
+            MessageID=int(73),
+            RepeatIndicator=int(79),
+            UserID=int(22),
+            Valid=True,
+            Spare=int(23),
+            Text='vcevvjndkcehdksmudjz'
         )

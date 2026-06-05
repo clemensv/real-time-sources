@@ -100,6 +100,8 @@ class FareTransferRules:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,11 +169,11 @@ class FareTransferRules:
             An instance of the dataclass.
         """
         return cls(
-            fareTransferRuleId='gqvmohymixpsforibufs',
-            fareProductId='ssxqwyyujpkqzryuuhql',
-            transferCount=int(31),
-            fromLegGroupId='uwsxoodzpslabzcmdssq',
-            toLegGroupId='rqosavodtqxjmzbmlwqs',
-            duration=int(9),
-            durationType='pnzaovlpxrbmrososwjr'
+            fareTransferRuleId='ivpqvsfxrretcrgvylfw',
+            fareProductId='uuilycowawekvzbwzckv',
+            transferCount=int(96),
+            fromLegGroupId='tkblagxzgtvcxizreyog',
+            toLegGroupId='dwbncfdxtycwvyqvtoun',
+            duration=int(54),
+            durationType='xdmxcnixeebaqtnnipat'
         )

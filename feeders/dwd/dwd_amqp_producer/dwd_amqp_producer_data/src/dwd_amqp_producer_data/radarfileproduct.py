@@ -102,6 +102,8 @@ class RadarFileProduct:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,12 +171,12 @@ class RadarFileProduct:
             An instance of the dataclass.
         """
         return cls(
-            file_url='fuplfkcmiaghbpegtvks',
-            product='qvjbaluaguuzjzfopxlc',
-            file_name='bfzfpfbcqhtjadiwkrpm',
-            modified='zmucesjckpcowgfykbmo',
-            size_bytes=int(51),
-            file_id='togkqbxckyjebcxratgj',
-            state='gfvidlzjkjvdbnfqoyhh',
-            product_type='cglpkczlbfjbefwwmbzh'
+            file_url='ydyuprfukgrhjtnvawfm',
+            product='wghpehvoyhftyrjdlyuo',
+            file_name='bkxsnlwfogvfpklkhhri',
+            modified='evnwvtvpxbwhurycrjmj',
+            size_bytes=int(90),
+            file_id='vsmccozcvhysjjiuozeh',
+            state='pswaorbymaobpkfhgfwc',
+            product_type='ubkkoughjjrmxcbwuvls'
         )

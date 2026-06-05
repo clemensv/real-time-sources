@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from waterinfo_vmm_producer_kafka_producer.producer import BEVlaanderenWaterinfoVMMEventProducer
 from waterinfo_vmm_producer_data import Station
-from test_waterinfo_vmm_producer_data_station import Test_Station
+from test_station import Test_Station
 from waterinfo_vmm_producer_data import WaterLevelReading
-from test_waterinfo_vmm_producer_data_waterlevelreading import Test_WaterLevelReading
+from test_waterlevelreading import Test_WaterLevelReading
 from waterinfo_vmm_producer_kafka_producer.producer import BEVlaanderenWaterinfoVMMMqttEventProducer
 from waterinfo_vmm_producer_kafka_producer.producer import BEVlaanderenWaterinfoVMMAmqpEventProducer
 
@@ -107,7 +107,8 @@ def test_be_vlaanderen_waterinfo_vmm_bevlaanderenwaterinfovmmstation(kafka_emula
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_vlaanderen_waterinfo_vmm_station(_station_no = f'test_{i}', data = event_data)
+        producer_instance.send_be_vlaanderen_waterinfo_vmm_station(_station_no = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -170,7 +171,8 @@ def test_be_vlaanderen_waterinfo_vmm_bevlaanderenwaterinfovmmwaterlevelreading(k
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_vlaanderen_waterinfo_vmm_water_level_reading(_station_no = f'test_{i}', data = event_data)
+        producer_instance.send_be_vlaanderen_waterinfo_vmm_water_level_reading(_station_no = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -233,7 +235,8 @@ def test_be_vlaanderen_waterinfo_vmm_mqtt_bevlaanderenwaterinfovmmmqttstation(ka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_vlaanderen_waterinfo_vmm_mqtt_station(_station_no = f'test_{i}', data = event_data)
+        producer_instance.send_be_vlaanderen_waterinfo_vmm_mqtt_station(_station_no = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -294,7 +297,8 @@ def test_be_vlaanderen_waterinfo_vmm_mqtt_bevlaanderenwaterinfovmmmqttwaterlevel
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_vlaanderen_waterinfo_vmm_mqtt_water_level_reading(_station_no = f'test_{i}', data = event_data)
+        producer_instance.send_be_vlaanderen_waterinfo_vmm_mqtt_water_level_reading(_station_no = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -355,7 +359,8 @@ def test_be_vlaanderen_waterinfo_vmm_amqp_bevlaanderenwaterinfovmmamqpstation(ka
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_vlaanderen_waterinfo_vmm_amqp_station(_station_no = f'test_{i}', data = event_data)
+        producer_instance.send_be_vlaanderen_waterinfo_vmm_amqp_station(_station_no = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -416,7 +421,8 @@ def test_be_vlaanderen_waterinfo_vmm_amqp_bevlaanderenwaterinfovmmamqpwaterlevel
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_vlaanderen_waterinfo_vmm_amqp_water_level_reading(_station_no = f'test_{i}', data = event_data)
+        producer_instance.send_be_vlaanderen_waterinfo_vmm_amqp_water_level_reading(_station_no = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

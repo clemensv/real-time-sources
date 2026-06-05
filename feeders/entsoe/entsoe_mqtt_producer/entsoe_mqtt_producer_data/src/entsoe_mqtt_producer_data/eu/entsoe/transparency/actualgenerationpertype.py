@@ -96,6 +96,8 @@ class ActualGenerationPerType:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class ActualGenerationPerType:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='kbkuktguzfjhsqfzplwa',
-            psrType='qasijwvmjzvxvjqriwxz',
-            quantity=float(38.23586540197267),
-            resolution='bchruxauzgjllffzyrgw',
-            businessType='ttriblnkpuyilnlprohu',
-            documentType='rmaseegfkmgmtyqaxceg',
-            unitName='zhqeojeawviwvjozzntb'
+            inDomain='oaxiqelahqrvaowxuzgk',
+            psrType='hzxaishddftclymaterx',
+            quantity=float(90.82747220762964),
+            resolution='jaoobemvyeaxfevsgaaj',
+            businessType='vacgbnauiprdavdhmnzj',
+            documentType='vkjflqqeqoczgyqoedjy',
+            unitName='pbawlyyzsvqprgbnzbab'
         )

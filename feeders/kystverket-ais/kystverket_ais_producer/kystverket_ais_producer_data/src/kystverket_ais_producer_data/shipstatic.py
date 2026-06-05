@@ -18,7 +18,7 @@ from kystverket_ais_producer_data.msgtypeenum import MsgTypeenum
 @dataclass
 class ShipStatic:
     """
-    AIS static and voyage-related data (Type 5 / Type 24) projected onto the UNS axes.
+    A transport update from the Norwegian Coastal Administration. It carries vessel position and voyage updates for AIS-equipped vessels in Norwegian waters.
     
     Attributes:
         mmsi (str)
@@ -121,6 +121,8 @@ class ShipStatic:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -188,23 +190,23 @@ class ShipStatic:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='jymyauwicqmmxlzkrudk',
-            flag='hxhpvnrcchaxxghmqtvy',
-            ship_type='clkkxreiklqxncdgbdll',
-            geohash5='unmojctgbrrzogasureu',
+            mmsi='ozzvopfqavgjgsqnifye',
+            flag='okyyywpouairygzafbny',
+            ship_type='uliiijlclpvlttgmsfcn',
+            geohash5='ujjepvnlhczqpgbfxfie',
             msg_type=MsgTypeenum.position_report,
-            ship_name='zhukgaahocwwbapebssc',
-            callsign='adosjeopbupuffgfeuis',
-            imo_number=int(27),
-            ship_type_code=int(43),
-            destination='qtcvkysiemcnbaimvylp',
-            eta='dthtkdtqmukfshwyzbmx',
-            draught=float(44.57056892950148),
-            dim_to_bow=int(11),
-            dim_to_stern=int(17),
-            dim_to_port=int(92),
-            dim_to_starboard=int(94),
-            timestamp='ecngeyaeqnayyekxpsnb',
-            station_id='fnjwhpdqltwlqrcktcdg',
-            ais_msg_type=int(60)
+            ship_name='osywxgumfqjngbuwbfpk',
+            callsign='erdcxjadkwfbgqogdbut',
+            imo_number=int(50),
+            ship_type_code=int(68),
+            destination='vxtpqqkbiahhkrzmlozj',
+            eta='yegerfthwvsmjhvthxke',
+            draught=float(75.37233308808743),
+            dim_to_bow=int(51),
+            dim_to_stern=int(76),
+            dim_to_port=int(87),
+            dim_to_starboard=int(17),
+            timestamp='ceshkcsgqjxnasmxieov',
+            station_id='nlueluyxkutmgrrpyohe',
+            ais_msg_type=int(41)
         )

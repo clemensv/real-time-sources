@@ -29,7 +29,7 @@ class Test_AffectedPrefecture(unittest.TestCase):
         Create instance of AffectedPrefecture for testing
         """
         instance = AffectedPrefecture(
-            code='pgzwhnmbmuglrbkjncky',
+            code='mrtvodpnuugzzujqcxuz',
             max_intensity=MaxIntensityenum.VALUE_1
         )
         return instance
@@ -39,7 +39,7 @@ class Test_AffectedPrefecture(unittest.TestCase):
         """
         Test code property
         """
-        test_value = 'pgzwhnmbmuglrbkjncky'
+        test_value = 'mrtvodpnuugzzujqcxuz'
         self.instance.code = test_value
         self.assertEqual(self.instance.code, test_value)
     

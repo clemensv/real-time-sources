@@ -30,12 +30,12 @@ class Test_TidewaterStation(unittest.TestCase):
         Create instance of TidewaterStation for testing
         """
         instance = TidewaterStation(
-            station_id='kwkhnimibctihazlxwks',
-            name='jdbfaialvgogtpdvnfow',
+            station_id='qikyyraatyecwucjtetf',
+            name='gpvexazcnivviseaqvvn',
             country=CountryEnum.DNK,
-            owner='cbssxicttyxlznovdyff',
-            latitude=float(92.175490899058),
-            longitude=float(46.64879809069647),
+            owner='bvuicpyzesbclpkrkdmq',
+            latitude=float(91.71993949865637),
+            longitude=float(90.05237351096446),
             valid_from=datetime.datetime.now(datetime.timezone.utc),
             valid_to=datetime.datetime.now(datetime.timezone.utc)
         )
@@ -46,7 +46,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'kwkhnimibctihazlxwks'
+        test_value = 'qikyyraatyecwucjtetf'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'jdbfaialvgogtpdvnfow'
+        test_value = 'gpvexazcnivviseaqvvn'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -70,7 +70,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test owner property
         """
-        test_value = 'cbssxicttyxlznovdyff'
+        test_value = 'bvuicpyzesbclpkrkdmq'
         self.instance.owner = test_value
         self.assertEqual(self.instance.owner, test_value)
     
@@ -78,7 +78,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(92.175490899058)
+        test_value = float(91.71993949865637)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -86,7 +86,7 @@ class Test_TidewaterStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(46.64879809069647)
+        test_value = float(90.05237351096446)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

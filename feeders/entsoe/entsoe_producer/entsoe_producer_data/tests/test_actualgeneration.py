@@ -28,11 +28,11 @@ class Test_ActualGeneration(unittest.TestCase):
         Create instance of ActualGeneration for testing
         """
         instance = ActualGeneration(
-            inDomain='lormjiynbkvfkesfloxi',
-            quantity=float(9.86417650916166),
-            resolution='ouzbzikpodkuxqkizbls',
-            documentType='ftbexjdklosqhuwlyxwz',
-            unitName='yfvfjoghmwnvmvtvency'
+            inDomain='ommdseoykcubnutivasa',
+            quantity=float(0.3861410433054213),
+            resolution='upwqcydiavtnatwbpafk',
+            documentType='zteymuxbeniaelslnzfb',
+            unitName='eqbhwywlytngnezxgith'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_ActualGeneration(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'lormjiynbkvfkesfloxi'
+        test_value = 'ommdseoykcubnutivasa'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -49,7 +49,7 @@ class Test_ActualGeneration(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(9.86417650916166)
+        test_value = float(0.3861410433054213)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -57,7 +57,7 @@ class Test_ActualGeneration(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'ouzbzikpodkuxqkizbls'
+        test_value = 'upwqcydiavtnatwbpafk'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -65,7 +65,7 @@ class Test_ActualGeneration(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'ftbexjdklosqhuwlyxwz'
+        test_value = 'zteymuxbeniaelslnzfb'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -73,19 +73,10 @@ class Test_ActualGeneration(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'yfvfjoghmwnvmvtvency'
+        test_value = 'eqbhwywlytngnezxgith'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = ActualGeneration.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

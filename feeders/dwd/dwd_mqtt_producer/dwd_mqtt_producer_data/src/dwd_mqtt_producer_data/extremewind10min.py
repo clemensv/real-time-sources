@@ -96,6 +96,8 @@ class ExtremeWind10Min:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class ExtremeWind10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='wvrwhapdiyjaovkcplue',
-            timestamp='pokvytcztqwlzzqlcsvu',
-            quality_level=int(70),
-            wind_speed_maximum=float(62.854226640857206),
-            wind_speed_minimum=float(97.80192261865666),
-            wind_direction_at_maximum=float(42.63721025328947),
-            state='wzezxmgdhshhakdzbyza'
+            station_id='tvdijsnyztkyryikfppp',
+            timestamp='twoumyttdieikrmtfjkg',
+            quality_level=int(94),
+            wind_speed_maximum=float(79.73279895969097),
+            wind_speed_minimum=float(93.87446457380675),
+            wind_direction_at_maximum=float(11.406405775509509),
+            state='spfhsygzeknpcrxnusrc'
         )

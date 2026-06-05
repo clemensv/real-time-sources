@@ -163,7 +163,6 @@ The producer constructor accepts:
 **Parameters:**
 - `data` (Incident): The message data object
 - `_incident_number` (str): Value for placeholder incident_number in attribute subject
-- `_incident_datetime_utc` (str): Value for placeholder incident_datetime_utc in attribute time
 - `content_type` (str): Content type of the message data (default: 'application/json')
 
 ##### `send_incident_batch()`
@@ -173,7 +172,6 @@ Send multiple Incident messages in sequence.
 **Parameters:**
 - `data_array` (List[Incident]): Array of message data objects
 - `_incident_number` (str): Value for placeholder incident_number in attribute subject
-- `_incident_datetime_utc` (str): Value for placeholder incident_datetime_utc in attribute time
 - `content_type` (str): Content type of the message data
 
 

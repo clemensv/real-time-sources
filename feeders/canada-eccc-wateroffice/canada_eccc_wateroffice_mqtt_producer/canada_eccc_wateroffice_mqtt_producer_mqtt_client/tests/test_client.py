@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import canada_eccc_wateroffice_mqtt_producer_data
 from canada_eccc_wateroffice_mqtt_producer_data import Station
-from test_canada_eccc_wateroffice_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from canada_eccc_wateroffice_mqtt_producer_data import Observation
-from test_canada_eccc_wateroffice_mqtt_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from canada_eccc_wateroffice_mqtt_producer_mqtt_client import CAGovECCCHydroMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -91,6 +92,7 @@ async def test_ca_gov_eccc_hydro_mqtt_ca_gov_eccc_hydro_mqtt_station_py(mosquitt
         await publisher_client.publish_ca_gov_eccc_hydro_mqtt_station(
             topic=test_topic,
             station_number=f"test_station_number_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -156,6 +158,7 @@ async def test_ca_gov_eccc_hydro_mqtt_ca_gov_eccc_hydro_mqtt_observation_py(mosq
         await publisher_client.publish_ca_gov_eccc_hydro_mqtt_observation(
             topic=test_topic,
             station_number=f"test_station_number_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

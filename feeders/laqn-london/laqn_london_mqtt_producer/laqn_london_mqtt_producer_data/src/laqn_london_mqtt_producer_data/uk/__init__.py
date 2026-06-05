@@ -1,3 +1,3 @@
-from .kcl import AirQualityBandenum, IndexSourceenum, DailyIndex, Measurement, Species, SiteTypeenum, Site
+from .kcl import SiteTypeenum, Site, AirQualityBandenum, IndexSourceenum, DailyIndex, Measurement, Species
 
-__all__ = ["AirQualityBandenum", "IndexSourceenum", "DailyIndex", "Measurement", "Species", "SiteTypeenum", "Site"]
+__all__ = ["SiteTypeenum", "Site", "AirQualityBandenum", "IndexSourceenum", "DailyIndex", "Measurement", "Species"]

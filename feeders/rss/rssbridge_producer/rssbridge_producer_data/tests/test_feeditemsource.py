@@ -30,18 +30,18 @@ class Test_FeedItemSource(unittest.TestCase):
         Create instance of FeedItemSource for testing
         """
         instance = FeedItemSource(
-            author='nnmqifnsgjowjerbzoze',
+            author='txxzdgtrmbpfcjcvevaw',
             author_detail=None,
-            contributors=[None, None],
-            icon='uzzlqrdjilfjnpreirtc',
-            id='wbxeseneffnfhfjtenqw',
-            link='sydgrhhsjpepiuqmejba',
+            contributors=[None, None, None, None],
+            icon='dpqwuvobndhxegosnbww',
+            id='mubxomzpsxpuotxmwifs',
+            link='ngguujcflibfxygbamii',
             links=[None, None, None],
-            logo='dcgoprszrdbwzyioprmd',
-            rights='bckjixynhlyxgvlghliu',
-            subtitle='qubhatevfsmeazukwbkq',
-            title='qwuecaocgijbjsmthnks',
-            updated=int(93)
+            logo='nwddebbmuqwfljmmqvub',
+            rights='sdrzigkmxymwmwgnaabt',
+            subtitle='zcjpihwcamwfzlwqgwuc',
+            title='plfzakdclblqikighkuk',
+            updated=int(39)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test author property
         """
-        test_value = 'nnmqifnsgjowjerbzoze'
+        test_value = 'txxzdgtrmbpfcjcvevaw'
         self.instance.author = test_value
         self.assertEqual(self.instance.author, test_value)
     
@@ -66,7 +66,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test contributors property
         """
-        test_value = [None, None]
+        test_value = [None, None, None, None]
         self.instance.contributors = test_value
         self.assertEqual(self.instance.contributors, test_value)
     
@@ -74,7 +74,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test icon property
         """
-        test_value = 'uzzlqrdjilfjnpreirtc'
+        test_value = 'dpqwuvobndhxegosnbww'
         self.instance.icon = test_value
         self.assertEqual(self.instance.icon, test_value)
     
@@ -82,7 +82,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'wbxeseneffnfhfjtenqw'
+        test_value = 'mubxomzpsxpuotxmwifs'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -90,7 +90,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test link property
         """
-        test_value = 'sydgrhhsjpepiuqmejba'
+        test_value = 'ngguujcflibfxygbamii'
         self.instance.link = test_value
         self.assertEqual(self.instance.link, test_value)
     
@@ -106,7 +106,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test logo property
         """
-        test_value = 'dcgoprszrdbwzyioprmd'
+        test_value = 'nwddebbmuqwfljmmqvub'
         self.instance.logo = test_value
         self.assertEqual(self.instance.logo, test_value)
     
@@ -114,7 +114,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test rights property
         """
-        test_value = 'bckjixynhlyxgvlghliu'
+        test_value = 'sdrzigkmxymwmwgnaabt'
         self.instance.rights = test_value
         self.assertEqual(self.instance.rights, test_value)
     
@@ -122,7 +122,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test subtitle property
         """
-        test_value = 'qubhatevfsmeazukwbkq'
+        test_value = 'zcjpihwcamwfzlwqgwuc'
         self.instance.subtitle = test_value
         self.assertEqual(self.instance.subtitle, test_value)
     
@@ -130,7 +130,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'qwuecaocgijbjsmthnks'
+        test_value = 'plfzakdclblqikighkuk'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -138,7 +138,7 @@ class Test_FeedItemSource(unittest.TestCase):
         """
         Test updated property
         """
-        test_value = int(93)
+        test_value = int(39)
         self.instance.updated = test_value
         self.assertEqual(self.instance.updated, test_value)
     

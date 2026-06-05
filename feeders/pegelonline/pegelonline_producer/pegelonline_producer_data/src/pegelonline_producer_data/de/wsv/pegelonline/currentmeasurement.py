@@ -12,9 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from pegelonline_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
 from pegelonline_producer_data.de.wsv.pegelonline.statenswhswenum import StateNswHswEnum
 from pegelonline_producer_data.de.wsv.pegelonline.statemnwmhwenum import StateMnwMhwEnum
+from pegelonline_producer_data.de.wsv.pegelonline.trendenum import TrendEnum
 import datetime
 
 
@@ -99,6 +99,8 @@ class CurrentMeasurement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -166,9 +168,9 @@ class CurrentMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='adblcgadkupgfhgurodj',
+            station_id='wpidwpgrxwyhxaailwtp',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(6.807940413193414),
+            value=float(75.28889669811143),
             stateMnwMhw=StateMnwMhwEnum.low,
             stateNswHsw=StateNswHswEnum.normal,
             trend=TrendEnum.VALUE_NEG_1

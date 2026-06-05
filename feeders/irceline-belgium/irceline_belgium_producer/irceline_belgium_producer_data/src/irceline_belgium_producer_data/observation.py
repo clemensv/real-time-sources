@@ -17,7 +17,7 @@ import json
 @dataclass
 class Observation:
     """
-    Telemetry measurement for a single IRCELINE timeseries from GET /timeseries/{id}/getData. The upstream payload returns Unix timestamps in milliseconds and numeric values that may be null; the bridge converts the timestamp to an ISO 8601 UTC string and carries the unit from the timeseries metadata.
+    A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value.
     
     Attributes:
         timeseries_id (str)
@@ -90,6 +90,8 @@ class Observation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            timeseries_id='meyobsvdsghjhkgueahp',
-            timestamp='lymrahmqsnvthbslelpj',
-            value=float(79.59508263561202),
-            uom='lntilcgulajvmbqgfrna'
+            timeseries_id='sqqqdnghjfvuktabtems',
+            timestamp='pnfumeoknkdpgbrsjkfu',
+            value=float(8.357994375592847),
+            uom='ytbbygslwpaacqoqzvhr'
         )

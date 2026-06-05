@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import energidataservice_dk_mqtt_producer_data
 from energidataservice_dk_mqtt_producer_data import PowerSystemSnapshot
-from test_energidataservice_dk_mqtt_producer_data_powersystemsnapshot import Test_PowerSystemSnapshot
+from test_powersystemsnapshot import Test_PowerSystemSnapshot
 from energidataservice_dk_mqtt_producer_data import SpotPrice
-from test_energidataservice_dk_mqtt_producer_data_spotprice import Test_SpotPrice
+from test_spotprice import Test_SpotPrice
 from energidataservice_dk_mqtt_producer_data import Info
-from test_energidataservice_dk_mqtt_producer_data_info import Test_Info
+from test_info import Test_Info
 from energidataservice_dk_mqtt_producer_mqtt_client import DkEnerginetEnergidataserviceMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -93,6 +94,7 @@ async def test_dk_energinet_energidataservice_mqtt_dk_energinet_energidataservic
         await publisher_client.publish_dk_energinet_energidataservice_mqtt_power_system_snapshot(
             topic=test_topic,
             price_area=f"test_price_area_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -158,6 +160,7 @@ async def test_dk_energinet_energidataservice_mqtt_dk_energinet_energidataservic
         await publisher_client.publish_dk_energinet_energidataservice_mqtt_spot_price(
             topic=test_topic,
             price_area=f"test_price_area_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -223,6 +226,7 @@ async def test_dk_energinet_energidataservice_mqtt_dk_energinet_energidataservic
         await publisher_client.publish_dk_energinet_energidataservice_mqtt_info(
             topic=test_topic,
             price_area=f"test_price_area_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

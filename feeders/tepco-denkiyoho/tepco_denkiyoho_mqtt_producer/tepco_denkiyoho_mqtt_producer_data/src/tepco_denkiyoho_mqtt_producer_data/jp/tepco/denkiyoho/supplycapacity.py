@@ -112,6 +112,8 @@ class SupplyCapacity:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -180,17 +182,17 @@ class SupplyCapacity:
         """
         return cls(
             date=datetime.date.today(),
-            time='bmqflnxbbxblqgbckgrn',
-            peak_supply_capacity_mw=float(18.31973895466922),
-            peak_supply_capacity_jp_unit_value=int(36),
-            peak_time_slot='bnmeheulhspgxlcrufzk',
-            peak_reserve_margin_pct=float(4.588866061702213),
-            peak_usage_pct=float(19.907226807813416),
-            daily_max_usage_pct=float(71.80490107535907),
-            daily_max_usage_time_slot='dvkzrnpkwgnwgvqrabgq',
+            time='mwbhczglhhkwwjltqaxg',
+            peak_supply_capacity_mw=float(62.91859239683853),
+            peak_supply_capacity_jp_unit_value=int(46),
+            peak_time_slot='dqlziapestrbmiddpwvx',
+            peak_reserve_margin_pct=float(78.52950165910127),
+            peak_usage_pct=float(31.35254337207457),
+            daily_max_usage_pct=float(69.02453676869125),
+            daily_max_usage_time_slot='arwjzznixtgbdtpzsqgg',
             update_datetime=datetime.datetime.now(datetime.timezone.utc),
             update_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            area_code='zzhgapuqvzlaltxohnki',
-            area_name_jp='epzjpnadnmqnbpjgxslr',
-            area_name_en='usedohyiqgxnktgyjioi'
+            area_code='jkaosujlkfuuxrpgvgkv',
+            area_name_jp='clwcrkfqxjcxmlnuegrr',
+            area_name_en='qwqaebmyuiptkewltykx'
         )

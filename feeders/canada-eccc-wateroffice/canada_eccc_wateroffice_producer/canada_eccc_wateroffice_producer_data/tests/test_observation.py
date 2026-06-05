@@ -29,16 +29,16 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            station_number='hhqrcbocrvgwmrygpdgc',
-            identifier='orxqedwocwjkdyodkrfc',
-            station_name='tkacxhcjixntpsirfzii',
-            prov_terr_state_loc='vtwhxfkxnbsikgysvyyp',
+            station_number='flvtpjqxkvrkmhdojywl',
+            identifier='cjsnvqgxfxzcijlmuiws',
+            station_name='qjdkdxdguwbwztylaaku',
+            prov_terr_state_loc='dupjuppesuhdfmfxubei',
             observation_datetime=datetime.datetime.now(datetime.timezone.utc),
-            level=float(97.40408830145512),
-            discharge=float(18.221563127027697),
-            latitude=float(61.701267747305735),
-            longitude=float(43.01218386529443),
-            basin='ofxqmvjkgtbscsbisoow'
+            level=float(96.22065069674434),
+            discharge=float(26.50973333742718),
+            latitude=float(14.205504757953957),
+            longitude=float(12.209501372533694),
+            basin='iyzysaxnwxazcmouqvbw'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test station_number property
         """
-        test_value = 'hhqrcbocrvgwmrygpdgc'
+        test_value = 'flvtpjqxkvrkmhdojywl'
         self.instance.station_number = test_value
         self.assertEqual(self.instance.station_number, test_value)
     
@@ -55,7 +55,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'orxqedwocwjkdyodkrfc'
+        test_value = 'cjsnvqgxfxzcijlmuiws'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
     
@@ -63,7 +63,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'tkacxhcjixntpsirfzii'
+        test_value = 'qjdkdxdguwbwztylaaku'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -71,7 +71,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test prov_terr_state_loc property
         """
-        test_value = 'vtwhxfkxnbsikgysvyyp'
+        test_value = 'dupjuppesuhdfmfxubei'
         self.instance.prov_terr_state_loc = test_value
         self.assertEqual(self.instance.prov_terr_state_loc, test_value)
     
@@ -87,7 +87,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test level property
         """
-        test_value = float(97.40408830145512)
+        test_value = float(96.22065069674434)
         self.instance.level = test_value
         self.assertEqual(self.instance.level, test_value)
     
@@ -95,7 +95,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(18.221563127027697)
+        test_value = float(26.50973333742718)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -103,7 +103,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(61.701267747305735)
+        test_value = float(14.205504757953957)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -111,7 +111,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(43.01218386529443)
+        test_value = float(12.209501372533694)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -119,19 +119,10 @@ class Test_Observation(unittest.TestCase):
         """
         Test basin property
         """
-        test_value = 'ofxqmvjkgtbscsbisoow'
+        test_value = 'iyzysaxnwxazcmouqvbw'
         self.instance.basin = test_value
         self.assertEqual(self.instance.basin, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Observation.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

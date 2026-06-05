@@ -36,11 +36,11 @@ from tepco_denkiyoho_producer_kafka_producer.producer import JPTEPCODenkiyohoKaf
 
 # imports for the data classes for each event
 
-from tepco_denkiyoho_producer_data.supplycapacity import SupplyCapacity
-from tepco_denkiyoho_producer_data.peakdemandforecast import PeakDemandForecast
-from tepco_denkiyoho_producer_data.demandactual import DemandActual
-from tepco_denkiyoho_producer_data.demandforecast import DemandForecast
-from tepco_denkiyoho_producer_data.info import Info
+from tepco_denkiyoho_producer_data import SupplyCapacity
+from tepco_denkiyoho_producer_data import PeakDemandForecast
+from tepco_denkiyoho_producer_data import DemandActual
+from tepco_denkiyoho_producer_data import DemandForecast
+from tepco_denkiyoho_producer_data import Info
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -104,7 +104,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

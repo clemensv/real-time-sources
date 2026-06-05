@@ -110,6 +110,8 @@ class VesselMetadata:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -177,18 +179,18 @@ class VesselMetadata:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(95),
-            timestamp=int(13),
-            name='ygagolkdndtfufapjofr',
-            callSign='ffxsdpupujhpltzvcfvt',
-            imo=int(8),
-            type=int(60),
-            draught=int(89),
-            eta=int(84),
-            destination='mhtarjygkberttfbaeer',
-            posType=int(92),
-            refA=int(14),
-            refB=int(97),
-            refC=int(6),
-            refD=int(86)
+            mmsi=int(36),
+            timestamp=int(38),
+            name='iopvtfdfyjrlllzvbmpv',
+            callSign='tcyvaszaujiasyzunvow',
+            imo=int(41),
+            type=int(22),
+            draught=int(93),
+            eta=int(70),
+            destination='eldlooecyrpxpauqrilw',
+            posType=int(66),
+            refA=int(50),
+            refB=int(33),
+            refC=int(84),
+            refD=int(51)
         )

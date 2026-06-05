@@ -5,6 +5,7 @@
 Tests for noaa_ndbc_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../noaa_ndbc_amqp_producer_data/src')))
@@ -25,23 +27,23 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from noaa_ndbc_amqp_producer_amqp_producer import *
 from noaa_ndbc_amqp_producer_data import BuoyObservation
-from test_noaa_ndbc_amqp_producer_data_buoyobservation import Test_BuoyObservation
+from test_buoyobservation import Test_BuoyObservation
 from noaa_ndbc_amqp_producer_data import BuoyStation
-from test_noaa_ndbc_amqp_producer_data_buoystation import Test_BuoyStation
+from test_buoystation import Test_BuoyStation
 from noaa_ndbc_amqp_producer_data import BuoySolarRadiationObservation
-from test_noaa_ndbc_amqp_producer_data_buoysolarradiationobservation import Test_BuoySolarRadiationObservation
+from test_buoysolarradiationobservation import Test_BuoySolarRadiationObservation
 from noaa_ndbc_amqp_producer_data import BuoyOceanographicObservation
-from test_noaa_ndbc_amqp_producer_data_buoyoceanographicobservation import Test_BuoyOceanographicObservation
+from test_buoyoceanographicobservation import Test_BuoyOceanographicObservation
 from noaa_ndbc_amqp_producer_data import BuoyDartMeasurement
-from test_noaa_ndbc_amqp_producer_data_buoydartmeasurement import Test_BuoyDartMeasurement
+from test_buoydartmeasurement import Test_BuoyDartMeasurement
 from noaa_ndbc_amqp_producer_data import BuoyContinuousWindObservation
-from test_noaa_ndbc_amqp_producer_data_buoycontinuouswindobservation import Test_BuoyContinuousWindObservation
+from test_buoycontinuouswindobservation import Test_BuoyContinuousWindObservation
 from noaa_ndbc_amqp_producer_data import BuoySupplementalMeasurement
-from test_noaa_ndbc_amqp_producer_data_buoysupplementalmeasurement import Test_BuoySupplementalMeasurement
+from test_buoysupplementalmeasurement import Test_BuoySupplementalMeasurement
 from noaa_ndbc_amqp_producer_data import BuoyDetailedWaveSummary
-from test_noaa_ndbc_amqp_producer_data_buoydetailedwavesummary import Test_BuoyDetailedWaveSummary
+from test_buoydetailedwavesummary import Test_BuoyDetailedWaveSummary
 from noaa_ndbc_amqp_producer_data import BuoyHourlyRainMeasurement
-from test_noaa_ndbc_amqp_producer_data_buoyhourlyrainmeasurement import Test_BuoyHourlyRainMeasurement
+from test_buoyhourlyrainmeasurement import Test_BuoyHourlyRainMeasurement
 
 
 
@@ -247,6 +249,45 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(MicrosoftOpenDataUSNOAANDBCAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_buoy_observation(self, artemis_container):
         """Send and receive a BuoyObservation message via ActiveMQ Artemis."""
@@ -274,6 +315,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _region="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -281,6 +323,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -303,8 +346,42 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('region') == "{region}".format(region="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_buoy_observation_single_fresh_connection(self, artemis_container):
+        """Send exactly one BuoyObservation message on a fresh producer connection."""
+        payload = Test_BuoyObservation.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANDBCAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_buoy_observation(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_buoy_station(self, artemis_container):
         """Send and receive a BuoyStation message via ActiveMQ Artemis."""
@@ -332,6 +409,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _region="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -339,6 +417,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -361,8 +440,42 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('region') == "{region}".format(region="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_buoy_station_single_fresh_connection(self, artemis_container):
+        """Send exactly one BuoyStation message on a fresh producer connection."""
+        payload = Test_BuoyStation.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANDBCAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_buoy_station(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_buoy_solar_radiation_observation(self, artemis_container):
         """Send and receive a BuoySolarRadiationObservation message via ActiveMQ Artemis."""
@@ -390,6 +503,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _region="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -397,6 +511,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -419,8 +534,42 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('region') == "{region}".format(region="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_buoy_solar_radiation_observation_single_fresh_connection(self, artemis_container):
+        """Send exactly one BuoySolarRadiationObservation message on a fresh producer connection."""
+        payload = Test_BuoySolarRadiationObservation.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANDBCAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_buoy_solar_radiation_observation(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_buoy_oceanographic_observation(self, artemis_container):
         """Send and receive a BuoyOceanographicObservation message via ActiveMQ Artemis."""
@@ -448,6 +597,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _region="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -455,6 +605,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -477,8 +628,42 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('region') == "{region}".format(region="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_buoy_oceanographic_observation_single_fresh_connection(self, artemis_container):
+        """Send exactly one BuoyOceanographicObservation message on a fresh producer connection."""
+        payload = Test_BuoyOceanographicObservation.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANDBCAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_buoy_oceanographic_observation(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_buoy_dart_measurement(self, artemis_container):
         """Send and receive a BuoyDartMeasurement message via ActiveMQ Artemis."""
@@ -506,6 +691,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _region="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -513,6 +699,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -535,8 +722,42 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('region') == "{region}".format(region="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_buoy_dart_measurement_single_fresh_connection(self, artemis_container):
+        """Send exactly one BuoyDartMeasurement message on a fresh producer connection."""
+        payload = Test_BuoyDartMeasurement.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANDBCAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_buoy_dart_measurement(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_buoy_continuous_wind_observation(self, artemis_container):
         """Send and receive a BuoyContinuousWindObservation message via ActiveMQ Artemis."""
@@ -564,6 +785,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _region="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -571,6 +793,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -593,8 +816,42 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('region') == "{region}".format(region="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_buoy_continuous_wind_observation_single_fresh_connection(self, artemis_container):
+        """Send exactly one BuoyContinuousWindObservation message on a fresh producer connection."""
+        payload = Test_BuoyContinuousWindObservation.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANDBCAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_buoy_continuous_wind_observation(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_buoy_supplemental_measurement(self, artemis_container):
         """Send and receive a BuoySupplementalMeasurement message via ActiveMQ Artemis."""
@@ -622,6 +879,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _region="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -629,6 +887,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -651,8 +910,42 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('region') == "{region}".format(region="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_buoy_supplemental_measurement_single_fresh_connection(self, artemis_container):
+        """Send exactly one BuoySupplementalMeasurement message on a fresh producer connection."""
+        payload = Test_BuoySupplementalMeasurement.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANDBCAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_buoy_supplemental_measurement(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_buoy_detailed_wave_summary(self, artemis_container):
         """Send and receive a BuoyDetailedWaveSummary message via ActiveMQ Artemis."""
@@ -680,6 +973,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _region="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -687,6 +981,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -709,8 +1004,42 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('region') == "{region}".format(region="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_buoy_detailed_wave_summary_single_fresh_connection(self, artemis_container):
+        """Send exactly one BuoyDetailedWaveSummary message on a fresh producer connection."""
+        payload = Test_BuoyDetailedWaveSummary.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANDBCAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_buoy_detailed_wave_summary(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
     
     def test_send_buoy_hourly_rain_measurement(self, artemis_container):
         """Send and receive a BuoyHourlyRainMeasurement message via ActiveMQ Artemis."""
@@ -738,6 +1067,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     data=payload,
                     _station_id="value",
                     _region="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -745,6 +1075,7 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -767,6 +1098,40 @@ class TestMicrosoftOpenDataUSNOAANDBCAmqpProducer:
                     assert received.body is not None
                 assert received.subject == "{station_id}".format(station_id="value")
                 assert properties.get('region') == "{region}".format(region="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_buoy_hourly_rain_measurement_single_fresh_connection(self, artemis_container):
+        """Send exactly one BuoyHourlyRainMeasurement message on a fresh producer connection."""
+        payload = Test_BuoyHourlyRainMeasurement.create_instance()
+
+        producer = MicrosoftOpenDataUSNOAANDBCAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_buoy_hourly_rain_measurement(
+                data=payload,
+                _station_id="value",
+                _region="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement'
+        assert received.body is not None
+        assert received.subject == "{station_id}".format(station_id="value")
+        assert properties.get('region') == "{region}".format(region="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
 

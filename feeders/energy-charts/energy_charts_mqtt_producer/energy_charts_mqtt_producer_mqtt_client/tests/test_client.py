@@ -17,13 +17,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import energy_charts_mqtt_producer_data
 from energy_charts_mqtt_producer_data import PublicPower
-from test_energy_charts_mqtt_producer_data_publicpower import Test_PublicPower
+from test_publicpower import Test_PublicPower
 from energy_charts_mqtt_producer_data import SpotPrice
-from test_energy_charts_mqtt_producer_data_spotprice import Test_SpotPrice
+from test_spotprice import Test_SpotPrice
 from energy_charts_mqtt_producer_data import GridSignal
-from test_energy_charts_mqtt_producer_data_gridsignal import Test_GridSignal
+from test_gridsignal import Test_GridSignal
 from energy_charts_mqtt_producer_data import Info
-from test_energy_charts_mqtt_producer_data_info import Test_Info
+from test_info import Test_Info
 from energy_charts_mqtt_producer_mqtt_client import InfoEnergyChartsMqttMqttClient
 
 @pytest_asyncio.fixture

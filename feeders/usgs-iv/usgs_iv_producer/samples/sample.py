@@ -35,37 +35,43 @@ from confluent_kafka import Producer as KafkaProducer
 from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer
 from usgs_iv_producer_kafka_producer.producer import USGSSiteTimeseriesEventProducer
 from usgs_iv_producer_kafka_producer.producer import USGSInstantaneousValuesEventProducer
+from usgs_iv_producer_kafka_producer.producer import USGSSitesMqttEventProducer
+from usgs_iv_producer_kafka_producer.producer import USGSSiteTimeseriesMqttEventProducer
+from usgs_iv_producer_kafka_producer.producer import USGSInstantaneousValuesMqttEventProducer
+from usgs_iv_producer_kafka_producer.producer import USGSSitesAmqpEventProducer
+from usgs_iv_producer_kafka_producer.producer import USGSSiteTimeseriesAmqpEventProducer
+from usgs_iv_producer_kafka_producer.producer import USGSInstantaneousValuesAmqpEventProducer
 
 # imports for the data classes for each event
 
-from usgs_iv_producer_data.site import Site
-from usgs_iv_producer_data.sitetimeseries import SiteTimeseries
-from usgs_iv_producer_data.otherparameter import OtherParameter
-from usgs_iv_producer_data.precipitation import Precipitation
-from usgs_iv_producer_data.streamflow import Streamflow
-from usgs_iv_producer_data.gageheight import GageHeight
-from usgs_iv_producer_data.watertemperature import WaterTemperature
-from usgs_iv_producer_data.dissolvedoxygen import DissolvedOxygen
-from usgs_iv_producer_data.ph import PH
-from usgs_iv_producer_data.specificconductance import SpecificConductance
-from usgs_iv_producer_data.turbidity import Turbidity
-from usgs_iv_producer_data.airtemperature import AirTemperature
-from usgs_iv_producer_data.windspeed import WindSpeed
-from usgs_iv_producer_data.winddirection import WindDirection
-from usgs_iv_producer_data.relativehumidity import RelativeHumidity
-from usgs_iv_producer_data.barometricpressure import BarometricPressure
-from usgs_iv_producer_data.turbidityfnu import TurbidityFNU
-from usgs_iv_producer_data.fdom import FDOM
-from usgs_iv_producer_data.reservoirstorage import ReservoirStorage
-from usgs_iv_producer_data.lakeelevationngvd29 import LakeElevationNGVD29
-from usgs_iv_producer_data.waterdepth import WaterDepth
-from usgs_iv_producer_data.equipmentstatus import EquipmentStatus
-from usgs_iv_producer_data.tidallyfiltereddischarge import TidallyFilteredDischarge
-from usgs_iv_producer_data.watervelocity import WaterVelocity
-from usgs_iv_producer_data.estuaryelevationngvd29 import EstuaryElevationNGVD29
-from usgs_iv_producer_data.lakeelevationnavd88 import LakeElevationNAVD88
-from usgs_iv_producer_data.salinity import Salinity
-from usgs_iv_producer_data.gateopening import GateOpening
+from usgs_iv_producer_data import Site
+from usgs_iv_producer_data import SiteTimeseries
+from usgs_iv_producer_data import OtherParameter
+from usgs_iv_producer_data import Precipitation
+from usgs_iv_producer_data import Streamflow
+from usgs_iv_producer_data import GageHeight
+from usgs_iv_producer_data import WaterTemperature
+from usgs_iv_producer_data import DissolvedOxygen
+from usgs_iv_producer_data import PH
+from usgs_iv_producer_data import SpecificConductance
+from usgs_iv_producer_data import Turbidity
+from usgs_iv_producer_data import AirTemperature
+from usgs_iv_producer_data import WindSpeed
+from usgs_iv_producer_data import WindDirection
+from usgs_iv_producer_data import RelativeHumidity
+from usgs_iv_producer_data import BarometricPressure
+from usgs_iv_producer_data import TurbidityFNU
+from usgs_iv_producer_data import FDOM
+from usgs_iv_producer_data import ReservoirStorage
+from usgs_iv_producer_data import LakeElevationNGVD29
+from usgs_iv_producer_data import WaterDepth
+from usgs_iv_producer_data import EquipmentStatus
+from usgs_iv_producer_data import TidallyFilteredDischarge
+from usgs_iv_producer_data import WaterVelocity
+from usgs_iv_producer_data import EstuaryElevationNGVD29
+from usgs_iv_producer_data import LakeElevationNAVD88
+from usgs_iv_producer_data import Salinity
+from usgs_iv_producer_data import GateOpening
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -122,7 +128,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _other_parameter = OtherParameter()
 
     # sends the 'USGS.InstantaneousValues.OtherParameter' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_other_parameter(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _other_parameter)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_other_parameter(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _other_parameter)
     print(f"Sent 'USGS.InstantaneousValues.OtherParameter' event: {_other_parameter.to_json()}")
 
     # ---- USGS.InstantaneousValues.Precipitation ----
@@ -130,7 +136,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _precipitation = Precipitation()
 
     # sends the 'USGS.InstantaneousValues.Precipitation' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_precipitation(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _precipitation)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_precipitation(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _precipitation)
     print(f"Sent 'USGS.InstantaneousValues.Precipitation' event: {_precipitation.to_json()}")
 
     # ---- USGS.InstantaneousValues.Streamflow ----
@@ -138,7 +144,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _streamflow = Streamflow()
 
     # sends the 'USGS.InstantaneousValues.Streamflow' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_streamflow(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _streamflow)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_streamflow(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _streamflow)
     print(f"Sent 'USGS.InstantaneousValues.Streamflow' event: {_streamflow.to_json()}")
 
     # ---- USGS.InstantaneousValues.GageHeight ----
@@ -146,7 +152,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _gage_height = GageHeight()
 
     # sends the 'USGS.InstantaneousValues.GageHeight' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_gage_height(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _gage_height)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_gage_height(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _gage_height)
     print(f"Sent 'USGS.InstantaneousValues.GageHeight' event: {_gage_height.to_json()}")
 
     # ---- USGS.InstantaneousValues.WaterTemperature ----
@@ -154,7 +160,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _water_temperature = WaterTemperature()
 
     # sends the 'USGS.InstantaneousValues.WaterTemperature' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_water_temperature(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _water_temperature)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_water_temperature(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _water_temperature)
     print(f"Sent 'USGS.InstantaneousValues.WaterTemperature' event: {_water_temperature.to_json()}")
 
     # ---- USGS.InstantaneousValues.DissolvedOxygen ----
@@ -162,7 +168,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _dissolved_oxygen = DissolvedOxygen()
 
     # sends the 'USGS.InstantaneousValues.DissolvedOxygen' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_dissolved_oxygen(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _dissolved_oxygen)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_dissolved_oxygen(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _dissolved_oxygen)
     print(f"Sent 'USGS.InstantaneousValues.DissolvedOxygen' event: {_dissolved_oxygen.to_json()}")
 
     # ---- USGS.InstantaneousValues.pH ----
@@ -170,7 +176,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _ph = PH()
 
     # sends the 'USGS.InstantaneousValues.pH' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_p_h(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _ph)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_p_h(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _ph)
     print(f"Sent 'USGS.InstantaneousValues.pH' event: {_ph.to_json()}")
 
     # ---- USGS.InstantaneousValues.SpecificConductance ----
@@ -178,7 +184,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _specific_conductance = SpecificConductance()
 
     # sends the 'USGS.InstantaneousValues.SpecificConductance' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_specific_conductance(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _specific_conductance)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_specific_conductance(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _specific_conductance)
     print(f"Sent 'USGS.InstantaneousValues.SpecificConductance' event: {_specific_conductance.to_json()}")
 
     # ---- USGS.InstantaneousValues.Turbidity ----
@@ -186,7 +192,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _turbidity = Turbidity()
 
     # sends the 'USGS.InstantaneousValues.Turbidity' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_turbidity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _turbidity)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_turbidity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _turbidity)
     print(f"Sent 'USGS.InstantaneousValues.Turbidity' event: {_turbidity.to_json()}")
 
     # ---- USGS.InstantaneousValues.AirTemperature ----
@@ -194,7 +200,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _air_temperature = AirTemperature()
 
     # sends the 'USGS.InstantaneousValues.AirTemperature' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_air_temperature(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _air_temperature)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_air_temperature(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _air_temperature)
     print(f"Sent 'USGS.InstantaneousValues.AirTemperature' event: {_air_temperature.to_json()}")
 
     # ---- USGS.InstantaneousValues.WindSpeed ----
@@ -202,7 +208,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _wind_speed = WindSpeed()
 
     # sends the 'USGS.InstantaneousValues.WindSpeed' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_wind_speed(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _wind_speed)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_wind_speed(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _wind_speed)
     print(f"Sent 'USGS.InstantaneousValues.WindSpeed' event: {_wind_speed.to_json()}")
 
     # ---- USGS.InstantaneousValues.WindDirection ----
@@ -210,7 +216,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _wind_direction = WindDirection()
 
     # sends the 'USGS.InstantaneousValues.WindDirection' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_wind_direction(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _wind_direction)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_wind_direction(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _wind_direction)
     print(f"Sent 'USGS.InstantaneousValues.WindDirection' event: {_wind_direction.to_json()}")
 
     # ---- USGS.InstantaneousValues.RelativeHumidity ----
@@ -218,7 +224,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _relative_humidity = RelativeHumidity()
 
     # sends the 'USGS.InstantaneousValues.RelativeHumidity' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_relative_humidity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _relative_humidity)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_relative_humidity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _relative_humidity)
     print(f"Sent 'USGS.InstantaneousValues.RelativeHumidity' event: {_relative_humidity.to_json()}")
 
     # ---- USGS.InstantaneousValues.BarometricPressure ----
@@ -226,7 +232,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _barometric_pressure = BarometricPressure()
 
     # sends the 'USGS.InstantaneousValues.BarometricPressure' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_barometric_pressure(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _barometric_pressure)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_barometric_pressure(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _barometric_pressure)
     print(f"Sent 'USGS.InstantaneousValues.BarometricPressure' event: {_barometric_pressure.to_json()}")
 
     # ---- USGS.InstantaneousValues.TurbidityFNU ----
@@ -234,7 +240,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _turbidity_fnu = TurbidityFNU()
 
     # sends the 'USGS.InstantaneousValues.TurbidityFNU' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_turbidity_fnu(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _turbidity_fnu)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_turbidity_fnu(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _turbidity_fnu)
     print(f"Sent 'USGS.InstantaneousValues.TurbidityFNU' event: {_turbidity_fnu.to_json()}")
 
     # ---- USGS.InstantaneousValues.fDOM ----
@@ -242,7 +248,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _fdom = FDOM()
 
     # sends the 'USGS.InstantaneousValues.fDOM' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_f_dom(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _fdom)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_f_dom(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _fdom)
     print(f"Sent 'USGS.InstantaneousValues.fDOM' event: {_fdom.to_json()}")
 
     # ---- USGS.InstantaneousValues.ReservoirStorage ----
@@ -250,7 +256,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _reservoir_storage = ReservoirStorage()
 
     # sends the 'USGS.InstantaneousValues.ReservoirStorage' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_reservoir_storage(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _reservoir_storage)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_reservoir_storage(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _reservoir_storage)
     print(f"Sent 'USGS.InstantaneousValues.ReservoirStorage' event: {_reservoir_storage.to_json()}")
 
     # ---- USGS.InstantaneousValues.LakeElevationNGVD29 ----
@@ -258,7 +264,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _lake_elevation_ngvd29 = LakeElevationNGVD29()
 
     # sends the 'USGS.InstantaneousValues.LakeElevationNGVD29' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_lake_elevation_ngvd29(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _lake_elevation_ngvd29)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_lake_elevation_ngvd29(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _lake_elevation_ngvd29)
     print(f"Sent 'USGS.InstantaneousValues.LakeElevationNGVD29' event: {_lake_elevation_ngvd29.to_json()}")
 
     # ---- USGS.InstantaneousValues.WaterDepth ----
@@ -266,7 +272,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _water_depth = WaterDepth()
 
     # sends the 'USGS.InstantaneousValues.WaterDepth' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_water_depth(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _water_depth)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_water_depth(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _water_depth)
     print(f"Sent 'USGS.InstantaneousValues.WaterDepth' event: {_water_depth.to_json()}")
 
     # ---- USGS.InstantaneousValues.EquipmentStatus ----
@@ -274,7 +280,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _equipment_status = EquipmentStatus()
 
     # sends the 'USGS.InstantaneousValues.EquipmentStatus' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_equipment_status(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _equipment_status)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_equipment_status(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _equipment_status)
     print(f"Sent 'USGS.InstantaneousValues.EquipmentStatus' event: {_equipment_status.to_json()}")
 
     # ---- USGS.InstantaneousValues.TidallyFilteredDischarge ----
@@ -282,7 +288,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _tidally_filtered_discharge = TidallyFilteredDischarge()
 
     # sends the 'USGS.InstantaneousValues.TidallyFilteredDischarge' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_tidally_filtered_discharge(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _tidally_filtered_discharge)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_tidally_filtered_discharge(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _tidally_filtered_discharge)
     print(f"Sent 'USGS.InstantaneousValues.TidallyFilteredDischarge' event: {_tidally_filtered_discharge.to_json()}")
 
     # ---- USGS.InstantaneousValues.WaterVelocity ----
@@ -290,7 +296,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _water_velocity = WaterVelocity()
 
     # sends the 'USGS.InstantaneousValues.WaterVelocity' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_water_velocity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _water_velocity)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_water_velocity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _water_velocity)
     print(f"Sent 'USGS.InstantaneousValues.WaterVelocity' event: {_water_velocity.to_json()}")
 
     # ---- USGS.InstantaneousValues.EstuaryElevationNGVD29 ----
@@ -298,7 +304,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _estuary_elevation_ngvd29 = EstuaryElevationNGVD29()
 
     # sends the 'USGS.InstantaneousValues.EstuaryElevationNGVD29' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_estuary_elevation_ngvd29(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _estuary_elevation_ngvd29)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_estuary_elevation_ngvd29(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _estuary_elevation_ngvd29)
     print(f"Sent 'USGS.InstantaneousValues.EstuaryElevationNGVD29' event: {_estuary_elevation_ngvd29.to_json()}")
 
     # ---- USGS.InstantaneousValues.LakeElevationNAVD88 ----
@@ -306,7 +312,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _lake_elevation_navd88 = LakeElevationNAVD88()
 
     # sends the 'USGS.InstantaneousValues.LakeElevationNAVD88' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_lake_elevation_navd88(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _lake_elevation_navd88)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_lake_elevation_navd88(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _lake_elevation_navd88)
     print(f"Sent 'USGS.InstantaneousValues.LakeElevationNAVD88' event: {_lake_elevation_navd88.to_json()}")
 
     # ---- USGS.InstantaneousValues.Salinity ----
@@ -314,7 +320,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _salinity = Salinity()
 
     # sends the 'USGS.InstantaneousValues.Salinity' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_salinity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _salinity)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_salinity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _salinity)
     print(f"Sent 'USGS.InstantaneousValues.Salinity' event: {_salinity.to_json()}")
 
     # ---- USGS.InstantaneousValues.GateOpening ----
@@ -322,14 +328,510 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _gate_opening = GateOpening()
 
     # sends the 'USGS.InstantaneousValues.GateOpening' event to Kafka topic.
-    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_gate_opening(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', _datetime = 'TODO: replace me', data = _gate_opening)
+    await usgsinstantaneous_values_event_producer.send_usgs_instantaneous_values_gate_opening(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _gate_opening)
     print(f"Sent 'USGS.InstantaneousValues.GateOpening' event: {_gate_opening.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgssites_mqtt_event_producer = USGSSitesMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgssites_mqtt_event_producer = USGSSitesMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.Sites.mqtt.Site ----
+    # TODO: Supply event data for the USGS.Sites.mqtt.Site event
+    _site = Site()
+
+    # sends the 'USGS.Sites.mqtt.Site' event to Kafka topic.
+    await usgssites_mqtt_event_producer.send_usgs_sites_mqtt_site(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', data = _site)
+    print(f"Sent 'USGS.Sites.mqtt.Site' event: {_site.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgssite_timeseries_mqtt_event_producer = USGSSiteTimeseriesMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgssite_timeseries_mqtt_event_producer = USGSSiteTimeseriesMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.SiteTimeseries.mqtt.SiteTimeseries ----
+    # TODO: Supply event data for the USGS.SiteTimeseries.mqtt.SiteTimeseries event
+    _site_timeseries = SiteTimeseries()
+
+    # sends the 'USGS.SiteTimeseries.mqtt.SiteTimeseries' event to Kafka topic.
+    await usgssite_timeseries_mqtt_event_producer.send_usgs_site_timeseries_mqtt_site_timeseries(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _site_timeseries)
+    print(f"Sent 'USGS.SiteTimeseries.mqtt.SiteTimeseries' event: {_site_timeseries.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgsinstantaneous_values_mqtt_event_producer = USGSInstantaneousValuesMqttEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgsinstantaneous_values_mqtt_event_producer = USGSInstantaneousValuesMqttEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.InstantaneousValues.mqtt.OtherParameter ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.OtherParameter event
+    _other_parameter = OtherParameter()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.OtherParameter' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_other_parameter(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _other_parameter)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.OtherParameter' event: {_other_parameter.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.Precipitation ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.Precipitation event
+    _precipitation = Precipitation()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.Precipitation' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_precipitation(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _precipitation)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.Precipitation' event: {_precipitation.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.Streamflow ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.Streamflow event
+    _streamflow = Streamflow()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.Streamflow' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_streamflow(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _streamflow)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.Streamflow' event: {_streamflow.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.GageHeight ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.GageHeight event
+    _gage_height = GageHeight()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.GageHeight' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_gage_height(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _gage_height)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.GageHeight' event: {_gage_height.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.WaterTemperature ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.WaterTemperature event
+    _water_temperature = WaterTemperature()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.WaterTemperature' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_water_temperature(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _water_temperature)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.WaterTemperature' event: {_water_temperature.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.DissolvedOxygen ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.DissolvedOxygen event
+    _dissolved_oxygen = DissolvedOxygen()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.DissolvedOxygen' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_dissolved_oxygen(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _dissolved_oxygen)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.DissolvedOxygen' event: {_dissolved_oxygen.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.pH ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.pH event
+    _ph = PH()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.pH' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_p_h(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _ph)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.pH' event: {_ph.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.SpecificConductance ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.SpecificConductance event
+    _specific_conductance = SpecificConductance()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.SpecificConductance' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_specific_conductance(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _specific_conductance)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.SpecificConductance' event: {_specific_conductance.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.Turbidity ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.Turbidity event
+    _turbidity = Turbidity()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.Turbidity' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_turbidity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _turbidity)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.Turbidity' event: {_turbidity.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.AirTemperature ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.AirTemperature event
+    _air_temperature = AirTemperature()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.AirTemperature' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_air_temperature(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _air_temperature)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.AirTemperature' event: {_air_temperature.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.WindSpeed ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.WindSpeed event
+    _wind_speed = WindSpeed()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.WindSpeed' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_wind_speed(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _wind_speed)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.WindSpeed' event: {_wind_speed.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.WindDirection ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.WindDirection event
+    _wind_direction = WindDirection()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.WindDirection' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_wind_direction(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _wind_direction)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.WindDirection' event: {_wind_direction.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.RelativeHumidity ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.RelativeHumidity event
+    _relative_humidity = RelativeHumidity()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.RelativeHumidity' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_relative_humidity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _relative_humidity)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.RelativeHumidity' event: {_relative_humidity.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.BarometricPressure ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.BarometricPressure event
+    _barometric_pressure = BarometricPressure()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.BarometricPressure' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_barometric_pressure(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _barometric_pressure)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.BarometricPressure' event: {_barometric_pressure.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.TurbidityFNU ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.TurbidityFNU event
+    _turbidity_fnu = TurbidityFNU()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.TurbidityFNU' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_turbidity_fnu(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _turbidity_fnu)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.TurbidityFNU' event: {_turbidity_fnu.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.fDOM ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.fDOM event
+    _fdom = FDOM()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.fDOM' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_f_dom(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _fdom)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.fDOM' event: {_fdom.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.ReservoirStorage ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.ReservoirStorage event
+    _reservoir_storage = ReservoirStorage()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.ReservoirStorage' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_reservoir_storage(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _reservoir_storage)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.ReservoirStorage' event: {_reservoir_storage.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.LakeElevationNGVD29 ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.LakeElevationNGVD29 event
+    _lake_elevation_ngvd29 = LakeElevationNGVD29()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.LakeElevationNGVD29' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_lake_elevation_ngvd29(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _lake_elevation_ngvd29)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.LakeElevationNGVD29' event: {_lake_elevation_ngvd29.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.WaterDepth ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.WaterDepth event
+    _water_depth = WaterDepth()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.WaterDepth' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_water_depth(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _water_depth)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.WaterDepth' event: {_water_depth.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.EquipmentStatus ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.EquipmentStatus event
+    _equipment_status = EquipmentStatus()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.EquipmentStatus' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_equipment_status(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _equipment_status)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.EquipmentStatus' event: {_equipment_status.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge event
+    _tidally_filtered_discharge = TidallyFilteredDischarge()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_tidally_filtered_discharge(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _tidally_filtered_discharge)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge' event: {_tidally_filtered_discharge.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.WaterVelocity ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.WaterVelocity event
+    _water_velocity = WaterVelocity()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.WaterVelocity' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_water_velocity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _water_velocity)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.WaterVelocity' event: {_water_velocity.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29 ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29 event
+    _estuary_elevation_ngvd29 = EstuaryElevationNGVD29()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_estuary_elevation_ngvd29(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _estuary_elevation_ngvd29)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29' event: {_estuary_elevation_ngvd29.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.LakeElevationNAVD88 ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.LakeElevationNAVD88 event
+    _lake_elevation_navd88 = LakeElevationNAVD88()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.LakeElevationNAVD88' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_lake_elevation_navd88(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _lake_elevation_navd88)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.LakeElevationNAVD88' event: {_lake_elevation_navd88.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.Salinity ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.Salinity event
+    _salinity = Salinity()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.Salinity' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_salinity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _salinity)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.Salinity' event: {_salinity.to_json()}")
+
+    # ---- USGS.InstantaneousValues.mqtt.GateOpening ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.mqtt.GateOpening event
+    _gate_opening = GateOpening()
+
+    # sends the 'USGS.InstantaneousValues.mqtt.GateOpening' event to Kafka topic.
+    await usgsinstantaneous_values_mqtt_event_producer.send_usgs_instantaneous_values_mqtt_gate_opening(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _gate_opening)
+    print(f"Sent 'USGS.InstantaneousValues.mqtt.GateOpening' event: {_gate_opening.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgssites_amqp_event_producer = USGSSitesAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgssites_amqp_event_producer = USGSSitesAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.Sites.amqp.Site ----
+    # TODO: Supply event data for the USGS.Sites.amqp.Site event
+    _site = Site()
+
+    # sends the 'USGS.Sites.amqp.Site' event to Kafka topic.
+    await usgssites_amqp_event_producer.send_usgs_sites_amqp_site(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', data = _site)
+    print(f"Sent 'USGS.Sites.amqp.Site' event: {_site.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgssite_timeseries_amqp_event_producer = USGSSiteTimeseriesAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgssite_timeseries_amqp_event_producer = USGSSiteTimeseriesAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.SiteTimeseries.amqp.SiteTimeseries ----
+    # TODO: Supply event data for the USGS.SiteTimeseries.amqp.SiteTimeseries event
+    _site_timeseries = SiteTimeseries()
+
+    # sends the 'USGS.SiteTimeseries.amqp.SiteTimeseries' event to Kafka topic.
+    await usgssite_timeseries_amqp_event_producer.send_usgs_site_timeseries_amqp_site_timeseries(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _site_timeseries)
+    print(f"Sent 'USGS.SiteTimeseries.amqp.SiteTimeseries' event: {_site_timeseries.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        usgsinstantaneous_values_amqp_event_producer = USGSInstantaneousValuesAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        usgsinstantaneous_values_amqp_event_producer = USGSInstantaneousValuesAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- USGS.InstantaneousValues.amqp.OtherParameter ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.OtherParameter event
+    _other_parameter = OtherParameter()
+
+    # sends the 'USGS.InstantaneousValues.amqp.OtherParameter' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_other_parameter(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _other_parameter)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.OtherParameter' event: {_other_parameter.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.Precipitation ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.Precipitation event
+    _precipitation = Precipitation()
+
+    # sends the 'USGS.InstantaneousValues.amqp.Precipitation' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_precipitation(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _precipitation)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.Precipitation' event: {_precipitation.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.Streamflow ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.Streamflow event
+    _streamflow = Streamflow()
+
+    # sends the 'USGS.InstantaneousValues.amqp.Streamflow' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_streamflow(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _streamflow)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.Streamflow' event: {_streamflow.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.GageHeight ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.GageHeight event
+    _gage_height = GageHeight()
+
+    # sends the 'USGS.InstantaneousValues.amqp.GageHeight' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_gage_height(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _gage_height)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.GageHeight' event: {_gage_height.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.WaterTemperature ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.WaterTemperature event
+    _water_temperature = WaterTemperature()
+
+    # sends the 'USGS.InstantaneousValues.amqp.WaterTemperature' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_water_temperature(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _water_temperature)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.WaterTemperature' event: {_water_temperature.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.DissolvedOxygen ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.DissolvedOxygen event
+    _dissolved_oxygen = DissolvedOxygen()
+
+    # sends the 'USGS.InstantaneousValues.amqp.DissolvedOxygen' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_dissolved_oxygen(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _dissolved_oxygen)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.DissolvedOxygen' event: {_dissolved_oxygen.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.pH ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.pH event
+    _ph = PH()
+
+    # sends the 'USGS.InstantaneousValues.amqp.pH' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_p_h(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _ph)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.pH' event: {_ph.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.SpecificConductance ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.SpecificConductance event
+    _specific_conductance = SpecificConductance()
+
+    # sends the 'USGS.InstantaneousValues.amqp.SpecificConductance' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_specific_conductance(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _specific_conductance)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.SpecificConductance' event: {_specific_conductance.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.Turbidity ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.Turbidity event
+    _turbidity = Turbidity()
+
+    # sends the 'USGS.InstantaneousValues.amqp.Turbidity' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_turbidity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _turbidity)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.Turbidity' event: {_turbidity.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.AirTemperature ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.AirTemperature event
+    _air_temperature = AirTemperature()
+
+    # sends the 'USGS.InstantaneousValues.amqp.AirTemperature' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_air_temperature(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _air_temperature)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.AirTemperature' event: {_air_temperature.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.WindSpeed ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.WindSpeed event
+    _wind_speed = WindSpeed()
+
+    # sends the 'USGS.InstantaneousValues.amqp.WindSpeed' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_wind_speed(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _wind_speed)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.WindSpeed' event: {_wind_speed.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.WindDirection ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.WindDirection event
+    _wind_direction = WindDirection()
+
+    # sends the 'USGS.InstantaneousValues.amqp.WindDirection' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_wind_direction(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _wind_direction)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.WindDirection' event: {_wind_direction.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.RelativeHumidity ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.RelativeHumidity event
+    _relative_humidity = RelativeHumidity()
+
+    # sends the 'USGS.InstantaneousValues.amqp.RelativeHumidity' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_relative_humidity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _relative_humidity)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.RelativeHumidity' event: {_relative_humidity.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.BarometricPressure ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.BarometricPressure event
+    _barometric_pressure = BarometricPressure()
+
+    # sends the 'USGS.InstantaneousValues.amqp.BarometricPressure' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_barometric_pressure(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _barometric_pressure)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.BarometricPressure' event: {_barometric_pressure.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.TurbidityFNU ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.TurbidityFNU event
+    _turbidity_fnu = TurbidityFNU()
+
+    # sends the 'USGS.InstantaneousValues.amqp.TurbidityFNU' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_turbidity_fnu(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _turbidity_fnu)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.TurbidityFNU' event: {_turbidity_fnu.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.fDOM ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.fDOM event
+    _fdom = FDOM()
+
+    # sends the 'USGS.InstantaneousValues.amqp.fDOM' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_f_dom(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _fdom)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.fDOM' event: {_fdom.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.ReservoirStorage ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.ReservoirStorage event
+    _reservoir_storage = ReservoirStorage()
+
+    # sends the 'USGS.InstantaneousValues.amqp.ReservoirStorage' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_reservoir_storage(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _reservoir_storage)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.ReservoirStorage' event: {_reservoir_storage.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.LakeElevationNGVD29 ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.LakeElevationNGVD29 event
+    _lake_elevation_ngvd29 = LakeElevationNGVD29()
+
+    # sends the 'USGS.InstantaneousValues.amqp.LakeElevationNGVD29' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_lake_elevation_ngvd29(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _lake_elevation_ngvd29)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.LakeElevationNGVD29' event: {_lake_elevation_ngvd29.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.WaterDepth ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.WaterDepth event
+    _water_depth = WaterDepth()
+
+    # sends the 'USGS.InstantaneousValues.amqp.WaterDepth' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_water_depth(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _water_depth)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.WaterDepth' event: {_water_depth.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.EquipmentStatus ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.EquipmentStatus event
+    _equipment_status = EquipmentStatus()
+
+    # sends the 'USGS.InstantaneousValues.amqp.EquipmentStatus' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_equipment_status(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _equipment_status)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.EquipmentStatus' event: {_equipment_status.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.TidallyFilteredDischarge ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.TidallyFilteredDischarge event
+    _tidally_filtered_discharge = TidallyFilteredDischarge()
+
+    # sends the 'USGS.InstantaneousValues.amqp.TidallyFilteredDischarge' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_tidally_filtered_discharge(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _tidally_filtered_discharge)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.TidallyFilteredDischarge' event: {_tidally_filtered_discharge.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.WaterVelocity ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.WaterVelocity event
+    _water_velocity = WaterVelocity()
+
+    # sends the 'USGS.InstantaneousValues.amqp.WaterVelocity' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_water_velocity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _water_velocity)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.WaterVelocity' event: {_water_velocity.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29 ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29 event
+    _estuary_elevation_ngvd29 = EstuaryElevationNGVD29()
+
+    # sends the 'USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_estuary_elevation_ngvd29(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _estuary_elevation_ngvd29)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29' event: {_estuary_elevation_ngvd29.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.LakeElevationNAVD88 ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.LakeElevationNAVD88 event
+    _lake_elevation_navd88 = LakeElevationNAVD88()
+
+    # sends the 'USGS.InstantaneousValues.amqp.LakeElevationNAVD88' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_lake_elevation_navd88(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _lake_elevation_navd88)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.LakeElevationNAVD88' event: {_lake_elevation_navd88.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.Salinity ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.Salinity event
+    _salinity = Salinity()
+
+    # sends the 'USGS.InstantaneousValues.amqp.Salinity' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_salinity(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _salinity)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.Salinity' event: {_salinity.to_json()}")
+
+    # ---- USGS.InstantaneousValues.amqp.GateOpening ----
+    # TODO: Supply event data for the USGS.InstantaneousValues.amqp.GateOpening event
+    _gate_opening = GateOpening()
+
+    # sends the 'USGS.InstantaneousValues.amqp.GateOpening' event to Kafka topic.
+    await usgsinstantaneous_values_amqp_event_producer.send_usgs_instantaneous_values_amqp_gate_opening(_source_uri = 'TODO: replace me', _agency_cd = 'TODO: replace me', _site_no = 'TODO: replace me', _parameter_cd = 'TODO: replace me', _timeseries_cd = 'TODO: replace me', data = _gate_opening)
+    print(f"Sent 'USGS.InstantaneousValues.amqp.GateOpening' event: {_gate_opening.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

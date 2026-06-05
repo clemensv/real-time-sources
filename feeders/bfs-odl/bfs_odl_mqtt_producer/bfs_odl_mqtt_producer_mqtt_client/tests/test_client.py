@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import bfs_odl_mqtt_producer_data
 from bfs_odl_mqtt_producer_data import Station
-from test_bfs_odl_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from bfs_odl_mqtt_producer_data import DoseRateMeasurement
-from test_bfs_odl_mqtt_producer_data_doseratemeasurement import Test_DoseRateMeasurement
+from test_doseratemeasurement import Test_DoseRateMeasurement
 from bfs_odl_mqtt_producer_mqtt_client import DeBfsOdlMqttMqttClient
 
 @pytest_asyncio.fixture

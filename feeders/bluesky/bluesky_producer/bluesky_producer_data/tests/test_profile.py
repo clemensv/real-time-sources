@@ -28,17 +28,17 @@ class Test_Profile(unittest.TestCase):
         Create instance of Profile for testing
         """
         instance = Profile(
-            did='gzksiggryuqjaaopjluc',
-            handle='geduesgekfxqjnqsipiy',
-            display_name='qraitxtihkiwouomfyye',
-            description='uptdfxifrlkqvdujckzh',
-            avatar='iekzgbuyohpxlzttzrwb',
-            banner='axmwfnhudtjzkwrwdygi',
-            created_at='vwgarmpmjvqgealvtaak',
-            indexed_at='kbeakrtfwclghhfuoeeo',
+            did='pgyxncugtkzrzjmpulua',
+            handle='lnbnjshaksjgekjszcyx',
+            display_name='onknbhxvxidlutsyugol',
+            description='hkqbplapxorscpfexarq',
+            avatar='cdwlhbtgkuqixfmmybhs',
+            banner='fptjudqfkpcteygvfptm',
+            created_at='dqonbislbxdfpubfpfyk',
+            indexed_at='rwbyayhdtywhjlmdileu',
             seq=int(37),
-            collection='dowokdqffsgorrpdclul',
-            lang='smnxrtrxzfeemoayfjzf'
+            collection='xmhfbtmdhnnuvjdebqyt',
+            lang='bspgshablrjyghsbmsrb'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Profile(unittest.TestCase):
         """
         Test did property
         """
-        test_value = 'gzksiggryuqjaaopjluc'
+        test_value = 'pgyxncugtkzrzjmpulua'
         self.instance.did = test_value
         self.assertEqual(self.instance.did, test_value)
     
@@ -55,7 +55,7 @@ class Test_Profile(unittest.TestCase):
         """
         Test handle property
         """
-        test_value = 'geduesgekfxqjnqsipiy'
+        test_value = 'lnbnjshaksjgekjszcyx'
         self.instance.handle = test_value
         self.assertEqual(self.instance.handle, test_value)
     
@@ -63,7 +63,7 @@ class Test_Profile(unittest.TestCase):
         """
         Test display_name property
         """
-        test_value = 'qraitxtihkiwouomfyye'
+        test_value = 'onknbhxvxidlutsyugol'
         self.instance.display_name = test_value
         self.assertEqual(self.instance.display_name, test_value)
     
@@ -71,7 +71,7 @@ class Test_Profile(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'uptdfxifrlkqvdujckzh'
+        test_value = 'hkqbplapxorscpfexarq'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -79,7 +79,7 @@ class Test_Profile(unittest.TestCase):
         """
         Test avatar property
         """
-        test_value = 'iekzgbuyohpxlzttzrwb'
+        test_value = 'cdwlhbtgkuqixfmmybhs'
         self.instance.avatar = test_value
         self.assertEqual(self.instance.avatar, test_value)
     
@@ -87,7 +87,7 @@ class Test_Profile(unittest.TestCase):
         """
         Test banner property
         """
-        test_value = 'axmwfnhudtjzkwrwdygi'
+        test_value = 'fptjudqfkpcteygvfptm'
         self.instance.banner = test_value
         self.assertEqual(self.instance.banner, test_value)
     
@@ -95,7 +95,7 @@ class Test_Profile(unittest.TestCase):
         """
         Test created_at property
         """
-        test_value = 'vwgarmpmjvqgealvtaak'
+        test_value = 'dqonbislbxdfpubfpfyk'
         self.instance.created_at = test_value
         self.assertEqual(self.instance.created_at, test_value)
     
@@ -103,7 +103,7 @@ class Test_Profile(unittest.TestCase):
         """
         Test indexed_at property
         """
-        test_value = 'kbeakrtfwclghhfuoeeo'
+        test_value = 'rwbyayhdtywhjlmdileu'
         self.instance.indexed_at = test_value
         self.assertEqual(self.instance.indexed_at, test_value)
     
@@ -119,7 +119,7 @@ class Test_Profile(unittest.TestCase):
         """
         Test collection property
         """
-        test_value = 'dowokdqffsgorrpdclul'
+        test_value = 'xmhfbtmdhnnuvjdebqyt'
         self.instance.collection = test_value
         self.assertEqual(self.instance.collection, test_value)
     
@@ -127,19 +127,10 @@ class Test_Profile(unittest.TestCase):
         """
         Test lang property
         """
-        test_value = 'smnxrtrxzfeemoayfjzf'
+        test_value = 'bspgshablrjyghsbmsrb'
         self.instance.lang = test_value
         self.assertEqual(self.instance.lang, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Profile.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

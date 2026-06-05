@@ -107,6 +107,8 @@ class StopTimes:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -174,16 +176,16 @@ class StopTimes:
             An instance of the dataclass.
         """
         return cls(
-            tripId='bwpwczlryczbhwkxkwcz',
-            arrivalTime='pticjyohzekffnximzzy',
-            departureTime='wgfuxfxawuwtpqzfyije',
-            stopId='aefapfrkpgeyoqqhhmpc',
-            stopSequence=int(33),
-            stopHeadsign='aqfjtiejkpobrsmzamza',
+            tripId='txslowgchupbizskclia',
+            arrivalTime='ceisjcpbvpyducmwnevy',
+            departureTime='kjmuzudqmanrthceghft',
+            stopId='qpygfvhsxoebptustbbd',
+            stopSequence=int(21),
+            stopHeadsign='yojjnifexgohwgiifysq',
             pickupType=None,
             dropOffType=None,
             continuousPickup=None,
             continuousDropOff=None,
-            shapeDistTraveled=float(96.50540079628355),
+            shapeDistTraveled=float(91.87870618720211),
             timepoint=None
         )

@@ -30,29 +30,29 @@ class Test_RoadDisruption(unittest.TestCase):
         Create instance of RoadDisruption for testing
         """
         instance = RoadDisruption(
-            road_id='giwncpfmmyeczoywxkdh',
-            disruption_id='hohnktgdneiopybwhftn',
-            category='wrcdpyaeyvyoklswjbfl',
-            sub_category='ewuzhvwlgnasorzeywuq',
-            severity='jvcpaissnzcipvwuvhpl',
-            ordinal=int(82),
-            url='pbyuuvnwsvmkivfanyhe',
-            point='bhzspftsjvxnkgczjinv',
-            comments='bmaqzadobauqpipcvckj',
-            current_update='scdjbmhxwgecrqoyhigy',
+            road_id='satiyohliazgvfydwnta',
+            disruption_id='jvskmmyhqbmhifdzyqsx',
+            category='lzwwfpbgionxhilpsigg',
+            sub_category='upgyrckhxbsxnrveveak',
+            severity='bzcfkmpsprvhhffiqrbj',
+            ordinal=int(28),
+            url='umxhkyrwghleqvibogqu',
+            point='maysnrosgvmehegdeivn',
+            comments='epdiqogheczoiwjvyiqa',
+            current_update='fntciouxyusblpxnfinj',
             current_update_datetime=datetime.datetime.now(datetime.timezone.utc),
             corridor_ids=None,
             start_datetime=datetime.datetime.now(datetime.timezone.utc),
             end_datetime=datetime.datetime.now(datetime.timezone.utc),
             last_modified_time=datetime.datetime.now(datetime.timezone.utc),
-            level_of_interest='msfnboqebkqlhealhzyj',
-            location='fbhzhzhietbmiykmpety',
+            level_of_interest='suprtjcilospmopnxyyz',
+            location='dadrztjmxmgkjjqeofut',
             is_provisional=True,
-            has_closures=True,
+            has_closures=False,
             streets=None,
-            geography='bgbklopmoyobwehwkuvm',
-            geometry='pifdgbmgkbxuwpopluei',
-            status='mxvttqpoqwgsuckxuuwb',
+            geography='iqcmdepqsolnxunjilpm',
+            geometry='dmxrbnuodbwbpzziyvoc',
+            status='fubpilmlbepxzyxnfvfi',
             is_active=False
         )
         return instance
@@ -62,7 +62,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test road_id property
         """
-        test_value = 'giwncpfmmyeczoywxkdh'
+        test_value = 'satiyohliazgvfydwnta'
         self.instance.road_id = test_value
         self.assertEqual(self.instance.road_id, test_value)
     
@@ -70,7 +70,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test disruption_id property
         """
-        test_value = 'hohnktgdneiopybwhftn'
+        test_value = 'jvskmmyhqbmhifdzyqsx'
         self.instance.disruption_id = test_value
         self.assertEqual(self.instance.disruption_id, test_value)
     
@@ -78,7 +78,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test category property
         """
-        test_value = 'wrcdpyaeyvyoklswjbfl'
+        test_value = 'lzwwfpbgionxhilpsigg'
         self.instance.category = test_value
         self.assertEqual(self.instance.category, test_value)
     
@@ -86,7 +86,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test sub_category property
         """
-        test_value = 'ewuzhvwlgnasorzeywuq'
+        test_value = 'upgyrckhxbsxnrveveak'
         self.instance.sub_category = test_value
         self.assertEqual(self.instance.sub_category, test_value)
     
@@ -94,7 +94,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = 'jvcpaissnzcipvwuvhpl'
+        test_value = 'bzcfkmpsprvhhffiqrbj'
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -102,7 +102,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test ordinal property
         """
-        test_value = int(82)
+        test_value = int(28)
         self.instance.ordinal = test_value
         self.assertEqual(self.instance.ordinal, test_value)
     
@@ -110,7 +110,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'pbyuuvnwsvmkivfanyhe'
+        test_value = 'umxhkyrwghleqvibogqu'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
@@ -118,7 +118,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test point property
         """
-        test_value = 'bhzspftsjvxnkgczjinv'
+        test_value = 'maysnrosgvmehegdeivn'
         self.instance.point = test_value
         self.assertEqual(self.instance.point, test_value)
     
@@ -126,7 +126,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test comments property
         """
-        test_value = 'bmaqzadobauqpipcvckj'
+        test_value = 'epdiqogheczoiwjvyiqa'
         self.instance.comments = test_value
         self.assertEqual(self.instance.comments, test_value)
     
@@ -134,7 +134,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test current_update property
         """
-        test_value = 'scdjbmhxwgecrqoyhigy'
+        test_value = 'fntciouxyusblpxnfinj'
         self.instance.current_update = test_value
         self.assertEqual(self.instance.current_update, test_value)
     
@@ -182,7 +182,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test level_of_interest property
         """
-        test_value = 'msfnboqebkqlhealhzyj'
+        test_value = 'suprtjcilospmopnxyyz'
         self.instance.level_of_interest = test_value
         self.assertEqual(self.instance.level_of_interest, test_value)
     
@@ -190,7 +190,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test location property
         """
-        test_value = 'fbhzhzhietbmiykmpety'
+        test_value = 'dadrztjmxmgkjjqeofut'
         self.instance.location = test_value
         self.assertEqual(self.instance.location, test_value)
     
@@ -206,7 +206,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test has_closures property
         """
-        test_value = True
+        test_value = False
         self.instance.has_closures = test_value
         self.assertEqual(self.instance.has_closures, test_value)
     
@@ -222,7 +222,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test geography property
         """
-        test_value = 'bgbklopmoyobwehwkuvm'
+        test_value = 'iqcmdepqsolnxunjilpm'
         self.instance.geography = test_value
         self.assertEqual(self.instance.geography, test_value)
     
@@ -230,7 +230,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test geometry property
         """
-        test_value = 'pifdgbmgkbxuwpopluei'
+        test_value = 'dmxrbnuodbwbpzziyvoc'
         self.instance.geometry = test_value
         self.assertEqual(self.instance.geometry, test_value)
     
@@ -238,7 +238,7 @@ class Test_RoadDisruption(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'mxvttqpoqwgsuckxuuwb'
+        test_value = 'fubpilmlbepxzyxnfvfi'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     

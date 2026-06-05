@@ -116,6 +116,8 @@ class WeatherObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -183,20 +185,20 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='gwhwsyyliqgbaazhjdlx',
+            station_id='tngehugcdteijzubvtkc',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            text_description='wignelhxzpupujochins',
-            temperature=float(39.27509625925176),
-            dewpoint=float(2.5944797982502377),
-            wind_direction=float(4.505925491477003),
-            wind_speed=float(95.67387684190471),
-            wind_gust=float(99.07383443774312),
-            barometric_pressure=float(72.16111871331545),
-            sea_level_pressure=float(15.877213862111228),
-            visibility=float(26.72249999648708),
-            relative_humidity=float(85.70955499201438),
-            wind_chill=float(75.30440599844552),
-            heat_index=float(68.7440867412516),
-            state='jtsxrgxwalnzawtibvjc',
-            zone_id='cxunrlyynoddqpewbnsy'
+            text_description='pjtpmhuzjjfmjvjpggcz',
+            temperature=float(86.63206545032435),
+            dewpoint=float(69.06393631027655),
+            wind_direction=float(3.060709458651356),
+            wind_speed=float(88.804376069682),
+            wind_gust=float(88.83551212695504),
+            barometric_pressure=float(51.646383209127656),
+            sea_level_pressure=float(21.133680641366237),
+            visibility=float(37.82021186193967),
+            relative_humidity=float(35.738429644557044),
+            wind_chill=float(53.83060975387169),
+            heat_index=float(60.48107711862591),
+            state='oepljjxvxwfygzmcikpt',
+            zone_id='xtaqldtlmznrvhbcwikg'
         )

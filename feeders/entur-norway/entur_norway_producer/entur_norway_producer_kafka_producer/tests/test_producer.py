@@ -20,15 +20,16 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from entur_norway_producer_kafka_producer.producer import NoEnturJourneysEventProducer
 from entur_norway_producer_data import DatedServiceJourney
-from test_entur_norway_producer_data_datedservicejourney import Test_DatedServiceJourney
+from test_datedservicejourney import Test_DatedServiceJourney
 from entur_norway_producer_data import EstimatedVehicleJourney
-from test_entur_norway_producer_data_estimatedvehiclejourney import Test_EstimatedVehicleJourney
+from test_estimatedvehiclejourney import Test_EstimatedVehicleJourney
 from entur_norway_producer_data import MonitoredVehicleJourney
-from test_entur_norway_producer_data_monitoredvehiclejourney import Test_MonitoredVehicleJourney
+from test_monitoredvehiclejourney import Test_MonitoredVehicleJourney
 from entur_norway_producer_kafka_producer.producer import NoEnturSituationsEventProducer
 from entur_norway_producer_data import PtSituationElement
-from test_entur_norway_producer_data_ptsituationelement import Test_PtSituationElement
+from test_ptsituationelement import Test_PtSituationElement
 from entur_norway_producer_kafka_producer.producer import NoEnturMqttEventProducer
+from entur_norway_producer_kafka_producer.producer import NoEnturAmqpEventProducer
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -111,7 +112,8 @@ def test_no_entur_journeys_noenturdatedservicejourney(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_no_entur_dated_service_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', data = event_data)
+        producer_instance.send_no_entur_dated_service_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -174,7 +176,8 @@ def test_no_entur_journeys_noenturestimatedvehiclejourney(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_no_entur_estimated_vehicle_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', data = event_data)
+        producer_instance.send_no_entur_estimated_vehicle_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -237,7 +240,8 @@ def test_no_entur_journeys_noenturmonitoredvehiclejourney(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_no_entur_monitored_vehicle_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', data = event_data)
+        producer_instance.send_no_entur_monitored_vehicle_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -300,7 +304,8 @@ def test_no_entur_situations_noenturptsituationelement(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_no_entur_pt_situation_element(_situation_number = f'test_{i}', data = event_data)
+        producer_instance.send_no_entur_pt_situation_element(_situation_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -363,7 +368,8 @@ def test_no_entur_mqtt_noenturmqttestimatedvehiclejourney(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_no_entur_mqtt_estimated_vehicle_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', data = event_data)
+        producer_instance.send_no_entur_mqtt_estimated_vehicle_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -424,7 +430,8 @@ def test_no_entur_mqtt_noenturmqttmonitoredvehiclejourney(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_no_entur_mqtt_monitored_vehicle_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', data = event_data)
+        producer_instance.send_no_entur_mqtt_monitored_vehicle_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -485,7 +492,194 @@ def test_no_entur_mqtt_noenturmqttptsituationelement(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_no_entur_mqtt_pt_situation_element(_situation_number = f'test_{i}', data = event_data)
+        producer_instance.send_no_entur_mqtt_pt_situation_element(_situation_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_no_entur_amqp_noenturamqpestimatedvehiclejourney(kafka_emulator):
+    """Test the NoEnturAmqpEstimatedVehicleJourney event from the No.Entur.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_no_entur_amqp_noenturamqpestimatedvehiclejourney',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "no.entur.amqp.EstimatedVehicleJourney":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = NoEnturAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_EstimatedVehicleJourney.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_no_entur_amqp_estimated_vehicle_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_no_entur_amqp_noenturamqpmonitoredvehiclejourney(kafka_emulator):
+    """Test the NoEnturAmqpMonitoredVehicleJourney event from the No.Entur.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_no_entur_amqp_noenturamqpmonitoredvehiclejourney',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "no.entur.amqp.MonitoredVehicleJourney":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = NoEnturAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_MonitoredVehicleJourney.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_no_entur_amqp_monitored_vehicle_journey(_operating_day = f'test_{i}', _service_journey_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
+    # Flush producer to ensure messages are sent before consumer polling
+    kafka_producer.flush(timeout=5.0)
+
+    # Verify all 5 messages received and assert Kafka key
+    for i in range(5):
+        received_key = on_event()
+        assert received_key is not None, f"Failed to receive message {i+1} of 5"
+    consumer.close()
+
+
+def test_no_entur_amqp_noenturamqpptsituationelement(kafka_emulator):
+    """Test the NoEnturAmqpPtSituationElement event from the No.Entur.Amqp message group"""
+
+    bootstrap_servers = kafka_emulator["bootstrap_servers"]
+    topic = kafka_emulator["topic"]
+
+    producer = Producer({'bootstrap.servers': bootstrap_servers})
+    consumer = Consumer({
+        'bootstrap.servers': bootstrap_servers,
+        'group.id': 'test_no_entur_amqp_noenturamqpptsituationelement',  # Unique group per test
+        'auto.offset.reset': 'earliest'
+    })
+    consumer.subscribe([topic])
+    
+    # Wait for partition assignment before producing messages
+    import time
+    assignment_timeout = time.time() + 10
+    while not consumer.assignment() and time.time() < assignment_timeout:
+        consumer.poll(0.1)
+    
+    # Verify partition assignment succeeded
+    if not consumer.assignment():
+        pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
+    
+    # Give consumer time to stabilize and seek to beginning
+    time.sleep(1)
+
+    def on_event():
+        import time
+        timeout = time.time() + 20  # 20 second timeout for CI robustness
+        while True:
+            if time.time() > timeout:
+                return None
+            msg = consumer.poll(1.0)
+            if msg is None:
+                continue
+            if msg.error():
+                continue
+            cloudevent = parse_cloudevent(msg)
+            if cloudevent['type'] == "no.entur.amqp.PtSituationElement":
+                return msg.key().decode('utf-8') if msg.key() else None
+
+    kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
+    producer_instance = NoEnturAmqpEventProducer(kafka_producer, topic, 'binary')
+    # Create valid test data using the test helper
+    event_data = Test_PtSituationElement.create_instance()
+    
+    # Send 5 messages to test message settlement and ordering
+    for i in range(5):
+        producer_instance.send_no_entur_amqp_pt_situation_element(_situation_number = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

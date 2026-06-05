@@ -100,6 +100,8 @@ class AirTemperature10Min:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class AirTemperature10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='ybxiudrrsvyrqcuhewmy',
-            timestamp='fxywmpeqxfxyzzvfjdmj',
-            quality_level=int(43),
-            pressure_station_level=float(41.16375112930788),
-            air_temperature_2m=float(93.88319559671852),
-            air_temperature_5cm=float(62.58304201019126),
-            relative_humidity=float(71.54373021451505),
-            dew_point_temperature=float(69.16758414922585),
-            state='zlggiaeofjshircqlesg'
+            station_id='sqbykfrgdkybliddkhox',
+            timestamp='zohgvkyummapexjcgsug',
+            quality_level=int(24),
+            pressure_station_level=float(37.98664273916504),
+            air_temperature_2m=float(0.052041270158453834),
+            air_temperature_5cm=float(89.99576487099378),
+            relative_humidity=float(42.725132990936956),
+            dew_point_temperature=float(38.70078468432543),
+            state='rmquubzmykhosusrnrlc'
         )

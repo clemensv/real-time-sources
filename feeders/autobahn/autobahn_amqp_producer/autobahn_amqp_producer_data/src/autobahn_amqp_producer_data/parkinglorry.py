@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -128,6 +128,8 @@ class ParkingLorry:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -195,25 +197,25 @@ class ParkingLorry:
             An instance of the dataclass.
         """
         return cls(
-            identifier='bunicdbuxoetlcfumkib',
-            road='namfajzoagofmlqbmltf',
-            road_ids=['lfqiievnxeojonuxsqul'],
+            identifier='urgjgiisfdbvpoxekdig',
+            road='udvzwoftpsaqvelqvtqp',
+            road_ids=['zrsowmhchwrtqpzjltlr', 'iyqxbzlgrbtsloprpukh', 'zjotlifintxrmegoywlj'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
-            title='vdiuueoifxafkybwjpzd',
-            subtitle='hvfyongrhdyeftupzyfw',
+            display_type=DisplayTypeenum.ROADWORKS,
+            title='xhjotawwqpbfuigbsfix',
+            subtitle='neilbeygknpkiwkvogks',
             description_lines=None,
             future=False,
-            is_blocked=False,
-            icon='gqvxvqrhqjpsutwrnzbo',
-            start_lc_position=int(9),
-            extent='oreeulisnkghngtczsjh',
-            point='uugtxhyoasmkvaekjwil',
-            coordinate_lat=float(76.45553629640854),
-            coordinate_lon=float(44.786288710975256),
-            route_recommendation_json='duyhfkirjzpyoouutbtc',
+            is_blocked=True,
+            icon='hrlecnielmenrjgtdkcf',
+            start_lc_position=int(20),
+            extent='pqaquwecfmmnawdkmpxn',
+            point='lzykdykbnodslbzjtsry',
+            coordinate_lat=float(54.503596476694106),
+            coordinate_lon=float(23.862934357635947),
+            route_recommendation_json='qkozvpaeotllskkcqbpw',
             footer_lines=None,
             amenity_descriptions=None,
-            car_space_count=int(87),
-            lorry_space_count=int(35)
+            car_space_count=int(52),
+            lorry_space_count=int(16)
         )

@@ -28,11 +28,11 @@ class Test_Component(unittest.TestCase):
         Create instance of Component for testing
         """
         instance = Component(
-            component_id=int(3),
-            component_code='oyxuysjmyeujifnqflmf',
-            symbol='cfadekbnnizghlibugmc',
-            unit='onrwtkyicurmymjmstjk',
-            name='xkdsnhzxnvalgngwntnb'
+            component_id=int(90),
+            component_code='jyygumockmduthmmwewp',
+            symbol='qplgrloqqtirxjwhysyu',
+            unit='ywidwrylouozvllmxdkf',
+            name='yddghztviobohznfdfce'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Component(unittest.TestCase):
         """
         Test component_id property
         """
-        test_value = int(3)
+        test_value = int(90)
         self.instance.component_id = test_value
         self.assertEqual(self.instance.component_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_Component(unittest.TestCase):
         """
         Test component_code property
         """
-        test_value = 'oyxuysjmyeujifnqflmf'
+        test_value = 'jyygumockmduthmmwewp'
         self.instance.component_code = test_value
         self.assertEqual(self.instance.component_code, test_value)
     
@@ -57,7 +57,7 @@ class Test_Component(unittest.TestCase):
         """
         Test symbol property
         """
-        test_value = 'cfadekbnnizghlibugmc'
+        test_value = 'qplgrloqqtirxjwhysyu'
         self.instance.symbol = test_value
         self.assertEqual(self.instance.symbol, test_value)
     
@@ -65,7 +65,7 @@ class Test_Component(unittest.TestCase):
         """
         Test unit property
         """
-        test_value = 'onrwtkyicurmymjmstjk'
+        test_value = 'ywidwrylouozvllmxdkf'
         self.instance.unit = test_value
         self.assertEqual(self.instance.unit, test_value)
     
@@ -73,7 +73,7 @@ class Test_Component(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'xkdsnhzxnvalgngwntnb'
+        test_value = 'yddghztviobohznfdfce'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     

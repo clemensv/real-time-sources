@@ -94,6 +94,8 @@ class StopTimeUpdate:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,8 +163,8 @@ class StopTimeUpdate:
             An instance of the dataclass.
         """
         return cls(
-            stop_sequence=int(68),
-            stop_id='wcsofncbektaiuuxywwp',
+            stop_sequence=int(73),
+            stop_id='iuuahpinblwdjgwblgoi',
             arrival=None,
             departure=None,
             schedule_relationship=None

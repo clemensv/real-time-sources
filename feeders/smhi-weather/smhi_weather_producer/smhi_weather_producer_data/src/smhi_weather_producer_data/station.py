@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station:
     """
-    Reference metadata for a SMHI meteorological observation station. Stations report hourly surface observations of temperature, wind, pressure, humidity, precipitation, and other parameters across Sweden.
+    A reference record published by the Swedish Meteorological and Hydrological Institute (SMHI). It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
         station_id (str)
@@ -28,6 +28,7 @@ class Station:
         height (typing.Optional[float])
         latitude (float)
         longitude (float)
+        lan (typing.Optional[str])
     """
     
     
@@ -39,6 +40,7 @@ class Station:
     height: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="height"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
+    lan: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lan"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -98,6 +100,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,12 +169,13 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='rhqxiqgfefynbsfqbtwq',
-            name='qoiubugicyyejwetcotj',
-            owner='itbtxaobaqlmsbkxohlk',
-            owner_category='dcjtbrcxclhumeuqvsya',
-            measuring_stations='kczrgupefmfsblogonee',
-            height=float(72.27969248732532),
-            latitude=float(87.40102019339265),
-            longitude=float(21.749264861459274)
+            station_id='bmfviebttismslvwvibr',
+            name='fgwuugycagiadvekcldd',
+            owner='ysvrklckmlmxqjuofboo',
+            owner_category='zzvudbvpsylquklwqcul',
+            measuring_stations='kdptxmroymgvwduwzehq',
+            height=float(27.366626382154568),
+            latitude=float(70.30924218573045),
+            longitude=float(87.62634493315437),
+            lan='mgawkbydbzdtxvcyqvfi'
         )

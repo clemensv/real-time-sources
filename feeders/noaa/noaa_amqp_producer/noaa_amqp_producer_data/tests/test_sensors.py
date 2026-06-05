@@ -28,7 +28,7 @@ class Test_Sensors(unittest.TestCase):
         Create instance of Sensors for testing
         """
         instance = Sensors(
-            self_='goufpntaufndzrtwenwt'
+            self_='omqexcitpkmysmdgixff'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Sensors(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'goufpntaufndzrtwenwt'
+        test_value = 'omqexcitpkmysmdgixff'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

@@ -1,4 +1,4 @@
-from .waterqualityreading import WaterQualityReading
 from .monitoringsite import MonitoringSite
+from .waterqualityreading import WaterQualityReading
 
-__all__ = ["WaterQualityReading", "MonitoringSite"]
+__all__ = ["MonitoringSite", "WaterQualityReading"]

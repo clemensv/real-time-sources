@@ -17,7 +17,7 @@ import json
 @dataclass
 class MaintenanceTaskType:
     """
-    Maintenance task type reference from the Finnish road maintenance system operated by Fintraffic. Each task type classifies a specific road maintenance activity such as ploughing, salting, or brush clearing. Task type identifiers appear in the tasks array of MaintenanceTracking telemetry events. This reference data provides multilingual human-readable names for each task identifier and is fetched from the Digitraffic REST API at https://tie.digitraffic.fi/api/maintenance/v1/tracking/tasks. Approximately 40 task types are defined. See https://www.digitraffic.fi/en/road-traffic/ for full documentation.
+    A transport update from Fintraffic Digitraffic. It carries road traffic measurements and status updates for Finnish road network sensors and traffic messages.
     
     Attributes:
         task_id (str)
@@ -92,6 +92,8 @@ class MaintenanceTaskType:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class MaintenanceTaskType:
             An instance of the dataclass.
         """
         return cls(
-            task_id='cdgtqpstjmfnmoemjxwe',
-            name_fi='mmswdnxivzueryxfktoh',
-            name_en='izvreaqxlrufakxopkks',
-            name_sv='thwmdxtwxquwzsgtcnfo',
-            data_updated_time='wbpybxbifwxqdsmxxuuv'
+            task_id='vsbdplineffkqxezxxtt',
+            name_fi='vrhwbqkitrqivteyzcxn',
+            name_en='euvrbrehjczoiybiukmo',
+            name_sv='oyskzbsqpcztysmxwelq',
+            data_updated_time='nvymhysgrzutrthlaozq'
         )
