@@ -5,6 +5,7 @@
 Tests for digitraffic_maritime_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,6 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../digitraffic_maritime_amqp_producer_data/src')))
@@ -25,15 +27,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from digitraffic_maritime_amqp_producer_amqp_producer import *
 from digitraffic_maritime_amqp_producer_data import VesselLocation
-from test_digitraffic_maritime_amqp_producer_data_vessellocation import Test_VesselLocation
+from test_vessellocation import Test_VesselLocation
 from digitraffic_maritime_amqp_producer_data import VesselMetadata
-from test_digitraffic_maritime_amqp_producer_data_vesselmetadata import Test_VesselMetadata
+from test_vesselmetadata import Test_VesselMetadata
 from digitraffic_maritime_amqp_producer_data import PortCall
-from test_digitraffic_maritime_amqp_producer_data_portcall import Test_PortCall
+from test_portcall import Test_PortCall
 from digitraffic_maritime_amqp_producer_data import VesselDetails
-from test_digitraffic_maritime_amqp_producer_data_vesseldetails import Test_VesselDetails
+from test_vesseldetails import Test_VesselDetails
 from digitraffic_maritime_amqp_producer_data import PortLocation
-from test_digitraffic_maritime_amqp_producer_data_portlocation import Test_PortLocation
+from test_portlocation import Test_PortLocation
 
 
 
@@ -239,6 +241,45 @@ class TestFiDigitrafficMarineAisAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(FiDigitrafficMarineAisAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_location(self, artemis_container):
         """Send and receive a Location message via ActiveMQ Artemis."""
@@ -265,6 +306,7 @@ class TestFiDigitrafficMarineAisAmqpProducer:
                 producer.send_location(
                     data=payload,
                     _mmsi="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -272,6 +314,7 @@ class TestFiDigitrafficMarineAisAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -293,8 +336,40 @@ class TestFiDigitrafficMarineAisAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{mmsi}".format(mmsi="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{mmsi}".format(mmsi="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_location_single_fresh_connection(self, artemis_container):
+        """Send exactly one Location message on a fresh producer connection."""
+        payload = Test_VesselLocation.create_instance()
+
+        producer = FiDigitrafficMarineAisAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_location(
+                data=payload,
+                _mmsi="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.ais.amqp.location'
+        assert received.body is not None
+        assert received.subject == "{mmsi}".format(mmsi="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{mmsi}".format(mmsi="value"))[:128]
     
     def test_send_metadata(self, artemis_container):
         """Send and receive a Metadata message via ActiveMQ Artemis."""
@@ -321,6 +396,7 @@ class TestFiDigitrafficMarineAisAmqpProducer:
                 producer.send_metadata(
                     data=payload,
                     _mmsi="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -328,6 +404,7 @@ class TestFiDigitrafficMarineAisAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -349,8 +426,40 @@ class TestFiDigitrafficMarineAisAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{mmsi}".format(mmsi="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{mmsi}".format(mmsi="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_metadata_single_fresh_connection(self, artemis_container):
+        """Send exactly one Metadata message on a fresh producer connection."""
+        payload = Test_VesselMetadata.create_instance()
+
+        producer = FiDigitrafficMarineAisAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_metadata(
+                data=payload,
+                _mmsi="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.ais.amqp.metadata'
+        assert received.body is not None
+        assert received.subject == "{mmsi}".format(mmsi="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{mmsi}".format(mmsi="value"))[:128]
 
 
 
@@ -372,6 +481,45 @@ class TestFiDigitrafficMarinePortcallAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(FiDigitrafficMarinePortcallAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_port_call(self, artemis_container):
         """Send and receive a PortCall message via ActiveMQ Artemis."""
@@ -398,6 +546,7 @@ class TestFiDigitrafficMarinePortcallAmqpProducer:
                 producer.send_port_call(
                     data=payload,
                     _port_call_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -405,6 +554,7 @@ class TestFiDigitrafficMarinePortcallAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -426,8 +576,40 @@ class TestFiDigitrafficMarinePortcallAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{port_call_id}".format(port_call_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{port_call_id}".format(port_call_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_port_call_single_fresh_connection(self, artemis_container):
+        """Send exactly one PortCall message on a fresh producer connection."""
+        payload = Test_PortCall.create_instance()
+
+        producer = FiDigitrafficMarinePortcallAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_port_call(
+                data=payload,
+                _port_call_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.portcall.amqp.port_call'
+        assert received.body is not None
+        assert received.subject == "{port_call_id}".format(port_call_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{port_call_id}".format(port_call_id="value"))[:128]
 
 
 
@@ -449,6 +631,45 @@ class TestFiDigitrafficMarinePortcallVesseldetailsAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(FiDigitrafficMarinePortcallVesseldetailsAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_vessel_details(self, artemis_container):
         """Send and receive a VesselDetails message via ActiveMQ Artemis."""
@@ -475,6 +696,7 @@ class TestFiDigitrafficMarinePortcallVesseldetailsAmqpProducer:
                 producer.send_vessel_details(
                     data=payload,
                     _vessel_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -482,6 +704,7 @@ class TestFiDigitrafficMarinePortcallVesseldetailsAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -503,8 +726,40 @@ class TestFiDigitrafficMarinePortcallVesseldetailsAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{vessel_id}".format(vessel_id="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{vessel_id}".format(vessel_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_vessel_details_single_fresh_connection(self, artemis_container):
+        """Send exactly one VesselDetails message on a fresh producer connection."""
+        payload = Test_VesselDetails.create_instance()
+
+        producer = FiDigitrafficMarinePortcallVesseldetailsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_vessel_details(
+                data=payload,
+                _vessel_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details'
+        assert received.body is not None
+        assert received.subject == "{vessel_id}".format(vessel_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{vessel_id}".format(vessel_id="value"))[:128]
 
 
 
@@ -526,6 +781,45 @@ class TestFiDigitrafficMarinePortcallPortlocationAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(FiDigitrafficMarinePortcallPortlocationAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_port_location(self, artemis_container):
         """Send and receive a PortLocation message via ActiveMQ Artemis."""
@@ -552,6 +846,7 @@ class TestFiDigitrafficMarinePortcallPortlocationAmqpProducer:
                 producer.send_port_location(
                     data=payload,
                     _locode="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -559,6 +854,7 @@ class TestFiDigitrafficMarinePortcallPortlocationAmqpProducer:
             for i in range(5):
                 received = _receive_single_message(artemis_container)
                 properties = received.properties or {}
+                annotations = received.annotations or {}
 
                 if True:
                     body = received.body
@@ -580,6 +876,38 @@ class TestFiDigitrafficMarinePortcallPortlocationAmqpProducer:
                     # Verify message body is not empty
                     assert received.body is not None
                 assert received.subject == "{locode}".format(locode="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{locode}".format(locode="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_port_location_single_fresh_connection(self, artemis_container):
+        """Send exactly one PortLocation message on a fresh producer connection."""
+        payload = Test_PortLocation.create_instance()
+
+        producer = FiDigitrafficMarinePortcallPortlocationAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_port_location(
+                data=payload,
+                _locode="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.portcall.portlocation.amqp.port_location'
+        assert received.body is not None
+        assert received.subject == "{locode}".format(locode="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{locode}".format(locode="value"))[:128]
 

@@ -29,19 +29,19 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         Create instance of BuoyDetailedWaveSummary for testing
         """
         instance = BuoyDetailedWaveSummary(
-            station_id='brgcnombuxpdnnviyrax',
+            station_id='jditlkzberdfdvxdqaeq',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            significant_wave_height=float(18.35189370860234),
-            swell_height=float(76.83683384941135),
-            swell_period=float(1.6261932559902492),
-            wind_wave_height=float(49.1304664398094),
-            wind_wave_period=float(23.45688867861374),
-            swell_direction='ujphikfuozweylcsxfsi',
-            wind_wave_direction='ajxipiqesvwoyyzzbkvy',
-            steepness='xayjpwoikjixrrrnlqlh',
-            average_wave_period=float(77.84241664701759),
-            mean_wave_direction=float(11.422789942646949),
-            region='jimunydbnwvnsszpglfm'
+            significant_wave_height=float(28.339135432661777),
+            swell_height=float(83.87954091202208),
+            swell_period=float(89.66088916452489),
+            wind_wave_height=float(72.21049089975982),
+            wind_wave_period=float(11.075515684561266),
+            swell_direction='zqpmkznpadtvtilaomlk',
+            wind_wave_direction='ywfkakhmyrsnhpabjhvx',
+            steepness='uhqyibaxvdudkcrtxqvk',
+            average_wave_period=float(81.92636273152728),
+            mean_wave_direction=float(4.21805333292683),
+            region='qxcmoswlfvwvernixbsd'
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'brgcnombuxpdnnviyrax'
+        test_value = 'jditlkzberdfdvxdqaeq'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -66,7 +66,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test significant_wave_height property
         """
-        test_value = float(18.35189370860234)
+        test_value = float(28.339135432661777)
         self.instance.significant_wave_height = test_value
         self.assertEqual(self.instance.significant_wave_height, test_value)
     
@@ -74,7 +74,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test swell_height property
         """
-        test_value = float(76.83683384941135)
+        test_value = float(83.87954091202208)
         self.instance.swell_height = test_value
         self.assertEqual(self.instance.swell_height, test_value)
     
@@ -82,7 +82,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test swell_period property
         """
-        test_value = float(1.6261932559902492)
+        test_value = float(89.66088916452489)
         self.instance.swell_period = test_value
         self.assertEqual(self.instance.swell_period, test_value)
     
@@ -90,7 +90,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test wind_wave_height property
         """
-        test_value = float(49.1304664398094)
+        test_value = float(72.21049089975982)
         self.instance.wind_wave_height = test_value
         self.assertEqual(self.instance.wind_wave_height, test_value)
     
@@ -98,7 +98,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test wind_wave_period property
         """
-        test_value = float(23.45688867861374)
+        test_value = float(11.075515684561266)
         self.instance.wind_wave_period = test_value
         self.assertEqual(self.instance.wind_wave_period, test_value)
     
@@ -106,7 +106,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test swell_direction property
         """
-        test_value = 'ujphikfuozweylcsxfsi'
+        test_value = 'zqpmkznpadtvtilaomlk'
         self.instance.swell_direction = test_value
         self.assertEqual(self.instance.swell_direction, test_value)
     
@@ -114,7 +114,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test wind_wave_direction property
         """
-        test_value = 'ajxipiqesvwoyyzzbkvy'
+        test_value = 'ywfkakhmyrsnhpabjhvx'
         self.instance.wind_wave_direction = test_value
         self.assertEqual(self.instance.wind_wave_direction, test_value)
     
@@ -122,7 +122,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test steepness property
         """
-        test_value = 'xayjpwoikjixrrrnlqlh'
+        test_value = 'uhqyibaxvdudkcrtxqvk'
         self.instance.steepness = test_value
         self.assertEqual(self.instance.steepness, test_value)
     
@@ -130,7 +130,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test average_wave_period property
         """
-        test_value = float(77.84241664701759)
+        test_value = float(81.92636273152728)
         self.instance.average_wave_period = test_value
         self.assertEqual(self.instance.average_wave_period, test_value)
     
@@ -138,7 +138,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test mean_wave_direction property
         """
-        test_value = float(11.422789942646949)
+        test_value = float(4.21805333292683)
         self.instance.mean_wave_direction = test_value
         self.assertEqual(self.instance.mean_wave_direction, test_value)
     
@@ -146,7 +146,7 @@ class Test_BuoyDetailedWaveSummary(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'jimunydbnwvnsszpglfm'
+        test_value = 'qxcmoswlfvwvernixbsd'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

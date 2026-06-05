@@ -18,7 +18,7 @@ from typing import Any
 @dataclass
 class Timeseries:
     """
-    Reference data for a single IRCELINE timeseries from GET /timeseries or GET /timeseries/{id}?expanded=true. Each timeseries combines a stable numeric timeseries identifier with a station, a phenomenon/category pair, the published unit of measurement, and optional statusIntervals that describe threshold bands used by IRCELINE for display and air-quality interpretation.
+    A current environmental measurement from Belgium's IRCELINE interregional environment agency. It carries pollutant concentration and air-quality measurements when the upstream feed reports a new or refreshed value.
     
     Attributes:
         timeseries_id (str)
@@ -107,6 +107,8 @@ class Timeseries:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -174,16 +176,16 @@ class Timeseries:
             An instance of the dataclass.
         """
         return cls(
-            timeseries_id='rhgtcmnewkdoerytfxcy',
-            label='gmvchtbwodxtxwhuadim',
-            uom='utyhhmdxkxqdknckjryr',
-            station_id='uhzezmstmnixlfoddvpm',
-            station_label='jzdomalvtjoupdxhnytl',
-            latitude=float(11.617483197746193),
-            longitude=float(44.251306491297896),
-            phenomenon_id='aiptebhrivqspggptbyi',
-            phenomenon_label='sdwiructihiiqpojdtum',
-            category_id='cvfdvkjkokpxsyshqkln',
-            category_label='ynszagyuxhjqtcxxtuqs',
+            timeseries_id='ckwaydrkcnpjhyhnijgn',
+            label='xooazoeddmsumffpbwcf',
+            uom='jepqbohkygmhccrbefsi',
+            station_id='vhqhrdgprygufwusrtoc',
+            station_label='lzwqlelofbgovtlmwfhi',
+            latitude=float(23.513609489025555),
+            longitude=float(75.92243517650434),
+            phenomenon_id='vbnddpzywjsmkwstydxd',
+            phenomenon_label='lidizrdpnaxdjqltjypy',
+            category_id='vrlqrrcdctdapzmrvqif',
+            category_label='vfklumqpgcbrkmnazwzt',
             status_intervals=None
         )

@@ -5,6 +5,7 @@
 Tests for ndw_road_traffic_amqp_producer_amqp_producer
 """
 import base64
+import datetime
 import json
 import os
 import sys
@@ -17,7 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
-from proton import symbol
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../ndw_road_traffic_amqp_producer_data/src')))
@@ -26,31 +27,31 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from ndw_road_traffic_amqp_producer_amqp_producer import *
 from ndw_road_traffic_amqp_producer_data import PointMeasurementSite
-from test_ndw_road_traffic_amqp_producer_data_pointmeasurementsite import Test_PointMeasurementSite
+from test_pointmeasurementsite import Test_PointMeasurementSite
 from ndw_road_traffic_amqp_producer_data import RouteMeasurementSite
-from test_ndw_road_traffic_amqp_producer_data_routemeasurementsite import Test_RouteMeasurementSite
+from test_routemeasurementsite import Test_RouteMeasurementSite
 from ndw_road_traffic_amqp_producer_data import TrafficObservation
-from test_ndw_road_traffic_amqp_producer_data_trafficobservation import Test_TrafficObservation
+from test_trafficobservation import Test_TrafficObservation
 from ndw_road_traffic_amqp_producer_data import TravelTimeObservation
-from test_ndw_road_traffic_amqp_producer_data_traveltimeobservation import Test_TravelTimeObservation
+from test_traveltimeobservation import Test_TravelTimeObservation
 from ndw_road_traffic_amqp_producer_data import DripSign
-from test_ndw_road_traffic_amqp_producer_data_dripsign import Test_DripSign
+from test_dripsign import Test_DripSign
 from ndw_road_traffic_amqp_producer_data import DripDisplayState
-from test_ndw_road_traffic_amqp_producer_data_dripdisplaystate import Test_DripDisplayState
+from test_dripdisplaystate import Test_DripDisplayState
 from ndw_road_traffic_amqp_producer_data import MsiSign
-from test_ndw_road_traffic_amqp_producer_data_msisign import Test_MsiSign
+from test_msisign import Test_MsiSign
 from ndw_road_traffic_amqp_producer_data import MsiDisplayState
-from test_ndw_road_traffic_amqp_producer_data_msidisplaystate import Test_MsiDisplayState
+from test_msidisplaystate import Test_MsiDisplayState
 from ndw_road_traffic_amqp_producer_data import Roadwork
-from test_ndw_road_traffic_amqp_producer_data_roadwork import Test_Roadwork
+from test_roadwork import Test_Roadwork
 from ndw_road_traffic_amqp_producer_data import BridgeOpening
-from test_ndw_road_traffic_amqp_producer_data_bridgeopening import Test_BridgeOpening
+from test_bridgeopening import Test_BridgeOpening
 from ndw_road_traffic_amqp_producer_data import TemporaryClosure
-from test_ndw_road_traffic_amqp_producer_data_temporaryclosure import Test_TemporaryClosure
+from test_temporaryclosure import Test_TemporaryClosure
 from ndw_road_traffic_amqp_producer_data import TemporarySpeedLimit
-from test_ndw_road_traffic_amqp_producer_data_temporaryspeedlimit import Test_TemporarySpeedLimit
+from test_temporaryspeedlimit import Test_TemporarySpeedLimit
 from ndw_road_traffic_amqp_producer_data import SafetyRelatedMessage
-from test_ndw_road_traffic_amqp_producer_data_safetyrelatedmessage import Test_SafetyRelatedMessage
+from test_safetyrelatedmessage import Test_SafetyRelatedMessage
 
 
 
@@ -256,6 +257,45 @@ class TestNLNDWAVGAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(NLNDWAVGAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -282,6 +322,7 @@ class TestNLNDWAVGAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _measurement_site_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -314,6 +355,37 @@ class TestNLNDWAVGAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_PointMeasurementSite.create_instance()
+
+        producer = NLNDWAVGAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _measurement_site_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.PointMeasurementSite.amqp'
+        assert received.body is not None
+        assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -340,6 +412,7 @@ class TestNLNDWAVGAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _measurement_site_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -372,6 +445,37 @@ class TestNLNDWAVGAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_RouteMeasurementSite.create_instance()
+
+        producer = NLNDWAVGAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _measurement_site_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.RouteMeasurementSite.amqp'
+        assert received.body is not None
+        assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -398,6 +502,7 @@ class TestNLNDWAVGAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _measurement_site_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -430,6 +535,37 @@ class TestNLNDWAVGAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_TrafficObservation.create_instance()
+
+        producer = NLNDWAVGAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _measurement_site_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.TrafficObservation.amqp'
+        assert received.body is not None
+        assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -456,6 +592,7 @@ class TestNLNDWAVGAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _measurement_site_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -489,6 +626,37 @@ class TestNLNDWAVGAmqpProducer:
         finally:
             producer.close()
 
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_TravelTimeObservation.create_instance()
+
+        producer = NLNDWAVGAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _measurement_site_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.TravelTimeObservation.amqp'
+        assert received.body is not None
+        assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
+
 
 
 class TestNLNDWDRIPAmqpProducer:
@@ -509,6 +677,45 @@ class TestNLNDWDRIPAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(NLNDWDRIPAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -536,6 +743,7 @@ class TestNLNDWDRIPAmqpProducer:
                     data=payload,
                     _vms_controller_id="value",
                     _vms_index="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -568,6 +776,38 @@ class TestNLNDWDRIPAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_DripSign.create_instance()
+
+        producer = NLNDWDRIPAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _vms_controller_id="value",
+                _vms_index="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.DRIP.DripSign.amqp'
+        assert received.body is not None
+        assert received.subject == "drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -595,6 +835,7 @@ class TestNLNDWDRIPAmqpProducer:
                     data=payload,
                     _vms_controller_id="value",
                     _vms_index="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -628,6 +869,38 @@ class TestNLNDWDRIPAmqpProducer:
         finally:
             producer.close()
 
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_DripDisplayState.create_instance()
+
+        producer = NLNDWDRIPAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _vms_controller_id="value",
+                _vms_index="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.DRIP.DripDisplayState.amqp'
+        assert received.body is not None
+        assert received.subject == "drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value"))[:128]
+
 
 
 class TestNLNDWMSIAmqpProducer:
@@ -648,6 +921,45 @@ class TestNLNDWMSIAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(NLNDWMSIAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -674,6 +986,7 @@ class TestNLNDWMSIAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _sign_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -706,6 +1019,37 @@ class TestNLNDWMSIAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("msi-signs/{sign_id}".format(sign_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_MsiSign.create_instance()
+
+        producer = NLNDWMSIAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _sign_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.MSI.MsiSign.amqp'
+        assert received.body is not None
+        assert received.subject == "msi-signs/{sign_id}".format(sign_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("msi-signs/{sign_id}".format(sign_id="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -732,6 +1076,7 @@ class TestNLNDWMSIAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _sign_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -765,6 +1110,37 @@ class TestNLNDWMSIAmqpProducer:
         finally:
             producer.close()
 
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_MsiDisplayState.create_instance()
+
+        producer = NLNDWMSIAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _sign_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.MSI.MsiDisplayState.amqp'
+        assert received.body is not None
+        assert received.subject == "msi-signs/{sign_id}".format(sign_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("msi-signs/{sign_id}".format(sign_id="value"))[:128]
+
 
 
 class TestNLNDWSituationsAmqpProducer:
@@ -785,6 +1161,45 @@ class TestNLNDWSituationsAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(NLNDWSituationsAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -811,6 +1226,7 @@ class TestNLNDWSituationsAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _situation_record_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -843,6 +1259,37 @@ class TestNLNDWSituationsAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_Roadwork.create_instance()
+
+        producer = NLNDWSituationsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _situation_record_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.Roadwork.amqp'
+        assert received.body is not None
+        assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -869,6 +1316,7 @@ class TestNLNDWSituationsAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _situation_record_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -901,6 +1349,37 @@ class TestNLNDWSituationsAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_BridgeOpening.create_instance()
+
+        producer = NLNDWSituationsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _situation_record_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.BridgeOpening.amqp'
+        assert received.body is not None
+        assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -927,6 +1406,7 @@ class TestNLNDWSituationsAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _situation_record_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -959,6 +1439,37 @@ class TestNLNDWSituationsAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_TemporaryClosure.create_instance()
+
+        producer = NLNDWSituationsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _situation_record_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.TemporaryClosure.amqp'
+        assert received.body is not None
+        assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -985,6 +1496,7 @@ class TestNLNDWSituationsAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _situation_record_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1017,6 +1529,37 @@ class TestNLNDWSituationsAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_TemporarySpeedLimit.create_instance()
+
+        producer = NLNDWSituationsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _situation_record_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.TemporarySpeedLimit.amqp'
+        assert received.body is not None
+        assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
     
     def test_send_amqp(self, artemis_container):
         """Send and receive a Amqp message via ActiveMQ Artemis."""
@@ -1043,6 +1586,7 @@ class TestNLNDWSituationsAmqpProducer:
                 producer.send_amqp(
                     data=payload,
                     _situation_record_id="value",
+                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
 
@@ -1075,4 +1619,35 @@ class TestNLNDWSituationsAmqpProducer:
                 assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
         finally:
             producer.close()
+
+    def test_send_amqp_single_fresh_connection(self, artemis_container):
+        """Send exactly one Amqp message on a fresh producer connection."""
+        payload = Test_SafetyRelatedMessage.create_instance()
+
+        producer = NLNDWSituationsAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_amqp(
+                data=payload,
+                _situation_record_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.SafetyRelatedMessage.amqp'
+        assert received.body is not None
+        assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
 

@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,31 +17,31 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import dwd_mqtt_producer_data
 from dwd_mqtt_producer_data import StationMetadata
-from test_dwd_mqtt_producer_data_stationmetadata import Test_StationMetadata
+from test_stationmetadata import Test_StationMetadata
 from dwd_mqtt_producer_data import AirTemperature10Min
-from test_dwd_mqtt_producer_data_airtemperature10min import Test_AirTemperature10Min
+from test_airtemperature10min import Test_AirTemperature10Min
 from dwd_mqtt_producer_data import Precipitation10Min
-from test_dwd_mqtt_producer_data_precipitation10min import Test_Precipitation10Min
+from test_precipitation10min import Test_Precipitation10Min
 from dwd_mqtt_producer_data import Wind10Min
-from test_dwd_mqtt_producer_data_wind10min import Test_Wind10Min
+from test_wind10min import Test_Wind10Min
 from dwd_mqtt_producer_data import Solar10Min
-from test_dwd_mqtt_producer_data_solar10min import Test_Solar10Min
+from test_solar10min import Test_Solar10Min
 from dwd_mqtt_producer_data import HourlyObservation
-from test_dwd_mqtt_producer_data_hourlyobservation import Test_HourlyObservation
+from test_hourlyobservation import Test_HourlyObservation
 from dwd_mqtt_producer_data import ExtremeWind10Min
-from test_dwd_mqtt_producer_data_extremewind10min import Test_ExtremeWind10Min
+from test_extremewind10min import Test_ExtremeWind10Min
 from dwd_mqtt_producer_data import ExtremeTemperature10Min
-from test_dwd_mqtt_producer_data_extremetemperature10min import Test_ExtremeTemperature10Min
+from test_extremetemperature10min import Test_ExtremeTemperature10Min
 from dwd_mqtt_producer_data import Alert
-from test_dwd_mqtt_producer_data_alert import Test_Alert
+from test_alert import Test_Alert
 from dwd_mqtt_producer_data import RadarProductCatalog
-from test_dwd_mqtt_producer_data_radarproductcatalog import Test_RadarProductCatalog
+from test_radarproductcatalog import Test_RadarProductCatalog
 from dwd_mqtt_producer_data import RadarFileProduct
-from test_dwd_mqtt_producer_data_radarfileproduct import Test_RadarFileProduct
+from test_radarfileproduct import Test_RadarFileProduct
 from dwd_mqtt_producer_data import ForecastModelCatalog
-from test_dwd_mqtt_producer_data_forecastmodelcatalog import Test_ForecastModelCatalog
+from test_forecastmodelcatalog import Test_ForecastModelCatalog
 from dwd_mqtt_producer_data import IconD2ForecastFile
-from test_dwd_mqtt_producer_data_icond2forecastfile import Test_IconD2ForecastFile
+from test_icond2forecastfile import Test_IconD2ForecastFile
 from dwd_mqtt_producer_mqtt_client import DEDWDCDCMqttMqttClient
 from dwd_mqtt_producer_mqtt_client import DEDWDWeatherMqttMqttClient
 from dwd_mqtt_producer_mqtt_client import DEDWDRadarMqttMqttClient
@@ -116,6 +117,7 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_station_metadata_py(mosquitto_bro
         await publisher_client.publish_de_dwd_cdc_mqtt_station_metadata(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -181,6 +183,7 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_air_temperature10_min_py(mosquitt
         await publisher_client.publish_de_dwd_cdc_mqtt_air_temperature10_min(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -246,6 +249,7 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_precipitation10_min_py(mosquitto_
         await publisher_client.publish_de_dwd_cdc_mqtt_precipitation10_min(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -311,6 +315,7 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_wind10_min_py(mosquitto_broker):
         await publisher_client.publish_de_dwd_cdc_mqtt_wind10_min(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -376,6 +381,7 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_solar10_min_py(mosquitto_broker):
         await publisher_client.publish_de_dwd_cdc_mqtt_solar10_min(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -441,6 +447,7 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_hourly_observation_py(mosquitto_b
         await publisher_client.publish_de_dwd_cdc_mqtt_hourly_observation(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -506,6 +513,7 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_extreme_wind10_min_py(mosquitto_b
         await publisher_client.publish_de_dwd_cdc_mqtt_extreme_wind10_min(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -571,6 +579,7 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_extreme_temperature10_min_py(mosq
         await publisher_client.publish_de_dwd_cdc_mqtt_extreme_temperature10_min(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -641,6 +650,7 @@ async def test_de_dwd_weather_mqtt_de_dwd_weather_mqtt_alert_py(mosquitto_broker
             state=f"test_state_{i}",
             severity=f"test_severity_{i}",
             identifier=f"test_identifier_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -709,6 +719,7 @@ async def test_de_dwd_radar_mqtt_de_dwd_radar_mqtt_radar_product_catalog_py(mosq
         await publisher_client.publish_de_dwd_radar_mqtt_radar_product_catalog(
             topic=test_topic,
             kind=f"test_kind_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -775,6 +786,7 @@ async def test_de_dwd_radar_mqtt_de_dwd_radar_mqtt_radar_file_product_py(mosquit
             topic=test_topic,
             product_type=f"test_product_type_{i}",
             file_id=f"test_file_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -843,6 +855,7 @@ async def test_de_dwd_forecast_mqtt_de_dwd_forecast_mqtt_forecast_model_catalog_
         await publisher_client.publish_de_dwd_forecast_mqtt_forecast_model_catalog(
             topic=test_topic,
             kind=f"test_kind_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -909,6 +922,7 @@ async def test_de_dwd_forecast_mqtt_de_dwd_forecast_mqtt_icon_d2_forecast_file_p
             topic=test_topic,
             variable=f"test_variable_{i}",
             file_id=f"test_file_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

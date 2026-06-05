@@ -108,6 +108,8 @@ class Event:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -175,16 +177,16 @@ class Event:
             An instance of the dataclass.
         """
         return cls(
-            event_id='bicyecaperjlzjhczzid',
-            legacy_id=int(39),
-            name='ebmxvbsnhqakbtkbbtrq',
-            slug='wkcswzuayxdbhlhgifyb',
+            event_id='jjgoytljkvlepjamjhsi',
+            legacy_id=int(9),
+            name='ccwdsibjgeyoyizjefzr',
+            slug='gtmgyqithncwmfwiikjb',
             starting_time=datetime.datetime.now(datetime.timezone.utc),
             ending_time=datetime.datetime.now(datetime.timezone.utc),
-            cover_url='whwjbkvrkoaopfcgerbu',
-            external_sales_url='hgmgzezhfbberbunzrrq',
-            venue_id='aacncemfumnvivonxeiy',
-            venue_name='egsjeajynezhqdvajgdc',
-            venue_city='pmdlqkgrbsqoeqyukalv',
-            venue_country_code='ykpgxgilenalpbztxakb'
+            cover_url='wprsvdunklipsfsjmuzk',
+            external_sales_url='fevadzcgmdvuczzzzkzo',
+            venue_id='vgfkzthkkonwueciqhdh',
+            venue_name='ddgtvhykaksywaglpsoc',
+            venue_city='vqqxfckikktofhojeogy',
+            venue_country_code='ifuxsiwsncnmrtsxzfya'
         )

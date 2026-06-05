@@ -90,6 +90,8 @@ class WeatherStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class WeatherStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='mfgfvjizivpzzfzgwmld',
-            station_name='wiwxxvnhquhmykbopodi',
-            latitude=float(53.73844341763464),
-            longitude=float(23.515999269857723)
+            station_id='kfdeailmnkpeersklggx',
+            station_name='cypoqjpqmvkceoapnnmi',
+            latitude=float(12.721271940661715),
+            longitude=float(67.8161934979757)
         )

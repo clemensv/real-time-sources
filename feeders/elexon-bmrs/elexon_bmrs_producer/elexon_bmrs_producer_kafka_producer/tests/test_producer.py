@@ -20,11 +20,11 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from elexon_bmrs_producer_kafka_producer.producer import UKCoElexonBMRSEventProducer
 from elexon_bmrs_producer_data import GenerationMix
-from test_elexon_bmrs_producer_data_generationmix import Test_GenerationMix
+from test_generationmix import Test_GenerationMix
 from elexon_bmrs_producer_data import DemandOutturn
-from test_elexon_bmrs_producer_data_demandoutturn import Test_DemandOutturn
+from test_demandoutturn import Test_DemandOutturn
 from elexon_bmrs_producer_data import Info
-from test_elexon_bmrs_producer_data_info import Test_Info
+from test_info import Test_Info
 from elexon_bmrs_producer_kafka_producer.producer import UKCoElexonBMRSMqttEventProducer
 from elexon_bmrs_producer_kafka_producer.producer import UKCoElexonBMRSAmqpEventProducer
 
@@ -73,17 +73,17 @@ def test_uk_co_elexon_bmrs_ukcoelexonbmrsgenerationmix(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -106,11 +106,12 @@ def test_uk_co_elexon_bmrs_ukcoelexonbmrsgenerationmix(kafka_emulator):
     producer_instance = UKCoElexonBMRSEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_GenerationMix.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_co_elexon_bmrs_generation_mix(_settlement_period = f'test_{i}', data = event_data)
-
+        producer_instance.send_uk_co_elexon_bmrs_generation_mix(_settlement_period = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -136,17 +137,17 @@ def test_uk_co_elexon_bmrs_ukcoelexonbmrsdemandoutturn(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -169,11 +170,12 @@ def test_uk_co_elexon_bmrs_ukcoelexonbmrsdemandoutturn(kafka_emulator):
     producer_instance = UKCoElexonBMRSEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_DemandOutturn.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_co_elexon_bmrs_demand_outturn(_settlement_period = f'test_{i}', data = event_data)
-
+        producer_instance.send_uk_co_elexon_bmrs_demand_outturn(_settlement_period = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -199,17 +201,17 @@ def test_uk_co_elexon_bmrs_ukcoelexonbmrsinfo(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -232,11 +234,12 @@ def test_uk_co_elexon_bmrs_ukcoelexonbmrsinfo(kafka_emulator):
     producer_instance = UKCoElexonBMRSEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Info.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_co_elexon_bmrs_info(_settlement_period = f'test_{i}', data = event_data)
-
+        producer_instance.send_uk_co_elexon_bmrs_info(_settlement_period = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -262,17 +265,17 @@ def test_uk_co_elexon_bmrs_mqtt_ukcoelexonbmrsmqttgenerationmix(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -295,11 +298,12 @@ def test_uk_co_elexon_bmrs_mqtt_ukcoelexonbmrsmqttgenerationmix(kafka_emulator):
     producer_instance = UKCoElexonBMRSMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_GenerationMix.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_co_elexon_bmrs_mqtt_generation_mix(_settlement_period = f'test_{i}', data = event_data)
-
+        producer_instance.send_uk_co_elexon_bmrs_mqtt_generation_mix(_settlement_period = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -323,17 +327,17 @@ def test_uk_co_elexon_bmrs_mqtt_ukcoelexonbmrsmqttdemandoutturn(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -356,11 +360,12 @@ def test_uk_co_elexon_bmrs_mqtt_ukcoelexonbmrsmqttdemandoutturn(kafka_emulator):
     producer_instance = UKCoElexonBMRSMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_DemandOutturn.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_co_elexon_bmrs_mqtt_demand_outturn(_settlement_period = f'test_{i}', data = event_data)
-
+        producer_instance.send_uk_co_elexon_bmrs_mqtt_demand_outturn(_settlement_period = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -384,17 +389,17 @@ def test_uk_co_elexon_bmrs_mqtt_ukcoelexonbmrsmqttinfo(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -417,11 +422,12 @@ def test_uk_co_elexon_bmrs_mqtt_ukcoelexonbmrsmqttinfo(kafka_emulator):
     producer_instance = UKCoElexonBMRSMqttEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Info.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_co_elexon_bmrs_mqtt_info(_settlement_period = f'test_{i}', data = event_data)
-
+        producer_instance.send_uk_co_elexon_bmrs_mqtt_info(_settlement_period = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -445,17 +451,17 @@ def test_uk_co_elexon_bmrs_amqp_ukcoelexonbmrsamqpgenerationmix(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -478,11 +484,12 @@ def test_uk_co_elexon_bmrs_amqp_ukcoelexonbmrsamqpgenerationmix(kafka_emulator):
     producer_instance = UKCoElexonBMRSAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_GenerationMix.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_co_elexon_bmrs_amqp_generation_mix(_settlement_period = f'test_{i}', data = event_data)
-
+        producer_instance.send_uk_co_elexon_bmrs_amqp_generation_mix(_settlement_period = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -506,17 +513,17 @@ def test_uk_co_elexon_bmrs_amqp_ukcoelexonbmrsamqpdemandoutturn(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -539,11 +546,12 @@ def test_uk_co_elexon_bmrs_amqp_ukcoelexonbmrsamqpdemandoutturn(kafka_emulator):
     producer_instance = UKCoElexonBMRSAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_DemandOutturn.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_co_elexon_bmrs_amqp_demand_outturn(_settlement_period = f'test_{i}', data = event_data)
-
+        producer_instance.send_uk_co_elexon_bmrs_amqp_demand_outturn(_settlement_period = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 
@@ -567,17 +575,17 @@ def test_uk_co_elexon_bmrs_amqp_ukcoelexonbmrsamqpinfo(kafka_emulator):
         'auto.offset.reset': 'earliest'
     })
     consumer.subscribe([topic])
-
+    
     # Wait for partition assignment before producing messages
     import time
     assignment_timeout = time.time() + 10
     while not consumer.assignment() and time.time() < assignment_timeout:
         consumer.poll(0.1)
-
+    
     # Verify partition assignment succeeded
     if not consumer.assignment():
         pytest.fail(f"Consumer failed to get partition assignment within 10 seconds. Topic: {topic}")
-
+    
     # Give consumer time to stabilize and seek to beginning
     time.sleep(1)
 
@@ -600,11 +608,12 @@ def test_uk_co_elexon_bmrs_amqp_ukcoelexonbmrsamqpinfo(kafka_emulator):
     producer_instance = UKCoElexonBMRSAmqpEventProducer(kafka_producer, topic, 'binary')
     # Create valid test data using the test helper
     event_data = Test_Info.create_instance()
-
+    
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_uk_co_elexon_bmrs_amqp_info(_settlement_period = f'test_{i}', data = event_data)
-
+        producer_instance.send_uk_co_elexon_bmrs_amqp_info(_settlement_period = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
+    
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
 

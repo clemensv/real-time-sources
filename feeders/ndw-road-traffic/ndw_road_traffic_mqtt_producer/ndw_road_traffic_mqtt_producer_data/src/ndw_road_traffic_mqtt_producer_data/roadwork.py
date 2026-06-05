@@ -104,6 +104,8 @@ class Roadwork:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class Roadwork:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='ldhhflkvdlriqydnonxh',
-            version_time='khaivbcufsivjpzkfarb',
-            validity_status='fespybcpjrwgotskhtxe',
-            start_time='zxxxprdaudjuprufnnon',
-            end_time='cqhygocebmgrvumpzqti',
-            road_name='mnkzxndwzoggwqbakows',
-            description='mgpxijfmzalohpvozdli',
-            location_description='rteeagrjjjrjpudckwou',
-            probability='taeygkqlltowitnojutc',
-            severity='puasjeebzpstzoejfjkb',
-            management_type='zlkijdahoectvbehdfrd'
+            situation_record_id='ghajiiznowephsusewvc',
+            version_time='rpwrtbmetzybcdgmhepi',
+            validity_status='fxnjkmtxgsrseaaxkytv',
+            start_time='uotnqmrepzpmxzuayqjz',
+            end_time='lubrprtyfcktefyrgdne',
+            road_name='ukcemfqnpkcfrmcimguo',
+            description='fvhsayobecjelnvuughc',
+            location_description='wczczjvadvjvudwyelcx',
+            probability='kroiiurjxqmmrampruby',
+            severity='yduzozwfmlyizixrysgv',
+            management_type='ltkinnytzdeklwxufxih'
         )

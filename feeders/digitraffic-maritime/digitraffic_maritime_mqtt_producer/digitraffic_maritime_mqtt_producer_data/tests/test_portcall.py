@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from digitraffic_maritime_mqtt_producer_data.portcall import PortCall
-from digitraffic_maritime_mqtt_producer_data.portcallareadetail import PortCallAreaDetail
 from digitraffic_maritime_mqtt_producer_data.portcallagent import PortCallAgent
+from digitraffic_maritime_mqtt_producer_data.portcallareadetail import PortCallAreaDetail
 import datetime
 
 
@@ -31,27 +31,27 @@ class Test_PortCall(unittest.TestCase):
         Create instance of PortCall for testing
         """
         instance = PortCall(
-            port_call_id=int(43),
+            port_call_id=int(72),
             updated_at=datetime.datetime.now(datetime.timezone.utc),
-            customs_reference='flogtzcjghlemsldmasp',
-            port_to_visit='tcrukvjlncgsxtdgacdg',
-            previous_port='sjvqitqddjtecfudpozj',
-            next_port='mnivigyranltdosqrtju',
-            mmsi=int(72),
-            imo_lloyds=int(0),
-            vessel_name='lecsndtsrzitnxckesjs',
-            vessel_name_prefix='mqkwdhzprracrltqubxg',
-            radio_call_sign='vawyvgyoxcisprtxxavx',
-            nationality='nskwafjxssbxertpnrun',
-            vessel_type_code=int(78),
-            domestic_traffic_arrival=True,
-            domestic_traffic_departure=False,
-            arrival_with_cargo=False,
+            customs_reference='dvieanzuhedbzyrgwgcf',
+            port_to_visit='ajnigumrllgjfaotfwdn',
+            previous_port='iirikgddmnckicrtdyag',
+            next_port='elbtylhjmjipddvterjx',
+            mmsi=int(34),
+            imo_lloyds=int(13),
+            vessel_name='fnzekvcatfhszmtejhsc',
+            vessel_name_prefix='vbwmctuegpohzovpsjjh',
+            radio_call_sign='soybjhdwruyvurwibsgo',
+            nationality='zhdvcftyyqrotrvufgov',
+            vessel_type_code=int(23),
+            domestic_traffic_arrival=False,
+            domestic_traffic_departure=True,
+            arrival_with_cargo=True,
             not_loading=False,
-            discharge=int(17),
-            current_security_level=int(89),
+            discharge=int(24),
+            current_security_level=int(96),
             agents=[None, None, None, None],
-            port_areas=[None, None, None, None]
+            port_areas=[None]
         )
         return instance
 
@@ -60,7 +60,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test port_call_id property
         """
-        test_value = int(43)
+        test_value = int(72)
         self.instance.port_call_id = test_value
         self.assertEqual(self.instance.port_call_id, test_value)
     
@@ -76,7 +76,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test customs_reference property
         """
-        test_value = 'flogtzcjghlemsldmasp'
+        test_value = 'dvieanzuhedbzyrgwgcf'
         self.instance.customs_reference = test_value
         self.assertEqual(self.instance.customs_reference, test_value)
     
@@ -84,7 +84,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test port_to_visit property
         """
-        test_value = 'tcrukvjlncgsxtdgacdg'
+        test_value = 'ajnigumrllgjfaotfwdn'
         self.instance.port_to_visit = test_value
         self.assertEqual(self.instance.port_to_visit, test_value)
     
@@ -92,7 +92,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test previous_port property
         """
-        test_value = 'sjvqitqddjtecfudpozj'
+        test_value = 'iirikgddmnckicrtdyag'
         self.instance.previous_port = test_value
         self.assertEqual(self.instance.previous_port, test_value)
     
@@ -100,7 +100,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test next_port property
         """
-        test_value = 'mnivigyranltdosqrtju'
+        test_value = 'elbtylhjmjipddvterjx'
         self.instance.next_port = test_value
         self.assertEqual(self.instance.next_port, test_value)
     
@@ -108,7 +108,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(72)
+        test_value = int(34)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -116,7 +116,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test imo_lloyds property
         """
-        test_value = int(0)
+        test_value = int(13)
         self.instance.imo_lloyds = test_value
         self.assertEqual(self.instance.imo_lloyds, test_value)
     
@@ -124,7 +124,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test vessel_name property
         """
-        test_value = 'lecsndtsrzitnxckesjs'
+        test_value = 'fnzekvcatfhszmtejhsc'
         self.instance.vessel_name = test_value
         self.assertEqual(self.instance.vessel_name, test_value)
     
@@ -132,7 +132,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test vessel_name_prefix property
         """
-        test_value = 'mqkwdhzprracrltqubxg'
+        test_value = 'vbwmctuegpohzovpsjjh'
         self.instance.vessel_name_prefix = test_value
         self.assertEqual(self.instance.vessel_name_prefix, test_value)
     
@@ -140,7 +140,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test radio_call_sign property
         """
-        test_value = 'vawyvgyoxcisprtxxavx'
+        test_value = 'soybjhdwruyvurwibsgo'
         self.instance.radio_call_sign = test_value
         self.assertEqual(self.instance.radio_call_sign, test_value)
     
@@ -148,7 +148,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test nationality property
         """
-        test_value = 'nskwafjxssbxertpnrun'
+        test_value = 'zhdvcftyyqrotrvufgov'
         self.instance.nationality = test_value
         self.assertEqual(self.instance.nationality, test_value)
     
@@ -156,7 +156,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test vessel_type_code property
         """
-        test_value = int(78)
+        test_value = int(23)
         self.instance.vessel_type_code = test_value
         self.assertEqual(self.instance.vessel_type_code, test_value)
     
@@ -164,7 +164,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test domestic_traffic_arrival property
         """
-        test_value = True
+        test_value = False
         self.instance.domestic_traffic_arrival = test_value
         self.assertEqual(self.instance.domestic_traffic_arrival, test_value)
     
@@ -172,7 +172,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test domestic_traffic_departure property
         """
-        test_value = False
+        test_value = True
         self.instance.domestic_traffic_departure = test_value
         self.assertEqual(self.instance.domestic_traffic_departure, test_value)
     
@@ -180,7 +180,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test arrival_with_cargo property
         """
-        test_value = False
+        test_value = True
         self.instance.arrival_with_cargo = test_value
         self.assertEqual(self.instance.arrival_with_cargo, test_value)
     
@@ -196,7 +196,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = int(17)
+        test_value = int(24)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -204,7 +204,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test current_security_level property
         """
-        test_value = int(89)
+        test_value = int(96)
         self.instance.current_security_level = test_value
         self.assertEqual(self.instance.current_security_level, test_value)
     
@@ -220,7 +220,7 @@ class Test_PortCall(unittest.TestCase):
         """
         Test port_areas property
         """
-        test_value = [None, None, None, None]
+        test_value = [None]
         self.instance.port_areas = test_value
         self.assertEqual(self.instance.port_areas, test_value)
     

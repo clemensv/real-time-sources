@@ -30,11 +30,11 @@ class Test_DemandOutturn(unittest.TestCase):
         """
         instance = DemandOutturn(
             settlement_period=int(35),
-            settlement_date='dswamalapnjamlkuerfz',
+            settlement_date='skdfdsqqptpixlaohsqh',
             start_time=datetime.datetime.now(datetime.timezone.utc),
             publish_time=datetime.datetime.now(datetime.timezone.utc),
-            initial_demand_outturn_mw=float(9.78603718263189),
-            initial_transmission_system_demand_outturn_mw=float(92.42736667563308)
+            initial_demand_outturn_mw=float(81.2729524019187),
+            initial_transmission_system_demand_outturn_mw=float(42.23873502668501)
         )
         return instance
 
@@ -51,7 +51,7 @@ class Test_DemandOutturn(unittest.TestCase):
         """
         Test settlement_date property
         """
-        test_value = 'dswamalapnjamlkuerfz'
+        test_value = 'skdfdsqqptpixlaohsqh'
         self.instance.settlement_date = test_value
         self.assertEqual(self.instance.settlement_date, test_value)
     
@@ -75,7 +75,7 @@ class Test_DemandOutturn(unittest.TestCase):
         """
         Test initial_demand_outturn_mw property
         """
-        test_value = float(9.78603718263189)
+        test_value = float(81.2729524019187)
         self.instance.initial_demand_outturn_mw = test_value
         self.assertEqual(self.instance.initial_demand_outturn_mw, test_value)
     
@@ -83,7 +83,7 @@ class Test_DemandOutturn(unittest.TestCase):
         """
         Test initial_transmission_system_demand_outturn_mw property
         """
-        test_value = float(92.42736667563308)
+        test_value = float(42.23873502668501)
         self.instance.initial_transmission_system_demand_outturn_mw = test_value
         self.assertEqual(self.instance.initial_transmission_system_demand_outturn_mw, test_value)
     

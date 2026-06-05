@@ -38,15 +38,15 @@ from noaa_ndbc_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAAND
 
 # imports for the data classes for each event
 
-from noaa_ndbc_producer_data.buoyobservation import BuoyObservation
-from noaa_ndbc_producer_data.buoystation import BuoyStation
-from noaa_ndbc_producer_data.buoysolarradiationobservation import BuoySolarRadiationObservation
-from noaa_ndbc_producer_data.buoyoceanographicobservation import BuoyOceanographicObservation
-from noaa_ndbc_producer_data.buoydartmeasurement import BuoyDartMeasurement
-from noaa_ndbc_producer_data.buoycontinuouswindobservation import BuoyContinuousWindObservation
-from noaa_ndbc_producer_data.buoysupplementalmeasurement import BuoySupplementalMeasurement
-from noaa_ndbc_producer_data.buoydetailedwavesummary import BuoyDetailedWaveSummary
-from noaa_ndbc_producer_data.buoyhourlyrainmeasurement import BuoyHourlyRainMeasurement
+from noaa_ndbc_producer_data import BuoyObservation
+from noaa_ndbc_producer_data import BuoyStation
+from noaa_ndbc_producer_data import BuoySolarRadiationObservation
+from noaa_ndbc_producer_data import BuoyOceanographicObservation
+from noaa_ndbc_producer_data import BuoyDartMeasurement
+from noaa_ndbc_producer_data import BuoyContinuousWindObservation
+from noaa_ndbc_producer_data import BuoySupplementalMeasurement
+from noaa_ndbc_producer_data import BuoyDetailedWaveSummary
+from noaa_ndbc_producer_data import BuoyHourlyRainMeasurement
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -302,7 +302,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

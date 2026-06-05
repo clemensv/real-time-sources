@@ -29,10 +29,10 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            timeseries_id='utankqynsortviyqgvds',
+            timeseries_id='jhckvuimdggzkgaeukmp',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(8.782364580593406),
-            uom='zzspbtmbwgkpbubezocj'
+            value=float(81.1131142568831),
+            uom='whxgyfugvadivspupggk'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test timeseries_id property
         """
-        test_value = 'utankqynsortviyqgvds'
+        test_value = 'jhckvuimdggzkgaeukmp'
         self.instance.timeseries_id = test_value
         self.assertEqual(self.instance.timeseries_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(8.782364580593406)
+        test_value = float(81.1131142568831)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -65,19 +65,10 @@ class Test_Observation(unittest.TestCase):
         """
         Test uom property
         """
-        test_value = 'zzspbtmbwgkpbubezocj'
+        test_value = 'whxgyfugvadivspupggk'
         self.instance.uom = test_value
         self.assertEqual(self.instance.uom, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Observation.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

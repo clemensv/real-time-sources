@@ -7,10 +7,10 @@ version = "0.1.0"
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-confluent-kafka = ">=2.5.3"
-cloudevents = ">=1.11.0,<2.0.0"
-requests = ">=2.32.3"
-aiohttp = ">=3.10.5"
+confluent-kafka = ">=2.14.2"
+cloudevents = ">=1.12.1,<2.0.0"
+requests = ">=2.34.2"
+aiohttp = ">=3.14.0"
 asyncio = ">=3.4.3"
 avro = "^1.12.1"
 dataclasses-json = "^0.6.7"
@@ -18,7 +18,7 @@ nifc_usa_wildfires_producer_data = {path = "nifc_usa_wildfires_producer/nifc_usa
 nifc_usa_wildfires_producer_kafka_producer = {path = "nifc_usa_wildfires_producer/nifc_usa_wildfires_producer_kafka_producer"}
 
 [tool.poetry.dev-dependencies]
-pytest = ">=8.3.3"
+pytest = ">=9.0.3"
 flake8 = ">=7.1.1"
 pylint = ">=3.2.7"
 mypy = ">=1.11.2"

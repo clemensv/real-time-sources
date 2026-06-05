@@ -4,6 +4,7 @@ import re
 import typing
 from typing import Callable, Awaitable, Optional, Dict, List
 import asyncio
+from datetime import datetime, timezone
 import paho.mqtt.client as mqtt
 try:
     # paho-mqtt 2.x exposes MQTT5 Properties for the PUBLISH packet type.
@@ -34,6 +35,51 @@ from noaa_mqtt_producer_data import CurrentPredictions
 
 # URI template regex pattern
 _URI_TEMPLATE_PATTERN = re.compile(r'\{([A-Za-z0-9_]+)\}')
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 
 def _topic_to_mqtt_wildcard(topic: str) -> str:
@@ -539,6 +585,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.WaterLevel' event to an MQTT topic.
@@ -552,6 +599,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/water-level"
@@ -568,6 +616,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -615,6 +664,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.Predictions' event to an MQTT topic.
@@ -628,6 +678,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/predictions"
@@ -644,6 +695,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -691,6 +743,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.AirPressure' event to an MQTT topic.
@@ -704,6 +757,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/air-pressure"
@@ -720,6 +774,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -767,6 +822,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.AirTemperature' event to an MQTT topic.
@@ -780,6 +836,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/air-temperature"
@@ -796,6 +853,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -843,6 +901,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.WaterTemperature' event to an MQTT topic.
@@ -856,6 +915,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/water-temperature"
@@ -872,6 +932,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -919,6 +980,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.Wind' event to an MQTT topic.
@@ -932,6 +994,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/wind"
@@ -948,6 +1011,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -995,6 +1059,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.Humidity' event to an MQTT topic.
@@ -1008,6 +1073,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/humidity"
@@ -1024,6 +1090,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1071,6 +1138,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.Conductivity' event to an MQTT topic.
@@ -1084,6 +1152,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/conductivity"
@@ -1100,6 +1169,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1147,6 +1217,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.Salinity' event to an MQTT topic.
@@ -1160,6 +1231,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/salinity"
@@ -1176,6 +1248,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1223,6 +1296,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.Station' event to an MQTT topic.
@@ -1236,6 +1310,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/info"
@@ -1252,6 +1327,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1292,19 +1368,20 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         self.client.publish(target_topic, payload, **publish_kwargs)
 
     
-    async def publish_microsoft_open_data_us_noaa_mqtt_visibility(self,_datacontenttype: str,_time: str,_dataschema: str,
+    async def publish_microsoft_open_data_us_noaa_mqtt_visibility(self,_datacontenttype: str,
         station_id: str,
         region: str,
         data: noaa_mqtt_producer_data.Visibility,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.Visibility' event to an MQTT topic.
 
         Args:
-        _datacontenttype: CloudEvents attribute 'datacontenttype'_time: CloudEvents attribute 'time'_dataschema: CloudEvents attribute 'dataschema'
+        _datacontenttype: CloudEvents attribute 'datacontenttype'
             station_id: URI template variable for 'station_id'
             region: URI template variable for 'region'
             data: The event data to be published.
@@ -1312,6 +1389,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/visibility"
@@ -1327,10 +1405,11 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "source":"https://api.tidesandcurrents.noaa.gov",
              "datacontenttype":_datacontenttype,
              "subject":"{station_id}".format(station_id = station_id),
-             "time":_time,
+             "time":None,
              "dataschema":_dataschema
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1378,6 +1457,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.Currents' event to an MQTT topic.
@@ -1391,6 +1471,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/currents"
@@ -1407,6 +1488,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -1454,6 +1536,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'Microsoft.OpenData.US.NOAA.mqtt.CurrentPredictions' event to an MQTT topic.
@@ -1467,6 +1550,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
         target_topic = topic if topic is not None else "maritime/us/noaa/noaa/{region}/{station_id}/current-predictions"
@@ -1483,6 +1567,7 @@ class MicrosoftOpenDataUSNOAAMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's

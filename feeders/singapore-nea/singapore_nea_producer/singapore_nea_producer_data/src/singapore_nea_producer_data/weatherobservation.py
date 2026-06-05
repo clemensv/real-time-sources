@@ -100,6 +100,8 @@ class WeatherObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,12 +169,12 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='pybeawthuzrurtguruve',
-            station_name='brgyeujxxzcgxutczwqi',
+            station_id='aqwblfncjqpvvzhtxwfz',
+            station_name='edrsusqtqxbkogxpaonm',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            air_temperature=float(51.97870445976518),
-            rainfall=float(67.44936463199733),
-            relative_humidity=float(49.440577635270465),
-            wind_speed=float(59.72795919866212),
-            wind_direction=float(59.6086106314201)
+            air_temperature=float(20.283049702029064),
+            rainfall=float(96.0463510425799),
+            relative_humidity=float(87.94427646314705),
+            wind_speed=float(27.087177051587506),
+            wind_direction=float(75.89907176091403)
         )

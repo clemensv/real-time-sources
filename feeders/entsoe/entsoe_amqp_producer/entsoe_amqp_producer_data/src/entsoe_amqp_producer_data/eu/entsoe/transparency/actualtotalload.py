@@ -92,6 +92,8 @@ class ActualTotalLoad:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class ActualTotalLoad:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='abxxdmzusulorgocwqtj',
-            quantity=float(63.26596410071655),
-            resolution='lbyfnryavrjzpnifdtuo',
-            outDomain='oknckvwzqwcsbwzvwftd',
-            documentType='qnqsrhrbejqwqlqpoisz'
+            inDomain='tnurjvnqrzbbujofioov',
+            quantity=float(48.36703786632942),
+            resolution='tduyobofggplgcgjeyxg',
+            outDomain='rkqbrcelxnnaicofmjpn',
+            documentType='nnxpfkmmyqzujivblpas'
         )

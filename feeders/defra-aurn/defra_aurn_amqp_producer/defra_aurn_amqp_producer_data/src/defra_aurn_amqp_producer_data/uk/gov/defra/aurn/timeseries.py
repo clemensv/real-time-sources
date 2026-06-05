@@ -104,6 +104,8 @@ class Timeseries:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class Timeseries:
             An instance of the dataclass.
         """
         return cls(
-            timeseries_id='nmtqhnowmxxppjvxhxbi',
-            label='njrzaxsmxprxtgvympeb',
-            uom='zypcmmounqegramtomlf',
-            station_id='mgmcepobjxjzdpjisuqy',
-            station_label='egpbgytjebshxscjsnfo',
-            latitude=float(24.516745439017217),
-            longitude=float(17.150699494882595),
-            phenomenon_id='vveltzzzbtfjjndnobel',
-            phenomenon_label='xmkxdnfqmqjycgjcmqhj',
-            category_id='trfyggqicbjaqicsresy',
-            category_label='advgylzxoxxaruofwwfh'
+            timeseries_id='xruacwaiqkkcidqqgrqa',
+            label='atwchlbpgvpcgvqvkwmr',
+            uom='gxrlqvmlggqpkionmhcb',
+            station_id='nyrguhzduwstdrvchfyi',
+            station_label='odinqepucishdpheyepy',
+            latitude=float(83.98933831128721),
+            longitude=float(61.06739444709547),
+            phenomenon_id='rudghbnsbzjwounxixso',
+            phenomenon_label='srdxtxxrevfaiecjbhrp',
+            category_id='nbhthznhfofpodjpbrxk',
+            category_label='xusngyonwwgswdyagzbv'
         )

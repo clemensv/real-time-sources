@@ -1272,28 +1272,44 @@
                     "description": "Reference details for a station, monitoring site, or reporting area in the DWD Weather source."
                   },
                   "air_temperature_2m": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "TT_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "air_temperature_5cm": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "TM5_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "relative_humidity": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "RF_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "dew_point_temperature": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "TD_10"
                     },
@@ -1352,14 +1368,22 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "precipitation_height": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "RWS_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "precipitation_indicator": {
-                    "type": "int32",
+                    "type": [
+                      "null",
+                      "int32"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "RWS_IND_10"
                     },
@@ -1418,14 +1442,22 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_speed": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "FF_10"
                     },
                     "description": "Wind speed reported by the station."
                   },
                   "wind_direction": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "DD_10"
                     },
@@ -1484,28 +1516,44 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "global_radiation": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "GS_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "sunshine_duration": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "SD_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "diffuse_radiation": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "DS_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "longwave_radiation": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "LS_10"
                     },
@@ -1727,21 +1775,33 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_speed_maximum": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "FX_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_speed_minimum": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "FNX_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "wind_direction_at_maximum": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "DX_10"
                     },
@@ -1800,14 +1860,22 @@
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "air_temperature_maximum_2m": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "TX_10"
                     },
                     "description": "Measurement payload for weather observations, warnings, and forecast product updates in the DWD Weather source."
                   },
                   "air_temperature_minimum_5cm": {
-                    "type": "double",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
                     "altnames": {
                       "lang:de": "TN_10"
                     },

@@ -42,16 +42,16 @@ from noaa_goes_producer_kafka_producer.producer import MicrosoftOpenDataUSNOAASW
 
 # imports for the data classes for each event
 
-from noaa_goes_producer_data.spaceweatheralert import SpaceWeatherAlert
-from noaa_goes_producer_data.planetarykindex import PlanetaryKIndex
-from noaa_goes_producer_data.solarwindsummary import SolarWindSummary
-from noaa_goes_producer_data.solarwindplasma import SolarWindPlasma
-from noaa_goes_producer_data.solarwindmagfield import SolarWindMagField
-from noaa_goes_producer_data.goesxrayflux import GoesXrayFlux
-from noaa_goes_producer_data.goesprotonflux import GoesProtonFlux
-from noaa_goes_producer_data.goeselectronflux import GoesElectronFlux
-from noaa_goes_producer_data.goesmagnetometer import GoesMagnetometer
-from noaa_goes_producer_data.xrayflare import XrayFlare
+from noaa_goes_producer_data import SpaceWeatherAlert
+from noaa_goes_producer_data import PlanetaryKIndex
+from noaa_goes_producer_data import SolarWindSummary
+from noaa_goes_producer_data import SolarWindPlasma
+from noaa_goes_producer_data import SolarWindMagField
+from noaa_goes_producer_data import GoesXrayFlux
+from noaa_goes_producer_data import GoesProtonFlux
+from noaa_goes_producer_data import GoesElectronFlux
+from noaa_goes_producer_data import GoesMagnetometer
+from noaa_goes_producer_data import XrayFlare
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -299,7 +299,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

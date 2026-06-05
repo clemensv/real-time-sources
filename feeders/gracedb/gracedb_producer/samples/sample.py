@@ -34,10 +34,11 @@ from confluent_kafka import Producer as KafkaProducer
 
 from gracedb_producer_kafka_producer.producer import OrgLigoGracedbEventProducer
 from gracedb_producer_kafka_producer.producer import OrgLigoGracedbMqttEventProducer
+from gracedb_producer_kafka_producer.producer import OrgLigoGracedbAmqpEventProducer
 
 # imports for the data classes for each event
 
-from gracedb_producer_data.superevent import Superevent
+from gracedb_producer_data import Superevent
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -62,7 +63,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _superevent = Superevent()
 
     # sends the 'org.ligo.gracedb.Superevent' event to Kafka topic.
-    await org_ligo_gracedb_event_producer.send_org_ligo_gracedb_superevent(_source_uri = 'TODO: replace me', _superevent_id = 'TODO: replace me', _created = 'TODO: replace me', data = _superevent)
+    await org_ligo_gracedb_event_producer.send_org_ligo_gracedb_superevent(_source_uri = 'TODO: replace me', _superevent_id = 'TODO: replace me', data = _superevent)
     print(f"Sent 'org.ligo.gracedb.Superevent' event: {_superevent.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -78,14 +79,30 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _superevent = Superevent()
 
     # sends the 'org.ligo.gracedb.mqtt.Superevent' event to Kafka topic.
-    await org_ligo_gracedb_mqtt_event_producer.send_org_ligo_gracedb_mqtt_superevent(_source_uri = 'TODO: replace me', _superevent_id = 'TODO: replace me', _created = 'TODO: replace me', data = _superevent)
+    await org_ligo_gracedb_mqtt_event_producer.send_org_ligo_gracedb_mqtt_superevent(_source_uri = 'TODO: replace me', _superevent_id = 'TODO: replace me', data = _superevent)
     print(f"Sent 'org.ligo.gracedb.mqtt.Superevent' event: {_superevent.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        org_ligo_gracedb_amqp_event_producer = OrgLigoGracedbAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        org_ligo_gracedb_amqp_event_producer = OrgLigoGracedbAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- org.ligo.gracedb.amqp.Superevent ----
+    # TODO: Supply event data for the org.ligo.gracedb.amqp.Superevent event
+    _superevent = Superevent()
+
+    # sends the 'org.ligo.gracedb.amqp.Superevent' event to Kafka topic.
+    await org_ligo_gracedb_amqp_event_producer.send_org_ligo_gracedb_amqp_superevent(_source_uri = 'TODO: replace me', _superevent_id = 'TODO: replace me', data = _superevent)
+    print(f"Sent 'org.ligo.gracedb.amqp.Superevent' event: {_superevent.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

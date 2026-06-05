@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from canada_aqhi_mqtt_producer_data.ca.gc.weather.aqhi.forecastperiodenum import ForecastPeriodenum
 from canada_aqhi_mqtt_producer_data.ca.gc.weather.aqhi.aqhicategoryenum import AqhiCategoryenum
+from canada_aqhi_mqtt_producer_data.ca.gc.weather.aqhi.forecastperiodenum import ForecastPeriodenum
 from canada_aqhi_mqtt_producer_data.ca.gc.weather.aqhi.forecastperiodlabelenum import ForecastPeriodLabelenum
 
 
@@ -103,6 +103,8 @@ class Forecast:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -170,13 +172,13 @@ class Forecast:
             An instance of the dataclass.
         """
         return cls(
-            province='nlqrpnforwvwlpvnhshv',
-            community_name='gcvaozocdgtehjzsbxan',
-            cgndb_code='pyxygdzbmpoduvxgvknt',
-            publication_datetime='doypvkmkaxqawrlbjbbg',
-            forecast_date='xezeeiegtvjhnxpmvldp',
+            province='lykvngikbowyhalrmjxp',
+            community_name='tnzjvptmibhyidwdwuoa',
+            cgndb_code='utmlutramtlofjyrmpjm',
+            publication_datetime='ugxjmyfkyczykcrxicqe',
+            forecast_date='jprgdkjlggnebffrhvqy',
             forecast_period=ForecastPeriodenum.VALUE_1,
             forecast_period_label=ForecastPeriodLabelenum.Today,
-            aqhi=int(91),
+            aqhi=int(5),
             aqhi_category=AqhiCategoryenum.Low
         )

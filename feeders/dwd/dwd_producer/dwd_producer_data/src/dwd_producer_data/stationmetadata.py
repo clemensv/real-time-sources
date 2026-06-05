@@ -98,6 +98,8 @@ class StationMetadata:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,12 +167,12 @@ class StationMetadata:
             An instance of the dataclass.
         """
         return cls(
-            station_id='isacqoiswlxqdryuxzfv',
-            station_name='kbtavzbglpnaotkjjvrx',
-            latitude=float(90.29245743692206),
-            longitude=float(35.68891290471936),
-            elevation=float(62.55508001698033),
-            state='fcchcyjsrtnhactteoop',
-            from_date='hgopdhrlbferpigyjxhm',
-            to_date='pbilmoymevbnlnukyxik'
+            station_id='bjrlkvzdegoyofamqjhj',
+            station_name='ljqwscrohjqywkyxpgsh',
+            latitude=float(48.48562698487511),
+            longitude=float(24.077252807576734),
+            elevation=float(26.056072730280878),
+            state='icweqqvhjhfsjdmsastm',
+            from_date='fndrqnrtavvzxweeodrv',
+            to_date='wlemokwkwvlsdyoaznzo'
         )

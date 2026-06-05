@@ -12,10 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
+from digitraffic_maritime_amqp_producer_data.vesselregistration import VesselRegistration
 from digitraffic_maritime_amqp_producer_data.vesseldimensions import VesselDimensions
 from digitraffic_maritime_amqp_producer_data.vesselconstruction import VesselConstruction
 from digitraffic_maritime_amqp_producer_data.vesselsystem import VesselSystem
-from digitraffic_maritime_amqp_producer_data.vesselregistration import VesselRegistration
 import datetime
 
 
@@ -114,6 +114,8 @@ class VesselDetails:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -181,15 +183,15 @@ class VesselDetails:
             An instance of the dataclass.
         """
         return cls(
-            vessel_id=int(56),
+            vessel_id=int(32),
             updated_at=datetime.datetime.now(datetime.timezone.utc),
-            mmsi=int(82),
-            name='nmmtgmrvaxvymeyoxhcf',
-            name_prefix='nedqbkuaatndarqfesdd',
-            imo_lloyds=int(63),
-            radio_call_sign='wkgfqeoqaahnvxkwsabs',
-            radio_call_sign_type='oiyjiulhvumzuonoaamc',
-            data_source='osybaqyqefeusfygmccb',
+            mmsi=int(70),
+            name='xjlucpdneoxqlnmoqtuy',
+            name_prefix='zklrheezgfoprwyfocac',
+            imo_lloyds=int(23),
+            radio_call_sign='byvunfhodkoxeyvohqka',
+            radio_call_sign_type='cameajikwttpqjrgbeyi',
+            data_source='fpysdritkwtytnlrhwye',
             vessel_construction=None,
             vessel_dimensions=None,
             vessel_registration=None,

@@ -1,3 +1,3 @@
-from .bluesky import Block, Follow, Post, Repost, Like, Profile
+from .bluesky import Post, Like, Repost, Profile, Follow, Block
 
-__all__ = ["Block", "Follow", "Post", "Repost", "Like", "Profile"]
+__all__ = ["Post", "Like", "Repost", "Profile", "Follow", "Block"]

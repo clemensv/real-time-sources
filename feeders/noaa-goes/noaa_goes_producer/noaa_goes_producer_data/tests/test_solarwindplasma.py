@@ -28,10 +28,10 @@ class Test_SolarWindPlasma(unittest.TestCase):
         Create instance of SolarWindPlasma for testing
         """
         instance = SolarWindPlasma(
-            observation_time='gedslmkgjolzdeudqbgp',
-            density=float(15.58535269627952),
-            speed=float(57.32898680419414),
-            temperature=float(17.239556668857624)
+            observation_time='spsrqakiieiriwwifvnf',
+            density=float(18.92751786196749),
+            speed=float(95.5988763257844),
+            temperature=float(37.00980475889721)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_SolarWindPlasma(unittest.TestCase):
         """
         Test observation_time property
         """
-        test_value = 'gedslmkgjolzdeudqbgp'
+        test_value = 'spsrqakiieiriwwifvnf'
         self.instance.observation_time = test_value
         self.assertEqual(self.instance.observation_time, test_value)
     
@@ -48,7 +48,7 @@ class Test_SolarWindPlasma(unittest.TestCase):
         """
         Test density property
         """
-        test_value = float(15.58535269627952)
+        test_value = float(18.92751786196749)
         self.instance.density = test_value
         self.assertEqual(self.instance.density, test_value)
     
@@ -56,7 +56,7 @@ class Test_SolarWindPlasma(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(57.32898680419414)
+        test_value = float(95.5988763257844)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     
@@ -64,19 +64,10 @@ class Test_SolarWindPlasma(unittest.TestCase):
         """
         Test temperature property
         """
-        test_value = float(17.239556668857624)
+        test_value = float(37.00980475889721)
         self.instance.temperature = test_value
         self.assertEqual(self.instance.temperature, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = SolarWindPlasma.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

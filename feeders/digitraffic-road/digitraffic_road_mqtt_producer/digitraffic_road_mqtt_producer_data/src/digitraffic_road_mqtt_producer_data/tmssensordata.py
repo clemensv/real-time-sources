@@ -94,6 +94,8 @@ class TmsSensorData:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class TmsSensorData:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(38),
-            sensor_id=int(78),
-            value=float(96.10496447791417),
-            time=int(16),
-            start=int(54),
-            end=int(27)
+            station_id=int(75),
+            sensor_id=int(9),
+            value=float(90.0919155188077),
+            time=int(26),
+            start=int(44),
+            end=int(78)
         )

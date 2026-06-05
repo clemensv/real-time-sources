@@ -1,18 +1,16 @@
 """ Block dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -20,18 +18,21 @@ import avro.io
 class Block:
     """
     A block relationship between users
+    
     Attributes:
-        uri (str): AT-URI of the block record
-        cid (str): Content Identifier of the block
-        did (str): DID of the blocker
-        handle (typing.Optional[str]): Handle of the blocker
-        subject (str): DID of the blocked user
-        subject_handle (typing.Optional[str]): Handle of the blocked user
-        created_at (str): ISO 8601 timestamp of block creation
-        indexed_at (str): ISO 8601 timestamp of indexing
-        seq (int): Firehose sequence number
-        collection (str): AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.
-        lang (str): Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `…/ja/+/+`."""
+        uri (str)
+        cid (str)
+        did (str)
+        handle (typing.Optional[str])
+        subject (str)
+        subject_handle (typing.Optional[str])
+        created_at (str)
+        indexed_at (str)
+        seq (int)
+        collection (str)
+        lang (str)
+    """
+    
     
     uri: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="uri"))
     cid: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cid"))
@@ -44,24 +45,6 @@ class Block:
     seq: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="seq"))
     collection: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="collection"))
     lang: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lang"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"Block\", \"namespace\": \"Bluesky.Graph\", \"fields\": [{\"name\": \"uri\", \"type\": \"string\", \"doc\": \"AT-URI of the block record\"}, {\"name\": \"cid\", \"type\": \"string\", \"doc\": \"Content Identifier of the block\"}, {\"name\": \"did\", \"type\": \"string\", \"doc\": \"DID of the blocker\"}, {\"name\": \"handle\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Handle of the blocker\"}, {\"name\": \"subject\", \"type\": \"string\", \"doc\": \"DID of the blocked user\"}, {\"name\": \"subject_handle\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Handle of the blocked user\"}, {\"name\": \"created_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of block creation\"}, {\"name\": \"indexed_at\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of indexing\"}, {\"name\": \"seq\", \"type\": \"long\", \"doc\": \"Firehose sequence number\"}, {\"name\": \"collection\", \"type\": \"string\", \"doc\": \"AT Protocol record collection NSID (e.g. 'app.bsky.feed.post'). Populated by the bridge from the upstream firehose commit and used as the second MQTT topic segment so subscribers can wildcard on a record family (e.g. all posts via 'app.bsky.feed.post/+/+/post'). Lowercase; never empty.\"}, {\"name\": \"lang\", \"type\": \"string\", \"doc\": \"Primary BCP-47 language tag for the record. For posts this is the first entry of `record.langs[]`; for records without a language field the bridge emits the sentinel 'und' (BCP-47 'undetermined'). Always lowercase, so subscribers can wildcard on `\u2026/ja/+/+`.\", \"default\": \"und\"}], \"doc\": \"A block relationship between users\"}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.uri=str(self.uri)
-        self.cid=str(self.cid)
-        self.did=str(self.did)
-        self.handle=str(self.handle) if self.handle else None
-        self.subject=str(self.subject)
-        self.subject_handle=str(self.subject_handle) if self.subject_handle else None
-        self.created_at=str(self.created_at)
-        self.indexed_at=str(self.indexed_at)
-        self.seq=int(self.seq)
-        self.collection=str(self.collection)
-        self.lang=str(self.lang)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Block':
@@ -72,7 +55,7 @@ class Block:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -91,7 +74,7 @@ class Block:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -105,8 +88,6 @@ class Block:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -119,16 +100,12 @@ class Block:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -153,10 +130,6 @@ class Block:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -182,18 +155,6 @@ class Block:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return Block.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -201,5 +162,26 @@ class Block:
                 return Block.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'Block':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            uri='grgrjfjdzxydjvmqhovy',
+            cid='zvzzamyhjrcxztomvgew',
+            did='ehbzlxmiukmvmhhyfevl',
+            handle='afdpigzxcixztcunnrep',
+            subject='eicrvycnnhlotvljvrjw',
+            subject_handle='szfbrhgsrpubitdlglud',
+            created_at='rosgehpucuwpxlipjlkb',
+            indexed_at='mvtntnzdsjetmjiddeyv',
+            seq=int(11),
+            collection='abojoptmazoitdjizdop',
+            lang='meerbxzdoqpjdepevdfj'
+        )

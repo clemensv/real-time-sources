@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -93,6 +94,7 @@ async def test_fr_gouv_transport_bison_fute_traffic_flow_mqtt_fr_gouv_transport_
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             site_id=f"test_site_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -162,6 +164,7 @@ async def test_fr_gouv_transport_bison_fute_road_event_mqtt_fr_gouv_transport_bi
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             situation_id=f"test_situation_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

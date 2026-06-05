@@ -1,0 +1,2 @@
+pip install .\usgs_geomag_producer_data
+pip install .\usgs_geomag_producer_kafka_producer

@@ -20,12 +20,12 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from jma_bosai_warning_producer_kafka_producer.producer import JPJMAWarningEventProducer
 from jma_bosai_warning_producer_data import Office
-from test_jma_bosai_warning_producer_data_office import Test_Office
+from test_office import Test_Office
 from jma_bosai_warning_producer_data import WeatherWarning
-from test_jma_bosai_warning_producer_data_weatherwarning import Test_WeatherWarning
+from test_weatherwarning import Test_WeatherWarning
 from jma_bosai_warning_producer_kafka_producer.producer import JPJMATsunamiEventProducer
 from jma_bosai_warning_producer_data import TsunamiAlert
-from test_jma_bosai_warning_producer_data_tsunamialert import Test_TsunamiAlert
+from test_tsunamialert import Test_TsunamiAlert
 from jma_bosai_warning_producer_kafka_producer.producer import JPJMAWarningMqttEventProducer
 from jma_bosai_warning_producer_kafka_producer.producer import JPJMAWarningAmqpEventProducer
 
@@ -110,7 +110,8 @@ def test_jp_jma_warning_jpjmawarningoffice(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_warning_office(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_warning_office(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -173,7 +174,8 @@ def test_jp_jma_warning_jpjmawarningweatherwarning(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_warning_weather_warning(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_warning_weather_warning(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -236,7 +238,8 @@ def test_jp_jma_tsunami_jpjmatsunamitsunamialert(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_tsunami_tsunami_alert(_feedurl = f'test_{i}', _event_id = f'test_{i}', _serial = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_tsunami_tsunami_alert(_feedurl = f'test_{i}', _event_id = f'test_{i}', _serial = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -299,7 +302,8 @@ def test_jp_jma_warning_mqtt_jpjmawarningmqttoffice(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_warning_mqtt_office(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_warning_mqtt_office(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -360,7 +364,8 @@ def test_jp_jma_warning_mqtt_jpjmawarningmqttweatherwarning(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_warning_mqtt_weather_warning(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_warning_mqtt_weather_warning(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -421,7 +426,8 @@ def test_jp_jma_warning_mqtt_jpjmawarningmqtttsunamialert(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_warning_mqtt_tsunami_alert(_feedurl = f'test_{i}', _event_id = f'test_{i}', _serial = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_warning_mqtt_tsunami_alert(_feedurl = f'test_{i}', _event_id = f'test_{i}', _serial = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -482,7 +488,8 @@ def test_jp_jma_warning_amqp_jpjmawarningamqpoffice(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_warning_amqp_office(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_warning_amqp_office(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -543,7 +550,8 @@ def test_jp_jma_warning_amqp_jpjmawarningamqpweatherwarning(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_warning_amqp_weather_warning(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_warning_amqp_weather_warning(_feedurl = f'test_{i}', _office_code = f'test_{i}', _area_code = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -604,7 +612,8 @@ def test_jp_jma_warning_amqp_jpjmawarningamqptsunamialert(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_jp_jma_warning_amqp_tsunami_alert(_feedurl = f'test_{i}', _event_id = f'test_{i}', _serial = f'test_{i}', data = event_data)
+        producer_instance.send_jp_jma_warning_amqp_tsunami_alert(_feedurl = f'test_{i}', _event_id = f'test_{i}', _serial = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

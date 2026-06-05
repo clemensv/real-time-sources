@@ -1,38 +1,39 @@
 """ DatedServiceJourney dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class DatedServiceJourney:
     """
-    Reference data for a dated service journey in the Norwegian public transport network.
+    Reference data for a dated service journey in the Norwegian public transport network. A DatedServiceJourney is a specific vehicle journey operating on a particular operating day, identified by its NeTEx ServiceJourney reference and operating day. This reference event is emitted at bridge startup from the SIRI-ET feed and refreshed periodically to provide downstream consumers with the timetable context for subsequent telemetry events.
+    
     Attributes:
-        service_journey_id (str): NeTEx ServiceJourney identifier from DatedVehicleJourneyRef. Example: RUT:ServiceJourney:1-1234.
-        operating_day (str): ISO 8601 date string for the operating day from DataFrameRef. Example: 2024-01-01.
-        line_ref (str): NeTEx Line reference. Example: RUT:Line:1.
-        operator_ref (str): NeTEx Operator or codespace reference. Example: RUT.
-        direction_ref (typing.Optional[str]): Direction reference, e.g. Outbound or Inbound.
-        vehicle_mode (typing.Optional[str]): SIRI VehicleMode: bus, tram, rail, ferry, metro, water, air, coach, taxi.
-        route_ref (typing.Optional[str]): NeTEx Route reference.
-        published_line_name (typing.Optional[str]): Public-facing line number or name displayed to passengers.
-        external_line_ref (typing.Optional[str]): External line reference.
-        origin_name (typing.Optional[str]): Origin stop or place name for this journey.
-        destination_name (typing.Optional[str]): Destination stop or place name for this journey.
-        data_source (typing.Optional[str]): Operator codespace originating this data record."""
+        service_journey_id (str)
+        operating_day (str)
+        line_ref (str)
+        operator_ref (str)
+        direction_ref (typing.Optional[str])
+        vehicle_mode (typing.Optional[str])
+        route_ref (typing.Optional[str])
+        published_line_name (typing.Optional[str])
+        external_line_ref (typing.Optional[str])
+        origin_name (typing.Optional[str])
+        destination_name (typing.Optional[str])
+        data_source (typing.Optional[str])
+    """
+    
     
     service_journey_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="service_journey_id"))
     operating_day: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="operating_day"))
@@ -46,25 +47,6 @@ class DatedServiceJourney:
     origin_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="origin_name"))
     destination_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="destination_name"))
     data_source: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="data_source"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"DatedServiceJourney\", \"namespace\": \"no.entur\", \"doc\": \"Reference data for a dated service journey in the Norwegian public transport network.\", \"fields\": [{\"name\": \"service_journey_id\", \"type\": \"string\", \"doc\": \"NeTEx ServiceJourney identifier from DatedVehicleJourneyRef. Example: RUT:ServiceJourney:1-1234.\"}, {\"name\": \"operating_day\", \"type\": \"string\", \"doc\": \"ISO 8601 date string for the operating day from DataFrameRef. Example: 2024-01-01.\"}, {\"name\": \"line_ref\", \"type\": \"string\", \"doc\": \"NeTEx Line reference. Example: RUT:Line:1.\"}, {\"name\": \"operator_ref\", \"type\": \"string\", \"doc\": \"NeTEx Operator or codespace reference. Example: RUT.\"}, {\"name\": \"direction_ref\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Direction reference, e.g. Outbound or Inbound.\"}, {\"name\": \"vehicle_mode\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"SIRI VehicleMode: bus, tram, rail, ferry, metro, water, air, coach, taxi.\"}, {\"name\": \"route_ref\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"NeTEx Route reference.\"}, {\"name\": \"published_line_name\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Public-facing line number or name displayed to passengers.\"}, {\"name\": \"external_line_ref\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"External line reference.\"}, {\"name\": \"origin_name\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Origin stop or place name for this journey.\"}, {\"name\": \"destination_name\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Destination stop or place name for this journey.\"}, {\"name\": \"data_source\", \"type\": [\"null\", \"string\"], \"default\": null, \"doc\": \"Operator codespace originating this data record.\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.service_journey_id=str(self.service_journey_id)
-        self.operating_day=str(self.operating_day)
-        self.line_ref=str(self.line_ref)
-        self.operator_ref=str(self.operator_ref)
-        self.direction_ref=str(self.direction_ref) if self.direction_ref else None
-        self.vehicle_mode=str(self.vehicle_mode) if self.vehicle_mode else None
-        self.route_ref=str(self.route_ref) if self.route_ref else None
-        self.published_line_name=str(self.published_line_name) if self.published_line_name else None
-        self.external_line_ref=str(self.external_line_ref) if self.external_line_ref else None
-        self.origin_name=str(self.origin_name) if self.origin_name else None
-        self.destination_name=str(self.destination_name) if self.destination_name else None
-        self.data_source=str(self.data_source) if self.data_source else None
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'DatedServiceJourney':
@@ -75,7 +57,7 @@ class DatedServiceJourney:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -94,7 +76,7 @@ class DatedServiceJourney:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -108,8 +90,6 @@ class DatedServiceJourney:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -122,16 +102,12 @@ class DatedServiceJourney:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -156,10 +132,6 @@ class DatedServiceJourney:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -185,18 +157,6 @@ class DatedServiceJourney:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return DatedServiceJourney.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -204,5 +164,27 @@ class DatedServiceJourney:
                 return DatedServiceJourney.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'DatedServiceJourney':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            service_journey_id='bhclnjulrxfcgiewufta',
+            operating_day='fykqhlkclewiudkezisk',
+            line_ref='vgnkiaecyuekwcfnneka',
+            operator_ref='wyzqpcdvqvdhsehzxgaa',
+            direction_ref='idaxsyhvbpfvmsjbvqkn',
+            vehicle_mode='rsamhxfwcferrudwjpkv',
+            route_ref='uvlpdtpioghogjykyobr',
+            published_line_name='rtnotstzdlkvnlrdnzjo',
+            external_line_ref='tqtidlcmbcsckyvnunyu',
+            origin_name='wvkuttwsglhshkchsinl',
+            destination_name='mvrjrmpxxgnkpbqjmixy',
+            data_source='kfjaeuzgbulbmfwhssyg'
+        )

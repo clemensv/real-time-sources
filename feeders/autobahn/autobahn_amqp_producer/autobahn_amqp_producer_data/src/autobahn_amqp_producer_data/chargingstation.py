@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -126,6 +126,8 @@ class ChargingStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,24 +195,24 @@ class ChargingStation:
             An instance of the dataclass.
         """
         return cls(
-            identifier='qdeliczyqlsigtdhqnxs',
-            road='onqcapgcpzpapksexrvf',
-            road_ids=['lfchmrurcafjodgwepxe', 'lqefizdbzyhufidfalov'],
+            identifier='mzpicgxvsfqbmfmmiisd',
+            road='cgncavdeoxnnagddbthc',
+            road_ids=['xmmukydhqoolqoqjdamh', 'pdadagmrruqjzljriusq'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
-            title='gvpmiaxoafjkcilmcgab',
-            subtitle='zxqmedtflbetnhiqnrkl',
+            display_type=DisplayTypeenum.ROADWORKS,
+            title='wyzkvxvfnivlafkwprko',
+            subtitle='cylwpbadtuovhpzuomfb',
             description_lines=None,
-            future=False,
+            future=True,
             is_blocked=False,
-            icon='nqxjtintzfmsgjpyaazq',
-            extent='siipkcpdyhzegyxfpsur',
-            point='wdtmlmevrrsluongdstk',
-            coordinate_lat=float(50.365249844724424),
-            coordinate_lon=float(34.70816575702445),
-            address_line='oehasebeannyhbjznibv',
-            charging_point_count=int(55),
-            charging_points_json='koqlhtbgvqgdwwbvbfgs',
-            route_recommendation_json='dhfhygqtbdjmduwneziw',
+            icon='sppldubzqyemvzanhlms',
+            extent='zmipfyxnfelpogjoipwd',
+            point='hmdtwvlddkpigvwjmlpw',
+            coordinate_lat=float(8.883737724741625),
+            coordinate_lon=float(97.82386256559693),
+            address_line='vuospxookqpsykuypubc',
+            charging_point_count=int(27),
+            charging_points_json='vkmffqytugdhjpszqevu',
+            route_recommendation_json='lwerreuykusfremmjbcp',
             footer_lines=None
         )

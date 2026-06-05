@@ -104,6 +104,8 @@ class SensorInfo:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class SensorInfo:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id=int(66),
-            sensor_type_id=int(67),
-            sensor_type_name='obtqimvloioqjjxzmhec',
-            sensor_type_manufacturer='ciofzquxaxgncfywegtn',
-            pin='ziqnnlsolbphrdvxnshy',
-            location_id=int(36),
-            latitude=float(69.46162312460046),
-            longitude=float(58.23943622374043),
-            altitude=float(76.54594695474357),
-            country='wcxurotaoumhnkriicli',
+            sensor_id=int(14),
+            sensor_type_id=int(78),
+            sensor_type_name='krkucwleohvaxxbgvkmg',
+            sensor_type_manufacturer='flebjgovwrsmaorknbyo',
+            pin='bvrrhtusibtmdafeevzj',
+            location_id=int(92),
+            latitude=float(89.22956987227832),
+            longitude=float(57.14202274955073),
+            altitude=float(5.675921885374258),
+            country='mrgtmslararwmwpotcwb',
             indoor=True
         )

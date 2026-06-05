@@ -108,6 +108,8 @@ class LongRangeAisBroadcastMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -175,17 +177,17 @@ class LongRangeAisBroadcastMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(32),
-            RepeatIndicator=int(26),
-            UserID=int(34),
-            Valid=True,
-            PositionAccuracy=True,
-            Raim=False,
-            NavigationalStatus=int(45),
-            Longitude=float(46.234343316543516),
-            Latitude=float(98.79153677675961),
-            Sog=float(98.90725227046525),
-            Cog=float(23.234577018232404),
+            MessageID=int(78),
+            RepeatIndicator=int(47),
+            UserID=int(42),
+            Valid=False,
+            PositionAccuracy=False,
+            Raim=True,
+            NavigationalStatus=int(53),
+            Longitude=float(79.11184098002155),
+            Latitude=float(39.47779281763588),
+            Sog=float(16.877651859938915),
+            Cog=float(29.258006695899496),
             PositionLatency=False,
             Spare=True
         )

@@ -30,13 +30,13 @@ class Test_MetObsObservation(unittest.TestCase):
         Create instance of MetObsObservation for testing
         """
         instance = MetObsObservation(
-            observation_id='hafomsxkmradozscufdl',
-            station_id='gqhkxuiivxaydjbgolxw',
+            observation_id='qpcjzlyvtgebkudwvisg',
+            station_id='lwdeodjmrosuaybvehor',
             parameter_id=ParameterIdenum.sealev_dvr,
             observed=datetime.datetime.now(datetime.timezone.utc),
-            value=float(49.47941780895639),
-            latitude=float(38.62933478835355),
-            longitude=float(43.21236060185253)
+            value=float(6.091730019423858),
+            latitude=float(16.783048632734666),
+            longitude=float(42.773308541729094)
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_MetObsObservation(unittest.TestCase):
         """
         Test observation_id property
         """
-        test_value = 'hafomsxkmradozscufdl'
+        test_value = 'qpcjzlyvtgebkudwvisg'
         self.instance.observation_id = test_value
         self.assertEqual(self.instance.observation_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_MetObsObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'gqhkxuiivxaydjbgolxw'
+        test_value = 'lwdeodjmrosuaybvehor'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -77,7 +77,7 @@ class Test_MetObsObservation(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(49.47941780895639)
+        test_value = float(6.091730019423858)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -85,7 +85,7 @@ class Test_MetObsObservation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(38.62933478835355)
+        test_value = float(16.783048632734666)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -93,7 +93,7 @@ class Test_MetObsObservation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(43.21236060185253)
+        test_value = float(42.773308541729094)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

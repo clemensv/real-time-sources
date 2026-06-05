@@ -27,7 +27,7 @@ class FeedItemEnclosure:
     
     
     href: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="href"))
-    length: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="length"))
+    length: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="length", encoder=lambda v: str(v) if v is not None else None, decoder=lambda v: int(v) if isinstance(v, str) else v))
     type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="type"))
 
     @classmethod
@@ -41,6 +41,8 @@ class FeedItemEnclosure:
         Returns:
             The dataclass representation of the dataclass.
         """
+        if 'length' in data and isinstance(data['length'], str):
+            data['length'] = int(data['length'])
         return cls(**data)
 
     def to_serializer_dict(self) -> dict:
@@ -51,6 +53,8 @@ class FeedItemEnclosure:
             The dictionary representation of the dataclass.
         """
         asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        if 'length' in asdict_result and asdict_result['length'] is not None:
+            asdict_result['length'] = str(asdict_result['length'])
         return asdict_result
 
     def _dict_resolver(self, data):
@@ -155,7 +159,7 @@ class FeedItemEnclosure:
             An instance of the dataclass.
         """
         return cls(
-            href='ewmmzjzepdcsumdfqsen',
-            length=int(88),
-            type='fposbyxjidrjsahwwnyk'
+            href='rihnbqulepgwoirfajgs',
+            length=int(86),
+            type='ibnwpulxmxjdhfzpmpiq'
         )

@@ -108,7 +108,7 @@ producer = DeWsvPegelonlineKafkaProducer(
 
 await producer.send_de_wsv_pegelonline_kafka_station(```python
 
-    data=object(...),add_consumer(self, consumer: KafkaConsumer)
+    data=Station(...),add_consumer(self, consumer: KafkaConsumer)
 
     partition_key='device-123'```
 
@@ -140,14 +140,16 @@ producer = DeWsvPegelonlineKafkaProducer(
 
     sasl_username='your-username',```python
 
-    sasl_password='your-password'de_wsv_pegelonline_kafka_station_async:  Callable[[ConsumerRecord, CloudEvent, object],
-Awaitable[None]]
+    sasl_password='your-password'de_wsv_pegelonline_kafka_station_async:  Callable[[ConsumerRecord, CloudEvent,
+Station], Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `de.wsv.pegelonline.kafka.Station`:
+Asynchronous handler hook for `de.wsv.pegelonline.kafka.Station`: A reference record for one federally administered
+German inland and coastal gauge published by Germany's Federal Waterways and Shipping Administration (WSV). It fires
+when the bridge publishes or refreshes the station catalog so consumers can interpret measurement events.
 
 ## Generated Producer Classes
 
@@ -157,7 +159,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DeWsvPegelonlineKafkaProducer- `data`: The event data of type `object`.
+### DeWsvPegelonlineKafkaProducer- `data`: The event data of type `pegelonline_producer_data.Station`.
 
 
 
@@ -167,7 +169,8 @@ Producer for `de.wsv.pegelonline.kafka` message group.Example:
 
 #### Constructor```python
 
-async def de_wsv_pegelonline_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: object) -> None:
+async def de_wsv_pegelonline_kafka_station_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Station) ->
+None:
 
 ```python    # Process the event data
 
@@ -203,13 +206,15 @@ de_wsv_pegelonline_kafka_dispatcher.de_wsv_pegelonline_kafka_station_async = de_
     sasl_username='your-username',```python
 
     sasl_password='your-password'de_wsv_pegelonline_kafka_current_measurement_async:  Callable[[ConsumerRecord,
-CloudEvent, object], Awaitable[None]]
+CloudEvent, CurrentMeasurement], Awaitable[None]]
 
 )```
 
 ```
 
-Asynchronous handler hook for `de.wsv.pegelonline.kafka.CurrentMeasurement`:
+Asynchronous handler hook for `de.wsv.pegelonline.kafka.CurrentMeasurement`: A current measurement from Germany's
+Federal Waterways and Shipping Administration (WSV) for one monitoring site. It carries water level measurements for
+rivers, canals, and estuaries when the upstream feed reports a new or refreshed value.
 
 ## Generated Producer Classes
 
@@ -219,7 +224,7 @@ The assigned handler must be a coroutine (`async def`) that accepts the followin
 
 - `cloud_event`: The CloudEvent.
 
-### DeWsvPegelonlineKafkaProducer- `data`: The event data of type `object`.
+### DeWsvPegelonlineKafkaProducer- `data`: The event data of type `pegelonline_producer_data.CurrentMeasurement`.
 
 
 
@@ -230,7 +235,7 @@ Producer for `de.wsv.pegelonline.kafka` message group.Example:
 #### Constructor```python
 
 async def de_wsv_pegelonline_kafka_current_measurement_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
-object) -> None:
+CurrentMeasurement) -> None:
 
 ```python    # Process the event data
 
@@ -276,7 +281,7 @@ async def send_de_wsv_pegelonline_kafka_station(
 
     self,##### `_process_event`
 
-    data: object,
+    data: Station,
 
     partition_key: Optional[str] = None,```python
 
@@ -290,13 +295,41 @@ async def send_de_wsv_pegelonline_kafka_station(
 
 
 
-Send a single `de.wsv.pegelonline.kafka.Station` message.Args:
+Send a single `de.wsv.pegelonline.kafka.Station` message. A reference record for one federally administered German
+inland and coastal gauge published by Germany's Federal Waterways and Shipping Administration (WSV). It fires when the
+bridge publishes or refreshes the station catalog so consumers can interpret measurement events.Args:
 
 - `record`: The Kafka record.
 
 **Parameters:**
 
-- `data`: Message data of type `object`
+- `data`: Message data of type `Station`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_wsv_pegelonline_kafka_station(
+
+    data=Station(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
 
 ##### `send_de_wsv_pegelonline_kafka_station_batch`##### `_dispatch_record`
 
@@ -308,7 +341,7 @@ async def send_de_wsv_pegelonline_kafka_station_batch(_dispatch_record(self, rec
 
     self,```
 
-    messages: List[object],
+    messages: List[Station],
 
     partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
 
@@ -347,11 +380,11 @@ await producer.send_de_wsv_pegelonline_kafka_station_batch(```
 
     messages=[
 
-        object(...),Initializes the runner with a Kafka consumer.
+        Station(...),Initializes the runner with a Kafka consumer.
 
-        object(...),
+        Station(...),
 
-        object(...)Args:
+        Station(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 
@@ -375,7 +408,7 @@ async def send_de_wsv_pegelonline_kafka_current_measurement(
 
     self,##### `_process_event`
 
-    data: object,
+    data: CurrentMeasurement,
 
     partition_key: Optional[str] = None,```python
 
@@ -389,13 +422,41 @@ async def send_de_wsv_pegelonline_kafka_current_measurement(
 
 
 
-Send a single `de.wsv.pegelonline.kafka.CurrentMeasurement` message.Args:
+Send a single `de.wsv.pegelonline.kafka.CurrentMeasurement` message. A current measurement from Germany's Federal
+Waterways and Shipping Administration (WSV) for one monitoring site. It carries water level measurements for rivers,
+canals, and estuaries when the upstream feed reports a new or refreshed value.Args:
 
 - `record`: The Kafka record.
 
 **Parameters:**
 
-- `data`: Message data of type `object`
+- `data`: Message data of type `CurrentMeasurement`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_wsv_pegelonline_kafka_current_measurement(
+
+    data=CurrentMeasurement(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
 
 ##### `send_de_wsv_pegelonline_kafka_current_measurement_batch`##### `_dispatch_record`
 
@@ -407,7 +468,7 @@ async def send_de_wsv_pegelonline_kafka_current_measurement_batch(_dispatch_reco
 
     self,```
 
-    messages: List[object],
+    messages: List[CurrentMeasurement],
 
     partition_key: Optional[str] = None,Dispatches a Kafka event to the appropriate handler.
 
@@ -446,11 +507,11 @@ await producer.send_de_wsv_pegelonline_kafka_current_measurement_batch(```
 
     messages=[
 
-        object(...),Initializes the runner with a Kafka consumer.
+        CurrentMeasurement(...),Initializes the runner with a Kafka consumer.
 
-        object(...),
+        CurrentMeasurement(...),
 
-        object(...)Args:
+        CurrentMeasurement(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

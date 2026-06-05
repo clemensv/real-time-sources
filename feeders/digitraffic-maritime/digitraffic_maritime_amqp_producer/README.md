@@ -164,8 +164,8 @@ The producer constructor accepts:
 
 
 ##### `send_location()`
-A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives
-consumers stable identifiers and labels needed to interpret realtime updates.
+AMQP transport projection of location using the same CloudEvent type and payload schema as the base Digitraffic Maritime
+message.
 
 **Parameters:**
 - `data` (VesselLocation): The message data object
@@ -184,8 +184,8 @@ Send multiple Location messages in sequence.
 
 
 ##### `send_metadata()`
-A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage
-information available from the upstream feed.
+AMQP transport projection of metadata using the same CloudEvent type and payload schema as the base Digitraffic Maritime
+message.
 
 **Parameters:**
 - `data` (VesselMetadata): The message data object
@@ -253,8 +253,8 @@ The producer constructor accepts:
 
 
 ##### `send_port_call()`
-A transport update from Fintraffic Digitraffic. It carries maritime traffic and fairway updates for Finnish maritime
-fairways and vessels.
+AMQP transport projection of port_call using the same CloudEvent type and payload schema as the base Digitraffic
+Maritime message.
 
 **Parameters:**
 - `data` (PortCall): The message data object
@@ -323,8 +323,8 @@ The producer constructor accepts:
 
 
 ##### `send_vessel_details()`
-A vehicle or vessel update from Fintraffic Digitraffic. It reports the latest position, movement, identity, or voyage
-information available from the upstream feed.
+AMQP transport projection of vessel_details using the same CloudEvent type and payload schema as the base Digitraffic
+Maritime message.
 
 **Parameters:**
 - `data` (VesselDetails): The message data object
@@ -393,8 +393,8 @@ The producer constructor accepts:
 
 
 ##### `send_port_location()`
-A reference record from Fintraffic Digitraffic for a station, stop, route, site, or other transport resource. It gives
-consumers stable identifiers and labels needed to interpret realtime updates.
+AMQP transport projection of port_location using the same CloudEvent type and payload schema as the base Digitraffic
+Maritime message.
 
 **Parameters:**
 - `data` (PortLocation): The message data object

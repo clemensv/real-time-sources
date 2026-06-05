@@ -28,10 +28,10 @@ class Test_Frequencies(unittest.TestCase):
         Create instance of Frequencies for testing
         """
         instance = Frequencies(
-            tripId='qvvviitkwaegaammxplw',
-            startTime='wxgldngtufenxwgxunyl',
-            endTime='oarfuaeagniugrlkxxvl',
-            headwaySecs=int(30),
+            tripId='edqdijngonkpxvaxgemq',
+            startTime='vtltzvkpsjwsnrhklxiv',
+            endTime='mbhrgehpfekwivcapfqt',
+            headwaySecs=int(9),
             exactTimes=int(73)
         )
         return instance
@@ -41,7 +41,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test tripId property
         """
-        test_value = 'qvvviitkwaegaammxplw'
+        test_value = 'edqdijngonkpxvaxgemq'
         self.instance.tripId = test_value
         self.assertEqual(self.instance.tripId, test_value)
     
@@ -49,7 +49,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test startTime property
         """
-        test_value = 'wxgldngtufenxwgxunyl'
+        test_value = 'vtltzvkpsjwsnrhklxiv'
         self.instance.startTime = test_value
         self.assertEqual(self.instance.startTime, test_value)
     
@@ -57,7 +57,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test endTime property
         """
-        test_value = 'oarfuaeagniugrlkxxvl'
+        test_value = 'mbhrgehpfekwivcapfqt'
         self.instance.endTime = test_value
         self.assertEqual(self.instance.endTime, test_value)
     
@@ -65,7 +65,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test headwaySecs property
         """
-        test_value = int(30)
+        test_value = int(9)
         self.instance.headwaySecs = test_value
         self.assertEqual(self.instance.headwaySecs, test_value)
     

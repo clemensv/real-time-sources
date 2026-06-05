@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,13 +17,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import nextbus_mqtt_producer_data
 from nextbus_mqtt_producer_data import VehiclePosition
-from test_nextbus_mqtt_producer_data_vehicleposition import Test_VehiclePosition
+from test_vehicleposition import Test_VehiclePosition
 from nextbus_mqtt_producer_data import RouteConfig
-from test_nextbus_mqtt_producer_data_routeconfig import Test_RouteConfig
+from test_routeconfig import Test_RouteConfig
 from nextbus_mqtt_producer_data import Schedule
-from test_nextbus_mqtt_producer_data_schedule import Test_Schedule
+from test_schedule import Test_Schedule
 from nextbus_mqtt_producer_data import Message
-from test_nextbus_mqtt_producer_data_message import Test_Message
+from test_message import Test_Message
 from nextbus_mqtt_producer_mqtt_client import NextbusMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -97,6 +98,7 @@ async def test_nextbus_mqtt_nextbus_vehicle_position_mqtt_py(mosquitto_broker):
             agency_id=f"test_agency_id_{i}",
             route_tag=f"test_route_tag_{i}",
             vehicle_id=f"test_vehicle_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -164,6 +166,7 @@ async def test_nextbus_mqtt_nextbus_route_config_mqtt_py(mosquitto_broker):
             agency_id=f"test_agency_id_{i}",
             route_tag=f"test_route_tag_{i}",
             stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -231,6 +234,7 @@ async def test_nextbus_mqtt_nextbus_schedule_mqtt_py(mosquitto_broker):
             agency_id=f"test_agency_id_{i}",
             route_tag=f"test_route_tag_{i}",
             stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -298,6 +302,7 @@ async def test_nextbus_mqtt_nextbus_message_mqtt_py(mosquitto_broker):
             agency_id=f"test_agency_id_{i}",
             route_tag=f"test_route_tag_{i}",
             stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

@@ -586,7 +586,10 @@ if ($existingDb) {
     $createResp = Invoke-WebRequest -Uri "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" -Method POST `
         -Headers @{ Authorization="Bearer $accessToken"; "Content-Type"="application/json" } `
         -Body ($createBody | ConvertTo-Json -Depth 10 -Compress) -SkipHttpErrorCheck
-    if ($createResp.StatusCode -ge 400) {
+    if ($createResp.StatusCode -eq 409) {
+        # Eventhouse auto-creates a DB with the same name; wait for it to appear in the list
+        Write-Host "  Database '$DatabaseName' already exists (auto-created with Eventhouse); waiting for it to appear..." -ForegroundColor Yellow
+    } elseif ($createResp.StatusCode -ge 400) {
         throw "kqlDatabases POST returned $($createResp.StatusCode): $($createResp.Content)"
     }
     $opLoc = $createResp.Headers['Location'] | Select-Object -First 1

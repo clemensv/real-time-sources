@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,67 +17,67 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import gtfs_mqtt_producer_data
 from gtfs_mqtt_producer_data import VehiclePosition
-from test_gtfs_mqtt_producer_data_vehicleposition import Test_VehiclePosition
+from test_vehicleposition import Test_VehiclePosition
 from gtfs_mqtt_producer_data import TripUpdate
-from test_gtfs_mqtt_producer_data_tripupdate import Test_TripUpdate
+from test_tripupdate import Test_TripUpdate
 from gtfs_mqtt_producer_data import Alert
-from test_gtfs_mqtt_producer_data_alert import Test_Alert
+from test_alert import Test_Alert
 from gtfs_mqtt_producer_data import Agency
-from test_gtfs_mqtt_producer_data_agency import Test_Agency
+from test_agency import Test_Agency
 from gtfs_mqtt_producer_data import Areas
-from test_gtfs_mqtt_producer_data_areas import Test_Areas
+from test_areas import Test_Areas
 from gtfs_mqtt_producer_data import Attributions
-from test_gtfs_mqtt_producer_data_attributions import Test_Attributions
+from test_attributions import Test_Attributions
 from gtfs_mqtt_producer_data import BookingRules
-from test_gtfs_mqtt_producer_data_bookingrules import Test_BookingRules
+from test_bookingrules import Test_BookingRules
 from gtfs_mqtt_producer_data import FareAttributes
-from test_gtfs_mqtt_producer_data_fareattributes import Test_FareAttributes
+from test_fareattributes import Test_FareAttributes
 from gtfs_mqtt_producer_data import FareLegRules
-from test_gtfs_mqtt_producer_data_farelegrules import Test_FareLegRules
+from test_farelegrules import Test_FareLegRules
 from gtfs_mqtt_producer_data import FareMedia
-from test_gtfs_mqtt_producer_data_faremedia import Test_FareMedia
+from test_faremedia import Test_FareMedia
 from gtfs_mqtt_producer_data import FareProducts
-from test_gtfs_mqtt_producer_data_fareproducts import Test_FareProducts
+from test_fareproducts import Test_FareProducts
 from gtfs_mqtt_producer_data import FareRules
-from test_gtfs_mqtt_producer_data_farerules import Test_FareRules
+from test_farerules import Test_FareRules
 from gtfs_mqtt_producer_data import FareTransferRules
-from test_gtfs_mqtt_producer_data_faretransferrules import Test_FareTransferRules
+from test_faretransferrules import Test_FareTransferRules
 from gtfs_mqtt_producer_data import FeedInfo
-from test_gtfs_mqtt_producer_data_feedinfo import Test_FeedInfo
+from test_feedinfo import Test_FeedInfo
 from gtfs_mqtt_producer_data import Frequencies
-from test_gtfs_mqtt_producer_data_frequencies import Test_Frequencies
+from test_frequencies import Test_Frequencies
 from gtfs_mqtt_producer_data import Levels
-from test_gtfs_mqtt_producer_data_levels import Test_Levels
+from test_levels import Test_Levels
 from gtfs_mqtt_producer_data import LocationGeoJson
-from test_gtfs_mqtt_producer_data_locationgeojson import Test_LocationGeoJson
+from test_locationgeojson import Test_LocationGeoJson
 from gtfs_mqtt_producer_data import LocationGroups
-from test_gtfs_mqtt_producer_data_locationgroups import Test_LocationGroups
+from test_locationgroups import Test_LocationGroups
 from gtfs_mqtt_producer_data import LocationGroupStores
-from test_gtfs_mqtt_producer_data_locationgroupstores import Test_LocationGroupStores
+from test_locationgroupstores import Test_LocationGroupStores
 from gtfs_mqtt_producer_data import Networks
-from test_gtfs_mqtt_producer_data_networks import Test_Networks
+from test_networks import Test_Networks
 from gtfs_mqtt_producer_data import Pathways
-from test_gtfs_mqtt_producer_data_pathways import Test_Pathways
+from test_pathways import Test_Pathways
 from gtfs_mqtt_producer_data import RouteNetworks
-from test_gtfs_mqtt_producer_data_routenetworks import Test_RouteNetworks
+from test_routenetworks import Test_RouteNetworks
 from gtfs_mqtt_producer_data import Routes
-from test_gtfs_mqtt_producer_data_routes import Test_Routes
+from test_routes import Test_Routes
 from gtfs_mqtt_producer_data import Shapes
-from test_gtfs_mqtt_producer_data_shapes import Test_Shapes
+from test_shapes import Test_Shapes
 from gtfs_mqtt_producer_data import StopAreas
-from test_gtfs_mqtt_producer_data_stopareas import Test_StopAreas
+from test_stopareas import Test_StopAreas
 from gtfs_mqtt_producer_data import Stops
-from test_gtfs_mqtt_producer_data_stops import Test_Stops
+from test_stops import Test_Stops
 from gtfs_mqtt_producer_data import StopTimes
-from test_gtfs_mqtt_producer_data_stoptimes import Test_StopTimes
+from test_stoptimes import Test_StopTimes
 from gtfs_mqtt_producer_data import Timeframes
-from test_gtfs_mqtt_producer_data_timeframes import Test_Timeframes
+from test_timeframes import Test_Timeframes
 from gtfs_mqtt_producer_data import Transfers
-from test_gtfs_mqtt_producer_data_transfers import Test_Transfers
+from test_transfers import Test_Transfers
 from gtfs_mqtt_producer_data import Translations
-from test_gtfs_mqtt_producer_data_translations import Test_Translations
+from test_translations import Test_Translations
 from gtfs_mqtt_producer_data import Trips
-from test_gtfs_mqtt_producer_data_trips import Test_Trips
+from test_trips import Test_Trips
 from gtfs_mqtt_producer_mqtt_client import GeneralTransitFeedRealTimeMqttMqttClient
 from gtfs_mqtt_producer_mqtt_client import GeneralTransitFeedStaticMqttMqttClient
 
@@ -151,6 +152,7 @@ async def test_generaltransitfeedrealtime_mqtt_general_transit_feed_real_time_ve
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -217,6 +219,7 @@ async def test_generaltransitfeedrealtime_mqtt_general_transit_feed_real_time_tr
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -283,6 +286,7 @@ async def test_generaltransitfeedrealtime_mqtt_general_transit_feed_real_time_al
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -352,6 +356,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_agency_
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -418,6 +423,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_areas_m
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -484,6 +490,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_attribu
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -550,6 +557,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_booking_rules_
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -616,6 +624,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_at
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -682,6 +691,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_le
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -748,6 +758,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_me
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -814,6 +825,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_pr
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -880,6 +892,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_ru
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -946,6 +959,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_tr
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1012,6 +1026,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_feed_in
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1078,6 +1093,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_frequen
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1144,6 +1160,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_levels_
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1210,6 +1227,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_locatio
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1276,6 +1294,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_locatio
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1342,6 +1361,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_locatio
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1408,6 +1428,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_network
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1474,6 +1495,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_pathway
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1540,6 +1562,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_route_n
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1606,6 +1629,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_routes_
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1672,6 +1696,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_shapes_
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1738,6 +1763,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_stop_ar
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1804,6 +1830,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_stops_m
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1870,6 +1897,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_stop_ti
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -1936,6 +1964,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_timefra
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -2002,6 +2031,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_transfe
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -2068,6 +2098,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_transla
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -2134,6 +2165,7 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_trips_m
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             agencyid=f"test_agencyid_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

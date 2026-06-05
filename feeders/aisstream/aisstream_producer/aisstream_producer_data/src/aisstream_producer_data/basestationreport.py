@@ -118,6 +118,8 @@ class BaseStationReport:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -185,22 +187,22 @@ class BaseStationReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(70),
-            RepeatIndicator=int(88),
-            UserID=int(24),
-            Valid=True,
-            UtcYear=int(85),
-            UtcMonth=int(62),
-            UtcDay=int(2),
-            UtcHour=int(32),
-            UtcMinute=int(85),
-            UtcSecond=int(25),
+            MessageID=int(17),
+            RepeatIndicator=int(83),
+            UserID=int(67),
+            Valid=False,
+            UtcYear=int(86),
+            UtcMonth=int(0),
+            UtcDay=int(38),
+            UtcHour=int(82),
+            UtcMinute=int(7),
+            UtcSecond=int(34),
             PositionAccuracy=False,
-            Longitude=float(12.558276859895678),
-            Latitude=float(84.25096906568868),
-            FixType=int(21),
+            Longitude=float(54.60037716142416),
+            Latitude=float(2.8882085963283455),
+            FixType=int(73),
             LongRangeEnable=False,
-            Spare=int(61),
-            Raim=False,
-            CommunicationState=int(53)
+            Spare=int(86),
+            Raim=True,
+            CommunicationState=int(71)
         )

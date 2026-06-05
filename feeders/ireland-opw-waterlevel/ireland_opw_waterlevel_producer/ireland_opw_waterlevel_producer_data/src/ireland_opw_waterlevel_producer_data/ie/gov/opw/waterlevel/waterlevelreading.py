@@ -1,18 +1,16 @@
 """ WaterLevelReading dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -20,13 +18,17 @@ import avro.io
 class WaterLevelReading:
     """
     A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum.
+    
     Attributes:
-        station_ref (str): Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041').
-        station_name (str): Human-readable name of the hydrometric station (e.g. 'Sandy Mills').
-        sensor_ref (str): Sensor reference code identifying the measurement type: '0001' for water level (metres), '0002' for temperature (degrees Celsius), '0003' for voltage (volts), 'OD' for Ordnance Datum level (metres).
-        value (typing.Optional[float]): Numeric sensor reading value. Units depend on sensor_ref: metres for water level ('0001') and OD ('OD'), degrees Celsius for temperature ('0002'), volts for voltage ('0003'). Null if the value could not be parsed from the upstream string representation.
-        datetime (str): ISO 8601 timestamp of the sensor reading as provided by the upstream API (e.g. '2024-01-15T12:00:00Z').
-        err_code (int): Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions."""
+        station_ref (str)
+        station_name (str)
+        sensor_ref (str)
+        value (typing.Optional[float])
+        datetime (str)
+        err_code (int)
+        basin (typing.Optional[str])
+    """
+    
     
     station_ref: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_ref"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
@@ -34,19 +36,7 @@ class WaterLevelReading:
     value: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="value"))
     datetime: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="datetime"))
     err_code: int=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="err_code"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WaterLevelReading\", \"namespace\": \"ie.gov.opw.waterlevel\", \"doc\": \"A sensor reading from an OPW hydrometric station, covering water level, temperature, voltage, or Ordnance Datum.\", \"fields\": [{\"name\": \"station_ref\", \"type\": \"string\", \"doc\": \"Zero-padded 10-digit station reference code uniquely identifying the hydrometric station (e.g. '0000001041').\"}, {\"name\": \"station_name\", \"type\": \"string\", \"doc\": \"Human-readable name of the hydrometric station (e.g. 'Sandy Mills').\"}, {\"name\": \"sensor_ref\", \"type\": \"string\", \"doc\": \"Sensor reference code identifying the measurement type: '0001' for water level (metres), '0002' for temperature (degrees Celsius), '0003' for voltage (volts), 'OD' for Ordnance Datum level (metres).\"}, {\"name\": \"value\", \"type\": [\"null\", \"double\"], \"doc\": \"Numeric sensor reading value. Units depend on sensor_ref: metres for water level ('0001') and OD ('OD'), degrees Celsius for temperature ('0002'), volts for voltage ('0003'). Null if the value could not be parsed from the upstream string representation.\"}, {\"name\": \"datetime\", \"type\": \"string\", \"doc\": \"ISO 8601 timestamp of the sensor reading as provided by the upstream API (e.g. '2024-01-15T12:00:00Z').\"}, {\"name\": \"err_code\", \"type\": \"int\", \"doc\": \"Upstream error code for the reading. A value of 99 indicates the reading is valid (OK). Other values indicate various error conditions.\"}], \"description\": \"Measurement payload for observations in the Ireland OPW waterlevel.ie source.\"}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_ref=str(self.station_ref)
-        self.station_name=str(self.station_name)
-        self.sensor_ref=str(self.sensor_ref)
-        self.value=float(self.value) if self.value else None
-        self.datetime=str(self.datetime)
-        self.err_code=int(self.err_code)
+    basin: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="basin"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WaterLevelReading':
@@ -57,7 +47,7 @@ class WaterLevelReading:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -76,7 +66,7 @@ class WaterLevelReading:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -90,8 +80,6 @@ class WaterLevelReading:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -104,16 +92,12 @@ class WaterLevelReading:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -138,10 +122,6 @@ class WaterLevelReading:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -167,18 +147,6 @@ class WaterLevelReading:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return WaterLevelReading.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -186,5 +154,22 @@ class WaterLevelReading:
                 return WaterLevelReading.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'WaterLevelReading':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            station_ref='usklyfpnyvlfvwqhwjap',
+            station_name='rmcwuisbnwnakvjznmjh',
+            sensor_ref='cnzhoyoknqowduolzkhz',
+            value=float(97.98107944219912),
+            datetime='ykupztehasjmlyjrriki',
+            err_code=int(4),
+            basin='ndouecggtwoscurswfkg'
+        )

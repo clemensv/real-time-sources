@@ -48,6 +48,9 @@ IMAGE_SUFFIXES = {
 }
 
 FRAMEWORK_ENV_NAMES = {"LOG_LEVEL", "PYTHONUNBUFFERED"}
+# Infra parameters whose authoritative description lives in the variant
+# reference template (not CONTAINER.md). Synced to every feeder on regen.
+INFRA_REFERENCE_PARAMS = ("eventHubSku", "queueName")
 GENERIC_DESCRIPTION_PATTERNS = (
     re.compile(r"^[A-Z0-9_]+ configuration value\.?$", re.IGNORECASE),
     re.compile(r"^Core configuration for this image variant\.?$", re.IGNORECASE),
@@ -536,9 +539,11 @@ def refresh_existing_template_descriptions(
     generated_targets: set[Path],
     staged_writes: dict[Path, dict[str, Any]],
     filters: set[str] | None,
+    references: dict[str, dict[str, Any]] | None = None,
 ) -> int:
     updated = 0
     source_cache: dict[str, dict[str, tuple[str, str]]] = {}
+    references = references or {}
     for path in (repo_root / "feeders").glob("**/azure-template*.json"):
         if path in generated_targets:
             continue
@@ -574,6 +579,29 @@ def refresh_existing_template_descriptions(
                     metadata["description"] = description
                     changed = True
                     DESCRIPTION_SOURCE_COUNTS[source] += 1
+        # Infrastructure parameters (eventHubSku, queueName) are not driven by
+        # CONTAINER.md env-var descriptions; their authoritative description
+        # lives in the variant reference template. Sync this whitelist so
+        # reference-level description fixes propagate to every feeder on
+        # regeneration. Scoped to known-stub infra params to avoid clobbering
+        # richer per-param descriptions that already exist downstream.
+        try:
+            variant = variant_from_template(path.name)
+        except ValueError:
+            variant = None
+        ref_params = references.get(variant, {}).get("parameters", {}) if variant else {}
+        for param_name in INFRA_REFERENCE_PARAMS:
+            if param_name not in parameters or param_name not in ref_params:
+                continue
+            ref_desc = ref_params[param_name].get("metadata", {}).get("description")
+            if not ref_desc:
+                continue
+            description = recursively_replace_aisstream(ref_desc, slug)
+            metadata = parameters[param_name].setdefault("metadata", {})
+            if metadata.get("description") != description:
+                metadata["description"] = description
+                changed = True
+                DESCRIPTION_SOURCE_COUNTS["reference"] += 1
         if changed:
             staged_writes[path] = template
             updated += 1
@@ -635,7 +663,7 @@ def main() -> int:
 
     existing_updated = 0
     if not args.dry_run:
-        existing_updated = refresh_existing_template_descriptions(repo_root, generated_targets, staged_writes, filters)
+        existing_updated = refresh_existing_template_descriptions(repo_root, generated_targets, staged_writes, filters, references)
 
     generated_count = len(generated_targets)
     written = commit_staged_writes(repo_root, staged_writes, args.dry_run)

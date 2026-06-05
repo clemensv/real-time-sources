@@ -143,6 +143,8 @@ class WaitTime:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -210,34 +212,34 @@ class WaitTime:
             An instance of the dataclass.
         """
         return cls(
-            port_number='xqlbaxzxsabjvdcwmcjc',
-            port_name='wmwgrkbvcrmdcjfmyguz',
-            border='cvvkmzapemiljprrisil',
-            crossing_name='ksfrabnchwwbavugzlxt',
-            port_status='bztrjnfiomkbyztmcvta',
-            date='agpjqaktzknzgtytinfr',
-            time='lxbmxkzmraecivhywgai',
-            passenger_vehicle_standard_delay=int(1),
-            passenger_vehicle_standard_lanes_open=int(6),
-            passenger_vehicle_standard_operational_status='tecezexvmcngqvzdouqd',
-            passenger_vehicle_nexus_sentri_delay=int(6),
-            passenger_vehicle_nexus_sentri_lanes_open=int(98),
-            passenger_vehicle_nexus_sentri_operational_status='rvpsforpjkekiwbozimd',
-            passenger_vehicle_ready_delay=int(48),
-            passenger_vehicle_ready_lanes_open=int(42),
-            passenger_vehicle_ready_operational_status='cximnukggzrpxbqqplts',
-            pedestrian_standard_delay=int(33),
-            pedestrian_standard_lanes_open=int(9),
-            pedestrian_standard_operational_status='baxngxtlrszsnayhwswu',
-            pedestrian_ready_delay=int(98),
-            pedestrian_ready_lanes_open=int(78),
-            pedestrian_ready_operational_status='ihjfvznwyjsexxhtgego',
-            commercial_vehicle_standard_delay=int(93),
-            commercial_vehicle_standard_lanes_open=int(92),
-            commercial_vehicle_standard_operational_status='chvcxqizqkykxfjpyaqn',
-            commercial_vehicle_fast_delay=int(20),
-            commercial_vehicle_fast_lanes_open=int(32),
-            commercial_vehicle_fast_operational_status='vodnvjurqdhdqsguoepk',
-            construction_notice='aeuwjesxagmobydulvcg',
+            port_number='hxzpmpuhpskprioidbpg',
+            port_name='ldemhtezhyjfuyeitwbj',
+            border='hskubkyfdhxvmerrvkco',
+            crossing_name='fvvqmycnnmibtegypovd',
+            port_status='qzgwtzdamcuwqacbwhyu',
+            date='uftwhlioqxzkfjefvraa',
+            time='cqvfesfugunykmizifqy',
+            passenger_vehicle_standard_delay=int(89),
+            passenger_vehicle_standard_lanes_open=int(29),
+            passenger_vehicle_standard_operational_status='jfmzulsvnugyspxxbsky',
+            passenger_vehicle_nexus_sentri_delay=int(38),
+            passenger_vehicle_nexus_sentri_lanes_open=int(66),
+            passenger_vehicle_nexus_sentri_operational_status='ozhzttdjdzeajpkrbptf',
+            passenger_vehicle_ready_delay=int(81),
+            passenger_vehicle_ready_lanes_open=int(99),
+            passenger_vehicle_ready_operational_status='yxwtxhugzebccwlwzayp',
+            pedestrian_standard_delay=int(83),
+            pedestrian_standard_lanes_open=int(19),
+            pedestrian_standard_operational_status='ijkrmzifuvpxcpqjenwk',
+            pedestrian_ready_delay=int(24),
+            pedestrian_ready_lanes_open=int(28),
+            pedestrian_ready_operational_status='hietiohmpxkgzlwjbpsr',
+            commercial_vehicle_standard_delay=int(12),
+            commercial_vehicle_standard_lanes_open=int(32),
+            commercial_vehicle_standard_operational_status='feniyaeyvrschofoxyrl',
+            commercial_vehicle_fast_delay=int(60),
+            commercial_vehicle_fast_lanes_open=int(62),
+            commercial_vehicle_fast_operational_status='fgpnwjqcqvhecrnhuott',
+            construction_notice='nbqoxstoaweelmcuowah',
             border_slug=BorderSlugenum.canadian_border
         )

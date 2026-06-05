@@ -100,6 +100,8 @@ class TemporaryClosure:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class TemporaryClosure:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='hhyhwqlbjnumvxoylkzu',
-            version_time='jfpunvwavgntrykzfmzl',
-            validity_status='pyhyrdubavequjoufzfk',
-            start_time='vzzerqqaudlrmvyloblo',
-            end_time='xpjfzthrsbaxowcuwkhq',
-            road_name='jlxxapcdvwiuhpvuipex',
-            description='oapilboqmmowxrjtasph',
-            location_description='qrzwoazfwaasshgpfcsh',
-            severity='wjwjvgjigwvndnqrshzh'
+            situation_record_id='rwgwzyievzapicksercq',
+            version_time='rohovawtkuwfixlxdcdm',
+            validity_status='bclltorpjwgymlfqqmxf',
+            start_time='uidadnfymqvojkudxxbx',
+            end_time='lhdlpkjqxfkrjkshlcad',
+            road_name='sudszbjzgemhrnlwxtqn',
+            description='sumxwbxahocwozmldlko',
+            location_description='jnfnjwbgcmgpfzktvorc',
+            severity='yuygbdrbguqbqanjbaat'
         )

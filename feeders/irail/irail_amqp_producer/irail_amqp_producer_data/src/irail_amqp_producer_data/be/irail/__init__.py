@@ -1,8 +1,8 @@
-from .occupancyenum import OccupancyEnum
-from .departure import Departure
-from .stationboard import StationBoard
 from .station import Station
+from .occupancyenum import OccupancyEnum
 from .arrival import Arrival
 from .arrivalboard import ArrivalBoard
+from .departure import Departure
+from .stationboard import StationBoard
 
-__all__ = ["OccupancyEnum", "Departure", "StationBoard", "Station", "Arrival", "ArrivalBoard"]
+__all__ = ["Station", "OccupancyEnum", "Arrival", "ArrivalBoard", "Departure", "StationBoard"]

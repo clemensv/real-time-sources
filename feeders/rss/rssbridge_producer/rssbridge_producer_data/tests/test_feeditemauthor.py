@@ -1,0 +1,80 @@
+"""
+Test case for FeedItemAuthor
+"""
+
+import os
+import sys
+import unittest
+
+sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
+
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
+
+
+class Test_FeedItemAuthor(unittest.TestCase):
+    """
+    Test case for FeedItemAuthor
+    """
+
+    def setUp(self):
+        """
+        Set up test case
+        """
+        self.instance = Test_FeedItemAuthor.create_instance()
+
+    @staticmethod
+    def create_instance():
+        """
+        Create instance of FeedItemAuthor for testing
+        """
+        instance = FeedItemAuthor(
+            name='vwbroyvlvhyqblxnpomc',
+            href='fxhmydjcvvhngkenorpj',
+            email='tgjhyypshieeaqnnpbfg'
+        )
+        return instance
+
+    
+    def test_name_property(self):
+        """
+        Test name property
+        """
+        test_value = 'vwbroyvlvhyqblxnpomc'
+        self.instance.name = test_value
+        self.assertEqual(self.instance.name, test_value)
+    
+    def test_href_property(self):
+        """
+        Test href property
+        """
+        test_value = 'fxhmydjcvvhngkenorpj'
+        self.instance.href = test_value
+        self.assertEqual(self.instance.href, test_value)
+    
+    def test_email_property(self):
+        """
+        Test email property
+        """
+        test_value = 'tgjhyypshieeaqnnpbfg'
+        self.instance.email = test_value
+        self.assertEqual(self.instance.email, test_value)
+    
+    def test_to_byte_array_json(self):
+        """
+        Test to_byte_array method with json media type
+        """
+        media_type = "application/json"
+        bytes_data = self.instance.to_byte_array(media_type)
+        new_instance = FeedItemAuthor.from_data(bytes_data, media_type)
+        bytes_data2 = new_instance.to_byte_array(media_type)
+        self.assertEqual(bytes_data, bytes_data2)
+
+    def test_to_json(self):
+        """
+        Test to_json method
+        """
+        json_data = self.instance.to_json()
+        new_instance = FeedItemAuthor.from_json(json_data)
+        json_data2 = new_instance.to_json()
+        self.assertEqual(json_data, json_data2)
+

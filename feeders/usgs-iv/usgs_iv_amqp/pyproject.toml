@@ -14,7 +14,7 @@ python = ">=3.10,<4.0"
 python-qpid-proton = ">=0.40.0"
 cloudevents = ">=1.11.0,<2.0.0"
 dataclasses_json = ">=0.6.7"
-avro = ">=1.11.3"
+avro = ">=1.12.1"
 azure-identity = ">=1.17.0"
 azure-core = ">=1.30.0"
 usgs_iv_amqp_producer_data = { path = "../usgs_iv_amqp_producer/usgs_iv_amqp_producer_data" }

@@ -102,6 +102,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,14 +171,14 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_number='vvrkrjsdvkbjxsrmgjpn',
-            location='dwtzuvnivzgzomchoenf',
-            type='lkvslxgtdqjiotfpsbyu',
-            organisation='vhejkzzuefjkxctwgwma',
-            municipality='mhcqhixwgunvmxyprsxw',
-            province='pnzvkubmrhnlcjzolkfl',
-            longitude=float(41.45773939943596),
-            latitude=float(30.1850191411564),
-            year_start='gludukdrfsakvxqijrsc',
-            components=['ssivtofgxayqsvyerzwb', 'hxobctzgoekqqyrlxdaw', 'ihxwumsindjhtqwnxcwa', 'vtopukkjmjtdiazztqnc', 'ixuefxzdthwdpaeaqilu']
+            station_number='spyilgtkqvjdkgezkxkm',
+            location='nvdvwpmivhzkitgwnemb',
+            type='ejnvjgdjanwxrewjriyr',
+            organisation='jzsibufnrtlgytdbvnxd',
+            municipality='dmkptewuwffyxyejldax',
+            province='dhvpwxemmhqdccfmtfym',
+            longitude=float(20.50714030362365),
+            latitude=float(78.97195607478088),
+            year_start='vegxvwgltejanasmcmty',
+            components=['ddwgewjplvhdpbgbwcvf', 'iogpoyodlgfqyimlslse', 'qrvsamltvwaqeejzyfyf', 'tcwzxgmfciqmyaeqbcae']
         )

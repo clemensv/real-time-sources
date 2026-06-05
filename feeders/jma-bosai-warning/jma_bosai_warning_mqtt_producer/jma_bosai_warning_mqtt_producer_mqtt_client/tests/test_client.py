@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,11 +17,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import jma_bosai_warning_mqtt_producer_data
 from jma_bosai_warning_mqtt_producer_data import Office
-from test_jma_bosai_warning_mqtt_producer_data_office import Test_Office
+from test_office import Test_Office
 from jma_bosai_warning_mqtt_producer_data import WeatherWarning
-from test_jma_bosai_warning_mqtt_producer_data_weatherwarning import Test_WeatherWarning
+from test_weatherwarning import Test_WeatherWarning
 from jma_bosai_warning_mqtt_producer_data import TsunamiAlert
-from test_jma_bosai_warning_mqtt_producer_data_tsunamialert import Test_TsunamiAlert
+from test_tsunamialert import Test_TsunamiAlert
 from jma_bosai_warning_mqtt_producer_mqtt_client import JPJMAWarningMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -95,6 +96,7 @@ async def test_jp_jma_warning_mqtt_jp_jma_warning_mqtt_office_py(mosquitto_broke
             feedurl=f"test_feedurl_{i}",
             office_code=f"test_office_code_{i}",
             area_code=f"test_area_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -162,6 +164,7 @@ async def test_jp_jma_warning_mqtt_jp_jma_warning_mqtt_weather_warning_py(mosqui
             feedurl=f"test_feedurl_{i}",
             office_code=f"test_office_code_{i}",
             area_code=f"test_area_code_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -229,6 +232,7 @@ async def test_jp_jma_warning_mqtt_jp_jma_warning_mqtt_tsunami_alert_py(mosquitt
             feedurl=f"test_feedurl_{i}",
             event_id=f"test_event_id_{i}",
             serial=f"test_serial_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

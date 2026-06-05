@@ -90,6 +90,8 @@ class Area:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class Area:
             An instance of the dataclass.
         """
         return cls(
-            Longitude1=float(12.500562861802521),
-            Latitude1=float(30.392647526351123),
-            Longitude2=float(20.88945895435872),
-            Latitude2=float(70.4056628608138)
+            Longitude1=float(42.296506114715214),
+            Latitude1=float(11.606200399783672),
+            Longitude2=float(46.829124497375695),
+            Latitude2=float(16.92481256863354)
         )

@@ -28,20 +28,20 @@ class Test_RiverStation(unittest.TestCase):
         Create instance of RiverStation for testing
         """
         instance = RiverStation(
-            station_id='pugveyhnvlwjhghwieyl',
-            title='jpksjiockomssynamcld',
-            basin='ptssqintlqixxuiikmrq',
-            latitude=float(93.01660189510697),
-            longitude=float(8.568401380682921),
-            elevation=int(87),
-            danger_level=float(72.33983137182693),
-            warning_level=float(72.33389611302167),
-            description='gkasrwveifecrpnodbch',
-            data_source='ifmfvthsociuafumyqrf',
-            province=int(84),
-            district=int(76),
-            municipality=int(14),
-            ward=int(70)
+            station_id='prwxpadwlshrwhvoadml',
+            title='iyfxnyydystcytjpfwzz',
+            basin='poffeczdvfcshejquwzn',
+            latitude=float(39.5332542887766),
+            longitude=float(22.78932820516546),
+            elevation=int(68),
+            danger_level=float(65.40994461430981),
+            warning_level=float(45.60464343547651),
+            description='wiuytkfyvlmykbkyabaf',
+            data_source='nmvzyyoykhbslajikbzr',
+            province=int(42),
+            district=int(33),
+            municipality=int(67),
+            ward=int(26)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'pugveyhnvlwjhghwieyl'
+        test_value = 'prwxpadwlshrwhvoadml'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'jpksjiockomssynamcld'
+        test_value = 'iyfxnyydystcytjpfwzz'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -66,7 +66,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test basin property
         """
-        test_value = 'ptssqintlqixxuiikmrq'
+        test_value = 'poffeczdvfcshejquwzn'
         self.instance.basin = test_value
         self.assertEqual(self.instance.basin, test_value)
     
@@ -74,7 +74,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(93.01660189510697)
+        test_value = float(39.5332542887766)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -82,7 +82,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(8.568401380682921)
+        test_value = float(22.78932820516546)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -90,7 +90,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test elevation property
         """
-        test_value = int(87)
+        test_value = int(68)
         self.instance.elevation = test_value
         self.assertEqual(self.instance.elevation, test_value)
     
@@ -98,7 +98,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test danger_level property
         """
-        test_value = float(72.33983137182693)
+        test_value = float(65.40994461430981)
         self.instance.danger_level = test_value
         self.assertEqual(self.instance.danger_level, test_value)
     
@@ -106,7 +106,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test warning_level property
         """
-        test_value = float(72.33389611302167)
+        test_value = float(45.60464343547651)
         self.instance.warning_level = test_value
         self.assertEqual(self.instance.warning_level, test_value)
     
@@ -114,7 +114,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'gkasrwveifecrpnodbch'
+        test_value = 'wiuytkfyvlmykbkyabaf'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -122,7 +122,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test data_source property
         """
-        test_value = 'ifmfvthsociuafumyqrf'
+        test_value = 'nmvzyyoykhbslajikbzr'
         self.instance.data_source = test_value
         self.assertEqual(self.instance.data_source, test_value)
     
@@ -130,7 +130,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test province property
         """
-        test_value = int(84)
+        test_value = int(42)
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -138,7 +138,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test district property
         """
-        test_value = int(76)
+        test_value = int(33)
         self.instance.district = test_value
         self.assertEqual(self.instance.district, test_value)
     
@@ -146,7 +146,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test municipality property
         """
-        test_value = int(14)
+        test_value = int(67)
         self.instance.municipality = test_value
         self.assertEqual(self.instance.municipality, test_value)
     
@@ -154,7 +154,7 @@ class Test_RiverStation(unittest.TestCase):
         """
         Test ward property
         """
-        test_value = int(70)
+        test_value = int(26)
         self.instance.ward = test_value
         self.assertEqual(self.instance.ward, test_value)
     

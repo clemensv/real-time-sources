@@ -38,10 +38,10 @@ from energy_charts_producer_kafka_producer.producer import InfoEnergyChartsAmqpE
 
 # imports for the data classes for each event
 
-from energy_charts_producer_data.publicpower import PublicPower
-from energy_charts_producer_data.spotprice import SpotPrice
-from energy_charts_producer_data.gridsignal import GridSignal
-from energy_charts_producer_data.info import Info
+from energy_charts_producer_data import PublicPower
+from energy_charts_producer_data import SpotPrice
+from energy_charts_producer_data import GridSignal
+from energy_charts_producer_data import Info
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -177,7 +177,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

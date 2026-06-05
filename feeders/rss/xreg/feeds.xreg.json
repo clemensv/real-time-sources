@@ -292,7 +292,9 @@
                             "contributors": {
                               "type": "array",
                               "items": {
-                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor"
+                                }
                               },
                               "default": null,
                               "description": "A list of contributors to the source feed."
@@ -315,7 +317,9 @@
                             "links": {
                               "type": "array",
                               "items": {
-                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/Link"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/Link"
+                                }
                               },
                               "default": null,
                               "description": "A collection of links related to the source feed."
@@ -455,7 +459,9 @@
                             "content": {
                               "type": "array",
                               "items": {
-                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemContent"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemContent"
+                                }
                               },
                               "default": null,
                               "description": "The content of the feed item, potentially including multiple formats."
@@ -463,7 +469,9 @@
                             "enclosures": {
                               "type": "array",
                               "items": {
-                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemEnclosure"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemEnclosure"
+                                }
                               },
                               "default": null,
                               "description": "Media attachments associated with the feed item."
@@ -510,7 +518,9 @@
                             "contributors": {
                               "type": "array",
                               "items": {
-                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/FeedItemAuthor"
+                                }
                               },
                               "default": null,
                               "description": "A list of individuals who contributed to the feed item."
@@ -518,7 +528,9 @@
                             "links": {
                               "type": "array",
                               "items": {
-                                "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/Link"
+                                "type": {
+                                  "$ref": "#/definitions/Microsoft/OpenData/RssFeeds/Link"
+                                }
                               },
                               "default": null,
                               "description": "A collection of links related to the feed item."

@@ -104,6 +104,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_reference='nbmiokblnphfpuonerlp',
-            label='ngohugrpuuvgsjbnhdrw',
-            river_name='dpndwoqhulmcwknmffue',
-            catchment_name='hvfusljijwvzpzzjqpef',
-            town='wfhghpuppabulywxjkuk',
-            lat=float(95.5048285875124),
-            long=float(27.75658625855297),
-            notation='qvinnitswxnnanoomgbt',
-            status='rmrkdrjrxlnhduwfxfcd',
-            date_opened='keeptbgzutrjqtjgedsg',
-            river='rkdutcstdijbmjhzesax'
+            station_reference='gnoelsfscvsbnyumtqsr',
+            label='mjghbukwfgixxkjzcbvg',
+            river_name='vrgcamdwkhvngluuvbef',
+            catchment_name='atsxpoosofiivlrtgrwe',
+            town='ocywurraemmyytmzigsg',
+            lat=float(31.411691748492878),
+            long=float(46.21231231341771),
+            notation='mixcvnblbsdfxfqsizkd',
+            status='jrkakcqfdgkwpsfzmuuc',
+            date_opened='pgqllrbsqnoyokchxhfz',
+            river='tpduettwniecqngyjbyg'
         )

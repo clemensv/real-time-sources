@@ -126,6 +126,8 @@ class StandardClassBPositionReport:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,26 +195,26 @@ class StandardClassBPositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(67),
-            RepeatIndicator=int(97),
-            UserID=int(54),
-            Valid=True,
-            Spare1=int(34),
-            Sog=float(16.25999297130103),
-            PositionAccuracy=False,
-            Longitude=float(53.26648503946132),
-            Latitude=float(22.686711046658548),
-            Cog=float(78.67703823371748),
-            TrueHeading=int(41),
-            Timestamp=int(32),
-            Spare2=int(15),
+            MessageID=int(96),
+            RepeatIndicator=int(82),
+            UserID=int(32),
+            Valid=False,
+            Spare1=int(6),
+            Sog=float(20.83685154556363),
+            PositionAccuracy=True,
+            Longitude=float(8.646128992494939),
+            Latitude=float(52.87225078831188),
+            Cog=float(0.2928574672874107),
+            TrueHeading=int(54),
+            Timestamp=int(17),
+            Spare2=int(55),
             ClassBUnit=False,
             ClassBDisplay=False,
-            ClassBDsc=False,
-            ClassBBand=True,
-            ClassBMsg22=False,
+            ClassBDsc=True,
+            ClassBBand=False,
+            ClassBMsg22=True,
             AssignedMode=False,
-            Raim=False,
+            Raim=True,
             CommunicationStateIsItdma=False,
-            CommunicationState=int(34)
+            CommunicationState=int(49)
         )

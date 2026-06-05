@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from canada_aqhi_mqtt_producer_data.ca.gc.weather.aqhi.forecast import Forecast
-from canada_aqhi_mqtt_producer_data.ca.gc.weather.aqhi.forecastperiodenum import ForecastPeriodenum
 from canada_aqhi_mqtt_producer_data.ca.gc.weather.aqhi.aqhicategoryenum import AqhiCategoryenum
+from canada_aqhi_mqtt_producer_data.ca.gc.weather.aqhi.forecastperiodenum import ForecastPeriodenum
 from canada_aqhi_mqtt_producer_data.ca.gc.weather.aqhi.forecastperiodlabelenum import ForecastPeriodLabelenum
 
 
@@ -31,14 +31,14 @@ class Test_Forecast(unittest.TestCase):
         Create instance of Forecast for testing
         """
         instance = Forecast(
-            province='nlqrpnforwvwlpvnhshv',
-            community_name='gcvaozocdgtehjzsbxan',
-            cgndb_code='pyxygdzbmpoduvxgvknt',
-            publication_datetime='doypvkmkaxqawrlbjbbg',
-            forecast_date='xezeeiegtvjhnxpmvldp',
+            province='lykvngikbowyhalrmjxp',
+            community_name='tnzjvptmibhyidwdwuoa',
+            cgndb_code='utmlutramtlofjyrmpjm',
+            publication_datetime='ugxjmyfkyczykcrxicqe',
+            forecast_date='jprgdkjlggnebffrhvqy',
             forecast_period=ForecastPeriodenum.VALUE_1,
             forecast_period_label=ForecastPeriodLabelenum.Today,
-            aqhi=int(91),
+            aqhi=int(5),
             aqhi_category=AqhiCategoryenum.Low
         )
         return instance
@@ -48,7 +48,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'nlqrpnforwvwlpvnhshv'
+        test_value = 'lykvngikbowyhalrmjxp'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -56,7 +56,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test community_name property
         """
-        test_value = 'gcvaozocdgtehjzsbxan'
+        test_value = 'tnzjvptmibhyidwdwuoa'
         self.instance.community_name = test_value
         self.assertEqual(self.instance.community_name, test_value)
     
@@ -64,7 +64,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test cgndb_code property
         """
-        test_value = 'pyxygdzbmpoduvxgvknt'
+        test_value = 'utmlutramtlofjyrmpjm'
         self.instance.cgndb_code = test_value
         self.assertEqual(self.instance.cgndb_code, test_value)
     
@@ -72,7 +72,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test publication_datetime property
         """
-        test_value = 'doypvkmkaxqawrlbjbbg'
+        test_value = 'ugxjmyfkyczykcrxicqe'
         self.instance.publication_datetime = test_value
         self.assertEqual(self.instance.publication_datetime, test_value)
     
@@ -80,7 +80,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test forecast_date property
         """
-        test_value = 'xezeeiegtvjhnxpmvldp'
+        test_value = 'jprgdkjlggnebffrhvqy'
         self.instance.forecast_date = test_value
         self.assertEqual(self.instance.forecast_date, test_value)
     
@@ -104,7 +104,7 @@ class Test_Forecast(unittest.TestCase):
         """
         Test aqhi property
         """
-        test_value = int(91)
+        test_value = int(5)
         self.instance.aqhi = test_value
         self.assertEqual(self.instance.aqhi, test_value)
     

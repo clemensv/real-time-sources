@@ -12,10 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from ptwc_tsunami_amqp_producer_data.ptwclevelenum import PtwcLevelenum
-from ptwc_tsunami_amqp_producer_data.categoryenum import CategoryEnum
 from ptwc_tsunami_amqp_producer_data.feedenum import FeedEnum
 from ptwc_tsunami_amqp_producer_data.basinenum import BasinEnum
+from ptwc_tsunami_amqp_producer_data.ptwclevelenum import PtwcLevelenum
+from ptwc_tsunami_amqp_producer_data.categoryenum import CategoryEnum
 import datetime
 
 
@@ -118,6 +118,8 @@ class TsunamiBulletin:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -185,19 +187,19 @@ class TsunamiBulletin:
             An instance of the dataclass.
         """
         return cls(
-            bulletin_id='ztvjdweqkjpisvpojrhm',
+            bulletin_id='tjuicrizwnkhdzxiivwm',
             feed=FeedEnum.PAAQ,
-            center='guauljqmecapycnkejdl',
-            title='fmzxnloaxafzmxhovwjc',
+            center='oaqxmjuzcmwjhgkpyyer',
+            title='rxpmogbdsxdpkcevizdo',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            latitude=float(66.21408226234975),
-            longitude=float(20.207819664362624),
+            latitude=float(83.07285102941738),
+            longitude=float(36.42554308893546),
             category=CategoryEnum.Warning,
-            magnitude='gdqfcfbymcpixsvfeids',
-            affected_region='bzvqjumydlmptpkkvati',
-            note='lijymjhipqphtogkorxe',
-            bulletin_url='mtozwwixuvdnqofrarvm',
-            cap_url='ylhhhvxrolijzohphjpx',
+            magnitude='vkvbeajndphtlawdzhcq',
+            affected_region='ehohdfushkiumfmbojvq',
+            note='qeozoanluuflbdciwinq',
+            bulletin_url='vmifdxzoieyslmwheors',
+            cap_url='trjfkasixrryqvaqpekr',
             basin=BasinEnum.pacific,
             ptwc_level=PtwcLevelenum.warning
         )

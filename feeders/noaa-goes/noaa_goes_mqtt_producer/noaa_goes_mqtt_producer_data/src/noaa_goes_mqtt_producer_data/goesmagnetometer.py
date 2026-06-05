@@ -96,6 +96,8 @@ class GoesMagnetometer:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class GoesMagnetometer:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='eosofvxfmuoykvysoeuf',
-            satellite=int(43),
-            he=float(23.586453297711273),
-            hp=float(39.40344495439609),
-            hn=float(90.87045139797023),
-            total=float(81.29638131554185),
-            arcjet_flag=False
+            time_tag='iwbdkmuebmgjaxmgwsnf',
+            satellite=int(26),
+            he=float(66.82939751716286),
+            hp=float(83.49853952105705),
+            hn=float(49.35244951308043),
+            total=float(70.12792242559621),
+            arcjet_flag=True
         )

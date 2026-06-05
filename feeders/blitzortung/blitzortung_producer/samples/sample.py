@@ -34,10 +34,11 @@ from confluent_kafka import Producer as KafkaProducer
 
 from blitzortung_producer_kafka_producer.producer import BlitzortungLightningEventProducer
 from blitzortung_producer_kafka_producer.producer import BlitzortungLightningMqttEventProducer
+from blitzortung_producer_kafka_producer.producer import BlitzortungLightningAmqpEventProducer
 
 # imports for the data classes for each event
 
-from blitzortung_producer_data.lightningstroke import LightningStroke
+from blitzortung_producer_data import LightningStroke
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -62,7 +63,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _lightning_stroke = LightningStroke()
 
     # sends the 'Blitzortung.Lightning.LightningStroke' event to Kafka topic.
-    await blitzortung_lightning_event_producer.send_blitzortung_lightning_lightning_stroke(_source_id = 'TODO: replace me', _stroke_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _lightning_stroke)
+    await blitzortung_lightning_event_producer.send_blitzortung_lightning_lightning_stroke(_source_id = 'TODO: replace me', _stroke_id = 'TODO: replace me', data = _lightning_stroke)
     print(f"Sent 'Blitzortung.Lightning.LightningStroke' event: {_lightning_stroke.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -78,14 +79,30 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _lightning_stroke = LightningStroke()
 
     # sends the 'Blitzortung.Lightning.mqtt.LightningStroke' event to Kafka topic.
-    await blitzortung_lightning_mqtt_event_producer.send_blitzortung_lightning_mqtt_lightning_stroke(_source_id = 'TODO: replace me', _stroke_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _lightning_stroke)
+    await blitzortung_lightning_mqtt_event_producer.send_blitzortung_lightning_mqtt_lightning_stroke(_source_id = 'TODO: replace me', _stroke_id = 'TODO: replace me', data = _lightning_stroke)
     print(f"Sent 'Blitzortung.Lightning.mqtt.LightningStroke' event: {_lightning_stroke.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        blitzortung_lightning_amqp_event_producer = BlitzortungLightningAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        blitzortung_lightning_amqp_event_producer = BlitzortungLightningAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Blitzortung.Lightning.amqp.LightningStroke ----
+    # TODO: Supply event data for the Blitzortung.Lightning.amqp.LightningStroke event
+    _lightning_stroke = LightningStroke()
+
+    # sends the 'Blitzortung.Lightning.amqp.LightningStroke' event to Kafka topic.
+    await blitzortung_lightning_amqp_event_producer.send_blitzortung_lightning_amqp_lightning_stroke(_source_id = 'TODO: replace me', _stroke_id = 'TODO: replace me', data = _lightning_stroke)
+    print(f"Sent 'Blitzortung.Lightning.amqp.LightningStroke' event: {_lightning_stroke.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

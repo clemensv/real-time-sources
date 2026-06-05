@@ -112,6 +112,8 @@ class WeatherReading:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -179,19 +181,19 @@ class WeatherReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='fiapilzrvwuyqbofbvup',
-            station_name='mjlhmnpqlgssirtiamls',
-            reading_time='jlvnvyficlojexadrrgd',
-            temperature_in_fahrenheit=float(38.4423509562757),
-            precipitation_in_inches=float(17.109248101646525),
-            wind_speed_in_mph=float(85.86460982001842),
-            wind_gust_speed_in_mph=float(16.8378880215062),
-            wind_direction=int(2),
-            wind_direction_cardinal='rutjgmncbgcmkbmfvunj',
-            barometric_pressure=float(46.68744615487266),
-            relative_humidity=int(38),
-            visibility=float(14.321959580872722),
-            sky_coverage='suybimlwgswoquvlysik',
-            latitude=float(68.04114278025718),
-            longitude=float(49.62504314350868)
+            station_id='haigbdfkkefnljvmvisb',
+            station_name='wjjaqipokuszczrugsjd',
+            reading_time='pxyqppgsrusdtyvclmhj',
+            temperature_in_fahrenheit=float(35.54753932703062),
+            precipitation_in_inches=float(29.772826203337555),
+            wind_speed_in_mph=float(53.16255364428722),
+            wind_gust_speed_in_mph=float(39.546511509029216),
+            wind_direction=int(52),
+            wind_direction_cardinal='qrdjmpdglwinrbfgdwwl',
+            barometric_pressure=float(2.3758879233688024),
+            relative_humidity=int(22),
+            visibility=float(77.47944905315529),
+            sky_coverage='vifzvjvxkvnexkwfrrsm',
+            latitude=float(63.888830693976374),
+            longitude=float(2.114476398856424)
         )

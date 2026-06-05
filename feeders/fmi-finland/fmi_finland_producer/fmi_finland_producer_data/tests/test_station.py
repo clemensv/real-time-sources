@@ -28,11 +28,11 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            fmisid='oujealmankquwinpmbkw',
-            station_name='wccsqjdfyokikbyznlfn',
-            latitude=float(85.95011071503224),
-            longitude=float(13.283394345253852),
-            municipality='bvtqefhyocruiazxsxvn'
+            fmisid='dhgpmskszeayhhkqghxt',
+            station_name='bjbiuijmorzavrqnzflv',
+            latitude=float(16.312563814519876),
+            longitude=float(85.49051150263938),
+            municipality='igcnnenuyhgkzupftcnx'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Station(unittest.TestCase):
         """
         Test fmisid property
         """
-        test_value = 'oujealmankquwinpmbkw'
+        test_value = 'dhgpmskszeayhhkqghxt'
         self.instance.fmisid = test_value
         self.assertEqual(self.instance.fmisid, test_value)
     
@@ -49,7 +49,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'wccsqjdfyokikbyznlfn'
+        test_value = 'bjbiuijmorzavrqnzflv'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -57,7 +57,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(85.95011071503224)
+        test_value = float(16.312563814519876)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -65,7 +65,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(13.283394345253852)
+        test_value = float(85.49051150263938)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -73,19 +73,10 @@ class Test_Station(unittest.TestCase):
         """
         Test municipality property
         """
-        test_value = 'bvtqefhyocruiazxsxvn'
+        test_value = 'igcnnenuyhgkzupftcnx'
         self.instance.municipality = test_value
         self.assertEqual(self.instance.municipality, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Station.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

@@ -3,9 +3,9 @@ from enum import Enum
 
 class EventEnum(Enum):
     """
-    Fixed MQTT topic event segment for retained office reference records.
+    Fixed MQTT topic event segment for JMA Bosai weather warning state records.
     """
-    info = 'info'
+    warning = 'warning'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'EventEnum':

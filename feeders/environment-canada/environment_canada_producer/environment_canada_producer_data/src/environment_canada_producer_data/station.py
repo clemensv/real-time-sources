@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station:
     """
-    Reference data for an Environment Canada SWOB weather station. Stations are identified by their MSC ID (Meteorological Service of Canada identifier) and include WMO synoptic IDs where available.
+    A reference record published by Environment and Climate Change Canada (ECCC). It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
         msc_id (str)
@@ -31,6 +31,7 @@ class Station:
         latitude (typing.Optional[float])
         longitude (typing.Optional[float])
         elevation (typing.Optional[float])
+        province (typing.Optional[str])
     """
     
     
@@ -45,6 +46,7 @@ class Station:
     latitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     elevation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="elevation"))
+    province: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="province"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -104,6 +106,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +175,16 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            msc_id='frdgoxaaowipsoujbafy',
-            name='nuramjkaczfrxrepbkja',
-            iata_id='eibdfpynqvcytnizjrej',
-            wmo_id=int(40),
-            province_territory='mumwquqjqkldjobyovmu',
-            data_provider='irvbdeutbkionzzigxrm',
-            dataset_network='ynlldffxdqkpprvydhae',
-            auto_man='fofqtfyultocnyrqyybr',
-            latitude=float(44.086616263744396),
-            longitude=float(66.9884282275524),
-            elevation=float(59.04851848297851)
+            msc_id='mvqgwhppyhoeitcrfdlp',
+            name='dxpgtrffhtljiiwjnjmq',
+            iata_id='mlxgyzgswkvwnojwpqde',
+            wmo_id=int(95),
+            province_territory='kdabonymturslqaxtlcn',
+            data_provider='qelqxmuixmadxsvvhtxk',
+            dataset_network='bwtdgmqvvqxewlhiijex',
+            auto_man='fzrzkaxesuupyxuzosiy',
+            latitude=float(68.44380307642119),
+            longitude=float(19.984553361544254),
+            elevation=float(7.746293477673394),
+            province='yrtezqlujxepbcxwhcff'
         )

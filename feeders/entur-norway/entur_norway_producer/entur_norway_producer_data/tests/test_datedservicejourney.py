@@ -28,18 +28,18 @@ class Test_DatedServiceJourney(unittest.TestCase):
         Create instance of DatedServiceJourney for testing
         """
         instance = DatedServiceJourney(
-            service_journey_id='hmwyamcpreabdstrxgna',
-            operating_day='aneyywbtsqxzspnqfadj',
-            line_ref='swiyqbabilveeuuwtvma',
-            operator_ref='jgayswpadlegtbpbulcs',
-            direction_ref='qpvdimjtuyqsipuluzau',
-            vehicle_mode='eullalluypgaswdjmuhp',
-            route_ref='nlbfyjcelnojfavaxqbe',
-            published_line_name='vvezukwxosfdxgownuzd',
-            external_line_ref='inxfcbyhxusxunjezsgu',
-            origin_name='egcaoulzbhwigroakaiw',
-            destination_name='dlzxhselfkkaeiahvbxa',
-            data_source='btbyzrtsbrlozabjwuev'
+            service_journey_id='bhclnjulrxfcgiewufta',
+            operating_day='fykqhlkclewiudkezisk',
+            line_ref='vgnkiaecyuekwcfnneka',
+            operator_ref='wyzqpcdvqvdhsehzxgaa',
+            direction_ref='idaxsyhvbpfvmsjbvqkn',
+            vehicle_mode='rsamhxfwcferrudwjpkv',
+            route_ref='uvlpdtpioghogjykyobr',
+            published_line_name='rtnotstzdlkvnlrdnzjo',
+            external_line_ref='tqtidlcmbcsckyvnunyu',
+            origin_name='wvkuttwsglhshkchsinl',
+            destination_name='mvrjrmpxxgnkpbqjmixy',
+            data_source='kfjaeuzgbulbmfwhssyg'
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test service_journey_id property
         """
-        test_value = 'hmwyamcpreabdstrxgna'
+        test_value = 'bhclnjulrxfcgiewufta'
         self.instance.service_journey_id = test_value
         self.assertEqual(self.instance.service_journey_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test operating_day property
         """
-        test_value = 'aneyywbtsqxzspnqfadj'
+        test_value = 'fykqhlkclewiudkezisk'
         self.instance.operating_day = test_value
         self.assertEqual(self.instance.operating_day, test_value)
     
@@ -64,7 +64,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test line_ref property
         """
-        test_value = 'swiyqbabilveeuuwtvma'
+        test_value = 'vgnkiaecyuekwcfnneka'
         self.instance.line_ref = test_value
         self.assertEqual(self.instance.line_ref, test_value)
     
@@ -72,7 +72,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test operator_ref property
         """
-        test_value = 'jgayswpadlegtbpbulcs'
+        test_value = 'wyzqpcdvqvdhsehzxgaa'
         self.instance.operator_ref = test_value
         self.assertEqual(self.instance.operator_ref, test_value)
     
@@ -80,7 +80,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test direction_ref property
         """
-        test_value = 'qpvdimjtuyqsipuluzau'
+        test_value = 'idaxsyhvbpfvmsjbvqkn'
         self.instance.direction_ref = test_value
         self.assertEqual(self.instance.direction_ref, test_value)
     
@@ -88,7 +88,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test vehicle_mode property
         """
-        test_value = 'eullalluypgaswdjmuhp'
+        test_value = 'rsamhxfwcferrudwjpkv'
         self.instance.vehicle_mode = test_value
         self.assertEqual(self.instance.vehicle_mode, test_value)
     
@@ -96,7 +96,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test route_ref property
         """
-        test_value = 'nlbfyjcelnojfavaxqbe'
+        test_value = 'uvlpdtpioghogjykyobr'
         self.instance.route_ref = test_value
         self.assertEqual(self.instance.route_ref, test_value)
     
@@ -104,7 +104,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test published_line_name property
         """
-        test_value = 'vvezukwxosfdxgownuzd'
+        test_value = 'rtnotstzdlkvnlrdnzjo'
         self.instance.published_line_name = test_value
         self.assertEqual(self.instance.published_line_name, test_value)
     
@@ -112,7 +112,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test external_line_ref property
         """
-        test_value = 'inxfcbyhxusxunjezsgu'
+        test_value = 'tqtidlcmbcsckyvnunyu'
         self.instance.external_line_ref = test_value
         self.assertEqual(self.instance.external_line_ref, test_value)
     
@@ -120,7 +120,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test origin_name property
         """
-        test_value = 'egcaoulzbhwigroakaiw'
+        test_value = 'wvkuttwsglhshkchsinl'
         self.instance.origin_name = test_value
         self.assertEqual(self.instance.origin_name, test_value)
     
@@ -128,7 +128,7 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test destination_name property
         """
-        test_value = 'dlzxhselfkkaeiahvbxa'
+        test_value = 'mvrjrmpxxgnkpbqjmixy'
         self.instance.destination_name = test_value
         self.assertEqual(self.instance.destination_name, test_value)
     
@@ -136,19 +136,10 @@ class Test_DatedServiceJourney(unittest.TestCase):
         """
         Test data_source property
         """
-        test_value = 'btbyzrtsbrlozabjwuev'
+        test_value = 'kfjaeuzgbulbmfwhssyg'
         self.instance.data_source = test_value
         self.assertEqual(self.instance.data_source, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = DatedServiceJourney.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

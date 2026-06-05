@@ -29,20 +29,20 @@ class Test_EstimatedCall(unittest.TestCase):
         Create instance of EstimatedCall for testing
         """
         instance = EstimatedCall(
-            stop_point_ref='yzomaaakcmxddytciaqs',
-            order=int(62),
-            stop_point_name='edxgfnoiibzgajbrmuml',
+            stop_point_ref='hcawufcchjcnulkqvmtg',
+            order=int(52),
+            stop_point_name='hjttwlaowvbczsnzhscl',
             aimed_arrival_time=datetime.datetime.now(datetime.timezone.utc),
             expected_arrival_time=datetime.datetime.now(datetime.timezone.utc),
             aimed_departure_time=datetime.datetime.now(datetime.timezone.utc),
             expected_departure_time=datetime.datetime.now(datetime.timezone.utc),
-            arrival_status='qtctddurubexbtnevkjy',
-            departure_status='mpzepnipeoxpdewgnqyv',
-            departure_platform_name='bszlimvhxkpwmwcyjyic',
-            arrival_boarding_activity='ogxepuqmoyuzlmniuolb',
-            departure_boarding_activity='lhawlgcbfpqxpwgntlyd',
+            arrival_status='eszeblvutksvsnljpbdu',
+            departure_status='zzitlayssengbmwoxrtt',
+            departure_platform_name='favcarscxnobswaaeccn',
+            arrival_boarding_activity='atxfxgknopvtedrjrkhg',
+            departure_boarding_activity='hlbwnbfqbcawcgybskkj',
             is_cancellation=True,
-            is_extra_stop=True
+            is_extra_stop=False
         )
         return instance
 
@@ -51,7 +51,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test stop_point_ref property
         """
-        test_value = 'yzomaaakcmxddytciaqs'
+        test_value = 'hcawufcchjcnulkqvmtg'
         self.instance.stop_point_ref = test_value
         self.assertEqual(self.instance.stop_point_ref, test_value)
     
@@ -59,7 +59,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test order property
         """
-        test_value = int(62)
+        test_value = int(52)
         self.instance.order = test_value
         self.assertEqual(self.instance.order, test_value)
     
@@ -67,7 +67,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test stop_point_name property
         """
-        test_value = 'edxgfnoiibzgajbrmuml'
+        test_value = 'hjttwlaowvbczsnzhscl'
         self.instance.stop_point_name = test_value
         self.assertEqual(self.instance.stop_point_name, test_value)
     
@@ -107,7 +107,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test arrival_status property
         """
-        test_value = 'qtctddurubexbtnevkjy'
+        test_value = 'eszeblvutksvsnljpbdu'
         self.instance.arrival_status = test_value
         self.assertEqual(self.instance.arrival_status, test_value)
     
@@ -115,7 +115,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test departure_status property
         """
-        test_value = 'mpzepnipeoxpdewgnqyv'
+        test_value = 'zzitlayssengbmwoxrtt'
         self.instance.departure_status = test_value
         self.assertEqual(self.instance.departure_status, test_value)
     
@@ -123,7 +123,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test departure_platform_name property
         """
-        test_value = 'bszlimvhxkpwmwcyjyic'
+        test_value = 'favcarscxnobswaaeccn'
         self.instance.departure_platform_name = test_value
         self.assertEqual(self.instance.departure_platform_name, test_value)
     
@@ -131,7 +131,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test arrival_boarding_activity property
         """
-        test_value = 'ogxepuqmoyuzlmniuolb'
+        test_value = 'atxfxgknopvtedrjrkhg'
         self.instance.arrival_boarding_activity = test_value
         self.assertEqual(self.instance.arrival_boarding_activity, test_value)
     
@@ -139,7 +139,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test departure_boarding_activity property
         """
-        test_value = 'lhawlgcbfpqxpwgntlyd'
+        test_value = 'hlbwnbfqbcawcgybskkj'
         self.instance.departure_boarding_activity = test_value
         self.assertEqual(self.instance.departure_boarding_activity, test_value)
     
@@ -155,7 +155,7 @@ class Test_EstimatedCall(unittest.TestCase):
         """
         Test is_extra_stop property
         """
-        test_value = True
+        test_value = False
         self.instance.is_extra_stop = test_value
         self.assertEqual(self.instance.is_extra_stop, test_value)
     

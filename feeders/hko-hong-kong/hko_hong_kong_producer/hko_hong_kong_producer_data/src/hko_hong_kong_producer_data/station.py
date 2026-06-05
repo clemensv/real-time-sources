@@ -17,18 +17,20 @@ import json
 @dataclass
 class Station:
     """
-    Reference data for a HKO weather observation place. Places include automatic weather stations (temperature), rainfall reporting districts, and special measurement locations (humidity at HKO headquarters, UV index at King's Park).
+    A reference record published by the Hong Kong Observatory. It lets consumers label, group, and route the live measurement or forecast events.
     
     Attributes:
         place_id (str)
         name (str)
         data_types (str)
+        district (typing.Optional[str])
     """
     
     
     place_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="place_id"))
     name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="name"))
     data_types: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="data_types"))
+    district: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="district"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'Station':
@@ -88,6 +90,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -155,7 +159,8 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            place_id='xscugzlxaqxpxxbukddf',
-            name='unmguxxocjajjrucgerj',
-            data_types='zdjokaivcogkegybrhpp'
+            place_id='jziwatxbjjbkhxrpufyb',
+            name='txakzfimvkwulpjcjyfd',
+            data_types='nbrvhohndwlklrsoifpe',
+            district='lwohkyxouvsnklqdykiq'
         )

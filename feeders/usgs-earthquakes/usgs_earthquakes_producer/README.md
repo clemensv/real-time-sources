@@ -17,7 +17,9 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 3. [Quick Start](#quick-start)    - USGSEarthquakesEventDispatcher,
 
-4. [Generated Producer Classes](#generated-producer-classes)    USGSEarthquakesMqttEventDispatcher
+4. [Generated Producer Classes](#generated-producer-classes)    USGSEarthquakesMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    USGSEarthquakesAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -45,6 +47,10 @@ It includes both plain Kafka messages and CloudEvents, offering a versatile
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - USGSEarthquakesMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- USGSEarthquakesAmqpProducersolution for event-driven applications.
 
 
 
@@ -228,6 +234,43 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 usgs_earthquakes_mqtt_dispatcher.usgs_earthquakes_event_async = usgs_earthquakes_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSEarthquakesAmqpProducer- `data`: The event data of type `usgs_earthquakes_producer_data.Event`.
+
+
+
+Producer for `USGS.Earthquakes.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_earthquakes_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+USGSEarthquakesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_earthquakes_amqp_dispatcher.usgs_earthquakes_event_async = usgs_earthquakes_event_event
 
 **Parameters:**```
 
@@ -530,6 +573,43 @@ usgs_earthquakes_mqtt_dispatcher.usgs_earthquakes_mqtt_event_async = usgs_earthq
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSEarthquakesAmqpProducer- `data`: The event data of type `usgs_earthquakes_producer_data.Event`.
+
+
+
+Producer for `USGS.Earthquakes.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_earthquakes_mqtt_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+USGSEarthquakesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_earthquakes_amqp_dispatcher.usgs_earthquakes_mqtt_event_async = usgs_earthquakes_mqtt_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -625,6 +705,341 @@ dispatching events to the appropriate handlers.
 ```python__init__(consumer: KafkaConsumer)
 
 await producer.send_usgs_earthquakes_mqtt_event_batch(```
+
+    messages=[
+
+        Event(...),Initializes the runner with a Kafka consumer.
+
+        Event(...),
+
+        Event(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### USGSEarthquakesAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`USGSEarthquakesAmqpEventDispatcher` handles events for the USGS.Earthquakes.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from usgs-earthquakes-producer import USGSEarthquakesProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = USGSEarthquakesProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_usgs_earthquakes_event(```python
+
+    data=Event(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The USGSEarthquakesAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = USGSEarthquakesProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `usgs_earthquakes_amqp_event_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'usgs_earthquakes_amqp_event_async:  Callable[[ConsumerRecord, CloudEvent, Event],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `USGS.Earthquakes.amqp.Event`: USGS earthquake event data from the Earthquake Hazards
+Program.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSEarthquakesProducer- `data`: The event data of type `usgs_earthquakes_producer_data.Event`.
+
+
+
+Producer for `USGS.Earthquakes` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_earthquakes_amqp_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+USGSEarthquakesProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_earthquakes_dispatcher.usgs_earthquakes_amqp_event_async = usgs_earthquakes_amqp_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSEarthquakesMqttProducer- `data`: The event data of type `usgs_earthquakes_producer_data.Event`.
+
+
+
+Producer for `USGS.Earthquakes.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_earthquakes_amqp_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+USGSEarthquakesMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_earthquakes_mqtt_dispatcher.usgs_earthquakes_amqp_event_async = usgs_earthquakes_amqp_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### USGSEarthquakesAmqpProducer- `data`: The event data of type `usgs_earthquakes_producer_data.Event`.
+
+
+
+Producer for `USGS.Earthquakes.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def usgs_earthquakes_amqp_event_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Event) -> None:
+
+```python    # Process the event data
+
+USGSEarthquakesAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+usgs_earthquakes_amqp_dispatcher.usgs_earthquakes_amqp_event_async = usgs_earthquakes_amqp_event_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_usgs_earthquakes_amqp_event`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_usgs_earthquakes_amqp_event(
+
+    self,##### `_process_event`
+
+    data: Event,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `USGS.Earthquakes.amqp.Event` message. USGS earthquake event data from the Earthquake Hazards
+Program.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Event`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_usgs_earthquakes_amqp_event(
+
+    data=Event(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `USGS.Earthquakes.amqp.Event` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_usgs_earthquakes_amqp_event_batch(```
 
     messages=[
 

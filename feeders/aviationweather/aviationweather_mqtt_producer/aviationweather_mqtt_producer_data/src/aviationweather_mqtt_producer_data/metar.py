@@ -126,6 +126,8 @@ class Metar:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -193,25 +195,25 @@ class Metar:
             An instance of the dataclass.
         """
         return cls(
-            icao_id='igxzvtyrhoazhozbhjxr',
+            icao_id='yggqkaeujmekpbdoscyx',
             obs_time=datetime.datetime.now(datetime.timezone.utc),
             report_time=datetime.datetime.now(datetime.timezone.utc),
-            temp=float(21.079810966335167),
-            dewp=float(2.228776850155978),
-            wdir=int(82),
-            wspd=int(47),
-            wgst=int(59),
-            visib='ztffyapljinhjbuedbmc',
-            altim=float(72.26789175894099),
-            slp=float(88.36881284460893),
-            qc_field=int(62),
-            wx_string='matfoqhaikcdlpsamvwp',
-            metar_type='tbvvusembetcugqfwgly',
-            raw_ob='numsssxpdrarumlzerhu',
-            latitude=float(67.21961060183105),
-            longitude=float(82.0863690344133),
-            elevation=float(70.60728351333644),
-            flt_cat='eeaaniwwpfgxnadyeqtv',
-            clouds='qtsgmjxwegvsxpocfcff',
-            name='qxyafbuybqvehhmuprmb'
+            temp=float(39.80478720206799),
+            dewp=float(39.4264123692867),
+            wdir=int(100),
+            wspd=int(6),
+            wgst=int(25),
+            visib='wussaerlfrizoerztmxp',
+            altim=float(8.186808775863575),
+            slp=float(8.518359807469167),
+            qc_field=int(46),
+            wx_string='tyezokrjtvtchvuadohl',
+            metar_type='pooiyfbkrahbrankhmqe',
+            raw_ob='ouyaxfxephzwmqbypbng',
+            latitude=float(60.107087402410365),
+            longitude=float(51.3630484670924),
+            elevation=float(34.000363170676415),
+            flt_cat='gtxjteizrbactvdbedri',
+            clouds='bqlfjhcutxwqqvzeoycz',
+            name='pflaynabhowoqofexqsb'
         )

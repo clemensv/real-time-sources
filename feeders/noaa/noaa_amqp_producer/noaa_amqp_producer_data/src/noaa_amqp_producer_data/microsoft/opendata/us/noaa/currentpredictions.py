@@ -98,6 +98,8 @@ class CurrentPredictions:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,12 +167,12 @@ class CurrentPredictions:
             An instance of the dataclass.
         """
         return cls(
-            station_id='xcadlrttkffegiaqptlg',
-            timestamp='exkrydafeylapathetev',
-            velocity_major=float(38.724796945271464),
-            mean_flood_dir=float(53.254898049830516),
-            mean_ebb_dir=float(32.74157324161997),
-            depth=float(65.45933298976199),
-            bin='nixgkomeebdwdemfavmk',
-            region='wmmziscirrxbyuyorbvy'
+            station_id='esxylmqjunywgngzdrgp',
+            timestamp='zkpievkpbaqexdxxmbih',
+            velocity_major=float(95.23996735914207),
+            mean_flood_dir=float(33.97935452378037),
+            mean_ebb_dir=float(26.001824021306895),
+            depth=float(92.62771636028192),
+            bin='aykiehjxzkhrtzacfsgz',
+            region='qqaloceeohwqudmmfaks'
         )

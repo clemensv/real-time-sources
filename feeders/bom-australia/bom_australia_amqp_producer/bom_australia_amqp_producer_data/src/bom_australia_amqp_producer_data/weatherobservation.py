@@ -148,6 +148,8 @@ class WeatherObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -215,36 +217,36 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_wmo='mfgizguxogdqepizikkd',
-            station_name='sbaroaqcvyghqkxyujov',
+            station_wmo='njzleoayynnkxvtlfeyt',
+            station_name='cxrleiurcackfqwobdtx',
             observation_time_utc=datetime.datetime.now(datetime.timezone.utc),
-            local_time='cqvxfyzxtxaegfbuueth',
-            air_temp=float(65.29545113984922),
-            apparent_temp=float(23.433147853939218),
-            dewpt=float(83.65408812579912),
-            rel_hum=int(1),
-            delta_t=float(77.19856862508975),
-            wind_dir='ayibbxilyzlninakiofl',
-            wind_spd_kmh=int(39),
-            wind_spd_kt=int(18),
-            gust_kmh=int(68),
-            gust_kt=int(61),
-            press=float(81.53700405064413),
-            press_qnh=float(10.644463328850783),
-            press_msl=float(32.866551023626286),
-            press_tend='ccltqfugrccutglzrpvr',
-            rain_trace='bubhksvpzbikhkhzaimh',
-            cloud='xwltqwvtyxztnnnwshbc',
-            cloud_oktas=int(44),
-            cloud_base_m=int(34),
-            cloud_type='ehashmuqgzylodgdkepj',
-            vis_km='yfuhwlnjxfoewicqwfpg',
-            weather='ezhgbdajfijhvkivfxpp',
-            sea_state='efxmlfaurrkphcirgyvd',
-            swell_dir_worded='vnjzawnqdlrznzvamspb',
-            swell_height=float(58.26887991595526),
-            swell_period=float(57.059350870621095),
-            latitude=float(60.87192329810974),
-            longitude=float(20.757529863682045),
-            state='vswtftjcxqxcyjfyoujp'
+            local_time='cserczqrxybkwmdoiiru',
+            air_temp=float(58.84010423549365),
+            apparent_temp=float(74.64671596399499),
+            dewpt=float(33.883502387511356),
+            rel_hum=int(77),
+            delta_t=float(24.22186109501039),
+            wind_dir='tvlgfyfwylwlohynsiyr',
+            wind_spd_kmh=int(47),
+            wind_spd_kt=int(64),
+            gust_kmh=int(79),
+            gust_kt=int(11),
+            press=float(57.68537296196597),
+            press_qnh=float(77.98430394971547),
+            press_msl=float(73.92315699246753),
+            press_tend='bevsphpmbkxfjusczerj',
+            rain_trace='raigwkgzzserxoeookhc',
+            cloud='uguibawcmoajwxvfsrrp',
+            cloud_oktas=int(96),
+            cloud_base_m=int(19),
+            cloud_type='mzeucczsnzfypivpaezu',
+            vis_km='nnaklffvsqujtleztwyc',
+            weather='adnsppfhnsqydldjoyov',
+            sea_state='zzrjgzlikgfhcoqqtyhu',
+            swell_dir_worded='pyhiltkdoareifuiekzd',
+            swell_height=float(63.390525884028634),
+            swell_period=float(6.885650154512812),
+            latitude=float(31.94135159383077),
+            longitude=float(67.43045963121575),
+            state='vuyviijrjznldldcenyu'
         )

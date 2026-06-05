@@ -23,8 +23,8 @@ from typing import Dict, List, Optional, Tuple, Any, Set
 from confluent_kafka import Producer
 
 # pylint: disable=import-error, line-too-long
-from usgs_nwis_wq_producer_data.usgs_nwis_wq_producer_data.monitoringsite import MonitoringSite
-from usgs_nwis_wq_producer_data.usgs_nwis_wq_producer_data.waterqualityreading import WaterQualityReading
+from usgs_nwis_wq_producer_data.monitoringsite import MonitoringSite
+from usgs_nwis_wq_producer_data.waterqualityreading import WaterQualityReading
 from usgs_nwis_wq_producer_kafka_producer.producer import (
     USGSWaterQualitySitesEventProducer,
     USGSWaterQualityReadingsEventProducer,
@@ -164,6 +164,13 @@ class USGSWaterQualityPoller:
             latitude = geo.get("latitude")
             longitude = geo.get("longitude")
 
+            # Extract variable info
+            var_codes = variable.get("variableCode", [])
+            parameter_code = var_codes[0].get("value", "") if var_codes else ""
+            parameter_name = html.unescape(variable.get("variableDescription", variable.get("variableName", "")))
+            unit_code = variable.get("unit", {}).get("unitCode", "")
+            no_data_value = variable.get("noDataValue", USGSWaterQualityPoller.NO_DATA_VALUE)
+
             # Extract site properties
             site_type = None
             state_code = None
@@ -194,15 +201,10 @@ class USGSWaterQualityPoller:
                     state_code=state_code,
                     county_code=county_code,
                     huc_code=huc_code,
+                    state=None,
+                    parameter_code=parameter_code or None,
                 )
                 sites_list.append(site)
-
-            # Extract variable info
-            var_codes = variable.get("variableCode", [])
-            parameter_code = var_codes[0].get("value", "") if var_codes else ""
-            parameter_name = html.unescape(variable.get("variableDescription", variable.get("variableName", "")))
-            unit_code = variable.get("unit", {}).get("unitCode", "")
-            no_data_value = variable.get("noDataValue", USGSWaterQualityPoller.NO_DATA_VALUE)
 
             # Extract timezone info
             tz_info = source_info.get("timeZoneInfo", {})
@@ -253,6 +255,7 @@ class USGSWaterQualityPoller:
                         unit=unit_code,
                         qualifier=qualifier,
                         date_time=dt_utc.isoformat(),
+                        state=None,
                     )
                     readings_list.append(reading)
 

@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station:
     """
-    Reference metadata for one active King County buoy or mooring raw-data dataset.
+    A reference record from King County Metro marine feeds for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates.
     
     Attributes:
         station_id (str)
@@ -98,6 +98,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -165,12 +167,12 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='ztbaakyyjdsaxedrzktb',
-            station_name='biiexlycritghfsuvrgx',
-            dataset_id='ypkydjedziympbzypzpb',
-            dataset_name='wmiwquwtacioocjvpwsn',
-            dataset_url='advqhsubqxcwklwidezk',
-            sensor_level='rrzzcmgdioefiukzmpaf',
-            latitude=float(47.319628562454305),
-            longitude=float(88.84606888249795)
+            station_id='lbjtdosmsopgbwcrwnhr',
+            station_name='zclxukwiramhxdplmlzl',
+            dataset_id='jedlelczslspoornxgrb',
+            dataset_name='erdsqgaubaleijzjkoeq',
+            dataset_url='xkzenhdjmnmpmmjofviz',
+            sensor_level='vbyjwvsxhkoevfqnhlbc',
+            latitude=float(48.87617909416462),
+            longitude=float(29.37018227255621)
         )

@@ -92,6 +92,8 @@ class RouteConfig:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class RouteConfig:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='zlkmisecuhnbqojsxgxu',
-            route_tag='wcjampbhpzpqrqplrdmy',
-            stop_or_vehicle_id='dgdyhgbvhidsyvzvjdbz',
-            event_type='oofmhfdipukpgutiuemh',
-            route_config='qquzzffodfpdzwwpksbn'
+            agency_id='qnrvuuycedzvjdqnpcsk',
+            route_tag='lcmzrhjcagcvbrqeokff',
+            stop_or_vehicle_id='ufdvvolevmiksngvrmvi',
+            event_type='evijmkkmtwueaapgbwdj',
+            route_config='vfylrfcfmqsnzahufoqc'
         )

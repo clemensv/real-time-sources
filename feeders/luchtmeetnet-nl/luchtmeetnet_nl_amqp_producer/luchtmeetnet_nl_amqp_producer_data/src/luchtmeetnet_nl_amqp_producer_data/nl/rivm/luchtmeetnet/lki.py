@@ -88,6 +88,8 @@ class LKI:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -155,7 +157,7 @@ class LKI:
             An instance of the dataclass.
         """
         return cls(
-            station_number='ahkamovakjcdlusftupj',
-            value=int(34),
-            timestamp_measured='iahhrxnssyakqmneorzt'
+            station_number='fwbskhpoqyokbnrtrsne',
+            value=int(95),
+            timestamp_measured='jcrnloxjxzwuurijwvaa'
         )

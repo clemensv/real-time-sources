@@ -96,6 +96,8 @@ class CoordinatedUTCInquiry:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class CoordinatedUTCInquiry:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(10),
-            RepeatIndicator=int(59),
-            UserID=int(45),
+            MessageID=int(11),
+            RepeatIndicator=int(12),
+            UserID=int(7),
             Valid=True,
-            Spare1=int(99),
-            DestinationID=int(82),
-            Spare2=int(65)
+            Spare1=int(14),
+            DestinationID=int(42),
+            Spare2=int(59)
         )

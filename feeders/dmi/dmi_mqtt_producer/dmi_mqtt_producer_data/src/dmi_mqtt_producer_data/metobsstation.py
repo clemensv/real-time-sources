@@ -127,6 +127,8 @@ class MetObsStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -194,21 +196,21 @@ class MetObsStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='npfizblpuownmwdinzsa',
-            wmo_station_id='khfgkhrrcviaqkfjvlww',
-            wmo_country_code='qhcsanjpzmaxelaandji',
-            name='fbqxgpzfcnmvsvobtgfe',
+            station_id='hmisjkiuzdcilthwfcic',
+            wmo_station_id='yttnxxmdskjtwamrflnb',
+            wmo_country_code='ybrxplwblcnsxuyyirvv',
+            name='keviievrkjxqmqcacgus',
             country=CountryEnum.DNK,
-            owner='fomnjmdqfifedgutqxkx',
-            region_id='zberckixivtekfugpptq',
-            type='fsafvndwjowavbekdftc',
-            status='lociggeztunrzvhvjerq',
-            parameter_id=['ehdttnxervtgogvautia', 'kwmtwwfnqkdalchjtret', 'famoqvxpcrwfqlcrifiu', 'cgtsuxnavxjxmwzijfyu', 'ykmreamhslnawenoxiqf'],
-            latitude=float(22.383119038698553),
-            longitude=float(84.0274897177452),
-            station_height=float(27.042369034369973),
-            barometer_height=float(29.155218957175066),
-            anemometer_height=float(70.70147433234077),
+            owner='pvbykwovewtjjemtwcdj',
+            region_id='bljzbyjbtvidkmnwiwmh',
+            type='hmfaktscpbtvcvpwdiwe',
+            status='nbikjwskkifywkhxxale',
+            parameter_id=['nkrzirocsertjgvboytb', 'cbdsrvsmlxnchzmnatol', 'ufizjjlaomeohbehdidg', 'ilsdfjoaugrmuulahtnf'],
+            latitude=float(45.178018397996745),
+            longitude=float(92.43696789193513),
+            station_height=float(48.65703768470095),
+            barometer_height=float(63.950830096722235),
+            anemometer_height=float(5.258584640780606),
             valid_from=datetime.datetime.now(datetime.timezone.utc),
             valid_to=datetime.datetime.now(datetime.timezone.utc),
             operation_from=datetime.datetime.now(datetime.timezone.utc),

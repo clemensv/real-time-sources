@@ -96,6 +96,8 @@ class Conductivity:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class Conductivity:
             An instance of the dataclass.
         """
         return cls(
-            station_id='oouwrehjhqfpkfjypxjn',
-            timestamp='bbgrujzkdurdbffgpiln',
-            value=float(98.17176232970326),
-            max_conductivity_exceeded=False,
+            station_id='kqscvnpnevfjvzqpjocl',
+            timestamp='evtgaoocmygsndbprcqe',
+            value=float(59.79915871811219),
+            max_conductivity_exceeded=True,
             min_conductivity_exceeded=False,
             rate_of_change_exceeded=False,
-            region='fkqsmexnidouueubelzs'
+            region='stfeftxtagtweaxrzmxt'
         )

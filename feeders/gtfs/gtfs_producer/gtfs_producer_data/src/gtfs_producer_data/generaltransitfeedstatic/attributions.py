@@ -104,6 +104,8 @@ class Attributions:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -171,15 +173,15 @@ class Attributions:
             An instance of the dataclass.
         """
         return cls(
-            attributionId='dqndtnmijxqlcqayeqsi',
-            agencyId='wmdgrjfofexmujqolcsi',
-            routeId='jsraetjeirngsirryihj',
-            tripId='hkbaxiqtnaeqccqwkrts',
-            organizationName='jwnuucxyskejrujqhzdb',
-            isProducer=int(90),
-            isOperator=int(37),
-            isAuthority=int(27),
-            attributionUrl='phpiztkpehteddxmyjhs',
-            attributionEmail='gcxjgjoqjmnvmsskjpwk',
-            attributionPhone='wqsstdhrpptznstnygfc'
+            attributionId='gavugsfrpzzakcwwqrzz',
+            agencyId='sgrrftrdimpkjfqgexcm',
+            routeId='gnbgwmznqagfivjehhty',
+            tripId='lbkdvmynmkkpaelwkmxi',
+            organizationName='divvqecpahsalzlqqhqy',
+            isProducer=int(22),
+            isOperator=int(100),
+            isAuthority=int(98),
+            attributionUrl='rtmjxsimzaedlbbzjzck',
+            attributionEmail='ubczmgsoiiehtgtbxruc',
+            attributionPhone='vqcqmxutykvbzzsplebq'
         )

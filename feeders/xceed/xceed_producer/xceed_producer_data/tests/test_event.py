@@ -29,54 +29,54 @@ class Test_Event(unittest.TestCase):
         Create instance of Event for testing
         """
         instance = Event(
-            event_id='ngiiaptuglmxtgbskohx',
-            legacy_id=int(53),
-            name='xqebfyeadpugqljidsgn',
-            slug='leenpnvcyqndgldctxpy',
+            event_id='wgmajvpkrfmtglzqvreq',
+            legacy_id=int(76),
+            name='hkpnejbqnyfpudaryqlu',
+            slug='cfnghrtklwljznqknzzx',
             starting_time=datetime.datetime.now(datetime.timezone.utc),
             ending_time=datetime.datetime.now(datetime.timezone.utc),
-            cover_url='qqcxtgiaedsnqthwgbpu',
-            external_sales_url='zzpdpbufyymifpbuclnt',
-            venue_id='rydhxqlhstvgcbbenhuh',
-            venue_name='fxswsmmlyfkipojeeatx',
-            venue_city='qbiglwdrxszuaqbvfnge',
-            venue_country_code='cfotgjmafqnrbcurpnqm'
+            cover_url='gmttsupqbdnnhtngaaml',
+            external_sales_url='fibokkwkckzwdettniat',
+            venue_id='zxvypdzzoweddsjwkkxr',
+            venue_name='rpqhhctzvmvogusilhdn',
+            venue_city='jehlzkalxbkfnaimtwci',
+            venue_country_code='txqmxknspvhugvjvtcjh'
         )
         return instance
 
-
+    
     def test_event_id_property(self):
         """
         Test event_id property
         """
-        test_value = 'ngiiaptuglmxtgbskohx'
+        test_value = 'wgmajvpkrfmtglzqvreq'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
-
+    
     def test_legacy_id_property(self):
         """
         Test legacy_id property
         """
-        test_value = int(53)
+        test_value = int(76)
         self.instance.legacy_id = test_value
         self.assertEqual(self.instance.legacy_id, test_value)
-
+    
     def test_name_property(self):
         """
         Test name property
         """
-        test_value = 'xqebfyeadpugqljidsgn'
+        test_value = 'hkpnejbqnyfpudaryqlu'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
-
+    
     def test_slug_property(self):
         """
         Test slug property
         """
-        test_value = 'leenpnvcyqndgldctxpy'
+        test_value = 'cfnghrtklwljznqknzzx'
         self.instance.slug = test_value
         self.assertEqual(self.instance.slug, test_value)
-
+    
     def test_starting_time_property(self):
         """
         Test starting_time property
@@ -84,7 +84,7 @@ class Test_Event(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.starting_time = test_value
         self.assertEqual(self.instance.starting_time, test_value)
-
+    
     def test_ending_time_property(self):
         """
         Test ending_time property
@@ -92,55 +92,55 @@ class Test_Event(unittest.TestCase):
         test_value = datetime.datetime.now(datetime.timezone.utc)
         self.instance.ending_time = test_value
         self.assertEqual(self.instance.ending_time, test_value)
-
+    
     def test_cover_url_property(self):
         """
         Test cover_url property
         """
-        test_value = 'qqcxtgiaedsnqthwgbpu'
+        test_value = 'gmttsupqbdnnhtngaaml'
         self.instance.cover_url = test_value
         self.assertEqual(self.instance.cover_url, test_value)
-
+    
     def test_external_sales_url_property(self):
         """
         Test external_sales_url property
         """
-        test_value = 'zzpdpbufyymifpbuclnt'
+        test_value = 'fibokkwkckzwdettniat'
         self.instance.external_sales_url = test_value
         self.assertEqual(self.instance.external_sales_url, test_value)
-
+    
     def test_venue_id_property(self):
         """
         Test venue_id property
         """
-        test_value = 'rydhxqlhstvgcbbenhuh'
+        test_value = 'zxvypdzzoweddsjwkkxr'
         self.instance.venue_id = test_value
         self.assertEqual(self.instance.venue_id, test_value)
-
+    
     def test_venue_name_property(self):
         """
         Test venue_name property
         """
-        test_value = 'fxswsmmlyfkipojeeatx'
+        test_value = 'rpqhhctzvmvogusilhdn'
         self.instance.venue_name = test_value
         self.assertEqual(self.instance.venue_name, test_value)
-
+    
     def test_venue_city_property(self):
         """
         Test venue_city property
         """
-        test_value = 'qbiglwdrxszuaqbvfnge'
+        test_value = 'jehlzkalxbkfnaimtwci'
         self.instance.venue_city = test_value
         self.assertEqual(self.instance.venue_city, test_value)
-
+    
     def test_venue_country_code_property(self):
         """
         Test venue_country_code property
         """
-        test_value = 'cfotgjmafqnrbcurpnqm'
+        test_value = 'txqmxknspvhugvjvtcjh'
         self.instance.venue_country_code = test_value
         self.assertEqual(self.instance.venue_country_code, test_value)
-
+    
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

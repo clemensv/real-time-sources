@@ -2,7 +2,7 @@
 name = "usgs-geomag-producer-kafka-producer"
 description = "usgs_geomag_producer_kafka_producer Kafka producer library"
 authors = ["Your Name <your.email@example.com>"]
-version = "0.1.0"
+version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
 packages = [{include = "usgs_geomag_producer_kafka_producer", from = "src"}]
 
 [tool.poetry.dependencies]

@@ -12,9 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_volcano_producer_data.eventenum import EventEnum
-from jma_bosai_volcano_producer_data.alertlevelcodeenum import AlertLevelCodeenum
 from jma_bosai_volcano_producer_data.conditionenum import ConditionEnum
+from jma_bosai_volcano_producer_data.alertlevelcodeenum import AlertLevelCodeenum
+from jma_bosai_volcano_producer_data.eventenum import EventEnum
 import datetime
 
 
@@ -111,6 +111,8 @@ class VolcanicWarning:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -178,16 +180,16 @@ class VolcanicWarning:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='jpizzhhbwpoetrkdqhuo',
-            event_id='qwmxzgcmkscsvpqqjyra',
+            volcano_code='wjfjmzuxousgfhlmabnr',
+            event_id='glnzszfidtaldrjrbwxr',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
             alert_level_code=AlertLevelCodeenum.CODE_02,
-            alert_level_name='rpexvjqilshwpcuksjed',
-            previous_level_code='nxjdukfdjulbihrpwkko',
+            alert_level_name='vdlaktanzsvfuaqgrrde',
+            previous_level_code='phbvasimztpqdutuqmwo',
             condition=ConditionEnum.ISSUED,
-            info_type_jp='gelfxmiorqwwsgzdvjsn',
-            area_codes=['oxahronjbzmitcmlsahs', 'cuaqypkoitxljaldoenc', 'kxhpmxktabdvnxyzextw', 'zkeebusxuolsmulxxxjd', 'ctmwgeguvleivyovrewo'],
-            prefecture='rqqdrjzkfiozzimxbnyw',
-            event=EventEnum.eruption
+            info_type_jp='nzljbofekupzjqnnoati',
+            area_codes=['mxmeqoqvzmekagtfxvht', 'brhvvuratmyajpkmabhl', 'vbjsdqrecokplkadjaow', 'zwzensclapkmnhbuhdwz', 'cosawqsdbarmktnukvps'],
+            prefecture='fgnpqcsoasslrmlgizzn',
+            event=EventEnum.info
         )

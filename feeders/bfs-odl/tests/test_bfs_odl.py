@@ -101,6 +101,7 @@ class TestParseStation:
         assert station.site_status == 1
         assert station.site_status_text == "in Betrieb"
         assert station.kid == 6
+        assert station.state == "schleswig-holstein"
 
     def test_coordinates(self):
         station = BfsOdlAPI.parse_station(SAMPLE_STATION_FEATURE)

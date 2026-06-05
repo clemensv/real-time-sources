@@ -28,11 +28,11 @@ class Test_Position(unittest.TestCase):
         Create instance of Position for testing
         """
         instance = Position(
-            latitude=float(50.34481094682472),
-            longitude=float(64.0251371537946),
-            bearing=float(60.792732751810654),
-            odometer=float(64.53068856769299),
-            speed=float(0.9259476799874156)
+            latitude=float(15.757216824656838),
+            longitude=float(75.86981648423192),
+            bearing=float(80.3839391678625),
+            odometer=float(71.10580760441104),
+            speed=float(55.26390821842503)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Position(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(50.34481094682472)
+        test_value = float(15.757216824656838)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -49,7 +49,7 @@ class Test_Position(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(64.0251371537946)
+        test_value = float(75.86981648423192)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -57,7 +57,7 @@ class Test_Position(unittest.TestCase):
         """
         Test bearing property
         """
-        test_value = float(60.792732751810654)
+        test_value = float(80.3839391678625)
         self.instance.bearing = test_value
         self.assertEqual(self.instance.bearing, test_value)
     
@@ -65,7 +65,7 @@ class Test_Position(unittest.TestCase):
         """
         Test odometer property
         """
-        test_value = float(64.53068856769299)
+        test_value = float(71.10580760441104)
         self.instance.odometer = test_value
         self.assertEqual(self.instance.odometer, test_value)
     
@@ -73,7 +73,7 @@ class Test_Position(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(0.9259476799874156)
+        test_value = float(55.26390821842503)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     

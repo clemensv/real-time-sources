@@ -34,10 +34,11 @@ from confluent_kafka import Producer as KafkaProducer
 
 from wikimedia_eventstreams_producer_kafka_producer.producer import WikimediaEventStreamsEventProducer
 from wikimedia_eventstreams_producer_kafka_producer.producer import WikimediaEventStreamsMqttEventProducer
+from wikimedia_eventstreams_producer_kafka_producer.producer import WikimediaEventStreamsAmqpEventProducer
 
 # imports for the data classes for each event
 
-from wikimedia_eventstreams_producer_data.recentchange import RecentChange
+from wikimedia_eventstreams_producer_data import RecentChange
 
 async def main(connection_string: Optional[str], producer_config: Optional[str], topic: Optional[str]):
     """
@@ -62,7 +63,7 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _recent_change = RecentChange()
 
     # sends the 'Wikimedia.EventStreams.RecentChange' event to Kafka topic.
-    await wikimedia_event_streams_event_producer.send_wikimedia_event_streams_recent_change(_event_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _recent_change)
+    await wikimedia_event_streams_event_producer.send_wikimedia_event_streams_recent_change(_event_id = 'TODO: replace me', data = _recent_change)
     print(f"Sent 'Wikimedia.EventStreams.RecentChange' event: {_recent_change.to_json()}")
     if connection_string:
         # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
@@ -78,14 +79,30 @@ async def main(connection_string: Optional[str], producer_config: Optional[str],
     _recent_change = RecentChange()
 
     # sends the 'Wikimedia.EventStreams.RecentChange.mqtt' event to Kafka topic.
-    await wikimedia_event_streams_mqtt_event_producer.send_wikimedia_event_streams_recent_change_mqtt(_wiki = 'TODO: replace me', _namespace = 'TODO: replace me', _event_id = 'TODO: replace me', _event_time = 'TODO: replace me', data = _recent_change)
+    await wikimedia_event_streams_mqtt_event_producer.send_wikimedia_event_streams_recent_change_mqtt(_wiki = 'TODO: replace me', _namespace = 'TODO: replace me', _event_id = 'TODO: replace me', data = _recent_change)
     print(f"Sent 'Wikimedia.EventStreams.RecentChange.mqtt' event: {_recent_change.to_json()}")
+    if connection_string:
+        # use a connection string obtained for an Event Stream from the Microsoft Fabric portal
+        # or an Azure Event Hubs connection string
+        wikimedia_event_streams_amqp_event_producer = WikimediaEventStreamsAmqpEventProducer.from_connection_string(connection_string, topic, 'binary')
+    else:
+        # use a Kafka producer configuration provided as JSON text
+        kafka_producer = KafkaProducer(json.loads(producer_config))
+        wikimedia_event_streams_amqp_event_producer = WikimediaEventStreamsAmqpEventProducer(kafka_producer, topic, 'binary')
+
+    # ---- Wikimedia.EventStreams.amqp.RecentChange ----
+    # TODO: Supply event data for the Wikimedia.EventStreams.amqp.RecentChange event
+    _recent_change = RecentChange()
+
+    # sends the 'Wikimedia.EventStreams.amqp.RecentChange' event to Kafka topic.
+    await wikimedia_event_streams_amqp_event_producer.send_wikimedia_event_streams_amqp_recent_change(_event_id = 'TODO: replace me', data = _recent_change)
+    print(f"Sent 'Wikimedia.EventStreams.amqp.RecentChange' event: {_recent_change.to_json()}")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Kafka Producer")
     parser.add_argument('--producer-config', default=os.getenv('KAFKA_PRODUCER_CONFIG'), help='Kafka producer config (JSON)', required=False)
     parser.add_argument('--topics', default=os.getenv('KAFKA_TOPICS'), help='Kafka topics to send events to', required=False)
-    parser.add_argument('-c|--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
+    parser.add_argument('-c', '--connection-string', dest='connection_string', default=os.getenv('FABRIC_CONNECTION_STRING'), help='Fabric connection string', required=False)
 
     args = parser.parse_args()
 

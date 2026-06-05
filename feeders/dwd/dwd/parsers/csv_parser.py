@@ -148,6 +148,15 @@ def map_row(row: Dict[str, Any], category: str) -> Dict[str, Any]:
 
     for dwd_col, semantic_name in col_map.items():
         if dwd_col in row:
-            result[semantic_name] = row[dwd_col]
+            value = row[dwd_col]
+            # RWS_IND_10 is a categorical precipitation-type code (0 = none,
+            # 1/3/6/7/8 = type); the generic float parser yields e.g. 0.0, but
+            # the contract declares it int32, so coerce non-null values to int.
+            if semantic_name == "precipitation_indicator" and value is not None:
+                try:
+                    value = int(float(value))
+                except (ValueError, TypeError):
+                    pass
+            result[semantic_name] = value
 
     return result

@@ -1,3 +1,3 @@
-from .fi import Observation, Station
+from .fi import Station, Observation
 
-__all__ = ["Observation", "Station"]
+__all__ = ["Station", "Observation"]

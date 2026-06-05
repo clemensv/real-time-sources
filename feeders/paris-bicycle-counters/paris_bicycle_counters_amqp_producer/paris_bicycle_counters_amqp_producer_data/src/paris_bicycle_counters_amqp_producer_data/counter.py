@@ -96,6 +96,8 @@ class Counter:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class Counter:
             An instance of the dataclass.
         """
         return cls(
-            counter_id='kdexdlujtykfdldmesrz',
-            counter_name='qfmasmyuctmtztkwrhqd',
-            channel_name='bjaxezdcjbvcphbhcivx',
-            installation_date='lvditalfvqgncokvkgoi',
-            longitude=float(9.107627190857848),
-            latitude=float(85.94706737935458),
-            ce_id='fbrsqquqtiycvlqvetrn'
+            counter_id='gbxoomxwsbggsrnidege',
+            counter_name='dijtxiqmvzvsvfmxshld',
+            channel_name='ocxnynhvgjtgnubqsgcz',
+            installation_date='ecbdnkbmxihcbqwkmdlp',
+            longitude=float(7.301179486209952),
+            latitude=float(30.91309813464025),
+            ce_id='wzeajfpsytlpbnsqfmpf'
         )

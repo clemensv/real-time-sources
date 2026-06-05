@@ -118,6 +118,8 @@ class Station:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -185,22 +187,22 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(32),
-            station_code='bhldvaplvlkubikeajpk',
-            station_name='xwqopvtrtejzggqpbpna',
-            station_city='uenyiytrvjcqofsbcldp',
-            station_synonym='alchpaznskcngfguaica',
-            active_from='fqzoazpjdhwhzmgkwcac',
-            active_to='rtfaccyqktgypglopvxa',
-            longitude=float(18.026977133613354),
-            latitude=float(19.867613334023304),
-            network_id=int(57),
-            network_code='pxdvtdoffbhtjkhigmgj',
-            network_name='qzgfrgozixzouwqzbjqx',
-            setting_name='awgnwnfxaaoemjjinlsw',
-            setting_short='hfptipflictiswvyetqp',
-            type_name='vdecmdnpqcquqvvmdwzx',
-            street='nwefhrnrsmhthsbztoez',
-            street_nr='xhjgnvjltsunxynnwckc',
-            zip_code='hsrkgitjwewskpxkstqg'
+            station_id=int(95),
+            station_code='vpiwjitnuiqqqreysrem',
+            station_name='vdgmrfygxeovjrdqdpic',
+            station_city='ydrgwoiehymtvecxirgn',
+            station_synonym='lnsbnzzpojkymxslikcf',
+            active_from='qqrxvlycbllklmppznlw',
+            active_to='trbidiwpxpxgiwdnxkdu',
+            longitude=float(94.56752323055308),
+            latitude=float(53.935741231545684),
+            network_id=int(98),
+            network_code='lnpcjiwhetrteickqavb',
+            network_name='aqipsvhkxsgcsrcactoy',
+            setting_name='afexwoplxqtsylpmmjtn',
+            setting_short='kafnqroaxngccdybwure',
+            type_name='itxquwnmnljccyxpyawd',
+            street='kudmmcbbyjrbcodlorpu',
+            street_nr='pbjxzjxmirkekmfatqco',
+            zip_code='cusbbzqlnxcdwrwjrmzh'
         )

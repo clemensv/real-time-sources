@@ -90,6 +90,8 @@ class WeatherSensorData:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -157,8 +159,8 @@ class WeatherSensorData:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(9),
-            sensor_id=int(6),
-            value=float(35.24446749941412),
-            time=int(57)
+            station_id=int(11),
+            sensor_id=int(37),
+            value=float(78.15418688158832),
+            time=int(28)
         )

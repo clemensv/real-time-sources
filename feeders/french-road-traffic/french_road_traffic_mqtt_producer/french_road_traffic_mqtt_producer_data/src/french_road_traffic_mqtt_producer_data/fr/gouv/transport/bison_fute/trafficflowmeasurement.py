@@ -94,6 +94,8 @@ class TrafficFlowMeasurement:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class TrafficFlowMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            site_id='uznieibekkwautqaamrt',
-            measurement_time='uornyianbhhongsvzaej',
-            vehicle_flow_rate=int(89),
-            average_speed=float(32.69381245970522),
-            input_values_flow=int(99),
-            input_values_speed=int(47)
+            site_id='gjxqwvkiszekhldgcrmm',
+            measurement_time='bwmgfqbcshwvnaynlrxh',
+            vehicle_flow_rate=int(3),
+            average_speed=float(33.14097894783076),
+            input_values_flow=int(97),
+            input_values_speed=int(93)
         )

@@ -100,6 +100,8 @@ class AddressedSafetyMessage:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class AddressedSafetyMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(56),
-            RepeatIndicator=int(8),
-            UserID=int(60),
-            Valid=True,
-            Sequenceinteger=int(70),
-            DestinationID=int(96),
+            MessageID=int(8),
+            RepeatIndicator=int(86),
+            UserID=int(42),
+            Valid=False,
+            Sequenceinteger=int(93),
+            DestinationID=int(15),
             Retransmission=False,
             Spare=True,
-            Text='qpcuzkqiohcaeuhdhlxx'
+            Text='zwtfhsuczsgwbharfxqe'
         )

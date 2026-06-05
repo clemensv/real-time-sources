@@ -19,7 +19,7 @@ import datetime
 @dataclass
 class WeatherObservation:
     """
-    Hourly weather observation from a SMHI meteorological station. Multi-parameter observations are assembled from the per-parameter latest-hour API endpoints. Each record contains the most recent values for temperature, wind, pressure, humidity, precipitation, visibility, cloud cover, irradiance, and present weather.
+    A current environmental measurement from the Swedish Meteorological and Hydrological Institute (SMHI). It carries weather observations when the upstream feed reports a new or refreshed value.
     
     Attributes:
         station_id (str)
@@ -41,6 +41,7 @@ class WeatherObservation:
         global_irradiance (typing.Optional[float])
         precipitation_intensity (typing.Optional[float])
         quality (typing.Optional[str])
+        lan (typing.Optional[str])
     """
     
     
@@ -63,6 +64,7 @@ class WeatherObservation:
     global_irradiance: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="global_irradiance"))
     precipitation_intensity: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation_intensity"))
     quality: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="quality"))
+    lan: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="lan"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherObservation':
@@ -122,6 +124,8 @@ class WeatherObservation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -189,23 +193,24 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='fthtuzcwncrnkclzqqme',
-            station_name='sqsktssbwgquawfamgdc',
+            station_id='hohvbekltlgupcrxetej',
+            station_name='qgifabhewxpzmfzrfyek',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            air_temperature=float(64.5441699428818),
-            wind_gust=float(38.23184509675938),
-            dew_point=float(54.93410678058955),
-            air_pressure=float(6.359459132231793),
-            relative_humidity=int(76),
-            precipitation_last_hour=float(17.581222680062623),
-            wind_direction=float(85.53436150630421),
-            wind_speed=float(5.24440973321052),
-            max_wind_speed=float(50.16910145375015),
-            visibility=float(43.69004223271664),
-            total_cloud_cover=int(37),
-            present_weather=int(81),
-            sunshine_duration=float(97.76537147210188),
-            global_irradiance=float(34.07089640340112),
-            precipitation_intensity=float(86.4539701294217),
-            quality='inosktkrsfusrscvvmfv'
+            air_temperature=float(10.580608023079341),
+            wind_gust=float(37.69168140464287),
+            dew_point=float(52.66468639258509),
+            air_pressure=float(21.80735028288693),
+            relative_humidity=int(67),
+            precipitation_last_hour=float(97.02011322521594),
+            wind_direction=float(57.49304591501313),
+            wind_speed=float(7.559906176189912),
+            max_wind_speed=float(32.6302474123209),
+            visibility=float(23.327792665737203),
+            total_cloud_cover=int(25),
+            present_weather=int(54),
+            sunshine_duration=float(90.84879114919993),
+            global_irradiance=float(19.5417802955955),
+            precipitation_intensity=float(47.078525871245894),
+            quality='eqsfmytrpihghikcgpfq',
+            lan='jfzillofzwbwwzhcukwe'
         )

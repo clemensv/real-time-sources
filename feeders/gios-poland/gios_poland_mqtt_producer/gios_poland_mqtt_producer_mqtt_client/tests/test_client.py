@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,13 +17,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import gios_poland_mqtt_producer_data
 from gios_poland_mqtt_producer_data import Station
-from test_gios_poland_mqtt_producer_data_station import Test_Station
+from test_station import Test_Station
 from gios_poland_mqtt_producer_data import Sensor
-from test_gios_poland_mqtt_producer_data_sensor import Test_Sensor
+from test_sensor import Test_Sensor
 from gios_poland_mqtt_producer_data import Measurement
-from test_gios_poland_mqtt_producer_data_measurement import Test_Measurement
+from test_measurement import Test_Measurement
 from gios_poland_mqtt_producer_data import AirQualityIndex
-from test_gios_poland_mqtt_producer_data_airqualityindex import Test_AirQualityIndex
+from test_airqualityindex import Test_AirQualityIndex
 from gios_poland_mqtt_producer_mqtt_client import PlGovGiosAirqualityMqttMqttClient
 
 @pytest_asyncio.fixture
@@ -95,6 +96,7 @@ async def test_pl_gov_gios_airquality_mqtt_pl_gov_gios_airquality_mqtt_station_p
         await publisher_client.publish_pl_gov_gios_airquality_mqtt_station(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -161,6 +163,7 @@ async def test_pl_gov_gios_airquality_mqtt_pl_gov_gios_airquality_mqtt_sensor_py
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             sensor_id=f"test_sensor_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -227,6 +230,7 @@ async def test_pl_gov_gios_airquality_mqtt_pl_gov_gios_airquality_mqtt_measureme
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             sensor_id=f"test_sensor_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -292,6 +296,7 @@ async def test_pl_gov_gios_airquality_mqtt_pl_gov_gios_airquality_mqtt_air_quali
         await publisher_client.publish_pl_gov_gios_airquality_mqtt_air_quality_index(
             topic=test_topic,
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

@@ -1,6 +1,6 @@
 
 
-# Autobahn_producer Kafka Producer# Autobahn_producer Event Dispatcher for Apache Kafka
+# Autobahn-producer Kafka Producer# Autobahn-producer Event Dispatcher for Apache Kafka
 
 
 
@@ -15,7 +15,11 @@ event dispatcher for processing events from Apache Kafka. It supports both plain
 
 2. [What is Apache Kafka?](#what-is-apache-kafka)2. [Generated Event Dispatchers](#generated-event-dispatchers)
 
-3. [Quick Start](#quick-start)    - DEAutobahnEventDispatcher
+3. [Quick Start](#quick-start)    - DEAutobahnEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    DEAutobahnMqttEventDispatcher,
+
+4. [Generated Producer Classes](#generated-producer-classes)    DEAutobahnAmqpEventDispatcher
 
 4. [Generated Producer Classes](#generated-producer-classes)
 
@@ -39,6 +43,14 @@ methods to handle various types of events.
 It includes both plain Kafka messages and CloudEvents, offering a versatile
 
 - DEAutobahnProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- DEAutobahnMqttProducersolution for event-driven applications.
+
+It includes both plain Kafka messages and CloudEvents, offering a versatile
+
+- DEAutobahnAmqpProducersolution for event-driven applications.
 
 
 
@@ -86,7 +98,7 @@ Initializes the dispatcher.
 
 ```python
 
-from autobahn_producer import DEAutobahnProducer```python
+from autobahn-producer import DEAutobahnProducer```python
 
 create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
 
@@ -192,6 +204,80 @@ de_autobahn_dispatcher.de_autobahn_roadwork_appeared_async = de_autobahn_roadwor
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_roadwork_appeared_async = de_autobahn_roadwork_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_roadwork_appeared_async = de_autobahn_roadwork_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -256,6 +342,80 @@ de_autobahn_dispatcher.de_autobahn_roadwork_updated_async = de_autobahn_roadwork
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_roadwork_updated_async = de_autobahn_roadwork_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_roadwork_updated_async = de_autobahn_roadwork_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -315,6 +475,80 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_roadwork_resolved_async = de_autobahn_roadwork_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_roadwork_resolved_async = de_autobahn_roadwork_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_roadwork_resolved_async = de_autobahn_roadwork_resolved_event
 
 **Parameters:**```
 
@@ -385,6 +619,84 @@ de_autobahn_dispatcher.de_autobahn_short_term_roadwork_appeared_async = de_autob
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_short_term_roadwork_appeared_async =
+de_autobahn_short_term_roadwork_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_short_term_roadwork_appeared_async =
+de_autobahn_short_term_roadwork_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -445,6 +757,84 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_short_term_roadwork_updated_async = de_autobahn_short_term_roadwork_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_short_term_roadwork_updated_async =
+de_autobahn_short_term_roadwork_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_short_term_roadwork_updated_async =
+de_autobahn_short_term_roadwork_updated_event
 
 **Parameters:**```
 
@@ -515,6 +905,84 @@ de_autobahn_dispatcher.de_autobahn_short_term_roadwork_resolved_async = de_autob
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_short_term_roadwork_resolved_async =
+de_autobahn_short_term_roadwork_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_short_term_roadwork_resolved_async =
+de_autobahn_short_term_roadwork_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -575,6 +1043,82 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_warning_appeared_async = de_autobahn_warning_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_warning_appeared_async = de_autobahn_warning_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_warning_appeared_async = de_autobahn_warning_appeared_event
 
 **Parameters:**```
 
@@ -645,6 +1189,82 @@ de_autobahn_dispatcher.de_autobahn_warning_updated_async = de_autobahn_warning_u
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_warning_updated_async = de_autobahn_warning_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_warning_updated_async = de_autobahn_warning_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -705,6 +1325,82 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_warning_resolved_async = de_autobahn_warning_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_warning_resolved_async = de_autobahn_warning_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_warning_resolved_async = de_autobahn_warning_resolved_event
 
 **Parameters:**```
 
@@ -774,6 +1470,80 @@ de_autobahn_dispatcher.de_autobahn_closure_appeared_async = de_autobahn_closure_
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_closure_appeared_async = de_autobahn_closure_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_closure_appeared_async = de_autobahn_closure_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -838,6 +1608,80 @@ de_autobahn_dispatcher.de_autobahn_closure_updated_async = de_autobahn_closure_u
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_closure_updated_async = de_autobahn_closure_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_closure_updated_async = de_autobahn_closure_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -897,6 +1741,80 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_closure_resolved_async = de_autobahn_closure_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_closure_resolved_async = de_autobahn_closure_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_closure_resolved_async = de_autobahn_closure_resolved_event
 
 **Parameters:**```
 
@@ -967,6 +1885,84 @@ de_autobahn_dispatcher.de_autobahn_entry_exit_closure_appeared_async = de_autoba
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_entry_exit_closure_appeared_async =
+de_autobahn_entry_exit_closure_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_entry_exit_closure_appeared_async =
+de_autobahn_entry_exit_closure_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1027,6 +2023,82 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_entry_exit_closure_updated_async = de_autobahn_entry_exit_closure_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_entry_exit_closure_updated_async = de_autobahn_entry_exit_closure_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_entry_exit_closure_updated_async = de_autobahn_entry_exit_closure_updated_event
 
 **Parameters:**```
 
@@ -1097,6 +2169,84 @@ de_autobahn_dispatcher.de_autobahn_entry_exit_closure_resolved_async = de_autoba
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_entry_exit_closure_resolved_async =
+de_autobahn_entry_exit_closure_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_entry_exit_closure_resolved_async =
+de_autobahn_entry_exit_closure_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1157,6 +2307,84 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_weight_limit35_restriction_appeared_async =
+de_autobahn_weight_limit35_restriction_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_weight_limit35_restriction_appeared_async =
+de_autobahn_weight_limit35_restriction_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_weight_limit35_restriction_appeared_async =
 de_autobahn_weight_limit35_restriction_appeared_event
 
 **Parameters:**```
@@ -1229,6 +2457,84 @@ de_autobahn_weight_limit35_restriction_updated_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_weight_limit35_restriction_updated_async =
+de_autobahn_weight_limit35_restriction_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_weight_limit35_restriction_updated_async =
+de_autobahn_weight_limit35_restriction_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1289,6 +2595,84 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_weight_limit35_restriction_resolved_async =
+de_autobahn_weight_limit35_restriction_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_weight_limit35_restriction_resolved_async =
+de_autobahn_weight_limit35_restriction_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_weight_limit35_restriction_resolved_async =
 de_autobahn_weight_limit35_restriction_resolved_event
 
 **Parameters:**```
@@ -1360,6 +2744,82 @@ de_autobahn_dispatcher.de_autobahn_parking_lorry_appeared_async = de_autobahn_pa
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ParkingLorry)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_parking_lorry_appeared_async = de_autobahn_parking_lorry_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ParkingLorry)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_parking_lorry_appeared_async = de_autobahn_parking_lorry_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1420,6 +2880,82 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_parking_lorry_updated_async = de_autobahn_parking_lorry_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ParkingLorry)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_parking_lorry_updated_async = de_autobahn_parking_lorry_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ParkingLorry)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_parking_lorry_updated_async = de_autobahn_parking_lorry_updated_event
 
 **Parameters:**```
 
@@ -1490,6 +3026,82 @@ de_autobahn_dispatcher.de_autobahn_parking_lorry_resolved_async = de_autobahn_pa
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ParkingLorry)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_parking_lorry_resolved_async = de_autobahn_parking_lorry_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: ParkingLorry)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_parking_lorry_resolved_async = de_autobahn_parking_lorry_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1550,6 +3162,84 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_electric_charging_station_appeared_async =
+de_autobahn_electric_charging_station_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_electric_charging_station_appeared_async =
+de_autobahn_electric_charging_station_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_electric_charging_station_appeared_async =
 de_autobahn_electric_charging_station_appeared_event
 
 **Parameters:**```
@@ -1622,6 +3312,84 @@ de_autobahn_electric_charging_station_updated_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_electric_charging_station_updated_async =
+de_autobahn_electric_charging_station_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_electric_charging_station_updated_async =
+de_autobahn_electric_charging_station_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1682,6 +3450,84 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_electric_charging_station_resolved_async =
+de_autobahn_electric_charging_station_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_electric_charging_station_resolved_async =
+de_autobahn_electric_charging_station_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_electric_charging_station_resolved_async =
 de_autobahn_electric_charging_station_resolved_event
 
 **Parameters:**```
@@ -1754,6 +3600,84 @@ de_autobahn_strong_electric_charging_station_appeared_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_strong_electric_charging_station_appeared_async =
+de_autobahn_strong_electric_charging_station_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_strong_electric_charging_station_appeared_async =
+de_autobahn_strong_electric_charging_station_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1814,6 +3738,84 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_strong_electric_charging_station_updated_async =
+de_autobahn_strong_electric_charging_station_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_updated_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_strong_electric_charging_station_updated_async =
+de_autobahn_strong_electric_charging_station_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_updated_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_strong_electric_charging_station_updated_async =
 de_autobahn_strong_electric_charging_station_updated_event
 
 **Parameters:**```
@@ -1886,6 +3888,84 @@ de_autobahn_strong_electric_charging_station_resolved_event
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_strong_electric_charging_station_resolved_async =
+de_autobahn_strong_electric_charging_station_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_strong_electric_charging_station_resolved_async =
+de_autobahn_strong_electric_charging_station_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -1945,6 +4025,80 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_webcam_appeared_async = de_autobahn_webcam_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_webcam_appeared_async = de_autobahn_webcam_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_webcam_appeared_async = de_autobahn_webcam_appeared_event
 
 **Parameters:**```
 
@@ -2014,6 +4168,80 @@ de_autobahn_dispatcher.de_autobahn_webcam_updated_async = de_autobahn_webcam_upd
 
 - `bootstrap_servers`: Comma-separated list of broker addresses
 
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_webcam_updated_async = de_autobahn_webcam_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_webcam_updated_async = de_autobahn_webcam_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
 - `client_id`: Optional client identifier
 
 - `**kwargs`: Additional Kafka producer configuration
@@ -2073,6 +4301,80 @@ responsible for calling the appropriate handler function when a message is recei
 ``````python
 
 de_autobahn_dispatcher.de_autobahn_webcam_resolved_async = de_autobahn_webcam_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_webcam_resolved_async = de_autobahn_webcam_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_webcam_resolved_async = de_autobahn_webcam_resolved_event
 
 **Parameters:**```
 
@@ -5227,6 +7529,15034 @@ await producer.send_de_autobahn_webcam_resolved_batch(```
         Webcam(...),
 
         Webcam(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### DEAutobahnMqttEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`DEAutobahnMqttEventDispatcher` handles events for the DE.Autobahn.mqtt message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from autobahn-producer import DEAutobahnProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = DEAutobahnProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_de_autobahn_roadwork_appeared(```python
+
+    data=RoadEvent(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The DEAutobahnMqttEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = DEAutobahnProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_roadwork_appeared_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_roadwork_appeared_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.RoadworkAppeared.mqtt`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_roadwork_appeared_mqtt_async = de_autobahn_roadwork_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_roadwork_appeared_mqtt_async = de_autobahn_roadwork_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_roadwork_appeared_mqtt_async = de_autobahn_roadwork_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_roadwork_updated_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_roadwork_updated_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.RoadworkUpdated.mqtt`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_roadwork_updated_mqtt_async = de_autobahn_roadwork_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_roadwork_updated_mqtt_async = de_autobahn_roadwork_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_roadwork_updated_mqtt_async = de_autobahn_roadwork_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_roadwork_resolved_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_roadwork_resolved_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.RoadworkResolved.mqtt`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_roadwork_resolved_mqtt_async = de_autobahn_roadwork_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_roadwork_resolved_mqtt_async = de_autobahn_roadwork_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_roadwork_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_roadwork_resolved_mqtt_async = de_autobahn_roadwork_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_short_term_roadwork_appeared_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_short_term_roadwork_appeared_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ShortTermRoadworkAppeared.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_short_term_roadwork_appeared_mqtt_async =
+de_autobahn_short_term_roadwork_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_short_term_roadwork_appeared_mqtt_async =
+de_autobahn_short_term_roadwork_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_short_term_roadwork_appeared_mqtt_async =
+de_autobahn_short_term_roadwork_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_short_term_roadwork_updated_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_short_term_roadwork_updated_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ShortTermRoadworkUpdated.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_short_term_roadwork_updated_mqtt_async =
+de_autobahn_short_term_roadwork_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_short_term_roadwork_updated_mqtt_async =
+de_autobahn_short_term_roadwork_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_short_term_roadwork_updated_mqtt_async =
+de_autobahn_short_term_roadwork_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_short_term_roadwork_resolved_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_short_term_roadwork_resolved_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ShortTermRoadworkResolved.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_short_term_roadwork_resolved_mqtt_async =
+de_autobahn_short_term_roadwork_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_short_term_roadwork_resolved_mqtt_async =
+de_autobahn_short_term_roadwork_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_short_term_roadwork_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_short_term_roadwork_resolved_mqtt_async =
+de_autobahn_short_term_roadwork_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_closure_appeared_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_closure_appeared_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ClosureAppeared.mqtt`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_closure_appeared_mqtt_async = de_autobahn_closure_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_closure_appeared_mqtt_async = de_autobahn_closure_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_closure_appeared_mqtt_async = de_autobahn_closure_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_closure_updated_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_closure_updated_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ClosureUpdated.mqtt`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_closure_updated_mqtt_async = de_autobahn_closure_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_closure_updated_mqtt_async = de_autobahn_closure_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_closure_updated_mqtt_async = de_autobahn_closure_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_closure_resolved_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_closure_resolved_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ClosureResolved.mqtt`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_closure_resolved_mqtt_async = de_autobahn_closure_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_closure_resolved_mqtt_async = de_autobahn_closure_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_closure_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_closure_resolved_mqtt_async = de_autobahn_closure_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_entry_exit_closure_appeared_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_entry_exit_closure_appeared_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.EntryExitClosureAppeared.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_entry_exit_closure_appeared_mqtt_async =
+de_autobahn_entry_exit_closure_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_entry_exit_closure_appeared_mqtt_async =
+de_autobahn_entry_exit_closure_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_entry_exit_closure_appeared_mqtt_async =
+de_autobahn_entry_exit_closure_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_entry_exit_closure_updated_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_entry_exit_closure_updated_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.EntryExitClosureUpdated.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_entry_exit_closure_updated_mqtt_async =
+de_autobahn_entry_exit_closure_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_entry_exit_closure_updated_mqtt_async =
+de_autobahn_entry_exit_closure_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_entry_exit_closure_updated_mqtt_async =
+de_autobahn_entry_exit_closure_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_entry_exit_closure_resolved_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_entry_exit_closure_resolved_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.EntryExitClosureResolved.mqtt`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_entry_exit_closure_resolved_mqtt_async =
+de_autobahn_entry_exit_closure_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_entry_exit_closure_resolved_mqtt_async =
+de_autobahn_entry_exit_closure_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_entry_exit_closure_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_entry_exit_closure_resolved_mqtt_async =
+de_autobahn_entry_exit_closure_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_warning_appeared_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_warning_appeared_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+WarningEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.WarningAppeared.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_warning_appeared_mqtt_async = de_autobahn_warning_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_warning_appeared_mqtt_async = de_autobahn_warning_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_warning_appeared_mqtt_async = de_autobahn_warning_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_warning_updated_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_warning_updated_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+WarningEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.WarningUpdated.mqtt`: A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_warning_updated_mqtt_async = de_autobahn_warning_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_warning_updated_mqtt_async = de_autobahn_warning_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_warning_updated_mqtt_async = de_autobahn_warning_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_warning_resolved_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_warning_resolved_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+WarningEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.WarningResolved.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_warning_resolved_mqtt_async = de_autobahn_warning_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_warning_resolved_mqtt_async = de_autobahn_warning_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_warning_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_warning_resolved_mqtt_async = de_autobahn_warning_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_weight_limit35_restriction_appeared_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_weight_limit35_restriction_appeared_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt`: A transport update from Germany's
+Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German
+motorway segments, roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_weight_limit35_restriction_appeared_mqtt_async =
+de_autobahn_weight_limit35_restriction_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_weight_limit35_restriction_appeared_mqtt_async =
+de_autobahn_weight_limit35_restriction_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_weight_limit35_restriction_appeared_mqtt_async =
+de_autobahn_weight_limit35_restriction_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_weight_limit35_restriction_updated_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_weight_limit35_restriction_updated_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt`: A transport update from Germany's
+Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German
+motorway segments, roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_weight_limit35_restriction_updated_mqtt_async =
+de_autobahn_weight_limit35_restriction_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_weight_limit35_restriction_updated_mqtt_async =
+de_autobahn_weight_limit35_restriction_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_weight_limit35_restriction_updated_mqtt_async =
+de_autobahn_weight_limit35_restriction_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_weight_limit35_restriction_resolved_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_weight_limit35_restriction_resolved_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.WeightLimit35RestrictionResolved.mqtt`: A transport update from Germany's
+Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German
+motorway segments, roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_weight_limit35_restriction_resolved_mqtt_async =
+de_autobahn_weight_limit35_restriction_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_weight_limit35_restriction_resolved_mqtt_async =
+de_autobahn_weight_limit35_restriction_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_weight_limit35_restriction_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_weight_limit35_restriction_resolved_mqtt_async =
+de_autobahn_weight_limit35_restriction_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_webcam_appeared_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_webcam_appeared_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, Webcam],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.WebcamAppeared.mqtt`: A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_webcam_appeared_mqtt_async = de_autobahn_webcam_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_webcam_appeared_mqtt_async = de_autobahn_webcam_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_webcam_appeared_mqtt_async = de_autobahn_webcam_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_webcam_updated_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_webcam_updated_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, Webcam],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.WebcamUpdated.mqtt`: A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_webcam_updated_mqtt_async = de_autobahn_webcam_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_webcam_updated_mqtt_async = de_autobahn_webcam_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_webcam_updated_mqtt_async = de_autobahn_webcam_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_webcam_resolved_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_webcam_resolved_mqtt_async:  Callable[[ConsumerRecord, CloudEvent, Webcam],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.WebcamResolved.mqtt`: A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_webcam_resolved_mqtt_async = de_autobahn_webcam_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_webcam_resolved_mqtt_async = de_autobahn_webcam_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_webcam_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_webcam_resolved_mqtt_async = de_autobahn_webcam_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_parking_lorry_appeared_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_parking_lorry_appeared_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+ParkingLorry], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ParkingLorryAppeared.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_parking_lorry_appeared_mqtt_async = de_autobahn_parking_lorry_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_parking_lorry_appeared_mqtt_async =
+de_autobahn_parking_lorry_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_parking_lorry_appeared_mqtt_async =
+de_autobahn_parking_lorry_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_parking_lorry_updated_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_parking_lorry_updated_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+ParkingLorry], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ParkingLorryUpdated.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_parking_lorry_updated_mqtt_async = de_autobahn_parking_lorry_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_parking_lorry_updated_mqtt_async = de_autobahn_parking_lorry_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_parking_lorry_updated_mqtt_async = de_autobahn_parking_lorry_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_parking_lorry_resolved_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_parking_lorry_resolved_mqtt_async:  Callable[[ConsumerRecord, CloudEvent,
+ParkingLorry], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ParkingLorryResolved.mqtt`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_parking_lorry_resolved_mqtt_async = de_autobahn_parking_lorry_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_parking_lorry_resolved_mqtt_async =
+de_autobahn_parking_lorry_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_parking_lorry_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_parking_lorry_resolved_mqtt_async =
+de_autobahn_parking_lorry_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_electric_charging_station_appeared_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_electric_charging_station_appeared_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ElectricChargingStationAppeared.mqtt`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_electric_charging_station_appeared_mqtt_async =
+de_autobahn_electric_charging_station_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_electric_charging_station_appeared_mqtt_async =
+de_autobahn_electric_charging_station_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_appeared_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_electric_charging_station_appeared_mqtt_async =
+de_autobahn_electric_charging_station_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_electric_charging_station_updated_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_electric_charging_station_updated_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ElectricChargingStationUpdated.mqtt`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_electric_charging_station_updated_mqtt_async =
+de_autobahn_electric_charging_station_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_electric_charging_station_updated_mqtt_async =
+de_autobahn_electric_charging_station_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_updated_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_electric_charging_station_updated_mqtt_async =
+de_autobahn_electric_charging_station_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_electric_charging_station_resolved_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_electric_charging_station_resolved_mqtt_async:  Callable[[ConsumerRecord,
+CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.ElectricChargingStationResolved.mqtt`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_electric_charging_station_resolved_mqtt_async =
+de_autobahn_electric_charging_station_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_electric_charging_station_resolved_mqtt_async =
+de_autobahn_electric_charging_station_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_electric_charging_station_resolved_mqtt_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_electric_charging_station_resolved_mqtt_async =
+de_autobahn_electric_charging_station_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_strong_electric_charging_station_appeared_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_strong_electric_charging_station_appeared_mqtt_async:
+Callable[[ConsumerRecord, CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.StrongElectricChargingStationAppeared.mqtt`: A reference record from
+Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers
+stable identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_appeared_mqtt_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_strong_electric_charging_station_appeared_mqtt_async =
+de_autobahn_strong_electric_charging_station_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_appeared_mqtt_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_strong_electric_charging_station_appeared_mqtt_async =
+de_autobahn_strong_electric_charging_station_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_appeared_mqtt_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_strong_electric_charging_station_appeared_mqtt_async =
+de_autobahn_strong_electric_charging_station_appeared_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_strong_electric_charging_station_updated_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_strong_electric_charging_station_updated_mqtt_async:
+Callable[[ConsumerRecord, CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.StrongElectricChargingStationUpdated.mqtt`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_updated_mqtt_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_strong_electric_charging_station_updated_mqtt_async =
+de_autobahn_strong_electric_charging_station_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_updated_mqtt_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_strong_electric_charging_station_updated_mqtt_async =
+de_autobahn_strong_electric_charging_station_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_updated_mqtt_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_strong_electric_charging_station_updated_mqtt_async =
+de_autobahn_strong_electric_charging_station_updated_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_strong_electric_charging_station_resolved_mqtt_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_strong_electric_charging_station_resolved_mqtt_async:
+Callable[[ConsumerRecord, CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.StrongElectricChargingStationResolved.mqtt`: A reference record from
+Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers
+stable identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_resolved_mqtt_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_strong_electric_charging_station_resolved_mqtt_async =
+de_autobahn_strong_electric_charging_station_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_resolved_mqtt_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_strong_electric_charging_station_resolved_mqtt_async =
+de_autobahn_strong_electric_charging_station_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_strong_electric_charging_station_resolved_mqtt_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_strong_electric_charging_station_resolved_mqtt_async =
+de_autobahn_strong_electric_charging_station_resolved_mqtt_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_de_autobahn_roadwork_appeared_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_roadwork_appeared_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.RoadworkAppeared.mqtt` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_roadwork_appeared_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.RoadworkAppeared.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_roadwork_appeared_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_roadwork_updated_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_roadwork_updated_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.RoadworkUpdated.mqtt` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_roadwork_updated_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.RoadworkUpdated.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_roadwork_updated_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_roadwork_resolved_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_roadwork_resolved_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.RoadworkResolved.mqtt` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_roadwork_resolved_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.RoadworkResolved.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_roadwork_resolved_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_short_term_roadwork_appeared_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_short_term_roadwork_appeared_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ShortTermRoadworkAppeared.mqtt` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_short_term_roadwork_appeared_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ShortTermRoadworkAppeared.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_short_term_roadwork_appeared_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_short_term_roadwork_updated_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_short_term_roadwork_updated_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ShortTermRoadworkUpdated.mqtt` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_short_term_roadwork_updated_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ShortTermRoadworkUpdated.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_short_term_roadwork_updated_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_short_term_roadwork_resolved_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_short_term_roadwork_resolved_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ShortTermRoadworkResolved.mqtt` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_short_term_roadwork_resolved_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ShortTermRoadworkResolved.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_short_term_roadwork_resolved_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_closure_appeared_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_closure_appeared_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ClosureAppeared.mqtt` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_closure_appeared_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ClosureAppeared.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_closure_appeared_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_closure_updated_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_closure_updated_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ClosureUpdated.mqtt` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_closure_updated_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ClosureUpdated.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_closure_updated_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_closure_resolved_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_closure_resolved_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ClosureResolved.mqtt` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_closure_resolved_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ClosureResolved.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_closure_resolved_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_entry_exit_closure_appeared_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_entry_exit_closure_appeared_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.EntryExitClosureAppeared.mqtt` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_entry_exit_closure_appeared_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.EntryExitClosureAppeared.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_entry_exit_closure_appeared_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_entry_exit_closure_updated_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_entry_exit_closure_updated_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.EntryExitClosureUpdated.mqtt` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_entry_exit_closure_updated_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.EntryExitClosureUpdated.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_entry_exit_closure_updated_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_entry_exit_closure_resolved_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_entry_exit_closure_resolved_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.EntryExitClosureResolved.mqtt` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_entry_exit_closure_resolved_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.EntryExitClosureResolved.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_entry_exit_closure_resolved_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_warning_appeared_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_warning_appeared_mqtt(
+
+    self,##### `_process_event`
+
+    data: WarningEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.WarningAppeared.mqtt` message. A transport update from Germany's Autobahn GmbH traffic APIs.
+It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WarningEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_warning_appeared_mqtt(
+
+    data=WarningEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.WarningAppeared.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_warning_appeared_mqtt_batch(```
+
+    messages=[
+
+        WarningEvent(...),Initializes the runner with a Kafka consumer.
+
+        WarningEvent(...),
+
+        WarningEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_warning_updated_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_warning_updated_mqtt(
+
+    self,##### `_process_event`
+
+    data: WarningEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.WarningUpdated.mqtt` message. A transport update from Germany's Autobahn GmbH traffic APIs.
+It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WarningEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_warning_updated_mqtt(
+
+    data=WarningEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.WarningUpdated.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_warning_updated_mqtt_batch(```
+
+    messages=[
+
+        WarningEvent(...),Initializes the runner with a Kafka consumer.
+
+        WarningEvent(...),
+
+        WarningEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_warning_resolved_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_warning_resolved_mqtt(
+
+    self,##### `_process_event`
+
+    data: WarningEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.WarningResolved.mqtt` message. A transport update from Germany's Autobahn GmbH traffic APIs.
+It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WarningEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_warning_resolved_mqtt(
+
+    data=WarningEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.WarningResolved.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_warning_resolved_mqtt_batch(```
+
+    messages=[
+
+        WarningEvent(...),Initializes the runner with a Kafka consumer.
+
+        WarningEvent(...),
+
+        WarningEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_weight_limit35_restriction_appeared_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_weight_limit35_restriction_appeared_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt` message. A transport update from Germany's Autobahn
+GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway
+segments, roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_weight_limit35_restriction_appeared_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_weight_limit35_restriction_appeared_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_weight_limit35_restriction_updated_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_weight_limit35_restriction_updated_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt` message. A transport update from Germany's Autobahn
+GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway
+segments, roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_weight_limit35_restriction_updated_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_weight_limit35_restriction_updated_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_weight_limit35_restriction_resolved_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_weight_limit35_restriction_resolved_mqtt(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.WeightLimit35RestrictionResolved.mqtt` message. A transport update from Germany's Autobahn
+GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway
+segments, roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_weight_limit35_restriction_resolved_mqtt(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.WeightLimit35RestrictionResolved.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_weight_limit35_restriction_resolved_mqtt_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_webcam_appeared_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_webcam_appeared_mqtt(
+
+    self,##### `_process_event`
+
+    data: Webcam,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.WebcamAppeared.mqtt` message. A transport update from Germany's Autobahn GmbH traffic APIs.
+It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Webcam`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_webcam_appeared_mqtt(
+
+    data=Webcam(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.WebcamAppeared.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_webcam_appeared_mqtt_batch(```
+
+    messages=[
+
+        Webcam(...),Initializes the runner with a Kafka consumer.
+
+        Webcam(...),
+
+        Webcam(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_webcam_updated_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_webcam_updated_mqtt(
+
+    self,##### `_process_event`
+
+    data: Webcam,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.WebcamUpdated.mqtt` message. A transport update from Germany's Autobahn GmbH traffic APIs. It
+carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Webcam`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_webcam_updated_mqtt(
+
+    data=Webcam(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.WebcamUpdated.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_webcam_updated_mqtt_batch(```
+
+    messages=[
+
+        Webcam(...),Initializes the runner with a Kafka consumer.
+
+        Webcam(...),
+
+        Webcam(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_webcam_resolved_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_webcam_resolved_mqtt(
+
+    self,##### `_process_event`
+
+    data: Webcam,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.WebcamResolved.mqtt` message. A transport update from Germany's Autobahn GmbH traffic APIs.
+It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Webcam`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_webcam_resolved_mqtt(
+
+    data=Webcam(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.WebcamResolved.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_webcam_resolved_mqtt_batch(```
+
+    messages=[
+
+        Webcam(...),Initializes the runner with a Kafka consumer.
+
+        Webcam(...),
+
+        Webcam(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_parking_lorry_appeared_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_parking_lorry_appeared_mqtt(
+
+    self,##### `_process_event`
+
+    data: ParkingLorry,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ParkingLorryAppeared.mqtt` message. A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ParkingLorry`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_parking_lorry_appeared_mqtt(
+
+    data=ParkingLorry(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ParkingLorryAppeared.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_parking_lorry_appeared_mqtt_batch(```
+
+    messages=[
+
+        ParkingLorry(...),Initializes the runner with a Kafka consumer.
+
+        ParkingLorry(...),
+
+        ParkingLorry(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_parking_lorry_updated_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_parking_lorry_updated_mqtt(
+
+    self,##### `_process_event`
+
+    data: ParkingLorry,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ParkingLorryUpdated.mqtt` message. A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ParkingLorry`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_parking_lorry_updated_mqtt(
+
+    data=ParkingLorry(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ParkingLorryUpdated.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_parking_lorry_updated_mqtt_batch(```
+
+    messages=[
+
+        ParkingLorry(...),Initializes the runner with a Kafka consumer.
+
+        ParkingLorry(...),
+
+        ParkingLorry(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_parking_lorry_resolved_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_parking_lorry_resolved_mqtt(
+
+    self,##### `_process_event`
+
+    data: ParkingLorry,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ParkingLorryResolved.mqtt` message. A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ParkingLorry`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_parking_lorry_resolved_mqtt(
+
+    data=ParkingLorry(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ParkingLorryResolved.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_parking_lorry_resolved_mqtt_batch(```
+
+    messages=[
+
+        ParkingLorry(...),Initializes the runner with a Kafka consumer.
+
+        ParkingLorry(...),
+
+        ParkingLorry(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_electric_charging_station_appeared_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_electric_charging_station_appeared_mqtt(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ElectricChargingStationAppeared.mqtt` message. A reference record from Germany's Autobahn
+GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers
+and labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_electric_charging_station_appeared_mqtt(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ElectricChargingStationAppeared.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_electric_charging_station_appeared_mqtt_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_electric_charging_station_updated_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_electric_charging_station_updated_mqtt(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ElectricChargingStationUpdated.mqtt` message. A reference record from Germany's Autobahn GmbH
+traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and
+labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_electric_charging_station_updated_mqtt(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ElectricChargingStationUpdated.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_electric_charging_station_updated_mqtt_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_electric_charging_station_resolved_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_electric_charging_station_resolved_mqtt(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.ElectricChargingStationResolved.mqtt` message. A reference record from Germany's Autobahn
+GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers
+and labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_electric_charging_station_resolved_mqtt(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.ElectricChargingStationResolved.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_electric_charging_station_resolved_mqtt_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_strong_electric_charging_station_appeared_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_strong_electric_charging_station_appeared_mqtt(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.StrongElectricChargingStationAppeared.mqtt` message. A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_strong_electric_charging_station_appeared_mqtt(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.StrongElectricChargingStationAppeared.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_strong_electric_charging_station_appeared_mqtt_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_strong_electric_charging_station_updated_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_strong_electric_charging_station_updated_mqtt(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.StrongElectricChargingStationUpdated.mqtt` message. A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_strong_electric_charging_station_updated_mqtt(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.StrongElectricChargingStationUpdated.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_strong_electric_charging_station_updated_mqtt_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_strong_electric_charging_station_resolved_mqtt`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_strong_electric_charging_station_resolved_mqtt(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.StrongElectricChargingStationResolved.mqtt` message. A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_strong_electric_charging_station_resolved_mqtt(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.StrongElectricChargingStationResolved.mqtt` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_strong_electric_charging_station_resolved_mqtt_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+
+
+
+
+**Apache Kafka** is a distributed streaming platform that:
+
+- **Handles high-throughput** real-time data feeds with low latency
+
+- **Provides durability** through log-based storage with configurable retention
+
+- **Scales horizontally** across multiple brokers and partitions### DEAutobahnAmqpEventDispatcher
+
+- **Enables pub/sub messaging** with topic-based routing
+
+`DEAutobahnAmqpEventDispatcher` handles events for the DE.Autobahn.amqp message group.
+
+Use cases: Event streaming, log aggregation, real-time analytics, data integration.
+
+#### Methods:
+
+## Quick Start
+
+##### `__init__`:
+
+### Installation
+
+```python
+
+```bash__init__(self)-> None
+
+pip install confluent-kafka cloudevents pydantic```
+
+```
+
+Initializes the dispatcher.
+
+### Basic Usage
+
+##### `create_processor`:
+
+```python
+
+from autobahn-producer import DEAutobahnProducer```python
+
+create_processor(self, bootstrap_servers: str, group_id: str, topics: List[str]) -> EventProcessorRunner
+
+# Create producer```
+
+producer = DEAutobahnProducer(
+
+    bootstrap_servers='localhost:9092',Creates an `EventProcessorRunner`.
+
+    client_id='my-producer'
+
+)Args:
+
+- `bootstrap_servers`: The Kafka bootstrap servers.
+
+- `group_id`: The consumer group ID.- `topics`: The list of topics to subscribe to.##### `add_consumer`:
+
+# Send single message
+
+await producer.send_de_autobahn_roadwork_appeared(```python
+
+    data=RoadEvent(...),add_consumer(self, consumer: KafkaConsumer)
+
+    partition_key='device-123'```
+
+)Adds a Kafka consumer to the dispatcher.
+
+
+
+# Close producerArgs:
+
+await producer.close()- `consumer`: The Kafka consumer.
+
+```
+
+#### Event Handlers
+
+### With SSL/SASL
+
+The DEAutobahnAmqpEventDispatcher defines the following event handler hooks.
+
+```python
+
+producer = DEAutobahnProducer(
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_roadwork_appeared_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_roadwork_appeared_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.RoadworkAppeared`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_roadwork_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_roadwork_appeared_async = de_autobahn_amqp_roadwork_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_roadwork_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_roadwork_appeared_async = de_autobahn_amqp_roadwork_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_roadwork_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_roadwork_appeared_async = de_autobahn_amqp_roadwork_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_roadwork_updated_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_roadwork_updated_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.RoadworkUpdated`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_roadwork_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_roadwork_updated_async = de_autobahn_amqp_roadwork_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_roadwork_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_roadwork_updated_async = de_autobahn_amqp_roadwork_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_roadwork_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_roadwork_updated_async = de_autobahn_amqp_roadwork_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_roadwork_resolved_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_roadwork_resolved_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.RoadworkResolved`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_roadwork_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_roadwork_resolved_async = de_autobahn_amqp_roadwork_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_roadwork_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_roadwork_resolved_async = de_autobahn_amqp_roadwork_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_roadwork_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_roadwork_resolved_async = de_autobahn_amqp_roadwork_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_short_term_roadwork_appeared_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_short_term_roadwork_appeared_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ShortTermRoadworkAppeared`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_short_term_roadwork_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_short_term_roadwork_appeared_async =
+de_autobahn_amqp_short_term_roadwork_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_short_term_roadwork_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_short_term_roadwork_appeared_async =
+de_autobahn_amqp_short_term_roadwork_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_short_term_roadwork_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_short_term_roadwork_appeared_async =
+de_autobahn_amqp_short_term_roadwork_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_short_term_roadwork_updated_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_short_term_roadwork_updated_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ShortTermRoadworkUpdated`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_short_term_roadwork_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_short_term_roadwork_updated_async =
+de_autobahn_amqp_short_term_roadwork_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_short_term_roadwork_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_short_term_roadwork_updated_async =
+de_autobahn_amqp_short_term_roadwork_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_short_term_roadwork_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_short_term_roadwork_updated_async =
+de_autobahn_amqp_short_term_roadwork_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_short_term_roadwork_resolved_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_short_term_roadwork_resolved_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ShortTermRoadworkResolved`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_short_term_roadwork_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_short_term_roadwork_resolved_async =
+de_autobahn_amqp_short_term_roadwork_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_short_term_roadwork_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_short_term_roadwork_resolved_async =
+de_autobahn_amqp_short_term_roadwork_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_short_term_roadwork_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_short_term_roadwork_resolved_async =
+de_autobahn_amqp_short_term_roadwork_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_closure_appeared_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_closure_appeared_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ClosureAppeared`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_closure_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_closure_appeared_async = de_autobahn_amqp_closure_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_closure_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_closure_appeared_async = de_autobahn_amqp_closure_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_closure_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_closure_appeared_async = de_autobahn_amqp_closure_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_closure_updated_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_closure_updated_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ClosureUpdated`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_closure_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_closure_updated_async = de_autobahn_amqp_closure_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_closure_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_closure_updated_async = de_autobahn_amqp_closure_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_closure_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_closure_updated_async = de_autobahn_amqp_closure_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_closure_resolved_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_closure_resolved_async:  Callable[[ConsumerRecord, CloudEvent,
+RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ClosureResolved`: A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_closure_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_closure_resolved_async = de_autobahn_amqp_closure_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_closure_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_closure_resolved_async = de_autobahn_amqp_closure_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_closure_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: RoadEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_closure_resolved_async = de_autobahn_amqp_closure_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_entry_exit_closure_appeared_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_entry_exit_closure_appeared_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.EntryExitClosureAppeared`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_entry_exit_closure_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_entry_exit_closure_appeared_async =
+de_autobahn_amqp_entry_exit_closure_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_entry_exit_closure_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_entry_exit_closure_appeared_async =
+de_autobahn_amqp_entry_exit_closure_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_entry_exit_closure_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_entry_exit_closure_appeared_async =
+de_autobahn_amqp_entry_exit_closure_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_entry_exit_closure_updated_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_entry_exit_closure_updated_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.EntryExitClosureUpdated`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_entry_exit_closure_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_entry_exit_closure_updated_async =
+de_autobahn_amqp_entry_exit_closure_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_entry_exit_closure_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_entry_exit_closure_updated_async =
+de_autobahn_amqp_entry_exit_closure_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_entry_exit_closure_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_entry_exit_closure_updated_async =
+de_autobahn_amqp_entry_exit_closure_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_entry_exit_closure_resolved_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_entry_exit_closure_resolved_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.EntryExitClosureResolved`: A traffic or service situation update from
+Germany's Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting
+the covered network.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_entry_exit_closure_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_entry_exit_closure_resolved_async =
+de_autobahn_amqp_entry_exit_closure_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_entry_exit_closure_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_entry_exit_closure_resolved_async =
+de_autobahn_amqp_entry_exit_closure_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_entry_exit_closure_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_entry_exit_closure_resolved_async =
+de_autobahn_amqp_entry_exit_closure_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_warning_appeared_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_warning_appeared_async:  Callable[[ConsumerRecord, CloudEvent,
+WarningEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.WarningAppeared`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_warning_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_warning_appeared_async = de_autobahn_amqp_warning_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_warning_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_warning_appeared_async = de_autobahn_amqp_warning_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_warning_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_warning_appeared_async = de_autobahn_amqp_warning_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_warning_updated_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_warning_updated_async:  Callable[[ConsumerRecord, CloudEvent,
+WarningEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.WarningUpdated`: A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_warning_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_warning_updated_async = de_autobahn_amqp_warning_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_warning_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_warning_updated_async = de_autobahn_amqp_warning_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_warning_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent) ->
+None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_warning_updated_async = de_autobahn_amqp_warning_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_warning_resolved_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_warning_resolved_async:  Callable[[ConsumerRecord, CloudEvent,
+WarningEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.WarningResolved`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_warning_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_warning_resolved_async = de_autobahn_amqp_warning_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_warning_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_warning_resolved_async = de_autobahn_amqp_warning_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.WarningEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_warning_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: WarningEvent)
+-> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_warning_resolved_async = de_autobahn_amqp_warning_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_weight_limit35_restriction_appeared_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_weight_limit35_restriction_appeared_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.WeightLimit35RestrictionAppeared`: A transport update from Germany's
+Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German
+motorway segments, roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_weight_limit35_restriction_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_weight_limit35_restriction_appeared_async =
+de_autobahn_amqp_weight_limit35_restriction_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_weight_limit35_restriction_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_weight_limit35_restriction_appeared_async =
+de_autobahn_amqp_weight_limit35_restriction_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_weight_limit35_restriction_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_weight_limit35_restriction_appeared_async =
+de_autobahn_amqp_weight_limit35_restriction_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_weight_limit35_restriction_updated_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_weight_limit35_restriction_updated_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.WeightLimit35RestrictionUpdated`: A transport update from Germany's
+Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German
+motorway segments, roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_weight_limit35_restriction_updated_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_weight_limit35_restriction_updated_async =
+de_autobahn_amqp_weight_limit35_restriction_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_weight_limit35_restriction_updated_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_weight_limit35_restriction_updated_async =
+de_autobahn_amqp_weight_limit35_restriction_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_weight_limit35_restriction_updated_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_weight_limit35_restriction_updated_async =
+de_autobahn_amqp_weight_limit35_restriction_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_weight_limit35_restriction_resolved_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_weight_limit35_restriction_resolved_async:  Callable[[ConsumerRecord,
+CloudEvent, RoadEvent], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.WeightLimit35RestrictionResolved`: A transport update from Germany's
+Autobahn GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German
+motorway segments, roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_weight_limit35_restriction_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_weight_limit35_restriction_resolved_async =
+de_autobahn_amqp_weight_limit35_restriction_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_weight_limit35_restriction_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_weight_limit35_restriction_resolved_async =
+de_autobahn_amqp_weight_limit35_restriction_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.RoadEvent`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_weight_limit35_restriction_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: RoadEvent) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_weight_limit35_restriction_resolved_async =
+de_autobahn_amqp_weight_limit35_restriction_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_webcam_appeared_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_webcam_appeared_async:  Callable[[ConsumerRecord, CloudEvent, Webcam],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.WebcamAppeared`: A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_webcam_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_webcam_appeared_async = de_autobahn_amqp_webcam_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_webcam_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_webcam_appeared_async = de_autobahn_amqp_webcam_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_webcam_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_webcam_appeared_async = de_autobahn_amqp_webcam_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_webcam_updated_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_webcam_updated_async:  Callable[[ConsumerRecord, CloudEvent, Webcam],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.WebcamUpdated`: A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_webcam_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_webcam_updated_async = de_autobahn_amqp_webcam_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_webcam_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_webcam_updated_async = de_autobahn_amqp_webcam_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_webcam_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_webcam_updated_async = de_autobahn_amqp_webcam_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_webcam_resolved_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_webcam_resolved_async:  Callable[[ConsumerRecord, CloudEvent, Webcam],
+Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.WebcamResolved`: A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_webcam_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_webcam_resolved_async = de_autobahn_amqp_webcam_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_webcam_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_webcam_resolved_async = de_autobahn_amqp_webcam_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.Webcam`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_webcam_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data: Webcam) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_webcam_resolved_async = de_autobahn_amqp_webcam_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_parking_lorry_appeared_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_parking_lorry_appeared_async:  Callable[[ConsumerRecord, CloudEvent,
+ParkingLorry], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ParkingLorryAppeared`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_parking_lorry_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_parking_lorry_appeared_async = de_autobahn_amqp_parking_lorry_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_parking_lorry_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_parking_lorry_appeared_async =
+de_autobahn_amqp_parking_lorry_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_parking_lorry_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_parking_lorry_appeared_async =
+de_autobahn_amqp_parking_lorry_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_parking_lorry_updated_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_parking_lorry_updated_async:  Callable[[ConsumerRecord, CloudEvent,
+ParkingLorry], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ParkingLorryUpdated`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_parking_lorry_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_parking_lorry_updated_async = de_autobahn_amqp_parking_lorry_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_parking_lorry_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_parking_lorry_updated_async = de_autobahn_amqp_parking_lorry_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_parking_lorry_updated_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_parking_lorry_updated_async = de_autobahn_amqp_parking_lorry_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_parking_lorry_resolved_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_parking_lorry_resolved_async:  Callable[[ConsumerRecord, CloudEvent,
+ParkingLorry], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ParkingLorryResolved`: A transport update from Germany's Autobahn GmbH
+traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_parking_lorry_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_parking_lorry_resolved_async = de_autobahn_amqp_parking_lorry_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_parking_lorry_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_parking_lorry_resolved_async =
+de_autobahn_amqp_parking_lorry_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ParkingLorry`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_parking_lorry_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent, data:
+ParkingLorry) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_parking_lorry_resolved_async =
+de_autobahn_amqp_parking_lorry_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_electric_charging_station_appeared_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_electric_charging_station_appeared_async:  Callable[[ConsumerRecord,
+CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ElectricChargingStationAppeared`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_electric_charging_station_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_electric_charging_station_appeared_async =
+de_autobahn_amqp_electric_charging_station_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_electric_charging_station_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_electric_charging_station_appeared_async =
+de_autobahn_amqp_electric_charging_station_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_electric_charging_station_appeared_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_electric_charging_station_appeared_async =
+de_autobahn_amqp_electric_charging_station_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_electric_charging_station_updated_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_electric_charging_station_updated_async:  Callable[[ConsumerRecord,
+CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ElectricChargingStationUpdated`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_electric_charging_station_updated_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_electric_charging_station_updated_async =
+de_autobahn_amqp_electric_charging_station_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_electric_charging_station_updated_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_electric_charging_station_updated_async =
+de_autobahn_amqp_electric_charging_station_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_electric_charging_station_updated_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_electric_charging_station_updated_async =
+de_autobahn_amqp_electric_charging_station_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_electric_charging_station_resolved_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_electric_charging_station_resolved_async:  Callable[[ConsumerRecord,
+CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.ElectricChargingStationResolved`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_electric_charging_station_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_electric_charging_station_resolved_async =
+de_autobahn_amqp_electric_charging_station_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_electric_charging_station_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_electric_charging_station_resolved_async =
+de_autobahn_amqp_electric_charging_station_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_electric_charging_station_resolved_event(record: ConsumerRecord, cloud_event: CloudEvent,
+data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_electric_charging_station_resolved_async =
+de_autobahn_amqp_electric_charging_station_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_strong_electric_charging_station_appeared_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_strong_electric_charging_station_appeared_async:
+Callable[[ConsumerRecord, CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.StrongElectricChargingStationAppeared`: A reference record from
+Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers
+stable identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_strong_electric_charging_station_appeared_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_strong_electric_charging_station_appeared_async =
+de_autobahn_amqp_strong_electric_charging_station_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_strong_electric_charging_station_appeared_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_strong_electric_charging_station_appeared_async =
+de_autobahn_amqp_strong_electric_charging_station_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_strong_electric_charging_station_appeared_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_strong_electric_charging_station_appeared_async =
+de_autobahn_amqp_strong_electric_charging_station_appeared_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_strong_electric_charging_station_updated_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_strong_electric_charging_station_updated_async:
+Callable[[ConsumerRecord, CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.StrongElectricChargingStationUpdated`: A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_strong_electric_charging_station_updated_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_strong_electric_charging_station_updated_async =
+de_autobahn_amqp_strong_electric_charging_station_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_strong_electric_charging_station_updated_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_strong_electric_charging_station_updated_async =
+de_autobahn_amqp_strong_electric_charging_station_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_strong_electric_charging_station_updated_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_strong_electric_charging_station_updated_async =
+de_autobahn_amqp_strong_electric_charging_station_updated_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+    bootstrap_servers='localhost:9093',
+
+    security_protocol='SASL_SSL',##### `de_autobahn_amqp_strong_electric_charging_station_resolved_async`
+
+    sasl_mechanism='PLAIN',
+
+    sasl_username='your-username',```python
+
+    sasl_password='your-password'de_autobahn_amqp_strong_electric_charging_station_resolved_async:
+Callable[[ConsumerRecord, CloudEvent, ChargingStation], Awaitable[None]]
+
+)```
+
+```
+
+Asynchronous handler hook for `DE.Autobahn.amqp.StrongElectricChargingStationResolved`: A reference record from
+Germany's Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers
+stable identifiers and labels needed to interpret realtime updates.
+
+## Generated Producer Classes
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_strong_electric_charging_station_resolved_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_dispatcher.de_autobahn_amqp_strong_electric_charging_station_resolved_async =
+de_autobahn_amqp_strong_electric_charging_station_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnMqttProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.mqtt` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_strong_electric_charging_station_resolved_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnMqttProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_mqtt_dispatcher.de_autobahn_amqp_strong_electric_charging_station_resolved_async =
+de_autobahn_amqp_strong_electric_charging_station_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier- `record`: The Kafka record.
+
+- `cloud_event`: The CloudEvent.
+
+### DEAutobahnAmqpProducer- `data`: The event data of type `autobahn_producer_data.ChargingStation`.
+
+
+
+Producer for `DE.Autobahn.amqp` message group.Example:
+
+
+
+#### Constructor```python
+
+async def de_autobahn_amqp_strong_electric_charging_station_resolved_event(record: ConsumerRecord, cloud_event:
+CloudEvent, data: ChargingStation) -> None:
+
+```python    # Process the event data
+
+DEAutobahnAmqpProducer(    await some_processing_function(record, cloud_event, data)
+
+    bootstrap_servers: str,```
+
+    client_id: Optional[str] = None,
+
+    **kwargsThe handler function is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+) -> None
+
+``````python
+
+de_autobahn_amqp_dispatcher.de_autobahn_amqp_strong_electric_charging_station_resolved_async =
+de_autobahn_amqp_strong_electric_charging_station_resolved_event
+
+**Parameters:**```
+
+- `bootstrap_servers`: Comma-separated list of broker addresses
+
+- `client_id`: Optional client identifier
+
+- `**kwargs`: Additional Kafka producer configuration
+
+
+
+#### Send Methods## Internals
+
+
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_roadwork_appeared`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_roadwork_appeared(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.RoadworkAppeared` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_roadwork_appeared(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.RoadworkAppeared` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_roadwork_appeared_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_roadwork_updated`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_roadwork_updated(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.RoadworkUpdated` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_roadwork_updated(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.RoadworkUpdated` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_roadwork_updated_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_roadwork_resolved`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_roadwork_resolved(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.RoadworkResolved` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_roadwork_resolved(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.RoadworkResolved` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_roadwork_resolved_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_short_term_roadwork_appeared`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_short_term_roadwork_appeared(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ShortTermRoadworkAppeared` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_short_term_roadwork_appeared(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ShortTermRoadworkAppeared` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_short_term_roadwork_appeared_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_short_term_roadwork_updated`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_short_term_roadwork_updated(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ShortTermRoadworkUpdated` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_short_term_roadwork_updated(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ShortTermRoadworkUpdated` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_short_term_roadwork_updated_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_short_term_roadwork_resolved`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_short_term_roadwork_resolved(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ShortTermRoadworkResolved` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_short_term_roadwork_resolved(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ShortTermRoadworkResolved` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_short_term_roadwork_resolved_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_closure_appeared`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_closure_appeared(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ClosureAppeared` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_closure_appeared(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ClosureAppeared` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_closure_appeared_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_closure_updated`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_closure_updated(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ClosureUpdated` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_closure_updated(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ClosureUpdated` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_closure_updated_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_closure_resolved`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_closure_resolved(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ClosureResolved` message. A traffic or service situation update from Germany's Autobahn
+GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the covered
+network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_closure_resolved(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ClosureResolved` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_closure_resolved_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_entry_exit_closure_appeared`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_entry_exit_closure_appeared(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.EntryExitClosureAppeared` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_entry_exit_closure_appeared(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.EntryExitClosureAppeared` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_entry_exit_closure_appeared_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_entry_exit_closure_updated`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_entry_exit_closure_updated(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.EntryExitClosureUpdated` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_entry_exit_closure_updated(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.EntryExitClosureUpdated` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_entry_exit_closure_updated_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_entry_exit_closure_resolved`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_entry_exit_closure_resolved(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.EntryExitClosureResolved` message. A traffic or service situation update from Germany's
+Autobahn GmbH traffic APIs. It describes a disruption, incident, closure, roadwork, or service alert affecting the
+covered network.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_entry_exit_closure_resolved(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.EntryExitClosureResolved` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_entry_exit_closure_resolved_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_warning_appeared`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_warning_appeared(
+
+    self,##### `_process_event`
+
+    data: WarningEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.WarningAppeared` message. A transport update from Germany's Autobahn GmbH traffic APIs.
+It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WarningEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_warning_appeared(
+
+    data=WarningEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.WarningAppeared` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_warning_appeared_batch(```
+
+    messages=[
+
+        WarningEvent(...),Initializes the runner with a Kafka consumer.
+
+        WarningEvent(...),
+
+        WarningEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_warning_updated`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_warning_updated(
+
+    self,##### `_process_event`
+
+    data: WarningEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.WarningUpdated` message. A transport update from Germany's Autobahn GmbH traffic APIs.
+It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WarningEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_warning_updated(
+
+    data=WarningEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.WarningUpdated` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_warning_updated_batch(```
+
+    messages=[
+
+        WarningEvent(...),Initializes the runner with a Kafka consumer.
+
+        WarningEvent(...),
+
+        WarningEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_warning_resolved`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_warning_resolved(
+
+    self,##### `_process_event`
+
+    data: WarningEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.WarningResolved` message. A transport update from Germany's Autobahn GmbH traffic APIs.
+It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `WarningEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_warning_resolved(
+
+    data=WarningEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.WarningResolved` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_warning_resolved_batch(```
+
+    messages=[
+
+        WarningEvent(...),Initializes the runner with a Kafka consumer.
+
+        WarningEvent(...),
+
+        WarningEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_weight_limit35_restriction_appeared`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_weight_limit35_restriction_appeared(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.WeightLimit35RestrictionAppeared` message. A transport update from Germany's Autobahn
+GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway
+segments, roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_weight_limit35_restriction_appeared(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.WeightLimit35RestrictionAppeared` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_weight_limit35_restriction_appeared_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_weight_limit35_restriction_updated`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_weight_limit35_restriction_updated(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.WeightLimit35RestrictionUpdated` message. A transport update from Germany's Autobahn
+GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway
+segments, roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_weight_limit35_restriction_updated(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.WeightLimit35RestrictionUpdated` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_weight_limit35_restriction_updated_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_weight_limit35_restriction_resolved`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_weight_limit35_restriction_resolved(
+
+    self,##### `_process_event`
+
+    data: RoadEvent,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.WeightLimit35RestrictionResolved` message. A transport update from Germany's Autobahn
+GmbH traffic APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway
+segments, roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `RoadEvent`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_weight_limit35_restriction_resolved(
+
+    data=RoadEvent(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.WeightLimit35RestrictionResolved` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_weight_limit35_restriction_resolved_batch(```
+
+    messages=[
+
+        RoadEvent(...),Initializes the runner with a Kafka consumer.
+
+        RoadEvent(...),
+
+        RoadEvent(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_webcam_appeared`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_webcam_appeared(
+
+    self,##### `_process_event`
+
+    data: Webcam,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.WebcamAppeared` message. A transport update from Germany's Autobahn GmbH traffic APIs.
+It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Webcam`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_webcam_appeared(
+
+    data=Webcam(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.WebcamAppeared` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_webcam_appeared_batch(```
+
+    messages=[
+
+        Webcam(...),Initializes the runner with a Kafka consumer.
+
+        Webcam(...),
+
+        Webcam(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_webcam_updated`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_webcam_updated(
+
+    self,##### `_process_event`
+
+    data: Webcam,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.WebcamUpdated` message. A transport update from Germany's Autobahn GmbH traffic APIs. It
+carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Webcam`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_webcam_updated(
+
+    data=Webcam(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.WebcamUpdated` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_webcam_updated_batch(```
+
+    messages=[
+
+        Webcam(...),Initializes the runner with a Kafka consumer.
+
+        Webcam(...),
+
+        Webcam(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_webcam_resolved`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_webcam_resolved(
+
+    self,##### `_process_event`
+
+    data: Webcam,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.WebcamResolved` message. A transport update from Germany's Autobahn GmbH traffic APIs.
+It carries road traffic incidents, closures, webcams, and travel information for German motorway segments, roadworks,
+closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `Webcam`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_webcam_resolved(
+
+    data=Webcam(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.WebcamResolved` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_webcam_resolved_batch(```
+
+    messages=[
+
+        Webcam(...),Initializes the runner with a Kafka consumer.
+
+        Webcam(...),
+
+        Webcam(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_parking_lorry_appeared`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_parking_lorry_appeared(
+
+    self,##### `_process_event`
+
+    data: ParkingLorry,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ParkingLorryAppeared` message. A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ParkingLorry`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_parking_lorry_appeared(
+
+    data=ParkingLorry(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ParkingLorryAppeared` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_parking_lorry_appeared_batch(```
+
+    messages=[
+
+        ParkingLorry(...),Initializes the runner with a Kafka consumer.
+
+        ParkingLorry(...),
+
+        ParkingLorry(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_parking_lorry_updated`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_parking_lorry_updated(
+
+    self,##### `_process_event`
+
+    data: ParkingLorry,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ParkingLorryUpdated` message. A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ParkingLorry`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_parking_lorry_updated(
+
+    data=ParkingLorry(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ParkingLorryUpdated` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_parking_lorry_updated_batch(```
+
+    messages=[
+
+        ParkingLorry(...),Initializes the runner with a Kafka consumer.
+
+        ParkingLorry(...),
+
+        ParkingLorry(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_parking_lorry_resolved`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_parking_lorry_resolved(
+
+    self,##### `_process_event`
+
+    data: ParkingLorry,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ParkingLorryResolved` message. A transport update from Germany's Autobahn GmbH traffic
+APIs. It carries road traffic incidents, closures, webcams, and travel information for German motorway segments,
+roadworks, closures, and traffic messages.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ParkingLorry`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_parking_lorry_resolved(
+
+    data=ParkingLorry(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ParkingLorryResolved` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_parking_lorry_resolved_batch(```
+
+    messages=[
+
+        ParkingLorry(...),Initializes the runner with a Kafka consumer.
+
+        ParkingLorry(...),
+
+        ParkingLorry(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_electric_charging_station_appeared`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_electric_charging_station_appeared(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ElectricChargingStationAppeared` message. A reference record from Germany's Autobahn
+GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers
+and labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_electric_charging_station_appeared(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ElectricChargingStationAppeared` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_electric_charging_station_appeared_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_electric_charging_station_updated`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_electric_charging_station_updated(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ElectricChargingStationUpdated` message. A reference record from Germany's Autobahn GmbH
+traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and
+labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_electric_charging_station_updated(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ElectricChargingStationUpdated` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_electric_charging_station_updated_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_electric_charging_station_resolved`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_electric_charging_station_resolved(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.ElectricChargingStationResolved` message. A reference record from Germany's Autobahn
+GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers
+and labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_electric_charging_station_resolved(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.ElectricChargingStationResolved` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_electric_charging_station_resolved_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_strong_electric_charging_station_appeared`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_strong_electric_charging_station_appeared(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.StrongElectricChargingStationAppeared` message. A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_strong_electric_charging_station_appeared(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.StrongElectricChargingStationAppeared` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_strong_electric_charging_station_appeared_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_strong_electric_charging_station_updated`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_strong_electric_charging_station_updated(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.StrongElectricChargingStationUpdated` message. A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_strong_electric_charging_station_updated(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.StrongElectricChargingStationUpdated` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_strong_electric_charging_station_updated_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
+
+    ],- `consumer`: The Kafka consumer.
+
+    partition_key='batch-001'
+
+)#####  `__aenter__()`
+
+```
+
+Enters the asynchronous context and starts the processor.
+
+### Dispatchers
+
+##### `send_de_autobahn_amqp_strong_electric_charging_station_resolved`Dispatchers have the following protected methods:
+
+
+
+```python### Methods:
+
+async def send_de_autobahn_amqp_strong_electric_charging_station_resolved(
+
+    self,##### `_process_event`
+
+    data: ChargingStation,
+
+    partition_key: Optional[str] = None,```python
+
+    headers: Optional[Dict[str, str]] = None,_process_event(self, record)
+
+    topic: Optional[str] = None```
+
+) -> None
+
+```Processes an incoming event.
+
+
+
+Send a single `DE.Autobahn.amqp.StrongElectricChargingStationResolved` message. A reference record from Germany's
+Autobahn GmbH traffic APIs for a station, stop, route, site, or other transport resource. It gives consumers stable
+identifiers and labels needed to interpret realtime updates.Args:
+
+- `record`: The Kafka record.
+
+**Parameters:**
+
+- `data`: Message data of type `ChargingStation`
+
+- `partition_key`: Optional partition key (defaults to random partitioning)##### `_dispatch_cloud_event`
+
+- `headers`: Optional message headers
+
+- `topic`: Optional topic override (uses default topic if not specified)```python
+
+_dispatch_cloud_event(self, record, cloud_event)
+
+**Example:**```
+
+
+
+```pythonDispatches a CloudEvent to the appropriate handler.
+
+await producer.send_de_autobahn_amqp_strong_electric_charging_station_resolved(
+
+    data=ChargingStation(...),Args:
+
+    partition_key='device-001',- `record`: The Kafka record.
+
+    headers={'source': 'sensor-gateway'}- `cloud_event`: The CloudEvent.
+
+)
+
+```
+
+Send multiple `DE.Autobahn.amqp.StrongElectricChargingStationResolved` messages in a batch.
+
+### EventProcessorRunner
+
+**Parameters:**
+
+- `messages`: List of message data`EventProcessorRunner` is responsible for managing the event processing loop and
+dispatching events to the appropriate handlers.
+
+- `partition_key`: Optional partition key for all messages
+
+- `headers`: Optional headers for all messages#### Methods
+
+- `topic`: Optional topic override
+
+##### `__init__`
+
+**Example:**
+
+```python
+
+```python__init__(consumer: KafkaConsumer)
+
+await producer.send_de_autobahn_amqp_strong_electric_charging_station_resolved_batch(```
+
+    messages=[
+
+        ChargingStation(...),Initializes the runner with a Kafka consumer.
+
+        ChargingStation(...),
+
+        ChargingStation(...)Args:
 
     ],- `consumer`: The Kafka consumer.
 

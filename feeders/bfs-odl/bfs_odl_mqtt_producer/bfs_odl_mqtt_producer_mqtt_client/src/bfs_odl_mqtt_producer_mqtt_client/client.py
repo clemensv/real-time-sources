@@ -4,6 +4,7 @@ import re
 import typing
 from typing import Callable, Awaitable, Optional, Dict, List
 import asyncio
+from datetime import datetime, timezone
 import paho.mqtt.client as mqtt
 try:
     # paho-mqtt 2.x exposes MQTT5 Properties for the PUBLISH packet type.
@@ -23,6 +24,51 @@ from bfs_odl_mqtt_producer_data import DoseRateMeasurement
 
 # URI template regex pattern
 _URI_TEMPLATE_PATTERN = re.compile(r'\{([A-Za-z0-9_]+)\}')
+
+_RFC3339_TIMESTAMP_PATTERN = re.compile(
+    r'^\d{4}-\d{2}-\d{2}[Tt]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[Zz]|[+-]\d{2}:\d{2})?$'
+)
+
+
+def _normalize_cloudevents_time(value: typing.Any) -> typing.Optional[str]:
+    """Validate and normalize CloudEvents ``time`` to RFC 3339."""
+    if value is None:
+        return None
+    if isinstance(value, datetime):
+        if value.tzinfo is None:
+            value = value.replace(tzinfo=timezone.utc)
+        return value.isoformat().replace('+00:00', 'Z')
+    text = str(value).strip()
+    if not text:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    if not _RFC3339_TIMESTAMP_PATTERN.fullmatch(text):
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp")
+    normalized = text
+    if normalized[10] == 't':
+        normalized = normalized[:10] + 'T' + normalized[11:]
+    if normalized.endswith('z'):
+        normalized = normalized[:-1] + 'Z'
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    try:
+        parsed = datetime.fromisoformat(normalized)
+    except ValueError as exc:
+        raise ValueError("CloudEvents 'time' must be an RFC 3339 timestamp") from exc
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.isoformat().replace('+00:00', 'Z')
+
+
+def _resolve_cloudevents_time(
+    override: typing.Any = None,
+    fallback: typing.Any = None,
+) -> str:
+    """Resolve CloudEvents ``time`` from override, fallback, or current UTC."""
+    if override is not None:
+        return _normalize_cloudevents_time(override)
+    if fallback is not None:
+        return _normalize_cloudevents_time(fallback)
+    return _normalize_cloudevents_time(datetime.now(timezone.utc))
 
 
 def _topic_to_mqtt_wildcard(topic: str) -> str:
@@ -187,8 +233,8 @@ def get_default_topic_mappings_de_bfs_odl_mqtt() -> Dict[str, str]:
         Dictionary mapping message identifiers to their default topic patterns.
     """
     return {
-        "de.bfs.odl.mqtt.Station": "radiation/ch/bfs/bfs-odl/{canton}/{station_id}/info",
-        "de.bfs.odl.mqtt.DoseRateMeasurement": "radiation/ch/bfs/bfs-odl/{canton}/{station_id}/dose-rate",
+        "de.bfs.odl.mqtt.Station": "radiation/de/bfs/bfs-odl/{state}/{station_id}/info",
+        "de.bfs.odl.mqtt.DoseRateMeasurement": "radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate",
     }
 
 
@@ -359,11 +405,12 @@ class DeBfsOdlMqttMqttClient(_ClientBase):
     async def publish_de_bfs_odl_mqtt_station(self,
         feedurl: str,
         station_id: str,
-        canton: str,
+        state: str,
         data: bfs_odl_mqtt_producer_data.Station,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'de.bfs.odl.mqtt.Station' event to an MQTT topic.
@@ -372,19 +419,20 @@ class DeBfsOdlMqttMqttClient(_ClientBase):
         
             feedurl: URI template variable for 'feedurl'
             station_id: URI template variable for 'station_id'
-            canton: URI template variable for 'canton'
+            state: URI template variable for 'state'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'radiation/ch/bfs/bfs-odl/{canton}/{station_id}/info'
+            topic: Optional topic override. If not provided, uses default topic 'radiation/de/bfs/bfs-odl/{state}/{station_id}/info'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "radiation/ch/bfs/bfs-odl/{canton}/{station_id}/info"
+        target_topic = topic if topic is not None else "radiation/de/bfs/bfs-odl/{state}/{station_id}/info"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
-            "canton": str(canton),
+            "state": str(state),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -395,6 +443,7 @@ class DeBfsOdlMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
@@ -438,11 +487,12 @@ class DeBfsOdlMqttMqttClient(_ClientBase):
     async def publish_de_bfs_odl_mqtt_dose_rate_measurement(self,
         feedurl: str,
         station_id: str,
-        canton: str,
+        state: str,
         data: bfs_odl_mqtt_producer_data.DoseRateMeasurement,
         topic: Optional[str] = None,
         qos: Optional[int] = None,
         retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = "application/json") -> None:
         """
         Publish the 'de.bfs.odl.mqtt.DoseRateMeasurement' event to an MQTT topic.
@@ -451,19 +501,20 @@ class DeBfsOdlMqttMqttClient(_ClientBase):
         
             feedurl: URI template variable for 'feedurl'
             station_id: URI template variable for 'station_id'
-            canton: URI template variable for 'canton'
+            state: URI template variable for 'state'
             data: The event data to be published.
-            topic: Optional topic override. If not provided, uses default topic 'radiation/ch/bfs/bfs-odl/{canton}/{station_id}/dose-rate'
+            topic: Optional topic override. If not provided, uses default topic 'radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate'
                 with URI template placeholders substituted from the keyword arguments.
             qos: Optional MQTT QoS override. If not provided, uses the message default (1).
             retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
             content_type: The content type for the event data.
         """
-        target_topic = topic if topic is not None else "radiation/ch/bfs/bfs-odl/{canton}/{station_id}/dose-rate"
+        target_topic = topic if topic is not None else "radiation/de/bfs/bfs-odl/{state}/{station_id}/dose-rate"
         _topic_template_values: Dict[str, str] = {
             "feedurl": str(feedurl),
             "station_id": str(station_id),
-            "canton": str(canton),
+            "state": str(state),
         }
         if _topic_template_values:
             target_topic = _apply_topic_template(target_topic, _topic_template_values)
@@ -474,6 +525,7 @@ class DeBfsOdlMqttMqttClient(_ClientBase):
              "subject":"{station_id}".format(station_id = station_id)
         }
         attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         byte_data = data.to_byte_array(content_type) if data is not None else b''
         # to_byte_array returns str for text content types (e.g. JSON);
         # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's

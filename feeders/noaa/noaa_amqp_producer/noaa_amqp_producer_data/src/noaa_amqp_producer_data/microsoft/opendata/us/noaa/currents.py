@@ -94,6 +94,8 @@ class Currents:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -161,10 +163,10 @@ class Currents:
             An instance of the dataclass.
         """
         return cls(
-            station_id='tyzrrnwewqaziqrchlnx',
-            timestamp='hwwcfhzqnxdksdltqbig',
-            speed=float(41.2336217861686),
-            direction_degrees=float(0.5298600869251824),
-            bin='murrqrkcgfjgmollnlyd',
-            region='jaiwpmhiqfyrpddcinne'
+            station_id='rumfgxqjtmorztblxytq',
+            timestamp='zpvggkselvewbirzpwbl',
+            speed=float(85.22168322588473),
+            direction_degrees=float(63.48133800830801),
+            bin='ovrarcwjgjwtrtnctbiu',
+            region='gpqsrdfftqionfztquwy'
         )

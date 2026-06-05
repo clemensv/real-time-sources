@@ -12,9 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
+from nasa_firms_producer_data.nasa.firms.instrumentenum import InstrumentEnum
 from nasa_firms_producer_data.nasa.firms.confidencelevelenum import ConfidenceLevelenum
 from nasa_firms_producer_data.nasa.firms.daynightenum import DaynightEnum
-from nasa_firms_producer_data.nasa.firms.instrumentenum import InstrumentEnum
 import datetime
 
 
@@ -129,6 +129,8 @@ class FireDetection:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -196,25 +198,25 @@ class FireDetection:
             An instance of the dataclass.
         """
         return cls(
-            source='gxruotsduafdfnxgiyhm',
-            record_id='fboocrqmpcsjqlnkzhmy',
-            latitude=float(73.73023102452139),
-            longitude=float(14.673635418174392),
-            brightness=float(53.86048557782072),
-            bright_t31=float(20.958365829702796),
-            bright_ti4=float(54.93464969825336),
-            bright_ti5=float(22.952016564032483),
-            scan=float(22.830313057426167),
-            track=float(71.9576744824222),
+            source='kvxckqktoicndntvopxv',
+            record_id='qrpyepabrgwkytmwtbuw',
+            latitude=float(96.40011811103395),
+            longitude=float(81.66768295412446),
+            brightness=float(78.47469866520768),
+            bright_t31=float(80.4597365093243),
+            bright_ti4=float(21.073441868552358),
+            bright_ti5=float(33.36151171468052),
+            scan=float(19.94893027667467),
+            track=float(97.12425992221233),
             acq_date=datetime.date.today(),
-            acq_time='qnhpgxxrrvrzaxhuoscy',
+            acq_time='dnbhuwbjrywijbcewspt',
             acq_datetime=datetime.datetime.now(datetime.timezone.utc),
-            satellite='kwifljqzlzjbhtravyoh',
+            satellite='xrhtfpxjodnulghnaljz',
             instrument=InstrumentEnum.VIIRS,
-            confidence='npdrqtylnsrwoucmklun',
+            confidence='zqeorkkxdhtygopakotb',
             confidence_level=ConfidenceLevelenum.low,
-            version='nbjvwimfaywekuzofikh',
-            frp=float(42.09153576425444),
+            version='lbastdkxwtiaecidpfpu',
+            frp=float(7.011170020858093),
             daynight=DaynightEnum.D,
-            tile='brjvhxdsxafjgvajmhgq'
+            tile='bqmkhqtyimbwzaayitcv'
         )

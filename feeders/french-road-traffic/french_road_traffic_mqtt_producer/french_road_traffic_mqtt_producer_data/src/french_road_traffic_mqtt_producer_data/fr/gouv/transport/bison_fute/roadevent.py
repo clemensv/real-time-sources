@@ -120,6 +120,8 @@ class RoadEvent:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -187,23 +189,23 @@ class RoadEvent:
             An instance of the dataclass.
         """
         return cls(
-            situation_id='vtcgsufhslelnfpvrlmp',
-            record_id='ssjkscecjdcglnehfxps',
-            version='ttxdfnuevndmpngugfyj',
-            severity='nmrlokvugnqualeouyow',
-            record_type='ugufyhurzxmdngujvbnt',
-            probability='roxuzphgadqsntlkuhtt',
-            latitude=float(10.66167778243119),
-            longitude=float(5.7030086717870905),
-            road_number='mcrrrnwkuhlzooburyzg',
-            town_name='asueguwczoqvlxpuyvpk',
-            direction='dcosdbbkytbyncwmcuao',
-            description='dpzmbdrsokshgwqgbcoa',
-            location_description='fcfyluktltbgntdjxyjl',
-            source_name='qjoniksfgfvvdcezvmzd',
-            validity_status='snrijdsoslbnnpqdqdqu',
-            overall_start_time='qypegdmpneihsvotfemn',
-            overall_end_time='tjfpvsdbfisredgcpsfe',
-            creation_time='xcdhzncvnpkizlidvxcp',
-            observation_time='umdvvlougwqvjvjcenrp'
+            situation_id='mppncegipykzxmsjonqs',
+            record_id='ybxuovquswuhotroglyx',
+            version='rnrcntddjljwtoxzfvvv',
+            severity='hrbjzmdlfxjhnrzjddvj',
+            record_type='noelzotumhalwhgyzwey',
+            probability='qrxymuzqehmcvvdvriqz',
+            latitude=float(29.981111679450645),
+            longitude=float(7.71187611953148),
+            road_number='gbjfkqrewlxttokxqypf',
+            town_name='hzmcghzburvxoavcfwxw',
+            direction='nhfjhjdtmebfucuyjqqb',
+            description='smuxoynoggouracidian',
+            location_description='wazpvlllyhlcbgcomgsp',
+            source_name='erwlccvhrdymyivsdrhr',
+            validity_status='zecczqryyylwavysytbz',
+            overall_start_time='lbgoreyfjmwyehtqqugu',
+            overall_end_time='byvxbzaqfyqchezoftgh',
+            creation_time='bqqdjczponyweaeguhyd',
+            observation_time='djryegfiqbiwaceawpro'
         )

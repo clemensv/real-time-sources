@@ -1,3 +1,3 @@
-from .rivm import Measurement, Component, Station, LKI
+from .rivm import Measurement, Station, Component, LKI
 
-__all__ = ["Measurement", "Component", "Station", "LKI"]
+__all__ = ["Measurement", "Station", "Component", "LKI"]

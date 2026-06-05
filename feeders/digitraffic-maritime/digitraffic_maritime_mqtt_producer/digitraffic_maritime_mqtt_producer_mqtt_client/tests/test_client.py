@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,15 +17,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import digitraffic_maritime_mqtt_producer_data
 from digitraffic_maritime_mqtt_producer_data import VesselLocation
-from test_digitraffic_maritime_mqtt_producer_data_vessellocation import Test_VesselLocation
+from test_vessellocation import Test_VesselLocation
 from digitraffic_maritime_mqtt_producer_data import VesselMetadata
-from test_digitraffic_maritime_mqtt_producer_data_vesselmetadata import Test_VesselMetadata
+from test_vesselmetadata import Test_VesselMetadata
 from digitraffic_maritime_mqtt_producer_data import PortCall
-from test_digitraffic_maritime_mqtt_producer_data_portcall import Test_PortCall
+from test_portcall import Test_PortCall
 from digitraffic_maritime_mqtt_producer_data import VesselDetails
-from test_digitraffic_maritime_mqtt_producer_data_vesseldetails import Test_VesselDetails
+from test_vesseldetails import Test_VesselDetails
 from digitraffic_maritime_mqtt_producer_data import PortLocation
-from test_digitraffic_maritime_mqtt_producer_data_portlocation import Test_PortLocation
+from test_portlocation import Test_PortLocation
 from digitraffic_maritime_mqtt_producer_mqtt_client import FiDigitrafficMarineAisMqttMqttClient
 from digitraffic_maritime_mqtt_producer_mqtt_client import FiDigitrafficMarinePortcallMqttMqttClient
 from digitraffic_maritime_mqtt_producer_mqtt_client import FiDigitrafficMarinePortcallVesseldetailsMqttMqttClient
@@ -100,6 +101,7 @@ async def test_fi_digitraffic_marine_ais_mqtt_fi_digitraffic_marine_ais_mqtt_loc
         await publisher_client.publish_fi_digitraffic_marine_ais_mqtt_location(
             topic=test_topic,
             mmsi=f"test_mmsi_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -165,6 +167,7 @@ async def test_fi_digitraffic_marine_ais_mqtt_fi_digitraffic_marine_ais_mqtt_met
         await publisher_client.publish_fi_digitraffic_marine_ais_mqtt_metadata(
             topic=test_topic,
             mmsi=f"test_mmsi_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -233,6 +236,7 @@ async def test_fi_digitraffic_marine_portcall_mqtt_fi_digitraffic_marine_portcal
         await publisher_client.publish_fi_digitraffic_marine_portcall_mqtt_port_call(
             topic=test_topic,
             port_call_id=f"test_port_call_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -301,6 +305,7 @@ async def test_fi_digitraffic_marine_portcall_vesseldetails_mqtt_fi_digitraffic_
         await publisher_client.publish_fi_digitraffic_marine_portcall_vesseldetails_mqtt_vessel_details(
             topic=test_topic,
             vessel_id=f"test_vessel_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -369,6 +374,7 @@ async def test_fi_digitraffic_marine_portcall_portlocation_mqtt_fi_digitraffic_m
         await publisher_client.publish_fi_digitraffic_marine_portcall_portlocation_mqtt_port_location(
             topic=test_topic,
             locode=f"test_locode_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

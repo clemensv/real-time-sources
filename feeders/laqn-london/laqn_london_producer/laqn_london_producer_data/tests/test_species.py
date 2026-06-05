@@ -28,11 +28,11 @@ class Test_Species(unittest.TestCase):
         Create instance of Species for testing
         """
         instance = Species(
-            species_code='zatxbqfwstqzjsgefcuz',
-            species_name='rlflpreygsnfshgftdtz',
-            description='gkplnbhoakyfjnogrmoa',
-            health_effect='afqvuhclzaskvqtbpzay',
-            link='jckmxbetzogqhfqaiyib'
+            species_code='qshpcjsabyffconycwdg',
+            species_name='tuvasllhqyujslycpjgo',
+            description='ayhowyphvuwwcuulggue',
+            health_effect='bvgscjsspmtswtzykyep',
+            link='mgaiqdbrxisujcswyvfc'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Species(unittest.TestCase):
         """
         Test species_code property
         """
-        test_value = 'zatxbqfwstqzjsgefcuz'
+        test_value = 'qshpcjsabyffconycwdg'
         self.instance.species_code = test_value
         self.assertEqual(self.instance.species_code, test_value)
     
@@ -49,7 +49,7 @@ class Test_Species(unittest.TestCase):
         """
         Test species_name property
         """
-        test_value = 'rlflpreygsnfshgftdtz'
+        test_value = 'tuvasllhqyujslycpjgo'
         self.instance.species_name = test_value
         self.assertEqual(self.instance.species_name, test_value)
     
@@ -57,7 +57,7 @@ class Test_Species(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'gkplnbhoakyfjnogrmoa'
+        test_value = 'ayhowyphvuwwcuulggue'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -65,7 +65,7 @@ class Test_Species(unittest.TestCase):
         """
         Test health_effect property
         """
-        test_value = 'afqvuhclzaskvqtbpzay'
+        test_value = 'bvgscjsspmtswtzykyep'
         self.instance.health_effect = test_value
         self.assertEqual(self.instance.health_effect, test_value)
     
@@ -73,19 +73,10 @@ class Test_Species(unittest.TestCase):
         """
         Test link property
         """
-        test_value = 'jckmxbetzogqhfqaiyib'
+        test_value = 'mgaiqdbrxisujcswyvfc'
         self.instance.link = test_value
         self.assertEqual(self.instance.link, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Species.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

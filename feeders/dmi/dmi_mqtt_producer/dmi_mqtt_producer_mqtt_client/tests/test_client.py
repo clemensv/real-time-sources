@@ -5,6 +5,7 @@ import sys
 import pytest
 import pytest_asyncio
 import asyncio
+import datetime
 import time
 import paho.mqtt.client as mqtt
 from testcontainers.core.container import DockerContainer
@@ -16,17 +17,17 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import dmi_mqtt_producer_data
 from dmi_mqtt_producer_data import MetObsStation
-from test_dmi_mqtt_producer_data_metobsstation import Test_MetObsStation
+from test_metobsstation import Test_MetObsStation
 from dmi_mqtt_producer_data import MetObsObservation
-from test_dmi_mqtt_producer_data_metobsobservation import Test_MetObsObservation
+from test_metobsobservation import Test_MetObsObservation
 from dmi_mqtt_producer_data import OceanStation
-from test_dmi_mqtt_producer_data_oceanstation import Test_OceanStation
+from test_oceanstation import Test_OceanStation
 from dmi_mqtt_producer_data import TidewaterStation
-from test_dmi_mqtt_producer_data_tidewaterstation import Test_TidewaterStation
+from test_tidewaterstation import Test_TidewaterStation
 from dmi_mqtt_producer_data import OceanObservation
-from test_dmi_mqtt_producer_data_oceanobservation import Test_OceanObservation
+from test_oceanobservation import Test_OceanObservation
 from dmi_mqtt_producer_data import TidewaterPrediction
-from test_dmi_mqtt_producer_data_tidewaterprediction import Test_TidewaterPrediction
+from test_tidewaterprediction import Test_TidewaterPrediction
 from dmi_mqtt_producer_mqtt_client import DkDmiMetObsMqttMqttClient
 from dmi_mqtt_producer_mqtt_client import DkDmiOceanObsMqttMqttClient
 
@@ -101,6 +102,7 @@ async def test_dk_dmi_metobs_mqtt_dk_dmi_met_obs_mqtt_station_py(mosquitto_broke
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -168,6 +170,7 @@ async def test_dk_dmi_metobs_mqtt_dk_dmi_met_obs_mqtt_observation_py(mosquitto_b
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
             parameter_id=f"test_parameter_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -237,6 +240,7 @@ async def test_dk_dmi_oceanobs_mqtt_dk_dmi_ocean_obs_mqtt_station_py(mosquitto_b
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -303,6 +307,7 @@ async def test_dk_dmi_oceanobs_mqtt_dk_dmi_ocean_obs_mqtt_tidewater_station_py(m
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -370,6 +375,7 @@ async def test_dk_dmi_oceanobs_mqtt_dk_dmi_ocean_obs_mqtt_observation_py(mosquit
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
             parameter_id=f"test_parameter_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )
@@ -436,6 +442,7 @@ async def test_dk_dmi_oceanobs_mqtt_dk_dmi_ocean_obs_mqtt_tidewater_prediction_p
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"
         )

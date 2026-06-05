@@ -28,23 +28,23 @@ class Test_PilotPosition(unittest.TestCase):
         Create instance of PilotPosition for testing
         """
         instance = PilotPosition(
-            cid=int(91),
-            callsign='uobjixpufnpropjfgtxe',
-            latitude=float(88.1717938147432),
-            longitude=float(27.476969096438697),
-            altitude=int(45),
-            groundspeed=int(50),
-            heading=int(55),
-            transponder='dunpcjzmeclxqafrrmbk',
-            qnh_mb=int(30),
-            flight_rules='mhzeuaxfdmxvgpgpnylq',
-            aircraft_short='zxxlsmlllslnzodiabsg',
-            departure='vbumryyqkhpvlddrkrsx',
-            arrival='fjxvwoysineavsfvvrpv',
-            route='lvajitwtnrzkvrqjcjxy',
-            cruise_altitude='uykgbjffpdumgegysqzk',
-            pilot_rating=int(13),
-            last_updated='rogygrnfdedjbkvtmabw'
+            cid=int(87),
+            callsign='kqcalumuamlsrmnxztgl',
+            latitude=float(99.12334630214126),
+            longitude=float(31.025264187182),
+            altitude=int(89),
+            groundspeed=int(6),
+            heading=int(50),
+            transponder='kjyvipbajghdhdrumzko',
+            qnh_mb=int(16),
+            flight_rules='yckaabvqagobcdabfolk',
+            aircraft_short='nzfiigqgtdkkdbqpstfz',
+            departure='tubqzhysekdkiekjcqsr',
+            arrival='izbjfpkhlgjrwyrzqbfs',
+            route='exwkyjiyicpjlsyennou',
+            cruise_altitude='iucfkmbxuzlsfvervjed',
+            pilot_rating=int(43),
+            last_updated='epmzbhiwawqxcazpnsaf'
         )
         return instance
 
@@ -53,7 +53,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = int(91)
+        test_value = int(87)
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -61,7 +61,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test callsign property
         """
-        test_value = 'uobjixpufnpropjfgtxe'
+        test_value = 'kqcalumuamlsrmnxztgl'
         self.instance.callsign = test_value
         self.assertEqual(self.instance.callsign, test_value)
     
@@ -69,7 +69,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(88.1717938147432)
+        test_value = float(99.12334630214126)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -77,7 +77,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(27.476969096438697)
+        test_value = float(31.025264187182)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -85,7 +85,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test altitude property
         """
-        test_value = int(45)
+        test_value = int(89)
         self.instance.altitude = test_value
         self.assertEqual(self.instance.altitude, test_value)
     
@@ -93,7 +93,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test groundspeed property
         """
-        test_value = int(50)
+        test_value = int(6)
         self.instance.groundspeed = test_value
         self.assertEqual(self.instance.groundspeed, test_value)
     
@@ -101,7 +101,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test heading property
         """
-        test_value = int(55)
+        test_value = int(50)
         self.instance.heading = test_value
         self.assertEqual(self.instance.heading, test_value)
     
@@ -109,7 +109,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test transponder property
         """
-        test_value = 'dunpcjzmeclxqafrrmbk'
+        test_value = 'kjyvipbajghdhdrumzko'
         self.instance.transponder = test_value
         self.assertEqual(self.instance.transponder, test_value)
     
@@ -117,7 +117,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test qnh_mb property
         """
-        test_value = int(30)
+        test_value = int(16)
         self.instance.qnh_mb = test_value
         self.assertEqual(self.instance.qnh_mb, test_value)
     
@@ -125,7 +125,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test flight_rules property
         """
-        test_value = 'mhzeuaxfdmxvgpgpnylq'
+        test_value = 'yckaabvqagobcdabfolk'
         self.instance.flight_rules = test_value
         self.assertEqual(self.instance.flight_rules, test_value)
     
@@ -133,7 +133,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test aircraft_short property
         """
-        test_value = 'zxxlsmlllslnzodiabsg'
+        test_value = 'nzfiigqgtdkkdbqpstfz'
         self.instance.aircraft_short = test_value
         self.assertEqual(self.instance.aircraft_short, test_value)
     
@@ -141,7 +141,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test departure property
         """
-        test_value = 'vbumryyqkhpvlddrkrsx'
+        test_value = 'tubqzhysekdkiekjcqsr'
         self.instance.departure = test_value
         self.assertEqual(self.instance.departure, test_value)
     
@@ -149,7 +149,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test arrival property
         """
-        test_value = 'fjxvwoysineavsfvvrpv'
+        test_value = 'izbjfpkhlgjrwyrzqbfs'
         self.instance.arrival = test_value
         self.assertEqual(self.instance.arrival, test_value)
     
@@ -157,7 +157,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test route property
         """
-        test_value = 'lvajitwtnrzkvrqjcjxy'
+        test_value = 'exwkyjiyicpjlsyennou'
         self.instance.route = test_value
         self.assertEqual(self.instance.route, test_value)
     
@@ -165,7 +165,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test cruise_altitude property
         """
-        test_value = 'uykgbjffpdumgegysqzk'
+        test_value = 'iucfkmbxuzlsfvervjed'
         self.instance.cruise_altitude = test_value
         self.assertEqual(self.instance.cruise_altitude, test_value)
     
@@ -173,7 +173,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test pilot_rating property
         """
-        test_value = int(13)
+        test_value = int(43)
         self.instance.pilot_rating = test_value
         self.assertEqual(self.instance.pilot_rating, test_value)
     
@@ -181,7 +181,7 @@ class Test_PilotPosition(unittest.TestCase):
         """
         Test last_updated property
         """
-        test_value = 'rogygrnfdedjbkvtmabw'
+        test_value = 'epmzbhiwawqxcazpnsaf'
         self.instance.last_updated = test_value
         self.assertEqual(self.instance.last_updated, test_value)
     

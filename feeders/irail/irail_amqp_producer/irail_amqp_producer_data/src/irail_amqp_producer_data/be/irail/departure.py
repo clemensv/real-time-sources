@@ -113,6 +113,8 @@ class Departure:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -180,19 +182,19 @@ class Departure:
             An instance of the dataclass.
         """
         return cls(
-            destination_station_id='nkejagkgcmyhsfhlsajk',
-            destination_name='bnspcticelhamwuqfyjl',
-            scheduled_time='znpfnzozmuoljeogevck',
-            delay_seconds=int(78),
-            is_canceled=True,
+            destination_station_id='npuxhhviatxnuszpklmq',
+            destination_name='anpwstydkzpqcqcvjrrh',
+            scheduled_time='tnahdksijwbqqidxaxiw',
+            delay_seconds=int(14),
+            is_canceled=False,
             has_left=False,
-            is_extra_stop=False,
-            vehicle_id='rialdszrcmcrjcapbrbz',
-            vehicle_short_name='fnurifwfsvmckjotxtoq',
-            vehicle_type='yfifyxhbxqgpnptosiae',
-            vehicle_number='fenljfgzmwzedkzifiay',
-            platform='iipmckjkwrrhwtnyisin',
+            is_extra_stop=True,
+            vehicle_id='rwfiaxffkhqkknvbvxfv',
+            vehicle_short_name='upjypskadbtqhmcwidqz',
+            vehicle_type='xdimgkfjuwwhaozsdkgi',
+            vehicle_number='cwnecjihckpvlpdvkkfi',
+            platform='qjhrkgfzbgxjlexjpdqx',
             is_normal_platform=True,
             occupancy=OccupancyEnum.low,
-            departure_connection_uri='qxfpprzsazislpclgrja'
+            departure_connection_uri='pnuinzgwqyzqjvddogey'
         )

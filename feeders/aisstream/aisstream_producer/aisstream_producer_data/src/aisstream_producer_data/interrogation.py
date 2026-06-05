@@ -101,6 +101,8 @@ class Interrogation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -168,11 +170,11 @@ class Interrogation:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(65),
-            RepeatIndicator=int(59),
-            UserID=int(85),
+            MessageID=int(39),
+            RepeatIndicator=int(79),
+            UserID=int(21),
             Valid=True,
-            Spare=int(99),
+            Spare=int(9),
             Station1Msg1=None,
             Station1Msg2=None,
             Station2=None

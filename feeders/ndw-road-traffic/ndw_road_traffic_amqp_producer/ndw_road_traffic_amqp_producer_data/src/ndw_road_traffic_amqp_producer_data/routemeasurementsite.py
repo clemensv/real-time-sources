@@ -102,6 +102,8 @@ class RouteMeasurementSite:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -169,14 +171,14 @@ class RouteMeasurementSite:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='dloegxvhifojgfmplfjm',
-            name='zmfktepynphfzbsvxriv',
-            measurement_site_type='pbyhpahrbfqchcvnmxgf',
-            period=int(32),
-            start_latitude=float(70.34232702344781),
-            start_longitude=float(43.58507097288897),
-            end_latitude=float(2.0948519073251015),
-            end_longitude=float(30.34184309654875),
-            road_name='ubhvhskchaywwmwnaaww',
-            length_metres=float(52.236736255923624)
+            measurement_site_id='lsgzmsbppsuxqderjtix',
+            name='hdahdyvrvokuiyefotrp',
+            measurement_site_type='kpuyxictbylxigfdlxgm',
+            period=int(83),
+            start_latitude=float(33.00835422126078),
+            start_longitude=float(47.19236464603141),
+            end_latitude=float(80.7978593479266),
+            end_longitude=float(89.1632420421538),
+            road_name='wsckuhfublgabkwxxmfz',
+            length_metres=float(98.24298786918628)
         )

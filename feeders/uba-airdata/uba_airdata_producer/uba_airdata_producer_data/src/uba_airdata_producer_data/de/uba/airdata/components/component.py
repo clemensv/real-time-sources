@@ -92,6 +92,8 @@ class Component:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class Component:
             An instance of the dataclass.
         """
         return cls(
-            component_id=int(15),
-            component_code='tgxpbiqqdarqemmwmyuk',
-            symbol='cynwxhjnsyxzpcvlvogi',
-            unit='uvoksytkqznrsggtgosh',
-            name='opgzueavohhzyjhgtimu'
+            component_id=int(68),
+            component_code='fnbrafmcxehzbkpfziiu',
+            symbol='ayegmoobcndfmpkbkufg',
+            unit='wrnbqdqmwlqsdylskisg',
+            name='piiaxkegtijsuaoyiroe'
         )

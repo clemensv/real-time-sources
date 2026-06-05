@@ -100,6 +100,8 @@ class TemporarySpeedLimit:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class TemporarySpeedLimit:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='ktqjhcvlmtbceuyxmgfv',
-            version_time='gvrpbsskoeatknmfrfxt',
-            validity_status='srwzsfmwqujdwbwaiplu',
-            start_time='iymjycuyjqqsflkvzxtu',
-            end_time='iupjkgbafsrlplearxxw',
-            road_name='eidhufecyhayclfpiqrl',
-            speed_limit_kmh=int(42),
-            description='reeypbgqvqkavanyckmx',
-            location_description='khtfeefwekvkfgterape'
+            situation_record_id='bnxmanjwupnajlzsodoh',
+            version_time='ixfdzzzfadzsdcfukmmw',
+            validity_status='hkfyygdirzzgnvmzqwxl',
+            start_time='pwleolpblwmqfnaloqag',
+            end_time='texbvneainvryazutecl',
+            road_name='jejzfxocqntdmllaopsc',
+            speed_limit_kmh=int(60),
+            description='jpspexghoimqkcredehb',
+            location_description='wrvegcobwgbrmtwrwhig'
         )

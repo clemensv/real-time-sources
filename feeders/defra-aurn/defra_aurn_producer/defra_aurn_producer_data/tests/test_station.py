@@ -28,10 +28,10 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_id='miqqfftukgtpsrpnhqgd',
-            label='tbemojuacrijvyagdomm',
-            latitude=float(38.01927383213024),
-            longitude=float(32.41457041494541)
+            station_id='henetvdtrezakknhtajw',
+            label='egibepjxrihkxatudpfn',
+            latitude=float(57.33058918091394),
+            longitude=float(38.876705803078735)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'miqqfftukgtpsrpnhqgd'
+        test_value = 'henetvdtrezakknhtajw'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -48,7 +48,7 @@ class Test_Station(unittest.TestCase):
         """
         Test label property
         """
-        test_value = 'tbemojuacrijvyagdomm'
+        test_value = 'egibepjxrihkxatudpfn'
         self.instance.label = test_value
         self.assertEqual(self.instance.label, test_value)
     
@@ -56,7 +56,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(38.01927383213024)
+        test_value = float(57.33058918091394)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -64,19 +64,10 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(32.41457041494541)
+        test_value = float(38.876705803078735)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
-    def test_to_byte_array_avro(self):
-        """
-        Test to_byte_array method with avro media type
-        """
-        media_type = "application/vnd.apache.avro+avro"
-        bytes_data = self.instance.to_byte_array(media_type)
-        new_instance = Station.from_data(bytes_data, media_type)
-        bytes_data2 = new_instance.to_byte_array(media_type)
-        self.assertEqual(bytes_data, bytes_data2)
     def test_to_byte_array_json(self):
         """
         Test to_byte_array method with json media type

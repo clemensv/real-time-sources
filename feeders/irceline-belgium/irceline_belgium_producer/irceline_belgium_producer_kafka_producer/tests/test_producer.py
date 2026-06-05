@@ -20,12 +20,12 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from irceline_belgium_producer_kafka_producer.producer import BeIrcelineStationsEventProducer
 from irceline_belgium_producer_data import Station
-from test_irceline_belgium_producer_data_station import Test_Station
+from test_station import Test_Station
 from irceline_belgium_producer_kafka_producer.producer import BeIrcelineTimeseriesEventProducer
 from irceline_belgium_producer_data import Timeseries
-from test_irceline_belgium_producer_data_timeseries import Test_Timeseries
+from test_timeseries import Test_Timeseries
 from irceline_belgium_producer_data import Observation
-from test_irceline_belgium_producer_data_observation import Test_Observation
+from test_observation import Test_Observation
 from irceline_belgium_producer_kafka_producer.producer import BeIrcelineStationsMqttEventProducer
 from irceline_belgium_producer_kafka_producer.producer import BeIrcelineStationsAmqpEventProducer
 from irceline_belgium_producer_kafka_producer.producer import BeIrcelineTimeseriesMqttEventProducer
@@ -112,7 +112,8 @@ def test_be_irceline_stations_beircelinestation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irceline_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irceline_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -175,7 +176,8 @@ def test_be_irceline_timeseries_beircelinetimeseries(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irceline_timeseries(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irceline_timeseries(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -238,7 +240,8 @@ def test_be_irceline_timeseries_beircelineobservation(kafka_emulator):
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irceline_observation(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irceline_observation(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -301,7 +304,8 @@ def test_be_irceline_stations_mqtt_beircelinestationsmqttstation(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irceline_stations_mqtt_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irceline_stations_mqtt_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -362,7 +366,8 @@ def test_be_irceline_stations_amqp_beircelinestationsamqpstation(kafka_emulator)
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irceline_stations_amqp_station(_station_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irceline_stations_amqp_station(_station_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -423,7 +428,8 @@ def test_be_irceline_timeseries_mqtt_beircelinetimeseriesmqtttimeseries(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irceline_timeseries_mqtt_timeseries(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irceline_timeseries_mqtt_timeseries(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -484,7 +490,8 @@ def test_be_irceline_timeseries_mqtt_beircelinetimeseriesmqttobservation(kafka_e
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irceline_timeseries_mqtt_observation(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irceline_timeseries_mqtt_observation(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -545,7 +552,8 @@ def test_be_irceline_timeseries_amqp_beircelinetimeseriesamqptimeseries(kafka_em
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irceline_timeseries_amqp_timeseries(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irceline_timeseries_amqp_timeseries(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)
@@ -606,7 +614,8 @@ def test_be_irceline_timeseries_amqp_beircelinetimeseriesamqpobservation(kafka_e
     
     # Send 5 messages to test message settlement and ordering
     for i in range(5):
-        producer_instance.send_be_irceline_timeseries_amqp_observation(_timeseries_id = f'test_{i}', data = event_data)
+        producer_instance.send_be_irceline_timeseries_amqp_observation(_timeseries_id = f'test_{i}', _time = datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data = event_data)
     
     # Flush producer to ensure messages are sent before consumer polling
     kafka_producer.flush(timeout=5.0)

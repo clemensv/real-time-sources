@@ -128,6 +128,8 @@ class PortCall:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -195,25 +197,25 @@ class PortCall:
             An instance of the dataclass.
         """
         return cls(
-            port_call_id=int(60),
+            port_call_id=int(8),
             updated_at=datetime.datetime.now(datetime.timezone.utc),
-            customs_reference='uybfrstnqopeixyqlccu',
-            port_to_visit='anfklaftbfhnqfxyfwnv',
-            previous_port='shfhmiwqxuzeuyrscliq',
-            next_port='sqezhujajtvzojrbtrqj',
-            mmsi=int(61),
-            imo_lloyds=int(58),
-            vessel_name='gmxihknsxejomvskujjy',
-            vessel_name_prefix='onmzdernwhwrcwnrufsv',
-            radio_call_sign='fgzyiabbazwicbjzjlpu',
-            nationality='knjdcynmzlgrpjnkeamo',
-            vessel_type_code=int(37),
+            customs_reference='iexadhbbqpjtqriavzjh',
+            port_to_visit='dggajfpgxeeacojvlhjy',
+            previous_port='wrqqcxvvkjnixrviotnp',
+            next_port='urhhewyvycxsmkyckoss',
+            mmsi=int(76),
+            imo_lloyds=int(21),
+            vessel_name='mbvfbjbfdcawaaqwtpwm',
+            vessel_name_prefix='iiniamvxmqtryrwnkkws',
+            radio_call_sign='rjajvblerrmszamoqglz',
+            nationality='gbfgokfjudeickpboitj',
+            vessel_type_code=int(97),
             domestic_traffic_arrival=True,
             domestic_traffic_departure=False,
             arrival_with_cargo=True,
-            not_loading=False,
-            discharge=int(23),
-            current_security_level=int(85),
-            agents=[None, None, None],
-            port_areas=[None, None, None, None, None]
+            not_loading=True,
+            discharge=int(30),
+            current_security_level=int(100),
+            agents=[None, None, None, None, None],
+            port_areas=[None, None]
         )

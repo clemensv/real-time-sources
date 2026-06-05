@@ -106,6 +106,8 @@ class BikeshareStation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -173,16 +175,16 @@ class BikeshareStation:
             An instance of the dataclass.
         """
         return cls(
-            system_id='modvzvapsxclwwymycga',
-            station_id='jwqnsaefscbwgjqixknk',
-            name='eldezmrfecpyrbjmvlpi',
-            short_name='dycgpvoooyfkjdrdraja',
-            lat=float(94.5711526809155),
-            lon=float(3.528308451865203),
-            address='egpxtdzepwaryjbpgovx',
-            cross_street='yzdonfqrjetvqartszra',
-            region_id='ixrxgcqzmmdwgevvuegw',
-            post_code='hdepohdkjnaikggygfvw',
-            capacity=int(20),
+            system_id='rojbzijvcnqsngdotcpd',
+            station_id='kndsenjcitovcmowdwjc',
+            name='zfyczbcudepzquaikeen',
+            short_name='dgdtbgdwxuuxawltfsio',
+            lat=float(91.48171449431327),
+            lon=float(97.16936282853655),
+            address='ywulgojanygthkxqnzwi',
+            cross_street='nupomwvayoelhkjztffg',
+            region_id='gucpjcdneaaztfnyadnj',
+            post_code='akciwkghcfbnglacoobu',
+            capacity=int(93),
             is_virtual_station=True
         )

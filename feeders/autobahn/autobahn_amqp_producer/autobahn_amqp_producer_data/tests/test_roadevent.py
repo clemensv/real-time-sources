@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from autobahn_amqp_producer_data.roadevent import RoadEvent
-from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -31,28 +31,28 @@ class Test_RoadEvent(unittest.TestCase):
         Create instance of RoadEvent for testing
         """
         instance = RoadEvent(
-            identifier='crbqydcdqraqqrkaupzf',
-            road='arfbskxsyspbkvgxcljc',
-            road_ids=['sducjgrafkfjrxrelerp', 'nnfiyuvoiuofxrdxwivi', 'vcvcmvpwegqnfrowvtzc', 'huguwoauekgmqsuemwum', 'ccuudkpbsookqkklxsag'],
+            identifier='vuyqcxgouwnykfmnpqcq',
+            road='xdjtsmiwaypssdifigpe',
+            road_ids=['csvojolvaomldnwldqca', 'gckrwnreskuxsgsmukwq', 'hpyzvqnvlkhqdhxufaiz'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
-            title='snjhccyjdzxhurrnajox',
-            subtitle='fuqdzgybdwvdrtcpodfi',
+            display_type=DisplayTypeenum.ROADWORKS,
+            title='gkmwizdyohzhcrjmlbiu',
+            subtitle='vcvumnaecksplekqavrf',
             description_lines=None,
             future=False,
             is_blocked=True,
-            icon='epntfxungqcwbyncsnuk',
-            start_lc_position=int(95),
+            icon='ikrojgyejwcnikiqmalw',
+            start_lc_position=int(11),
             start_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            extent='dlbpwyfnmnfmjcvrjnts',
-            point='xdrnehjgkrfdonafazqk',
-            coordinate_lat=float(77.06878974069419),
-            coordinate_lon=float(92.83549706325556),
-            geometry_json='iibsfopkzrmghaqkyesr',
-            impact_lower='cxapxeeplpeujdobpdua',
-            impact_upper='vaafndaaqdfmcedghkxe',
+            extent='bpnsfxrgxpknzprtgovv',
+            point='wakduwgjeocbgwhccrdq',
+            coordinate_lat=float(51.227109860749124),
+            coordinate_lon=float(86.43348839476911),
+            geometry_json='vmainhajlngstigzurzq',
+            impact_lower='kptgujibuatjdrxpooxk',
+            impact_upper='rghbmeeadvutfovqmucz',
             impact_symbols=None,
-            route_recommendation_json='wigccgxdcsunorbepoqo',
+            route_recommendation_json='vdcunoxxnifawrornwpx',
             footer_lines=None
         )
         return instance
@@ -62,7 +62,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'crbqydcdqraqqrkaupzf'
+        test_value = 'vuyqcxgouwnykfmnpqcq'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
     
@@ -70,7 +70,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test road property
         """
-        test_value = 'arfbskxsyspbkvgxcljc'
+        test_value = 'xdjtsmiwaypssdifigpe'
         self.instance.road = test_value
         self.assertEqual(self.instance.road, test_value)
     
@@ -78,7 +78,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test road_ids property
         """
-        test_value = ['sducjgrafkfjrxrelerp', 'nnfiyuvoiuofxrdxwivi', 'vcvcmvpwegqnfrowvtzc', 'huguwoauekgmqsuemwum', 'ccuudkpbsookqkklxsag']
+        test_value = ['csvojolvaomldnwldqca', 'gckrwnreskuxsgsmukwq', 'hpyzvqnvlkhqdhxufaiz']
         self.instance.road_ids = test_value
         self.assertEqual(self.instance.road_ids, test_value)
     
@@ -94,7 +94,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test display_type property
         """
-        test_value = DisplayTypeenum.ELECTRIC_CHARGING_STATION
+        test_value = DisplayTypeenum.ROADWORKS
         self.instance.display_type = test_value
         self.assertEqual(self.instance.display_type, test_value)
     
@@ -102,7 +102,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'snjhccyjdzxhurrnajox'
+        test_value = 'gkmwizdyohzhcrjmlbiu'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -110,7 +110,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test subtitle property
         """
-        test_value = 'fuqdzgybdwvdrtcpodfi'
+        test_value = 'vcvumnaecksplekqavrf'
         self.instance.subtitle = test_value
         self.assertEqual(self.instance.subtitle, test_value)
     
@@ -142,7 +142,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test icon property
         """
-        test_value = 'epntfxungqcwbyncsnuk'
+        test_value = 'ikrojgyejwcnikiqmalw'
         self.instance.icon = test_value
         self.assertEqual(self.instance.icon, test_value)
     
@@ -150,7 +150,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test start_lc_position property
         """
-        test_value = int(95)
+        test_value = int(11)
         self.instance.start_lc_position = test_value
         self.assertEqual(self.instance.start_lc_position, test_value)
     
@@ -166,7 +166,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test extent property
         """
-        test_value = 'dlbpwyfnmnfmjcvrjnts'
+        test_value = 'bpnsfxrgxpknzprtgovv'
         self.instance.extent = test_value
         self.assertEqual(self.instance.extent, test_value)
     
@@ -174,7 +174,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test point property
         """
-        test_value = 'xdrnehjgkrfdonafazqk'
+        test_value = 'wakduwgjeocbgwhccrdq'
         self.instance.point = test_value
         self.assertEqual(self.instance.point, test_value)
     
@@ -182,7 +182,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test coordinate_lat property
         """
-        test_value = float(77.06878974069419)
+        test_value = float(51.227109860749124)
         self.instance.coordinate_lat = test_value
         self.assertEqual(self.instance.coordinate_lat, test_value)
     
@@ -190,7 +190,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test coordinate_lon property
         """
-        test_value = float(92.83549706325556)
+        test_value = float(86.43348839476911)
         self.instance.coordinate_lon = test_value
         self.assertEqual(self.instance.coordinate_lon, test_value)
     
@@ -198,7 +198,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test geometry_json property
         """
-        test_value = 'iibsfopkzrmghaqkyesr'
+        test_value = 'vmainhajlngstigzurzq'
         self.instance.geometry_json = test_value
         self.assertEqual(self.instance.geometry_json, test_value)
     
@@ -206,7 +206,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test impact_lower property
         """
-        test_value = 'cxapxeeplpeujdobpdua'
+        test_value = 'kptgujibuatjdrxpooxk'
         self.instance.impact_lower = test_value
         self.assertEqual(self.instance.impact_lower, test_value)
     
@@ -214,7 +214,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test impact_upper property
         """
-        test_value = 'vaafndaaqdfmcedghkxe'
+        test_value = 'rghbmeeadvutfovqmucz'
         self.instance.impact_upper = test_value
         self.assertEqual(self.instance.impact_upper, test_value)
     
@@ -230,7 +230,7 @@ class Test_RoadEvent(unittest.TestCase):
         """
         Test route_recommendation_json property
         """
-        test_value = 'wigccgxdcsunorbepoqo'
+        test_value = 'vdcunoxxnifawrornwpx'
         self.instance.route_recommendation_json = test_value
         self.assertEqual(self.instance.route_recommendation_json, test_value)
     

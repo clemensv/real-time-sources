@@ -13,8 +13,8 @@ from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
 from jma_bosai_warning_mqtt_producer_data.affectedcoastalregion import AffectedCoastalRegion
-from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_mqtt_producer_data.infotypeenum import InfoTypeenum
+from jma_bosai_warning_mqtt_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_mqtt_producer_data.tsunamiobservation import TsunamiObservation
 import datetime
 
@@ -114,6 +114,8 @@ class TsunamiAlert:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -181,17 +183,17 @@ class TsunamiAlert:
             An instance of the dataclass.
         """
         return cls(
-            event_id='kmajipjpympoywzjljwb',
-            serial=int(82),
+            event_id='nrrceyguqcvzmicpqnpp',
+            serial=int(9),
             info_type=InfoTypeenum.ISSUED,
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            title_jp='rbxvijlzpxkzoqsdnndq',
-            title_en='cohnxikvspkcvxscxphq',
-            bulletin_type='tkrwghuoqupbroulpzbf',
-            detail_url='nthdqlmfeibrqhiyurna',
-            affected_coastal_regions=[None],
-            observations=[None, None, None, None],
-            prefecture='hozypobihuirsaoxavoi',
-            severity=SeverityEnum.info
+            title_jp='znapnyicxoragtfmmvsj',
+            title_en='qniwubbnooeauvwulcaw',
+            bulletin_type='ihvxrqmbidnaxjqryeoa',
+            detail_url='pfzvgdfjhgfouotpyowo',
+            affected_coastal_regions=[None, None, None, None, None],
+            observations=[None, None, None, None, None],
+            prefecture='syhnaojdmclblpxlraxx',
+            severity=SeverityEnum.advisory
         )
