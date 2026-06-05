@@ -572,11 +572,24 @@ def main() -> None:
         default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
         help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
     )
+    feed_parser.add_argument(
+        "--mock",
+        action="store_true",
+        default=os.getenv("FMI_MOCK", "").lower() in ("1", "true", "yes"),
+        help="Serve a deterministic offline sample corpus instead of polling the live FMI WFS service (also via FMI_MOCK env var). Implies --once. Used by the Docker E2E flow test.",
+    )
 
     args = parser.parse_args()
     _configure_logging()
 
-    api = FMIAirQualityAPI()
+    if getattr(args, "mock", False):
+        from fmi_finland.samples import build_offline_api
+
+        api = build_offline_api()
+        args.once = True
+        logger.info("Running in offline mock mode using the bundled sample corpus")
+    else:
+        api = FMIAirQualityAPI()
 
     if args.command == "list":
         registry = api.get_station_registry()
