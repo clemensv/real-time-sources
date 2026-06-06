@@ -17,6 +17,7 @@ from typing import Any, Iterable, Optional
 import websockets.sync.client as ws_client
 from confluent_kafka import Producer
 
+from blitzortung.geohash import geohash5 as _geohash5, geohash7 as _geohash7
 from blitzortung_producer_data import LightningStroke
 from blitzortung_producer_kafka_producer.producer import BlitzortungLightningEventProducer
 
@@ -181,17 +182,22 @@ def normalize_stroke(stroke: dict[str, Any]) -> dict[str, Any]:
                 }
             )
 
+    latitude = float(stroke["lat"])
+    longitude = float(stroke["lon"])
+
     return {
         "source_id": int(stroke["src"]),
         "stroke_id": str(stroke["id"]),
         "event_time": epoch_millis_to_iso8601(timestamp_ms),
         "event_timestamp_ms": timestamp_ms,
-        "latitude": float(stroke["lat"]),
-        "longitude": float(stroke["lon"]),
+        "latitude": latitude,
+        "longitude": longitude,
         "server_id": int(stroke["srv"]) if stroke.get("srv") is not None else None,
         "server_delay_ms": int(stroke["del"]) if stroke.get("del") is not None else None,
         "accuracy_diameter_m": float(stroke["dev"]) if stroke.get("dev") is not None else None,
         "detector_participations": detector_participations,
+        "geohash5": _geohash5(latitude, longitude),
+        "geohash7": _geohash7(latitude, longitude),
     }
 
 
@@ -368,7 +374,7 @@ class BlitzortungBridge:
         self._event_producer.send_blitzortung_lightning_lightning_stroke(
             _source_id=data.source_id,
             _stroke_id=data.stroke_id,
-            _event_time=data.event_time,
+            _time=data.event_time,
             data=data,
             flush_producer=False,
         )

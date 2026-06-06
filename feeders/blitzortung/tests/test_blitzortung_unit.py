@@ -89,6 +89,8 @@ class TestHelpers:
             {"station_id": 1188, "status": 65},
             {"station_id": 1232, "status": 0},
         ]
+        assert normalized["geohash5"] == "dkukp"
+        assert normalized["geohash7"] == "dkukp5z"
 
 
 class TestStateStore:
@@ -128,7 +130,7 @@ class TestBridge:
         call = event_producer.send_blitzortung_lightning_lightning_stroke.call_args
         assert call.kwargs["_source_id"] == 2
         assert call.kwargs["_stroke_id"] == "2341268"
-        assert call.kwargs["_event_time"] == "2026-04-08T08:41:00.093000Z"
+        assert call.kwargs["_time"] == "2026-04-08T08:41:00.093000Z"
 
     def test_emit_mock_corpus(self, tmp_path: Path) -> None:
         event_producer = MagicMock()
