@@ -153,8 +153,9 @@ class TestParsingHelpers:
         assert observation["o3_ug_m3"] is None
 
     def test_measurement_arg_preserves_zero(self):
-        assert _measurement_arg(0.0) == "0"
-        assert _measurement_arg(1.5) == "1.5"
+        assert _measurement_arg(0.0) == 0.0
+        assert isinstance(_measurement_arg(0.0), float)
+        assert _measurement_arg(1.5) == 1.5
         assert _measurement_arg(None) is None
 
     def test_observation_window_alignment(self):

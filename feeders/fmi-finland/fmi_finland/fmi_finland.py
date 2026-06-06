@@ -198,11 +198,18 @@ def _safe_float(value: str | None) -> float | None:
         return None
 
 
-def _measurement_arg(value: float | None) -> str | None:
-    """Pass floats as strings so generated __post_init__ keeps zero values."""
+def _measurement_arg(value: float | None) -> float | None:
+    """Return the measurement as a float (or None).
+
+    The xrcg 0.10.12 generated ``Observation`` dataclass has no
+    ``__post_init__`` coercion and serializes stored values verbatim, so the
+    numeric pollutant/index fields must be passed as real floats to satisfy
+    the ``double`` JsonStructure schema. (Earlier codegen dropped zero values
+    in ``__post_init__``, which is why this previously stringified them.)
+    """
     if value is None:
         return None
-    return format(value, ".15g")
+    return float(value)
 
 
 def _flush_event_producer(event_producer: typing.Any) -> None:
