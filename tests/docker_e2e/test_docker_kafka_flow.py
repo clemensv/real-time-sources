@@ -1034,8 +1034,9 @@ class TestBlitzortungDockerFlow:
             reference_types=None,
             telemetry_types=['LightningStroke'],
             extra_env={'KAFKA_TOPIC': self.TOPIC},
+            command=['python', '-m', 'blitzortung', 'feed', '--mock'],
             min_messages=1,
-            timeout=180,
+            timeout=120,
         )
 
 

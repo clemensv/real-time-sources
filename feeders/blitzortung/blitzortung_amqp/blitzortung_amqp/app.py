@@ -259,7 +259,7 @@ class BlitzortungAmqpBridge:
             geohash5=data.geohash5,
             geohash7=data.geohash7,
             stroke_id=data.stroke_id,
-            event_time=data.event_time,
+            _time=data.event_time,
             data=data, qos=0, retain=False,
         )
         self._count += 1
