@@ -1,3 +1,3 @@
-from .firms import InstrumentEnum, ConfidenceLevelenum, DaynightEnum, FireDetection, DataAvailability
+from .firms import InstrumentEnum, DataAvailability, ConfidenceLevelenum, DaynightEnum, FireDetection
 
-__all__ = ["InstrumentEnum", "ConfidenceLevelenum", "DaynightEnum", "FireDetection", "DataAvailability"]
+__all__ = ["InstrumentEnum", "DataAvailability", "ConfidenceLevelenum", "DaynightEnum", "FireDetection"]

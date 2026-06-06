@@ -422,7 +422,7 @@ class GovNoaaSwpcL1MqttMqttClient(_ClientBase):
              "type":"gov.noaa.swpc.l1.PropagatedSolarWind",
              "source":"{feedurl}".format(feedurl = feedurl),
              "subject":"{spacecraft}".format(spacecraft = spacecraft),
-             "time":"{time_tag}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

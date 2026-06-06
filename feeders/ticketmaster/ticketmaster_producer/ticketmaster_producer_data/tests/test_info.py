@@ -28,19 +28,19 @@ class Test_Info(unittest.TestCase):
         Create instance of Info for testing
         """
         instance = Info(
-            info_id='hvuzrtqpqxvuoyffcwcv',
-            name='qwlqocfqligzeiipdihd',
-            country='ztsgnadikuzuekbpqawg',
-            city='focirbizqrxsicsygrrw',
-            category='dabkibywurnimwkjovbx',
-            price_area='ecseobwpikcotyfkfjay',
-            settlement_date='hzcdemyogzgbamqdvqsn',
-            settlement_period=int(70),
-            area_code='himyisonnkdxmwmbxxoy',
-            segment='uzcpieztqyjisyssigtr',
-            entity_id='rogoklioyfrlknobzuye',
-            event_id='cbrreqcrqxbqtxshpnuo',
-            venue_id='lvwnwijbbrkjwhljgbsi'
+            info_id='uhtrernxigmapzmxvepg',
+            name='mhoawpusidlvcywzatug',
+            country='bgbwzedolsyocqsatwbv',
+            city='kuqphegvlnvfrbudapul',
+            category='cqzaytyvxpoabauqhktd',
+            price_area='owncklvheufztsbygvur',
+            settlement_date='fxxgqapqpobrpnqrvyfi',
+            settlement_period=int(17),
+            area_code='suufmglaewgaiyhttkpd',
+            segment='lsoiqvgrhmizjjlsynpt',
+            entity_id='qonqokdbzakpptuhqzcr',
+            event_id='nwhpqxvrdkukowjsbshr',
+            venue_id='cohwirhberjdhnkogekd'
         )
         return instance
 
@@ -49,7 +49,7 @@ class Test_Info(unittest.TestCase):
         """
         Test info_id property
         """
-        test_value = 'hvuzrtqpqxvuoyffcwcv'
+        test_value = 'uhtrernxigmapzmxvepg'
         self.instance.info_id = test_value
         self.assertEqual(self.instance.info_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_Info(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'qwlqocfqligzeiipdihd'
+        test_value = 'mhoawpusidlvcywzatug'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -65,7 +65,7 @@ class Test_Info(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'ztsgnadikuzuekbpqawg'
+        test_value = 'bgbwzedolsyocqsatwbv'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -73,7 +73,7 @@ class Test_Info(unittest.TestCase):
         """
         Test city property
         """
-        test_value = 'focirbizqrxsicsygrrw'
+        test_value = 'kuqphegvlnvfrbudapul'
         self.instance.city = test_value
         self.assertEqual(self.instance.city, test_value)
     
@@ -81,7 +81,7 @@ class Test_Info(unittest.TestCase):
         """
         Test category property
         """
-        test_value = 'dabkibywurnimwkjovbx'
+        test_value = 'cqzaytyvxpoabauqhktd'
         self.instance.category = test_value
         self.assertEqual(self.instance.category, test_value)
     
@@ -89,7 +89,7 @@ class Test_Info(unittest.TestCase):
         """
         Test price_area property
         """
-        test_value = 'ecseobwpikcotyfkfjay'
+        test_value = 'owncklvheufztsbygvur'
         self.instance.price_area = test_value
         self.assertEqual(self.instance.price_area, test_value)
     
@@ -97,7 +97,7 @@ class Test_Info(unittest.TestCase):
         """
         Test settlement_date property
         """
-        test_value = 'hzcdemyogzgbamqdvqsn'
+        test_value = 'fxxgqapqpobrpnqrvyfi'
         self.instance.settlement_date = test_value
         self.assertEqual(self.instance.settlement_date, test_value)
     
@@ -105,7 +105,7 @@ class Test_Info(unittest.TestCase):
         """
         Test settlement_period property
         """
-        test_value = int(70)
+        test_value = int(17)
         self.instance.settlement_period = test_value
         self.assertEqual(self.instance.settlement_period, test_value)
     
@@ -113,7 +113,7 @@ class Test_Info(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'himyisonnkdxmwmbxxoy'
+        test_value = 'suufmglaewgaiyhttkpd'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
     
@@ -121,7 +121,7 @@ class Test_Info(unittest.TestCase):
         """
         Test segment property
         """
-        test_value = 'uzcpieztqyjisyssigtr'
+        test_value = 'lsoiqvgrhmizjjlsynpt'
         self.instance.segment = test_value
         self.assertEqual(self.instance.segment, test_value)
     
@@ -129,7 +129,7 @@ class Test_Info(unittest.TestCase):
         """
         Test entity_id property
         """
-        test_value = 'rogoklioyfrlknobzuye'
+        test_value = 'qonqokdbzakpptuhqzcr'
         self.instance.entity_id = test_value
         self.assertEqual(self.instance.entity_id, test_value)
     
@@ -137,7 +137,7 @@ class Test_Info(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'cbrreqcrqxbqtxshpnuo'
+        test_value = 'nwhpqxvrdkukowjsbshr'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -145,7 +145,7 @@ class Test_Info(unittest.TestCase):
         """
         Test venue_id property
         """
-        test_value = 'lvwnwijbbrkjwhljgbsi'
+        test_value = 'cohwirhberjdhnkogekd'
         self.instance.venue_id = test_value
         self.assertEqual(self.instance.venue_id, test_value)
     

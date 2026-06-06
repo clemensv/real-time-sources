@@ -717,7 +717,7 @@ class NextbusAmqpProducer:
             "subject":
             "{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, vehicle_id=_vehicle_id),
             "time":
-            "{timestamp}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -832,7 +832,7 @@ class NextbusAmqpProducer:
             "subject":
             "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id),
             "time":
-            "{timestamp}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -947,7 +947,7 @@ class NextbusAmqpProducer:
             "subject":
             "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id),
             "time":
-            "{timestamp}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -1062,7 +1062,7 @@ class NextbusAmqpProducer:
             "subject":
             "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id=_agency_id, route_tag=_route_tag, stop_or_vehicle_id=_stop_or_vehicle_id),
             "time":
-            "{timestamp}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

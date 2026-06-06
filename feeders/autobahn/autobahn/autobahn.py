@@ -660,7 +660,7 @@ class AutobahnPoller:
         method = getattr(self.event_producer, method_name)
         method(
             _identifier=snapshot["identifier"],
-            _event_time=event_time,
+            _time=event_time,
             data=data,
             flush_producer=False,
         )

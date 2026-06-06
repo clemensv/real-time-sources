@@ -428,7 +428,7 @@ class BillettoEventsMqttMqttClient(_ClientBase):
              "type":"Billetto.Events.Event",
              "source":"https://billetto.dk/api/v3/public/events",
              "subject":"{event_id}".format(event_id = event_id),
-             "time":"{startdate}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

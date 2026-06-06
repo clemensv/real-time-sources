@@ -119,7 +119,7 @@ def test_feed_once_sends_rows_flushes_and_saves_state(tmp_path, sample_row):
     call = event_producer.send_gov_noaa_swpc_l1_kafka_propagated_solar_wind.call_args
     assert call.kwargs["_feedurl"] == kafka_app.FEED_URL
     assert call.kwargs["_spacecraft"] == "dscovr"
-    assert call.kwargs["_time_tag"] == sample_row.time_tag.isoformat()
+    assert call.kwargs["_time"] == sample_row.time_tag.isoformat()
     assert call.kwargs["flush_producer"] is False
     assert raw_producer.flush.call_count == 2
     assert kafka_app.load_state(str(state_file))["last_time_tag"] == sample_row.time_tag.isoformat()

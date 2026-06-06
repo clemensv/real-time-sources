@@ -714,7 +714,7 @@ class TicketmasterEventsAmqpProducer:
             "subject":
             "{event_id}".format(event_id=_event_id),
             "time":
-            "{start_datetime_utc}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

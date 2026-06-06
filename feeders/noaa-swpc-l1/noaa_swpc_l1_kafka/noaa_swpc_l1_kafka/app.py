@@ -110,7 +110,7 @@ async def feed(
                     swpc_producer.send_gov_noaa_swpc_l1_kafka_propagated_solar_wind(
                         _feedurl=FEED_URL,
                         _spacecraft=row.spacecraft,
-                        _time_tag=row.time_tag.isoformat(),
+                        _time=row.time_tag.isoformat(),
                         data=_row_to_data(row),
                         flush_producer=False,
                     )

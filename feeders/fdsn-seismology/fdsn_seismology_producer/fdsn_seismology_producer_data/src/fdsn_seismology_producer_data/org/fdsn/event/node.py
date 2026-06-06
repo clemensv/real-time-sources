@@ -92,6 +92,8 @@ class Node:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -159,9 +161,9 @@ class Node:
             An instance of the dataclass.
         """
         return cls(
-            node_id='gxherdtrgubucamunfye',
-            name='eurmflsugjhudlqhashu',
-            base_url='ylmhrxbakcgnhogarwox',
-            coverage='ajgjpvywjdspdhuqqorw',
-            country='xntralplbfppyqieyhzq'
+            node_id='ydovuszwjmkbiwbycgcl',
+            name='azqwgbbfbjwbyulfhgif',
+            base_url='ysroydndghsgjtqhlnwg',
+            coverage='ikmbhyazmqhushsdtfqy',
+            country='rmvzgsovgueevyzknads'
         )

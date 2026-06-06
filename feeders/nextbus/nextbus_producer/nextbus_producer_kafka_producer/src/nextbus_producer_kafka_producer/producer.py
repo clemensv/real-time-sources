@@ -117,7 +117,7 @@ class NextbusKafkaEventProducer:
              "type":"nextbus.VehiclePosition",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id = _agency_id,route_tag = _route_tag,vehicle_id = _vehicle_id),
-             "time":"{timestamp}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -154,7 +154,7 @@ class NextbusKafkaEventProducer:
              "type":"nextbus.RouteConfig",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id = _agency_id,route_tag = _route_tag,stop_or_vehicle_id = _stop_or_vehicle_id),
-             "time":"{timestamp}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -191,7 +191,7 @@ class NextbusKafkaEventProducer:
              "type":"nextbus.Schedule",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id = _agency_id,route_tag = _route_tag,stop_or_vehicle_id = _stop_or_vehicle_id),
-             "time":"{timestamp}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -228,7 +228,7 @@ class NextbusKafkaEventProducer:
              "type":"nextbus.Message",
              "source":"https://retro.umoiq.com/service/publicXMLFeed",
              "subject":"{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id = _agency_id,route_tag = _route_tag,stop_or_vehicle_id = _stop_or_vehicle_id),
-             "time":"{timestamp}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

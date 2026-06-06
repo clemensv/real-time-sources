@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from autobahn_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -209,31 +209,31 @@ class WarningEvent:
             An instance of the dataclass.
         """
         return cls(
-            identifier='raxrrhqmsqyducvzawvc',
-            road='yiddylwipjalfetqnrgg',
-            road_ids=['xivdfoeyrfzobfrobnjl'],
+            identifier='rjciyqxscomcibbesadn',
+            road='kqyppezhpojucyoerfsv',
+            road_ids=['buhryaflnsorzeufqpup', 'kcpmiiubynyajbgzbrae', 'rbrukvjvafvccihykihc', 'xzqgzutnxuabugmydtnm'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.WARNING,
-            title='sfwtcpnruknuuweknnqo',
-            subtitle='iousrgglolkzazkdpard',
+            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
+            title='qwmnpdtqjrdaaofccrus',
+            subtitle='chczvimtagypbrdyyqvj',
             description_lines=None,
             future=True,
             is_blocked=True,
-            icon='lsswhnohrynlkvprnmts',
-            start_lc_position=int(75),
+            icon='sgmitwrkmjejnchbsyfu',
+            start_lc_position=int(7),
             start_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            extent='lmbnzhykjoqcfhlexbol',
-            point='tymlejqfpwrnhxqkkmtd',
-            coordinate_lat=float(9.617093556609667),
-            coordinate_lon=float(85.2954756531973),
-            geometry_json='uovzjlwufavmbfameikf',
-            impact_lower='hagkhknmnsphcvylwcit',
-            impact_upper='qugrspkhxvwgshlqsryd',
+            extent='prqbiaiqhyrwhxyvdmyl',
+            point='iirhpedsolnabkusgzjb',
+            coordinate_lat=float(30.467137696481373),
+            coordinate_lon=float(36.91676549051657),
+            geometry_json='moknimsqpnmvcptyoyno',
+            impact_lower='pieugoyerbelffpxjkcx',
+            impact_upper='ujowvyykqwuxzblluuwg',
             impact_symbols=None,
-            route_recommendation_json='sbjceyvausbzlqpcnezs',
+            route_recommendation_json='vrwcivmflbranvbkztgz',
             footer_lines=None,
-            delay_minutes=int(20),
-            average_speed_kmh=int(25),
-            abnormal_traffic_type='cxqswabattgnlpvlonsx',
-            source_name='nadqgxomfkgufubpuntf'
+            delay_minutes=int(23),
+            average_speed_kmh=int(69),
+            abnormal_traffic_type='qowvkknowoufcvtvltcm',
+            source_name='taulpgbqfdgrllnbkzef'
         )

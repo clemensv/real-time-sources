@@ -712,7 +712,7 @@ class GovNoaaSwpcL1AmqpProducer:
             "subject":
             "{spacecraft}".format(spacecraft=_spacecraft),
             "time":
-            "{time_tag}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

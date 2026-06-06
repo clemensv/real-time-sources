@@ -428,7 +428,7 @@ class BlitzortungLightningMqttMqttClient(_ClientBase):
              "type":"Blitzortung.Lightning.LightningStroke",
              "source":"wss://live.lightningmaps.org/",
              "subject":"{source_id}/{stroke_id}".format(source_id = source_id,stroke_id = stroke_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

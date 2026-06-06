@@ -259,7 +259,7 @@ class ParisBicycleCounterPoller:
 
                 for bc in new_counts:
                     self.producer.send_fr_paris_open_data_velo_bicycle_count(
-                        bc.counter_id, bc.ce_id, ce_datetime(bc.date), bc, flush_producer=False)
+                        bc.counter_id, bc.ce_id, data=bc, _time=ce_datetime(bc.date), flush_producer=False)
                 self.producer.producer.flush()
 
                 # Trim seen_keys to last 48h worth of keys to avoid unbounded growth

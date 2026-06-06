@@ -261,7 +261,7 @@ def feed(
                             data=_row_to_data(row),
                             _feedurl=FEED_URL,
                             _spacecraft=row.spacecraft,
-                            _time_tag=row.time_tag.isoformat(),
+                            _time=row.time_tag.isoformat(),
                         )
                         count += 1
                         last_seen = row.time_tag

@@ -242,8 +242,8 @@ class SeattleFire911Bridge:
                         continue
                     producer.send_us_wa_seattle_fire911_incident(
                         incident.incident_number,
-                        incident.incident_datetime_utc.isoformat(),
-                        incident,
+                        data=incident,
+                        _time=incident.incident_datetime_utc.isoformat(),
                         flush_producer=False,
                     )
                     sent_incident_numbers.append(incident.incident_number)

@@ -16,17 +16,18 @@ class Test_DisplayTypeenum(unittest.TestCase):
         """
         Setup test
         """
-        self.instance = DisplayTypeenum.WARNING
+        self.instance = DisplayTypeenum.ELECTRIC_CHARGING_STATION
 
     @staticmethod
     def create_instance():
         """
         Create instance of DisplayTypeenum
         """
-        return DisplayTypeenum.WARNING
+        return DisplayTypeenum.ELECTRIC_CHARGING_STATION
 
     def test_enum_values(self):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(DisplayTypeenum.WARNING.value, 'WARNING')
+        self.assertEqual(DisplayTypeenum.ELECTRIC_CHARGING_STATION.value, 'ELECTRIC_CHARGING_STATION')
+        self.assertEqual(DisplayTypeenum.STRONG_ELECTRIC_CHARGING_STATION.value, 'STRONG_ELECTRIC_CHARGING_STATION')

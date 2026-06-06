@@ -710,7 +710,7 @@ class BillettoEventsAmqpProducer:
             "subject":
             "{event_id}".format(event_id=_event_id),
             "time":
-            "{startdate}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

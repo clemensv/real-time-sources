@@ -112,7 +112,7 @@ class USWASeattleFire911EventProducer:
              "type":"US.WA.Seattle.Fire911.Incident",
              "source":"https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj",
              "subject":"{incident_number}".format(incident_number = _incident_number),
-             "time":"{incident_datetime_utc}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -236,7 +236,7 @@ class USWASeattleFire911MqttEventProducer:
              "type":"US.WA.Seattle.Fire911.Incident",
              "source":"https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj",
              "subject":"{incident_number}".format(incident_number = _incident_number),
-             "time":"{incident_datetime_utc}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -360,7 +360,7 @@ class USWASeattleFire911AmqpEventProducer:
              "type":"US.WA.Seattle.Fire911.Incident",
              "source":"https://data.seattle.gov/Public-Safety/Seattle-Real-Time-Fire-911-Calls/kzjm-xkqj",
              "subject":"{incident_number}".format(incident_number = _incident_number),
-             "time":"{incident_datetime_utc}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

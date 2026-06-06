@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from fdsn_seismology_producer_kafka_producer.producer import OrgFdsnEventKafkaEventProducer
 from fdsn_seismology_producer_data import Earthquake
-from test_fdsn_seismology_producer_data_earthquake import Test_Earthquake
+from test_earthquake import Test_Earthquake
 from fdsn_seismology_producer_data import Node
-from test_fdsn_seismology_producer_data_node import Test_Node
+from test_node import Test_Node
 
 @pytest.fixture(scope="module")
 def kafka_emulator():

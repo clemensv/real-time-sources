@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from autobahn_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -201,27 +201,27 @@ class RoadEvent:
             An instance of the dataclass.
         """
         return cls(
-            identifier='dzroyzjupwpxfrfspvlq',
-            road='yvpvdeaivuulogbvrfgi',
-            road_ids=['chjibeyymxssstotscbb', 'nnmfnlvqfzbeigdmuzyh', 'gmedvrehakmlkivxcpyj'],
+            identifier='djsfwoixhhsrspxsmudo',
+            road='aakqgmtoprkotexiqict',
+            road_ids=['gcyevcuewjjytycfccwz', 'qenfdixlolhsbhyiljoq'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.WARNING,
-            title='glbounytecniyehwgvpe',
-            subtitle='fpigvsegdtdzmeipjolr',
+            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
+            title='ofxkqqjwajfagruboyff',
+            subtitle='naafqaxctjqqszbpixur',
             description_lines=None,
             future=False,
-            is_blocked=False,
-            icon='uhamgdjkhkvrdeswuugi',
-            start_lc_position=int(82),
+            is_blocked=True,
+            icon='qqfjfmibgffhvawrefmx',
+            start_lc_position=int(67),
             start_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            extent='vdnhjyxvjjaecevmljjz',
-            point='hpjzospykindgkdkzgxf',
-            coordinate_lat=float(70.08011059839886),
-            coordinate_lon=float(56.49820555148928),
-            geometry_json='ubiopfemsrnzcextedyx',
-            impact_lower='fxeooqrqamssuujiivtu',
-            impact_upper='nhwtxijetobphuwsshzg',
+            extent='snunrnfysghcnqipxlvv',
+            point='szhuiyixgcxnygesnpof',
+            coordinate_lat=float(61.280445695037514),
+            coordinate_lon=float(54.65204994530358),
+            geometry_json='mfpptxvlbxhlscmurwqv',
+            impact_lower='iyidtxzqnzvdphtmxzef',
+            impact_upper='cattvlidmshiucivvzxa',
             impact_symbols=None,
-            route_recommendation_json='cyuuwhtzemsghxzdzezv',
+            route_recommendation_json='qkspoumcaujbctarxjjz',
             footer_lines=None
         )

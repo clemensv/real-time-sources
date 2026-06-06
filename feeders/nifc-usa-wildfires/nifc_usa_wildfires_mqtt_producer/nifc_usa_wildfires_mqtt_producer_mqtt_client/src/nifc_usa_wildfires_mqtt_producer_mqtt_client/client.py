@@ -428,7 +428,7 @@ class GovNIFCWildfiresMqttMqttClient(_ClientBase):
              "type":"Gov.NIFC.Wildfires.WildfireIncident",
              "source":"{source_uri}".format(source_uri = source_uri),
              "subject":"{irwin_id}".format(irwin_id = irwin_id),
-             "time":"{modified_on_datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

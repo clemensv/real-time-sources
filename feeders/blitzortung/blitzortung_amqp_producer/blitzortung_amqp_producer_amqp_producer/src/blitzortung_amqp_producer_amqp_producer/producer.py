@@ -712,7 +712,7 @@ class BlitzortungLightningAmqpProducer:
             "subject":
             "{source_id}/{stroke_id}".format(source_id=_source_id, stroke_id=_stroke_id),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

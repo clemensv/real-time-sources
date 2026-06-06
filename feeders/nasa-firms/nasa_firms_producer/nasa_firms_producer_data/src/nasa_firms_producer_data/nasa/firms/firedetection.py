@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from nasa_firms_producer_data.nasa.firms.instrumentenum import InstrumentEnum
 from nasa_firms_producer_data.nasa.firms.confidencelevelenum import ConfidenceLevelenum
+from nasa_firms_producer_data.nasa.firms.instrumentenum import InstrumentEnum
 from nasa_firms_producer_data.nasa.firms.daynightenum import DaynightEnum
 import datetime
 
@@ -198,25 +198,25 @@ class FireDetection:
             An instance of the dataclass.
         """
         return cls(
-            source='kvxckqktoicndntvopxv',
-            record_id='qrpyepabrgwkytmwtbuw',
-            latitude=float(96.40011811103395),
-            longitude=float(81.66768295412446),
-            brightness=float(78.47469866520768),
-            bright_t31=float(80.4597365093243),
-            bright_ti4=float(21.073441868552358),
-            bright_ti5=float(33.36151171468052),
-            scan=float(19.94893027667467),
-            track=float(97.12425992221233),
+            source='omvmaanimzbyytwnadno',
+            record_id='kclnfwxainvgxrkqkdwd',
+            latitude=float(74.11331456115465),
+            longitude=float(34.14583003988011),
+            brightness=float(93.92855204302406),
+            bright_t31=float(41.0849974244462),
+            bright_ti4=float(80.87825148699241),
+            bright_ti5=float(27.64433677183148),
+            scan=float(82.8024022077793),
+            track=float(62.179263036451324),
             acq_date=datetime.date.today(),
-            acq_time='dnbhuwbjrywijbcewspt',
+            acq_time='gbocnwaigpgnfzjoazwj',
             acq_datetime=datetime.datetime.now(datetime.timezone.utc),
-            satellite='xrhtfpxjodnulghnaljz',
+            satellite='qznklpsdgglsfunqhrhb',
             instrument=InstrumentEnum.VIIRS,
-            confidence='zqeorkkxdhtygopakotb',
+            confidence='punwrxlnzhoozejfuurw',
             confidence_level=ConfidenceLevelenum.low,
-            version='lbastdkxwtiaecidpfpu',
-            frp=float(7.011170020858093),
+            version='beskicuslpaynxjsqgtw',
+            frp=float(67.26698456431424),
             daynight=DaynightEnum.D,
-            tile='bqmkhqtyimbwzaayitcv'
+            tile='pzpwaivkrfxlvrqovdnt'
         )

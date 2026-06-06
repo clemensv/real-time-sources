@@ -28,11 +28,11 @@ class Test_Schedule(unittest.TestCase):
         Create instance of Schedule for testing
         """
         instance = Schedule(
-            agency_id='csbmidepcjiehttachxr',
-            route_tag='xckmejombunjwcdghxwu',
-            stop_or_vehicle_id='magskqpeqwyhqrumgihc',
-            event_type='zvumlyejhreaqevsxglz',
-            schedule='ecnukvzynbjuztynmupm'
+            agency_id='ltooslbsjvxeguxvhahg',
+            route_tag='bzzsygzaqpbifcoqejgv',
+            stop_or_vehicle_id='adwwxetmdtuvulwprivm',
+            event_type='czeaorzrrlmuzyubgyfr',
+            schedule='lvzqblfyrkwtpxicafhp'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Schedule(unittest.TestCase):
         """
         Test agency_id property
         """
-        test_value = 'csbmidepcjiehttachxr'
+        test_value = 'ltooslbsjvxeguxvhahg'
         self.instance.agency_id = test_value
         self.assertEqual(self.instance.agency_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_Schedule(unittest.TestCase):
         """
         Test route_tag property
         """
-        test_value = 'xckmejombunjwcdghxwu'
+        test_value = 'bzzsygzaqpbifcoqejgv'
         self.instance.route_tag = test_value
         self.assertEqual(self.instance.route_tag, test_value)
     
@@ -57,7 +57,7 @@ class Test_Schedule(unittest.TestCase):
         """
         Test stop_or_vehicle_id property
         """
-        test_value = 'magskqpeqwyhqrumgihc'
+        test_value = 'adwwxetmdtuvulwprivm'
         self.instance.stop_or_vehicle_id = test_value
         self.assertEqual(self.instance.stop_or_vehicle_id, test_value)
     
@@ -65,7 +65,7 @@ class Test_Schedule(unittest.TestCase):
         """
         Test event_type property
         """
-        test_value = 'zvumlyejhreaqevsxglz'
+        test_value = 'czeaorzrrlmuzyubgyfr'
         self.instance.event_type = test_value
         self.assertEqual(self.instance.event_type, test_value)
     
@@ -73,7 +73,7 @@ class Test_Schedule(unittest.TestCase):
         """
         Test schedule property
         """
-        test_value = 'ecnukvzynbjuztynmupm'
+        test_value = 'lvzqblfyrkwtpxicafhp'
         self.instance.schedule = test_value
         self.assertEqual(self.instance.schedule, test_value)
     

@@ -447,7 +447,7 @@ class NASAFIRMSMqttMqttClient(_ClientBase):
              "type":"NASA.FIRMS.FireDetection",
              "source":"{source_uri}".format(source_uri = source_uri),
              "subject":"{source}/{record_id}".format(source = source,record_id = record_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -530,7 +530,7 @@ class NASAFIRMSMqttMqttClient(_ClientBase):
              "type":"NASA.FIRMS.DataAvailability",
              "source":"{source_uri}".format(source_uri = source_uri),
              "subject":"{source}/{record_id}".format(source = source,record_id = record_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
