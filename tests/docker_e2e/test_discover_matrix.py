@@ -92,5 +92,114 @@ def test_scoped_change_selects_that_feeders_jobs(tmp_path, monkeypatch):
     assert all(m["dir"] == target for m in flow)
 
 
+def _run(monkeypatch, tmp_path, *, event, changed="", scope=None, base=None):
+    out = tmp_path / "gh_output"
+    out.write_text("", encoding="utf-8")
+    monkeypatch.setenv("GITHUB_OUTPUT", str(out))
+    monkeypatch.setenv("EVENT_NAME", event)
+    monkeypatch.setenv("CHANGED_FILES", changed)
+    monkeypatch.delenv("CHANGED_FILES_PATH", raising=False)
+    if scope is None:
+        monkeypatch.delenv("SCOPE", raising=False)
+    else:
+        monkeypatch.setenv("SCOPE", scope)
+    if base is None:
+        monkeypatch.delenv("BASE_SHA", raising=False)
+    else:
+        monkeypatch.setenv("BASE_SHA", base)
+    assert dm.main() == 0
+    vals = _parse_github_output(out)
+    return (
+        vals,
+        json.loads(vals["build_matrix"])["include"],
+        json.loads(vals["flow_matrix"])["include"],
+    )
+
+
+def test_tools_change_selects_zero_jobs(tmp_path, monkeypatch):
+    # tools/** does not affect Docker E2E (images build from committed feeder
+    # code, not from tools/), so a tools-only change must run no E2E jobs and
+    # must NOT escalate to the full matrix.
+    vals, build, flow = _run(
+        monkeypatch, tmp_path, event="push", changed="tools/deploy/build_wheel.py"
+    )
+    assert vals["full_run"] == "false"
+    assert build == []
+    assert flow == []
+
+
+def test_docs_change_selects_zero_jobs(tmp_path, monkeypatch):
+    vals, build, flow = _run(
+        monkeypatch, tmp_path, event="push", changed="docs/readme.md"
+    )
+    assert vals["full_run"] == "false"
+    assert build == [] and flow == []
+
+
+def test_harness_change_runs_smoke_set(tmp_path, monkeypatch):
+    matrix = json.loads(MATRIX_PATH.read_text())
+    smoke_build = [m for m in matrix["build"] if m.get("smoke")]
+    smoke_flow = [m for m in matrix["flow"] if m.get("smoke")]
+    assert smoke_build and smoke_flow, "matrix.json must define a smoke set"
+    vals, build, flow = _run(
+        monkeypatch, tmp_path, event="push", changed="tests/docker_e2e/conftest.py"
+    )
+    assert vals["full_run"] == "false"
+    assert build == smoke_build
+    assert flow == smoke_flow
+
+
+def test_shard_workflow_change_runs_smoke_set(tmp_path, monkeypatch):
+    vals, build, flow = _run(
+        monkeypatch,
+        tmp_path,
+        event="push",
+        changed=".github/workflows/_docker-flow-shard.yml",
+    )
+    assert vals["full_run"] == "false"
+    assert all(m.get("smoke") for m in build)
+    assert build, "shard-workflow change must run the smoke set"
+
+
+def test_schedule_forces_full(tmp_path, monkeypatch):
+    matrix = json.loads(MATRIX_PATH.read_text())
+    vals, build, flow = _run(monkeypatch, tmp_path, event="schedule")
+    assert vals["full_run"] == "true"
+    assert len(build) == len(matrix["build"])
+    assert len(flow) == len(matrix["flow"])
+
+
+def test_dispatch_default_full(tmp_path, monkeypatch):
+    matrix = json.loads(MATRIX_PATH.read_text())
+    # No scope input -> default full.
+    vals, build, _ = _run(monkeypatch, tmp_path, event="workflow_dispatch", scope="")
+    assert vals["full_run"] == "true"
+    assert len(build) == len(matrix["build"])
+
+
+def test_dispatch_smoke_scope(tmp_path, monkeypatch):
+    vals, build, flow = _run(
+        monkeypatch, tmp_path, event="workflow_dispatch", scope="smoke"
+    )
+    assert vals["full_run"] == "false"
+    assert build and all(m.get("smoke") for m in build)
+    assert flow and all(m.get("smoke") for m in flow)
+
+
+def test_dispatch_changed_scope(tmp_path, monkeypatch):
+    matrix = json.loads(MATRIX_PATH.read_text())
+    target = matrix["build"][0]["dir"]
+    feeder = target.split("/", 1)[1]
+    vals, build, flow = _run(
+        monkeypatch,
+        tmp_path,
+        event="workflow_dispatch",
+        scope="changed",
+        changed=f"{target}/{feeder}/{feeder}.py",
+    )
+    assert vals["full_run"] == "false"
+    assert build and all(m["dir"] == target for m in build)
+
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-v"]))

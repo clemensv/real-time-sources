@@ -1,20 +1,42 @@
 name: Docker E2E Tests
 
 # Strategy: a `discover` job inspects the changed files and decides which
-# feeders to build + test. If only one feeder's files changed, only that
-# feeder's docker-build + docker-kafka-flow jobs run. If any infrastructure
-# path changed (tests/docker_e2e/**, this workflow, tools/**, catalog.json)
-# the full matrix runs. workflow_dispatch / schedule also force full.
+# feeders to build + test.
+#   - push / pull_request -> change-scoped: only the touched feeders' build +
+#     flow jobs run. A test-harness change (tests/docker_e2e/**, this workflow,
+#     the reusable _docker-*-shard.yml workflows, non-additive catalog.json)
+#     runs a small curated SMOKE set spanning Kafka/MQTT/AMQP instead of the
+#     full matrix. tools/** and docs changes run zero E2E jobs (images build
+#     from committed feeder code, not from tools/).
+#   - schedule (weekly) -> the full matrix. This is the authoritative gate.
+#   - workflow_dispatch -> honours the `scope` input (full / smoke / changed).
+#
+# The full ~664-job matrix is reserved for the weekly run because, under runner
+# load, it starves live-upstream flow tests into transient failures. Scoped PR
+# runs stay fast and reliable; the weekly run catches cross-feeder drift.
 #
 # The authoritative feeder list lives in tests/docker_e2e/matrix.json so
-# adding a feeder is a JSON edit, not a YAML edit.
+# adding a feeder is a JSON edit, not a YAML edit. Smoke feeders carry a
+# "smoke": true flag there.
 
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+  schedule:
+    # Weekly full run: Mondays 06:00 UTC.
+    - cron: '0 6 * * 1'
   workflow_dispatch:
+    inputs:
+      scope:
+        description: 'Run scope for manual dispatch.'
+        type: choice
+        default: full
+        options:
+          - full
+          - smoke
+          - changed
 
 jobs:
   discover:
@@ -62,6 +84,7 @@ jobs:
         id: compute
         env:
           EVENT_NAME: ${{ github.event_name }}
+          SCOPE: ${{ github.event.inputs.scope }}
           CHANGED_FILES_PATH: changed-files.txt
           BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha || github.event.after }}

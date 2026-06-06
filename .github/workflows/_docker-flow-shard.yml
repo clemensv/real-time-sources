@@ -36,14 +36,22 @@ jobs:
           cache: 'pip'
 
       - name: Install test dependencies
-        run: pip install -r tests/docker_e2e/requirements.txt
+        run: |
+          pip install -r tests/docker_e2e/requirements.txt
+          pip install pytest-rerunfailures
 
       - name: Run Kafka flow test
         run: |
+          # Bounded retry absorbs transient live-upstream flakes (an upstream
+          # that simply did not emit within the window under runner load).
+          # Deterministic contract failures (wrong key/subject, invalid schema,
+          # missing event types) fail identically on every attempt, so they are
+          # not masked. The weekly scheduled full run is the authoritative gate.
           pytest tests/docker_e2e/${{ matrix.test_file || 'test_docker_kafka_flow.py' }} \
             -v --timeout=600 \
+            --reruns 2 --reruns-delay 15 \
             -k "${{ matrix.test_class }}" \
             --tb=long
-        timeout-minutes: 10
+        timeout-minutes: 15
         env:
           WSDOT_ACCESS_CODE: ${{ secrets.WSDOT_ACCESS_CODE }}

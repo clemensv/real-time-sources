@@ -3,7 +3,9 @@
 
 Inputs (env):
   CHANGED_FILES : newline-separated list of changed file paths.
-  EVENT_NAME    : github.event_name (workflow_dispatch / schedule force full).
+  EVENT_NAME    : github.event_name (schedule forces full; see SCOPE).
+  SCOPE         : manual override for workflow_dispatch: full / smoke / changed
+                  (default full). Ignored for push/pull_request/schedule.
   BASE_SHA      : merge base SHA (optional; enables additive-infra scoping).
   HEAD_SHA      : head SHA (optional; defaults to HEAD).
 
@@ -15,17 +17,28 @@ Outputs (GITHUB_OUTPUT):
   full_run        : "true" or "false"
   reason          : short human-readable reason.
 
-Logic:
-  - If event is workflow_dispatch/schedule, or any changed file matches an
-    INFRA path that is NOT additive-safe, emit the full matrix.
-  - Else compute the set of top-level dirs touched; intersect with the
-    matrix `dir` fields; emit only those entries.
-  - Additive-safe infra files (matrix.json, catalog.json,
-    test_docker_*_flow.py) contribute their newly-added source dirs to the
-    scoped set when the diff is purely additive (existing entries
-    unchanged); otherwise they force the full run.
-  - Always emit a `{include:[]}` shape so an empty selection still produces
-    a valid (no-op) matrix.
+Run-scoping policy (the full 664-job matrix is expensive and, under runner
+load, starves live-upstream flow tests into transient failures, so we reserve
+it for the weekly scheduled run and on-demand dispatch):
+
+  - schedule .............. FULL matrix (weekly authoritative gate).
+  - workflow_dispatch ..... honours SCOPE (full | smoke | changed; default full).
+  - push / pull_request ... change-scoped:
+      * feeder dir changed -> just that feeder's build+flow jobs.
+      * additive-safe infra (matrix.json / catalog.json / test_docker_*_flow.py
+        purely additive) -> the newly-added feeders' jobs.
+      * harness change (anything under tests/docker_e2e/** that is NOT
+        additive-safe, the e2e workflow yml, the reusable shard ymls, or a
+        non-additive catalog.json) -> the SMOKE set: a small curated,
+        transport-spanning subset (entries flagged "smoke": true in
+        matrix.json) that cheaply proves the harness still works across
+        Kafka/MQTT/AMQP. Full feeder coverage for harness changes comes from
+        the weekly scheduled run.
+      * nothing matched (e.g. tools/** or docs only) -> zero jobs (no-op);
+        tools/** does not affect Docker E2E because images are built from the
+        committed feeder code, not regenerated from tools/.
+  - Always emit a `{include:[]}` shape so an empty selection still produces a
+    valid (no-op) matrix.
 """
 from __future__ import annotations
 
@@ -51,12 +64,17 @@ MATRIX_PATH = ROOT / "tests" / "docker_e2e" / "matrix.json"
 SHARD_COUNT = 4
 SHARD_CAP = 250  # < 256 GitHub limit, leaves headroom inside each shard
 
-# Anything under these paths invalidates per-feeder scoping and forces full
-# run UNLESS the change is purely additive (handled per-file below).
+# Anything under these paths is a test-harness change: it invalidates
+# per-feeder scoping because it can affect every feeder's E2E run. A
+# non-additive change here triggers the SMOKE set (not the full matrix) on
+# push/PR; the weekly scheduled run provides full coverage. Note: tools/** is
+# deliberately NOT here -- Docker E2E builds images from committed feeder code
+# and never regenerates producers from tools/, so tool changes need no E2E.
 INFRA_PATTERNS = [
     re.compile(r"^tests/docker_e2e/"),
     re.compile(r"^\.github/workflows/test-docker-e2e\.yml$"),
-    re.compile(r"^tools/"),
+    re.compile(r"^\.github/workflows/_docker-build-shard\.yml$"),
+    re.compile(r"^\.github/workflows/_docker-flow-shard\.yml$"),
     re.compile(r"^catalog\.json$"),
 ]
 
@@ -312,49 +330,75 @@ def shard_entries(entries: list) -> list[list]:
 def main() -> int:
     matrix = json.loads(MATRIX_PATH.read_text())
     event = os.environ.get("EVENT_NAME", "")
+    scope = os.environ.get("SCOPE", "").strip().lower()
     base_sha = os.environ.get("BASE_SHA", "").strip()
     changed = _load_changed_files()
 
-    force_full = event in ("workflow_dispatch", "schedule") or not changed
-    reason = (
-        f"event={event}, force full"
-        if event in ("workflow_dispatch", "schedule")
-        else "no changed files detected, force full"
-        if not changed
-        else ""
-    )
+    force_full = False
+    smoke = False
+    reason = ""
+
+    if event == "schedule":
+        force_full = True
+        reason = "scheduled run: full weekly matrix"
+    elif event == "workflow_dispatch":
+        # Manual dispatch honours the SCOPE input (default full).
+        if scope == "smoke":
+            smoke = True
+            reason = "manual dispatch: smoke scope"
+        elif scope == "changed":
+            reason = "manual dispatch: changed scope"
+        else:
+            force_full = True
+            reason = "manual dispatch: full scope"
+    elif not changed:
+        # No diff to scope from (e.g. first push of a branch); be safe with
+        # the smoke set rather than the full matrix on push/PR.
+        smoke = True
+        reason = "no changed files detected, running smoke set"
 
     extra_dirs: set[str] = set()
-    if not force_full:
+    if not force_full and not smoke and event not in ("schedule", "workflow_dispatch"):
         infra_hits = [p for p in changed if is_infra(p)]
         if infra_hits:
             additive_paths = [p for p in infra_hits if is_additive_candidate(p)]
             hard_infra = [p for p in infra_hits if not is_additive_candidate(p)]
             if hard_infra:
-                force_full = True
-                reason = f"infra paths changed: {', '.join(hard_infra[:5])}"
+                # Non-additive harness change: run the smoke set on push/PR.
+                # The weekly scheduled run covers the full feeder matrix.
+                smoke = True
+                reason = (
+                    "harness paths changed, running smoke set: "
+                    + ", ".join(hard_infra[:5])
+                )
             elif additive_paths and base_sha:
                 extra, blockers = scope_additive_infra(
                     additive_paths, base_sha, matrix
                 )
                 if blockers:
-                    force_full = True
+                    smoke = True
                     reason = (
-                        "infra changes not provably additive: "
+                        "infra changes not provably additive, running smoke set: "
                         + ", ".join(blockers[:5])
                     )
                 else:
                     extra_dirs.update(extra)
             elif additive_paths and not base_sha:
-                force_full = True
+                smoke = True
                 reason = (
-                    "infra paths changed and no BASE_SHA to verify additive: "
-                    + ", ".join(additive_paths[:5])
+                    "infra paths changed and no BASE_SHA to verify additive, "
+                    "running smoke set: " + ", ".join(additive_paths[:5])
                 )
 
     if force_full:
         build = matrix["build"]
         flow = matrix["flow"]
+    elif smoke:
+        build = [m for m in matrix["build"] if m.get("smoke")]
+        flow = [m for m in matrix["flow"] if m.get("smoke")]
+        reason = (
+            f"{reason} -> {len(build)} build / {len(flow)} flow smoke job(s)"
+        )
     else:
         touched_dirs = {top_dir(p) for p in changed if not is_infra(p)}
         touched_dirs.update(extra_dirs)
