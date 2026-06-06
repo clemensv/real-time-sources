@@ -233,20 +233,72 @@ def _class_blocks(text: str) -> dict[str, str]:
     for node in tree.body:
         if not isinstance(node, ast.ClassDef):
             continue
-        start = node.lineno - 1
+        # Include any class-level decorators (which precede ``node.lineno``)
+        # in the hashed span so a decorator-only change (e.g. adding
+        # @pytest.mark.skip) registers as a class-body change rather than
+        # silently slipping past both this hash and the non-class hash.
+        start = min([node.lineno] + [d.lineno for d in node.decorator_list]) - 1
         end = getattr(node, "end_lineno", None) or start + 1
         body = "".join(lines[start:end])
         out[node.name] = hashlib.sha256(body.encode("utf-8")).hexdigest()
     return out
 
 
+def _module_nonclass_hash(text: str) -> str | None:
+    """Hash of all top-level statements that are NOT class definitions.
+
+    Returns None if the source cannot be parsed. Used to prove that a change
+    to a test file is confined to test-class bodies and does not touch shared
+    module-level code (imports, fixtures, helper functions) that could affect
+    every feeder's E2E run.
+    """
+    import ast
+
+    try:
+        tree = ast.parse(text)
+    except SyntaxError:
+        return None
+    lines = text.splitlines(keepends=True)
+    segments: list[str] = []
+    for node in tree.body:
+        if isinstance(node, ast.ClassDef):
+            continue
+        start = node.lineno - 1
+        end = getattr(node, "end_lineno", None) or start + 1
+        segments.append("".join(lines[start:end]))
+    return hashlib.sha256("\x00".join(segments).encode("utf-8")).hexdigest()
+
+
 def additive_test_file(base_txt: str, head_txt: str, matrix: dict) -> list[str] | None:
+    """Scope a Docker-E2E test-file change to the affected feeder dirs.
+
+    Returns the list of feeder dirs whose flow jobs should run, or None to
+    signal the change cannot be attributed to specific feeders (the caller
+    then falls back to the smoke set).
+
+    A change is attributable when it is confined to test-class bodies and
+    every added/modified class maps to a feeder dir via the matrix. It bails
+    (None) when shared module-level code changed (imports, fixtures, helper
+    functions), when an existing class was removed, or when a *modified*
+    existing class has no matrix mapping (e.g. a shared base class) -- any of
+    which can affect feeders we cannot enumerate from the class alone. This
+    lets a PR that flips one feeder's own test class to ``--mock`` run that
+    feeder's flow job instead of the whole smoke set.
+    """
+    # Shared, non-class module-level code must be byte-identical; otherwise a
+    # changed import / fixture / helper could affect every feeder's run.
+    base_shared = _module_nonclass_hash(base_txt)
+    head_shared = _module_nonclass_hash(head_txt)
+    if base_shared is None or head_shared is None or base_shared != head_shared:
+        return None
+
     base_classes = _class_blocks(base_txt)
     head_classes = _class_blocks(head_txt)
-    # No removals or body changes of existing classes.
-    for cls, base_hash in base_classes.items():
-        if cls not in head_classes or head_classes[cls] != base_hash:
+    # No removals of existing classes (a deletion may alter shared behavior).
+    for cls in base_classes:
+        if cls not in head_classes:
             return None
+
     # Map test_class -> dir via matrix entries.
     cls_to_dir = {}
     for entry in matrix.get("flow", []):
@@ -254,10 +306,24 @@ def additive_test_file(base_txt: str, head_txt: str, matrix: dict) -> list[str] 
         d = entry.get("dir")
         if tc and d:
             cls_to_dir[tc] = d
+
     touched: set[str] = set()
-    for cls in set(head_classes) - set(base_classes):
-        d = cls_to_dir.get(cls)
-        if d:
+    for cls, head_hash in head_classes.items():
+        base_hash = base_classes.get(cls)
+        if base_hash is None:
+            # Newly added class: additive. Attribute to its feeder if mapped;
+            # an unmapped new class selects no job (matches the prior add-only
+            # behavior -- nothing references it yet, so it is safe).
+            d = cls_to_dir.get(cls)
+            if d:
+                touched.add(d)
+        elif base_hash != head_hash:
+            # Modified existing class body. Attribute to its feeder dir. A
+            # modified class that is NOT a flow-matrix entry is a shared base
+            # class whose change can affect many feeders -> cannot scope.
+            d = cls_to_dir.get(cls)
+            if d is None:
+                return None
             touched.add(d)
     return sorted(touched)
 
