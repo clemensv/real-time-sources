@@ -201,5 +201,113 @@ def test_dispatch_changed_scope(tmp_path, monkeypatch):
     assert build and all(m["dir"] == target for m in build)
 
 
+# --- additive_test_file: feeder-scoped edits to existing test classes -------
+
+_FLOW_MATRIX = {
+    "flow": [
+        {"dir": "feeders/blitzortung", "test_class": "TestBlitzortungDockerFlow"},
+        {"dir": "feeders/gbfs-bikeshare", "test_class": "TestGbfsMqttDockerFlow"},
+    ]
+}
+
+
+def _test_file(blitz_cmd: str = "feed", gbfs_env: str = "live", helper: str = "x") -> str:
+    return (
+        "import os\n"
+        "import pytest\n"
+        "\n"
+        f"def _shared_helper():\n    return '{helper}'\n"
+        "\n"
+        "class TestBlitzortungDockerFlow:\n"
+        f"    command = ['python', '-m', 'blitzortung', '{blitz_cmd}']\n"
+        "    def test_it(self):\n        assert True\n"
+        "\n"
+        "class TestGbfsMqttDockerFlow:\n"
+        f"    env = {{'GBFS_MOCK': '{gbfs_env}'}}\n"
+        "    def test_it(self):\n        assert True\n"
+    )
+
+
+def test_additive_test_file_scopes_modified_class_to_its_feeder():
+    base = _test_file(blitz_cmd="feed")
+    head = _test_file(blitz_cmd="feed --mock")
+    dirs = dm.additive_test_file(base, head, _FLOW_MATRIX)
+    assert dirs == ["feeders/blitzortung"]
+
+
+def test_additive_test_file_scopes_only_changed_classes():
+    base = _test_file(blitz_cmd="feed", gbfs_env="live")
+    head = _test_file(blitz_cmd="feed", gbfs_env="true")
+    dirs = dm.additive_test_file(base, head, _FLOW_MATRIX)
+    assert dirs == ["feeders/gbfs-bikeshare"]
+
+
+def test_additive_test_file_shared_helper_change_bails_to_smoke():
+    base = _test_file(helper="x")
+    head = _test_file(helper="y")  # module-level helper changed
+    assert dm.additive_test_file(base, head, _FLOW_MATRIX) is None
+
+
+def test_additive_test_file_added_class_is_additive():
+    base = _test_file()
+    head = _test_file() + (
+        "\nclass TestNewFeederDockerFlow:\n    def test_it(self):\n        assert True\n"
+    )
+    # New unmapped class selects no job but is still additive (not None).
+    assert dm.additive_test_file(base, head, _FLOW_MATRIX) == []
+
+
+def test_additive_test_file_removed_class_bails_to_smoke():
+    base = _test_file()
+    head = (
+        "import os\nimport pytest\n\n"
+        "def _shared_helper():\n    return 'x'\n\n"
+        "class TestBlitzortungDockerFlow:\n"
+        "    command = ['python', '-m', 'blitzortung', 'feed']\n"
+        "    def test_it(self):\n        assert True\n"
+    )  # TestGbfsMqttDockerFlow removed
+    assert dm.additive_test_file(base, head, _FLOW_MATRIX) is None
+
+
+def test_additive_test_file_modified_unmapped_class_bails_to_smoke():
+    base = (
+        "import pytest\n\n"
+        "class AmqpDockerFlowBase:\n    timeout = 60\n"
+        "    def run(self):\n        return 1\n"
+    )
+    head = base.replace("timeout = 60", "timeout = 90")
+    # A shared base class (no matrix entry) changed -> cannot scope.
+    assert dm.additive_test_file(base, head, _FLOW_MATRIX) is None
+
+
+def test_additive_test_file_decorator_change_on_mapped_class_scopes():
+    # A class-level decorator change must register as a class change (the
+    # decorator precedes `class`, so without span widening it would be
+    # invisible to both hashes and silently under-scope).
+    base = (
+        "import pytest\n\n"
+        "class TestBlitzortungDockerFlow:\n    def test_it(self):\n        assert True\n"
+    )
+    head = (
+        "import pytest\n\n"
+        "@pytest.mark.skip(reason='flaky')\n"
+        "class TestBlitzortungDockerFlow:\n    def test_it(self):\n        assert True\n"
+    )
+    assert dm.additive_test_file(base, head, _FLOW_MATRIX) == ["feeders/blitzortung"]
+
+
+def test_additive_test_file_decorator_change_on_unmapped_class_bails():
+    base = (
+        "import pytest\n\n"
+        "class AmqpDockerFlowBase:\n    def run(self):\n        return 1\n"
+    )
+    head = (
+        "import pytest\n\n"
+        "@pytest.mark.usefixtures('broker')\n"
+        "class AmqpDockerFlowBase:\n    def run(self):\n        return 1\n"
+    )
+    assert dm.additive_test_file(base, head, _FLOW_MATRIX) is None
+
+
 if __name__ == "__main__":
     raise SystemExit(pytest.main([__file__, "-v"]))
