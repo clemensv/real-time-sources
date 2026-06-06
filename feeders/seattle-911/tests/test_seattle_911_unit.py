@@ -105,8 +105,8 @@ class TestPolling:
         first_incident = parse_incident(SAMPLE_ROWS[0])
         producer.send_us_wa_seattle_fire911_incident.assert_any_call(
             "F260046986",
-            first_incident.incident_datetime_utc.isoformat(),
-            first_incident,
+            data=first_incident,
+            _time=first_incident.incident_datetime_utc.isoformat(),
             flush_producer=False,
         )
 

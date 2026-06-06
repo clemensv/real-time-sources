@@ -116,7 +116,7 @@ class TicketmasterEventsEventProducer:
              "type":"Ticketmaster.Events.Event",
              "source":"https://app.ticketmaster.com/discovery/v2/events",
              "subject":"{event_id}".format(event_id = _event_id),
-             "time":"{start_datetime_utc}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -466,7 +466,7 @@ class TicketmasterEventsMqttEventProducer:
              "type":"Ticketmaster.Events.Event",
              "source":"https://app.ticketmaster.com/discovery/v2/events",
              "subject":"{event_id}".format(event_id = _event_id),
-             "time":"{start_datetime_utc}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -590,7 +590,7 @@ class TicketmasterEventsAmqpEventProducer:
              "type":"Ticketmaster.Events.Event",
              "source":"https://app.ticketmaster.com/discovery/v2/events",
              "subject":"{event_id}".format(event_id = _event_id),
-             "time":"{start_datetime_utc}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

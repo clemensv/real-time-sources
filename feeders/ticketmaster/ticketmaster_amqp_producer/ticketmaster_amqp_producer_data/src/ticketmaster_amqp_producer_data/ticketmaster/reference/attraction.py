@@ -171,14 +171,14 @@ class Attraction:
             An instance of the dataclass.
         """
         return cls(
-            entity_id='hvhathabvfptjriesvxp',
-            name='emqxnzrlheswrymdxjoi',
-            url='rfjdgoxypliresxfurqf',
-            locale='femomuyvknyaieahxakq',
-            segment_id='aebpgamrsitdifitywgd',
-            segment_name='lvjokknolliyrtcolwtz',
-            genre_id='scsvbspinpqkqfhlnrpi',
-            genre_name='hrtkysgybvzkpdqlvhij',
-            subgenre_id='fayzmcqmjcsxrqxyhzqf',
-            subgenre_name='bajtmlkdyizihksrwqmx'
+            entity_id='mlvhnqxmrlnvwrgbtopi',
+            name='rudcenszandjwcfcgaaa',
+            url='cbczqjgyvzmcmoneojxl',
+            locale='ibjplzpbnavevorzbqjp',
+            segment_id='cdrlpwaxntsdufxlanav',
+            segment_name='jgglerupnaixmaaonxxx',
+            genre_id='elonqagxcwxbiihlutxe',
+            genre_name='eqfxqtojqavpufaecwii',
+            subgenre_id='ycgwyjoembumcjpydwdk',
+            subgenre_name='ymdiqhnxrqptnsokhsfv'
         )

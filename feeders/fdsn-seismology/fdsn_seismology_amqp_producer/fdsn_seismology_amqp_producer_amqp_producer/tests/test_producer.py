@@ -27,9 +27,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from fdsn_seismology_amqp_producer_amqp_producer import *
 from fdsn_seismology_amqp_producer_data import Earthquake
-from test_fdsn_seismology_amqp_producer_data_earthquake import Test_Earthquake
+from test_earthquake import Test_Earthquake
 from fdsn_seismology_amqp_producer_data import Node
-from test_fdsn_seismology_amqp_producer_data_node import Test_Node
+from test_node import Test_Node
 
 
 

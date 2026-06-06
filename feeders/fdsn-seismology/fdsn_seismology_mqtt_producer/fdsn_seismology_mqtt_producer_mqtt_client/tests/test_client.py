@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import fdsn_seismology_mqtt_producer_data
 from fdsn_seismology_mqtt_producer_data import Earthquake
-from test_fdsn_seismology_mqtt_producer_data_earthquake import Test_Earthquake
+from test_earthquake import Test_Earthquake
 from fdsn_seismology_mqtt_producer_data import Node
-from test_fdsn_seismology_mqtt_producer_data_node import Test_Node
+from test_node import Test_Node
 from fdsn_seismology_mqtt_producer_mqtt_client import OrgFdsnEventMqttMqttClient
 
 @pytest_asyncio.fixture

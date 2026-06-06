@@ -113,7 +113,7 @@ class GovNoaaSwpcL1KafkaEventProducer:
              "type":"gov.noaa.swpc.l1.PropagatedSolarWind",
              "source":"{feedurl}".format(feedurl = _feedurl),
              "subject":"{spacecraft}".format(spacecraft = _spacecraft),
-             "time":"{time_tag}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

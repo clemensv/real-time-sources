@@ -825,7 +825,7 @@ class FRParisOpenDataVeloAmqpProducer:
             "id":
             str(uuid.uuid4()),
             "time":
-            "{date}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

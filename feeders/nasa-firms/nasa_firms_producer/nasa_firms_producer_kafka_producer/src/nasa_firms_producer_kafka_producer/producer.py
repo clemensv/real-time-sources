@@ -115,7 +115,7 @@ class NASAFIRMSEventProducer:
              "type":"NASA.FIRMS.FireDetection",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -152,7 +152,7 @@ class NASAFIRMSEventProducer:
              "type":"NASA.FIRMS.DataAvailability",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -278,7 +278,7 @@ class NASAFIRMSMqttEventProducer:
              "type":"NASA.FIRMS.FireDetection",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -314,7 +314,7 @@ class NASAFIRMSMqttEventProducer:
              "type":"NASA.FIRMS.DataAvailability",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -440,7 +440,7 @@ class NASAFIRMSAmqpEventProducer:
              "type":"NASA.FIRMS.FireDetection",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -476,7 +476,7 @@ class NASAFIRMSAmqpEventProducer:
              "type":"NASA.FIRMS.DataAvailability",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{source}/{record_id}".format(source = _source,record_id = _record_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

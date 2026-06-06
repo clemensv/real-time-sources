@@ -715,7 +715,7 @@ class OrgFdsnEventAmqpProducer:
             "subject":
             "{contributor}/{event_id}".format(contributor=_contributor, event_id=_event_id),
             "time":
-            "{time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

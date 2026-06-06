@@ -27,7 +27,7 @@ async def feed(host,port,*,username:Optional[str]=None,password:Optional[str]=No
    else:
     poller=NIFCWildfirePoller(); incidents=[_to_mqtt(poller.parse_incident(f)) for f in await poller.fetch_incidents() if poller.parse_incident(f)]
    for i in incidents:
-    await client.publish_gov_nifc_wildfires_mqtt_wildfire_incident(source_uri=SOURCE_URI, irwin_id=i.irwin_id, modified_on_datetime=i.modified_on_datetime, state=i.state, status=i.status, data=i)
+    await client.publish_gov_nifc_wildfires_mqtt_wildfire_incident(source_uri=SOURCE_URI, irwin_id=i.irwin_id, _time=i.modified_on_datetime, state=i.state, status=i.status, data=i)
    logger.info('Published %d NIFC wildfire incidents to MQTT',len(incidents))
    if once: break
    await asyncio.sleep(max(1,polling_interval))

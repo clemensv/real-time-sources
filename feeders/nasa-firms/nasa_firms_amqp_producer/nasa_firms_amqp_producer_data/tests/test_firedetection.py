@@ -32,27 +32,27 @@ class Test_FireDetection(unittest.TestCase):
         Create instance of FireDetection for testing
         """
         instance = FireDetection(
-            source='bbhbhqghihmonwsmzird',
-            record_id='zpdpbngplpbdhmzgqvyw',
-            latitude=float(87.71916174874373),
-            longitude=float(7.942411873355592),
-            brightness=float(47.15243661175932),
-            bright_t31=float(55.4915105178454),
-            bright_ti4=float(64.37094752678159),
-            bright_ti5=float(7.551323708700741),
-            scan=float(92.86376091850599),
-            track=float(79.28984664758568),
+            source='lvriqaehfjbirbdsfkki',
+            record_id='dstmdbqgfpseyvnzcpki',
+            latitude=float(72.05838185939804),
+            longitude=float(47.9707223029746),
+            brightness=float(34.789530489258105),
+            bright_t31=float(99.54612199209558),
+            bright_ti4=float(66.3562991578253),
+            bright_ti5=float(58.519954444192365),
+            scan=float(41.647579344603926),
+            track=float(62.67032057649536),
             acq_date=datetime.date.today(),
-            acq_time='vyloluqevsfqbfhzpfad',
+            acq_time='dvihjesnzrreewbjjjxl',
             acq_datetime=datetime.datetime.now(datetime.timezone.utc),
-            satellite='owgaamldwwcgkwubncfp',
+            satellite='joorpzqolcbhybuxogwo',
             instrument=InstrumentEnum.VIIRS,
-            confidence='dsszgwtrjydjpjuirjsn',
+            confidence='pdwzkgvgjtpfmhcnpaof',
             confidence_level=ConfidenceLevelenum.low,
-            version='dcybgodkrwjxgldfugvo',
-            frp=float(54.502358403411755),
+            version='fjspkdpnpglvjajktxin',
+            frp=float(38.63196510218808),
             daynight=DaynightEnum.D,
-            tile='wxbvbaryahrrhyptaagw'
+            tile='zqqakkftqofitcrhfish'
         )
         return instance
 
@@ -61,7 +61,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test source property
         """
-        test_value = 'bbhbhqghihmonwsmzird'
+        test_value = 'lvriqaehfjbirbdsfkki'
         self.instance.source = test_value
         self.assertEqual(self.instance.source, test_value)
     
@@ -69,7 +69,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test record_id property
         """
-        test_value = 'zpdpbngplpbdhmzgqvyw'
+        test_value = 'dstmdbqgfpseyvnzcpki'
         self.instance.record_id = test_value
         self.assertEqual(self.instance.record_id, test_value)
     
@@ -77,7 +77,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(87.71916174874373)
+        test_value = float(72.05838185939804)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -85,7 +85,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(7.942411873355592)
+        test_value = float(47.9707223029746)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -93,7 +93,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test brightness property
         """
-        test_value = float(47.15243661175932)
+        test_value = float(34.789530489258105)
         self.instance.brightness = test_value
         self.assertEqual(self.instance.brightness, test_value)
     
@@ -101,7 +101,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test bright_t31 property
         """
-        test_value = float(55.4915105178454)
+        test_value = float(99.54612199209558)
         self.instance.bright_t31 = test_value
         self.assertEqual(self.instance.bright_t31, test_value)
     
@@ -109,7 +109,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test bright_ti4 property
         """
-        test_value = float(64.37094752678159)
+        test_value = float(66.3562991578253)
         self.instance.bright_ti4 = test_value
         self.assertEqual(self.instance.bright_ti4, test_value)
     
@@ -117,7 +117,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test bright_ti5 property
         """
-        test_value = float(7.551323708700741)
+        test_value = float(58.519954444192365)
         self.instance.bright_ti5 = test_value
         self.assertEqual(self.instance.bright_ti5, test_value)
     
@@ -125,7 +125,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test scan property
         """
-        test_value = float(92.86376091850599)
+        test_value = float(41.647579344603926)
         self.instance.scan = test_value
         self.assertEqual(self.instance.scan, test_value)
     
@@ -133,7 +133,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test track property
         """
-        test_value = float(79.28984664758568)
+        test_value = float(62.67032057649536)
         self.instance.track = test_value
         self.assertEqual(self.instance.track, test_value)
     
@@ -149,7 +149,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test acq_time property
         """
-        test_value = 'vyloluqevsfqbfhzpfad'
+        test_value = 'dvihjesnzrreewbjjjxl'
         self.instance.acq_time = test_value
         self.assertEqual(self.instance.acq_time, test_value)
     
@@ -165,7 +165,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test satellite property
         """
-        test_value = 'owgaamldwwcgkwubncfp'
+        test_value = 'joorpzqolcbhybuxogwo'
         self.instance.satellite = test_value
         self.assertEqual(self.instance.satellite, test_value)
     
@@ -181,7 +181,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test confidence property
         """
-        test_value = 'dsszgwtrjydjpjuirjsn'
+        test_value = 'pdwzkgvgjtpfmhcnpaof'
         self.instance.confidence = test_value
         self.assertEqual(self.instance.confidence, test_value)
     
@@ -197,7 +197,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test version property
         """
-        test_value = 'dcybgodkrwjxgldfugvo'
+        test_value = 'fjspkdpnpglvjajktxin'
         self.instance.version = test_value
         self.assertEqual(self.instance.version, test_value)
     
@@ -205,7 +205,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test frp property
         """
-        test_value = float(54.502358403411755)
+        test_value = float(38.63196510218808)
         self.instance.frp = test_value
         self.assertEqual(self.instance.frp, test_value)
     
@@ -221,7 +221,7 @@ class Test_FireDetection(unittest.TestCase):
         """
         Test tile property
         """
-        test_value = 'wxbvbaryahrrhyptaagw'
+        test_value = 'zqqakkftqofitcrhfish'
         self.instance.tile = test_value
         self.assertEqual(self.instance.tile, test_value)
     

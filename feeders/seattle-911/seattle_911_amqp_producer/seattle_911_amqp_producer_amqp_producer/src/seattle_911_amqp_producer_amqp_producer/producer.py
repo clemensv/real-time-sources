@@ -711,7 +711,7 @@ class USWASeattleFire911AmqpProducer:
             "subject":
             "{incident_number}".format(incident_number=_incident_number),
             "time":
-            "{incident_datetime_utc}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

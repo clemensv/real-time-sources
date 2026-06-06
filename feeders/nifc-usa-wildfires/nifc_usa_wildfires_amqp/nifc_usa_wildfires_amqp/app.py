@@ -31,7 +31,7 @@ def feed(args):
    for f in asyncio.run(poller.fetch_incidents()):
     i=poller.parse_incident(f)
     if i: incidents.append(WildfireIncident(**dataclasses.asdict(i)))
-  for i in incidents: prod.send_wildfire_incident(data=i,_source_uri=SOURCE_URI,_irwin_id=i.irwin_id,_modified_on_datetime=i.modified_on_datetime,_state=i.state,_status=i.status)
+  for i in incidents: prod.send_wildfire_incident(data=i,_source_uri=SOURCE_URI,_irwin_id=i.irwin_id,_time=i.modified_on_datetime,_state=i.state,_status=i.status)
   logger.info('Published %d NIFC wildfire incidents to AMQP',len(incidents))
  finally: prod.close()
 def main():

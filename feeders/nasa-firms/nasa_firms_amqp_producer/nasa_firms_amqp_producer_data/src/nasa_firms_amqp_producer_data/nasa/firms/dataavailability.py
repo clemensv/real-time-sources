@@ -103,6 +103,8 @@ class DataAvailability:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -170,13 +172,13 @@ class DataAvailability:
             An instance of the dataclass.
         """
         return cls(
-            source='gxadtzdiwsypxlffqkyr',
-            record_id='ohetgcalzwjldwrhgcdw',
-            data_id='dghwzsjzesmxhkycwkxd',
+            source='xfeozaeeygshcpzaqpkj',
+            record_id='rjizuxbdatgcteaqqajq',
+            data_id='pqibxhokemvasdcmdjbc',
             min_date=datetime.date.today(),
             max_date=datetime.date.today(),
             instrument=InstrumentEnum.VIIRS,
-            satellite='sbxunvmemdrtjizplwpf',
-            resolution_m=float(97.70098026620796),
+            satellite='wlfxaypgqubxlygtijrs',
+            resolution_m=float(67.70575290056485),
             retrieved_at=datetime.datetime.now(datetime.timezone.utc)
         )

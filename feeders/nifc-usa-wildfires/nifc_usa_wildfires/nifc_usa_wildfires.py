@@ -236,7 +236,7 @@ class NIFCWildfirePoller:
                 self.event_producer.send_gov_nifc_wildfires_wildfire_incident(
                     _source_uri=SOURCE_URI,
                     _irwin_id=incident.irwin_id,
-                    _modified_on_datetime=incident.modified_on_datetime,
+                    _time=incident.modified_on_datetime,
                     data=incident,
                     flush_producer=False,
                 )

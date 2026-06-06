@@ -517,7 +517,7 @@ class BillettoPoller:
 
             self.event_producer.send_billetto_events_event(
                 _event_id=key,
-                _startdate=startdate,
+                _time=startdate,
                 data=event,
                 flush_producer=False,
             )

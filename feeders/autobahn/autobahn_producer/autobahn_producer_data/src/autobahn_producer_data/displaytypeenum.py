@@ -3,9 +3,10 @@ from enum import Enum
 
 class DisplayTypeenum(Enum):
     """
-    Autobahn API display_type for warning items.
+    Autobahn API display_type for charging-station items.
     """
-    WARNING = 'WARNING'
+    ELECTRIC_CHARGING_STATION = 'ELECTRIC_CHARGING_STATION'
+    STRONG_ELECTRIC_CHARGING_STATION = 'STRONG_ELECTRIC_CHARGING_STATION'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'DisplayTypeenum':

@@ -716,7 +716,7 @@ class GovNIFCWildfiresAmqpProducer:
             "subject":
             "{irwin_id}".format(irwin_id=_irwin_id),
             "time":
-            "{modified_on_datetime}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

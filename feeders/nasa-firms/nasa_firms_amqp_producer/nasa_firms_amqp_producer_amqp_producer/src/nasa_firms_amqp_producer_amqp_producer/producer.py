@@ -610,9 +610,11 @@ class NASAFIRMSAmqpProducer:
         self._sender.send(amqp_msg, timeout=timeout)
         if self._blocking_sender_is_presettled:
             # BlockingSender.send() returns immediately for pre-settled
-            # deliveries, so wait until Proton has flushed all pending bytes.
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
             self._connection.wait(
                 lambda: (
+                    self._sender.link.queued == 0 and
                     self._connection.conn.transport is not None and
                     self._connection.conn.transport.pending() == 0
                 ),
@@ -713,7 +715,7 @@ class NASAFIRMSAmqpProducer:
             "subject":
             "{source}/{record_id}".format(source=_source, record_id=_record_id),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -825,7 +827,7 @@ class NASAFIRMSAmqpProducer:
             "subject":
             "{source}/{record_id}".format(source=_source, record_id=_record_id),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

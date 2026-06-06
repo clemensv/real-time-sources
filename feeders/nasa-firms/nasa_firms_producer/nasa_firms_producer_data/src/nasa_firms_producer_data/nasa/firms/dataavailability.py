@@ -172,13 +172,13 @@ class DataAvailability:
             An instance of the dataclass.
         """
         return cls(
-            source='gdoozrxhxcdhfnduyfxo',
-            record_id='rfgkhpvokzwddahqmsmj',
-            data_id='bujbqyuosmxqzncvisxe',
+            source='otfonxpslkgbqobbbqem',
+            record_id='dgqxwotkrjwvdymixtnn',
+            data_id='fvevhtvzjxurxnbqfwvf',
             min_date=datetime.date.today(),
             max_date=datetime.date.today(),
             instrument=InstrumentEnum.VIIRS,
-            satellite='lmbpllylabxidhhwmezi',
-            resolution_m=float(20.452509048722835),
+            satellite='auissuubyrkesxjxzrwd',
+            resolution_m=float(2.9991271758130322),
             retrieved_at=datetime.datetime.now(datetime.timezone.utc)
         )

@@ -129,6 +129,8 @@ class FireDetection:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -196,25 +198,25 @@ class FireDetection:
             An instance of the dataclass.
         """
         return cls(
-            source='bbhbhqghihmonwsmzird',
-            record_id='zpdpbngplpbdhmzgqvyw',
-            latitude=float(87.71916174874373),
-            longitude=float(7.942411873355592),
-            brightness=float(47.15243661175932),
-            bright_t31=float(55.4915105178454),
-            bright_ti4=float(64.37094752678159),
-            bright_ti5=float(7.551323708700741),
-            scan=float(92.86376091850599),
-            track=float(79.28984664758568),
+            source='lvriqaehfjbirbdsfkki',
+            record_id='dstmdbqgfpseyvnzcpki',
+            latitude=float(72.05838185939804),
+            longitude=float(47.9707223029746),
+            brightness=float(34.789530489258105),
+            bright_t31=float(99.54612199209558),
+            bright_ti4=float(66.3562991578253),
+            bright_ti5=float(58.519954444192365),
+            scan=float(41.647579344603926),
+            track=float(62.67032057649536),
             acq_date=datetime.date.today(),
-            acq_time='vyloluqevsfqbfhzpfad',
+            acq_time='dvihjesnzrreewbjjjxl',
             acq_datetime=datetime.datetime.now(datetime.timezone.utc),
-            satellite='owgaamldwwcgkwubncfp',
+            satellite='joorpzqolcbhybuxogwo',
             instrument=InstrumentEnum.VIIRS,
-            confidence='dsszgwtrjydjpjuirjsn',
+            confidence='pdwzkgvgjtpfmhcnpaof',
             confidence_level=ConfidenceLevelenum.low,
-            version='dcybgodkrwjxgldfugvo',
-            frp=float(54.502358403411755),
+            version='fjspkdpnpglvjajktxin',
+            frp=float(38.63196510218808),
             daynight=DaynightEnum.D,
-            tile='wxbvbaryahrrhyptaagw'
+            tile='zqqakkftqofitcrhfish'
         )

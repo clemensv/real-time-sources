@@ -18,7 +18,7 @@ from urllib.parse import quote_plus
 import pytest
 from testcontainers.core.container import DockerContainer
 from testcontainers.core.waiting_utils import wait_for_logs
-from proton import symbol
+from proton import Message, symbol
 from proton.utils import BlockingConnection
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../../nasa_firms_amqp_producer_data/src')))
@@ -27,9 +27,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from nasa_firms_amqp_producer_amqp_producer import *
 from nasa_firms_amqp_producer_data import FireDetection
-from test_nasa_firms_amqp_producer_data_firedetection import Test_FireDetection
+from test_firedetection import Test_FireDetection
 from nasa_firms_amqp_producer_data import DataAvailability
-from test_nasa_firms_amqp_producer_data_dataavailability import Test_DataAvailability
+from test_dataavailability import Test_DataAvailability
 
 
 
@@ -235,6 +235,45 @@ class TestNASAFIRMSAmqpProducer:
         assert producer.port == artemis_container["port"]
         assert producer.username == artemis_container["username"]
         producer.close()
+
+    def test_presettled_send_waits_for_queued_delivery_to_drain(self):
+        """Pre-settled sends must not return before queued deliveries are written."""
+
+        class FakeTransport:
+            def pending(self):
+                return 0
+
+        class FakeSender:
+            def __init__(self):
+                self.link = type("Link", (), {"queued": 1, "name": "fake-link"})()
+                self.calls = []
+
+            def send(self, amqp_msg, timeout=30.0):
+                self.calls.append((amqp_msg, timeout))
+
+        fake_sender = FakeSender()
+
+        class FakeConnection:
+            def __init__(self):
+                self.conn = type("Conn", (), {"transport": FakeTransport()})()
+                self.wait_calls = 0
+
+            def wait(self, predicate, msg=None, timeout=None):
+                self.wait_calls += 1
+                assert not predicate()
+                fake_sender.link.queued = 0
+                assert predicate()
+
+        fake_connection = FakeConnection()
+        producer = object.__new__(NASAFIRMSAmqpProducer)
+        producer._sender = fake_sender
+        producer._connection = fake_connection
+        producer._blocking_sender_is_presettled = True
+
+        producer._send_via_blocking_sender(Message(body=b"payload", inferred=True), timeout=7.5)
+
+        assert len(fake_sender.calls) == 1
+        assert fake_connection.wait_calls == 1
     
     def test_send_fire_detection(self, artemis_container):
         """Send and receive a FireDetection message via ActiveMQ Artemis."""
@@ -295,6 +334,38 @@ class TestNASAFIRMSAmqpProducer:
                 assert received.subject == "{source}/{record_id}".format(source="value", record_id="value")
         finally:
             producer.close()
+
+    def test_send_fire_detection_single_fresh_connection(self, artemis_container):
+        """Send exactly one FireDetection message on a fresh producer connection."""
+        payload = Test_FireDetection.create_instance()
+
+        producer = NASAFIRMSAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_fire_detection(
+                data=payload,
+                _source_uri="value",
+                _source="value",
+                _record_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NASA.FIRMS.amqp.FireDetection'
+        assert received.body is not None
+        assert received.subject == "{source}/{record_id}".format(source="value", record_id="value")
     
     def test_send_data_availability(self, artemis_container):
         """Send and receive a DataAvailability message via ActiveMQ Artemis."""
@@ -355,4 +426,36 @@ class TestNASAFIRMSAmqpProducer:
                 assert received.subject == "{source}/{record_id}".format(source="value", record_id="value")
         finally:
             producer.close()
+
+    def test_send_data_availability_single_fresh_connection(self, artemis_container):
+        """Send exactly one DataAvailability message on a fresh producer connection."""
+        payload = Test_DataAvailability.create_instance()
+
+        producer = NASAFIRMSAmqpProducer(
+            host=artemis_container["host"],
+            address=artemis_container["address"],
+            port=artemis_container["port"],
+            username=artemis_container["username"],
+            password=artemis_container["password"],
+            content_mode='binary'
+        )
+
+        try:
+            producer.send_data_availability(
+                data=payload,
+                _source_uri="value",
+                _source="value",
+                _record_id="value",
+                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                content_type="application/json"
+            )
+        finally:
+            producer.close()
+
+        received = _receive_single_message(artemis_container)
+        properties = received.properties or {}
+        annotations = received.annotations or {}
+        assert properties.get('cloudEvents:type') == 'NASA.FIRMS.amqp.DataAvailability'
+        assert received.body is not None
+        assert received.subject == "{source}/{record_id}".format(source="value", record_id="value")
 

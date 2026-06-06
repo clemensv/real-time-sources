@@ -716,7 +716,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -827,7 +827,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -938,7 +938,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -1049,7 +1049,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -1160,7 +1160,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -1271,7 +1271,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -1382,7 +1382,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -1493,7 +1493,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -1604,7 +1604,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -1715,7 +1715,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -1826,7 +1826,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -1937,7 +1937,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -2048,7 +2048,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -2159,7 +2159,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -2270,7 +2270,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -2381,7 +2381,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -2492,7 +2492,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -2603,7 +2603,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -2714,7 +2714,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -2825,7 +2825,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -2936,7 +2936,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -3047,7 +3047,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -3158,7 +3158,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -3269,7 +3269,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -3380,7 +3380,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -3491,7 +3491,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -3602,7 +3602,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -3713,7 +3713,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -3824,7 +3824,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         
@@ -3935,7 +3935,7 @@ class DEAutobahnAmqpProducer:
             "subject":
             "{identifier}".format(identifier=_identifier),
             "time":
-            "{event_time}",
+            None,
         }
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
         

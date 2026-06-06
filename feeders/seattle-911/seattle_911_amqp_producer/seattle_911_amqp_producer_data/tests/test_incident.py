@@ -29,13 +29,13 @@ class Test_Incident(unittest.TestCase):
         Create instance of Incident for testing
         """
         instance = Incident(
-            incident_number='zpapnejwvppeuutbztyz',
-            incident_type='opzczviwncydgpwztajg',
-            incident_datetime='fwzosumpkmgvbhkqqmma',
-            address='vbyoszdpeyjjghlcgtil',
-            latitude=float(6.328061645901961),
-            longitude=float(97.12341381655797),
-            incident_type_slug='smaekzuhwsduzsxpkrgm',
+            incident_number='pltlwrprhmkabfpmpsqt',
+            incident_type='rwgxukfsxnixerynzomf',
+            incident_datetime='wtmrudvosouuvhmsgeav',
+            address='wzgdalxnffqaqkyvnnxc',
+            latitude=float(88.07536989135714),
+            longitude=float(86.309895078409),
+            incident_type_slug='vgumemipzvcnlxtyqkkh',
             incident_datetime_utc=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
@@ -45,7 +45,7 @@ class Test_Incident(unittest.TestCase):
         """
         Test incident_number property
         """
-        test_value = 'zpapnejwvppeuutbztyz'
+        test_value = 'pltlwrprhmkabfpmpsqt'
         self.instance.incident_number = test_value
         self.assertEqual(self.instance.incident_number, test_value)
     
@@ -53,7 +53,7 @@ class Test_Incident(unittest.TestCase):
         """
         Test incident_type property
         """
-        test_value = 'opzczviwncydgpwztajg'
+        test_value = 'rwgxukfsxnixerynzomf'
         self.instance.incident_type = test_value
         self.assertEqual(self.instance.incident_type, test_value)
     
@@ -61,7 +61,7 @@ class Test_Incident(unittest.TestCase):
         """
         Test incident_datetime property
         """
-        test_value = 'fwzosumpkmgvbhkqqmma'
+        test_value = 'wtmrudvosouuvhmsgeav'
         self.instance.incident_datetime = test_value
         self.assertEqual(self.instance.incident_datetime, test_value)
     
@@ -69,7 +69,7 @@ class Test_Incident(unittest.TestCase):
         """
         Test address property
         """
-        test_value = 'vbyoszdpeyjjghlcgtil'
+        test_value = 'wzgdalxnffqaqkyvnnxc'
         self.instance.address = test_value
         self.assertEqual(self.instance.address, test_value)
     
@@ -77,7 +77,7 @@ class Test_Incident(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(6.328061645901961)
+        test_value = float(88.07536989135714)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -85,7 +85,7 @@ class Test_Incident(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(97.12341381655797)
+        test_value = float(86.309895078409)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -93,7 +93,7 @@ class Test_Incident(unittest.TestCase):
         """
         Test incident_type_slug property
         """
-        test_value = 'smaekzuhwsduzsxpkrgm'
+        test_value = 'vgumemipzvcnlxtyqkkh'
         self.instance.incident_type_slug = test_value
         self.assertEqual(self.instance.incident_type_slug, test_value)
     

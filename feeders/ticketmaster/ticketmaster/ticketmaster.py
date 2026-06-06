@@ -831,7 +831,7 @@ class TicketmasterBridge:
 
                 self.events_producer.send_ticketmaster_events_event(
                     _event_id=event.event_id,
-                    _start_datetime_utc=time_attr,
+                    _time=time_attr,
                     data=event,
                     flush_producer=False,
                 )

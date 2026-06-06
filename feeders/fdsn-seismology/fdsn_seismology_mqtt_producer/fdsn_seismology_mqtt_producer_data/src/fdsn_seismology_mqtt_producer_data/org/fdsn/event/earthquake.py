@@ -114,6 +114,8 @@ class Earthquake:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -181,19 +183,19 @@ class Earthquake:
             An instance of the dataclass.
         """
         return cls(
-            event_id='obotkbddereniswxwlnv',
+            event_id='wjxfrteyjxiqtxalwnoj',
             time=datetime.datetime.now(datetime.timezone.utc),
-            latitude=float(94.75488615706678),
-            longitude=float(21.90939896137235),
-            depth_km=float(6.940546902536992),
-            author='prrhdqwzqhjkkrnwlecz',
-            catalog='tuzdvbnincpsxueuyewj',
-            contributor='izgvijiuhdvjxddblahy',
-            contributor_id='sfzwsyyvqqwjglesonvh',
-            magnitude_type='kmssnxlzwvjawrqjxgdl',
-            magnitude=float(10.412598580281507),
-            magnitude_author='fxdkyrvumistjkuodpja',
-            event_location_name='fxcjfygdqrhaaohbgzre',
-            event_type='shxjkmiqigipdwmtbcyg',
-            node_url='gcquoxwwreggryqfmfwm'
+            latitude=float(13.382475410966732),
+            longitude=float(8.042288137746656),
+            depth_km=float(61.52750782850786),
+            author='ziptoptaxttddgdbhlvu',
+            catalog='qiaebibzbgymwwwfsehj',
+            contributor='tafgfviwtmnkklztouyq',
+            contributor_id='uzbkuqghmhkasipnzfgb',
+            magnitude_type='tohirrjbocqrxudplcky',
+            magnitude=float(7.896570988851059),
+            magnitude_author='rjiqzubzvnuoycxuwyhs',
+            event_location_name='btrymbmkoufmbewbpqod',
+            event_type='pwqpwosqrtcvprixqczj',
+            node_url='uhhsesiqqvmteafhuznq'
         )

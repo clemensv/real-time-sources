@@ -151,7 +151,7 @@ class FRParisOpenDataVeloEventProducer:
              "source":"https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs",
              "subject":"{counter_id}".format(counter_id = _counter_id),
              "id":"{ce_id}".format(ce_id = _ce_id),
-             "time":"{date}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -312,7 +312,7 @@ class FRParisOpenDataVeloMqttEventProducer:
              "source":"https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs",
              "subject":"{counter_id}".format(counter_id = _counter_id),
              "id":"{ce_id}".format(ce_id = _ce_id),
-             "time":"{date}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -473,7 +473,7 @@ class FRParisOpenDataVeloAmqpEventProducer:
              "source":"https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs",
              "subject":"{counter_id}".format(counter_id = _counter_id),
              "id":"{ce_id}".format(ce_id = _ce_id),
-             "time":"{date}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

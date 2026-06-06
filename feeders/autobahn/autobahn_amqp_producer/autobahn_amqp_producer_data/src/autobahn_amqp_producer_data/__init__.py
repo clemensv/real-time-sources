@@ -1,8 +1,8 @@
 from .displaytypeenum import DisplayTypeenum
-from .roadevent import RoadEvent
+from .parkinglorry import ParkingLorry
 from .warningevent import WarningEvent
 from .chargingstation import ChargingStation
+from .roadevent import RoadEvent
 from .webcam import Webcam
-from .parkinglorry import ParkingLorry
 
-__all__ = ["DisplayTypeenum", "RoadEvent", "WarningEvent", "ChargingStation", "Webcam", "ParkingLorry"]
+__all__ = ["DisplayTypeenum", "ParkingLorry", "WarningEvent", "ChargingStation", "RoadEvent", "Webcam"]

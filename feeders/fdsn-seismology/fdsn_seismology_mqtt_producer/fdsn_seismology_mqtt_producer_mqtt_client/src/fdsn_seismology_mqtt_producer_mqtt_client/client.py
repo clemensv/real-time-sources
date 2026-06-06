@@ -441,7 +441,7 @@ class OrgFdsnEventMqttMqttClient(_ClientBase):
              "type":"org.fdsn.event.Earthquake",
              "source":"{node_url}".format(node_url = node_url),
              "subject":"{contributor}/{event_id}".format(contributor = contributor,event_id = event_id),
-             "time":"{time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

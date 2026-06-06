@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import nasa_firms_mqtt_producer_data
 from nasa_firms_mqtt_producer_data import FireDetection
-from test_nasa_firms_mqtt_producer_data_firedetection import Test_FireDetection
+from test_firedetection import Test_FireDetection
 from nasa_firms_mqtt_producer_data import DataAvailability
-from test_nasa_firms_mqtt_producer_data_dataavailability import Test_DataAvailability
+from test_dataavailability import Test_DataAvailability
 from nasa_firms_mqtt_producer_mqtt_client import NASAFIRMSMqttMqttClient
 
 @pytest_asyncio.fixture

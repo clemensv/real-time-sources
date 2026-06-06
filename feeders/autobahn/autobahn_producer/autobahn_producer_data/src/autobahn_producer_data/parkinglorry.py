@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from autobahn_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -197,25 +197,25 @@ class ParkingLorry:
             An instance of the dataclass.
         """
         return cls(
-            identifier='exzwtbgndydelphorssp',
-            road='nplcgihseipxwypoyhmh',
-            road_ids=['ieacvvenhxoiaqyyvfne', 'vpuupqinyczkiodaioxz', 'lgopvvjumsgqzqbfufoq'],
+            identifier='cvcpzpffjebpzpbhehal',
+            road='rgboihopmzfaclhhvpro',
+            road_ids=['kzogxtwvoobakkkofted', 'yeemdoiuwxuurmiheyav', 'pjmcdgskarfzvugarjyl', 'htycxsblqqbrcrephaut', 'onffkrqkotdtmxkesiml'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.WARNING,
-            title='dkfobedcdbbghfiybyuh',
-            subtitle='sqzgspdevzozuzuzjvit',
+            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
+            title='hhjcvyjmcxonwedhgitl',
+            subtitle='xwfbzlqwirnvgnwswhkb',
             description_lines=None,
-            future=False,
-            is_blocked=False,
-            icon='edhmrqaavbdgbypthnap',
-            start_lc_position=int(80),
-            extent='yxsbggkwhyuwecqoxnsn',
-            point='zlerkcyhglucxrsdoort',
-            coordinate_lat=float(49.67222218113619),
-            coordinate_lon=float(57.40976463260444),
-            route_recommendation_json='daziqzrjxuyzsuthssoo',
+            future=True,
+            is_blocked=True,
+            icon='pazimtraqbcxszebvpdz',
+            start_lc_position=int(12),
+            extent='falasoxdsfoukmfplvgh',
+            point='obqficcjutpbhvjrpths',
+            coordinate_lat=float(47.57651825720801),
+            coordinate_lon=float(73.20061166778018),
+            route_recommendation_json='qqzaqtlfzyqrklqqkbtz',
             footer_lines=None,
             amenity_descriptions=None,
-            car_space_count=int(55),
-            lorry_space_count=int(29)
+            car_space_count=int(4),
+            lorry_space_count=int(25)
         )

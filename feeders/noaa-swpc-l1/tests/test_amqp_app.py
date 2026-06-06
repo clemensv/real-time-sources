@@ -160,6 +160,6 @@ def test_feed_once_sends_row_saves_state_and_closes(tmp_path, sample_row):
     sent = producer.sent[0]
     assert sent["_feedurl"] == amqp_app.FEED_URL
     assert sent["_spacecraft"] == "dscovr"
-    assert sent["_time_tag"] == sample_row.time_tag.isoformat()
+    assert sent["_time"] == sample_row.time_tag.isoformat()
     assert sent["data"].speed == sample_row.speed
     assert amqp_app.load_state(str(state_file))["last_time_tag"] == sample_row.time_tag.isoformat()

@@ -242,7 +242,7 @@ async def feed(
                         await mqtt_client.publish_gov_noaa_swpc_l1_mqtt_propagated_solar_wind(
                             feedurl=FEED_URL,
                             spacecraft=row.spacecraft,
-                            time_tag=row.time_tag.isoformat(),
+                            _time=row.time_tag.isoformat(),
                             data=_row_to_data(row),
                         )
                         count += 1

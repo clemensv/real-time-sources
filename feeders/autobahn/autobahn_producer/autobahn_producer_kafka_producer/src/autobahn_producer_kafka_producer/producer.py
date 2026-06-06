@@ -116,7 +116,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.RoadworkAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -151,7 +151,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.RoadworkUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -186,7 +186,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.RoadworkResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -221,7 +221,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ShortTermRoadworkAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -256,7 +256,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ShortTermRoadworkUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -291,7 +291,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ShortTermRoadworkResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -326,7 +326,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.WarningAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -361,7 +361,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.WarningUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -396,7 +396,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.WarningResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -431,7 +431,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ClosureAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -466,7 +466,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ClosureUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -501,7 +501,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ClosureResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -536,7 +536,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.EntryExitClosureAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -571,7 +571,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.EntryExitClosureUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -606,7 +606,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.EntryExitClosureResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -641,7 +641,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.WeightLimit35RestrictionAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -676,7 +676,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.WeightLimit35RestrictionUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -711,7 +711,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.WeightLimit35RestrictionResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -746,7 +746,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ParkingLorryAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -781,7 +781,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ParkingLorryUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -816,7 +816,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ParkingLorryResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -851,7 +851,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ElectricChargingStationAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -886,7 +886,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ElectricChargingStationUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -921,7 +921,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.ElectricChargingStationResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -956,7 +956,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.StrongElectricChargingStationAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -991,7 +991,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.StrongElectricChargingStationUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1026,7 +1026,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.StrongElectricChargingStationResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1061,7 +1061,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.WebcamAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1096,7 +1096,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.WebcamUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1131,7 +1131,7 @@ class DEAutobahnEventProducer:
              "type":"DE.Autobahn.WebcamResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1255,7 +1255,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.RoadworkAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1289,7 +1289,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.RoadworkUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1323,7 +1323,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.RoadworkResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1357,7 +1357,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ShortTermRoadworkAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1391,7 +1391,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ShortTermRoadworkUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1425,7 +1425,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ShortTermRoadworkResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1459,7 +1459,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ClosureAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1493,7 +1493,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ClosureUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1527,7 +1527,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ClosureResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1561,7 +1561,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.EntryExitClosureAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1595,7 +1595,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.EntryExitClosureUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1629,7 +1629,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.EntryExitClosureResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1663,7 +1663,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.WarningAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1697,7 +1697,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.WarningUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1731,7 +1731,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.WarningResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1765,7 +1765,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.WeightLimit35RestrictionAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1799,7 +1799,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.WeightLimit35RestrictionUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1833,7 +1833,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.WeightLimit35RestrictionResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1867,7 +1867,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.WebcamAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1901,7 +1901,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.WebcamUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1935,7 +1935,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.WebcamResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1969,7 +1969,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ParkingLorryAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2003,7 +2003,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ParkingLorryUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2037,7 +2037,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ParkingLorryResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2071,7 +2071,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ElectricChargingStationAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2105,7 +2105,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ElectricChargingStationUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2139,7 +2139,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.ElectricChargingStationResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2173,7 +2173,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.StrongElectricChargingStationAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2207,7 +2207,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.StrongElectricChargingStationUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2241,7 +2241,7 @@ class DEAutobahnMqttEventProducer:
              "type":"DE.Autobahn.StrongElectricChargingStationResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2365,7 +2365,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.RoadworkAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2399,7 +2399,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.RoadworkUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2433,7 +2433,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.RoadworkResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2467,7 +2467,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ShortTermRoadworkAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2501,7 +2501,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ShortTermRoadworkUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2535,7 +2535,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ShortTermRoadworkResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2569,7 +2569,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ClosureAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2603,7 +2603,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ClosureUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2637,7 +2637,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ClosureResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2671,7 +2671,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.EntryExitClosureAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2705,7 +2705,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.EntryExitClosureUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2739,7 +2739,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.EntryExitClosureResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2773,7 +2773,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.WarningAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2807,7 +2807,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.WarningUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2841,7 +2841,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.WarningResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2875,7 +2875,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.WeightLimit35RestrictionAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2909,7 +2909,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.WeightLimit35RestrictionUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2943,7 +2943,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.WeightLimit35RestrictionResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2977,7 +2977,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.WebcamAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3011,7 +3011,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.WebcamUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3045,7 +3045,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.WebcamResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3079,7 +3079,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ParkingLorryAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3113,7 +3113,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ParkingLorryUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3147,7 +3147,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ParkingLorryResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3181,7 +3181,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ElectricChargingStationAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3215,7 +3215,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ElectricChargingStationUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3249,7 +3249,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.ElectricChargingStationResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3283,7 +3283,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.StrongElectricChargingStationAppeared",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3317,7 +3317,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.StrongElectricChargingStationUpdated",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3351,7 +3351,7 @@ class DEAutobahnAmqpEventProducer:
              "type":"DE.Autobahn.StrongElectricChargingStationResolved",
              "source":"https://verkehr.autobahn.de/o/autobahn",
              "subject":"{identifier}".format(identifier = _identifier),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
