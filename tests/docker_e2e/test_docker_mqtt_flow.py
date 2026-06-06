@@ -5582,7 +5582,7 @@ class TestGbfsBikeshareMqttDockerFlow:
             'gbfs-bikeshare',
             gbfs_bikeshare_mqtt_image,
             mosquitto_gbfs_bikeshare,
-            extra_env={'GBFS_FEEDS': 'https://gbfs.citibikenyc.com/gbfs/gbfs.json', 'ONCE_MODE': 'true'},
+            extra_env={'GBFS_MOCK': 'true'},
             timeout=240,
         )
 
