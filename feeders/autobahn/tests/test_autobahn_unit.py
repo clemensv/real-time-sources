@@ -84,7 +84,7 @@ class TestSnapshotBuilding:
 
         assert family == "roadwork"
         assert snapshot["identifier"] == "roadwork-1"
-        assert snapshot["road_ids"] == ["A1"]
+        assert snapshot["road_ids"] == ["a1"]
         assert snapshot["coordinate_lat"] == 51.1
         assert snapshot["coordinate_lon"] == 7.1
         assert snapshot["start_lc_position"] == 1000

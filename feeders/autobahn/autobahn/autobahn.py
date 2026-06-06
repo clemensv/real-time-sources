@@ -278,8 +278,8 @@ def _normalize_common_fields(road_id: str, resource_type: str, raw_item: dict[st
 
     return {
         "identifier": str(identifier),
-        "road": road_id,
-        "road_ids": [road_id],
+        "road": road_id.lower(),
+        "road_ids": [road_id.lower()],
         "resource_type": resource_type,
         "display_type": raw_item.get("display_type"),
         "title": raw_item.get("title"),
@@ -547,10 +547,22 @@ def _load_generated_data_classes() -> dict[str, type[Any]]:
 
 def _load_generated_producer_class() -> type[Any]:
     module = importlib.import_module("autobahn_producer_kafka_producer.producer")
-    for attribute_name in dir(module):
-        candidate = getattr(module, attribute_name)
-        if isinstance(candidate, type) and attribute_name.endswith("EventProducer"):
+    # The xreg manifest declares three messagegroups (DE.Autobahn for Kafka plus
+    # DE.Autobahn.mqtt / DE.Autobahn.amqp companions), so the generated Kafka
+    # producer module exposes DEAutobahnEventProducer alongside the transport
+    # infixed DEAutobahnMqttEventProducer / DEAutobahnAmqpEventProducer classes.
+    # Select the transport-neutral Kafka producer whose send_* methods match the
+    # method names this bridge builds (no mqtt/amqp infix).
+    producers = [
+        getattr(module, name)
+        for name in dir(module)
+        if name.endswith("EventProducer") and isinstance(getattr(module, name), type)
+    ]
+    for candidate in producers:
+        if "Mqtt" not in candidate.__name__ and "Amqp" not in candidate.__name__:
             return candidate
+    if producers:
+        return producers[0]
     raise ImportError("Generated Autobahn producer client not found. Run ./generate_producer.ps1.")
 
 
