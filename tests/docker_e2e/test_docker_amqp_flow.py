@@ -736,7 +736,7 @@ class TestTokyoDocomoBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
 class TestGbfsBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "gbfs-bikeshare"
     image = "gbfs-bikeshare-amqp"
-    env = {"GBFS_FEEDS": "https://gbfs.citibikenyc.com/gbfs/gbfs.json", "ONCE_MODE": "true"}
+    env = {"GBFS_MOCK": "true"}
     expected_types = {'org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'}
     expected_count = 3
 

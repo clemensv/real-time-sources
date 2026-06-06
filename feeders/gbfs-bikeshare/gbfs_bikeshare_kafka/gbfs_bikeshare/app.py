@@ -9,7 +9,7 @@ from typing import Optional
 
 from confluent_kafka import Producer
 
-from gbfs_bikeshare_core import build_kafka_config, load_state, parse_feed_configuration, parse_kafka_connection_string, save_state
+from gbfs_bikeshare_core import build_kafka_config, build_offline_client_and_feeds, load_state, parse_bool, parse_feed_configuration, parse_kafka_connection_string, save_state
 from gbfs_bikeshare_core.acquisition import (
     GbfsSourceClient,
     StationInformationRecord,
@@ -87,7 +87,10 @@ def _build_free_bike_status(record: FreeBikeStatusRecord) -> FreeBikeStatus:
 
 
 def feed(args: argparse.Namespace) -> None:
-    configured_feeds = parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids)
+    mock_mode = getattr(args, "mock", False)
+    configured_feeds = (
+        [] if mock_mode else parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids)
+    )
     if args.connection_string:
         cfg = parse_kafka_connection_string(args.connection_string)
         bootstrap = cfg.get("bootstrap.servers")
@@ -115,7 +118,12 @@ def feed(args: argparse.Namespace) -> None:
     stations_producer = OrgGbfsStationsEventProducer(producer, topic)
     free_bikes_producer = OrgGbfsFreeBikesEventProducer(producer, topic)
     state = load_state(args.state_file)
-    client = GbfsSourceClient()
+    if mock_mode:
+        logger.info("--mock mode: using deterministic offline GBFS corpus (no network access)")
+        client, configured_feeds = build_offline_client_and_feeds()
+        args.once = True
+    else:
+        client = GbfsSourceClient()
     sources = discover_sources(client, configured_feeds)
     if not sources:
         raise SystemExit("No GBFS feeds could be discovered successfully.")
@@ -207,6 +215,7 @@ def build_parser() -> argparse.ArgumentParser:
     feed_parser.add_argument("--reference-refresh-interval", type=int, default=int(os.getenv("REFERENCE_REFRESH_INTERVAL", "3600")), help="Reference-data refresh interval in seconds")
     feed_parser.add_argument("--state-file", default=os.getenv("STATE_FILE", DEFAULT_STATE_FILE), help="Path to the JSON dedupe state file")
     feed_parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"), help="Exit after one polling cycle")
+    feed_parser.add_argument("--mock", action="store_true", default=parse_bool(os.getenv("GBFS_MOCK"), default=False), help="Emit a deterministic offline GBFS corpus once (no network); for CI flow tests")
     return parser
 
 
