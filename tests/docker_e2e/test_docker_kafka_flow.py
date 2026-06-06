@@ -1572,7 +1572,9 @@ class TestFMIFinlandDockerFlow:
             reference_types=['Station'],
             telemetry_types=['Observation'],
             required_types=['Station', 'Observation'],
-            extra_env={'POLLING_INTERVAL': '5'},
+            command=['python', '-m', 'fmi_finland', 'feed', '--mock'],
+            min_messages=6,
+            timeout=120,
         )
 
 

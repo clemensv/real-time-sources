@@ -153,8 +153,9 @@ class TestParsingHelpers:
         assert observation["o3_ug_m3"] is None
 
     def test_measurement_arg_preserves_zero(self):
-        assert _measurement_arg(0.0) == "0"
-        assert _measurement_arg(1.5) == "1.5"
+        assert _measurement_arg(0.0) == 0.0
+        assert isinstance(_measurement_arg(0.0), float)
+        assert _measurement_arg(1.5) == 1.5
         assert _measurement_arg(None) is None
 
     def test_observation_window_alignment(self):
@@ -166,3 +167,67 @@ class TestParsingHelpers:
         assert PARAM_MAP["AQINDEX_PT1H_avg"] == "aqindex"
         assert PARAM_MAP["PM10_PT1H_avg"] == "pm10_ug_m3"
         assert PARAM_MAP["CO_PT1H_avg"] == "co_mg_m3"
+
+
+class _RecordingEventProducer:
+    """Minimal stand-in capturing the events the bridge would publish."""
+
+    def __init__(self):
+        self.stations = []
+        self.observations = []
+
+    def send_fi_fmi_opendata_airquality_station(self, key, station, flush_producer=False):
+        self.stations.append((key, station))
+
+    def send_fi_fmi_opendata_airquality_observation(self, key, observation, flush_producer=False):
+        self.observations.append((key, observation))
+
+    def flush(self, *args, **kwargs):
+        pass
+
+
+class TestOfflineMockCorpus:
+    def test_offline_corpus_round_trips_reference_and_telemetry(self):
+        from fmi_finland.fmi_finland import run_feed_cycle
+        from fmi_finland.samples import build_offline_api
+
+        api = build_offline_api()
+        producer = _RecordingEventProducer()
+        state: dict = {}
+
+        counts = run_feed_cycle(
+            api, producer, state, now=datetime(2024, 1, 15, 15, 0, tzinfo=timezone.utc),
+            force_station_emit=True,
+        )
+
+        # Three stations (reference) and six aggregated hourly observations.
+        assert counts["stations"] == 3
+        assert counts["observations"] == 6
+        assert len(producer.stations) == 3
+        assert len(producer.observations) == 6
+
+        station_keys = sorted(key for key, _ in producer.stations)
+        assert station_keys == ["100662", "100742", "100803"]
+
+        # Keys are the stable fmisid, matching the xreg subject/Kafka key template.
+        for key, observation in producer.observations:
+            assert key == observation.fmisid
+            assert observation.aqindex is not None
+
+        # NaN upstream values must coalesce to a null measurement, not a string.
+        o3_values = {obs.o3_ug_m3 for _, obs in producer.observations}
+        assert None in o3_values
+
+    def test_offline_observations_are_deduplicated_on_replay(self):
+        from fmi_finland.fmi_finland import run_feed_cycle
+        from fmi_finland.samples import build_offline_api
+
+        api = build_offline_api()
+        producer = _RecordingEventProducer()
+        state: dict = {}
+
+        run_feed_cycle(api, producer, state, force_station_emit=True)
+        second = run_feed_cycle(api, producer, state, force_station_emit=False)
+
+        # Identical corpus on the second cycle yields no new telemetry events.
+        assert second["observations"] == 0

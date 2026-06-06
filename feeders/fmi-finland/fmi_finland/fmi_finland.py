@@ -198,11 +198,18 @@ def _safe_float(value: str | None) -> float | None:
         return None
 
 
-def _measurement_arg(value: float | None) -> str | None:
-    """Pass floats as strings so generated __post_init__ keeps zero values."""
+def _measurement_arg(value: float | None) -> float | None:
+    """Return the measurement as a float (or None).
+
+    The xrcg 0.10.12 generated ``Observation`` dataclass has no
+    ``__post_init__`` coercion and serializes stored values verbatim, so the
+    numeric pollutant/index fields must be passed as real floats to satisfy
+    the ``double`` JsonStructure schema. (Earlier codegen dropped zero values
+    in ``__post_init__``, which is why this previously stringified them.)
+    """
     if value is None:
         return None
-    return format(value, ".15g")
+    return float(value)
 
 
 def _flush_event_producer(event_producer: typing.Any) -> None:
@@ -572,11 +579,24 @@ def main() -> None:
         default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
         help="Exit after one polling cycle (also via ONCE_MODE env var). Useful for scheduled execution in Fabric notebooks.",
     )
+    feed_parser.add_argument(
+        "--mock",
+        action="store_true",
+        default=os.getenv("FMI_MOCK", "").lower() in ("1", "true", "yes"),
+        help="Serve a deterministic offline sample corpus instead of polling the live FMI WFS service (also via FMI_MOCK env var). Implies --once. Used by the Docker E2E flow test.",
+    )
 
     args = parser.parse_args()
     _configure_logging()
 
-    api = FMIAirQualityAPI()
+    if getattr(args, "mock", False):
+        from fmi_finland.samples import build_offline_api
+
+        api = build_offline_api()
+        args.once = True
+        logger.info("Running in offline mock mode using the bundled sample corpus")
+    else:
+        api = FMIAirQualityAPI()
 
     if args.command == "list":
         registry = api.get_station_registry()
