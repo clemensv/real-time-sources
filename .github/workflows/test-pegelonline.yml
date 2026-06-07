@@ -73,7 +73,7 @@ jobs:
             -p no:cacheprovider --override-ini="addopts="
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v6
+        uses: codecov/codecov-action@v7
         if: always()
         with:
           file: ./feeders/pegelonline/coverage.xml
