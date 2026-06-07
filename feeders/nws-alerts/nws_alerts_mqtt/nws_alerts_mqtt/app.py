@@ -29,11 +29,11 @@ from nws_alerts_mqtt_producer_mqtt_client.client import NWSAlertsMqttMqttClient
 logger = logging.getLogger("nws_alerts_mqtt")
 
 SEVERITY_METHODS = {
-    "minor": "publish_nws_weather_alert_mqtt",
-    "moderate": "publish_nws_weather_alert_mqtt",
-    "severe": "publish_nws_weather_alert_mqtt",
-    "extreme": "publish_nws_weather_alert_mqtt",
-    "unknown": "publish_nws_weather_alert_mqtt",
+    "minor": "publish_nws_weather_alert_minor_mqtt",
+    "moderate": "publish_nws_weather_alert_moderate_mqtt",
+    "severe": "publish_nws_weather_alert_severe_mqtt",
+    "extreme": "publish_nws_weather_alert_extreme_mqtt",
+    "unknown": "publish_nws_weather_alert_unknown_mqtt",
 }
 
 
@@ -74,7 +74,6 @@ class NWSAlertsMqttBridge:
         await method(
             alert_id=uns_slug(alert.alert_id),
             state=uns_slug(alert.state),
-            severity=severity,
             event_type=uns_slug(alert.event_type),
             data=_to_mqtt_alert(alert),
             qos=1,
