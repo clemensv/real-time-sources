@@ -21,7 +21,7 @@ nws_alerts_producer_kafka_producer = { path = "nws_alerts_producer/nws_alerts_pr
 
 [tool.poetry.dev-dependencies]
 pytest = ">=9.0.3"
-pytest-asyncio = ">=0.24.0"
+pytest-asyncio = ">=1.4.0"
 pytest-cov = ">=7.1.0"
 
 [tool.poetry.scripts]
