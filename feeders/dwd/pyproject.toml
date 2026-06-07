@@ -16,7 +16,7 @@ cloudevents = ">=1.12.1,<2.0.0"
 dataclasses_json = ">=0.6.7"
 avro = ">=1.12.1"
 eccodes = ">=2.47.0"
-numpy = ">=1.24"
+numpy = ">=2.2.6"
 dwd_producer_data = {path = "dwd_producer/dwd_producer_data"}
 dwd_producer_kafka_producer = {path = "dwd_producer/dwd_producer_kafka_producer"}
 
