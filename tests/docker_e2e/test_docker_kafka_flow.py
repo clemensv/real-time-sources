@@ -2512,6 +2512,8 @@ class TestJmaBosaiVolcanoDockerFlow:
             reference_types=['JP.JMA.Volcano.Volcano'],
             telemetry_types=['JP.JMA.Volcano.VolcanicWarning'],
             required_any_types=['JP.JMA.Volcano.VolcanicWarning', 'JP.JMA.Volcano.VolcanicEruption'],
+            extra_env={'JMA_BOSAI_VOLCANO_MOCK': 'true', 'ONCE_MODE': 'true'},
+            min_messages=3,
         )
 
 
