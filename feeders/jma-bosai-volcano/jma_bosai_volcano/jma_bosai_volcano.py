@@ -321,6 +321,41 @@ class JMABosaiVolcanoAPI:
             time.sleep(sleep_for)
 
 
+def _mock_enabled() -> bool:
+    return os.getenv("JMA_BOSAI_VOLCANO_MOCK", "").lower() in ("1", "true", "yes")
+
+
+class MockAPI(JMABosaiVolcanoAPI):
+    """Deterministic offline volcano source for the Docker E2E flow tests.
+
+    Returns a fixed catalog, warning, and eruption so the test does not depend
+    on JMA publishing a live volcanic warning during the test window. Canned
+    payloads mirror the MQTT/AMQP MockAPI so all three transports emit the same
+    reference + telemetry shapes.
+    """
+
+    def fetch_volcano_catalog(self) -> dict[str, Volcano]:
+        return parse_volcano_catalog([
+            {'code': '101', 'nameJp': '桜島', 'nameEn': 'Sakurajima',
+             'lat': 31.58, 'lon': 130.66, 'elevation': 1117, 'levelOperation': True},
+        ])
+
+    def fetch_warnings(self) -> list[dict[str, Any]]:
+        return [{
+            'eventId': 'v1', 'reportDatetime': '2026-01-01T00:00:00+09:00',
+            'volcanoInfos': [{'type': '噴火警報・予報（対象火山）',
+                'items': [{'code': '11', 'name': '活火山であることに留意',
+                    'condition': '発表', 'areas': [{'code': '101'}]}]}],
+        }]
+
+    def fetch_eruptions(self) -> list[dict[str, Any]]:
+        return [{
+            'eventId': 'e1', 'reportDatetime': '2026-01-01T00:05:00+09:00',
+            'volcanoInfos': [{'items': [{'type': '噴火',
+                'areas': [{'code': '101'}], 'description': '噴火しました'}]}],
+        }]
+
+
 def parse_volcano_catalog(payload: Any) -> dict[str, Volcano]:
     entries: Iterable[Any]
     if isinstance(payload, dict):
@@ -540,12 +575,13 @@ def main() -> None:
     feed_parser.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
     args = parser.parse_args()
 
-    api = JMABosaiVolcanoAPI()
+    api = MockAPI() if _mock_enabled() else JMABosaiVolcanoAPI()
     if args.command == "catalog":
         print(json.dumps([v.to_serializer_dict() for v in api.fetch_volcano_catalog().values()], ensure_ascii=False, indent=2))
     elif args.command == "feed":
         kafka_config, topic = build_kafka_config(args)
-        api.feed(kafka_config, topic, args.polling_interval, args.state_file, args.metadata_refresh_hours, args.once)
+        once = args.once or _mock_enabled()
+        api.feed(kafka_config, topic, args.polling_interval, args.state_file, args.metadata_refresh_hours, once)
     else:
         parser.print_help()
 
