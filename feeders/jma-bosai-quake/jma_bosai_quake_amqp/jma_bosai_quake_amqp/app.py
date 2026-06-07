@@ -17,7 +17,9 @@ from jma_bosai_quake.jma_bosai_quake import (
     LIST_URL,
     SUPPORTED_BULLETIN_TYPES,
     JmaBosaiQuakeAPI,
+    MockAPI,
     bulletin_type_from_filename,
+    mock_enabled,
 )
 from jma_bosai_quake_amqp_producer_amqp_producer.producer import JPJMAQuakeAmqpProducer
 
@@ -176,6 +178,7 @@ def main() -> None:
     if args.feed_command != "feed":
         parser.error("only the 'feed' command is supported")
     host, port, tls = _parse_broker_url(args.broker_url)
-    api = JmaBosaiQuakeAPI(state_file=args.state_file)
+    api = (MockAPI if mock_enabled() else JmaBosaiQuakeAPI)(state_file=args.state_file)
+    once = args.once or mock_enabled()
     logger.info("Polling %s and publishing to AMQP %s:%d", LIST_URL, host, port)
-    asyncio.run(feed(api, host, port, polling_interval=args.polling_interval, username=args.username or None, password=args.password or None, tls=tls, client_id=args.client_id or None, content_mode=args.content_mode, once=args.once))
+    asyncio.run(feed(api, host, port, polling_interval=args.polling_interval, username=args.username or None, password=args.password or None, tls=tls, client_id=args.client_id or None, content_mode=args.content_mode, once=once))

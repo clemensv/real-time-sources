@@ -5,15 +5,15 @@ class MaxIntensityenum(Enum):
     """
     Maximum observed JMA seismic intensity for the report copied from list.json maxi or detail Body.Intensity.Observation.MaxInt. Null is emitted when the bulletin has no observed intensity summary, including 震度速報, 南海トラフ関連解説情報, and 顕著な地震の震源要素更新のお知らせ bulletins.
     """
-    VALUE_1 = '1'
-    VALUE_2 = '2'
-    VALUE_3 = '3'
-    VALUE_4 = '4'
-    VALUE_5_ = '5-'
-    VALUE_5_ = '5+'
-    VALUE_6_ = '6-'
-    VALUE_6_ = '6+'
-    VALUE_7 = '7'
+    INTENSITY_1 = '1'
+    INTENSITY_2 = '2'
+    INTENSITY_3 = '3'
+    INTENSITY_4 = '4'
+    INTENSITY_5_MINUS = '5-'
+    INTENSITY_5_PLUS = '5+'
+    INTENSITY_6_MINUS = '6-'
+    INTENSITY_6_PLUS = '6+'
+    INTENSITY_7 = '7'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'MaxIntensityenum':
@@ -49,3 +49,4 @@ class MaxIntensityenum(Enum):
         """
         members = list(cls)
         return members.index(member)
+
