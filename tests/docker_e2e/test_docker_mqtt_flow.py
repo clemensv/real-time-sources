@@ -4919,7 +4919,7 @@ def mosquitto_gracedb():
 
 class TestGraceDbMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_gracedb, gracedb_mqtt_image):
-        _run_mqtt_contract_flow('gracedb', gracedb_mqtt_image, mosquitto_gracedb, timeout=900)
+        _run_mqtt_contract_flow('gracedb', gracedb_mqtt_image, mosquitto_gracedb, extra_env={'GRACEDB_MOCK': 'true', 'ONCE_MODE': 'true'}, timeout=240)
 
 
 @pytest.fixture(scope='module')

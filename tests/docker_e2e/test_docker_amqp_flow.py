@@ -459,7 +459,7 @@ class TestBfsOdlAmqpDockerFlow(AmqpDockerFlowBase):
 class TestGracedbAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "gracedb"
     image = "gracedb-amqp"
-    env = {"ONCE_MODE": "true"}
+    env = {"ONCE_MODE": "true", "GRACEDB_MOCK": "true"}
     expected_types = {'org.ligo.gracedb.Superevent'}
     expected_count = 1
 
