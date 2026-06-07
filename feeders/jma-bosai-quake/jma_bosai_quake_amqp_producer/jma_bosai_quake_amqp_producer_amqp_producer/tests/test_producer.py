@@ -365,4 +365,3 @@ class TestJPJMAQuakeAmqpProducer:
         assert received.body is not None
         assert received.subject == "jp.jma.quake/{event_id}/{serial}".format(event_id="value", serial="value")
 
-

@@ -823,4 +823,3 @@ class JPJMAQuakeAmqpProducer:
             finally:
                 self._connection = None
 
-

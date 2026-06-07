@@ -179,4 +179,3 @@ class JPJMAQuakeEventProducer:
             raise ValueError("Topic name not found in connection string")
         return cls(Producer(config), topic_name, content_mode)
 
-

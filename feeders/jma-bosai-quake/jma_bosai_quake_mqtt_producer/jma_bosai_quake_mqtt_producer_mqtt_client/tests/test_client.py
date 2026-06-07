@@ -111,4 +111,3 @@ async def test_jp_jma_quake_mqtt_jp_jma_quake_mqtt_earthquake_report_py(mosquitt
     await publisher_client.disconnect()
 
 
-

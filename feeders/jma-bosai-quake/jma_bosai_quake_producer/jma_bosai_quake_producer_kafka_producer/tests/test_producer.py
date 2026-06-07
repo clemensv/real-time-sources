@@ -116,5 +116,3 @@ def test_jp_jma_quake_jpjmaquakeearthquakereport(kafka_emulator):
         expected_key = "jp.jma.quake/{event_id}/{serial}".format(event_id=f'test_{i}', serial=f'test_{i}')
         assert received_key == expected_key, f"Expected Kafka key '{expected_key}' but got '{received_key}'"
     consumer.close()
-
-

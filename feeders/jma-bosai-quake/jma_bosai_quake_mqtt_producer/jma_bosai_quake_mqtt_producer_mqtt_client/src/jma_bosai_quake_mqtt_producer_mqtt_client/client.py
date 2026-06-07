@@ -474,4 +474,3 @@ class JPJMAQuakeMqttMqttClient(_ClientBase):
         self.client.publish(target_topic, payload, **publish_kwargs)
 
     
-

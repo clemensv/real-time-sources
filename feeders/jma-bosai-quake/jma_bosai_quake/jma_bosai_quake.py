@@ -58,15 +58,15 @@ _NO_TSUNAMI_MARKERS = (
 )
 _TSUNAMI_MARKERS = ("津波", "tsunami")
 _MAX_INTENSITY_MAP = {
-    "1": MaxIntensityenum.INTENSITY_1,
-    "2": MaxIntensityenum.INTENSITY_2,
-    "3": MaxIntensityenum.INTENSITY_3,
-    "4": MaxIntensityenum.INTENSITY_4,
-    "5-": MaxIntensityenum.INTENSITY_5_MINUS,
-    "5+": MaxIntensityenum.INTENSITY_5_PLUS,
-    "6-": MaxIntensityenum.INTENSITY_6_MINUS,
-    "6+": MaxIntensityenum.INTENSITY_6_PLUS,
-    "7": MaxIntensityenum.INTENSITY_7,
+    "1": MaxIntensityenum.VALUE_1,
+    "2": MaxIntensityenum.VALUE_2,
+    "3": MaxIntensityenum.VALUE_3,
+    "4": MaxIntensityenum.VALUE_4,
+    "5-": MaxIntensityenum.VALUE_5_MINUS,
+    "5+": MaxIntensityenum.VALUE_5_PLUS,
+    "6-": MaxIntensityenum.VALUE_6_MINUS,
+    "6+": MaxIntensityenum.VALUE_6_PLUS,
+    "7": MaxIntensityenum.VALUE_7,
 }
 _PREFECTURE_BY_CODE = {
     "01": "hokkaido", "02": "aomori", "03": "iwate", "04": "miyagi", "05": "akita", "06": "yamagata", "07": "fukushima",
