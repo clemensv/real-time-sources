@@ -961,7 +961,9 @@ class TestFdsnSeismologyDockerFlow:
             kafka, fdsn_seismology_image, self.TOPIC,
             reference_types=['Node'],
             telemetry_types=['Earthquake'],
-            timeout=420,
+            extra_env={'FDSN_MOCK': 'true', 'ONCE_MODE': 'true'},
+            min_messages=1,
+            timeout=240,
         )
 
 

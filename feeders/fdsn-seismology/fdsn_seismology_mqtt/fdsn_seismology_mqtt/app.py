@@ -15,7 +15,7 @@ from paho.mqtt.packettypes import PacketTypes
 from paho.mqtt.properties import Properties
 import requests
 
-from fdsn_seismology_core import get_active_nodes, load_state, parse_node_filter, poll_nodes, save_state, should_publish_event
+from fdsn_seismology_core import get_active_nodes, load_mock_events, load_state, parse_node_filter, poll_nodes, save_state, should_publish_event
 from fdsn_seismology_core.fdsn_client import EarthquakeRecord, prune_seen_events
 from fdsn_seismology_mqtt_producer_data import Earthquake, Node
 from fdsn_seismology_mqtt_producer_mqtt_client.client import OrgFdsnEventMqttMqttClient
@@ -205,14 +205,17 @@ async def feed(args: argparse.Namespace) -> None:
         while True:
             published = 0
             cycle_started = time.time()
-            events = poll_nodes(
-                session,
-                active_nodes,
-                state,
-                poll_interval_seconds=args.poll_interval,
-                min_magnitude=args.min_magnitude,
-                limit=args.limit,
-            )
+            if args.mock:
+                events = load_mock_events(active_nodes)
+            else:
+                events = poll_nodes(
+                    session,
+                    active_nodes,
+                    state,
+                    poll_interval_seconds=args.poll_interval,
+                    min_magnitude=args.min_magnitude,
+                    limit=args.limit,
+                )
             for event in events:
                 if not should_publish_event(event, state):
                     continue
@@ -228,7 +231,7 @@ async def feed(args: argparse.Namespace) -> None:
             prune_seen_events(state)
             save_state(args.state_file, state)
             logger.info("Published %d MQTT earthquake events from %d active node(s)", published, len(active_nodes))
-            if args.once:
+            if args.once or args.mock:
                 logger.info("--once mode: exiting after one polling cycle")
                 break
             sleep_seconds = max(0.0, args.poll_interval - (time.time() - cycle_started))
@@ -259,6 +262,8 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=int(os.getenv("FDSN_LIMIT", "500")))
     parser.add_argument("--content-mode", choices=("binary", "structured"), default=os.getenv("MQTT_CONTENT_MODE", "binary"))
     parser.add_argument("--once", action="store_true", default=_env_flag("ONCE_MODE", default=False))
+    parser.add_argument("--mock", action="store_true", default=_env_flag("FDSN_MOCK", default=False),
+                        help="Emit a deterministic canned earthquake corpus instead of polling live FDSN nodes (one cycle, then exit). Used by the Docker E2E flow test.")
     parser.add_argument("--username", default=os.getenv("MQTT_USERNAME", ""))
     parser.add_argument("--password", default=os.getenv("MQTT_PASSWORD", ""))
     parser.add_argument("--client-id", default=os.getenv("MQTT_CLIENT_ID", "fdsn-seismology-mqtt"))
