@@ -40,6 +40,67 @@ DEFAULT_POLL_COUNT = 25
 DEFAULT_CATEGORIES = "Production,MDC"
 
 
+def _mock_enabled() -> bool:
+    return os.getenv("GRACEDB_MOCK", "").lower() in ("1", "true", "yes")
+
+
+def created_to_rfc3339(created: Optional[str]) -> str:
+    """Convert a GraceDB ``created`` timestamp to an RFC 3339 string.
+
+    GraceDB publishes ``created`` as e.g. ``"2024-01-01 00:00:00 UTC"`` which is
+    not valid RFC 3339 and is rejected by the generated Kafka producer's
+    CloudEvents ``time`` normalization. Parse the known GraceDB shape and emit a
+    ``Z``-suffixed RFC 3339 timestamp; fall back to the current UTC instant when
+    the upstream value is missing or in an unexpected format so the producer
+    never receives an invalid ``time``.
+    """
+    text = (created or "").strip()
+    if text:
+        candidate = text[:-4].strip() if text.upper().endswith(" UTC") else text
+        for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%dT%H:%M:%S"):
+            try:
+                dt = datetime.strptime(candidate, fmt).replace(tzinfo=timezone.utc)
+                return dt.isoformat().replace("+00:00", "Z")
+            except ValueError:
+                continue
+    return datetime.now(timezone.utc).isoformat().replace("+00:00", "Z")
+
+
+# Deterministic canned superevent used by the ``GRACEDB_MOCK`` offline mode so
+# the Docker E2E flow tests do not depend on a real gravitational-wave candidate
+# being published by GraceDB within the test window. The shape mirrors the live
+# ``/api/superevents/`` JSON so it flows through the same ``parse_superevent``
+# normalization path the live poller uses, exercising the real producer code.
+SAMPLE_SUPEREVENTS = [
+    {
+        "superevent_id": "MS240101a",
+        "category": "Production",
+        "created": "2024-01-01 00:00:00 UTC",
+        "t_start": 1388534400.0,
+        "t_0": 1388534401.0,
+        "t_end": 1388534402.0,
+        "far": 1.2e-09,
+        "time_coinc_far": None,
+        "space_coinc_far": None,
+        "labels": ["ADVOK", "GCN_PRELIM_SENT"],
+        "gw_id": None,
+        "submitter": "mock",
+        "em_type": None,
+        "preferred_event_data": {
+            "graceid": "G000001",
+            "pipeline": "gstlal",
+            "group": "CBC",
+            "instruments": "H1,L1,V1",
+            "search": "AllSky",
+            "far_is_upper_limit": False,
+            "nevents": 1,
+        },
+        "links": {"self": "https://gracedb.ligo.org/api/superevents/MS240101a/"},
+    },
+]
+
+
+
 def is_topic_segment(value: str) -> bool:
     return bool(value) and all(char not in value for char in ("/", "+", "#", "\x00"))
 
@@ -58,6 +119,7 @@ class GraceDBPoller:
         self.last_polled_file = last_polled_file
         self.poll_count = poll_count
         self.categories = set(c.strip() for c in (categories or DEFAULT_CATEGORIES).split(','))
+        self.mock = _mock_enabled()
         self.event_producer: Optional[OrgLigoGracedbEventProducer] = None
         if kafka_config is not None:
             producer = Producer(kafka_config)
@@ -65,6 +127,9 @@ class GraceDBPoller:
 
     async def fetch_superevents(self, count: Optional[int] = None) -> List[Dict[str, Any]]:
         """Fetch superevents from the GraceDB public API."""
+        if self.mock:
+            logger.info("GRACEDB_MOCK enabled: returning %d canned superevent(s)", len(SAMPLE_SUPEREVENTS))
+            return [dict(raw) for raw in SAMPLE_SUPEREVENTS]
         url = f"{BASE_API_URL}?format=json&count={count or self.poll_count}"
         async with aiohttp.ClientSession(headers={"User-Agent": USER_AGENT}, timeout=aiohttp.ClientTimeout(total=30)) as session:
             try:
@@ -147,6 +212,8 @@ class GraceDBPoller:
         """
         seen_ids = self.load_seen_ids()
         poll_interval = timedelta(minutes=2)
+        # Mock mode is for the deterministic E2E flow test: emit one cycle and exit.
+        once = once or self.mock
 
         while True:
             start_poll_time = datetime.now(timezone.utc)
@@ -164,7 +231,7 @@ class GraceDBPoller:
                 self.event_producer.send_org_ligo_gracedb_superevent(
                     _source_uri=BASE_API_URL,
                     _superevent_id=superevent.superevent_id,
-                    _created=superevent.created,
+                    _time=created_to_rfc3339(superevent.created),
                     data=superevent,
                     flush_producer=False,
                 )

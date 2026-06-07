@@ -30,6 +30,11 @@ class _MqttProducerAdapter:
         kwargs.pop("flush_producer", None)
         data = kwargs["data"]
         normalized = {key[1:] if key.startswith("_") else key: value for key, value in kwargs.items()}
+        # The Kafka producer takes a uniform CloudEvents ``_time`` override, but
+        # the MQTT publish method takes the named ``created`` template variable.
+        # Translate so the shared bridge call site works across both transports.
+        if "time" in normalized and "created" not in normalized:
+            normalized["created"] = normalized.pop("time")
         normalized["category"] = data.category
         normalized["group"] = data.group
         task = asyncio.create_task(self._publish(**normalized))

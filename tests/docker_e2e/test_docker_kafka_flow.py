@@ -999,6 +999,7 @@ class TestGraceDBDockerFlow:
             kafka, gracedb_image, self.TOPIC,
             reference_types=None,
             telemetry_types=['Superevent'],
+            extra_env={'GRACEDB_MOCK': 'true', 'ONCE_MODE': 'true'},
             min_messages=1,
         )
 
