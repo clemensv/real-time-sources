@@ -4897,7 +4897,7 @@ def mosquitto_jma_bosai_quake():
 
 class TestJmaBosaiQuakeMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_jma_bosai_quake, jma_bosai_quake_mqtt_image):
-        _run_mqtt_contract_flow('jma-bosai-quake', jma_bosai_quake_mqtt_image, mosquitto_jma_bosai_quake, timeout=900)
+        _run_mqtt_contract_flow('jma-bosai-quake', jma_bosai_quake_mqtt_image, mosquitto_jma_bosai_quake, extra_env={'JMA_BOSAI_QUAKE_MOCK': 'true'}, timeout=900, min_messages=1)
 
 
 @pytest.fixture(scope='module')

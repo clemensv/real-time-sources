@@ -6,3 +6,4 @@ from .affectedcity import AffectedCity
 from .earthquakereport import EarthquakeReport
 
 __all__ = ["InfoTypeenum", "MaxIntensityenum", "BulletinTypeenum", "AffectedPrefecture", "AffectedCity", "EarthquakeReport"]
+

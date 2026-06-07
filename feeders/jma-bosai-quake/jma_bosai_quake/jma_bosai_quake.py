@@ -184,11 +184,13 @@ def prefecture_slug(epicenter_area_en: str | None, affected_prefectures: List[Af
 
 def magnitude_bucket(magnitude: Optional[float]) -> str:
     if magnitude is None:
-        return "mx"
+        return "magnitude-unknown"
+    if magnitude < 1:
+        return "magnitude-lt1"
     bucket = int(magnitude)
-    if bucket < 0:
-        return "mx"
-    return f"m{min(bucket, 9)}"
+    if bucket >= 9:
+        return "magnitude-9plus"
+    return f"magnitude-{bucket}"
 
 
 def extract_tsunami_possible(detail: Optional[Dict[str, Any]]) -> Optional[bool]:
@@ -419,6 +421,62 @@ class JmaBosaiQuakeAPI:
         producer.flush()
 
 
+def mock_enabled() -> bool:
+    """True when JMA_BOSAI_QUAKE_MOCK is set, selecting the deterministic offline source."""
+    return os.getenv("JMA_BOSAI_QUAKE_MOCK", "").lower() in ("1", "true", "yes")
+
+
+# Canned earthquake-report list entry + detail used by MockAPI so the Docker
+# E2E flow tests do not depend on JMA publishing a live earthquake report during
+# the test window. The shape mirrors a real VXSE5k "震源・震度情報" bulletin.
+SAMPLE_REPORTS: List[Dict[str, Any]] = [
+    {
+        "ctt": "20260521011147",
+        "eid": "20260521010824",
+        "rdt": "2026-05-21T01:11:00+09:00",
+        "ttl": "震源・震度情報",
+        "ift": "発表",
+        "ser": "1",
+        "at": "2026-05-21T01:08:00+09:00",
+        "anm": "京都府南部",
+        "acd": "511",
+        "cod": "+35.0+135.5-10000/",
+        "mag": "2.4",
+        "maxi": "1",
+        "int": [{"code": "27", "maxi": "1", "city": [{"code": "2732200", "maxi": "1"}]}],
+        "json": "20260521011147_20260521010824_VXSE5k_1.json",
+        "en_ttl": "Earthquake and Seismic Intensity Information",
+        "en_anm": "Southern Kyoto Prefecture",
+    }
+]
+
+SAMPLE_DETAIL: Dict[str, Any] = {
+    "Body": {
+        "Comments": {
+            "ForecastComment": {
+                "Text": "この地震による津波の心配はありません。",
+                "enText": "This earthquake poses no tsunami risk.\n",
+            }
+        }
+    }
+}
+
+
+class MockAPI(JmaBosaiQuakeAPI):
+    """Deterministic offline earthquake source for the Docker E2E flow tests.
+
+    Returns a single canned VXSE5k report so all three transports emit one
+    ``JP.JMA.Quake.EarthquakeReport`` without waiting for a live JMA bulletin.
+    Canned data flows through the real normalization + generated producer path.
+    """
+
+    def list_reports(self) -> List[Dict[str, Any]]:
+        return list(SAMPLE_REPORTS)
+
+    def fetch_detail(self, filename: str) -> Optional[Dict[str, Any]]:
+        return dict(SAMPLE_DETAIL)
+
+
 def build_kafka_config(args: argparse.Namespace) -> Tuple[Dict[str, Any], str]:
     if args.connection_string:
         parsed = parse_connection_string(args.connection_string)
@@ -473,7 +531,9 @@ def main() -> None:
     if args.command == "feed":
         try:
             kafka_config, kafka_topic = build_kafka_config(args)
-            JmaBosaiQuakeAPI(state_file=args.state_file).feed(kafka_config, kafka_topic, args.polling_interval, args.once)
+            api_cls = MockAPI if mock_enabled() else JmaBosaiQuakeAPI
+            once = args.once or mock_enabled()
+            api_cls(state_file=args.state_file).feed(kafka_config, kafka_topic, args.polling_interval, once)
         except Exception as exc:  # pylint: disable=broad-except
             print(f"Error: {exc}", file=sys.stderr)
             sys.exit(1)

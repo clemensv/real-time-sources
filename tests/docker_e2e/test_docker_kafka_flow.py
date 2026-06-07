@@ -2496,6 +2496,8 @@ class TestJmaBosaiQuakeDockerFlow:
             reference_types=None,
             telemetry_types=['JP.JMA.Quake.EarthquakeReport'],
             required_exact_types=['JP.JMA.Quake.EarthquakeReport'],
+            extra_env={'JMA_BOSAI_QUAKE_MOCK': 'true', 'ONCE_MODE': 'true'},
+            min_messages=1,
         )
 
 

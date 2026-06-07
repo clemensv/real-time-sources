@@ -427,7 +427,7 @@ class TestUSGSIVAmqpDockerFlow(AmqpDockerFlowBase):
 class TestJmaBosaiQuakeAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "jma-bosai-quake"
     image = "jma-bosai-quake-amqp"
-    env = {"ONCE_MODE": "true"}
+    env = {"ONCE_MODE": "true", "JMA_BOSAI_QUAKE_MOCK": "true"}
     expected_types = {'JP.JMA.Quake.EarthquakeReport'}
     expected_count = 1
 
