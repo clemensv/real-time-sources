@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from fdsn_seismology_core.fdsn_client import EarthquakeRecord, deduplicate_events, parse_fdsn_text
+from fdsn_seismology_core.fdsn_client import EarthquakeRecord, deduplicate_events, load_mock_events, parse_fdsn_text
 from fdsn_seismology_core.nodes import NODE_CATALOG, get_active_nodes
 
 
@@ -41,6 +41,24 @@ class TestParseFdsnText:
 
         assert len(records) == 1
         assert records[0].event_type is None
+
+
+class TestMockEvents:
+    def test_load_mock_events_is_deterministic_and_nonempty(self):
+        active = get_active_nodes(None, None)
+        first = load_mock_events(active)
+        second = load_mock_events(active)
+
+        assert len(first) >= 1
+        assert [r.event_id for r in first] == [r.event_id for r in second]
+        assert all(r.contributor == "MOCK" for r in first)
+        # Earthquakes are attributed to the first active node so keys/subjects stay stable.
+        first_node_url = str(next(iter(active.values()))["base_url"])
+        assert all(r.node_url == first_node_url for r in first)
+        assert all(r.magnitude is not None for r in first)
+
+    def test_load_mock_events_empty_node_selection(self):
+        assert load_mock_events({}) == []
 
 
 class TestNodeCatalog:

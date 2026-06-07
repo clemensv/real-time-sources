@@ -194,6 +194,39 @@ def parse_fdsn_text(text: str, node_id: str, node_url: str) -> list[EarthquakeRe
 
 
 
+# Deterministic FDSN-text corpus used by the ``--mock`` / ``FDSN_MOCK`` offline
+# mode. It mirrors the upstream FDSN event "text" format (pipe-delimited, with a
+# leading ``#`` header row) so it flows through the same ``parse_fdsn_text`` path
+# the live poller uses — exercising the real normalization and producer code
+# without depending on a real earthquake occurring during a test window.
+SAMPLE_FDSN_TEXT = (
+    "#EventID|Time|Latitude|Longitude|Depth/km|Author|Catalog|Contributor"
+    "|ContributorID|MagType|Magnitude|MagAuthor|EventLocationName|EventType\n"
+    "mock0000000001|2024-01-01T00:00:00.000000|35.6895|139.6917|10.0|MOCK|MOCK"
+    "|MOCK|mock0000000001|MW|5.2|MOCK|Tokyo region, Japan|earthquake\n"
+    "mock0000000002|2024-01-01T00:30:00.000000|38.2975|142.3729|25.5|MOCK|MOCK"
+    "|MOCK|mock0000000002|MW|4.8|MOCK|Off the coast of Tohoku, Japan|earthquake\n"
+)
+
+
+def load_mock_events(
+    active_nodes: dict[str, dict[str, str | None]],
+) -> list[EarthquakeRecord]:
+    """Return deterministic canned earthquake records for offline/mock runs.
+
+    Used by the ``--mock`` / ``FDSN_MOCK`` deterministic mode so the Docker E2E
+    flow test does not depend on a real earthquake landing within the test
+    window. The canned events are attributed to the first active node and parsed
+    through the same ``parse_fdsn_text`` path as live data, so normalization and
+    the generated producer are still exercised end to end.
+    """
+    if not active_nodes:
+        return []
+    node_id, node = next(iter(active_nodes.items()))
+    return parse_fdsn_text(SAMPLE_FDSN_TEXT, node_id=node_id, node_url=str(node["base_url"]))
+
+
+
 def _record_score(record: EarthquakeRecord) -> int:
     return sum(1 for value in asdict(record).values() if value not in (None, ""))
 

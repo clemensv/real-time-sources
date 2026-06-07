@@ -4743,7 +4743,7 @@ def mosquitto_fdsn_seismology():
 
 class TestFdsnSeismologyMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_fdsn_seismology, fdsn_seismology_mqtt_image):
-        _run_mqtt_contract_flow('fdsn-seismology', fdsn_seismology_mqtt_image, mosquitto_fdsn_seismology, timeout=420)
+        _run_mqtt_contract_flow('fdsn-seismology', fdsn_seismology_mqtt_image, mosquitto_fdsn_seismology, extra_env={'FDSN_MOCK': 'true', 'ONCE_MODE': 'true'}, timeout=240)
 
 
 @pytest.fixture(scope='module')
