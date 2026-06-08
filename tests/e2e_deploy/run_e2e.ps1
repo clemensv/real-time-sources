@@ -120,13 +120,25 @@ if ($OnlySource) {
 # Filter out skipped sources
 $allSources = $allSources | Where-Object { $_ -notin $skipSources }
 
-# Categorize
+# Categorize — detect available transport variants per source
 $azureSources = @()
 $fabricSources = @()
 
+$transportVariants = @{
+    "eventhub"       = "azure-template-with-eventhub.json"
+    "servicebus"     = "azure-template-with-servicebus.json"
+    "eventgrid-mqtt" = "azure-template-with-eventgrid-mqtt.json"
+}
+
 foreach ($src in $allSources) {
     $srcPath = Join-Path $feedersDir $src
-    if (Test-Path (Join-Path $srcPath "azure-template.json")) {
+    $hasAnyTemplate = $false
+    foreach ($variant in $transportVariants.Keys) {
+        if (Test-Path (Join-Path $srcPath $transportVariants[$variant])) {
+            $hasAnyTemplate = $true
+        }
+    }
+    if ($hasAnyTemplate) {
         $azureSources += $src
     }
     if (Test-Path (Join-Path $srcPath "notebook")) {
@@ -151,23 +163,31 @@ $results = @{
     end_time = $null
 }
 
-# --- Run Azure tests ---
+# --- Run Azure tests (all variants per source) ---
 if (-not $skipAz -and $sub) {
     Write-Host "--- Azure ACI Tests ---" -ForegroundColor Cyan
     foreach ($src in $azureSources) {
-        Write-Host ""
-        $r = & "$scriptDir/test_azure_aci.ps1" `
-            -Source $src `
-            -SessionDir $sessionDir `
-            -Subscription $sub `
-            -Region $region `
-            -TimeoutSeconds $timeoutAzure
+        $srcPath = Join-Path $feedersDir $src
+        foreach ($variant in @("eventhub", "servicebus", "eventgrid-mqtt")) {
+            $templateFile = $transportVariants[$variant]
+            if (-not (Test-Path (Join-Path $srcPath $templateFile))) {
+                continue
+            }
+            Write-Host ""
+            $r = & "$scriptDir/test_azure_aci.ps1" `
+                -Source $src `
+                -Variant $variant `
+                -SessionDir $sessionDir `
+                -Subscription $sub `
+                -Region $region `
+                -TimeoutSeconds $timeoutAzure
 
-        $results.azure.sources += @{ source = $src; result = $r.result }
-        switch ($r.result) {
-            "pass" { $results.azure.pass++ }
-            "fail" { $results.azure.fail++ }
-            "skip" { $results.azure.skip++ }
+            $results.azure.sources += @{ source = $src; variant = $variant; result = $r.result }
+            switch ($r.result) {
+                "pass" { $results.azure.pass++ }
+                "fail" { $results.azure.fail++ }
+                "skip" { $results.azure.skip++ }
+            }
         }
     }
 }

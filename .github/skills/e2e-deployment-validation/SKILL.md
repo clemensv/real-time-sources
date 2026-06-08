@@ -59,32 +59,124 @@ failures and never silently pass a broken source.
 
 ## Azure ACI Validation Procedure
 
-For each source that has `feeders/<source>/azure-template.json`:
+Each source may ship up to **four** ACI deployment variants. The agent must
+test every variant that has a corresponding ARM template and Dockerfile:
 
-### Step 1: Deploy Infrastructure
+| Variant | ARM Template | Dockerfile | Broker |
+|---------|-------------|-----------|--------|
+| ACI + Event Hubs (Kafka) | `azure-template-with-eventhub.json` | `Dockerfile` or `Dockerfile.kafka` | Event Hubs (Kafka protocol) |
+| ACI + Service Bus (AMQP) | `azure-template-with-servicebus.json` | `Dockerfile.amqp` | Service Bus (AMQP 1.0) |
+| ACI + Event Grid (MQTT) | `azure-template-with-eventgrid-mqtt.json` | `Dockerfile.mqtt` | Event Grid namespace (MQTT v5) |
+| ACI + BYO MQTT | `azure-template-mqtt.json` | `Dockerfile.mqtt` | External MQTT broker (skip in E2E) |
+
+The agent **skips** `azure-template-mqtt.json` (BYO broker) because it requires
+an external broker that isn't provisioned by the template itself.
+
+### Variant: ACI + Event Hubs (Kafka)
+
+For each source with `feeders/<source>/azure-template-with-eventhub.json`:
+
+#### Step 1: Deploy Infrastructure
 
 ```powershell
-$rg = "e2e-<source>-<timestamp>"
+$rg = "e2e-<source>-eh-<timestamp>"
 az group create --name $rg --location <region> --subscription <sub>
 az eventhubs namespace create --name <ns> --resource-group $rg --sku Standard
 az eventhubs eventhub create --name <source> --namespace-name <ns> --resource-group $rg
 ```
 
-### Step 2: Deploy Container
+#### Step 2: Deploy Container
 
 ```powershell
-az deployment group create --resource-group $rg --template-file azure-template.json --parameters ...
+az deployment group create --resource-group $rg \
+    --template-file azure-template-with-eventhub.json --parameters ...
 ```
 
-### Step 3: Validate Messages
+#### Step 3: Validate Messages
 
-Use the Event Hubs SDK to consume from the hub. Validate:
+Use the Event Hubs SDK (Kafka consumer) to consume from the hub. Validate:
 - [ ] At least 1 message received within timeout
-- [ ] Each message has CloudEvents headers (`ce_type`, `ce_source`, `ce_subject`)
+- [ ] Each message has CloudEvents Kafka headers (`ce_type`, `ce_source`, `ce_subject`)
 - [ ] Kafka key matches the subject template from the xreg manifest
 - [ ] Payload validates against the JsonStructure schema in the xreg
 
-### Step 4: Teardown
+#### Step 4: Teardown
+
+```powershell
+az group delete --name $rg --yes --no-wait
+```
+
+### Variant: ACI + Service Bus (AMQP)
+
+For each source with `feeders/<source>/azure-template-with-servicebus.json`:
+
+#### Step 1: Deploy Infrastructure
+
+```powershell
+$rg = "e2e-<source>-sb-<timestamp>"
+az group create --name $rg --location <region> --subscription <sub>
+az servicebus namespace create --name <ns> --resource-group $rg --sku Standard
+```
+
+The ARM template typically creates the topic/queue within the deployment.
+
+#### Step 2: Deploy Container
+
+```powershell
+az deployment group create --resource-group $rg \
+    --template-file azure-template-with-servicebus.json --parameters ...
+```
+
+#### Step 3: Validate Messages
+
+Use the Service Bus SDK to receive from the topic/queue. Validate:
+- [ ] At least 1 message received within timeout
+- [ ] AMQP application properties contain CloudEvents attributes with `cloudEvents:` prefix
+  (per CloudEvents AMQP binding: `cloudEvents:type`, `cloudEvents:source`, `cloudEvents:subject`)
+- [ ] Content-type is `application/cloudevents+json` (structured) or `application/json` (binary)
+- [ ] Payload validates against the JsonStructure schema in the xreg
+
+#### Step 4: Teardown
+
+```powershell
+az group delete --name $rg --yes --no-wait
+```
+
+### Variant: ACI + Event Grid MQTT
+
+For each source with `feeders/<source>/azure-template-with-eventgrid-mqtt.json`:
+
+#### Step 1: Deploy Infrastructure
+
+```powershell
+$rg = "e2e-<source>-eg-<timestamp>"
+az group create --name $rg --location <region> --subscription <sub>
+```
+
+The ARM template provisions the Event Grid namespace with MQTT enabled,
+client identities, topic spaces, and permission bindings.
+
+#### Step 2: Deploy Container
+
+```powershell
+az deployment group create --resource-group $rg \
+    --template-file azure-template-with-eventgrid-mqtt.json --parameters ...
+```
+
+#### Step 3: Validate Messages
+
+Use a MQTT v5 client to subscribe to the feeder's topic tree. Validate:
+- [ ] At least 1 PUBLISH received within timeout
+- [ ] MQTT v5 user properties contain CloudEvents attributes with `ce-` prefix
+  (per CloudEvents MQTT binding: `ce-type`, `ce-source`, `ce-subject`)
+- [ ] Topic path follows the UNS structure declared in the xreg MQTT messagegroup
+- [ ] Payload validates against the JsonStructure schema in the xreg
+
+**Authentication**: The ARM template creates a test client registration. The
+agent reads the client credentials from the deployment outputs or from the
+`read-only-test-client` registration pattern.
+
+#### Step 4: Teardown
 
 ```powershell
 az group delete --name $rg --yes --no-wait
