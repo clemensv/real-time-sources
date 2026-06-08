@@ -1,11 +1,14 @@
 <#
 .SYNOPSIS
-    Receives messages from a Service Bus topic and validates AMQP CloudEvents properties.
+    Receives messages from a Service Bus queue or topic and validates AMQP CloudEvents properties.
+    Uses DefaultAzureCredential (RBAC); caller must assign 'Azure Service Bus Data Receiver' role first.
     Returns the message count.
 #>
 param(
-    [Parameter(Mandatory)][string]$ConnectionString,
-    [Parameter(Mandatory)][string]$TopicName,
+    [Parameter(Mandatory)][string]$FullyQualifiedNamespace,
+    [Parameter(Mandatory)][string]$EntityName,
+    [string]$EntityType = "queue",  # "queue" or "topic"
+    [string]$SubscriptionName = "e2e-test-sub",
     [Parameter(Mandatory)][string]$SessionDir,
     [Parameter(Mandatory)][string]$Source,
     [int]$TimeoutSeconds = 600,
@@ -14,58 +17,58 @@ param(
 
 $consumerScript = @"
 import sys, json, time
+from azure.identity import DefaultAzureCredential
 from azure.servicebus import ServiceBusClient
 
-conn_str = sys.argv[1]
-topic_name = sys.argv[2]
-timeout = int(sys.argv[3])
-min_msgs = int(sys.argv[4])
+fqns = sys.argv[1]
+entity_name = sys.argv[2]
+entity_type = sys.argv[3]  # "queue" or "topic"
+sub_name = sys.argv[4]
+timeout = int(sys.argv[5])
+min_msgs = int(sys.argv[6])
 
 messages = []
 errors = []
 start = time.time()
 
-client = ServiceBusClient.from_connection_string(conn_str)
-# Create a temporary subscription for testing
-sub_name = "e2e-test-sub"
-try:
-    from azure.servicebus.management import ServiceBusAdministrationClient
-    admin = ServiceBusAdministrationClient.from_connection_string(conn_str)
-    try:
-        admin.create_subscription(topic_name, sub_name)
-    except Exception:
-        pass  # may already exist
+credential = DefaultAzureCredential()
+client = ServiceBusClient(fully_qualified_namespace=fqns, credential=credential)
 
+try:
     with client:
-        receiver = client.get_subscription_receiver(
-            topic_name=topic_name,
-            subscription_name=sub_name,
-            max_wait_time=30
-        )
+        if entity_type == "queue":
+            receiver = client.get_queue_receiver(entity_name, max_wait_time=30)
+        else:
+            receiver = client.get_subscription_receiver(
+                topic_name=entity_name,
+                subscription_name=sub_name,
+                max_wait_time=30
+            )
         with receiver:
             while len(messages) < min_msgs and (time.time() - start) < timeout:
                 batch = receiver.receive_messages(max_message_count=10, max_wait_time=30)
                 for msg in batch:
-                    app_props = {str(k): str(v) for k, v in (msg.application_properties or {}).items()}
-                    body = str(msg)
+                    ap = msg.application_properties or {}
+                    props = {
+                        (k.decode() if isinstance(k, bytes) else str(k)):
+                        (v.decode() if isinstance(v, bytes) else str(v))
+                        for k, v in ap.items()
+                    }
+                    body_bytes = b"".join(msg.body)
+                    try:
+                        body_obj = json.loads(body_bytes)
+                    except Exception:
+                        body_obj = None
                     messages.append({
-                        "properties": app_props,
+                        "properties": props,
                         "content_type": msg.content_type,
-                        "body_size": len(body)
+                        "body_size": len(body_bytes),
+                        "body_obj": body_obj
                     })
-                    # Validate AMQP CloudEvents binding (cloudEvents: prefix)
                     for attr in ["cloudEvents:type", "cloudEvents:source", "cloudEvents:subject"]:
-                        # Also check byte-decoded key variants
-                        found = any(attr in k or attr.encode() == k for k in (msg.application_properties or {}).keys())
-                        if not found:
+                        if attr not in props:
                             errors.append(f"Message {len(messages)-1}: missing AMQP property '{attr}'")
                     receiver.complete_message(msg)
-
-    # Cleanup subscription
-    try:
-        admin.delete_subscription(topic_name, sub_name)
-    except Exception:
-        pass
 
 except Exception as e:
     print(json.dumps({"error": str(e), "messages": messages, "validation_errors": errors}))
@@ -77,7 +80,7 @@ print(json.dumps({"messages": messages, "count": len(messages), "validation_erro
 $scriptPath = Join-Path $SessionDir "$Source-sb-consumer.py"
 $consumerScript | Set-Content $scriptPath -Encoding utf8
 
-$pyResult = python $scriptPath $ConnectionString $TopicName $TimeoutSeconds $MinMessages 2>&1 | Out-String
+$pyResult = python $scriptPath $FullyQualifiedNamespace $EntityName $EntityType $SubscriptionName $TimeoutSeconds $MinMessages 2>&1 | Out-String
 Remove-Item $scriptPath -ErrorAction SilentlyContinue
 
 $parsed = $pyResult.Trim() | ConvertFrom-Json

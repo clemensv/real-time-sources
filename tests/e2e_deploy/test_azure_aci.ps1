@@ -113,16 +113,25 @@ try {
     $result.steps["deployment_complete"] = $true
 
     # Step 3: Wait for container to start
+    # NOTE: `az container list` may return empty instanceView.state; use `az container show` instead.
     Write-Host "[3/4] Waiting for ACI container to reach Running state..."
     $aciStartTimeout = 180
     $aciStart = Get-Date
     $running = $false
+    $containerName = az container list --resource-group $rgName --subscription $Subscription `
+        --query "[0].name" --output tsv 2>$null
     while (((Get-Date) - $aciStart).TotalSeconds -lt $aciStartTimeout) {
-        $containers = az container list --resource-group $rgName --subscription $Subscription `
-            --query "[].{name:name,state:instanceView.state}" --output json 2>$null | ConvertFrom-Json
-        if ($containers | Where-Object { $_.state -eq "Running" }) {
-            $running = $true
-            break
+        if (-not $containerName) {
+            $containerName = az container list --resource-group $rgName --subscription $Subscription `
+                --query "[0].name" --output tsv 2>$null
+        }
+        if ($containerName) {
+            $state = az container show --resource-group $rgName --name $containerName `
+                --subscription $Subscription --query "instanceView.state" --output tsv 2>$null
+            if ($state -eq "Running") {
+                $running = $true
+                break
+            }
         }
         Start-Sleep -Seconds 10
     }
@@ -165,17 +174,29 @@ try {
             # Get the Service Bus namespace from the RG
             $sbNs = az servicebus namespace list --resource-group $rgName --subscription $Subscription `
                 --query "[0].name" --output tsv
-            $sbConnStr = az servicebus namespace authorization-rule keys list `
-                --resource-group $rgName --namespace-name $sbNs `
-                --name RootManageSharedAccessKey --subscription $Subscription `
-                --query primaryConnectionString --output tsv
-            # Find topics or queues
-            $topics = az servicebus topic list --resource-group $rgName --namespace-name $sbNs `
+            $sbNsId = az servicebus namespace show --resource-group $rgName --namespace-name $sbNs `
+                --subscription $Subscription --query id --output tsv
+
+            # Assign Azure Service Bus Data Receiver to current user — ARM template does not do this.
+            # Without this, DefaultAzureCredential gets amqp:unauthorized-access (Listen claim required).
+            $myObjectId = az ad signed-in-user show --query id --output tsv
+            Write-Host "  Assigning Azure Service Bus Data Receiver to test identity..."
+            az role assignment create --assignee $myObjectId --role "Azure Service Bus Data Receiver" `
+                --scope $sbNsId --output none --subscription $Subscription
+            Start-Sleep -Seconds 30  # allow RBAC propagation
+
+            # Find queues (prefer queue over topic for standard SKU)
+            $queues = az servicebus queue list --resource-group $rgName --namespace-name $sbNs `
                 --subscription $Subscription --query "[].name" --output tsv
+            $entityName = if ($queues) { $queues | Select-Object -First 1 } else {
+                az servicebus topic list --resource-group $rgName --namespace-name $sbNs `
+                    --subscription $Subscription --query "[0].name" --output tsv
+            }
 
             $msgCount = & "$scriptDir/validate_servicebus.ps1" `
-                -ConnectionString $sbConnStr `
-                -TopicName ($topics | Select-Object -First 1) `
+                -FullyQualifiedNamespace "$sbNs.servicebus.windows.net" `
+                -EntityName $entityName `
+                -EntityType ($(if ($queues) { "queue" } else { "topic" })) `
                 -TimeoutSeconds $TimeoutSeconds `
                 -MinMessages $MinMessages `
                 -SessionDir $SessionDir `
