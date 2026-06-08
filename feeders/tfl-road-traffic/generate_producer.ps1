@@ -31,3 +31,5 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "Producer generated successfully in $outputDir"
 
 & (Join-Path $PSScriptRoot "generate_amqp_producer.ps1")
+
+Convert-GeneratedPyprojects

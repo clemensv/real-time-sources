@@ -34,3 +34,5 @@ xrcg generate `
     --projectname king_county_marine_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output king_county_marine_amqp_producer
+
+Convert-GeneratedPyprojects

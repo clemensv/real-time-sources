@@ -27,3 +27,5 @@ xrcg generate `
 if ($LASTEXITCODE -ne 0) {
     throw "Producer generation failed"
 }
+
+Convert-GeneratedPyprojects

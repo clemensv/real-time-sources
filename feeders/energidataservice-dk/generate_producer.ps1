@@ -87,3 +87,5 @@ Write-InfoCompatibilityShim -DataRoot (Join-Path $scriptDir "energidataservice_d
 xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint dk.energinet.energidataservice.Amqp --projectname energidataservice_dk_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir "energidataservice_dk_amqp_producer")
 if ($LASTEXITCODE -ne 0) { throw "AMQP producer generation failed" }
 Write-InfoCompatibilityShim -DataRoot (Join-Path $scriptDir "energidataservice_dk_amqp_producer\energidataservice_dk_amqp_producer_data\src\energidataservice_dk_amqp_producer_data")
+
+Convert-GeneratedPyprojects

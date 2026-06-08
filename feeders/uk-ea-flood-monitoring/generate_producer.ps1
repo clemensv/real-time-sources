@@ -24,3 +24,5 @@ xrcg generate --style amqpproducer --language py --projectname uk_ea_flood_monit
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 Write-Host "Producer generation completed successfully" -ForegroundColor Green
+
+Convert-GeneratedPyprojects

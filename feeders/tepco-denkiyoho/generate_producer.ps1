@@ -13,3 +13,5 @@ xrcg generate --style mqttclient --language py --definitions $xregFile --endpoin
 if ($LASTEXITCODE -ne 0) { throw "MQTT producer generation failed" }
 xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint JP.TEPCO.Denkiyoho.Amqp --projectname tepco_denkiyoho_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir "tepco_denkiyoho_amqp_producer")
 if ($LASTEXITCODE -ne 0) { throw "AMQP producer generation failed" }
+
+Convert-GeneratedPyprojects

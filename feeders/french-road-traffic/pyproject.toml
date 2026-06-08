@@ -1,27 +1,43 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "french-road-traffic"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "French national road network real-time traffic data bridge (DATEX II) via Bison Futé"
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
-packages = [{ include = "french_road_traffic" }]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.12.1",
+    "cloudevents>=1.12.1,<2.0.0",
+    "confluent-kafka>=2.14.2",
+    "dataclasses-json>=0.6.7",
+    "requests>=2.31.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-confluent-kafka = ">=2.14.2"
-cloudevents = ">=1.12.1,<2.0.0"
-requests = ">=2.31.0"
-dataclasses-json = ">=0.6.7"
-avro = ">=1.12.1"
-french_road_traffic_producer_data = { path = "french_road_traffic_producer/french_road_traffic_producer_data" }
-french_road_traffic_producer_kafka_producer = { path = "french_road_traffic_producer/french_road_traffic_producer_kafka_producer" }
-
-[tool.poetry.dev-dependencies]
-pytest = ">=9.0.3"
-testcontainers = ">=4.14.2"
-
-[tool.poetry.scripts]
+[project.scripts]
 french-road-traffic = "french_road_traffic:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.3",
+    "testcontainers>=4.14.2",
+]
+
+[tool.setuptools_scm]
+root = "../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "french_road_traffic",
+]

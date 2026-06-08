@@ -74,3 +74,5 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "AMQP producer generated successfully in $amqpOutputDir"
+
+Convert-GeneratedPyprojects

@@ -9,3 +9,5 @@ xrcg generate --style kafkaproducer --language py --definitions $xregFile --proj
 xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'NL.NDW.Mqtt' --projectname ndw_road_traffic_mqtt_producer --output (Join-Path $scriptDir 'ndw_road_traffic_mqtt_producer')
 
 xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'NL.NDW.Amqp' --projectname ndw_road_traffic_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'ndw_road_traffic_amqp_producer')
+
+Convert-GeneratedPyprojects

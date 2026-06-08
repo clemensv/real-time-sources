@@ -56,3 +56,5 @@ if (Test-Path $dataInit) {
     }
     Set-Content -Path $dataInit -Value $content -NoNewline
 }
+
+Convert-GeneratedPyprojects

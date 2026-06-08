@@ -1,25 +1,38 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "fdsn_seismology_amqp"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "AMQP 1.0 feeder for federated FDSN earthquake event nodes."
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
-packages = [{ include = "fdsn_seismology_amqp" }]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.11.3",
+    "azure-core>=1.30.0",
+    "azure-identity>=1.17.0",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "python-qpid-proton>=0.40.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-python-qpid-proton = ">=0.40.0"
-cloudevents = ">=1.11.0,<2.0.0"
-dataclasses_json = ">=0.6.7"
-avro = ">=1.11.3"
-azure-identity = ">=1.17.0"
-azure-core = ">=1.30.0"
-fdsn_seismology_core = { path = "../fdsn_seismology_core" }
-fdsn_seismology_amqp_producer_data = { path = "../fdsn_seismology_amqp_producer/fdsn_seismology_amqp_producer_data" }
-fdsn_seismology_amqp_producer_amqp_producer = { path = "../fdsn_seismology_amqp_producer/fdsn_seismology_amqp_producer_amqp_producer" }
-
-[tool.poetry.scripts]
+[project.scripts]
 fdsn-seismology-amqp = "fdsn_seismology_amqp.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "fdsn_seismology_amqp",
+]

@@ -1,15 +1,27 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "hubeau-hydrometrie-amqp"
-version = "0.1.0"
-packages = [{include = "hubeau_hydrometrie_amqp"}]
+dynamic = [
+    "version",
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "azure-identity>=1.17.0",
+    "dataclasses_json>=0.6.7",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-azure-identity = ">=1.17.0"
-dataclasses_json = ">=0.6.7"
-hubeau_hydrometrie_amqp_producer_data = {path = "../hubeau_hydrometrie_amqp_producer/hubeau_hydrometrie_amqp_producer_data"}
-hubeau_hydrometrie_amqp_producer_amqp_producer = {path = "../hubeau_hydrometrie_amqp_producer/hubeau_hydrometrie_amqp_producer_amqp_producer"}
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "hubeau_hydrometrie_amqp",
+]

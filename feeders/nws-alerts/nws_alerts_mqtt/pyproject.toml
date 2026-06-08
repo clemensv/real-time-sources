@@ -1,22 +1,35 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "nws-alerts-mqtt"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "NWS CAP weather alerts -> MQTT/UNS bridge"
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
-packages = [{ include = "nws_alerts_mqtt" }]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "aiohttp>=3.10.5",
+    "azure-identity>=1.17.0",
+    "paho-mqtt>=2.1.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-aiohttp = ">=3.10.5"
-paho-mqtt = ">=2.1.0"
-azure-identity = ">=1.17.0"
-nws-alerts = { path = ".." }
-nws_alerts_mqtt_producer_data = { path = "../nws_alerts_mqtt_producer/nws_alerts_mqtt_producer_data" }
-nws_alerts_mqtt_producer_mqtt_client = { path = "../nws_alerts_mqtt_producer/nws_alerts_mqtt_producer_mqtt_client" }
-
-[tool.poetry.scripts]
+[project.scripts]
 nws-alerts-mqtt = "nws_alerts_mqtt.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "nws_alerts_mqtt",
+]

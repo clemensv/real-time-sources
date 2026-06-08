@@ -63,3 +63,5 @@ xrcg generate --style mqttclient --language py --definitions $xregFile --endpoin
 
 xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'fr.gouv.transport.bison_fute.Amqp' --projectname french_road_traffic_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'french_road_traffic_amqp_producer')
 Repair-GeneratedTransportTests
+
+Convert-GeneratedPyprojects

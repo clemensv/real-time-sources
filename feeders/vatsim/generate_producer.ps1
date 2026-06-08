@@ -13,3 +13,5 @@ xrcg generate `
     --projectname vatsim_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output vatsim_amqp_producer
+
+Convert-GeneratedPyprojects

@@ -1,35 +1,51 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "rssbridge"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "A project to fetch data from RSS feeds and publish them as CloudEvents"
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "BeautifulSoup4>=4.12.3",
+    "avro>=1.12.1,<2.0.0",
+    "cloudevents>=1.12.1,<2.0.0",
+    "confluent-kafka>=2.14.2",
+    "dataclasses>=0.6",
+    "dataclasses_json>=0.6.7",
+    "feedparser>=6.0.11",
+    "idna>=3.15",
+    "listparser>=0.20",
+    "requests>=2.34.2",
+    "urllib3>=2.7.0",
+]
 
-
-[tool.poetry.dependencies]
-rssbridge_producer_data = {path = "rssbridge_producer/rssbridge_producer_data"}
-rssbridge_producer_kafka_producer = {path = "rssbridge_producer/rssbridge_producer_kafka_producer"}
-python = ">=3.10,<4.0"
-requests = ">=2.34.2"
-urllib3 = ">=2.7.0"  # CVE pin (transitive via requests)
-idna = ">=3.15"  # CVE pin (transitive via requests)
-confluent-kafka = ">=2.14.2"
-cloudevents = ">=1.12.1,<2.0.0"
-avro = "^1.12.1"
-dataclasses = ">=0.6"
-dataclasses_json = ">=0.6.7"
-feedparser = ">=6.0.11"
-listparser = ">=0.20"
-BeautifulSoup4 = ">=4.12.3"
-
-[tool.poetry.dev-dependencies]
-pytest = ">=9.0.3"
-pytest-cov = ">=7.1.0"
-testcontainers = ">=4.14.2"
-requests-mock = ">=1.12.1"
-
-[tool.poetry.scripts]
+[project.scripts]
 rssbridge = "rssbridge:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest-cov>=7.1.0",
+    "pytest>=9.0.3",
+    "requests-mock>=1.12.1",
+    "testcontainers>=4.14.2",
+]
+
+[tool.setuptools_scm]
+root = "../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "rssbridge",
+]

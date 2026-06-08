@@ -9,3 +9,5 @@ xrcg generate --style kafkaproducer --language py --definitions $xregFile --endp
 xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'es.madrid.Mqtt' --projectname madrid_traffic_mqtt_producer --output (Join-Path $scriptDir 'madrid_traffic_mqtt_producer')
 
 xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'es.madrid.Amqp' --projectname madrid_traffic_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'madrid_traffic_amqp_producer')
+
+Convert-GeneratedPyprojects

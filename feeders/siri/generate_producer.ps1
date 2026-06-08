@@ -25,3 +25,5 @@ xrcg generate `
     --projectname siri_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output siri_amqp_producer
+
+Convert-GeneratedPyprojects

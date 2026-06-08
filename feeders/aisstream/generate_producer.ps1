@@ -42,3 +42,5 @@ xrcg generate `
     --projectname aisstream_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output aisstream_amqp_producer
+
+Convert-GeneratedPyprojects

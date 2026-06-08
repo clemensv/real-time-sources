@@ -1,29 +1,41 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "xceed"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "Bridge between the Xceed Open Event API and Kafka endpoints"
-authors = []
-readme = "README.md"
-packages = [{ include = "xceed" }]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.12.1",
+    "cloudevents>=1.12.1,<2.0.0",
+    "confluent-kafka>=2.14.2",
+    "dataclasses_json>=0.6.7",
+    "requests>=2.34.2",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-requests = ">=2.34.2"
-confluent-kafka = ">=2.14.2"
-cloudevents = ">=1.12.1,<2.0.0"
-dataclasses_json = ">=0.6.7"
-avro = ">=1.12.1"
-xceed_producer_data = {path = "xceed_producer/xceed_producer_data"}
-xceed_producer_kafka_producer = {path = "xceed_producer/xceed_producer_kafka_producer"}
-
-[tool.poetry.dev-dependencies]
-pytest = ">=9.0.3"
-pytest-cov = ">=7.1.0"
-requests-mock = ">=1.12.1"
-
-[tool.poetry.scripts]
+[project.scripts]
 xceed = "xceed:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest-cov>=7.1.0",
+    "pytest>=9.0.3",
+    "requests-mock>=1.12.1",
+]
+
+[tool.setuptools_scm]
+root = "../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "xceed",
+]

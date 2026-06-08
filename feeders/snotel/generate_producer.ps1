@@ -24,3 +24,5 @@ xrcg generate --style amqpproducer --language py --projectname snotel_amqp_produ
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 Write-Host "Producer generation completed successfully" -ForegroundColor Green
+
+Convert-GeneratedPyprojects

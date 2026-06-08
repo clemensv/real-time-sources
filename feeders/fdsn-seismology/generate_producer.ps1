@@ -25,3 +25,5 @@ xrcg generate `
     --projectname fdsn_seismology_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output fdsn_seismology_amqp_producer
+
+Convert-GeneratedPyprojects

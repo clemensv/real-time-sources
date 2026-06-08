@@ -1,27 +1,43 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "aisstream"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "AISstream.io bridge — global AIS vessel tracking data to Kafka as CloudEvents"
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
-packages = [{include = "aisstream"}]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.12.1",
+    "cloudevents>=1.12.1,<2.0.0",
+    "confluent-kafka>=2.14.2",
+    "dataclasses_json>=0.6.7",
+    "websockets>=13.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-websockets = ">=13.0"
-confluent-kafka = ">=2.14.2"
-cloudevents = ">=1.12.1,<2.0.0"
-dataclasses_json = ">=0.6.7"
-avro = ">=1.12.1"
-aisstream_producer_data = {path = "aisstream_producer/aisstream_producer_data"}
-aisstream_producer_kafka_producer = {path = "aisstream_producer/aisstream_producer_kafka_producer"}
-
-[tool.poetry.dev-dependencies]
-pytest = ">=9.0.3"
-pytest-cov = ">=7.1.0"
-
-[tool.poetry.scripts]
+[project.scripts]
 aisstream = "aisstream:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest-cov>=7.1.0",
+    "pytest>=9.0.3",
+]
+
+[tool.setuptools_scm]
+root = "../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "aisstream",
+]

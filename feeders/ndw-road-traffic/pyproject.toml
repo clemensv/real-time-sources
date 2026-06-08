@@ -1,28 +1,44 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "ndw-road-traffic"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "NDW Netherlands road traffic bridge — speed, travel time, situations, DRIP, MSI from Dutch national traffic data"
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
-packages = [{ include = "ndw_road_traffic" }]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.12.1",
+    "cloudevents>=1.12.1,<2.0.0",
+    "confluent-kafka>=2.14.2",
+    "dataclasses-json>=0.6.7",
+    "requests>=2.34.2",
+    "urllib3>=1.26.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-avro = ">=1.12.1"
-cloudevents = ">=1.12.1,<2.0.0"
-confluent-kafka = ">=2.14.2"
-dataclasses-json = ">=0.6.7"
-requests = ">=2.34.2"
-urllib3 = ">=1.26.0"
-ndw_road_traffic_producer_data = { path = "ndw_road_traffic_producer/ndw_road_traffic_producer_data" }
-ndw_road_traffic_producer_kafka_producer = { path = "ndw_road_traffic_producer/ndw_road_traffic_producer_kafka_producer" }
-
-[tool.poetry.dev-dependencies]
-pytest = ">=9.0.3"
-testcontainers = ">=4.14.2"
-
-[tool.poetry.scripts]
+[project.scripts]
 ndw-road-traffic = "ndw_road_traffic:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.0.3",
+    "testcontainers>=4.14.2",
+]
+
+[tool.setuptools_scm]
+root = "../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "ndw_road_traffic",
+]

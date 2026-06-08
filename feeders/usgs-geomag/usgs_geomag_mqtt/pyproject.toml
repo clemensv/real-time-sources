@@ -1,21 +1,36 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "usgs-geomag-mqtt"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "USGS Geomagnetism bridge to MQTT/UNS"
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "paho-mqtt>=2.1.0",
+    "requests>=2.32.3",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-requests = ">=2.32.3"
-cloudevents = ">=1.11.0,<2.0.0"
-dataclasses_json = ">=0.6.7"
-paho-mqtt = ">=2.1.0"
-usgs_geomag_mqtt_producer_data = {path = "../usgs_geomag_mqtt_producer/usgs_geomag_mqtt_producer_data"}
-usgs_geomag_mqtt_producer_mqtt_client = {path = "../usgs_geomag_mqtt_producer/usgs_geomag_mqtt_producer_mqtt_client"}
-
-[tool.poetry.scripts]
+[project.scripts]
 usgs-geomag-mqtt = "usgs_geomag_mqtt:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "usgs_geomag_mqtt",
+]

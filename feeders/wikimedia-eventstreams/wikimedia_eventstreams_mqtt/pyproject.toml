@@ -1,20 +1,34 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "wikimedia-eventstreams-mqtt"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "Wikimedia EventStreams firehose -> MQTT/UNS non-retained bridge"
-authors = ["clemensv"]
-packages = [{include = "wikimedia_eventstreams_mqtt"}]
+authors = [
+    { name = "clemensv" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "aiohttp>=3.9",
+    "azure-identity>=1.17.0",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "paho-mqtt>=2.1.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-aiohttp = ">=3.9"
-paho-mqtt = ">=2.1.0"
-cloudevents = ">=1.11.0,<2.0.0"
-dataclasses_json = ">=0.6.7"
-azure-identity = ">=1.17.0"
-wikimedia_eventstreams_mqtt_producer_data = {path = "../wikimedia_eventstreams_mqtt_producer/wikimedia_eventstreams_mqtt_producer_data"}
-wikimedia_eventstreams_mqtt_producer_mqtt_client = {path = "../wikimedia_eventstreams_mqtt_producer/wikimedia_eventstreams_mqtt_producer_mqtt_client"}
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "wikimedia_eventstreams_mqtt",
+]

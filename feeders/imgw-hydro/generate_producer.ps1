@@ -24,3 +24,5 @@ xrcg generate --style amqpproducer --language py --projectname imgw_hydro_amqp_p
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
 Write-Host "Producer generation completed successfully" -ForegroundColor Green
+
+Convert-GeneratedPyprojects

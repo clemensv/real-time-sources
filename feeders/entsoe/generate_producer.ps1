@@ -49,3 +49,5 @@ xrcg generate `
 if ($LASTEXITCODE -ne 0) { throw "AMQP producer generation failed with exit code $LASTEXITCODE" }
 
 Write-Host "Producer generation completed successfully" -ForegroundColor Green
+
+Convert-GeneratedPyprojects

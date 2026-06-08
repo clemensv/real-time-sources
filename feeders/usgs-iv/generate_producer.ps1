@@ -34,3 +34,5 @@ if ($LASTEXITCODE -eq 0) {
     Write-Host "`nProducer generation failed" -ForegroundColor Red
     exit $LASTEXITCODE
 }
+
+Convert-GeneratedPyprojects

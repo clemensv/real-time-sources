@@ -1,31 +1,47 @@
-[tool.poetry]
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "ticketmaster"
+dynamic = [
+    "version",
+]
 description = "Ticketmaster Discovery API bridge to Apache Kafka"
-authors = ["Clemens Vasters"]
-readme = "README.md"
-version = "0.1.0"
+authors = [
+    { name = "Clemens Vasters" },
+]
+requires-python = "<4.0,>=3.10"
+dependencies = [
+    "avro>=1.12.1",
+    "cloudevents>=1.12.1,<2.0.0",
+    "confluent-kafka>=2.14.2",
+    "dataclasses-json>=0.6.7",
+    "requests>=2.34.2",
+    "urllib3>=2.2.0",
+]
 
-[tool.poetry.dependencies]
-python = "<4.0,>=3.10"
-confluent-kafka = ">=2.14.2"
-cloudevents = ">=1.12.1,<2.0.0"
-requests = ">=2.34.2"
-urllib3 = ">=2.2.0"
-avro = ">=1.12.1"
-dataclasses-json = ">=0.6.7"
-ticketmaster_producer_data = {path = "ticketmaster_producer/ticketmaster_producer_data"}
-ticketmaster_producer_kafka_producer = {path = "ticketmaster_producer/ticketmaster_producer_kafka_producer"}
-
-[tool.poetry.dev-dependencies]
-pytest = ">=9.0.3"
-flake8 = ">=7.1.1"
-pylint = ">=3.2.7"
-mypy = ">=1.11.2"
-pytest-cov = "^7.0.0"
-
-[tool.poetry.scripts]
+[project.scripts]
 ticketmaster = "ticketmaster.ticketmaster:main"
 
-[build-system]
-requires = ["poetry-core>=1.9.0"]
-build-backend = "poetry.core.masonry.api"
+[project.optional-dependencies]
+dev = [
+    "flake8>=7.1.1",
+    "mypy>=1.11.2",
+    "pylint>=3.2.7",
+    "pytest-cov>=7.0.0,<8.0.0",
+    "pytest>=9.0.3",
+]
+
+[tool.setuptools_scm]
+root = "../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "ticketmaster",
+]

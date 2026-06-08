@@ -1,16 +1,28 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "uk-ea-flood-monitoring-mqtt"
-version = "0.1.0"
-packages = [{include = "uk_ea_flood_monitoring_mqtt"}]
+dynamic = [
+    "version",
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "paho-mqtt>=2.1.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-paho-mqtt = ">=2.1.0"
-cloudevents = ">=1.11.0,<2.0.0"
-dataclasses_json = ">=0.6.7"
-uk_ea_flood_monitoring_mqtt_producer_data = {path = "../uk_ea_flood_monitoring_mqtt_producer/uk_ea_flood_monitoring_mqtt_producer_data"}
-uk_ea_flood_monitoring_mqtt_producer_mqtt_client = {path = "../uk_ea_flood_monitoring_mqtt_producer/uk_ea_flood_monitoring_mqtt_producer_mqtt_client"}
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "uk_ea_flood_monitoring_mqtt",
+]

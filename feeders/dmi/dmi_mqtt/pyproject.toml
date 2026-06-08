@@ -1,24 +1,37 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "dmi_mqtt"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "MQTT/UNS feeder for the DMI observation triad (metObs + oceanObs)."
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
-packages = [{ include = "dmi_mqtt" }]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.12.1",
+    "azure-identity>=1.17.0",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "paho-mqtt>=2.1.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-paho-mqtt = ">=2.1.0"
-cloudevents = ">=1.11.0,<2.0.0"
-dataclasses_json = ">=0.6.7"
-avro = ">=1.12.1"
-azure-identity = ">=1.17.0"
-dmi_core = { path = "../dmi_core" }
-dmi_mqtt_producer_data = { path = "../dmi_mqtt_producer/dmi_mqtt_producer_data" }
-dmi_mqtt_producer_mqtt_client = { path = "../dmi_mqtt_producer/dmi_mqtt_producer_mqtt_client" }
-
-[tool.poetry.scripts]
+[project.scripts]
 dmi-mqtt = "dmi_mqtt.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "dmi_mqtt",
+]

@@ -9,3 +9,5 @@ xrcg generate --style mqttclient --language py --definitions xreg\bfs_odl.xreg.j
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 xrcg generate --style amqpproducer --language py --definitions xreg\bfs_odl.xreg.json --endpoint de.bfs.odl.Amqp --projectname bfs_odl_amqp_producer --template-args azure_cbs_target=servicebus --output bfs_odl_amqp_producer
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+Convert-GeneratedPyprojects

@@ -1,33 +1,39 @@
-[tool.poetry]
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
 name = "mode-s-kafka-bridge"
+dynamic = [
+    "version",
+]
 description = "Mode-S/ADS-B Bridge for BEAST messages (dump1090)"
-authors = ["Clemens Vasters"]
-readme = "README.md"
-version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
+authors = [
+    { name = "Clemens Vasters" },
+]
+requires-python = "<4.0,>=3.10"
+dependencies = [
+    "aiohttp>=3.14.0",
+    "asyncio>=3.4.3",
+    "avro>=1.12.1,<2.0.0",
+    "cloudevents>=1.12.1,<2.0.0",
+    "confluent-kafka>=2.14.2",
+    "pymodes>=2.19,<3",
+    "requests>=2.34.2",
+]
 
-[tool.poetry.dependencies]
-python = "<4.0,>=3.10"
-mode-s-producer-data = {path = "mode_s_producer/mode_s_producer_data"}
-mode-s-producer-kafka-producer = {path = "mode_s_producer/mode_s_producer_kafka_producer"}
-confluent-kafka = ">=2.14.2"
-cloudevents = ">=1.12.1,<2.0.0"
-avro = "^1.12.1"
-pymodes = ">=2.19,<3"
-requests = ">=2.34.2"
-aiohttp = ">=3.14.0"
-asyncio = ">=3.4.3"
-
-[tool.poetry.dev.dependencies]
-pytest = ">=9.0.3"
-flake8 = ">=7.1.1"
-pylint = ">=3.2.7"
-mypy = ">=1.11.2"
-testcontainers = ">=4.14.2"
-pytest-asyncio = ">=0.24.0"
-
-[tool.poetry.scripts]
+[project.scripts]
 mode_s_kafka_bridge = "mode_s_kafka_bridge.mode_s:main"
 
-[build-system]
-requires = ["poetry-core>=1.9.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.setuptools_scm]
+root = "../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "mode_s_kafka_bridge",
+]

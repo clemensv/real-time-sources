@@ -12,3 +12,5 @@ xrcg generate `
     --projectname mode_s_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output mode_s_amqp_producer
+
+Convert-GeneratedPyprojects

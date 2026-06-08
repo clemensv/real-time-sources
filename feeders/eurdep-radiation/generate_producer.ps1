@@ -7,3 +7,5 @@ xrcg generate --style mqttclient --language py --definitions xreg\eurdep_radiati
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 xrcg generate --style amqpproducer --language py --definitions xreg\eurdep_radiation.xreg.json --endpoint eu.jrc.eurdep.Amqp --projectname eurdep_radiation_amqp_producer --template-args azure_cbs_target=servicebus --output eurdep_radiation_amqp_producer
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+Convert-GeneratedPyprojects

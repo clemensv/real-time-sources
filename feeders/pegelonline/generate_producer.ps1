@@ -31,3 +31,5 @@ xrcg generate `
     --projectname pegelonline_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output pegelonline_amqp_producer
+
+Convert-GeneratedPyprojects

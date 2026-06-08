@@ -31,3 +31,5 @@ xrcg generate `
     --projectname noaa_swpc_l1_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output noaa_swpc_l1_amqp_producer
+
+Convert-GeneratedPyprojects

@@ -1,15 +1,26 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "entsoe-kafka"
-version = "0.1.0"
-packages = [{include = "entsoe_kafka"}]
+dynamic = [
+    "version",
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "confluent-kafka>=2.5.3",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-confluent-kafka = ">=2.5.3"
-entsoe-core = {path = "../entsoe_core"}
-entsoe_producer_data = {path = "../entsoe_producer/entsoe_producer_data"}
-entsoe_producer_kafka_producer = {path = "../entsoe_producer/entsoe_producer_kafka_producer"}
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "entsoe_kafka",
+]

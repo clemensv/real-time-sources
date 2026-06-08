@@ -1,14 +1,30 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "fdsn_seismology_core"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "Transport-agnostic acquisition and state management for the FDSN Seismology feeder."
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
-packages = [{ include = "fdsn_seismology_core" }]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "requests>=2.32.3",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-requests = ">=2.32.3"
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "fdsn_seismology_core",
+]

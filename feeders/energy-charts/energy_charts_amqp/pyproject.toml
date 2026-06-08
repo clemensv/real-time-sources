@@ -1,21 +1,36 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "energy-charts-amqp"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "energy-charts AMQP companion feeder"
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "azure-identity>=1.16.0",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "python-qpid-proton>=0.39.0",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-cloudevents = ">=1.11.0,<2.0.0"
-dataclasses_json = ">=0.6.7"
-python-qpid-proton = ">=0.39.0"
-azure-identity = ">=1.16.0"
-energy_charts_amqp_producer_data = {path = "../energy_charts_amqp_producer/energy_charts_amqp_producer_data"}
-energy_charts_amqp_producer_amqp_producer = {path = "../energy_charts_amqp_producer/energy_charts_amqp_producer_amqp_producer"}
-
-[tool.poetry.scripts]
+[project.scripts]
 energy-charts-amqp = "energy_charts_amqp:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "energy_charts_amqp",
+]

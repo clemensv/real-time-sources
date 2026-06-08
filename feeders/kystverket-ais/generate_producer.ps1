@@ -42,3 +42,5 @@ xrcg generate `
     --projectname kystverket_ais_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output kystverket_ais_amqp_producer
+
+Convert-GeneratedPyprojects

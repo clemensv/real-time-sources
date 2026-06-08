@@ -32,3 +32,5 @@ xrcg generate `
     --projectname dmi_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output dmi_amqp_producer
+
+Convert-GeneratedPyprojects

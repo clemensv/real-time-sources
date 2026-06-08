@@ -16,3 +16,5 @@ xrcg generate `
     --output $OUTPUT_DIR
 
 Write-Host "Generation complete. Output in $OUTPUT_DIR"
+
+Convert-GeneratedPyprojects

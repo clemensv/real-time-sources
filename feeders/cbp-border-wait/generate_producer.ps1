@@ -5,3 +5,5 @@ Assert-XrcgVersion
 xrcg generate --style kafkaproducer --language py --definitions xreg\cbp_border_wait.xreg.json --projectname cbp_border_wait_producer --output cbp_border_wait_producer
 
 & (Join-Path $PSScriptRoot "generate_amqp_producer.ps1")
+
+Convert-GeneratedPyprojects

@@ -1,23 +1,36 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "dmi_kafka"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "Kafka feeder for the DMI observation triad (metObs + oceanObs + lightning)."
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
-packages = [{ include = "dmi_kafka" }]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.12.1",
+    "cloudevents>=1.11.0,<2.0.0",
+    "confluent-kafka>=2.5.3",
+    "dataclasses_json>=0.6.7",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-confluent-kafka = ">=2.5.3"
-cloudevents = ">=1.11.0,<2.0.0"
-dataclasses_json = ">=0.6.7"
-avro = ">=1.12.1"
-dmi_core = { path = "../dmi_core" }
-dmi_producer_data = { path = "../dmi_producer/dmi_producer_data" }
-dmi_producer_kafka_producer = { path = "../dmi_producer/dmi_producer_kafka_producer" }
-
-[tool.poetry.scripts]
+[project.scripts]
 dmi-kafka = "dmi_kafka.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "dmi_kafka",
+]

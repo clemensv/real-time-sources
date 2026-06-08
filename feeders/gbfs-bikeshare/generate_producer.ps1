@@ -27,3 +27,5 @@ xrcg generate `
     --projectname gbfs_bikeshare_amqp_producer `
     --template-args azure_cbs_target=servicebus `
     --output (Join-Path $PSScriptRoot 'gbfs_bikeshare_amqp_producer')
+
+Convert-GeneratedPyprojects

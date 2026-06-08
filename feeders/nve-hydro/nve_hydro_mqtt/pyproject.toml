@@ -1,24 +1,37 @@
 [build-system]
-requires = ["poetry-core>=1.1.0"]
-build-backend = "poetry.core.masonry.api"
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
 
-[tool.poetry]
+[project]
 name = "nve_hydro_mqtt"
-version = "0.1.0"
+dynamic = [
+    "version",
+]
 description = "MQTT/UNS feeder for the Norwegian Water Resources and Energy Directorate (NVE) Hydrology HydAPI."
-authors = ["Clemens Vasters <clemensv@microsoft.com>"]
-packages = [{ include = "nve_hydro_mqtt" }]
+authors = [
+    { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
+]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.12.1",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "paho-mqtt>=2.1.0",
+    "requests>=2.32.3",
+]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<4.0"
-paho-mqtt = ">=2.1.0"
-cloudevents = ">=1.11.0,<2.0.0"
-dataclasses_json = ">=0.6.7"
-avro = ">=1.12.1"
-requests = ">=2.32.3"
-nve_hydro = { path = ".." }
-nve_hydro_mqtt_producer_data = { path = "../nve_hydro_mqtt_producer/nve_hydro_mqtt_producer_data" }
-nve_hydro_mqtt_producer_mqtt_client = { path = "../nve_hydro_mqtt_producer/nve_hydro_mqtt_producer_mqtt_client" }
-
-[tool.poetry.scripts]
+[project.scripts]
 nve-hydro-mqtt = "nve_hydro_mqtt.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "nve_hydro_mqtt",
+]

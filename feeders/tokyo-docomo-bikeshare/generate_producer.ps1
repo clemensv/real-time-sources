@@ -9,3 +9,5 @@ xrcg generate --style kafkaproducer --language py --definitions $xregFile --proj
 xrcg generate --style mqttclient --language py --definitions $xregFile --endpoint 'JP.ODPT.DocomoBikeshare.Mqtt' --projectname tokyo_docomo_bikeshare_mqtt_producer --output (Join-Path $scriptDir 'tokyo_docomo_bikeshare_mqtt_producer')
 
 xrcg generate --style amqpproducer --language py --definitions $xregFile --endpoint 'JP.ODPT.DocomoBikeshare.Amqp' --projectname tokyo_docomo_bikeshare_amqp_producer --template-args azure_cbs_target=servicebus --output (Join-Path $scriptDir 'tokyo_docomo_bikeshare_amqp_producer')
+
+Convert-GeneratedPyprojects

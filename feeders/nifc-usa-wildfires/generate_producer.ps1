@@ -8,3 +8,5 @@ xrcg generate --style mqttclient --language py --projectname nifc_usa_wildfires_
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 xrcg generate --style amqpproducer --language py --projectname nifc_usa_wildfires_amqp_producer --definitions $xregFile --endpoint Gov.NIFC.Amqp --template-args azure_cbs_target=servicebus --output (Join-Path $PSScriptRoot "nifc_usa_wildfires_amqp_producer")
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+Convert-GeneratedPyprojects

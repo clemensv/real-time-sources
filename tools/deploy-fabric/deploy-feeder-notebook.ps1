@@ -307,12 +307,11 @@ function Get-PrebuiltWheels {
 function Build-SourceWheels {
     <#
     Builds wheels for the source's bridge + its generated producer sub-packages
-    using `pip wheel --no-deps` and strips poetry path-deps from the top-level
-    wheel's METADATA so it installs cleanly in the Fabric Environment.
+    using `pip wheel --no-deps` and strips path-deps from the top-level wheel's
+    METADATA so it installs cleanly in the Fabric Environment.
 
-    Uses setuptools-scm to derive a git-based version (e.g. 1.5.0.post74)
-    and temporarily patches each pyproject.toml so pip sees distinct versions
-    across deploys without needing --force-reinstall.
+    Each pyproject.toml uses setuptools-scm to derive the version from git tags
+    (e.g. 1.5.0.post77) automatically — no version patching needed.
 
     Returns an array of FileInfo objects pointing at the wheels under $outDir.
     #>
@@ -327,17 +326,7 @@ function Build-SourceWheels {
     $outDir = Join-Path $TempDir "feeder-wheels-$Source-$(Get-Random)"
     New-Item -ItemType Directory -Force -Path $outDir | Out-Null
 
-    # Derive a PEP 440 version from git tags via setuptools-scm
-    $gitVersion = & python -c "from setuptools_scm import get_version; print(get_version(version_scheme='post-release'))" 2>$null
-    if (-not $gitVersion -or $LASTEXITCODE -ne 0) {
-        Write-Warning "setuptools-scm unavailable; falling back to timestamp version"
-        $gitVersion = "0.1.0.post$(Get-Date -Format 'yyyyMMddHHmmss')"
-    }
-    # Strip local part (+gXXX) for wheel compatibility - pip ignores local versions from non-editable installs
-    $gitVersion = ($gitVersion -split '\+')[0]
-    Write-Info "  Wheel version: $gitVersion"
-
-    # Build the producer sub-packages first (each is a self-contained poetry project),
+    # Build the producer sub-packages first (each is a self-contained project),
     # then the top-level source bridge package(s) which reference them via path-deps.
     $subPackages = Get-ChildItem -Directory $producerRoot |
         Where-Object { Test-Path (Join-Path $_.FullName "pyproject.toml") } |
@@ -355,38 +344,19 @@ function Build-SourceWheels {
     }
     $toBuild = @($subPackages) + @($bridgePackages)
 
-    # Temporarily patch version in each pyproject.toml
-    $patchedFiles = @()
     foreach ($pkgDir in $toBuild) {
-        $pyproj = Join-Path $pkgDir "pyproject.toml"
-        if (Test-Path $pyproj) {
-            $content = Get-Content $pyproj -Raw
-            $patched = $content -replace '(?m)^version\s*=\s*"[^"]+"', "version = `"$gitVersion`""
-            if ($patched -ne $content) {
-                Set-Content $pyproj -Value $patched -NoNewline
-                $patchedFiles += @{ Path = $pyproj; Original = $content }
-            }
-        }
-    }
-
-    try {
-        foreach ($pkgDir in $toBuild) {
-            Write-Info "  pip wheel $($pkgDir | Split-Path -Leaf)"
-            & python -m pip wheel --no-deps --no-build-isolation --wheel-dir $outDir $pkgDir 2>&1 | Out-Host
-            if ($LASTEXITCODE -ne 0) { throw "pip wheel failed for $pkgDir" }
-        }
-    } finally {
-        # Restore original pyproject.toml files
-        foreach ($entry in $patchedFiles) {
-            Set-Content $entry.Path -Value $entry.Original -NoNewline
-        }
+        Write-Info "  pip wheel $($pkgDir | Split-Path -Leaf)"
+        & python -m pip wheel --no-deps --no-build-isolation --wheel-dir $outDir $pkgDir 2>&1 | Out-Host
+        if ($LASTEXITCODE -ne 0) { throw "pip wheel failed for $pkgDir" }
     }
 
     $wheels = Get-ChildItem -LiteralPath $outDir -Filter *.whl
     if (-not $wheels) { throw "No wheels produced in $outDir" }
 
+    Write-Info "  Wheel version: $($wheels[0].Name -replace '^[^-]+-([^-]+)-.*','$1')"
+
     $stripper = Join-Path $PSScriptRoot "strip-wheel-pathdeps.py"
-    & python $stripper --stamp-version @($wheels | ForEach-Object { $_.FullName }) | Out-Host
+    & python $stripper @($wheels | ForEach-Object { $_.FullName }) | Out-Host
     if ($LASTEXITCODE -ne 0) { throw "Wheel METADATA post-processing failed." }
 
     return ,$wheels

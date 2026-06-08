@@ -20,3 +20,4 @@ xrcg generate --style kafkaproducer --language py --projectname nasa-firms-produ
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 Write-Host "Producer generation completed" -ForegroundColor Green
 
+Convert-GeneratedPyprojects
