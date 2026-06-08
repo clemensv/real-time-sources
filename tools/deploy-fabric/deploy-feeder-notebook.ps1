@@ -773,8 +773,8 @@ if (-not $nb.metadata.dependencies) { $nb.metadata | Add-Member -NotePropertyNam
 # do no distributed Spark compute; the Python runtime is cheaper and faster to
 # start. Dependencies are loaded via %pip install from Lakehouse Files at runtime.
 $nb.metadata | Add-Member -NotePropertyName kernelspec -NotePropertyValue ([pscustomobject]@{
-    name         = 'python3.11'
-    display_name = 'Python 3.11'
+    name         = 'jupyter_python'
+    display_name = 'Python (Jupyter)'
     language     = 'python'
 }) -Force
 $nb.metadata | Add-Member -NotePropertyName language_info -NotePropertyValue ([pscustomobject]@{ name = 'python' }) -Force
@@ -880,13 +880,112 @@ Write-OK "Parameters cell patched."
 $tmpNb = Join-Path $TempDir "$Source`_feed_$(Get-Random).ipynb"
 [System.IO.File]::WriteAllText($tmpNb, ($nb | ConvertTo-Json -Depth 50), [System.Text.UTF8Encoding]::new($false))
 
-# ── Stage B/4: Upload notebook ────────────────────────────────────────────
-Write-Step "B/4" "Uploading notebook to Fabric workspace..."
-$nbBytes  = [System.IO.File]::ReadAllBytes($tmpNb)
-$nbBase64 = [Convert]::ToBase64String($nbBytes)
+# ── Stage B/4: Upload notebook in Fabric-native .py format ────────────────
+# Fabric ignores the standard Jupyter kernelspec in .ipynb uploads and defaults
+# to synapse_pyspark. To guarantee the pure-Python (jupyter) kernel we convert
+# the patched ipynb to Fabric's internal notebook-content.py format which has
+# META blocks that Fabric DOES respect.
+Write-Step "B/4" "Uploading notebook to Fabric workspace (native .py format)..."
+
+# --- Convert ipynb cells to Fabric notebook-content.py ---
+$pyLines = [System.Collections.Generic.List[string]]::new()
+$pyLines.Add("# Fabric notebook source")
+$pyLines.Add("")
+
+# METADATA block: kernel_info + dependencies
+$metaObj = [ordered]@{
+    kernel_info  = [ordered]@{
+        name               = 'jupyter'
+        jupyter_kernel_name = 'python3.11'
+    }
+    dependencies = [ordered]@{}
+}
+# Transfer dependencies from ipynb metadata
+if ($nb.metadata.dependencies) {
+    if ($nb.metadata.dependencies.lakehouse) {
+        $lhDep = $nb.metadata.dependencies.lakehouse
+        $metaObj.dependencies['lakehouse'] = [ordered]@{
+            default_lakehouse              = $lhDep.default_lakehouse
+            default_lakehouse_name         = $lhDep.default_lakehouse_name
+            default_lakehouse_workspace_id = $lhDep.default_lakehouse_workspace_id
+        }
+    }
+    $metaObj.dependencies['environment'] = @{}
+    if ($nb.metadata.dependencies.kqlDatabases) {
+        $kqlDbs = @($nb.metadata.dependencies.kqlDatabases | ForEach-Object {
+            [ordered]@{ name = $_.name; displayName = $_.displayName; workspaceId = $_.workspaceId; itemId = $_.itemId }
+        })
+        $metaObj.dependencies['kqlDatabases'] = $kqlDbs
+    }
+}
+$metaJson = $metaObj | ConvertTo-Json -Depth 10
+$pyLines.Add("# METADATA ********************")
+$pyLines.Add("")
+foreach ($mLine in ($metaJson -split "`n")) {
+    $pyLines.Add("# META $($mLine.TrimEnd())")
+}
+$pyLines.Add("")
+
+# Convert each cell
+foreach ($cell in $nb.cells) {
+    $cellSource = ($cell.source -join '').TrimEnd()
+
+    if ($cell.cell_type -eq 'markdown') {
+        $pyLines.Add("# MARKDOWN ********************")
+        $pyLines.Add("")
+        foreach ($mdLine in ($cellSource -split "`n")) {
+            $pyLines.Add("# $($mdLine.TrimEnd())")
+        }
+        $pyLines.Add("")
+    } elseif ($cell.cell_type -eq 'code') {
+        # Check if this is the parameters cell
+        $isParams = $false
+        if ($cell.metadata -and $cell.metadata.tags) {
+            $isParams = @($cell.metadata.tags) -contains 'parameters'
+        }
+        if ($isParams) {
+            $pyLines.Add("# PARAMETERS CELL ********************")
+        } else {
+            $pyLines.Add("# CELL ********************")
+        }
+        $pyLines.Add("")
+        foreach ($codeLine in ($cellSource -split "`n")) {
+            $pyLines.Add($codeLine.TrimEnd())
+        }
+        $pyLines.Add("")
+        # Cell-level metadata
+        $cellMeta = [ordered]@{
+            language       = 'python'
+            language_group = 'jupyter_python'
+        }
+        $cellMetaJson = $cellMeta | ConvertTo-Json -Depth 5
+        $pyLines.Add("")
+        $pyLines.Add("# METADATA ********************")
+        $pyLines.Add("")
+        foreach ($cmLine in ($cellMetaJson -split "`n")) {
+            $pyLines.Add("# META $($cmLine.TrimEnd())")
+        }
+        $pyLines.Add("")
+    }
+}
+
+$pyContent = ($pyLines -join "`n")
+$pyBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($pyContent))
+
+# .platform part
+$platformObj = [ordered]@{
+    '$schema' = 'https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json'
+    metadata  = [ordered]@{ type = 'Notebook'; displayName = $NotebookName }
+    config    = [ordered]@{ version = '2.0'; logicalId = '00000000-0000-0000-0000-000000000000' }
+}
+$platformJson = $platformObj | ConvertTo-Json -Depth 5
+$platformBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($platformJson))
+
 $definition = @{
-    format = "ipynb"
-    parts  = @(@{ path = "notebook-content.ipynb"; payload = $nbBase64; payloadType = "InlineBase64" })
+    parts = @(
+        @{ path = "notebook-content.py"; payload = $pyBase64; payloadType = "InlineBase64" }
+        @{ path = ".platform"; payload = $platformBase64; payloadType = "InlineBase64" }
+    )
 }
 
 $nbList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/notebooks"
