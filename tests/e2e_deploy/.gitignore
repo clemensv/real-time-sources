@@ -1,0 +1,6 @@
+# Ignore session output (per-run data, logs, results)
+sessions/*/
+!sessions/.gitkeep
+
+# Ignore user config (secrets)
+config.json

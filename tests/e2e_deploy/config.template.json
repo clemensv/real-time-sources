@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "Copy this file to config.json and fill in values. Never commit config.json.",
+  "azure": {
+    "subscription": "",
+    "region": "westeurope",
+    "resource_group_prefix": "e2e",
+    "eventhubs_sku": "Standard",
+    "eventhubs_capacity": 1,
+    "timeout_seconds": 600,
+    "min_messages": 1
+  },
+  "fabric": {
+    "workspace_name": "",
+    "workspace_id": "",
+    "timeout_seconds": 900,
+    "deploy_script": "../../tools/deploy-fabric/deploy-feeder-notebook.ps1",
+    "min_kql_rows": 1
+  },
+  "issues": {
+    "repo": "clemensv/real-time-sources",
+    "label": "e2e-validation"
+  },
+  "skip_sources": [],
+  "only_sources": []
+}
