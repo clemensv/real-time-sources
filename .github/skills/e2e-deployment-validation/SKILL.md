@@ -97,16 +97,42 @@ For each source that has `feeders/<source>/notebook/`:
 ### Step 1: Deploy Notebook
 
 ```powershell
-pwsh tools/deploy-fabric/deploy-feeder-notebook.ps1 -Source <source> -WorkspaceName <ws> -Once
+pwsh tools/deploy-fabric/deploy-feeder-notebook.ps1 `
+    -Source <source> `
+    -Workspace <workspace-name> `
+    -OnceMode True `
+    -BuildWheelsLocally `
+    -NoSchedule
 ```
+
+Key parameter notes:
+- **`-Workspace`** (not `-WorkspaceName`) — the display name of the Fabric workspace
+- **`-OnceMode True`** — a string parameter (not a switch); controls `ONCE_MODE` env var
+- **`-BuildWheelsLocally`** — builds fresh wheels from the local repo. **Always use this**
+  for E2E validation to avoid stale pre-built wheel bundles (e.g. from GitHub releases
+  that predate setuptools-scm integration). Without this, you may get old 0.1.0 wheels.
+- **`-NoSchedule`** — skips creating a recurring schedule; the agent triggers manually
+
+The script outputs the notebook ID and workspace ID needed for subsequent steps.
 
 ### Step 2: Trigger and Wait
 
-Use the Fabric REST API:
+The deploy script with `-NoSchedule` already triggers one immediate run (Step B/5a).
+If you need to trigger additional runs:
 ```
 POST /v1/workspaces/{wsId}/items/{notebookId}/jobs/instances?jobType=RunNotebook
 ```
 Poll until `status == "Completed"` or timeout.
+
+**Failure diagnosis**: If the job reports `Failed`, check the OneLake log first:
+```
+GET https://onelake.dfs.fabric.microsoft.com/{wsId}/{lakehouseId}/Files/feeder-state/<source>/last-run.log
+Authorization: Bearer <storage-token>   # scope: https://storage.azure.com
+x-ms-version: 2021-06-08
+```
+The log shows import success, argv, and any caught exceptions. If the log ends
+abruptly after "Running feeder.main()", the crash escaped the exception handler
+(likely `SystemExit` from argparse or a native segfault from confluent-kafka).
 
 ### Step 3: Validate KQL Data
 
@@ -115,33 +141,57 @@ This is the core validation — **the data must actually land in typed tables**.
 #### 3a: Discover the KQL Database
 
 ```
-GET /v1/workspaces/{wsId}/items?type=KQLDatabase
+GET /v1/workspaces/{wsId}/kqlDatabases/{dbId}
 ```
-Find the database matching the source name.
+Find the database matching the source name. The response includes the critical
+`queryServiceUri` in the `properties` object — this is the Kusto cluster endpoint
+needed for all subsequent queries.
+
+```json
+{
+  "properties": {
+    "queryServiceUri": "https://trd-XXXXX.z4.kusto.fabric.microsoft.com",
+    "ingestionServiceUri": "https://ingest-trd-XXXXX.z4.kusto.fabric.microsoft.com"
+  }
+}
+```
+
+**Token scope for KQL queries**: `https://kusto.kusto.windows.net` (NOT the Fabric API token).
 
 #### 3b: Query Dispatch Table
 
-```kql
-_cloudevents_dispatch | count
+Use the **query endpoint**:
+```
+POST {queryServiceUri}/v1/rest/query
+Content-Type: application/json
+Authorization: Bearer <kusto-token>
+
+{ "db": "<source_name>", "csl": "_cloudevents_dispatch | count" }
 ```
 This table receives ALL events before update policies route them.
 If this is zero, the event stream / ingestion path is broken.
 
 #### 3c: Query Typed Tables
 
-The source's `kql/<source>.kql` script defines typed tables with update
-policies. Each event type gets its own table. Query them:
+Use the **management endpoint** (not query) for `.show tables`:
 
-```kql
-.show tables
-| where TableName != '_cloudevents_dispatch'
-| project TableName
+```
+POST {queryServiceUri}/v1/rest/mgmt
+Content-Type: application/json
+Authorization: Bearer <kusto-token>
+
+{ "db": "<source_name>", "csl": ".show tables" }
 ```
 
-Then for each table:
-```kql
-['<table>'] | count
+Filter out `_cloudevents_dispatch` from the result. Then for each typed table,
+use the **query endpoint**:
 ```
+POST {queryServiceUri}/v1/rest/query
+
+{ "db": "<source_name>", "csl": "['<table>'] | count" }
+```
+
+Note: table names with dots must be quoted: `['AU.Gov.Emergency.Wildfires.FireIncident']`.
 
 **Pass criteria**: At least one typed table has rows > 0. If dispatch has
 rows but typed tables don't, the update policy is broken (common failure
@@ -328,3 +378,40 @@ Per session:
 - [validate_map.ps1](references/validate_map.ps1) — Map validation module
 - [source_cadence.json](references/source_cadence.json) — per-source expected data cadence
 - [CHECKLIST_TEMPLATE.md](../../tests/e2e_deploy/CHECKLIST_TEMPLATE.md) — session checklist template
+
+## Operational Pitfalls (from real runs)
+
+### 1. Stale pre-built wheels
+
+The GitHub release artifacts may contain old wheels (e.g. v0.1.0 from before
+setuptools-scm integration). Always use `-BuildWheelsLocally` to build from
+the current repo HEAD. The deploy script will remove old wheels from OneLake
+before uploading the fresh ones.
+
+### 2. argparse --once vs ONCE_MODE env var
+
+Notebooks do NOT pass `--once` in `sys.argv`. The `ONCE_MODE=true` env var
+(set by the parameter cell) controls the argparse default. Some feeders have
+`--once` on the top-level parser (not the feed subparser), so passing it after
+`feed` in argv would cause `sys.exit(2)`.
+
+### 3. KQL API endpoint confusion
+
+- **Query endpoint** (`/v1/rest/query`): for KQL queries like `T | count`
+- **Management endpoint** (`/v1/rest/mgmt`): for control commands like `.show tables`
+- Both use the same `queryServiceUri` base URL but different paths
+- Token scope: `https://kusto.kusto.windows.net` for both
+
+### 4. Event Stream ingestion lag
+
+After a notebook run completes, data may take 30–90 seconds to flow through
+the Event Stream and appear in the `_cloudevents_dispatch` table. Wait at
+least 60 seconds before querying KQL after a successful notebook run.
+
+### 5. Seasonal/event-driven sources
+
+Sources like `australia-wildfires` are event-driven — they may have zero
+events if no incidents are active. But if they DO fetch data, it should
+flow end-to-end (dispatch + typed). During the June 2026 validation run,
+australia-wildfires returned 37 active fire incidents from VIC and NSW.
+
