@@ -43,7 +43,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$repoRoot = (Resolve-Path "$scriptDir/../..").Path
+$repoRoot = (Resolve-Path (Join-Path $scriptDir "..\..")).Path
 $sourceDir = Join-Path $repoRoot "feeders" $Source
 $sessionId = Split-Path -Leaf $SessionDir
 
@@ -76,7 +76,7 @@ try {
     # Step 1: Deploy notebook
     Write-Host "[1/6] Deploying notebook..."
     $deployScript = Join-Path $repoRoot "tools/deploy-fabric/deploy-feeder-notebook.ps1"
-    & $deployScript -Source $Source -WorkspaceName $WorkspaceName -Once
+    & $deployScript -Source $Source -Workspace $WorkspaceName -OnceMode "True" -BuildWheelsLocally -NoSchedule
     $result.steps["notebook_deployed"] = $true
 
     # Find the notebook item ID
@@ -186,7 +186,7 @@ catch {
     Write-Host "FAIL: $($_.Exception.Message)" -ForegroundColor Red
 
     # File issue
-    & "$scriptDir/issue_tracker.ps1" `
+    & (Join-Path $scriptDir "issue_tracker.ps1") `
         -Source $Source `
         -Target fabric `
         -ErrorMessage $_.Exception.Message `

@@ -80,10 +80,12 @@ print(json.dumps({"messages": messages, "count": len(messages), "validation_erro
 $scriptPath = Join-Path $SessionDir "$Source-sb-consumer.py"
 $consumerScript | Set-Content $scriptPath -Encoding utf8
 
-$pyResult = python $scriptPath $FullyQualifiedNamespace $EntityName $EntityType $SubscriptionName $TimeoutSeconds $MinMessages 2>&1 | Out-String
+$pyResult = python $scriptPath $FullyQualifiedNamespace $EntityName $EntityType $SubscriptionName $TimeoutSeconds $MinMessages 2>$null | Out-String
 Remove-Item $scriptPath -ErrorAction SilentlyContinue
 
-$parsed = $pyResult.Trim() | ConvertFrom-Json
+$jsonLine = ($pyResult -split "`n" | Where-Object { $_.Trim().StartsWith('{') } | Select-Object -Last 1)
+if (-not $jsonLine) { throw "No JSON output from Service Bus consumer. Raw output: $pyResult" }
+$parsed = $jsonLine.Trim() | ConvertFrom-Json
 if ($parsed.error) {
     throw "Service Bus consumer error: $($parsed.error)"
 }
