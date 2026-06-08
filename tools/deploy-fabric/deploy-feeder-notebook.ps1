@@ -65,13 +65,13 @@
     Default '/lakehouse/default/Files/feeder-state/<source>'.
 
 .PARAMETER PollingInterval
-    Bridge polling interval in seconds (used if ONCE_MODE is disabled).
-    Default 900 (matches pegelonline's native upstream cadence).
+    Bridge polling interval in seconds. If not specified, the value from the
+    notebook's checked-in parameters cell is preserved.
 
 .PARAMETER OnceMode
-    If $true (default), the bridge exits after one polling cycle. Use
-    in scheduled runs. Set to $false to let the bridge loop forever
-    (e.g., always-on Spark session).
+    If $true, the bridge exits after one polling cycle. If $false, the bridge
+    loops continuously. If not specified, the value from the notebook's
+    checked-in parameters cell is preserved.
 
 .PARAMETER SkipInfra
     Skip Stage A. Use when the KQL DB / Event Stream already exist.
@@ -106,8 +106,8 @@ param(
 
     [string]$NotebookName,
     [string]$StatePath,
-    [int]$PollingInterval = 900,
-    [bool]$OnceMode = $true,
+    [int]$PollingInterval = -1,
+    [string]$OnceMode = "",
 
     # Extra source-specific parameter overrides patched into the notebook's
     # 'parameters'-tagged cell (e.g. @{ FIRMS_MAP_KEY = '...' }). Use this for
@@ -474,7 +474,9 @@ Write-Host "  KQL Database:     $DatabaseName"    -ForegroundColor White
 Write-Host "  Notebook:         $NotebookName"    -ForegroundColor White
 Write-Host "  Notebook file:    $notebookPath"    -ForegroundColor White
 Write-Host "  Source ref:       $Repo@$Branch"    -ForegroundColor White
-Write-Host "  Polling interval: $PollingInterval s (once-mode=$OnceMode)" -ForegroundColor White
+$pollingDisplay = if ($PollingInterval -eq -1) { "(from notebook)" } else { "$PollingInterval s" }
+$onceDisplay = if ($OnceMode -eq "") { "(from notebook)" } else { "once-mode=$OnceMode" }
+Write-Host "  Polling interval: $pollingDisplay ($onceDisplay)" -ForegroundColor White
 
 # ── Stage A: Fabric infra (Eventhouse + KQL DB + Event Stream) ────────────
 # The notebook resolves the Event Stream connection string at runtime via
@@ -690,6 +692,40 @@ Write-Step "B/3" "Patching notebook parameters + KQL/Environment binding..."
 $nbJson = Get-Content -LiteralPath $notebookPath -Raw -Encoding UTF8
 $nb = $nbJson | ConvertFrom-Json
 
+# ── Read checked-in POLLING_INTERVAL and ONCE_MODE from the notebook when
+#    the user didn't explicitly pass them on the command line. This ensures
+#    the deploy script respects the source-specific cadence committed in the
+#    notebook (set by the notebook-retrofit workflow).
+if ($PollingInterval -eq -1 -or $OnceMode -eq "") {
+    foreach ($cell in $nb.cells) {
+        if ($cell.cell_type -ne 'code') { continue }
+        $tags = @()
+        if ($cell.metadata -and $cell.metadata.tags) { $tags = @($cell.metadata.tags) }
+        if ($tags -notcontains 'parameters') { continue }
+        $srcLines = @($cell.source) | ForEach-Object { $_ }
+        foreach ($line in $srcLines) {
+            if ($PollingInterval -eq -1 -and $line -match '^\s*POLLING_INTERVAL\s*=\s*(\d+)') {
+                $PollingInterval = [int]$matches[1]
+            }
+            if ($OnceMode -eq "" -and $line -match '^\s*ONCE_MODE\s*=\s*(True|False)') {
+                $OnceMode = $matches[1]
+            }
+        }
+        break
+    }
+    # Fallback if notebook doesn't declare the values
+    if ($PollingInterval -eq -1) { $PollingInterval = 900 }
+    if ($OnceMode -eq "") { $OnceMode = "True" }
+}
+# Normalize OnceMode to bool for downstream logic
+if ($OnceMode -is [string]) {
+    $OnceModeFlag = $OnceMode -eq "True"
+} else {
+    $OnceModeFlag = [bool]$OnceMode
+}
+
+Write-Host "  Resolved cadence: POLLING_INTERVAL=$PollingInterval, ONCE_MODE=$(if ($OnceModeFlag) { 'True' } else { 'False' })" -ForegroundColor DarkGray
+
 if (-not $nb.metadata)              { $nb | Add-Member -NotePropertyName metadata     -NotePropertyValue ([pscustomobject]@{}) -Force }
 if (-not $nb.metadata.dependencies) { $nb.metadata | Add-Member -NotePropertyName dependencies -NotePropertyValue ([pscustomobject]@{}) -Force }
 
@@ -762,7 +798,7 @@ if ($EnvironmentId) {
     $nb.metadata.dependencies | Add-Member -NotePropertyName environment -NotePropertyValue $envBinding -Force
 }
 
-$onceLiteral = if ($OnceMode) { "True" } else { "False" }
+$onceLiteral = if ($OnceModeFlag) { "True" } else { "False" }
 
 $paramsPatched = $false
 foreach ($cell in $nb.cells) {
