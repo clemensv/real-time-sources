@@ -639,10 +639,13 @@ if ($kqlFile) {
     Write-Step "B/2.1" "No KQL schema found — skipping"
 }
 
-# ── Stage B/2.5: Fabric Environment with pre-built source wheels ─────────
-$EnvironmentId = $null
+# ── Stage B/2.5: Build wheels and upload to Lakehouse Files ──────────────
+# Python notebooks cannot bind Fabric Environments; dependencies are loaded
+# at runtime via `%pip install /lakehouse/default/Files/wheels/<source>/*.whl`.
+# We upload the built wheels to the feeder_state_lake Lakehouse that is already
+# bound as the default Lakehouse for state/log storage.
 if (-not $SkipEnvironment) {
-    Write-Step "B/2.5" "Building source wheels and publishing Fabric Environment '$EnvironmentName'..."
+    Write-Step "B/2.5" "Building source wheels and uploading to Lakehouse Files..."
 
     $wheels = if ($BuildWheelsLocally) {
         Write-Info "Building wheels locally (-BuildWheelsLocally)..."
@@ -660,86 +663,64 @@ if (-not $SkipEnvironment) {
     Write-OK "Got $($wheels.Count) wheel(s):"
     foreach ($w in $wheels) { Write-Info "  $($w.Name)" }
 
-    # Resolve-or-create the environment item.
-    $envList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/environments"
-    $envItem = $envList.value | Where-Object { $_.displayName -eq $EnvironmentName } | Select-Object -First 1
-    if (-not $envItem) {
-        Write-Info "Creating environment '$EnvironmentName'..."
-        $createEnv = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/environments" `
-            -Body @{ displayName = $EnvironmentName; description = "Pre-built libraries for real-time-sources feeder notebooks (shared across sources)." }
-        if ($createEnv -and $createEnv.id) {
-            $envItem = $createEnv
-        } else {
-            $envList2 = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/environments"
-            $envItem = $envList2.value | Where-Object { $_.displayName -eq $EnvironmentName } | Select-Object -First 1
-            if (-not $envItem) { throw "Environment '$EnvironmentName' was not found after create." }
+    # We need the Lakehouse ID for OneLake upload. Resolve it early (the same
+    # Lakehouse is bound to the notebook later in Stage B/3).
+    $lakehouseList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/lakehouses"
+    $lhForWheels = $null
+    if ($DefaultLakehouse) {
+        $lhForWheels = $lakehouseList.value | Where-Object { $_.displayName -eq $DefaultLakehouse -or $_.id -eq $DefaultLakehouse } | Select-Object -First 1
+    } elseif ($lakehouseList.value.Count -eq 1) {
+        $lhForWheels = $lakehouseList.value[0]
+    } elseif ($lakehouseList.value.Count -gt 1) {
+        $lhForWheels = $lakehouseList.value | Where-Object { $_.displayName -eq 'feeder_state_lake' } | Select-Object -First 1
+        if (-not $lhForWheels) { $lhForWheels = $lakehouseList.value[0] }
+    } else {
+        $newLakehouseName = 'feeder_state_lake'
+        Write-Info "Workspace has no Lakehouse; creating '$newLakehouseName'..."
+        $createBody = @{ displayName = $newLakehouseName } | ConvertTo-Json
+        $lhForWheels = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/lakehouses" -Body $createBody
+        if (-not $lhForWheels -or -not $lhForWheels.id) {
+            Start-Sleep -Seconds 5
+            $lakehouseList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/lakehouses"
+            $lhForWheels = $lakehouseList.value | Where-Object { $_.displayName -eq $newLakehouseName } | Select-Object -First 1
         }
+        if (-not $lhForWheels) { throw "Failed to create Lakehouse for wheel storage." }
     }
-    $EnvironmentId = $envItem.id
-    Write-OK "Environment: $EnvironmentName ($EnvironmentId)"
+    $LakehouseId = $lhForWheels.id
+    Write-Info "Using Lakehouse '$($lhForWheels.displayName)' ($LakehouseId) for wheel storage."
 
-    # Wait for any in-progress publish to complete before uploading
-    $envDetails = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/environments/$EnvironmentId"
-    if ($envDetails.properties -and $envDetails.properties.publishDetails -and
-        $envDetails.properties.publishDetails.state -eq "Running") {
-        Write-Info "Environment has a publish in progress — waiting for it to finish before uploading..."
-        Wait-EnvironmentPublished -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId
-        Write-OK "Previous publish completed."
-    }
-
-    Write-Info "Uploading wheels one at a time to staging libraries..."
+    # Upload wheels to OneLake: Files/wheels/<source>/<wheel>.whl
+    $oneLakeDfs = "https://onelake.dfs.fabric.microsoft.com"
     $fabricToken = Get-FabricToken
-    foreach ($w in $wheels) {
-        Write-Info "  uploading $($w.Name)"
-        $sc = Upload-EnvironmentLibrary -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId -Wheel $w -Token $fabricToken
-        Write-Info "    -> HTTP $sc"
-    }
+    $wheelsDir = "wheels/$Source"
 
-    # Public PyPI libraries for the generated producer runtime.
-    #
-    # The avrotize/xrcg-generated `<source>_producer_data` package imports
-    # `avro.schema` and `dataclasses_json` at module load time, but its
-    # generated pyproject declares NO runtime dependencies, so neither dep is
-    # carried by any of the uploaded wheels. In a fresh Fabric Environment that
-    # surfaces as `ModuleNotFoundError: No module named 'avro'`. Declaring them
-    # as public libraries via environment.yml lets Fabric resolve them from
-    # PyPI. (Upstream codegen bug — see the producer_data pyproject. Remove this
-    # once the generator declares these deps.)
-    $envYmlDir  = Join-Path $TempDir "feeder_env_yml_$([System.Guid]::NewGuid().ToString('N'))"
-    New-Item -ItemType Directory -Path $envYmlDir -Force | Out-Null
-    $envYmlPath = Join-Path $envYmlDir "environment.yml"
-    @(
-        "dependencies:"
-        "  - pip:"
-        "    - avro>=1.11.3"
-        "    - dataclasses_json>=0.6.7"
-    ) -join "`n" | Set-Content -LiteralPath $envYmlPath -Encoding ASCII
+    # Create the directory (PUT with resource=directory)
+    $dirUrl = "$oneLakeDfs/$WorkspaceId/$LakehouseId/Files/$wheelsDir`?resource=directory"
     try {
-        Write-Info "Uploading public libraries (environment.yml: avro, dataclasses_json)..."
-        $scYml = Upload-EnvironmentLibrary -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId -Wheel (Get-Item $envYmlPath) -Token $fabricToken
-        Write-Info "    -> HTTP $scYml"
-    } finally {
-        Remove-Item $envYmlDir -Recurse -Force -ErrorAction SilentlyContinue
-    }
-
-    Write-Info "Setting Spark compute (runtime 1.3, Starter Pool)..."
-    try {
-        Update-EnvironmentSparkCompute -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId
+        Invoke-RestMethod -Method PUT -Uri $dirUrl -Headers @{ Authorization = "Bearer $fabricToken" } -ErrorAction Stop | Out-Null
     } catch {
-        Write-Info "  Spark compute update warning (non-fatal, defaults will be used): $($_.Exception.Message)"
+        # 409 = already exists, that's fine
+        if ($_.Exception.Response.StatusCode.value__ -ne 409) { throw }
     }
 
-    Write-Info "Publishing environment (3-6 min — building Spark image with custom libraries)..."
-    Invoke-FabricApiRaw -Method POST `
-        -Url "$FabricApi/workspaces/$WorkspaceId/environments/$EnvironmentId/staging/publish" | Out-Null
+    foreach ($w in $wheels) {
+        $fileUrl = "$oneLakeDfs/$WorkspaceId/$LakehouseId/Files/$wheelsDir/$($w.Name)"
+        Write-Info "  uploading $($w.Name) to OneLake..."
+        # OneLake DFS: Create file then append+flush
+        $createUrl = "$fileUrl`?resource=file"
+        Invoke-RestMethod -Method PUT -Uri $createUrl -Headers @{ Authorization = "Bearer $fabricToken" } -ErrorAction Stop | Out-Null
+        $content = [System.IO.File]::ReadAllBytes($w.FullName)
+        $appendUrl = "$fileUrl`?position=0&action=append"
+        Invoke-RestMethod -Method PATCH -Uri $appendUrl -Headers @{ Authorization = "Bearer $fabricToken"; "Content-Type" = "application/octet-stream" } -Body $content -ErrorAction Stop | Out-Null
+        $flushUrl = "$fileUrl`?position=$($content.Length)&action=flush"
+        Invoke-RestMethod -Method PATCH -Uri $flushUrl -Headers @{ Authorization = "Bearer $fabricToken" } -ErrorAction Stop | Out-Null
+        Write-Info "    -> uploaded ($($content.Length) bytes)"
+    }
 
-    Wait-EnvironmentPublished -WorkspaceId $WorkspaceId -EnvironmentId $EnvironmentId
-    Write-OK "Environment published."
-} else {
-    # Look it up to bind metadata.
-    $envList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/environments"
-    $envItem = $envList.value | Where-Object { $_.displayName -eq $EnvironmentName } | Select-Object -First 1
-    if ($envItem) { $EnvironmentId = $envItem.id; Write-Info "Reusing environment '$EnvironmentName' ($EnvironmentId)" }
+    # Also upload PyPI dependency wheels (avro, dataclasses_json) that the
+    # generated producer_data package needs but doesn't declare. The notebook's
+    # %pip install cell handles these from PyPI directly, so no upload needed.
+    Write-OK "Wheels uploaded to Lakehouse Files/$wheelsDir/"
 }
 
 # ── Stage B/3: Patch notebook ─────────────────────────────────────────────
@@ -787,9 +768,7 @@ if (-not $nb.metadata.dependencies) { $nb.metadata | Add-Member -NotePropertyNam
 # Force the pure-Python (jupyter_python) notebook kernel regardless of what the
 # committed .ipynb declares. Feeder notebooks are single-node Python pollers and
 # do no distributed Spark compute; the Python runtime is cheaper and faster to
-# start, and it still attaches the feeder Environment + custom wheels (verified
-# live on ContosoRealTimeTest). This is a safety net — the committed notebooks
-# are also stored with the Python kernel.
+# start. Dependencies are loaded via %pip install from Lakehouse Files at runtime.
 $nb.metadata | Add-Member -NotePropertyName kernelspec -NotePropertyValue ([pscustomobject]@{
     name         = 'python3.11'
     display_name = 'Python 3.11'
@@ -844,14 +823,9 @@ $nb.metadata.dependencies | Add-Member -NotePropertyName lakehouse -NoteProperty
 }) -Force
 Write-OK "Default Lakehouse bound: $($lh.displayName) ($($lh.id))"
 
-if ($EnvironmentId) {
-    $envBinding = [pscustomobject]@{
-        environmentId   = $EnvironmentId
-        workspaceId     = $WorkspaceId
-        environmentName = $EnvironmentName
-    }
-    $nb.metadata.dependencies | Add-Member -NotePropertyName environment -NotePropertyValue $envBinding -Force
-}
+# Python notebooks do not support Environment binding. Dependencies are loaded
+# via %pip install from Lakehouse Files at runtime (see the pip install cell in
+# each notebook). No environment metadata is needed.
 
 $onceLiteral = if ($OnceModeFlag) { "True" } else { "False" }
 
@@ -916,18 +890,12 @@ $nbList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/
 $existing = $nbList.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
 
 if ($existing) {
-    # Delete and recreate the notebook to ensure it is registered as a Python
-    # notebook at the platform level. Merely updating the definition of a
-    # notebook that was originally created as PySpark does not reliably switch
-    # the execution engine — Fabric may still attach a Spark session.
-    Write-Info "Removing existing notebook '$NotebookName' to recreate as Python notebook..."
-    Invoke-FabricApi -Method DELETE `
-        -Url "$FabricApi/workspaces/$WorkspaceId/notebooks/$($existing.id)" | Out-Null
-    Start-Sleep -Seconds 3
-    $existing = $null
-}
-
-if (-not $existing) {
+    Invoke-FabricApi -Method POST `
+        -Url "$FabricApi/workspaces/$WorkspaceId/notebooks/$($existing.id)/updateDefinition" `
+        -Body @{ definition = $definition } | Out-Null
+    Write-OK "Updated existing notebook '$NotebookName' ($($existing.id))"
+    $notebookId = $existing.id
+} else {
     $createBody = @{ displayName = $NotebookName; definition = $definition }
     $createResp = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/notebooks" -Body $createBody
     if ($createResp -and $createResp.id) {
@@ -994,8 +962,8 @@ Write-Host "`n=== Notebook Feeder Deployment Complete ===" -ForegroundColor Cyan
 Write-Host "  Notebook:     $NotebookName ($notebookId)" -ForegroundColor Gray
 Write-Host "  Workspace:    $($wsInfo.displayName) ($WorkspaceId)" -ForegroundColor Gray
 Write-Host "  KQL Database: $($db.displayName) ($($db.id))" -ForegroundColor Gray
-if ($EnvironmentId) {
-    Write-Host "  Environment:  $EnvironmentName ($EnvironmentId)" -ForegroundColor Gray
+if ($LakehouseId) {
+    Write-Host "  Wheels:       Files/wheels/$Source/ (Lakehouse)" -ForegroundColor Gray
 }
 Write-Host "  State path:   $StatePath  (Lakehouse Files)" -ForegroundColor Gray
 Write-Host ""
