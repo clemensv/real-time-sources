@@ -86,7 +86,7 @@ $stderrContent = (Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue).Tr
 Remove-Item $stderrFile -ErrorAction SilentlyContinue
 Remove-Item $scriptPath -ErrorAction SilentlyContinue
 
-$jsonLine = ($pyResult -split "`n" | Where-Object { $_.Trim().StartsWith('{') } | Select-Object -Last 1)
+$jsonLine = ($pyResult -split "`n" | Where-Object { $_ -ne $null -and $_.Trim().StartsWith('{') } | Select-Object -Last 1)
 if (-not $jsonLine) { throw "No JSON output from Service Bus consumer. Stderr: $stderrContent. Stdout: $pyResult" }
 $parsed = $jsonLine.Trim() | ConvertFrom-Json
 if ($parsed.error) {
