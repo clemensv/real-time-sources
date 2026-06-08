@@ -927,7 +927,33 @@ if (-not $NoTriggerNow) {
 }
 
 if (-not $NoSchedule) {
-    Write-Step "B/5b" "Creating recurring schedule (every $ScheduleIntervalMinutes min)..."
+    # For continuous-mode notebooks (ONCE_MODE=False), the notebook runs for
+    # RUN_DURATION seconds (~55 min). Schedule every 60 min so the next run
+    # starts shortly after the previous one exits. For once-mode notebooks,
+    # use the configured ScheduleIntervalMinutes (default 15).
+    $effectiveScheduleMin = [int]$ScheduleIntervalMinutes
+    if (-not $OnceModeFlag) {
+        # Read RUN_DURATION from the notebook to compute schedule interval
+        $runDuration = 3300
+        foreach ($cell in $nb.cells) {
+            if ($cell.cell_type -ne 'code') { continue }
+            $tags = @()
+            if ($cell.metadata -and $cell.metadata.tags) { $tags = @($cell.metadata.tags) }
+            if ($tags -notcontains 'parameters') { continue }
+            $srcLines = @($cell.source) | ForEach-Object { $_ }
+            foreach ($line in $srcLines) {
+                if ($line -match '^\s*RUN_DURATION\s*=\s*(\d+)') {
+                    $runDuration = [int]$matches[1]
+                }
+            }
+            break
+        }
+        # Schedule = RUN_DURATION + 5 min buffer, rounded up to nearest minute
+        $effectiveScheduleMin = [int][math]::Ceiling(($runDuration + 300) / 60)
+        # Fabric scheduler minimum is 5 minutes
+        if ($effectiveScheduleMin -lt 5) { $effectiveScheduleMin = 5 }
+    }
+    Write-Step "B/5b" "Creating recurring schedule (every $effectiveScheduleMin min)..."
     $existingSchedules = $null
     try {
         $existingSchedules = Invoke-FabricApi -Method GET `
@@ -944,7 +970,7 @@ if (-not $NoSchedule) {
             enabled = $true
             configuration = @{
                 type             = "Cron"
-                interval         = $ScheduleIntervalMinutes
+                interval         = $effectiveScheduleMin
                 startDateTime    = $startDt
                 endDateTime      = $endDt
                 localTimeZoneId  = "UTC"
@@ -954,7 +980,7 @@ if (-not $NoSchedule) {
             -Url "$FabricApi/workspaces/$WorkspaceId/items/$notebookId/jobs/RunNotebook/schedules" `
             -Body $schedBody
         if ($schedResp.ExitCode -eq 0) {
-            Write-OK "Schedule created (every $ScheduleIntervalMinutes min UTC)."
+            Write-OK "Schedule created (every $effectiveScheduleMin min UTC)."
         } else {
             Write-Warning "Could not create schedule (create it manually from the portal):`n$($schedResp.Body)"
         }
