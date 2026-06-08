@@ -104,12 +104,31 @@ try {
     $result.steps["rg_created"] = $true
 
     # Step 2: Deploy ARM template (includes broker + ACI)
+    # Auto-detect ARM parameters that match env vars (camelCase param → SCREAMING_SNAKE env var)
+    $armParams = @()
+    $templateJson = Get-Content $armTemplate -Raw | ConvertFrom-Json
+    foreach ($paramName in $templateJson.parameters.PSObject.Properties.Name) {
+        # Convert camelCase → SCREAMING_SNAKE: insert _ before each uppercase letter group
+        $envName = ($paramName -creplace '([A-Z])', '_$1').ToUpper().TrimStart('_')
+        $envVal = [System.Environment]::GetEnvironmentVariable($envName)
+        if ($envVal) {
+            $armParams += "$paramName=$envVal"
+            Write-Host "  Passing ARM param $paramName from env $envName"
+        }
+    }
+    $deployArgs = @(
+        "deployment", "group", "create",
+        "--resource-group", $rgName,
+        "--subscription", $Subscription,
+        "--template-file", $armTemplate,
+        "--output", "none"
+    )
+    if ($armParams.Count -gt 0) {
+        $deployArgs += "--parameters"
+        $deployArgs += $armParams
+    }
     Write-Host "[2/4] Deploying $templateFile..."
-    az deployment group create `
-        --resource-group $rgName `
-        --subscription $Subscription `
-        --template-file $armTemplate `
-        --output none 2>&1 | ForEach-Object { Write-Host "  $_" }
+    az @deployArgs 2>&1 | ForEach-Object { Write-Host "  $_" }
     $result.steps["deployment_complete"] = $true
 
     # Step 3: Wait for container to start

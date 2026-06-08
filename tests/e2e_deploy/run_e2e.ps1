@@ -40,7 +40,9 @@ param(
     [string]$Token,
     [switch]$SkipAzure,
     [switch]$SkipFabric,
-    [string]$OnlySource
+    [switch]$SkipEgMqtt,
+    [string]$OnlySource,
+    [string]$Sources          # comma-separated list of sources (alternative to OnlySource)
 )
 
 $ErrorActionPreference = "Stop"
@@ -116,6 +118,9 @@ $allSources = Get-ChildItem -Path $feedersDir -Directory | Select-Object -Expand
 if ($OnlySource) {
     $allSources = @($OnlySource)
 }
+elseif ($Sources) {
+    $allSources = $Sources -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ }
+}
 
 # Filter out skipped sources
 $allSources = $allSources | Where-Object { $_ -notin $skipSources }
@@ -169,6 +174,10 @@ if (-not $skipAz -and $sub) {
     foreach ($src in $azureSources) {
         $srcPath = Join-Path $feedersDir $src
         foreach ($variant in @("eventhub", "servicebus", "eventgrid-mqtt")) {
+            # Skip EG MQTT — known BLOCKED (feeder Entra auth not implemented, issue #840)
+            if ($variant -eq "eventgrid-mqtt" -and ($SkipEgMqtt -or $env:E2E_SKIP_EG_MQTT -eq "true")) {
+                continue
+            }
             $templateFile = $transportVariants[$variant]
             if (-not (Test-Path (Join-Path $srcPath $templateFile))) {
                 continue
