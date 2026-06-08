@@ -137,11 +137,14 @@ try {
 
     # Step 4: Validate KQL data (reusable module)
     Write-Host "[4/6] Validating KQL data..."
+    # Fabric REST needs api.fabric.microsoft.com audience; Kusto REST needs kusto.kusto.windows.net audience
+    $kustoToken = az account get-access-token --resource "https://kusto.kusto.windows.net" --query accessToken --output tsv
     $validateKqlPath = Join-Path $repoRoot ".github/skills/e2e-deployment-validation/references/validate_kql.ps1"
     $kqlValidation = & $validateKqlPath `
         -Source $Source `
         -WorkspaceId $WorkspaceId `
         -Token $Token `
+        -KustoToken $kustoToken `
         -MinRows $MinKqlRows
 
     $result.kql_rows = $kqlValidation.dispatch_count

@@ -39,6 +39,7 @@ param(
     [Parameter(Mandatory)][string]$Source,
     [Parameter(Mandatory)][string]$WorkspaceId,
     [Parameter(Mandatory)][string]$Token,
+    [string]$KustoToken,      # separate token for kusto.kusto.windows.net audience; falls back to $Token
     [string]$QueryUri,
     [string]$DatabaseName,
     [int]$MinRows = 1,
@@ -115,7 +116,7 @@ function Invoke-KQL {
     } | ConvertTo-Json
 
     $kqlHeaders = @{
-        "Authorization" = "Bearer $Token"
+        "Authorization" = "Bearer $(if ($KustoToken) { $KustoToken } else { $Token })"
         "Content-Type"  = "application/json"
     }
 

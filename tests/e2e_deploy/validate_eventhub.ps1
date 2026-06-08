@@ -40,11 +40,11 @@ def on_event(partition_context, event):
         })
         partition_context.update_checkpoint(event)
 
-client = EventHubConsumerClient.from_connection_string(conn_str, consumer_group="\$Default", eventhub_name=eh_name)
+client = EventHubConsumerClient.from_connection_string(conn_str, consumer_group="`$Default", eventhub_name=eh_name)
 try:
     with client:
         while len(messages) < min_msgs and (time.time() - start) < timeout:
-            client.receive(on_event=on_event, starting_position="-1", max_wait_time=30)
+            client.receive(on_event=on_event, starting_position="@earliest", max_wait_time=30)
             if len(messages) >= min_msgs:
                 break
 except Exception as e:
