@@ -159,7 +159,8 @@ class HubEauHydrometrieAPI:
                 libelle_commune=station.get("libelle_commune", "") or "",
                 code_departement=station.get("code_departement", "") or "",
                 en_service=station.get("en_service", False) or False,
-                date_ouverture_station=station.get("date_ouverture_station", "") or ""
+                date_ouverture_station=station.get("date_ouverture_station", "") or "",
+                basin=station.get("libelle_bassin", None)
             )
             hubeau_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_station(
                 station_data.code_station, station_data, flush_producer=False)

@@ -119,7 +119,8 @@ class TestHubEauContainerIntegration:
                 libelle_commune=s.get("libelle_commune", ""),
                 code_departement=s.get("code_departement", ""),
                 en_service=s.get("en_service", False),
-                date_ouverture_station=s.get("date_ouverture_station", "")
+                date_ouverture_station=s.get("date_ouverture_station", ""),
+                basin=s.get("libelle_bassin", None)
             )
             hubeau_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_station(
                 station_data.code_station, station_data, flush_producer=False)
@@ -213,7 +214,8 @@ class TestHubEauLiveContainerIntegration:
                 libelle_commune=s.get("libelle_commune", "") or "",
                 code_departement=s.get("code_departement", "") or "",
                 en_service=s.get("en_service", False) or False,
-                date_ouverture_station=s.get("date_ouverture_station", "") or ""
+                date_ouverture_station=s.get("date_ouverture_station", "") or "",
+                basin=s.get("libelle_bassin", None)
             )
             hubeau_producer.send_fr_gov_eaufrance_hub_eau_hydrometrie_station(
                 station_data.code_station, station_data, flush_producer=False)

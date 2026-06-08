@@ -723,6 +723,7 @@ class NDBCBuoyPoller:
                     latitude=lat if lat is not None else 0.0,
                     longitude=lon if lon is not None else 0.0,
                     timezone=tz,
+                    region=fields[5] if len(fields) > 5 else None,
                 ))
             except (IndexError, ValueError):
                 continue
