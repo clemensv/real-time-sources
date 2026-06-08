@@ -618,16 +618,30 @@ Start-Sleep -Seconds 30
 Using a SAS `RootManageSharedAccessKey` connection string for receiving will also
 fail with `amqp:client-error`. Always use DefaultAzureCredential + FQNS.
 
-### 8. Event Grid MQTT external connection is blocked
+### 8. Event Grid MQTT has a two-layer authZ chain — both layers break independently
 
-`EventGrid TopicSpaces Subscriber` RBAC role does **not** authorize external MQTT
-connections. Connections from a non-Azure machine (local dev or CI) return
-CONNACK rc=5 (Not authorized) unless the client has a registered certificate. This
-is a fundamental EG MQTT broker auth requirement — RBAC only applies to the control
-plane. Use Azure Monitor metrics (`Mqtt.Connections`,
-`Mqtt.SuccessfulPublishedMessages`) to verify feeder delivery instead. Mark the
-external-subscribe step as BLOCKED until the tooling gains certificate registration
-support.
+The EG MQTT ARM template creates a user-assigned managed identity and assigns it
+`EventGrid TopicSpaces Publisher` on the topic space. The ACI container gets the
+identity and three env vars: `MQTT_AUTH_MODE=entra`, `MQTT_ENTRA_AUDIENCE`,
+`MQTT_ENTRA_CLIENT_ID`. These two authZ layers are separate and both failed:
+
+**Layer 1 — Feeder → EG broker (publish path):**
+The feeder's `app.py` ignores all three env vars. It connects with no credentials
+and gets CONNACK rc=5. The managed identity role assignment in the ARM template is
+wasted. The fix is in the feeder code (issue #840), not the ARM template.
+
+**Layer 2 — Test validator → EG broker (subscribe path):**
+`EventGrid TopicSpaces Subscriber` RBAC alone does **not** authorize external MQTT
+connections from non-Azure clients. A registered client certificate or an Entra JWT
+whose subject matches a registered `Microsoft.EventGrid/namespaces/clients` entry
+is required. The ARM template does not create a `clients` resource, so there is no
+registered test identity to authenticate with even if the validator acquired a token.
+Connections from local dev or CI return CONNACK rc=5 (Not authorized).
+
+Use Azure Monitor metrics (`Mqtt.Connections`, `Mqtt.SuccessfulPublishedMessages`)
+as the only available validation proxy until both layers are fixed. Mark the
+external-subscribe step as BLOCKED; mark the feeder-publishing step as FAIL if
+metrics show 0 connections.
 
 ### 9. Generated MQTT client's `connect()` is not awaited
 
@@ -664,4 +678,28 @@ status is `"Completed"` — not `"Succeeded"`. Include both `"Completed"` and
 ```powershell
 $terminal = @("Completed", "Failed", "Cancelled", "DeadLettered")
 ```
+
+### 13. ARM templates with role assignments require Owner or User Access Administrator
+
+Several ARM templates in this repo (`azure-template-with-eventgrid-mqtt.json`)
+include `Microsoft.Authorization/roleAssignments` resources. The deploying identity
+must have `Microsoft.Authorization/roleAssignments/write` permission — i.e. **Owner**
+or **User Access Administrator** — on the subscription or resource group.
+
+**Contributor alone is not sufficient.** If the deploying identity only has
+Contributor, the ARM deployment will fail at the role assignment step with:
+```
+The client does not have authorization to perform action 'Microsoft.Authorization/roleAssignments/write'
+```
+
+Before deploying, verify the identity's role:
+```powershell
+$myOid = az ad signed-in-user show --query id --output tsv
+az role assignment list --assignee $myOid --subscription <sub> `
+    --query "[?roleDefinitionName=='Owner' || roleDefinitionName=='User Access Administrator'].roleDefinitionName"
+```
+
+If the deployment fails at role assignment, either elevate the identity or
+pre-create the role assignment manually and use `--mode Incremental` to skip
+the already-created resource.
 
