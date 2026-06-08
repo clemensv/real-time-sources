@@ -76,27 +76,45 @@ an external broker that isn't provisioned by the template itself.
 
 For each source with `feeders/<source>/azure-template-with-eventhub.json`:
 
-#### Step 1: Deploy Infrastructure
+#### Step 1: Deploy
 
 ```powershell
 $rg = "e2e-<source>-eh-<timestamp>"
 az group create --name $rg --location <region> --subscription <sub>
-az eventhubs namespace create --name <ns> --resource-group $rg --sku Standard
-az eventhubs eventhub create --name <source> --namespace-name <ns> --resource-group $rg
+az deployment group create --resource-group $rg --subscription <sub> `
+    --template-file feeders/<source>/azure-template-with-eventhub.json --output none
 ```
 
-#### Step 2: Deploy Container
+The ARM template provisions the Event Hubs namespace, hub entity, and ACI container.
+
+#### Step 2: Wait for Container
 
 ```powershell
-az deployment group create --resource-group $rg \
-    --template-file azure-template-with-eventhub.json --parameters ...
+# Use az container show (not az container list) — list may return empty instanceView.state
+$containerName = az container list --resource-group $rg --query "[0].name" --output tsv
+$state = az container show --resource-group $rg --name $containerName `
+    --query "instanceView.state" --output tsv
 ```
+
+Poll until `state -eq "Running"`.
 
 #### Step 3: Validate Messages
 
-Use the Event Hubs SDK (Kafka consumer) to consume from the hub. Validate:
+Use the Event Hubs SDK (Kafka consumer) to consume from the hub.
+
+**CloudEvents content mode**: Sources may use **structured** or **binary** mode.
+- **Binary mode**: CloudEvents attributes in Kafka headers with `ce_` prefix
+  (`ce_type`, `ce_source`, `ce_subject`)
+- **Structured mode**: `content-type: application/cloudevents+json`; all CE
+  attributes (`type`, `source`, `subject`) are in the JSON body — there are
+  **no** `ce_type`/`ce_source`/`ce_subject` headers in structured mode
+
+Validate for whichever mode the message uses; do not require a specific mode.
+Check the `content-type` header to detect which mode is in use.
+
+Validate:
 - [ ] At least 1 message received within timeout
-- [ ] Each message has CloudEvents Kafka headers (`ce_type`, `ce_source`, `ce_subject`)
+- [ ] CloudEvents envelope present (binary headers OR structured body with type/source/subject)
 - [ ] Kafka key matches the subject template from the xreg manifest
 - [ ] Payload validates against the JsonStructure schema in the xreg
 
@@ -110,33 +128,72 @@ az group delete --name $rg --yes --no-wait
 
 For each source with `feeders/<source>/azure-template-with-servicebus.json`:
 
-#### Step 1: Deploy Infrastructure
+#### Step 1: Deploy
 
 ```powershell
 $rg = "e2e-<source>-sb-<timestamp>"
 az group create --name $rg --location <region> --subscription <sub>
-az servicebus namespace create --name <ns> --resource-group $rg --sku Standard
+az deployment group create --resource-group $rg --subscription <sub> `
+    --template-file feeders/<source>/azure-template-with-servicebus.json --output none
 ```
 
-The ARM template typically creates the topic/queue within the deployment.
+The ARM template creates the Service Bus namespace, queue/topic, and ACI container.
+**The standard SKU template typically uses a queue (not topic).**
 
-#### Step 2: Deploy Container
+#### Step 2: Assign RBAC — MANDATORY
+
+The ARM template does **not** grant the deploying user any Service Bus data
+plane rights. Without this step, `DefaultAzureCredential` fails with
+`amqp:unauthorized-access` ("Listen claim required"):
 
 ```powershell
-az deployment group create --resource-group $rg \
-    --template-file azure-template-with-servicebus.json --parameters ...
+$myObjectId = az ad signed-in-user show --query id --output tsv
+$sbNsId = az servicebus namespace show --resource-group $rg --namespace-name <ns> `
+    --query id --output tsv
+az role assignment create --assignee $myObjectId `
+    --role "Azure Service Bus Data Receiver" --scope $sbNsId --output none
+Start-Sleep -Seconds 30  # allow RBAC propagation
 ```
 
-#### Step 3: Validate Messages
+#### Step 3: Detect Queue vs Topic
 
-Use the Service Bus SDK to receive from the topic/queue. Validate:
+```powershell
+$queues = az servicebus queue list --resource-group $rg --namespace-name <ns> `
+    --query "[].name" --output tsv
+$entityType = if ($queues) { "queue" } else { "topic" }
+$entityName = if ($queues) { $queues | Select-Object -First 1 } else {
+    az servicebus topic list --resource-group $rg --namespace-name <ns> `
+        --query "[0].name" --output tsv
+}
+```
+
+#### Step 4: Validate Messages
+
+Use `DefaultAzureCredential` + FQNS (never SAS connection string):
+
+```python
+from azure.identity import DefaultAzureCredential
+from azure.servicebus import ServiceBusClient
+
+credential = DefaultAzureCredential()
+client = ServiceBusClient(fully_qualified_namespace=fqns, credential=credential)
+```
+
+AMQP application property keys may be `bytes` or `str`. Decode before comparing:
+```python
+props = {
+    (k.decode() if isinstance(k, bytes) else str(k)):
+    (v.decode() if isinstance(v, bytes) else str(v))
+    for k, v in (msg.application_properties or {}).items()
+}
+```
+
+Validate:
 - [ ] At least 1 message received within timeout
-- [ ] AMQP application properties contain CloudEvents attributes with `cloudEvents:` prefix
-  (per CloudEvents AMQP binding: `cloudEvents:type`, `cloudEvents:source`, `cloudEvents:subject`)
-- [ ] Content-type is `application/cloudevents+json` (structured) or `application/json` (binary)
+- [ ] `cloudEvents:type`, `cloudEvents:source`, `cloudEvents:subject` present in AMQP properties
 - [ ] Payload validates against the JsonStructure schema in the xreg
 
-#### Step 4: Teardown
+#### Step 5: Teardown
 
 ```powershell
 az group delete --name $rg --yes --no-wait
@@ -146,35 +203,58 @@ az group delete --name $rg --yes --no-wait
 
 For each source with `feeders/<source>/azure-template-with-eventgrid-mqtt.json`:
 
-#### Step 1: Deploy Infrastructure
+#### Step 1: Deploy
 
 ```powershell
 $rg = "e2e-<source>-eg-<timestamp>"
 az group create --name $rg --location <region> --subscription <sub>
+az deployment group create --resource-group $rg --subscription <sub> `
+    --template-file feeders/<source>/azure-template-with-eventgrid-mqtt.json --output none
 ```
 
-The ARM template provisions the Event Grid namespace with MQTT enabled,
-client identities, topic spaces, and permission bindings.
+The ARM template provisions the Event Grid namespace with MQTT enabled, a topic
+space, and the feeder container with a user-assigned managed identity.
 
-#### Step 2: Deploy Container
+#### Step 2: Verify Feeder Is Actually Publishing
+
+**Do not trust the container log alone.** The generated MQTT client's `connect()`
+does not await the CONNACK — paho retries silently, and `publish()` queues
+messages that never deliver if auth fails. The log will say "Published N events"
+even when 0 messages reached the broker.
+
+**Always check EG namespace metrics to confirm actual delivery:**
 
 ```powershell
-az deployment group create --resource-group $rg \
-    --template-file azure-template-with-eventgrid-mqtt.json --parameters ...
+az monitor metrics list `
+    --resource <eg-namespace-resource-id> `
+    --metric "Mqtt.SuccessfulPublishedMessages" "Mqtt.Connections" `
+    --start-time <startTime> --end-time <endTime> --interval PT5M `
+    --query "value[].{metric:name.value, data:timeseries[0].data[-3:]}" --output json
 ```
 
-#### Step 3: Validate Messages
+If `Mqtt.Connections` is 0, the feeder is not connected. Check whether the
+feeder `app.py` implements `MQTT_AUTH_MODE=entra` (many early feeders do not —
+see issue #840).
 
-Use a MQTT v5 client to subscribe to the feeder's topic tree. Validate:
-- [ ] At least 1 PUBLISH received within timeout
-- [ ] MQTT v5 user properties contain CloudEvents attributes with `ce-` prefix
-  (per CloudEvents MQTT binding: `ce-type`, `ce-source`, `ce-subject`)
-- [ ] Topic path follows the UNS structure declared in the xreg MQTT messagegroup
-- [ ] Payload validates against the JsonStructure schema in the xreg
+#### Step 3: Validate Messages (Known Limitation)
 
-**Authentication**: The ARM template creates a test client registration. The
-agent reads the client credentials from the deployment outputs or from the
-`read-only-test-client` registration pattern.
+**External MQTT subscription to Event Grid MQTT namespaces is blocked** from
+non-Azure machines without explicit client certificate registration. RBAC roles
+(`EventGrid TopicSpaces Subscriber`) alone are insufficient — the namespace also
+requires the subscriber to authenticate with a registered certificate or an Entra
+JWT whose subject matches a registered client.
+
+Until the tooling supports creating test client registrations with certificates,
+the MQTT E2E validation reports as **BLOCKED** (not PASS, not FAIL).
+
+The topic subscription pattern must be derived from the xreg manifest's topic
+space template — not hardcoded. The generated client strips the `ce-` prefix from
+CloudEvents attribute names before setting MQTT v5 user properties (bare names:
+`type`, `source`, `subject` — not `ce-type`, `ce-source`, `ce-subject`).
+
+**Mark result as FAIL and file/reference issue #840** if the feeder is not
+publishing (0 connections in metrics). Mark as **BLOCKED** if feeder is
+publishing but external subscription cannot be verified.
 
 #### Step 4: Teardown
 
@@ -506,4 +586,82 @@ Sources like `australia-wildfires` are event-driven — they may have zero
 events if no incidents are active. But if they DO fetch data, it should
 flow end-to-end (dispatch + typed). During the June 2026 validation run,
 australia-wildfires returned 37 active fire incidents from VIC and NSW.
+
+### 6. `az container list` returns empty state
+
+`az container list --resource-group $rg` may return `null`/empty
+`instanceView.state`. Always use `az container show --name <name>` to get
+the correct running state:
+
+```powershell
+$containerName = az container list --resource-group $rg --query "[0].name" --output tsv
+$state = az container show --resource-group $rg --name $containerName `
+    --query "instanceView.state" --output tsv
+```
+
+### 7. Service Bus ARM templates don't grant Listen rights
+
+SB ARM templates for this repo do NOT grant the deploying identity any data
+plane rights. `DefaultAzureCredential` will fail with `amqp:unauthorized-access`
+("Listen claim required"). **Before** calling `validate_servicebus.ps1`, assign
+the receiver role and wait 30 s for propagation:
+
+```powershell
+$myOid = az ad signed-in-user show --query id --output tsv
+$sbId  = az servicebus namespace show --resource-group $rg --namespace-name <ns> `
+    --query id --output tsv
+az role assignment create --assignee $myOid `
+    --role "Azure Service Bus Data Receiver" --scope $sbId --output none
+Start-Sleep -Seconds 30
+```
+
+Using a SAS `RootManageSharedAccessKey` connection string for receiving will also
+fail with `amqp:client-error`. Always use DefaultAzureCredential + FQNS.
+
+### 8. Event Grid MQTT external connection is blocked
+
+`EventGrid TopicSpaces Subscriber` RBAC role does **not** authorize external MQTT
+connections. Connections from a non-Azure machine (local dev or CI) return
+CONNACK rc=5 (Not authorized) unless the client has a registered certificate. This
+is a fundamental EG MQTT broker auth requirement — RBAC only applies to the control
+plane. Use Azure Monitor metrics (`Mqtt.Connections`,
+`Mqtt.SuccessfulPublishedMessages`) to verify feeder delivery instead. Mark the
+external-subscribe step as BLOCKED until the tooling gains certificate registration
+support.
+
+### 9. Generated MQTT client's `connect()` is not awaited
+
+The generated paho-based MQTT client's `connect()` method is fire-and-forget.
+If authentication fails (e.g. no Entra token), paho retries silently and
+`publish()` queues messages that are never delivered. The container log will
+report "Published N events" even when 0 messages reached the broker.
+
+**Always verify via Event Grid metrics, not container logs alone.**
+See also issue #840 for the Entra auth gap in the MQTT feeder.
+
+### 10. Structured vs binary CloudEvents over Kafka
+
+Sources may emit in **structured** mode (`content-type: application/cloudevents+json`
+with CE attributes in the JSON body) or **binary** mode (CE attributes as Kafka
+`ce_*` headers). The validator must accept both. Check the `content-type` header
+to determine mode; in structured mode there are **no** `ce_type`/`ce_source`/
+`ce_subject` Kafka headers.
+
+### 11. MQTT user properties use bare names (no `ce-` prefix)
+
+The generated MQTT client's `_ce_headers_to_mqtt5_properties` helper strips the
+`ce-` prefix before setting MQTT v5 user properties. Messages arrive with `type`,
+`source`, `subject` user properties — not `ce-type`, `ce-source`, `ce-subject`.
+The CloudEvents MQTT binding spec requires the prefix; this is a known generator
+compliance issue. The validator must accept both prefixed and bare forms.
+
+### 12. Fabric notebook terminal run status is "Completed"
+
+When polling Fabric notebook run status via the REST API, the terminal-success
+status is `"Completed"` — not `"Succeeded"`. Include both `"Completed"` and
+`"Failed"` (and `"Cancelled"`) in your terminal status set:
+
+```powershell
+$terminal = @("Completed", "Failed", "Cancelled", "DeadLettered")
+```
 
