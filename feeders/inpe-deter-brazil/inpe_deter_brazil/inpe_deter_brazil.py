@@ -130,6 +130,7 @@ def build_wfs_url(biome: str, cql_filter: Optional[str] = None,
         "outputFormat": "application/json",
         "count": str(count),
         "startIndex": str(start_index),
+        "sortBy": "view_date",
     }
     if cql_filter:
         params["CQL_FILTER"] = cql_filter
