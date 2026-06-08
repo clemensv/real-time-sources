@@ -34,6 +34,9 @@ it for the weekly scheduled run and on-demand dispatch):
         matrix.json) that cheaply proves the harness still works across
         Kafka/MQTT/AMQP. Full feeder coverage for harness changes comes from
         the weekly scheduled run.
+      * shared runtime patches that span more than 8 feeder dirs -> the
+        SMOKE set, because broad live-upstream E2E runs are noisy and
+        unstable for these shared patches.
       * nothing matched (e.g. tools/** or docs only) -> zero jobs (no-op);
         tools/** does not affect Docker E2E because images are built from the
         committed feeder code, not regenerated from tools/.
@@ -63,6 +66,7 @@ MATRIX_PATH = ROOT / "tests" / "docker_e2e" / "matrix.json"
 # spill into later shards when the full matrix runs.
 SHARD_COUNT = 4
 SHARD_CAP = 250  # < 256 GitHub limit, leaves headroom inside each shard
+MAX_SCOPED_FEEDER_DIRS = 8
 
 # Anything under these paths is a test-harness change: it invalidates
 # per-feeder scoping because it can affect every feeder's E2E run. A
@@ -456,6 +460,9 @@ def main() -> int:
                     "running smoke set: " + ", ".join(additive_paths[:5])
                 )
 
+    touched_dirs = {top_dir(p) for p in changed if not is_infra(p)}
+    touched_dirs.update(extra_dirs)
+
     if force_full:
         build = matrix["build"]
         flow = matrix["flow"]
@@ -466,14 +473,22 @@ def main() -> int:
             f"{reason} -> {len(build)} build / {len(flow)} flow smoke job(s)"
         )
     else:
-        touched_dirs = {top_dir(p) for p in changed if not is_infra(p)}
-        touched_dirs.update(extra_dirs)
-        build = [m for m in matrix["build"] if m["dir"] in touched_dirs]
-        flow = [m for m in matrix["flow"] if m["dir"] in touched_dirs]
-        reason = (
-            f"scoped to {len(build)} build / {len(flow)} flow job(s): "
-            f"{', '.join(sorted(touched_dirs))[:200]}"
-        )
+        if len(touched_dirs) > MAX_SCOPED_FEEDER_DIRS:
+            smoke = True
+            build = [m for m in matrix["build"] if m.get("smoke")]
+            flow = [m for m in matrix["flow"] if m.get("smoke")]
+            reason = (
+                f"shared runtime change spans {len(touched_dirs)} feeder dirs; "
+                "running smoke set instead of live-upstream E2E for every touched feeder "
+                f"-> {len(build)} build / {len(flow)} flow smoke job(s)"
+            )
+        else:
+            build = [m for m in matrix["build"] if m["dir"] in touched_dirs]
+            flow = [m for m in matrix["flow"] if m["dir"] in touched_dirs]
+            reason = (
+                f"scoped to {len(build)} build / {len(flow)} flow job(s): "
+                f"{', '.join(sorted(touched_dirs))[:200]}"
+            )
 
     emit("full_run", "true" if force_full else "false")
     emit("reason", reason)
