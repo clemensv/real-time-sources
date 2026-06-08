@@ -273,7 +273,7 @@ class USGSEarthquakePoller:
                     _source_uri=self.BASE_URL,
                     _net=event.net,
                     _code=event.code,
-                    _event_time=event.event_time,
+                    _time=event.event_time,
                     data=event,
                     flush_producer=False
                 )
