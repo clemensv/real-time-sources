@@ -351,7 +351,7 @@ function Build-SourceWheels {
     if (-not $wheels) { throw "No wheels produced in $outDir" }
 
     $stripper = Join-Path $PSScriptRoot "strip-wheel-pathdeps.py"
-    & python $stripper @($wheels | ForEach-Object { $_.FullName }) | Out-Host
+    & python $stripper --stamp-version @($wheels | ForEach-Object { $_.FullName }) | Out-Host
     if ($LASTEXITCODE -ne 0) { throw "Wheel METADATA post-processing failed." }
 
     return ,$wheels
