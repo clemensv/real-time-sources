@@ -330,7 +330,7 @@ class INPEDeterPoller:
                             _source_uri=SOURCE_URI,
                             _biome=alert.biome,
                             _alert_id=alert.alert_id,
-                            _view_date=alert.view_date,
+                            _time=alert.view_date,
                             data=alert,
                             flush_producer=False
                         )

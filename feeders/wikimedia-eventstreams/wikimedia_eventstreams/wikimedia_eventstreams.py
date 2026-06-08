@@ -316,7 +316,7 @@ class WikimediaRecentChangeBridge:
         data = RecentChange.from_serializer_dict(normalized)
         self._event_producer.send_wikimedia_event_streams_recent_change(
             _event_id=str(event_id),
-            _event_time=str(event_time),
+            _time=str(event_time),
             data=data,
             flush_producer=False,
         )

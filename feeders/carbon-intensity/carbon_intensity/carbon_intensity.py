@@ -309,8 +309,8 @@ class CarbonIntensityPoller:
         """Send a RegionalIntensity event."""
         self.regional_producer.send_uk_org_carbonintensity_regional_intensity(
             _region_id=str(regional.region_id),
-            _period_from=regional.period_from.isoformat(),
             _ce_id=regional.ce_id,
+            _time=regional.period_from.isoformat(),
             data=regional,
             flush_producer=False,
         )
