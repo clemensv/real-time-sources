@@ -584,6 +584,61 @@ Write-OK "KQL database: $($db.displayName) ($($db.id))"
 
 $queryUri = $eh.properties.queryServiceUri
 
+# ── Stage B/2.1: Apply KQL schema ────────────────────────────────────────
+# Find and apply the source's .kql schema script. This ensures tables exist
+# regardless of whether -SkipInfra was used (Stage A is the only other path
+# that applies schema, via deploy-fabric.ps1).
+$kqlFile = $null
+$kqlCandidates = @(
+    (Join-Path $repoRoot "feeders/$Source/kql/$($Source -replace '-','_').kql"),
+    (Join-Path $repoRoot "feeders/$Source/kql/$Source.kql")
+)
+foreach ($c in $kqlCandidates) {
+    if (Test-Path $c) { $kqlFile = $c; break }
+}
+if ($kqlFile) {
+    Write-Step "B/2.1" "Applying KQL schema ($([System.IO.Path]::GetFileName($kqlFile)))..."
+    $kqlContent = Get-Content -LiteralPath $kqlFile -Raw -Encoding UTF8
+    $kqlBody = @{
+        csl = ".execute database script <|`n$kqlContent"
+        db  = $db.displayName
+    }
+    $kqlBodyFile = Join-Path $TempDir "kql_schema_$(Get-Random).json"
+    [System.IO.File]::WriteAllText(
+        $kqlBodyFile,
+        ($kqlBody | ConvertTo-Json -Compress),
+        [System.Text.UTF8Encoding]::new($false)
+    )
+    $kqlAttempts = 3
+    $kqlApplied = $false
+    for ($ka = 1; $ka -le $kqlAttempts; $ka++) {
+        $kqlResult = az rest `
+            --method POST `
+            --url "$queryUri/v1/rest/mgmt" `
+            --resource $queryUri `
+            --body "@$kqlBodyFile" `
+            --headers "Content-Type=application/json" `
+            --only-show-errors `
+            --output json 2>&1
+        if ($LASTEXITCODE -eq 0) {
+            $kqlApplied = $true
+            break
+        }
+        if ($ka -lt $kqlAttempts) {
+            Write-Host "  Schema apply attempt $ka failed; retrying in 15s..." -ForegroundColor DarkYellow
+            Start-Sleep -Seconds 15
+        }
+    }
+    if ($kqlApplied) {
+        Write-OK "KQL schema applied."
+    } else {
+        Write-Warning "KQL schema apply failed after $kqlAttempts attempts. Tables may be missing.`n$kqlResult"
+    }
+    Remove-Item -LiteralPath $kqlBodyFile -ErrorAction SilentlyContinue
+} else {
+    Write-Step "B/2.1" "No KQL schema found — skipping"
+}
+
 # ── Stage B/2.5: Fabric Environment with pre-built source wheels ─────────
 $EnvironmentId = $null
 if (-not $SkipEnvironment) {
