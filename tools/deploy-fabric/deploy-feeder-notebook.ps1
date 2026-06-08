@@ -691,13 +691,16 @@ if (-not $SkipEnvironment) {
 
     # Upload wheels to OneLake: Files/wheels/<source>/<wheel>.whl
     $oneLakeDfs = "https://onelake.dfs.fabric.microsoft.com"
-    $fabricToken = Get-FabricToken
+    # OneLake DFS requires the storage audience token, not the Fabric API token
+    $oneLakeToken = (az account get-access-token --resource https://storage.azure.com --query accessToken -o tsv 2>&1)
+    if ($LASTEXITCODE -ne 0) { throw "Failed to acquire OneLake token: $oneLakeToken" }
+    $oneLakeToken = ($oneLakeToken | Out-String).Trim()
     $wheelsDir = "wheels/$Source"
 
     # Create the directory (PUT with resource=directory)
     $dirUrl = "$oneLakeDfs/$WorkspaceId/$LakehouseId/Files/$wheelsDir`?resource=directory"
     try {
-        Invoke-RestMethod -Method PUT -Uri $dirUrl -Headers @{ Authorization = "Bearer $fabricToken" } -ErrorAction Stop | Out-Null
+        Invoke-RestMethod -Method PUT -Uri $dirUrl -Headers @{ Authorization = "Bearer $oneLakeToken" } -ErrorAction Stop | Out-Null
     } catch {
         # 409 = already exists, that's fine
         if ($_.Exception.Response.StatusCode.value__ -ne 409) { throw }
@@ -708,12 +711,12 @@ if (-not $SkipEnvironment) {
         Write-Info "  uploading $($w.Name) to OneLake..."
         # OneLake DFS: Create file then append+flush
         $createUrl = "$fileUrl`?resource=file"
-        Invoke-RestMethod -Method PUT -Uri $createUrl -Headers @{ Authorization = "Bearer $fabricToken" } -ErrorAction Stop | Out-Null
+        Invoke-RestMethod -Method PUT -Uri $createUrl -Headers @{ Authorization = "Bearer $oneLakeToken" } -ErrorAction Stop | Out-Null
         $content = [System.IO.File]::ReadAllBytes($w.FullName)
         $appendUrl = "$fileUrl`?position=0&action=append"
-        Invoke-RestMethod -Method PATCH -Uri $appendUrl -Headers @{ Authorization = "Bearer $fabricToken"; "Content-Type" = "application/octet-stream" } -Body $content -ErrorAction Stop | Out-Null
+        Invoke-RestMethod -Method PATCH -Uri $appendUrl -Headers @{ Authorization = "Bearer $oneLakeToken"; "Content-Type" = "application/octet-stream" } -Body $content -ErrorAction Stop | Out-Null
         $flushUrl = "$fileUrl`?position=$($content.Length)&action=flush"
-        Invoke-RestMethod -Method PATCH -Uri $flushUrl -Headers @{ Authorization = "Bearer $fabricToken" } -ErrorAction Stop | Out-Null
+        Invoke-RestMethod -Method PATCH -Uri $flushUrl -Headers @{ Authorization = "Bearer $oneLakeToken" } -ErrorAction Stop | Out-Null
         Write-Info "    -> uploaded ($($content.Length) bytes)"
     }
 
