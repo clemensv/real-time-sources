@@ -916,12 +916,18 @@ $nbList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/
 $existing = $nbList.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
 
 if ($existing) {
-    Invoke-FabricApi -Method POST `
-        -Url "$FabricApi/workspaces/$WorkspaceId/notebooks/$($existing.id)/updateDefinition" `
-        -Body @{ definition = $definition } | Out-Null
-    Write-OK "Updated existing notebook '$NotebookName' ($($existing.id))"
-    $notebookId = $existing.id
-} else {
+    # Delete and recreate the notebook to ensure it is registered as a Python
+    # notebook at the platform level. Merely updating the definition of a
+    # notebook that was originally created as PySpark does not reliably switch
+    # the execution engine — Fabric may still attach a Spark session.
+    Write-Info "Removing existing notebook '$NotebookName' to recreate as Python notebook..."
+    Invoke-FabricApi -Method DELETE `
+        -Url "$FabricApi/workspaces/$WorkspaceId/notebooks/$($existing.id)" | Out-Null
+    Start-Sleep -Seconds 3
+    $existing = $null
+}
+
+if (-not $existing) {
     $createBody = @{ displayName = $NotebookName; definition = $definition }
     $createResp = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/notebooks" -Body $createBody
     if ($createResp -and $createResp.id) {
