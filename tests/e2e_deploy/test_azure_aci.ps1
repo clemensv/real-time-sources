@@ -205,7 +205,7 @@ try {
             Write-Host "  Assigning Azure Service Bus Data Receiver to test identity..."
             az role assignment create --assignee $myObjectId --role "Azure Service Bus Data Receiver" `
                 --scope $sbNsId --output none --subscription $Subscription
-            Start-Sleep -Seconds 30  # allow RBAC propagation
+            Start-Sleep -Seconds 60  # allow RBAC propagation (can take up to 60s)
 
             # Find queues (prefer queue over topic for standard SKU)
             $queues = az servicebus queue list --resource-group $rgName --namespace-name $sbNs `

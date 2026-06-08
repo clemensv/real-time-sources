@@ -13,53 +13,74 @@ param(
 )
 
 $consumerScript = @"
-import sys, json, time
-from azure.eventhub import EventHubConsumerClient
+import sys, json, time, re
+from confluent_kafka import Consumer, KafkaError
 
 conn_str = sys.argv[1]
-eh_name = sys.argv[2]
-timeout = int(sys.argv[3])
+eh_name  = sys.argv[2]
+timeout  = int(sys.argv[3])
 min_msgs = int(sys.argv[4])
 
-messages = []
-start = time.time()
+# Parse EH AMQP connection string into Kafka bootstrap / SASL config
+ns_match  = re.search(r'Endpoint=sb://([^/]+\.servicebus\.windows\.net)/', conn_str)
+namespace = ns_match.group(1) if ns_match else ''
 
-def on_event(partition_context, event):
-    if event:
-        props = {}
-        if event.properties:
-            props = {k.decode() if isinstance(k, bytes) else str(k): v.decode() if isinstance(v, bytes) else str(v)
-                     for k, v in event.properties.items()}
-        body = event.body_as_str()
-        messages.append({
-            "partition": partition_context.partition_id,
-            "offset": event.offset,
-            "properties": props,
-            "body_preview": body[:200] if body else "",
-            "body_size": len(body) if body else 0
-        })
-        partition_context.update_checkpoint(event)
+conf = {
+    'bootstrap.servers':   f'{namespace}:9093',
+    'security.protocol':   'SASL_SSL',
+    'sasl.mechanism':      'PLAIN',
+    'sasl.username':       '`$ConnectionString',
+    'sasl.password':       conn_str,
+    'group.id':            f'e2e-test-{int(time.time())}',
+    'auto.offset.reset':   'earliest',
+    'enable.auto.commit':  False,
+    'session.timeout.ms':  10000,
+}
 
-client = EventHubConsumerClient.from_connection_string(conn_str, consumer_group="`$Default", eventhub_name=eh_name)
+consumer = Consumer(conf)
+consumer.subscribe([eh_name])
+
+messages    = []
+error_items = []
+start       = time.time()
+
 try:
-    with client:
-        while len(messages) < min_msgs and (time.time() - start) < timeout:
-            client.receive(on_event=on_event, starting_position="@earliest", max_wait_time=30)
-            if len(messages) >= min_msgs:
-                break
+    while len(messages) < min_msgs and (time.time() - start) < timeout:
+        msg = consumer.poll(timeout=5.0)
+        if msg is None:
+            continue
+        if msg.error():
+            if msg.error().code() != KafkaError._PARTITION_EOF:
+                error_items.append(str(msg.error()))
+            continue
+        props = {}
+        if msg.headers():
+            for k, v in msg.headers():
+                props[k] = v.decode('utf-8') if isinstance(v, bytes) else str(v)
+        body = msg.value() or b''
+        try:
+            body_str = body.decode('utf-8')
+        except Exception:
+            body_str = ''
+        messages.append({
+            'partition': msg.partition(),
+            'offset':    msg.offset(),
+            'properties': props,
+            'body_preview': body_str[:200],
+            'body_size': len(body),
+        })
 except Exception as e:
-    print(json.dumps({"error": str(e), "messages": messages}))
-    sys.exit(1)
+    error_items.append(str(e))
+finally:
+    consumer.close()
 
-# Validate CloudEvents Kafka headers
-errors = []
-for i, msg in enumerate(messages):
-    p = msg["properties"]
-    for hdr in ["ce_type", "ce_source", "ce_subject"]:
+for i, m in enumerate(messages):
+    p = m['properties']
+    for hdr in ['ce_type', 'ce_source', 'ce_subject']:
         if hdr not in p:
-            errors.append(f"Message {i}: missing {hdr}")
+            error_items.append(f'Message {i}: missing Kafka header {hdr}')
 
-print(json.dumps({"messages": messages, "count": len(messages), "validation_errors": errors}))
+print(json.dumps({'messages': messages, 'count': len(messages), 'validation_errors': error_items}))
 "@
 
 $scriptPath = Join-Path $SessionDir "$Source-eh-consumer.py"
