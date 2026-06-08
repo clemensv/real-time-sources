@@ -215,12 +215,12 @@ def _receive_single_message(config: dict, timeout: int = 30):
         receiver.close()
         connection.close()
 
-class TestNWSAlertsAmqpProducer:
-    """Test cases for NWSAlertsAmqpProducer"""
+class TestNWSAlertsProducer:
+    """Test cases for NWSAlertsProducer"""
     
     def test_producer_initialization(self, artemis_container):
         """Test that producer initializes correctly"""
-        producer = NWSAlertsAmqpProducer(
+        producer = NWSAlertsProducer(
             host=artemis_container["host"],
             address=artemis_container["address"],
             port=artemis_container["port"],
@@ -263,7 +263,7 @@ class TestNWSAlertsAmqpProducer:
                 assert predicate()
 
         fake_connection = FakeConnection()
-        producer = object.__new__(NWSAlertsAmqpProducer)
+        producer = object.__new__(NWSAlertsProducer)
         producer._sender = fake_sender
         producer._connection = fake_connection
         producer._blocking_sender_is_presettled = True
@@ -273,12 +273,12 @@ class TestNWSAlertsAmqpProducer:
         assert len(fake_sender.calls) == 1
         assert fake_connection.wait_calls == 1
     
-    def test_send_weather_alert_minor(self, artemis_container):
-        """Send and receive a WeatherAlertMinor message via ActiveMQ Artemis."""
+    def test_send_weather_alert(self, artemis_container):
+        """Send and receive a WeatherAlert message via ActiveMQ Artemis."""
         # Create valid test data using the test helper
         payload = Test_WeatherAlert.create_instance()
 
-        producer = NWSAlertsAmqpProducer(
+        producer = NWSAlertsProducer(
             host=artemis_container["host"],
             address=artemis_container["address"],
             port=artemis_container["port"],
@@ -295,11 +295,9 @@ class TestNWSAlertsAmqpProducer:
             assert producer.content_mode == 'structured'
             # Send 5 messages to test proper message settlement and ordering
             for i in range(5):
-                producer.send_weather_alert_minor(
+                producer.send_weather_alert(
                     data=payload,
                     _alert_id="value",
-                    _state="value",
-                    _event_type="value",
                     _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
@@ -323,24 +321,21 @@ class TestNWSAlertsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NWS.Alerts.amqp.WeatherAlertMinor"
+                    assert cloud_event_payload.get("type") == "NWS.WeatherAlert"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
+                    assert properties.get('subject') == 'NWS.WeatherAlert'
                     # Verify message body is not empty
                     assert received.body is not None
-                assert received.subject == "{alert_id}".format(alert_id="value")
-                assert properties.get('state') == "{state}".format(state="value")
-                assert properties.get('event_type') == "{event_type}".format(event_type="value")
-                assert annotations.get(symbol('x-opt-partition-key')) == str("{alert_id}".format(alert_id="value"))[:128]
         finally:
             producer.close()
 
-    def test_send_weather_alert_minor_single_fresh_connection(self, artemis_container):
-        """Send exactly one WeatherAlertMinor message on a fresh producer connection."""
+    def test_send_weather_alert_single_fresh_connection(self, artemis_container):
+        """Send exactly one WeatherAlert message on a fresh producer connection."""
         payload = Test_WeatherAlert.create_instance()
 
-        producer = NWSAlertsAmqpProducer(
+        producer = NWSAlertsProducer(
             host=artemis_container["host"],
             address=artemis_container["address"],
             port=artemis_container["port"],
@@ -350,11 +345,9 @@ class TestNWSAlertsAmqpProducer:
         )
 
         try:
-            producer.send_weather_alert_minor(
+            producer.send_weather_alert(
                 data=payload,
                 _alert_id="value",
-                _state="value",
-                _event_type="value",
                 _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 content_type="application/json"
             )
@@ -364,402 +357,6 @@ class TestNWSAlertsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NWS.Alerts.amqp.WeatherAlertMinor'
+        assert properties.get('cloudEvents:type') == 'NWS.WeatherAlert'
         assert received.body is not None
-        assert received.subject == "{alert_id}".format(alert_id="value")
-        assert properties.get('state') == "{state}".format(state="value")
-        assert properties.get('event_type') == "{event_type}".format(event_type="value")
-        assert annotations.get(symbol('x-opt-partition-key')) == str("{alert_id}".format(alert_id="value"))[:128]
-    
-    def test_send_weather_alert_moderate(self, artemis_container):
-        """Send and receive a WeatherAlertModerate message via ActiveMQ Artemis."""
-        # Create valid test data using the test helper
-        payload = Test_WeatherAlert.create_instance()
-
-        producer = NWSAlertsAmqpProducer(
-            host=artemis_container["host"],
-            address=artemis_container["address"],
-            port=artemis_container["port"],
-            username=artemis_container["username"],
-            password=artemis_container["password"],
-            content_mode='structured'
-        )
-        
-        try:
-            assert producer.host == artemis_container["host"]
-            assert producer.address == artemis_container["address"]
-            assert producer.port == artemis_container["port"]
-            assert producer.username == artemis_container["username"]
-            assert producer.content_mode == 'structured'
-            # Send 5 messages to test proper message settlement and ordering
-            for i in range(5):
-                producer.send_weather_alert_moderate(
-                    data=payload,
-                    _alert_id="value",
-                    _state="value",
-                    _event_type="value",
-                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                    content_type="application/json"
-                )
-
-            # Receive and verify all 5 messages
-            for i in range(5):
-                received = _receive_single_message(artemis_container)
-                properties = received.properties or {}
-                annotations = received.annotations or {}
-
-                if True:
-                    body = received.body
-                    if isinstance(body, memoryview):
-                        body_text = body.tobytes().decode('utf-8')
-                    elif isinstance(body, bytes):
-                        body_text = body.decode('utf-8')
-                    elif isinstance(body, str):
-                        body_text = body
-                    elif isinstance(body, dict):
-                        body_text = json.dumps(body)
-                    else:
-                        body_text = str(body)
-                    cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NWS.Alerts.amqp.WeatherAlertModerate"
-                    # Verify data section exists (either as data or data_base64)
-                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
-                else:
-                    # Verify message body is not empty
-                    assert received.body is not None
-                assert received.subject == "{alert_id}".format(alert_id="value")
-                assert properties.get('state') == "{state}".format(state="value")
-                assert properties.get('event_type') == "{event_type}".format(event_type="value")
-                assert annotations.get(symbol('x-opt-partition-key')) == str("{alert_id}".format(alert_id="value"))[:128]
-        finally:
-            producer.close()
-
-    def test_send_weather_alert_moderate_single_fresh_connection(self, artemis_container):
-        """Send exactly one WeatherAlertModerate message on a fresh producer connection."""
-        payload = Test_WeatherAlert.create_instance()
-
-        producer = NWSAlertsAmqpProducer(
-            host=artemis_container["host"],
-            address=artemis_container["address"],
-            port=artemis_container["port"],
-            username=artemis_container["username"],
-            password=artemis_container["password"],
-            content_mode='binary'
-        )
-
-        try:
-            producer.send_weather_alert_moderate(
-                data=payload,
-                _alert_id="value",
-                _state="value",
-                _event_type="value",
-                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                content_type="application/json"
-            )
-        finally:
-            producer.close()
-
-        received = _receive_single_message(artemis_container)
-        properties = received.properties or {}
-        annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NWS.Alerts.amqp.WeatherAlertModerate'
-        assert received.body is not None
-        assert received.subject == "{alert_id}".format(alert_id="value")
-        assert properties.get('state') == "{state}".format(state="value")
-        assert properties.get('event_type') == "{event_type}".format(event_type="value")
-        assert annotations.get(symbol('x-opt-partition-key')) == str("{alert_id}".format(alert_id="value"))[:128]
-    
-    def test_send_weather_alert_severe(self, artemis_container):
-        """Send and receive a WeatherAlertSevere message via ActiveMQ Artemis."""
-        # Create valid test data using the test helper
-        payload = Test_WeatherAlert.create_instance()
-
-        producer = NWSAlertsAmqpProducer(
-            host=artemis_container["host"],
-            address=artemis_container["address"],
-            port=artemis_container["port"],
-            username=artemis_container["username"],
-            password=artemis_container["password"],
-            content_mode='structured'
-        )
-        
-        try:
-            assert producer.host == artemis_container["host"]
-            assert producer.address == artemis_container["address"]
-            assert producer.port == artemis_container["port"]
-            assert producer.username == artemis_container["username"]
-            assert producer.content_mode == 'structured'
-            # Send 5 messages to test proper message settlement and ordering
-            for i in range(5):
-                producer.send_weather_alert_severe(
-                    data=payload,
-                    _alert_id="value",
-                    _state="value",
-                    _event_type="value",
-                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                    content_type="application/json"
-                )
-
-            # Receive and verify all 5 messages
-            for i in range(5):
-                received = _receive_single_message(artemis_container)
-                properties = received.properties or {}
-                annotations = received.annotations or {}
-
-                if True:
-                    body = received.body
-                    if isinstance(body, memoryview):
-                        body_text = body.tobytes().decode('utf-8')
-                    elif isinstance(body, bytes):
-                        body_text = body.decode('utf-8')
-                    elif isinstance(body, str):
-                        body_text = body
-                    elif isinstance(body, dict):
-                        body_text = json.dumps(body)
-                    else:
-                        body_text = str(body)
-                    cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NWS.Alerts.amqp.WeatherAlertSevere"
-                    # Verify data section exists (either as data or data_base64)
-                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
-                else:
-                    # Verify message body is not empty
-                    assert received.body is not None
-                assert received.subject == "{alert_id}".format(alert_id="value")
-                assert properties.get('state') == "{state}".format(state="value")
-                assert properties.get('event_type') == "{event_type}".format(event_type="value")
-                assert annotations.get(symbol('x-opt-partition-key')) == str("{alert_id}".format(alert_id="value"))[:128]
-        finally:
-            producer.close()
-
-    def test_send_weather_alert_severe_single_fresh_connection(self, artemis_container):
-        """Send exactly one WeatherAlertSevere message on a fresh producer connection."""
-        payload = Test_WeatherAlert.create_instance()
-
-        producer = NWSAlertsAmqpProducer(
-            host=artemis_container["host"],
-            address=artemis_container["address"],
-            port=artemis_container["port"],
-            username=artemis_container["username"],
-            password=artemis_container["password"],
-            content_mode='binary'
-        )
-
-        try:
-            producer.send_weather_alert_severe(
-                data=payload,
-                _alert_id="value",
-                _state="value",
-                _event_type="value",
-                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                content_type="application/json"
-            )
-        finally:
-            producer.close()
-
-        received = _receive_single_message(artemis_container)
-        properties = received.properties or {}
-        annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NWS.Alerts.amqp.WeatherAlertSevere'
-        assert received.body is not None
-        assert received.subject == "{alert_id}".format(alert_id="value")
-        assert properties.get('state') == "{state}".format(state="value")
-        assert properties.get('event_type') == "{event_type}".format(event_type="value")
-        assert annotations.get(symbol('x-opt-partition-key')) == str("{alert_id}".format(alert_id="value"))[:128]
-    
-    def test_send_weather_alert_extreme(self, artemis_container):
-        """Send and receive a WeatherAlertExtreme message via ActiveMQ Artemis."""
-        # Create valid test data using the test helper
-        payload = Test_WeatherAlert.create_instance()
-
-        producer = NWSAlertsAmqpProducer(
-            host=artemis_container["host"],
-            address=artemis_container["address"],
-            port=artemis_container["port"],
-            username=artemis_container["username"],
-            password=artemis_container["password"],
-            content_mode='structured'
-        )
-        
-        try:
-            assert producer.host == artemis_container["host"]
-            assert producer.address == artemis_container["address"]
-            assert producer.port == artemis_container["port"]
-            assert producer.username == artemis_container["username"]
-            assert producer.content_mode == 'structured'
-            # Send 5 messages to test proper message settlement and ordering
-            for i in range(5):
-                producer.send_weather_alert_extreme(
-                    data=payload,
-                    _alert_id="value",
-                    _state="value",
-                    _event_type="value",
-                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                    content_type="application/json"
-                )
-
-            # Receive and verify all 5 messages
-            for i in range(5):
-                received = _receive_single_message(artemis_container)
-                properties = received.properties or {}
-                annotations = received.annotations or {}
-
-                if True:
-                    body = received.body
-                    if isinstance(body, memoryview):
-                        body_text = body.tobytes().decode('utf-8')
-                    elif isinstance(body, bytes):
-                        body_text = body.decode('utf-8')
-                    elif isinstance(body, str):
-                        body_text = body
-                    elif isinstance(body, dict):
-                        body_text = json.dumps(body)
-                    else:
-                        body_text = str(body)
-                    cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NWS.Alerts.amqp.WeatherAlertExtreme"
-                    # Verify data section exists (either as data or data_base64)
-                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
-                else:
-                    # Verify message body is not empty
-                    assert received.body is not None
-                assert received.subject == "{alert_id}".format(alert_id="value")
-                assert properties.get('state') == "{state}".format(state="value")
-                assert properties.get('event_type') == "{event_type}".format(event_type="value")
-                assert annotations.get(symbol('x-opt-partition-key')) == str("{alert_id}".format(alert_id="value"))[:128]
-        finally:
-            producer.close()
-
-    def test_send_weather_alert_extreme_single_fresh_connection(self, artemis_container):
-        """Send exactly one WeatherAlertExtreme message on a fresh producer connection."""
-        payload = Test_WeatherAlert.create_instance()
-
-        producer = NWSAlertsAmqpProducer(
-            host=artemis_container["host"],
-            address=artemis_container["address"],
-            port=artemis_container["port"],
-            username=artemis_container["username"],
-            password=artemis_container["password"],
-            content_mode='binary'
-        )
-
-        try:
-            producer.send_weather_alert_extreme(
-                data=payload,
-                _alert_id="value",
-                _state="value",
-                _event_type="value",
-                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                content_type="application/json"
-            )
-        finally:
-            producer.close()
-
-        received = _receive_single_message(artemis_container)
-        properties = received.properties or {}
-        annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NWS.Alerts.amqp.WeatherAlertExtreme'
-        assert received.body is not None
-        assert received.subject == "{alert_id}".format(alert_id="value")
-        assert properties.get('state') == "{state}".format(state="value")
-        assert properties.get('event_type') == "{event_type}".format(event_type="value")
-        assert annotations.get(symbol('x-opt-partition-key')) == str("{alert_id}".format(alert_id="value"))[:128]
-    
-    def test_send_weather_alert_unknown(self, artemis_container):
-        """Send and receive a WeatherAlertUnknown message via ActiveMQ Artemis."""
-        # Create valid test data using the test helper
-        payload = Test_WeatherAlert.create_instance()
-
-        producer = NWSAlertsAmqpProducer(
-            host=artemis_container["host"],
-            address=artemis_container["address"],
-            port=artemis_container["port"],
-            username=artemis_container["username"],
-            password=artemis_container["password"],
-            content_mode='structured'
-        )
-        
-        try:
-            assert producer.host == artemis_container["host"]
-            assert producer.address == artemis_container["address"]
-            assert producer.port == artemis_container["port"]
-            assert producer.username == artemis_container["username"]
-            assert producer.content_mode == 'structured'
-            # Send 5 messages to test proper message settlement and ordering
-            for i in range(5):
-                producer.send_weather_alert_unknown(
-                    data=payload,
-                    _alert_id="value",
-                    _state="value",
-                    _event_type="value",
-                    _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                    content_type="application/json"
-                )
-
-            # Receive and verify all 5 messages
-            for i in range(5):
-                received = _receive_single_message(artemis_container)
-                properties = received.properties or {}
-                annotations = received.annotations or {}
-
-                if True:
-                    body = received.body
-                    if isinstance(body, memoryview):
-                        body_text = body.tobytes().decode('utf-8')
-                    elif isinstance(body, bytes):
-                        body_text = body.decode('utf-8')
-                    elif isinstance(body, str):
-                        body_text = body
-                    elif isinstance(body, dict):
-                        body_text = json.dumps(body)
-                    else:
-                        body_text = str(body)
-                    cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NWS.Alerts.amqp.WeatherAlertUnknown"
-                    # Verify data section exists (either as data or data_base64)
-                    assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
-                else:
-                    # Verify message body is not empty
-                    assert received.body is not None
-                assert received.subject == "{alert_id}".format(alert_id="value")
-                assert properties.get('state') == "{state}".format(state="value")
-                assert properties.get('event_type') == "{event_type}".format(event_type="value")
-                assert annotations.get(symbol('x-opt-partition-key')) == str("{alert_id}".format(alert_id="value"))[:128]
-        finally:
-            producer.close()
-
-    def test_send_weather_alert_unknown_single_fresh_connection(self, artemis_container):
-        """Send exactly one WeatherAlertUnknown message on a fresh producer connection."""
-        payload = Test_WeatherAlert.create_instance()
-
-        producer = NWSAlertsAmqpProducer(
-            host=artemis_container["host"],
-            address=artemis_container["address"],
-            port=artemis_container["port"],
-            username=artemis_container["username"],
-            password=artemis_container["password"],
-            content_mode='binary'
-        )
-
-        try:
-            producer.send_weather_alert_unknown(
-                data=payload,
-                _alert_id="value",
-                _state="value",
-                _event_type="value",
-                _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
-                content_type="application/json"
-            )
-        finally:
-            producer.close()
-
-        received = _receive_single_message(artemis_container)
-        properties = received.properties or {}
-        annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NWS.Alerts.amqp.WeatherAlertUnknown'
-        assert received.body is not None
-        assert received.subject == "{alert_id}".format(alert_id="value")
-        assert properties.get('state') == "{state}".format(state="value")
-        assert properties.get('event_type') == "{event_type}".format(event_type="value")
-        assert annotations.get(symbol('x-opt-partition-key')) == str("{alert_id}".format(alert_id="value"))[:128]
 
