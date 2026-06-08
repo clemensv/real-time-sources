@@ -748,7 +748,9 @@ if (-not $SkipEnvironment) {
         $listing = Invoke-RestMethod -Method GET -Uri $listUrl -Headers @{ Authorization = "Bearer $oneLakeToken"; "x-ms-version" = "2021-06-08" } -ErrorAction Stop
         $existingPaths = $listing.paths | Where-Object { $_.name -like "*.whl" } | ForEach-Object { $_.name }
         foreach ($ep in $existingPaths) {
-            $delUrl = "$oneLakeDfs/$WorkspaceId/$LakehouseId/$ep"
+            # Listed paths include the lakehouse-id prefix; strip it for the delete URL
+            $relPath = $ep -replace "^$LakehouseId/", ""
+            $delUrl = "$oneLakeDfs/$WorkspaceId/$LakehouseId/$relPath"
             try {
                 Invoke-RestMethod -Method DELETE -Uri $delUrl -Headers @{ Authorization = "Bearer $oneLakeToken"; "x-ms-version" = "2021-06-08" } -ErrorAction Stop | Out-Null
                 Write-Info "  removed old wheel: $(Split-Path $ep -Leaf)"
