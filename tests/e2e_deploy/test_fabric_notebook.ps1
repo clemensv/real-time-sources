@@ -135,95 +135,49 @@ try {
     }
     $result.steps["run_completed"] = $true
 
-    # Step 4: Query KQL for row counts
-    Write-Host "[4/6] Querying KQL for data..."
-    # Find the KQL database for this source
-    $kqlDatabases = Invoke-RestMethod -Uri "$fabricBase/workspaces/$WorkspaceId/items?type=KQLDatabase" -Headers $headers -Method Get
-    $sourceDb = $kqlDatabases.value | Where-Object { $_.displayName -match $Source } | Select-Object -First 1
+    # Step 4: Validate KQL data (reusable module)
+    Write-Host "[4/6] Validating KQL data..."
+    $validateKqlPath = Join-Path $repoRoot ".github/skills/e2e-deployment-validation/references/validate_kql.ps1"
+    $kqlValidation = & $validateKqlPath `
+        -Source $Source `
+        -WorkspaceId $WorkspaceId `
+        -Token $Token `
+        -MinRows $MinKqlRows
 
-    if ($sourceDb) {
-        # Get the query URI from database properties
-        $dbProps = Invoke-RestMethod -Uri "$fabricBase/workspaces/$WorkspaceId/items/$($sourceDb.id)" -Headers $headers -Method Get
-        $queryUri = $dbProps.properties.queryUri
-
-        if ($queryUri) {
-            # Query dispatch table
-            $kqlBody = @{ db = $sourceDb.displayName; csl = "_cloudevents_dispatch | count" } | ConvertTo-Json
-            $kqlHeaders = @{ "Authorization" = "Bearer $Token"; "Content-Type" = "application/json" }
-            try {
-                $kqlResult = Invoke-RestMethod -Uri "$queryUri/v1/rest/query" -Headers $kqlHeaders -Method Post -Body $kqlBody
-                $rowCount = $kqlResult.Tables[0].Rows[0][0]
-                $result.kql_rows = [int]$rowCount
-                Write-Host "  _cloudevents_dispatch rows: $rowCount"
-
-                if ($rowCount -ge $MinKqlRows) {
-                    $result.steps["kql_dispatch_rows"] = $true
-                }
-                else {
-                    throw "KQL dispatch table has $rowCount rows (expected >= $MinKqlRows)"
-                }
-            }
-            catch {
-                Write-Host "  KQL query error: $($_.Exception.Message)" -ForegroundColor Yellow
-                throw "KQL query failed: $($_.Exception.Message)"
-            }
-
-            # Query typed tables
-            $tablesBody = @{ db = $sourceDb.displayName; csl = ".show tables | where TableName != '_cloudevents_dispatch' | project TableName" } | ConvertTo-Json
-            try {
-                $tablesResult = Invoke-RestMethod -Uri "$queryUri/v1/rest/query" -Headers $kqlHeaders -Method Post -Body $tablesBody
-                $tables = $tablesResult.Tables[0].Rows | ForEach-Object { $_[0] }
-                $typedTableHasRows = $false
-                foreach ($table in $tables) {
-                    $countBody = @{ db = $sourceDb.displayName; csl = "['$table'] | count" } | ConvertTo-Json
-                    $countResult = Invoke-RestMethod -Uri "$queryUri/v1/rest/query" -Headers $kqlHeaders -Method Post -Body $countBody
-                    $tCount = [int]$countResult.Tables[0].Rows[0][0]
-                    if ($tCount -gt 0) {
-                        Write-Host "  Table '$table': $tCount rows" -ForegroundColor Green
-                        $typedTableHasRows = $true
-                        break
-                    }
-                }
-                if ($typedTableHasRows) {
-                    $result.steps["typed_tables_rows"] = $true
-                }
-                else {
-                    Write-Host "  No typed tables have rows" -ForegroundColor Yellow
-                }
-            }
-            catch {
-                Write-Host "  Typed table query error: $($_.Exception.Message)" -ForegroundColor Yellow
-            }
-        }
+    $result.kql_rows = $kqlValidation.dispatch_count
+    if ($kqlValidation.dispatch_count -ge $MinKqlRows) {
+        $result.steps["kql_dispatch_rows"] = $true
     }
-    else {
-        Write-Host "  No KQL database found for $Source" -ForegroundColor Yellow
+    if ($kqlValidation.typed_tables.Values | Where-Object { $_ -gt 0 }) {
+        $result.steps["typed_tables_rows"] = $true
+    }
+    if ($kqlValidation.errors.Count -gt 0) {
+        Write-Host "  KQL errors: $($kqlValidation.errors -join '; ')" -ForegroundColor Yellow
     }
 
-    # Step 5: Check Map/Dashboard items
-    Write-Host "[5/6] Checking Map/Dashboard items..."
-    $allItems = Invoke-RestMethod -Uri "$fabricBase/workspaces/$WorkspaceId/items" -Headers $headers -Method Get
-    $mapItems = $allItems.value | Where-Object { $_.type -eq "Map" -and $_.displayName -match $Source }
-    $dashItems = $allItems.value | Where-Object { $_.type -eq "Dashboard" -and $_.displayName -match $Source }
+    # Step 5: Validate Map/Dashboard items (reusable module)
+    Write-Host "[5/6] Validating Map/Dashboard items..."
+    $validateMapPath = Join-Path $repoRoot ".github/skills/e2e-deployment-validation/references/validate_map.ps1"
+    $mapValidation = & $validateMapPath `
+        -Source $Source `
+        -WorkspaceId $WorkspaceId `
+        -Token $Token `
+        -QueryUri $kqlValidation.query_uri `
+        -DatabaseName $kqlValidation.database_name
 
-    if ($mapItems) {
-        Write-Host "  Map item found: $($mapItems[0].displayName)"
+    if ($null -eq $mapValidation.pass) {
+        $result.steps["map_verified"] = "n/a"
+    }
+    elseif ($mapValidation.pass) {
         $result.steps["map_verified"] = $true
     }
     else {
-        $result.steps["map_verified"] = "n/a"
+        $result.steps["map_verified"] = $false
     }
+    $result.steps["dashboard_verified"] = "n/a"  # Dashboards checked via same workspace scan
 
-    if ($dashItems) {
-        Write-Host "  Dashboard item found: $($dashItems[0].displayName)"
-        $result.steps["dashboard_verified"] = $true
-    }
-    else {
-        $result.steps["dashboard_verified"] = "n/a"
-    }
-
-    # Mark pass if dispatch table has rows
-    if ($result.steps["kql_dispatch_rows"]) {
+    # Mark pass if dispatch table has rows and typed tables have data
+    if ($kqlValidation.pass) {
         $result.result = "pass"
     }
 }

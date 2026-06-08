@@ -1,0 +1,52 @@
+{
+  "$comment": "Expected data cadence per source. Used by the E2E validation agent to set appropriate timeouts and determine whether zero rows is a legitimate state. 'cadence_minutes' is the expected polling/update interval. 'seasonal' sources may have zero data outside their active period. 'event_driven' sources only emit on real-world events (may be legitimately empty).",
+  "defaults": {
+    "cadence_minutes": 15,
+    "timeout_multiplier": 2.0,
+    "min_wait_minutes": 5
+  },
+  "patterns": {
+    "continuous_stream": {
+      "description": "Always-on WebSocket/MQTT/TCP streams — data within seconds",
+      "cadence_minutes": 1,
+      "sources": ["aisstream", "bluesky", "kystverket-ais", "digitraffic-maritime", "mode-s", "blitzortung"]
+    },
+    "frequent_poller": {
+      "description": "Poll every 5-15 minutes",
+      "cadence_minutes": 10,
+      "sources": ["pegelonline", "usgs-iv", "noaa-ndbc", "waterinfo-vmm", "rws-waterwebservices", "hubeau-hydrometrie", "bafu-hydro", "nve-hydro", "smhi-hydro", "syke-hydro", "chmi-hydro", "imgw-hydro", "ireland-opw-waterlevel", "canada-eccc-wateroffice", "vatsim", "nextbus", "gtfs", "siri", "tfl-road-traffic", "madrid-traffic", "french-road-traffic", "ndw-road-traffic"]
+    },
+    "standard_poller": {
+      "description": "Poll every 15-60 minutes",
+      "cadence_minutes": 30,
+      "sources": ["noaa", "noaa-nws", "nws-alerts", "nws-forecasts", "dwd", "dmi", "environment-canada", "fmi-finland", "geosphere-austria", "smhi-weather", "meteoalarm", "bom-australia", "hko-hong-kong", "jma-japan", "jma-bosai-amedas", "singapore-nea", "irceline-belgium", "luchtmeetnet-nl", "gios-poland", "defra-aurn", "uba-airdata", "sensor-community", "laqn-london", "wallonia-issep", "epa-uv", "eurdep-radiation", "king-county-marine"]
+    },
+    "hourly_poller": {
+      "description": "Poll every 1-6 hours",
+      "cadence_minutes": 60,
+      "sources": ["entsoe", "energy-charts", "energidataservice-dk", "elexon-bmrs", "carbon-intensity", "tepco-denkiyoho", "noaa-goes", "noaa-swpc-l1", "usgs-geomag", "autobahn", "gbfs-bikeshare", "tokyo-docomo-bikeshare", "paris-bicycle-counters", "cbp-border-wait", "aviationweather"]
+    },
+    "infrequent_poller": {
+      "description": "Poll every 6-24 hours",
+      "cadence_minutes": 360,
+      "sources": ["dwd-pollenflug", "ticketmaster", "billetto", "cdec-reservoirs", "snotel", "usgs-nwis-wq"]
+    },
+    "event_driven": {
+      "description": "Only emit on real-world events — may be legitimately empty",
+      "cadence_minutes": null,
+      "allow_zero_rows": true,
+      "sources": ["usgs-earthquakes", "fdsn-seismology", "gracedb", "jma-bosai-quake", "jma-bosai-volcano", "jma-bosai-warning", "ptwc-tsunami", "nina-bbk", "gdacs", "eaws-albina", "australia-wildfires", "nifc-usa-wildfires", "nasa-firms", "seattle-911", "seattle-street-closures"]
+    },
+    "seasonal": {
+      "description": "Data availability depends on season/conditions",
+      "cadence_minutes": null,
+      "allow_zero_rows": true,
+      "sources": ["dwd-pollenflug", "eaws-albina", "australia-wildfires", "nifc-usa-wildfires", "inpe-deter-brazil"]
+    }
+  },
+  "overrides": {
+    "wikimedia-eventstreams": { "cadence_minutes": 1, "note": "SSE stream, continuous" },
+    "wikimedia-osm-diffs": { "cadence_minutes": 1, "note": "Minutely diffs" },
+    "rss": { "cadence_minutes": 60, "note": "Depends on configured feeds" }
+  }
+}
