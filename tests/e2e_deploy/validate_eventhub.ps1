@@ -88,7 +88,7 @@ $consumerScript | Set-Content $scriptPath -Encoding utf8
 
 $stderrFile = [System.IO.Path]::GetTempFileName()
 $pyResult = python $scriptPath $ConnectionString $EventHubName $TimeoutSeconds $MinMessages 2>$stderrFile | Out-String
-$stderrContent = (Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue).Trim()
+$stderrContent = ((Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue) ?? "").Trim()
 Remove-Item $stderrFile -ErrorAction SilentlyContinue
 Remove-Item $scriptPath -ErrorAction SilentlyContinue
 
