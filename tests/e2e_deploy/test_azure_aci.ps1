@@ -48,7 +48,7 @@ param(
 
 $ErrorActionPreference = "Stop"
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
-$repoRoot = (Resolve-Path "$scriptDir/../..").Path
+$repoRoot = (Resolve-Path (Join-Path $scriptDir "..\..")).Path
 $sourceDir = Join-Path $repoRoot "feeders" $Source
 
 # Map variant to ARM template filename
@@ -72,10 +72,13 @@ if (-not (Test-Path $armTemplate)) {
 }
 
 # Check for required API keys (source-specific)
-$envCheck = & "$scriptDir/check_env_keys.ps1" -Source $Source -Target azure 2>$null
-if ($envCheck -and $envCheck.missing) {
-    Write-Warning "Source '$Source' missing env keys: $($envCheck.missing -join ', ') — skipping."
-    return @{ result = "skip"; reason = "missing-api-keys"; keys = $envCheck.missing; variant = $Variant }
+$envCheckScript = Join-Path $scriptDir "check_env_keys.ps1"
+if (Test-Path $envCheckScript) {
+    $envCheck = & $envCheckScript -Source $Source -Target azure 2>$null
+    if ($envCheck -and $envCheck.missing) {
+        Write-Warning "Source '$Source' missing env keys: $($envCheck.missing -join ', ') — skipping."
+        return @{ result = "skip"; reason = "missing-api-keys"; keys = $envCheck.missing; variant = $Variant }
+    }
 }
 
 $timestamp = Get-Date -Format "yyyyMMddHHmmss"
@@ -180,7 +183,7 @@ try {
                 --query primaryConnectionString --output tsv
             $fullConnStr = "$connStr;EntityPath=$ehName"
 
-            $msgCount = & "$scriptDir/validate_eventhub.ps1" `
+            $msgCount = & (Join-Path $scriptDir "validate_eventhub.ps1") `
                 -ConnectionString $fullConnStr `
                 -EventHubName $ehName `
                 -TimeoutSeconds $TimeoutSeconds `
@@ -212,7 +215,7 @@ try {
                     --subscription $Subscription --query "[0].name" --output tsv
             }
 
-            $msgCount = & "$scriptDir/validate_servicebus.ps1" `
+            $msgCount = & (Join-Path $scriptDir "validate_servicebus.ps1") `
                 -FullyQualifiedNamespace "$sbNs.servicebus.windows.net" `
                 -EntityName $entityName `
                 -EntityType ($(if ($queues) { "queue" } else { "topic" })) `
@@ -228,7 +231,7 @@ try {
                 --query "[0]" --output json 2>$null | ConvertFrom-Json
             $mqttHostname = $egNs.topicSpacesConfiguration.hostname
 
-            $msgCount = & "$scriptDir/validate_mqtt.ps1" `
+            $msgCount = & (Join-Path $scriptDir "validate_mqtt.ps1") `
                 -Hostname $mqttHostname `
                 -ResourceGroup $rgName `
                 -Subscription $Subscription `
@@ -246,6 +249,14 @@ try {
         Write-Host "  Received $($result.messages_received) messages" -ForegroundColor Green
     }
     else {
+        # Capture container logs for diagnosis before teardown
+        if ($containerName) {
+            Write-Host "  Capturing container logs for diagnosis..." -ForegroundColor Yellow
+            $logs = az container logs --resource-group $rgName --name $containerName `
+                --subscription $Subscription 2>&1 | Out-String
+            $result["container_logs_tail"] = ($logs -split "`n" | Select-Object -Last 30) -join "`n"
+            Write-Host "  Container logs (last 30 lines):`n$($result['container_logs_tail'])" -ForegroundColor DarkYellow
+        }
         throw "Only received $($result.messages_received) messages (expected >= $MinMessages)"
     }
 }
@@ -254,7 +265,7 @@ catch {
     Write-Host "FAIL: $($_.Exception.Message)" -ForegroundColor Red
 
     # File issue
-    & "$scriptDir/issue_tracker.ps1" `
+    & (Join-Path $scriptDir "issue_tracker.ps1") `
         -Source $Source `
         -Target "azure-$Variant" `
         -ErrorMessage $_.Exception.Message `

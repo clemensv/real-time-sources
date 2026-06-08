@@ -92,7 +92,7 @@ if (-not $DatabaseName -or -not $QueryUri) {
     $dbDetail = Invoke-RestMethod `
         -Uri "$fabricBase/workspaces/$WorkspaceId/kqlDatabases/$($db.id)" `
         -Headers $headers -Method Get
-    $QueryUri = $dbDetail.properties.queryUri
+    $QueryUri = $dbDetail.properties.queryServiceUri
     $result.query_uri = $QueryUri
 }
 else {

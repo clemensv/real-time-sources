@@ -65,12 +65,15 @@ print(json.dumps({"messages": messages, "count": len(messages), "validation_erro
 $scriptPath = Join-Path $SessionDir "$Source-eh-consumer.py"
 $consumerScript | Set-Content $scriptPath -Encoding utf8
 
-$pyResult = python $scriptPath $ConnectionString $EventHubName $TimeoutSeconds $MinMessages 2>$null | Out-String
+$stderrFile = [System.IO.Path]::GetTempFileName()
+$pyResult = python $scriptPath $ConnectionString $EventHubName $TimeoutSeconds $MinMessages 2>$stderrFile | Out-String
+$stderrContent = (Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue).Trim()
+Remove-Item $stderrFile -ErrorAction SilentlyContinue
 Remove-Item $scriptPath -ErrorAction SilentlyContinue
 
 # Extract the JSON line (last line starting with '{') in case there are non-JSON warnings
 $jsonLine = ($pyResult -split "`n" | Where-Object { $_.Trim().StartsWith('{') } | Select-Object -Last 1)
-if (-not $jsonLine) { throw "No JSON output from Event Hub consumer. Raw output: $pyResult" }
+if (-not $jsonLine) { throw "No JSON output from Event Hub consumer. Stderr: $stderrContent. Stdout: $pyResult" }
 $parsed = $jsonLine.Trim() | ConvertFrom-Json
 if ($parsed.error) {
     throw "Event Hub consumer error: $($parsed.error)"
