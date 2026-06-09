@@ -52,7 +52,9 @@ class TestHKEPDAQHIAPI:
 
         assert len(stations) == 18
         assert stations["central_western"].station_type == "General Stations"
+        assert stations["central_western"].district == "central-and-western"
         assert stations["mong_kok"].station_type == "Roadside Stations"
+        assert stations["mong_kok"].district == "yau-tsim-mong"
 
     def test_get_latest_readings_uses_latest_per_station(self):
         api = HKEPDAQHIAPI()
@@ -61,7 +63,9 @@ class TestHKEPDAQHIAPI:
 
         assert set(readings.keys()) == {"central_western", "mong_kok"}
         assert readings["central_western"].aqhi == 5
+        assert readings["central_western"].district == "central-and-western"
         assert readings["central_western"].health_risk_category == "Moderate"
+        assert readings["mong_kok"].district == "yau-tsim-mong"
         assert readings["mong_kok"].health_risk_category == "Very High"
 
 

@@ -28,25 +28,115 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
 
 AQHI_FEED_URL = "https://www.aqhi.gov.hk/epd/ddata/html/out/24aqhi_Eng.xml"
 
-STATION_COORDS = {
-    "central_western": (22.2863, 114.1500, "General Stations"),
-    "eastern": (22.2847, 114.2264, "General Stations"),
-    "kwai_chung": (22.3563, 114.1311, "General Stations"),
-    "kwun_tong": (22.3123, 114.2289, "General Stations"),
-    "north": (22.4966, 114.1388, "General Stations"),
-    "sha_tin": (22.3811, 114.1880, "General Stations"),
-    "sham_shui_po": (22.3319, 114.1623, "General Stations"),
-    "southern": (22.2472, 114.1562, "General Stations"),
-    "tai_po": (22.4508, 114.1655, "General Stations"),
-    "tap_mun": (22.4716, 114.3608, "General Stations"),
-    "tseung_kwan_o": (22.3108, 114.2553, "General Stations"),
-    "tsuen_wan": (22.3728, 114.1235, "General Stations"),
-    "tuen_mun": (22.3917, 113.9736, "General Stations"),
-    "tung_chung": (22.2889, 113.9434, "General Stations"),
-    "yuen_long": (22.4413, 114.0222, "General Stations"),
-    "causeway_bay": (22.2800, 114.1841, "Roadside Stations"),
-    "central": (22.2836, 114.1571, "Roadside Stations"),
-    "mong_kok": (22.3194, 114.1688, "Roadside Stations"),
+STATION_INFO = {
+    "central_western": {
+        "latitude": 22.2863,
+        "longitude": 114.1500,
+        "station_type": "General Stations",
+        "district": "central-and-western",
+    },
+    "eastern": {
+        "latitude": 22.2847,
+        "longitude": 114.2264,
+        "station_type": "General Stations",
+        "district": "eastern",
+    },
+    "kwai_chung": {
+        "latitude": 22.3563,
+        "longitude": 114.1311,
+        "station_type": "General Stations",
+        "district": "kwai-tsing",
+    },
+    "kwun_tong": {
+        "latitude": 22.3123,
+        "longitude": 114.2289,
+        "station_type": "General Stations",
+        "district": "kwun-tong",
+    },
+    "north": {
+        "latitude": 22.4966,
+        "longitude": 114.1388,
+        "station_type": "General Stations",
+        "district": "north",
+    },
+    "sha_tin": {
+        "latitude": 22.3811,
+        "longitude": 114.1880,
+        "station_type": "General Stations",
+        "district": "sha-tin",
+    },
+    "sham_shui_po": {
+        "latitude": 22.3319,
+        "longitude": 114.1623,
+        "station_type": "General Stations",
+        "district": "sham-shui-po",
+    },
+    "southern": {
+        "latitude": 22.2472,
+        "longitude": 114.1562,
+        "station_type": "General Stations",
+        "district": "southern",
+    },
+    "tai_po": {
+        "latitude": 22.4508,
+        "longitude": 114.1655,
+        "station_type": "General Stations",
+        "district": "tai-po",
+    },
+    "tap_mun": {
+        "latitude": 22.4716,
+        "longitude": 114.3608,
+        "station_type": "General Stations",
+        "district": "sai-kung",
+    },
+    "tseung_kwan_o": {
+        "latitude": 22.3108,
+        "longitude": 114.2553,
+        "station_type": "General Stations",
+        "district": "sai-kung",
+    },
+    "tsuen_wan": {
+        "latitude": 22.3728,
+        "longitude": 114.1235,
+        "station_type": "General Stations",
+        "district": "tsuen-wan",
+    },
+    "tuen_mun": {
+        "latitude": 22.3917,
+        "longitude": 113.9736,
+        "station_type": "General Stations",
+        "district": "tuen-mun",
+    },
+    "tung_chung": {
+        "latitude": 22.2889,
+        "longitude": 113.9434,
+        "station_type": "General Stations",
+        "district": "islands",
+    },
+    "yuen_long": {
+        "latitude": 22.4413,
+        "longitude": 114.0222,
+        "station_type": "General Stations",
+        "district": "yuen-long",
+    },
+    "causeway_bay": {
+        "latitude": 22.2800,
+        "longitude": 114.1841,
+        "station_type": "Roadside Stations",
+        "district": "wan-chai",
+    },
+    "central": {
+        "latitude": 22.2836,
+        "longitude": 114.1571,
+        "station_type": "Roadside Stations",
+        "district": "central-and-western",
+    },
+    "mong_kok": {
+        "latitude": 22.3194,
+        "longitude": 114.1688,
+        "station_type": "Roadside Stations",
+        "district": "yau-tsim-mong",
+    },
 }
 
 STATION_NAME_TO_ID = {
@@ -105,13 +195,14 @@ class HKEPDAQHIAPI:
         """Return hard-coded station reference data."""
         stations: dict[str, Station] = {}
         for station_id, station_name in STATION_ID_TO_NAME.items():
-            latitude, longitude, station_type = STATION_COORDS[station_id]
+            station_info = STATION_INFO[station_id]
             stations[station_id] = Station(
                 station_id=station_id,
                 station_name=station_name,
-                station_type=station_type,
-                latitude=latitude,
-                longitude=longitude,
+                station_type=station_info["station_type"],
+                district=station_info["district"],
+                latitude=station_info["latitude"],
+                longitude=station_info["longitude"],
             )
         return stations
 
@@ -139,7 +230,8 @@ class HKEPDAQHIAPI:
                 logger.warning("Could not parse AQHI value for station %s", station_name)
                 continue
 
-            station_type = (item.findtext("type") or "").strip() or STATION_COORDS[station_id][2]
+            station_info = STATION_INFO[station_id]
+            station_type = (item.findtext("type") or "").strip() or station_info["station_type"]
             current = latest_by_station.get(station_id)
             if current and current.reading_time >= reading_time:
                 continue
@@ -148,6 +240,7 @@ class HKEPDAQHIAPI:
                 station_id=station_id,
                 station_name=station_name,
                 station_type=station_type,
+                district=station_info["district"],
                 reading_time=reading_time,
                 aqhi=aqhi_value,
                 health_risk_category=aqhi_to_health_risk(aqhi_value),
