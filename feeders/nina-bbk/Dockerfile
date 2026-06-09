@@ -8,6 +8,8 @@ WORKDIR /app
 
 COPY . /app/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir \
     nina_bbk_producer/nina_bbk_producer_data \
     nina_bbk_producer/nina_bbk_producer_kafka_producer \

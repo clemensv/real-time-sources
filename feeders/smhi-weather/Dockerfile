@@ -10,6 +10,8 @@ WORKDIR /app
 
 COPY smhi_weather_producer/ smhi_weather_producer/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir \
     ./smhi_weather_producer/smhi_weather_producer_data \
     ./smhi_weather_producer/smhi_weather_producer_kafka_producer
@@ -17,6 +19,8 @@ RUN pip install --no-cache-dir \
 COPY pyproject.toml .
 COPY smhi_weather/ smhi_weather/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir .
 
 CMD ["python", "-m", "smhi_weather", "feed"]

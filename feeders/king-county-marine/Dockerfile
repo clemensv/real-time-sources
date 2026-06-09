@@ -8,6 +8,8 @@ LABEL org.opencontainers.image.license="MIT"
 
 WORKDIR /app
 COPY . /app
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install .
 
 ENV KING_COUNTY_MARINE_STATE_FILE="/mnt/fileshare/king_county_marine_state.json"

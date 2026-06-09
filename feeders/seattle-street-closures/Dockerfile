@@ -8,6 +8,8 @@ LABEL org.opencontainers.image.license="MIT"
 
 WORKDIR /app
 COPY . /app
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install .
 
 ENV SEATTLE_STREET_CLOSURES_STATE_FILE="/mnt/fileshare/seattle_street_closures_state.json"

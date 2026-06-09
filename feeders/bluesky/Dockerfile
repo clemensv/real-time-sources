@@ -14,6 +14,8 @@ WORKDIR /app
 COPY . /app
 
 # Install the required Python packages
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install ./bluesky_producer/bluesky_producer_data ./bluesky_producer/bluesky_producer_kafka_producer .
 
 # Define environment variables (default values)

@@ -10,6 +10,8 @@ WORKDIR /app
 
 COPY environment_canada_producer/ environment_canada_producer/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir \
     ./environment_canada_producer/environment_canada_producer_data \
     ./environment_canada_producer/environment_canada_producer_kafka_producer
@@ -17,6 +19,8 @@ RUN pip install --no-cache-dir \
 COPY pyproject.toml .
 COPY environment_canada/ environment_canada/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir .
 
 CMD ["python", "-m", "environment_canada", "feed"]

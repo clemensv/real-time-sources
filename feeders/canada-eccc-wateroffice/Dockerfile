@@ -8,8 +8,12 @@ LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-t
 LABEL org.opencontainers.image.license="MIT"
 
 COPY requirements.txt .
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir canada_eccc_wateroffice_producer/canada_eccc_wateroffice_producer_data && \
     pip install --no-cache-dir canada_eccc_wateroffice_producer/canada_eccc_wateroffice_producer_kafka_producer && \
     pip install --no-cache-dir -e .

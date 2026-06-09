@@ -10,6 +10,8 @@ WORKDIR /app
 
 COPY singapore_nea_producer/ singapore_nea_producer/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir \
     ./singapore_nea_producer/singapore_nea_producer_data \
     ./singapore_nea_producer/singapore_nea_producer_kafka_producer
@@ -17,6 +19,8 @@ RUN pip install --no-cache-dir \
 COPY pyproject.toml .
 COPY singapore_nea/ singapore_nea/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir .
 
 CMD ["python", "-m", "singapore_nea", "feed"]

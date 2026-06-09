@@ -10,6 +10,8 @@ WORKDIR /app
 
 COPY hko_hong_kong_producer/ hko_hong_kong_producer/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir \
     ./hko_hong_kong_producer/hko_hong_kong_producer_data \
     ./hko_hong_kong_producer/hko_hong_kong_producer_kafka_producer
@@ -17,6 +19,8 @@ RUN pip install --no-cache-dir \
 COPY pyproject.toml .
 COPY hko_hong_kong/ hko_hong_kong/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir .
 
 CMD ["python", "-m", "hko_hong_kong", "feed"]

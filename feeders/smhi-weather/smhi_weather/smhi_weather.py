@@ -110,6 +110,7 @@ class SMHIWeatherAPI:
             height=float(station_data.get("height", 0.0)),
             latitude=lat,
             longitude=lon,
+            lan=station_data.get("lan") or None,
         )
 
     @staticmethod
@@ -177,6 +178,7 @@ def _merge_observations(param_data: dict[int, dict[str, dict]]) -> list[WeatherO
             global_irradiance=param_data.get(PARAM_IRRADIANCE, {}).get(sid, {}).get("value"),
             precipitation_intensity=param_data.get(PARAM_PRECIP_INTENSITY, {}).get(sid, {}).get("value"),
             quality=temp_data.get("quality", ""),
+            lan=None,
         )
         observations.append(obs)
     return observations

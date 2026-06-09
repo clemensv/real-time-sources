@@ -10,6 +10,8 @@ WORKDIR /app
 
 COPY hongkong_epd_producer/ hongkong_epd_producer/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir \
     ./hongkong_epd_producer/hongkong_epd_producer_data \
     ./hongkong_epd_producer/hongkong_epd_producer_kafka_producer
@@ -17,6 +19,8 @@ RUN pip install --no-cache-dir \
 COPY pyproject.toml .
 COPY hongkong_epd/ hongkong_epd/
 
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir .
 
 CMD ["python", "-m", "hongkong_epd", "feed"]

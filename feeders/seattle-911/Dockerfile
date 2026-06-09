@@ -8,6 +8,8 @@ LABEL org.opencontainers.image.license="MIT"
 
 WORKDIR /app
 COPY . /app
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install .
 
 ENV SEATTLE_911_LAST_POLLED_FILE="/mnt/fileshare/seattle_911_last_polled.json"

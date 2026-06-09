@@ -25,6 +25,8 @@ RUN set -eux; \
 COPY . /app
 
 # Install the required Python packages
+ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install .
 
 # Define environment variables (default values)
