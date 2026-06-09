@@ -138,6 +138,17 @@ def build_wfs_url(biome: str, cql_filter: Optional[str] = None,
     return endpoint["base_url"] + "?" + urlencode(params)
 
 
+def to_rfc3339_timestamp(value: str) -> str:
+    """Convert source timestamps or dates to RFC 3339 timestamps for CloudEvents."""
+    normalized = value.strip()
+    if normalized.endswith('Z'):
+        normalized = normalized[:-1] + '+00:00'
+    parsed = datetime.fromisoformat(normalized)
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc).isoformat().replace('+00:00', 'Z')
+
+
 class INPEDeterPoller:
     """
     Polls INPE DETER WFS endpoints for deforestation alerts and sends events to Kafka.
@@ -331,7 +342,7 @@ class INPEDeterPoller:
                             _source_uri=SOURCE_URI,
                             _biome=alert.biome,
                             _alert_id=alert.alert_id,
-                            _time=alert.view_date,
+                            _time=to_rfc3339_timestamp(alert.view_date),
                             data=alert,
                             flush_producer=False
                         )

@@ -17,6 +17,7 @@ from inpe_deter_brazil.inpe_deter_brazil import (
     compute_centroid,
     build_wfs_url,
     parse_connection_string,
+    to_rfc3339_timestamp,
 )
 
 
@@ -171,6 +172,17 @@ class TestBuildWfsUrl:
         """Test building a URL without CQL filter."""
         url = build_wfs_url("amazon")
         assert "CQL_FILTER" not in url
+
+
+@pytest.mark.unit
+class TestTimestampNormalization:
+    """Test CloudEvents timestamp normalization."""
+
+    def test_date_only_is_converted_to_utc_midnight(self):
+        assert to_rfc3339_timestamp("2026-02-21") == "2026-02-21T00:00:00Z"
+
+    def test_existing_zulu_timestamp_is_preserved(self):
+        assert to_rfc3339_timestamp("2026-02-21T12:34:56Z") == "2026-02-21T12:34:56Z"
 
 
 @pytest.mark.unit
@@ -731,6 +743,27 @@ class TestDeforestationAlertDataClass:
         restored = DeforestationAlert.from_data(json_bytes, "application/json")
         assert restored.alert_id == "json_rt"
         assert restored.municipality == "Test City"
+
+
+@pytest.mark.unit
+class TestPollAndSend:
+    """Tests for polling and event emission."""
+
+    @pytest.mark.asyncio
+    async def test_poll_and_send_uses_rfc3339_cloudevents_time(self):
+        mock_event_producer = Mock()
+        poller = INPEDeterPoller(last_polled_file=None)
+        poller.event_producer = mock_event_producer
+        poller.fetch_biome = AsyncMock(return_value=[SAMPLE_AMAZON_FEATURE])
+        poller.save_state = Mock()
+
+        await poller.poll_and_send(once=True)
+
+        assert mock_event_producer.send_br_inpe_deter_deforestation_alert.call_count >= 1
+        assert all(
+            call.kwargs["_time"] == "2026-02-21T00:00:00Z"
+            for call in mock_event_producer.send_br_inpe_deter_deforestation_alert.call_args_list
+        )
 
 
 @pytest.mark.unit
