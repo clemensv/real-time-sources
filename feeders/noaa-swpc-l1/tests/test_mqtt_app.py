@@ -143,6 +143,6 @@ def test_feed_once_publishes_row_and_saves_state(tmp_path, sample_row):
     published = client.published[0]
     assert published["feedurl"] == mqtt_app.FEED_URL
     assert published["spacecraft"] == "dscovr"
-    assert published["time_tag"] == sample_row.time_tag.isoformat()
+    assert published["_time"] == sample_row.time_tag.isoformat()
     assert published["data"].speed == sample_row.speed
     assert mqtt_app.load_state(str(state_file))["last_time_tag"] == sample_row.time_tag.isoformat()
