@@ -277,11 +277,9 @@
                             },
                             "km": {
                               "type": [
-                                "null",
-                                "double"
+                                "double",
+                                "null"
                               ],
-                              "unit": "km",
-                              "symbol": "km",
                               "description": "Position along the federal waterway expressed as river-kilometre downstream from the waterway's official origin (e.g. Rhine-km 0 at the Old Rhine Bridge in Konstanz). The decimal fraction is the hectometre offset within the kilometre. Negative values occur on tributaries where the kilometre count is measured upstream from a confluence (e.g. Ohře gauge LOUNY at km -61.4 of the Elbe/Ohře system). **Optional**: absent or null for tidal / coastal gauges (Küstenpegel on the North Sea and Baltic) and for waterways without a kilometre reference. Sourced from the upstream `km` field. Unit: km."
                             },
                             "agency": {

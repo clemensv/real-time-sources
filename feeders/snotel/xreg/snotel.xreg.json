@@ -206,6 +206,11 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
                 "type": "object",
                 "required": [
                   "station_triplet",
@@ -259,6 +264,11 @@
               "format": "JsonStructure/draft-02",
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
                 "type": "object",
                 "required": [
                   "station_triplet",
@@ -279,36 +289,28 @@
                       "double",
                       "null"
                     ],
-                    "description": "Snow Water Equivalent (SWE) — the depth of water that would theoretically result if the entire snowpack were melted instantaneously. Measured by a snow pillow sensor at the station. This is the primary measurement for water supply forecasting. Reported in inches.",
-                    "unit": "[in_i]",
-                    "symbol": "in"
+                    "description": "Snow Water Equivalent (SWE) — the depth of water that would theoretically result if the entire snowpack were melted instantaneously. Measured by a snow pillow sensor at the station. This is the primary measurement for water supply forecasting. Reported in inches."
                   },
                   "snow_depth": {
                     "type": [
                       "double",
                       "null"
                     ],
-                    "description": "Total snow depth measured by an ultrasonic depth sensor mounted above the snow surface. Reported in inches. Can fluctuate due to settling, wind redistribution, and measurement noise.",
-                    "unit": "[in_i]",
-                    "symbol": "in"
+                    "description": "Total snow depth measured by an ultrasonic depth sensor mounted above the snow surface. Reported in inches. Can fluctuate due to settling, wind redistribution, and measurement noise."
                   },
                   "precipitation": {
                     "type": [
                       "double",
                       "null"
                     ],
-                    "description": "Water-year accumulated precipitation measured by a storage-type precipitation gauge. The accumulation resets on October 1 (start of the water year). Reported in inches. Values are cumulative and should be monotonically increasing within a water year.",
-                    "unit": "[in_i]",
-                    "symbol": "in"
+                    "description": "Water-year accumulated precipitation measured by a storage-type precipitation gauge. The accumulation resets on October 1 (start of the water year). Reported in inches. Values are cumulative and should be monotonically increasing within a water year."
                   },
                   "air_temperature": {
                     "type": [
                       "double",
                       "null"
                     ],
-                    "description": "Instantaneously observed air temperature at the station. SNOTEL air temperature data contains a known bias rooted in the sensor conversion equation that varies through the output range; see the NRCS Air Temperature Bias Correction documentation. Reported in degrees Fahrenheit.",
-                    "unit": "[degF]",
-                    "symbol": "°F"
+                    "description": "Instantaneously observed air temperature at the station. SNOTEL air temperature data contains a known bias rooted in the sensor conversion equation that varies through the output range; see the NRCS Air Temperature Bias Correction documentation. Reported in degrees Fahrenheit."
                   },
                   "state": {
                     "type": "string",

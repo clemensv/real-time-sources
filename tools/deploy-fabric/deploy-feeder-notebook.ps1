@@ -264,6 +264,35 @@ function Invoke-FabricApiRaw {
     return [pscustomobject]@{ ExitCode = $LASTEXITCODE; Body = ($result | Out-String) }
 }
 
+function Ensure-OneShotStateCleanup {
+    param([object]$Notebook)
+
+    $changed = $false
+    foreach ($cell in $Notebook.cells) {
+        if ($cell.cell_type -ne 'code') { continue }
+        $src = @($cell.source)
+        $srcText = $src -join "`n"
+        if ($srcText -notmatch 'feeder\.main\(' -and $srcText -notmatch 'Running feeder\.main\(') { continue }
+
+        $newSrc = [System.Collections.Generic.List[string]]::new()
+        $seenCleanup = $false
+        foreach ($line in $src) {
+            $newSrc.Add($line)
+            if ($line -match "^\s*os\.environ\['ONCE_MODE'\]\s*=.*") {
+                if (-not $seenCleanup) {
+                    $newSrc.Add("    if ONCE_MODE and os.path.exists(STATE_FILE):")
+                    $newSrc.Add("        os.remove(STATE_FILE)")
+                    $newSrc.Add("        _log('Cleared stale dedupe state before one-shot run')")
+                    $seenCleanup = $true
+                    $changed = $true
+                }
+            }
+        }
+        $cell.source = @($newSrc)
+    }
+    return $changed
+}
+
 function Get-PrebuiltWheels {
     <#
     Download the per-source wheel bundle from the `notebook-wheels` release
@@ -900,6 +929,9 @@ foreach ($cell in $nb.cells) {
 }
 if (-not $paramsPatched) { throw "Notebook has no 'parameters'-tagged cell to patch." }
 Write-OK "Parameters cell patched."
+
+$stateCleanupAdded = Ensure-OneShotStateCleanup -Notebook $nb
+if ($stateCleanupAdded) { Write-OK "Added one-shot state cleanup to the notebook run cell." }
 
 $tmpNb = Join-Path $TempDir "$Source`_feed_$(Get-Random).ipynb"
 [System.IO.File]::WriteAllText($tmpNb, ($nb | ConvertTo-Json -Depth 50), [System.Text.UTF8Encoding]::new($false))

@@ -13,10 +13,14 @@ WORKDIR /app
 # Copy the current directory contents into the container at /app
 COPY . /app
 
-# Install the required Python packages
+# Install the generated producer packages first, then the feeder package.
+# The bridge imports snotel_producer_data / snotel_producer_kafka_producer
+# at runtime, so they must be present before the wheel is installed.
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install --no-cache-dir ./snotel_producer/snotel_producer_data \
+    && pip install --no-cache-dir ./snotel_producer/snotel_producer_kafka_producer \
+    && pip install --no-cache-dir .
 
 # Define environment variables (default values)
 ENV CONNECTION_STRING=""
