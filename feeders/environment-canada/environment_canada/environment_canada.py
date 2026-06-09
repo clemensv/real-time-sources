@@ -174,6 +174,7 @@ class ECWeatherAPI:
             wind_gust_1hr=_float("max_wnd_spd_10m_pst1hr"),
             precipitation_24hr=_float("pcpn_amt_pst24hrs"),
             altimeter_setting=_float("altmetr_setng"),
+            province=props.get("prov_state_terr-value"),
         )
 
 

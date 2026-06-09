@@ -210,6 +210,7 @@ class CdecReservoirsAPI:
                         date=iso_date,
                         dur_code=raw.get("durCode", "").strip(),
                         data_flag=raw.get("dataFlag", " "),
+                        basin=raw.get("basin"),
                     )
 
                     cdec_producer.send_gov_ca_water_cdec_reservoir_reading(

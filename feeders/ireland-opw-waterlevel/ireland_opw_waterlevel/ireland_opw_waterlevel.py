@@ -193,6 +193,7 @@ def emit_readings(
                 value=reading["value"],
                 datetime=reading["datetime"],
                 err_code=reading["err_code"],
+                basin=reading.get("basin"),
             )
             producer_client.send_ie_gov_opw_waterlevel_water_level_reading(
                 _feedurl=FEED_URL,

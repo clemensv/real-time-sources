@@ -148,6 +148,7 @@ class JMABulletinPoller:
 
             bulletin = WeatherBulletin(
                 bulletin_id=bulletin_id,
+                office=None,
                 title=title,
                 author=author,
                 updated=updated,
