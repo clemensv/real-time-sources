@@ -24,8 +24,13 @@ failures and never silently pass a broken source.
 ### Core Principles
 
 1. **Observe, don't assume** — always verify with actual queries/counts.
-2. **Immediate teardown** — clean up each source's resources before moving
-   to the next. Never leave orphaned resources.
+2. **Mandatory teardown — this is non-negotiable.** Delete ALL per-source
+   Fabric resources (Notebook, Eventstream, KQL Database, Eventhouse) after
+   validating each source. Never leave orphaned resources. Each source creates
+   4 items; 100 sources × 4 = 400 orphaned items if cleanup is skipped, which
+   exhausts workspace capacity. If per-source cleanup was skipped (e.g. agents
+   ran in parallel), run the bulk cleanup script (see Step 6) at the end of
+   the session before declaring the session complete.
 3. **File issues for everything** — every failure gets a GitHub issue.
    Amend existing issues rather than creating duplicates.
 4. **Structured output** — fill in the session checklist as you go, write
@@ -423,16 +428,83 @@ Dashboards are less common. Similar approach:
 - Discover via `GET /v1/workspaces/{wsId}/items` (type filters)
 - Verify the dashboard's data sources resolve to non-empty tables
 
-### Step 6: Cleanup
+### Step 6: Cleanup — MANDATORY, non-negotiable
+
+**Every Fabric E2E test run MUST delete ALL per-source resources it created,
+immediately after validation is complete.** This is not optional. Skipping
+cleanup causes the workspace to accumulate hundreds of orphaned items (each
+source creates 1 Eventhouse + 1 KQL database + 1 Eventstream + 1 Notebook),
+which exhausts Fabric workspace capacity limits and makes future test runs
+unreliable.
+
+**Resources to delete after each source test (in this order):**
 
 ```powershell
-# Delete the notebook
-DELETE /v1/workspaces/{wsId}/items/{notebookId}
+$wsId   = "<workspace-id>"
+$fabTok = az account get-access-token --resource https://api.fabric.microsoft.com --query accessToken -o tsv
+$h      = @{Authorization="Bearer $fabTok"}
+
+# 1. Cancel any running notebook jobs first
+$jobs = (irm "https://api.fabric.microsoft.com/v1/workspaces/$wsId/items/$notebookId/jobs/instances" -Headers $h).value
+foreach ($job in $jobs | Where-Object { $_.status -in 'InProgress','NotStarted' }) {
+    irm "https://api.fabric.microsoft.com/v1/workspaces/$wsId/items/$notebookId/jobs/instances/$($job.id)/cancel" -Method Post -Headers $h
+}
+
+# 2. Delete notebook (also removes its schedule)
+irm "https://api.fabric.microsoft.com/v1/workspaces/$wsId/items/$notebookId" -Method Delete -Headers $h
+
+# 3. Delete Eventstream
+irm "https://api.fabric.microsoft.com/v1/workspaces/$wsId/items/$eventstreamId" -Method Delete -Headers $h
+
+# 4. Delete KQL Database (child of Eventhouse — must go before Eventhouse)
+irm "https://api.fabric.microsoft.com/v1/workspaces/$wsId/eventhouses/$eventhouseId/kqlDatabases/$kqlDbId" -Method Delete -Headers $h
+# OR via items endpoint:
+irm "https://api.fabric.microsoft.com/v1/workspaces/$wsId/items/$kqlDbId" -Method Delete -Headers $h
+
+# 5. Delete Eventhouse
+irm "https://api.fabric.microsoft.com/v1/workspaces/$wsId/items/$eventhouseId" -Method Delete -Headers $h
 ```
 
-Do NOT delete the KQL database or Map — those are shared/persistent
-infrastructure, not per-test ephemeral resources. Only the notebook
-(and its scheduled job) are test artifacts.
+**Items to PRESERVE (never delete):**
+- `feeder_state_lake` Lakehouse — shared diagnostic store, not per-test
+- `feeder_env` Environment — shared wheel store, rebuilt per-source but reused
+- Any Map items (`*-map`) — persistent visualizations committed to the repo
+- Any Dashboard items — persistent shared dashboards
+- OneLake log files under `feeder-state/<source>/last-run.log` — keep for audit
+
+**Bulk cleanup after a multi-source session:**
+
+If individual cleanup was skipped (e.g. agents ran in parallel), clean up all
+test artifacts at the end of the session with:
+
+```powershell
+$wsId   = "<workspace-id>"
+$fabTok = az account get-access-token --resource https://api.fabric.microsoft.com --query accessToken -o tsv
+$h      = @{Authorization="Bearer $fabTok"}
+$items  = (irm "https://api.fabric.microsoft.com/v1/workspaces/$wsId/items" -Headers $h).value
+
+# Preserve list — do NOT delete these
+$preserve = @('feeder_state_lake','feeder_env')
+$preserveTypes = @('Map','KQLDashboard','Lakehouse','SQLEndpoint')
+
+$toDelete = $items | Where-Object {
+    $_.displayName -notin $preserve -and $_.type -notin $preserveTypes
+} | Sort-Object type  # KQLDatabase before Eventhouse
+
+foreach ($item in $toDelete) {
+    Write-Host "Deleting $($item.type): $($item.displayName)"
+    try {
+        irm "https://api.fabric.microsoft.com/v1/workspaces/$wsId/items/$($item.id)" -Method Delete -Headers $h -ErrorAction Stop
+        Start-Sleep -Milliseconds 200
+    } catch {
+        Write-Warning "Failed to delete $($item.displayName): $_"
+    }
+}
+```
+
+**This bulk cleanup MUST be run at the end of every E2E session, regardless of
+whether per-source cleanup was done.** A clean workspace is a prerequisite for
+the next session — do not leave the workspace for someone else to sweep.
 
 ## KQL Validation Strategy — Reusable Yet Adaptable
 
@@ -702,4 +774,51 @@ az role assignment list --assignee $myOid --subscription <sub> `
 If the deployment fails at role assignment, either elevate the identity or
 pre-create the role assignment manually and use `--mode Incremental` to skip
 the already-created resource.
+
+### 14. Fabric bulk DELETE hits 429 rate limits at scale
+
+When deleting 30+ KQL Databases or Eventhouses in quick succession, the Fabric
+REST API returns `429 Too Many Requests`. The workaround is to retry with
+backoff and sort deletions to process KQL Databases before Eventhouses:
+
+```powershell
+foreach ($item in $toDelete) {
+    $ok = $false
+    for ($i = 0; $i -lt 3 -and -not $ok; $i++) {
+        try {
+            irm "https://api.fabric.microsoft.com/v1/workspaces/$wsId/items/$($item.id)" `
+                -Method Delete -Headers $h -ErrorAction Stop | Out-Null
+            $ok = $true
+            Start-Sleep -Milliseconds 800   # throttle between deletes
+        } catch {
+            if ($_.Exception.Response.StatusCode -eq 429) {
+                Start-Sleep -Seconds 5      # back off on rate limit
+            } else {
+                Write-Warning "FAILED $($item.type) $($item.displayName): $_"
+                $ok = $true                 # don't retry non-429
+            }
+        }
+    }
+}
+```
+
+A 800 ms inter-delete delay allows ~75 deletes/minute — sufficient for
+workspace cleanup without triggering the rate limiter. The bulk cleanup
+script in Step 6 already includes these retry semantics.
+
+### 15. Fabric authZ — Entra token audience matters
+
+The Fabric REST API uses the `https://api.fabric.microsoft.com` resource (NOT
+`https://analysis.windows.net/powerbi/api`). Using the wrong audience returns
+`403 Unauthorized` even with a valid signed-in identity.
+
+KQL queries use a different resource: `https://kusto.kusto.windows.net` — this
+is the same audience for all Fabric KQL endpoints regardless of whether the
+cluster URL contains `kusto.fabric.microsoft.com`. Using `kusto.fabric.microsoft.com`
+as the audience will result in `401 Unauthorized`.
+
+Summary:
+- Fabric REST API management: `https://api.fabric.microsoft.com`
+- KQL REST queries: `https://kusto.kusto.windows.net`
+- OneLake DFS: `https://storage.azure.com`
 
