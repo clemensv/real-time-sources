@@ -220,7 +220,13 @@ class KafkaFixture:
         admin = AdminClient({'bootstrap.servers': self.external_address})
         fut = admin.create_topics([NewTopic(topic, num_partitions=partitions, replication_factor=1)])
         for _topic, f in fut.items():
-            f.result(timeout=10)
+            try:
+                f.result(timeout=10)
+            except Exception as exc:
+                message = str(exc).lower()
+                if 'already exists' in message or 'topic_already_exists' in message:
+                    continue
+                raise
         time.sleep(1)
 
     def consume_messages(
