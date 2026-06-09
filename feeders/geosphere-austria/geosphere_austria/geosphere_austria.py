@@ -114,6 +114,7 @@ def parse_station(raw: typing.Dict) -> WeatherStation:
         longitude=float(raw["lon"]),
         altitude=float(raw.get("altitude", 0.0)),
         state=raw.get("state") or None,
+        bundesland=raw.get("bundesland") or None,
     )
 
 
