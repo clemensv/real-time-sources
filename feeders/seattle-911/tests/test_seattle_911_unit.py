@@ -1,6 +1,7 @@
 """Unit tests for the Seattle Fire 911 bridge."""
 
-from unittest.mock import Mock, patch
+import sys
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
@@ -85,6 +86,43 @@ class TestFetchIncidents:
             DEFAULT_CONNECT_TIMEOUT_SECONDS,
             DEFAULT_READ_TIMEOUT_SECONDS,
         )
+
+
+@pytest.mark.unit
+class TestOnceMode:
+    def test_main_respects_explicit_once_flag(self, monkeypatch):
+        fake_producer = MagicMock()
+        fake_event_producer = MagicMock()
+        fake_bridge = MagicMock()
+
+        monkeypatch.setattr("seattle_911.seattle_911.Producer", MagicMock(return_value=fake_producer))
+        monkeypatch.setattr("seattle_911.seattle_911.USWASeattleFire911EventProducer", MagicMock(return_value=fake_event_producer))
+        monkeypatch.setattr("seattle_911.seattle_911.SeattleFire911Bridge", MagicMock(return_value=fake_bridge))
+        monkeypatch.setattr(sys, "argv", ["seattle-911", "--connection-string", "BootstrapServer=localhost:9092;EntityPath=seattle-911", "--once"])
+        monkeypatch.delenv("ONCE_MODE", raising=False)
+
+        import seattle_911.seattle_911 as bridge
+
+        bridge.main()
+
+        fake_bridge.poll_and_send.assert_called_once_with(fake_event_producer, once=True)
+
+    def test_main_respects_once_mode_env_var(self, monkeypatch):
+        fake_producer = MagicMock()
+        fake_event_producer = MagicMock()
+        fake_bridge = MagicMock()
+
+        monkeypatch.setattr("seattle_911.seattle_911.Producer", MagicMock(return_value=fake_producer))
+        monkeypatch.setattr("seattle_911.seattle_911.USWASeattleFire911EventProducer", MagicMock(return_value=fake_event_producer))
+        monkeypatch.setattr("seattle_911.seattle_911.SeattleFire911Bridge", MagicMock(return_value=fake_bridge))
+        monkeypatch.setattr(sys, "argv", ["seattle-911", "--connection-string", "BootstrapServer=localhost:9092;EntityPath=seattle-911"])
+        monkeypatch.setenv("ONCE_MODE", "true")
+
+        import seattle_911.seattle_911 as bridge
+
+        bridge.main()
+
+        fake_bridge.poll_and_send.assert_called_once_with(fake_event_producer, once=True)
 
 
 @pytest.mark.unit

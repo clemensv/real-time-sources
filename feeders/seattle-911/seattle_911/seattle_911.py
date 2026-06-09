@@ -280,7 +280,12 @@ def main() -> None:
         ),
         help="Path to the persisted dedupe state file",
     )
-    parser.add_argument("--once", action="store_true", help="Poll once and exit")
+    parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Poll once and exit (also via ONCE_MODE env var).",
+    )
     args = parser.parse_args()
 
     kafka_config = parse_connection_string(args.connection_string)
