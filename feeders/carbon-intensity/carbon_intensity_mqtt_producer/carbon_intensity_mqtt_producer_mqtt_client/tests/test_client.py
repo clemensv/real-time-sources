@@ -95,8 +95,9 @@ async def test_uk_org_carbonintensity_mqtt_uk_org_carbonintensity_mqtt_intensity
             period_from=f"test_period_from_{i}",
             ce_id=f"test_ce_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -161,8 +162,9 @@ async def test_uk_org_carbonintensity_mqtt_uk_org_carbonintensity_mqtt_generatio
             period_from=f"test_period_from_{i}",
             ce_id=f"test_ce_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -227,8 +229,9 @@ async def test_uk_org_carbonintensity_mqtt_uk_org_carbonintensity_mqtt_regional_
             region_id=f"test_region_id_{i}",
             ce_id=f"test_ce_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

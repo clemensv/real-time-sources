@@ -96,8 +96,9 @@ async def test_fr_gouv_transport_bison_fute_traffic_flow_mqtt_fr_gouv_transport_
             site_id=f"test_site_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            road="test_road",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -166,8 +167,9 @@ async def test_fr_gouv_transport_bison_fute_road_event_mqtt_fr_gouv_transport_bi
             situation_id=f"test_situation_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            road="test_road",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

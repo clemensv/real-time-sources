@@ -92,8 +92,9 @@ async def test_se_gov_smhi_hydro_mqtt_se_gov_smhi_hydro_mqtt_station_py(mosquitt
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            catchment_name="test_catchment_name",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -157,8 +158,9 @@ async def test_se_gov_smhi_hydro_mqtt_se_gov_smhi_hydro_mqtt_discharge_observati
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            catchment_name="test_catchment_name",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

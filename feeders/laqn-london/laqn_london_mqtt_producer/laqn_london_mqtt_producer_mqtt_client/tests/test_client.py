@@ -99,8 +99,10 @@ async def test_uk_kcl_laqn_mqtt_uk_kcl_laqn_mqtt_site_py(mosquitto_broker):
             site_code=f"test_site_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            borough="test_borough",
+            species_code="test_species_code",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -165,8 +167,10 @@ async def test_uk_kcl_laqn_mqtt_uk_kcl_laqn_mqtt_measurement_py(mosquitto_broker
             site_code=f"test_site_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            borough="test_borough",
+            species_code="test_species_code",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -231,8 +235,10 @@ async def test_uk_kcl_laqn_mqtt_uk_kcl_laqn_mqtt_daily_index_py(mosquitto_broker
             site_code=f"test_site_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            borough="test_borough",
+            species_code="test_species_code",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -300,8 +306,10 @@ async def test_uk_kcl_laqn_species_mqtt_uk_kcl_laqn_species_mqtt_species_py(mosq
             species_code=f"test_species_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            borough="test_borough",
+            site_code="test_site_code",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

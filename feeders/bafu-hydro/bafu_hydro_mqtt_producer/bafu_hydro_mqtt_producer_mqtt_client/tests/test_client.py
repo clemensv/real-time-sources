@@ -92,8 +92,9 @@ async def test_ch_bafu_hydrology_mqtt_ch_bafu_hydrology_mqtt_station_py(mosquitt
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            water_body_name="test_water_body_name",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -157,8 +158,9 @@ async def test_ch_bafu_hydrology_mqtt_ch_bafu_hydrology_mqtt_water_level_observa
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            water_body_name="test_water_body_name",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

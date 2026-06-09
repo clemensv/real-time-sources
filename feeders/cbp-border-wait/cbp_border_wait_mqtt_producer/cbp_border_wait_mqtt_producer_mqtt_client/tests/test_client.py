@@ -92,8 +92,9 @@ async def test_gov_cbp_borderwait_mqtt_gov_cbp_borderwait_mqtt_port_py(mosquitto
             topic=test_topic,
             port_number=f"test_port_number_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            border_slug="test_border_slug",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -157,8 +158,9 @@ async def test_gov_cbp_borderwait_mqtt_gov_cbp_borderwait_mqtt_wait_time_py(mosq
             topic=test_topic,
             port_number=f"test_port_number_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            border_slug="test_border_slug",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

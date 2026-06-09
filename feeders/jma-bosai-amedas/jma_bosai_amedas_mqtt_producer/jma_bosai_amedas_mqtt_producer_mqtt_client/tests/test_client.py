@@ -95,8 +95,10 @@ async def test_jp_jma_amedas_mqtt_jp_jma_amedas_mqtt_station_py(mosquitto_broker
             station_code=f"test_station_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            prefecture="test_prefecture",
+            event="test_event",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -162,8 +164,10 @@ async def test_jp_jma_amedas_mqtt_jp_jma_amedas_mqtt_observation_py(mosquitto_br
             station_code=f"test_station_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            prefecture="test_prefecture",
+            event="test_event",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

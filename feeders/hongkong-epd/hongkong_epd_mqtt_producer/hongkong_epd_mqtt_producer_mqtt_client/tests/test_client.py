@@ -92,8 +92,9 @@ async def test_hk_gov_epd_aqhi_mqtt_hk_gov_epd_aqhi_mqtt_station_py(mosquitto_br
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            district="test_district",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -157,8 +158,9 @@ async def test_hk_gov_epd_aqhi_mqtt_hk_gov_epd_aqhi_mqtt_aqhireading_py(mosquitt
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            district="test_district",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

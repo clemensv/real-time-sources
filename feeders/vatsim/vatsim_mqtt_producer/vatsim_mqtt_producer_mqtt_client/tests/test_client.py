@@ -224,8 +224,9 @@ async def test_net_vatsim_mqtt_net_vatsim_mqtt_facility_status_py(mosquitto_brok
             topic=test_topic,
             callsign=f"test_callsign_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            facility="test_facility",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

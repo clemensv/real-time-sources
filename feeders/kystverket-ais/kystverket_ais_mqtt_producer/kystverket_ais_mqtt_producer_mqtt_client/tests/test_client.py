@@ -94,8 +94,11 @@ async def test_no_kystverket_ais_mqtt_no_kystverket_ais_mqtt_position_report_py(
             topic=test_topic,
             mmsi=f"test_mmsi_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            flag="test_flag",
+            ship_type="test_ship_type",
+            geohash5="test_geohash5",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -159,8 +162,11 @@ async def test_no_kystverket_ais_mqtt_no_kystverket_ais_mqtt_ship_static_py(mosq
             topic=test_topic,
             mmsi=f"test_mmsi_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            flag="test_flag",
+            ship_type="test_ship_type",
+            geohash5="test_geohash5",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -224,8 +230,11 @@ async def test_no_kystverket_ais_mqtt_no_kystverket_ais_mqtt_aid_to_navigation_p
             topic=test_topic,
             mmsi=f"test_mmsi_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            flag="test_flag",
+            ship_type="test_ship_type",
+            geohash5="test_geohash5",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

@@ -96,8 +96,10 @@ async def test_nasa_firms_mqtt_nasa_firms_mqtt_fire_detection_py(mosquitto_broke
             record_id=f"test_record_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            confidence_level="test_confidence_level",
+            tile="test_tile",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

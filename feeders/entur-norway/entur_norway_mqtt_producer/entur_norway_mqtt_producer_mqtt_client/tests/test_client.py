@@ -95,8 +95,10 @@ async def test_no_entur_mqtt_no_entur_mqtt_estimated_vehicle_journey_py(mosquitt
             operating_day=f"test_operating_day_{i}",
             service_journey_id=f"test_service_journey_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            operator_ref="test_operator_ref",
+            line_ref="test_line_ref",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -161,8 +163,10 @@ async def test_no_entur_mqtt_no_entur_mqtt_monitored_vehicle_journey_py(mosquitt
             operating_day=f"test_operating_day_{i}",
             service_journey_id=f"test_service_journey_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            operator_ref="test_operator_ref",
+            line_ref="test_line_ref",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -226,8 +230,9 @@ async def test_no_entur_mqtt_no_entur_mqtt_pt_situation_element_py(mosquitto_bro
             topic=test_topic,
             situation_number=f"test_situation_number_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            severity="test_severity",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

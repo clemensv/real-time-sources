@@ -154,8 +154,10 @@ async def test_generaltransitfeedrealtime_mqtt_general_transit_feed_real_time_ve
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            route_id="test_route_id",
+            vehicle_id="test_vehicle_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -221,8 +223,10 @@ async def test_generaltransitfeedrealtime_mqtt_general_transit_feed_real_time_tr
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            route_id="test_route_id",
+            trip_id="test_trip_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -288,8 +292,10 @@ async def test_generaltransitfeedrealtime_mqtt_general_transit_feed_real_time_al
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            route_id="test_route_id",
+            alert_id="test_alert_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -358,8 +364,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_agency_
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -425,8 +432,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_areas_m
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -492,8 +500,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_attribu
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -559,8 +568,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_booking_rules_
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -626,8 +636,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_at
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -693,8 +704,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_le
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -760,8 +772,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_me
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -827,8 +840,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_pr
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -894,8 +908,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_ru
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -961,8 +976,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_fare_tr
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1028,8 +1044,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_feed_in
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1095,8 +1112,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_frequen
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1162,8 +1180,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_levels_
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1229,8 +1248,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_locatio
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1296,8 +1316,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_locatio
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1363,8 +1384,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_locatio
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1430,8 +1452,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_network
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1497,8 +1520,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_pathway
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1564,8 +1588,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_route_n
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1631,8 +1656,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_routes_
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1698,8 +1724,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_shapes_
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1765,8 +1792,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_stop_ar
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1832,8 +1860,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_stops_m
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1899,8 +1928,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_stop_ti
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -1966,8 +1996,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_timefra
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -2033,8 +2064,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_transfe
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -2100,8 +2132,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_transla
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -2167,8 +2200,9 @@ async def test_generaltransitfeedstatic_mqtt_general_transit_feed_static_trips_m
             agencyid=f"test_agencyid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            row_id="test_row_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

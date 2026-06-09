@@ -90,8 +90,10 @@ async def test_nina_warnings_mqtt_nina_warnings_mqtt_civil_warning_py(mosquitto_
             topic=test_topic,
             warning_id=f"test_warning_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            state="test_state",
+            severity="test_severity",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

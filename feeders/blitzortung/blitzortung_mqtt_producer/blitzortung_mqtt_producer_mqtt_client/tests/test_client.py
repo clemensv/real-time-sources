@@ -93,8 +93,10 @@ async def test_blitzortung_lightning_mqtt_blitzortung_lightning_mqtt_lightning_s
             stroke_id=f"test_stroke_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            geohash5="test_geohash5",
+            geohash7="test_geohash7",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

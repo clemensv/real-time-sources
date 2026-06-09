@@ -91,8 +91,9 @@ async def test_us_wa_seattle_fire911_mqtt_us_wa_seattle_fire911_mqtt_incident_py
             incident_number=f"test_incident_number_{i}",
             incident_datetime_utc=f"test_incident_datetime_utc_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            incident_type_slug="test_incident_type_slug",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

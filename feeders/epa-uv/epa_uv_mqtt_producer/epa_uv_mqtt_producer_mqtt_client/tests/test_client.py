@@ -92,8 +92,11 @@ async def test_us_epa_uvindex_mqtt_us_epa_uvindex_mqtt_hourly_forecast_py(mosqui
             topic=test_topic,
             location_id=f"test_location_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            state="test_state",
+            city_slug="test_city_slug",
+            forecast_hour="test_forecast_hour",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -157,8 +160,11 @@ async def test_us_epa_uvindex_mqtt_us_epa_uvindex_mqtt_daily_forecast_py(mosquit
             topic=test_topic,
             location_id=f"test_location_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            state="test_state",
+            city_slug="test_city_slug",
+            forecast_date="test_forecast_date",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

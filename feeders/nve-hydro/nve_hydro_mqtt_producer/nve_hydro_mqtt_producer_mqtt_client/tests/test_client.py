@@ -92,8 +92,9 @@ async def test_no_nve_hydrology_mqtt_no_nve_hydrology_mqtt_station_py(mosquitto_
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            river_name="test_river_name",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -157,8 +158,9 @@ async def test_no_nve_hydrology_mqtt_no_nve_hydrology_mqtt_water_level_observati
             topic=test_topic,
             station_id=f"test_station_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            river_name="test_river_name",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

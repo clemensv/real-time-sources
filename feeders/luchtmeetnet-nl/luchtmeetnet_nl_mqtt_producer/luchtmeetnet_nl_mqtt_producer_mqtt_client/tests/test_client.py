@@ -99,8 +99,10 @@ async def test_nl_rivm_luchtmeetnet_mqtt_nl_rivm_luchtmeetnet_mqtt_station_py(mo
             station_number=f"test_station_number_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+            formula="test_formula",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -165,8 +167,10 @@ async def test_nl_rivm_luchtmeetnet_mqtt_nl_rivm_luchtmeetnet_mqtt_measurement_p
             station_number=f"test_station_number_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+            formula="test_formula",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -231,8 +235,10 @@ async def test_nl_rivm_luchtmeetnet_mqtt_nl_rivm_luchtmeetnet_mqtt_lki_py(mosqui
             station_number=f"test_station_number_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+            formula="test_formula",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -300,8 +306,10 @@ async def test_nl_rivm_luchtmeetnet_components_mqtt_nl_rivm_luchtmeetnet_compone
             formula=f"test_formula_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+            station_number="test_station_number",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

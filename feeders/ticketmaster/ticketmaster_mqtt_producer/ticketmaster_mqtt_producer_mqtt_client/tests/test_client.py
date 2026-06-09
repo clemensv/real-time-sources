@@ -101,8 +101,11 @@ async def test_ticketmaster_events_mqtt_ticketmaster_events_mqtt_event_py(mosqui
             event_id=f"test_event_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            country="test_country",
+            city="test_city",
+            venue_id="test_venue_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -170,8 +173,11 @@ async def test_ticketmaster_reference_mqtt_ticketmaster_reference_mqtt_venue_py(
             entity_id=f"test_entity_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            country="test_country",
+            city="test_city",
+            venue_id="test_venue_id",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -236,8 +242,11 @@ async def test_ticketmaster_reference_mqtt_ticketmaster_reference_mqtt_attractio
             entity_id=f"test_entity_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            country="test_country",
+            city="test_city",
+            segment="test_segment",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -302,8 +311,11 @@ async def test_ticketmaster_reference_mqtt_ticketmaster_reference_mqtt_classific
             entity_id=f"test_entity_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            country="test_country",
+            city="test_city",
+            segment="test_segment",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -368,8 +380,11 @@ async def test_ticketmaster_reference_mqtt_ticketmaster_reference_mqtt_info_py(m
             entity_id=f"test_entity_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            country="test_country",
+            city="test_city",
+            segment="test_segment",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

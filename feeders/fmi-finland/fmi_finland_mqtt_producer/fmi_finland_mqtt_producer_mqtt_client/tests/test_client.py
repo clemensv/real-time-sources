@@ -94,8 +94,9 @@ async def test_fi_fmi_opendata_airquality_mqtt_fi_fmi_opendata_airquality_mqtt_s
             fmisid=f"test_fmisid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -160,8 +161,9 @@ async def test_fi_fmi_opendata_airquality_mqtt_fi_fmi_opendata_airquality_mqtt_o
             fmisid=f"test_fmisid_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

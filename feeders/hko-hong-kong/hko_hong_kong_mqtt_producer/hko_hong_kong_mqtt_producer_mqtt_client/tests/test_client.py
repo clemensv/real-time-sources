@@ -94,8 +94,9 @@ async def test_hk_gov_hko_weather_mqtt_hk_gov_hko_weather_mqtt_station_py(mosqui
             place_id=f"test_place_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            district="test_district",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -160,8 +161,9 @@ async def test_hk_gov_hko_weather_mqtt_hk_gov_hko_weather_mqtt_weather_observati
             place_id=f"test_place_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            district="test_district",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

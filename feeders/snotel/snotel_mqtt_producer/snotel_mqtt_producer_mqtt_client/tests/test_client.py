@@ -94,8 +94,9 @@ async def test_gov_usda_nrcs_snotel_mqtt_gov_usda_nrcs_snotel_mqtt_station_py(mo
             station_triplet=f"test_station_triplet_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            state="test_state",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -160,8 +161,9 @@ async def test_gov_usda_nrcs_snotel_mqtt_gov_usda_nrcs_snotel_mqtt_snow_observat
             station_triplet=f"test_station_triplet_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            state="test_state",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

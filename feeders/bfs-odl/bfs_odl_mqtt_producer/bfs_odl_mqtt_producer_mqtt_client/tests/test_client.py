@@ -95,8 +95,9 @@ async def test_de_bfs_odl_mqtt_de_bfs_odl_mqtt_station_py(mosquitto_broker):
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            state="test_state",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -162,8 +163,9 @@ async def test_de_bfs_odl_mqtt_de_bfs_odl_mqtt_dose_rate_measurement_py(mosquitt
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            state="test_state",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
