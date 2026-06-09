@@ -104,8 +104,9 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
             time_tag=f"test_time_tag_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            event="test_event",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -172,8 +173,9 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
             time_tag=f"test_time_tag_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            event="test_event",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -240,8 +242,9 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
             time_tag=f"test_time_tag_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            event="test_event",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -307,8 +310,9 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
             time_tag=f"test_time_tag_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            event="test_event",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -440,8 +444,9 @@ async def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoft_open_data_us_
             begin_time=f"test_begin_time_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            flare_class="test_flare_class",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

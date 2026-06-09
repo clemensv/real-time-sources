@@ -97,8 +97,9 @@ async def test_au_gov_bom_weather_mqtt_au_gov_bom_weather_mqtt_station_py(mosqui
             station_wmo=f"test_station_wmo_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            state="test_state",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -163,8 +164,9 @@ async def test_au_gov_bom_weather_mqtt_au_gov_bom_weather_mqtt_weather_observati
             station_wmo=f"test_station_wmo_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            state="test_state",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

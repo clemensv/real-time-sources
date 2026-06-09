@@ -97,8 +97,9 @@ async def test_uk_gov_defra_aurn_stations_mqtt_uk_gov_defra_aurn_stations_mqtt_s
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -166,8 +167,11 @@ async def test_uk_gov_defra_aurn_timeseries_mqtt_uk_gov_defra_aurn_timeseries_mq
             timeseries_id=f"test_timeseries_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+            station_id="test_station_id",
+            pollutant="test_pollutant",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -232,8 +236,11 @@ async def test_uk_gov_defra_aurn_timeseries_mqtt_uk_gov_defra_aurn_timeseries_mq
             timeseries_id=f"test_timeseries_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+            station_id="test_station_id",
+            pollutant="test_pollutant",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

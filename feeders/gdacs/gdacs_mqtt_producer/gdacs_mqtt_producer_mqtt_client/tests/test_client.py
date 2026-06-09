@@ -91,8 +91,10 @@ async def test_gdacs_alerts_mqtt_gdacs_alerts_mqtt_disaster_alert_py(mosquitto_b
             event_type=f"test_event_type_{i}",
             event_id=f"test_event_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            alert_color="test_alert_color",
+            country="test_country",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

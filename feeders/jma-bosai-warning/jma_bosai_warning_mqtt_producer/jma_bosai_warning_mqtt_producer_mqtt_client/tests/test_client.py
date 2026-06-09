@@ -98,8 +98,11 @@ async def test_jp_jma_warning_mqtt_jp_jma_warning_mqtt_office_py(mosquitto_broke
             area_code=f"test_area_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            prefecture="test_prefecture",
+            severity="test_severity",
+            event="test_event",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -166,8 +169,11 @@ async def test_jp_jma_warning_mqtt_jp_jma_warning_mqtt_weather_warning_py(mosqui
             area_code=f"test_area_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            prefecture="test_prefecture",
+            severity="test_severity",
+            event="test_event",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -234,8 +240,10 @@ async def test_jp_jma_warning_mqtt_jp_jma_warning_mqtt_tsunami_alert_py(mosquitt
             serial=f"test_serial_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            prefecture="test_prefecture",
+            severity="test_severity",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

@@ -94,8 +94,9 @@ async def test_pl_gov_imgw_hydro_mqtt_pl_gov_imgw_hydro_mqtt_station_py(mosquitt
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            basin="test_basin",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -160,8 +161,9 @@ async def test_pl_gov_imgw_hydro_mqtt_pl_gov_imgw_hydro_mqtt_water_level_observa
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            basin="test_basin",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

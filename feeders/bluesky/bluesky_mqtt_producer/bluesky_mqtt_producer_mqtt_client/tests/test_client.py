@@ -101,8 +101,10 @@ async def test_blueskyfirehose_mqtt_bluesky_feed_post_mqtt_py(mosquitto_broker):
             firehoseurl=f"test_firehoseurl_{i}",
             did=f"test_did_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            collection="test_collection",
+            lang="test_lang",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -167,8 +169,10 @@ async def test_blueskyfirehose_mqtt_bluesky_feed_like_mqtt_py(mosquitto_broker):
             firehoseurl=f"test_firehoseurl_{i}",
             did=f"test_did_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            collection="test_collection",
+            lang="test_lang",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -233,8 +237,10 @@ async def test_blueskyfirehose_mqtt_bluesky_feed_repost_mqtt_py(mosquitto_broker
             firehoseurl=f"test_firehoseurl_{i}",
             did=f"test_did_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            collection="test_collection",
+            lang="test_lang",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -299,8 +305,10 @@ async def test_blueskyfirehose_mqtt_bluesky_graph_follow_mqtt_py(mosquitto_broke
             firehoseurl=f"test_firehoseurl_{i}",
             did=f"test_did_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            collection="test_collection",
+            lang="test_lang",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -365,8 +373,10 @@ async def test_blueskyfirehose_mqtt_bluesky_graph_block_mqtt_py(mosquitto_broker
             firehoseurl=f"test_firehoseurl_{i}",
             did=f"test_did_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            collection="test_collection",
+            lang="test_lang",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -431,8 +441,10 @@ async def test_blueskyfirehose_mqtt_bluesky_actor_profile_mqtt_py(mosquitto_brok
             firehoseurl=f"test_firehoseurl_{i}",
             did=f"test_did_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            collection="test_collection",
+            lang="test_lang",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

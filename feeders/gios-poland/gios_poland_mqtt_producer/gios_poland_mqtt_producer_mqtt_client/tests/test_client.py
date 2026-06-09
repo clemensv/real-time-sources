@@ -98,8 +98,10 @@ async def test_pl_gov_gios_airquality_mqtt_pl_gov_gios_airquality_mqtt_station_p
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            voivodeship="test_voivodeship",
+            pollutant="test_pollutant",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -165,8 +167,10 @@ async def test_pl_gov_gios_airquality_mqtt_pl_gov_gios_airquality_mqtt_sensor_py
             sensor_id=f"test_sensor_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            voivodeship="test_voivodeship",
+            pollutant="test_pollutant",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -232,8 +236,10 @@ async def test_pl_gov_gios_airquality_mqtt_pl_gov_gios_airquality_mqtt_measureme
             sensor_id=f"test_sensor_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            voivodeship="test_voivodeship",
+            pollutant="test_pollutant",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -298,8 +304,10 @@ async def test_pl_gov_gios_airquality_mqtt_pl_gov_gios_airquality_mqtt_air_quali
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            voivodeship="test_voivodeship",
+            pollutant="test_pollutant",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

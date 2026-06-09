@@ -92,8 +92,10 @@ async def test_org_ligo_gracedb_mqtt_org_ligo_gracedb_mqtt_superevent_py(mosquit
             superevent_id=f"test_superevent_id_{i}",
             created=f"test_created_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            category="test_category",
+            group="test_group",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

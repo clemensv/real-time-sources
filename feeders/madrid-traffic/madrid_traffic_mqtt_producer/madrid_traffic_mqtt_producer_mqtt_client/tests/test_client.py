@@ -94,8 +94,9 @@ async def test_es_madrid_informo_mqtt_es_madrid_informo_measurement_point_mqtt_p
             sensor_id=f"test_sensor_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            district="test_district",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -160,8 +161,9 @@ async def test_es_madrid_informo_mqtt_es_madrid_informo_traffic_reading_mqtt_py(
             sensor_id=f"test_sensor_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            district="test_district",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

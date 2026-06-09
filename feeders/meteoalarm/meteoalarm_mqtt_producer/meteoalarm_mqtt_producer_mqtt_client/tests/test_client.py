@@ -90,8 +90,11 @@ async def test_meteoalarm_warnings_mqtt_meteoalarm_warnings_mqtt_weather_warning
             topic=test_topic,
             identifier=f"test_identifier_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            country="test_country",
+            severity="test_severity",
+            awareness_type="test_awareness_type",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

@@ -96,8 +96,9 @@ async def test_xceed_mqtt_xceed_mqtt_event_py(mosquitto_broker):
             event_id=f"test_event_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            city="test_city",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

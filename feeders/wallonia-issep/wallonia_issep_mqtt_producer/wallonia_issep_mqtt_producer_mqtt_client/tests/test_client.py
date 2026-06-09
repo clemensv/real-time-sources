@@ -92,8 +92,9 @@ async def test_be_issep_airquality_sensors_mqtt_be_issep_airquality_sensors_mqtt
             topic=test_topic,
             configuration_id=f"test_configuration_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            province="test_province",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -157,8 +158,9 @@ async def test_be_issep_airquality_sensors_mqtt_be_issep_airquality_sensors_mqtt
             topic=test_topic,
             configuration_id=f"test_configuration_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            province="test_province",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

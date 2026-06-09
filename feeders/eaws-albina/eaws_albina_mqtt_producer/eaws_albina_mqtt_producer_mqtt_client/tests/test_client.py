@@ -90,8 +90,10 @@ async def test_org_eaws_albina_mqtt_org_eaws_albina_mqtt_avalanche_bulletin_py(m
             topic=test_topic,
             region_id=f"test_region_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            country="test_country",
+            danger_level="test_danger_level",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

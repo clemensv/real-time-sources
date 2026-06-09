@@ -90,8 +90,10 @@ async def test_ptwc_bulletins_mqtt_ptwc_bulletins_mqtt_tsunami_bulletin_py(mosqu
             topic=test_topic,
             bulletin_id=f"test_bulletin_id_{i}",
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            basin="test_basin",
+            ptwc_level="test_ptwc_level",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:

@@ -108,8 +108,9 @@ async def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoft_open_data_us_noaa_
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -174,8 +175,9 @@ async def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoft_open_data_us_noaa_
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -240,8 +242,9 @@ async def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoft_open_data_us_noaa_
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -306,8 +309,9 @@ async def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoft_open_data_us_noaa_
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -372,8 +376,9 @@ async def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoft_open_data_us_noaa_
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -438,8 +443,9 @@ async def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoft_open_data_us_noaa_
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -504,8 +510,9 @@ async def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoft_open_data_us_noaa_
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -570,8 +577,9 @@ async def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoft_open_data_us_noaa_
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -636,8 +644,9 @@ async def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoft_open_data_us_noaa_
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json"
-        )
+            content_type="application/json",
+            region="test_region",
+)
     
     # Wait for all 5 messages to be received (with timeout)
     try:
