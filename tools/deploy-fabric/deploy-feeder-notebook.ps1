@@ -268,27 +268,35 @@ function Ensure-OneShotStateCleanup {
     param([object]$Notebook)
 
     $changed = $false
+    $cleanupMarker = "Cleared stale dedupe state before one-shot run"
     foreach ($cell in $Notebook.cells) {
         if ($cell.cell_type -ne 'code') { continue }
+
         $src = @($cell.source)
         $srcText = $src -join "`n"
-        if ($srcText -notmatch 'feeder\.main\(' -and $srcText -notmatch 'Running feeder\.main\(') { continue }
+        if ($srcText -notmatch 'feeder\.main\(' -and $srcText -notmatch 'Running feeder\.main\(') {
+            continue
+        }
+        if ($srcText -match [regex]::Escape($cleanupMarker)) {
+            continue
+        }
 
         $newSrc = [System.Collections.Generic.List[string]]::new()
-        $seenCleanup = $false
+        $injected = $false
         foreach ($line in $src) {
             $newSrc.Add($line)
             if ($line -match "^\s*os\.environ\['ONCE_MODE'\]\s*=.*") {
-                if (-not $seenCleanup) {
-                    $newSrc.Add("    if ONCE_MODE and os.path.exists(STATE_FILE):")
-                    $newSrc.Add("        os.remove(STATE_FILE)")
-                    $newSrc.Add("        _log('Cleared stale dedupe state before one-shot run')")
-                    $seenCleanup = $true
-                    $changed = $true
-                }
+                $newSrc.Add("    if ONCE_MODE and os.path.exists(STATE_FILE):")
+                $newSrc.Add("        os.remove(STATE_FILE)")
+                $newSrc.Add("        _log('Cleared stale dedupe state before one-shot run')")
+                $injected = $true
+                $changed = $true
             }
         }
-        $cell.source = @($newSrc)
+
+        if ($injected) {
+            $cell.source = @($newSrc)
+        }
     }
     return $changed
 }
