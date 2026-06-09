@@ -57,10 +57,16 @@ failures and never silently pass a broken source.
    a. Run Azure test (if applicable)
    b. Run Fabric test (if applicable)
    c. Update checklist with results
-   d. Teardown resources
+   d. Update the session results file and running tally after each PASS or FAIL
+   e. File a GitHub issue immediately for any FAIL result with root-cause details
+   f. Teardown resources
 4. Write summary.json
 5. Report results
 ```
+
+### Per-Source Checklist Discipline
+
+- [ ] After each run (PASS or FAIL), update the session results file and record the result in the running tally. File a GitHub issue immediately for any FAIL result with root-cause details.
 
 ## Azure ACI Validation Procedure
 
@@ -821,4 +827,17 @@ Summary:
 - Fabric REST API management: `https://api.fabric.microsoft.com`
 - KQL REST queries: `https://kusto.kusto.windows.net`
 - OneLake DFS: `https://storage.azure.com`
+
+### Pitfall #16: Notebook crashes before log cell — no OneLake diagnostic available
+
+**Symptom**: `System_Cancelled_Session_Statements_Failed`, OneLake `last-run.log` returns 404.
+
+**Cause**: A cell *before* the run cell (typically the pip-install cell or the CS-lookup cell) raised an unhandled exception. Since the log file is opened in the run cell, earlier failures leave no trace.
+
+**Diagnoses**:
+1. Check Lakehouse Files for wheels: `GET https://onelake.dfs.fabric.microsoft.com/{ws}/{lhId}/Files/wheels/{source}/` — if empty, the deploy was run with `-SkipEnvironment` but wheels had never been uploaded. Re-run without `-SkipEnvironment`.
+2. Check the pip-install cell for `subprocess.check_call` — if it raises, the kernel dies silently. Capture stderr by removing `stdout=subprocess.DEVNULL` temporarily.
+3. If wheels are present but CS-lookup cell crashes, add explicit error logging before the CS-lookup call.
+
+**Fix**: Always run the deploy script without `-SkipEnvironment` for the first deploy of a source (wheels have never been uploaded). `-SkipEnvironment` is safe only when wheels are already in the Lakehouse from a prior run.
 
