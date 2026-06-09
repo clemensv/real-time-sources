@@ -20,7 +20,7 @@ from typing import Any, Dict, List, Mapping, Optional, Tuple
 import docker
 from docker.models.containers import Container
 from docker.models.images import Image
-from confluent_kafka import Consumer
+from confluent_kafka import Consumer, KafkaError, KafkaException
 from confluent_kafka.admin import AdminClient, NewTopic
 from json_structure import InstanceValidator, SchemaValidator
 from testcontainers.kafka import KafkaContainer
@@ -218,13 +218,13 @@ class KafkaFixture:
 
     def create_topic(self, topic: str, partitions: int = 1) -> None:
         admin = AdminClient({'bootstrap.servers': self.external_address})
-        fut = admin.create_topics([NewTopic(topic, num_partitions=partitions, replication_factor=1)])
-        for _topic, f in fut.items():
+        futures = admin.create_topics([NewTopic(topic, num_partitions=partitions, replication_factor=1)])
+        for _topic, future in futures.items():
             try:
-                f.result(timeout=10)
-            except Exception as exc:
-                message = str(exc).lower()
-                if 'already exists' in message or 'topic_already_exists' in message:
+                future.result(timeout=10)
+            except KafkaException as exc:
+                error = exc.args[0] if exc.args else None
+                if isinstance(error, KafkaError) and error.code() == KafkaError.TOPIC_ALREADY_EXISTS:
                     continue
                 raise
         time.sleep(1)
