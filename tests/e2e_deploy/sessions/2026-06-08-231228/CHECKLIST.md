@@ -95,17 +95,17 @@
 | snotel | ✅ PASS | — | — | — |
 | syke-hydro | ❌ FAIL | — | — | — |
 | uba-airdata | ✅ PASS | — | — | — |
-| uk-ea-flood-monitoring | ❌ FAIL | — | — | — |
-| usgs-earthquakes | ✅ PASS | — | — | — |
+| uk-ea-flood-monitoring | ❌ FAIL | — | ❌ FAIL | #856 |
+| usgs-earthquakes | ✅ PASS | — | ✅ PASS (dispatch=9; USGS.Earthquakes.Event=9) | cleanup complete |
 | usgs-geomag | ✅ PASS | — | — | — |
 | usgs-iv | ✅ PASS | — | — | — |
 | usgs-nwis-wq | ✅ PASS | — | — | — |
 | vatsim | ✅ PASS | — | — | — |
 | wallonia-issep | ✅ PASS | — | — | — |
-| waterinfo-vmm | ❌ FAIL | — | — | — |
+| waterinfo-vmm | ❌ FAIL | — | ✅ PASS | — |
 | wikimedia-eventstreams | ✅ PASS | — | — | — |
 | wikimedia-osm-diffs | ✅ PASS | — | — | — |
-| xceed | ✅ PASS | — | — | — |
+| xceed | ✅ PASS | — | ✅ PASS (dispatch=1076; Event=250; EventAdmission=826) | #864 |
 
 ## Session Notes
 
@@ -1408,6 +1408,14 @@ None.
 
 ## Source: `uk-ea-flood-monitoring`
 
+### Fabric Notebook
+- Status: ❌ FAIL
+- dispatch_count: 0
+- typed_tables: uk.gov.environment.ea.floodmonitoring.Station=0, uk.gov.environment.ea.floodmonitoring.Reading=0
+- timestamp: 2026-06-09T11:06:52Z
+- error: Notebook job failed with `System_Cancelled_Session_Statements_Failed`; OneLake log captured `ModuleNotFoundError: No module named 'cloudevents.kafka'` while importing `uk_ea_flood_monitoring_producer_kafka_producer.producer`.
+- cleanup: notebook, eventstream, KQL database, and eventhouse deleted after validation
+
 ### Azure Event Hubs (Kafka)
 - Status: ❌ FAIL
 - messages_received: 0
@@ -1415,9 +1423,16 @@ None.
 - error: Only received 0 messages (expected >= 1)
 
 ### Issues Filed
-None.
+- #856
 
 ## Source: `usgs-earthquakes`
+
+### Fabric Notebook
+- Status: ✅ PASS
+- dispatch_count: 9
+- typed_tables: USGS.Earthquakes.Event=9
+- timestamp: 2026-06-09T11:08:00Z
+- notes: Verified local-wheel reinstall and cloudevents<2.0.0 pin in notebook; cleanup complete.
 
 ### Azure Event Hubs (Kafka)
 - Status: ✅ PASS
@@ -1479,6 +1494,14 @@ None.
 
 ## Source: `waterinfo-vmm`
 
+### Fabric Notebook
+- Status: ✅ PASS
+- fix_applied: Redeployed with `-BuildWheelsLocally` after the `Station()` argument fix landed.
+- dispatch_count: 1877
+- typed_tables: be.vlaanderen.waterinfo.vmm.Station=1877, be.vlaanderen.waterinfo.vmm.WaterLevelReading=0
+- cleanup: notebook/eventstream/kql database/eventhouse deleted
+- timestamp: 2026-06-09T11:14:29.2628062Z
+
 ### Azure Event Hubs (Kafka)
 - Status: ❌ FAIL
 - messages_received: 0
@@ -1510,13 +1533,22 @@ None.
 
 ## Source: `xceed`
 
+### Fabric Notebook
+- Status: ✅ PASS
+- fix_applied: Redeployed without `-SkipEnvironment` using `-BuildWheelsLocally` after the continuous-mode notebook fix (`t.join(timeout=RUN_DURATION)`) and force-reinstall pip fix.
+- onelake_log: startup reached `Running feeder.main() with argv=['xceed', 'feed']`; KQL ingestion confirmed within the validation window.
+- dispatch_count: 1076
+- typed_tables: Event=250, EventAdmission=826
+- cleanup: notebook/eventstream/kql database/eventhouse deleted
+- timestamp: 2026-06-09T11:28:17.7560884Z
+
 ### Azure Event Hubs (Kafka)
 - Status: ✅ PASS
 - messages_received: 1
 - steps: messages_validated=yes, rg_deleted=yes, rg_created=yes, aci_running=yes, deployment_complete=yes
 
 ### Issues Filed
-None.
+- #864
 
 ## Source: `paris-bicycle-counters`
 
