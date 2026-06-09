@@ -90,6 +90,7 @@ class HKOWeatherAPI:
                 place_id=pid,
                 name=info["name"],
                 data_types=",".join(sorted(info["types"])),
+                district=None,
             )
         return stations
 
@@ -153,6 +154,7 @@ class HKOWeatherAPI:
                 humidity=humidity_map.get(pid),
                 uv_index=uv[0] if uv else None,
                 uv_description=uv[1] if uv else None,
+                district=None,
             )
             observations.append(obs)
         return observations
