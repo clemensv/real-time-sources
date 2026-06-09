@@ -113,6 +113,7 @@ class TestDataClasses:
             voivodeship="śląskie",
             longitude=18.5431,
             latitude=50.3825,
+            basin=None,
         )
         assert station.station_id == "150180090"
         assert station.station_name == "Nędza"
@@ -129,6 +130,7 @@ class TestDataClasses:
             voivodeship="śląskie",
             longitude=18.5431,
             latitude=50.3825,
+            basin=None,
         )
         json_str = station.to_json()
         data = json.loads(json_str)
@@ -136,13 +138,13 @@ class TestDataClasses:
         assert data["station_name"] == "Nędza"
 
     def test_station_from_data(self):
-        data = {"station_id": "123", "station_name": "Test", "river": "River", "voivodeship": "test", "longitude": 20.0, "latitude": 52.0}
+        data = {"station_id": "123", "station_name": "Test", "river": "River", "voivodeship": "test", "longitude": 20.0, "latitude": 52.0, "basin": None}
         station = Station.from_data(data)
         assert station.station_id == "123"
         assert station.longitude == 20.0
 
     def test_station_to_byte_array(self):
-        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0)
+        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0, basin=None)
         data = station.to_byte_array("application/json")
         assert isinstance(data, (str, bytes))
         parsed = json.loads(data)
@@ -162,6 +164,7 @@ class TestDataClasses:
             discharge_timestamp="2026-02-18 09:50:00",
             ice_phenomenon_code="0",
             overgrowth_code="0",
+            basin=None,
         )
         assert obs.station_id == "150180090"
         assert obs.water_level == 45.0
@@ -182,6 +185,7 @@ class TestDataClasses:
             discharge_timestamp=None,
             ice_phenomenon_code=None,
             overgrowth_code=None,
+            basin=None,
         )
         assert obs.water_temperature is None
         assert obs.discharge is None
@@ -201,6 +205,7 @@ class TestDataClasses:
             discharge_timestamp=None,
             ice_phenomenon_code=None,
             overgrowth_code=None,
+            basin=None,
         )
         json_str = obs.to_json()
         data = json.loads(json_str)
@@ -222,6 +227,7 @@ class TestDataClasses:
             "discharge_timestamp": None,
             "ice_phenomenon_code": None,
             "overgrowth_code": None,
+            "basin": None,
         }
         obs = WaterLevelObservation.from_data(data)
         assert obs.station_id == "123"
@@ -323,7 +329,7 @@ class TestProducerClient:
     def test_send_station(self):
         mock_kafka_producer = MagicMock()
         producer = PLGovIMGWHydroEventProducer(mock_kafka_producer, "test-topic")
-        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0)
+        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0, basin=None)
         producer.send_pl_gov_imgw_hydro_station("123", station)
         mock_kafka_producer.produce.assert_called_once()
         mock_kafka_producer.flush.assert_called_once()
@@ -337,6 +343,7 @@ class TestProducerClient:
             water_temperature=None, water_temperature_timestamp=None,
             discharge=None, discharge_timestamp=None,
             ice_phenomenon_code=None, overgrowth_code=None,
+            basin=None,
         )
         producer.send_pl_gov_imgw_hydro_water_level_observation("123", obs)
         mock_kafka_producer.produce.assert_called_once()
@@ -344,7 +351,7 @@ class TestProducerClient:
     def test_send_station_no_flush(self):
         mock_kafka_producer = MagicMock()
         producer = PLGovIMGWHydroEventProducer(mock_kafka_producer, "test-topic")
-        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0)
+        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0, basin=None)
         producer.send_pl_gov_imgw_hydro_station("123", station, flush_producer=False)
         mock_kafka_producer.produce.assert_called_once()
         mock_kafka_producer.flush.assert_not_called()
@@ -352,14 +359,14 @@ class TestProducerClient:
     def test_send_station_binary_mode(self):
         mock_kafka_producer = MagicMock()
         producer = PLGovIMGWHydroEventProducer(mock_kafka_producer, "test-topic", content_mode='binary')
-        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0)
+        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0, basin=None)
         producer.send_pl_gov_imgw_hydro_station("123", station)
         mock_kafka_producer.produce.assert_called_once()
 
     def test_cloudevents_structured_format(self):
         mock_kafka_producer = MagicMock()
         producer = PLGovIMGWHydroEventProducer(mock_kafka_producer, "test-topic")
-        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0)
+        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0, basin=None)
         producer.send_pl_gov_imgw_hydro_station("123", station)
         call_kwargs = mock_kafka_producer.produce.call_args
         headers = dict(call_kwargs[1]['headers']) if isinstance(call_kwargs[1]['headers'], list) else call_kwargs[1]['headers']
@@ -368,7 +375,7 @@ class TestProducerClient:
     def test_station_cloudevent_value(self):
         mock_kafka_producer = MagicMock()
         producer = PLGovIMGWHydroEventProducer(mock_kafka_producer, "test-topic")
-        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0)
+        station = Station(station_id="123", station_name="Test", river="River", voivodeship="test", longitude=20.0, latitude=52.0, basin=None)
         producer.send_pl_gov_imgw_hydro_station("123", station)
         call_kwargs = mock_kafka_producer.produce.call_args
         value = json.loads(call_kwargs[1]['value'])

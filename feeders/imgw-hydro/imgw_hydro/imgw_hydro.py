@@ -54,10 +54,11 @@ class IMGWHydroAPI:
         return Station(
             station_id=record.get("id_stacji", ""),
             station_name=record.get("stacja", ""),
-            river=record.get("rzeka", "") or "",
-            voivodeship=record.get("wojewodztwo", "") or "",
-            longitude=float(record["lon"]) if record.get("lon") else 0.0,
-            latitude=float(record["lat"]) if record.get("lat") else 0.0,
+            river=record.get("rzeka") or None,
+            voivodeship=record.get("wojewodztwo") or None,
+            longitude=float(record["lon"]) if record.get("lon") else None,
+            latitude=float(record["lat"]) if record.get("lat") else None,
+            basin=record.get("dorzecze") or record.get("basin") or None,
         )
 
     @staticmethod
@@ -88,8 +89,8 @@ class IMGWHydroAPI:
         return WaterLevelObservation(
             station_id=record.get("id_stacji", ""),
             station_name=record.get("stacja", ""),
-            river=record.get("rzeka", "") or "",
-            voivodeship=record.get("wojewodztwo", "") or "",
+            river=record.get("rzeka") or None,
+            voivodeship=record.get("wojewodztwo") or None,
             water_level=water_level,
             water_level_timestamp=datetime.datetime.fromisoformat(record.get("stan_wody_data_pomiaru", "")) if record.get("stan_wody_data_pomiaru") else datetime.datetime.now(datetime.timezone.utc),
             water_temperature=water_temp,
@@ -98,6 +99,7 @@ class IMGWHydroAPI:
             discharge_timestamp=datetime.datetime.fromisoformat(record["przeplyw_data"]) if record.get("przeplyw_data") else None,
             ice_phenomenon_code=record.get("zjawisko_lodowe"),
             overgrowth_code=record.get("zjawisko_zarastania"),
+            basin=record.get("dorzecze") or record.get("basin") or None,
         )
 
 
