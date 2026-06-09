@@ -176,14 +176,15 @@ class EAFloodMonitoringAPI:
             station_data = Station(
                 station_reference=station_ref,
                 label=station.get("label", ""),
-                river_name=station.get("riverName", ""),
-                catchment_name=station.get("catchmentName", ""),
-                town=station.get("town", ""),
+                river_name=station.get("riverName") or None,
+                catchment_name=station.get("catchmentName") or None,
+                town=station.get("town") or None,
                 lat=raw_lat if raw_lat is not None else 0.0,
                 long=raw_long if raw_long is not None else 0.0,
                 notation=station.get("notation", ""),
-                status=station.get("status", ""),
-                date_opened=station.get("dateOpened", "")
+                status=station.get("status") or None,
+                date_opened=station.get("dateOpened") or None,
+                river=station.get("river") or None
             )
             ea_producer.send_uk_gov_environment_ea_flood_monitoring_station(
                 station_ref, station_data, flush_producer=False)
