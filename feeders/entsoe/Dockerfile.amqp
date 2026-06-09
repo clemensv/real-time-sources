@@ -6,6 +6,8 @@ LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sou
       org.opencontainers.image.description="Publishes ENTSO-E Transparency Platform CloudEvents to AMQP 1.0 brokers and Azure Service Bus/Event Hubs."
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
+
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
 RUN set -eux; \
     for i in 1 2 3 4 5; do \

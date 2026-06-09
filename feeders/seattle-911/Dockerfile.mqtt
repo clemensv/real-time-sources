@@ -11,6 +11,8 @@ LABEL source.transport="mqtt"
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+
 COPY . /app
 
 RUN pip install --no-cache-dir ./seattle_911_mqtt_producer/seattle_911_mqtt_producer_data \

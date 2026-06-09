@@ -8,6 +8,8 @@ LABEL org.opencontainers.image.license="MIT"
 
 WORKDIR /app
 
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+
 COPY geosphere_austria_producer/geosphere_austria_producer_data /app/geosphere_austria_producer_data
 COPY geosphere_austria_producer/geosphere_austria_producer_kafka_producer /app/geosphere_austria_producer_kafka_producer
 

@@ -9,6 +9,8 @@ LABEL org.opencontainers.image.license="MIT"
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
+
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends --fix-missing \

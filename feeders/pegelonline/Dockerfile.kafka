@@ -10,6 +10,8 @@ LABEL org.opencontainers.image.license="MIT"
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+
 # Bring in the local pegelonline source tree. Generated producer packages plus
 # the transport-specific app are installed sequentially to avoid path-resolution
 # races in Poetry-driven local installs.

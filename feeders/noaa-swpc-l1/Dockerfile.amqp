@@ -10,6 +10,8 @@ LABEL org.opencontainers.image.license="MIT"
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+
 # python-qpid-proton compiles a C extension at install time. Install
 # build tools + -dev headers, build the wheel, then drop the build
 # packages but keep the runtime shared libs (libssl, libsasl2).

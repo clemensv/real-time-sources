@@ -9,6 +9,8 @@ import glob
 import json
 import os
 import re
+import shutil
+import tempfile
 import time
 from base64 import b64encode
 from dataclasses import dataclass
@@ -123,12 +125,30 @@ def build_image(project_dir: str, dockerfile: str = 'Dockerfile', tag: Optional[
     build_context = _resolve_project_dir(project_dir)
     if tag is None:
         tag = f'test-{project_dir}'
-    image, _logs = client.images.build(
-        path=build_context,
-        dockerfile=dockerfile,
-        tag=tag,
-        rm=True,
-    )
+
+    with tempfile.TemporaryDirectory(prefix='docker-build-context-') as temp_context:
+        shutil.copytree(build_context, temp_context, dirs_exist_ok=True)
+
+        git_path = os.path.join(REPO_ROOT, '.git')
+        if os.path.isfile(git_path):
+            with open(git_path, 'r', encoding='utf-8') as handle:
+                gitdir_line = handle.readline().strip()
+            gitdir_match = re.match(r'^gitdir:\s*(.+)$', gitdir_line)
+            if gitdir_match:
+                raw_gitdir = os.path.expanduser(gitdir_match.group(1))
+                gitdir = os.path.normpath(raw_gitdir if os.path.isabs(raw_gitdir) else os.path.join(REPO_ROOT, raw_gitdir))
+                shutil.copytree(gitdir, os.path.join(temp_context, '.git'), dirs_exist_ok=True)
+            else:
+                raise RuntimeError(f'Unrecognized .git file format in {git_path}')
+        else:
+            shutil.copytree(git_path, os.path.join(temp_context, '.git'), dirs_exist_ok=True)
+
+        image, _logs = client.images.build(
+            path=temp_context,
+            dockerfile=dockerfile,
+            tag=tag,
+            rm=True,
+        )
     return image
 
 
