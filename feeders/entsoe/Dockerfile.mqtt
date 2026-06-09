@@ -9,9 +9,11 @@ WORKDIR /app
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
-RUN pip install --no-cache-dir ./entsoe_mqtt_producer/entsoe_mqtt_producer_data \
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./entsoe_mqtt_producer/entsoe_mqtt_producer_data \
  && pip install --no-cache-dir ./entsoe_mqtt_producer/entsoe_mqtt_producer_mqtt_client \
  && pip install --no-cache-dir ./entsoe_core \
+ && pip install --no-cache-dir ./entsoe_producer/entsoe_producer_kafka_producer \
  && pip install --no-cache-dir ./entsoe_mqtt
 ENV STATE_FILE="/mnt/fileshare/entsoe_state.json" MQTT_BROKER_URL="" MQTT_AUTH_MODE="anonymous"
 CMD ["python", "-m", "entsoe_mqtt", "feed"]

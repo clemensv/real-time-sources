@@ -11,6 +11,8 @@
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
         COPY . /app
-        RUN pip install --no-cache-dir ./aviationweather_mqtt
+        RUN pip install --no-cache-dir confluent-kafka \
+         && pip install --no-cache-dir ./aviationweather_producer/aviationweather_producer_kafka_producer \
+         && pip install --no-cache-dir ./aviationweather_mqtt
         ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "aviationweather_mqtt", "feed"]
