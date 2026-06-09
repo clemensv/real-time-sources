@@ -81,15 +81,15 @@
 | noaa-swpc-l1 | ✅ PASS | — | ❌ FAIL | #848 |
 | nws-alerts | ✅ PASS | — | ❌ FAIL | — |
 | nws-forecasts | ✅ PASS | — | — | — |
-| paris-bicycle-counters | ✅ PASS | — | — | — |
+| paris-bicycle-counters | ✅ PASS | — | ✅ PASS | — |
 | pegelonline | ✅ PASS | — | — | — |
-| ptwc-tsunami | ✅ PASS | — | — | — |
+| ptwc-tsunami | ✅ PASS | — | ✅ PASS | — |
 | rss | ❌ FAIL | — | — | — |
-| rws-waterwebservices | ✅ PASS | — | — | — |
-| seattle-911 | ✅ PASS | — | — | — |
+| rws-waterwebservices | ✅ PASS | — | ✅ PASS | — |
+| seattle-911 | ✅ PASS | — | ❌ FAIL | #851 |
 | seattle-street-closures | ✅ PASS | — | — | — |
 | sensor-community | ✅ PASS | — | — | — |
-| singapore-nea | ✅ PASS | — | — | — |
+| singapore-nea | ✅ PASS | — | ✅ PASS (dispatch=219) | — |
 | smhi-hydro | ✅ PASS | — | — | — |
 | smhi-weather | ❌ FAIL | — | — | — |
 | snotel | ✅ PASS | — | — | — |
@@ -1243,7 +1243,7 @@ None.
 - typed_tables: Station=786, CurrentMeasurement=721, RiverSegments=1947
 - freshness_minutes: 1
 - map_queries: StateSegments=1947, NavSegments=1947, FreshSegments=1947, StationLabels=721
-- timestamp: 2026-06-09T00:00:00Z
+- timestamp: 2026-06-09T10:26:38.2691782+02:00
 
 ### Azure Event Hubs (Kafka)
 - Status: ✅ PASS
@@ -1254,6 +1254,16 @@ None.
 None.
 
 ## Source: `ptwc-tsunami`
+
+### Fabric Notebook
+- Status: ✅ PASS
+- job_instance_id: b340af6d-753d-49a4-a2a9-386e01f7ecd7
+- dispatch_count: 2
+- typed_tables: TsunamiBulletin=2
+- freshness_minutes_ago: 2
+- fix_applied: Initial notebook had an empty `if ONCE_MODE:` block; added `argv.append('--once')`, redeployed, and reran successfully.
+- cleanup: notebook/eventstream/kqldb/eventhouse deleted
+- timestamp: 2026-06-09T08:54:14.8493061Z
 
 ### Azure Event Hubs (Kafka)
 - Status: ✅ PASS
@@ -1276,6 +1286,16 @@ None.
 
 ## Source: `rws-waterwebservices`
 
+### Fabric Notebook
+- Status: ✅ PASS
+- job_instance_id: 8e071ec0-476c-4574-87a8-46a2bead511f
+- dispatch_count: 3178
+- typed_tables: nl.rws.waterwebservices.Station=797, nl.rws.waterwebservices.WaterLevelObservation=2381
+- freshness_minutes_ago: 1
+- fix_applied: Initial `-SkipEnvironment` run failed with `ModuleNotFoundError`; redeployed without `-SkipEnvironment` using `-BuildWheelsLocally`.
+- cleanup: notebook/eventstream/kqldb/eventhouse deleted
+- timestamp: 2026-06-09T08:49:10.1188715Z
+
 ### Azure Event Hubs (Kafka)
 - Status: ✅ PASS
 - messages_received: 1
@@ -1286,13 +1306,23 @@ None.
 
 ## Source: `seattle-911`
 
+### Fabric Notebook
+- Status: ❌ FAIL
+- job_instance_id: 1e2b1ef0-1194-41af-8c5f-98dce4b98f51
+- dispatch_count: 0
+- typed_tables: US.WA.Seattle.Fire911.Incident=0
+- error: Initial `-SkipEnvironment` run failed with `ModuleNotFoundError: No module named 'seattle_911'`. Redeployed without `-SkipEnvironment`; import succeeded, but the notebook stayed `InProgress` for >12 minutes and produced no KQL rows.
+- fix_applied: None. Root cause appears to be `feeders/seattle-911/seattle_911/seattle_911.py` ignoring `ONCE_MODE`; notebook log stopped after `Running feeder.main() with argv=['seattle-911']`.
+- cleanup: notebook/eventstream/kqldb/eventhouse deleted
+- timestamp: 2026-06-09T08:59:30Z
+
 ### Azure Event Hubs (Kafka)
 - Status: ✅ PASS
 - messages_received: 1
 - steps: rg_deleted=yes, rg_created=yes, deployment_complete=yes, aci_running=yes, messages_validated=yes
 
 ### Issues Filed
-None.
+- #851 seattle-911: Fabric E2E FAIL — notebook ignores ONCE_MODE and produced no KQL rows
 
 ## Source: `seattle-street-closures`
 
@@ -1484,6 +1514,22 @@ None.
 - Status: ✅ PASS
 - messages_received: 1
 - steps: messages_validated=yes, rg_deleted=yes, rg_created=yes, aci_running=yes, deployment_complete=yes
+
+### Issues Filed
+None.
+
+## Source: `paris-bicycle-counters`
+
+### Fabric Notebook
+- Status: ✅ PASS
+- initial_attempt: ❌ FAIL (`ModuleNotFoundError: No module named 'paris_bicycle_counters'` with `-SkipEnvironment`)
+- fix_applied: Redeployed without `-SkipEnvironment` using `-BuildWheelsLocally`
+- notebook_job_status: Completed
+- dispatch_count: 10139
+- typed_tables: FR.Paris.OpenData.Velo.Counter=139, FR.Paris.OpenData.Velo.BicycleCount=10000
+- freshness_minutes_ago: 1
+- cleanup: notebook/eventstream/kql database/eventhouse deleted
+- timestamp: 2026-06-09T08:35:36.2366361Z
 
 ### Issues Filed
 None.

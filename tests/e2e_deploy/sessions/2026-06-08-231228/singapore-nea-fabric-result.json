@@ -1,0 +1,13 @@
+{
+  "source": "singapore-nea",
+  "status": "PASS",
+  "dispatch_count": 219,
+  "typed_table_counts": {
+    "Station": 73,
+    "WeatherObservation": 146,
+    "Region": 0
+  },
+  "error": null,
+  "fix_applied": null,
+  "timestamp": "2026-06-09T09:14:52.7987763Z"
+}
