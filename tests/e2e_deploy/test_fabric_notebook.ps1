@@ -136,6 +136,9 @@ try {
     $result.steps["run_completed"] = $true
 
     # Step 4: Validate KQL data (reusable module)
+    # Wait for EventStream → KQL ingestion pipeline to flush (typically 60-120s latency)
+    Write-Host "[4/6] Waiting 120s for EventStream ingestion before querying KQL..."
+    Start-Sleep -Seconds 120
     Write-Host "[4/6] Validating KQL data..."
     # Fabric REST needs api.fabric.microsoft.com audience; Kusto REST needs kusto.kusto.windows.net audience
     $kustoToken = az account get-access-token --resource "https://kusto.kusto.windows.net" --query accessToken --output tsv
