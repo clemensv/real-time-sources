@@ -149,6 +149,35 @@ def test_harness_change_runs_smoke_set(tmp_path, monkeypatch):
     assert flow == smoke_flow
 
 
+def test_many_feeder_changes_fall_back_to_smoke_set(tmp_path, monkeypatch):
+    matrix = json.loads(MATRIX_PATH.read_text())
+    smoke_build = [m for m in matrix["build"] if m.get("smoke")]
+    smoke_flow = [m for m in matrix["flow"] if m.get("smoke")]
+    changed = []
+    seen = set()
+    for entry in matrix["build"]:
+        feeder_dir = entry["dir"]
+        if feeder_dir in seen:
+            continue
+        seen.add(feeder_dir)
+        feeder = feeder_dir.split("/", 1)[1]
+        changed.append(f"{feeder_dir}/{feeder}/{feeder}.py")
+        if len(seen) >= 9:
+            break
+
+    vals, build, flow = _run(
+        monkeypatch,
+        tmp_path,
+        event="push",
+        changed="\n".join(changed),
+    )
+
+    assert vals["full_run"] == "false"
+    assert build == smoke_build
+    assert flow == smoke_flow
+    assert "shared runtime change spans" in vals["reason"]
+
+
 def test_shard_workflow_change_runs_smoke_set(tmp_path, monkeypatch):
     vals, build, flow = _run(
         monkeypatch,

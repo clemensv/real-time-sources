@@ -53,12 +53,13 @@ def _parse_broker_url(url: str):
 
 def _producer_class():
     mod = importlib.import_module(f"{PY_MODULE}_amqp_producer_amqp_producer.producer")
-    classes = [obj for name, obj in vars(mod).items() if inspect.isclass(obj) and name.endswith("AmqpProducer")]
+    classes = [obj for _, obj in vars(mod).items() if inspect.isclass(obj) and any(name.startswith("send_") for name in dir(obj))]
     if not classes:
         raise RuntimeError(f"No AMQP producer class found in {mod.__name__}")
-    # Most of these sources have a single AMQP endpoint/messagegroup. If xrcg
-    # emits helper/base classes, choose the concrete producer with send_* APIs.
-    classes.sort(key=lambda cls: len([n for n in dir(cls) if n.startswith("send_")]), reverse=True)
+    # xrcg can emit producer classes whose names do not end with "AmqpProducer"
+    # (for example after a simplified message-group manifest). Prefer the concrete
+    # class with the most send_* methods rather than relying on the old naming rule.
+    classes.sort(key=lambda cls: (len([name for name in dir(cls) if name.startswith("send_")]), cls.__name__), reverse=True)
     return classes[0]
 
 
@@ -247,11 +248,27 @@ def _coerce_data(cls: type[Any], payload: dict[str, Any]) -> Any:
 def emit_mock_corpus(adapter: MqttToAmqpAdapter) -> None:
     manifest = json.loads(_manifest_path().read_text(encoding="utf-8"))
     jstruct_group = next(v for k, v in manifest["schemagroups"].items() if k.endswith(".jstruct"))
-    amqp_group = next(v for k, v in manifest["messagegroups"].items() if k.endswith(".amqp"))
+    amqp_group = None
+    for endpoint in manifest.get("endpoints", {}).values():
+        if endpoint.get("protocol") != "AMQP/1.0":
+            continue
+        for group_uri in endpoint.get("messagegroups", []):
+            group_name = group_uri.strip("/").rsplit("/", 1)[-1]
+            if group_name in manifest.get("messagegroups", {}):
+                amqp_group = manifest["messagegroups"][group_name]
+                break
+        if amqp_group is not None:
+            break
+    if amqp_group is None:
+        amqp_group = next(v for k, v in manifest["messagegroups"].items() if k.endswith(".amqp"))
     for message_name, message in amqp_group["messages"].items():
-        base = message["basemessageuri"].strip("/").split("/")
-        base_msg = manifest["messagegroups"][base[1]]["messages"][base[3]]
-        schema_name = base_msg["dataschemauri"].split("/")[-1]
+        schema_name = None
+        if "dataschemauri" in message:
+            schema_name = message["dataschemauri"].split("/")[-1]
+        else:
+            base = message["basemessageuri"].strip("/").split("/")
+            base_msg = manifest["messagegroups"][base[1]]["messages"][base[3]]
+            schema_name = base_msg["dataschemauri"].split("/")[-1]
         schema_entry = jstruct_group["schemas"][schema_name]["versions"]["1"]["schema"]
         root_node, doc = _schema_root(schema_entry)
         payload = _sample_for_node(root_node, doc)
