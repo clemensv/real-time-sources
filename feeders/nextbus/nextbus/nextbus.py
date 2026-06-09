@@ -313,8 +313,8 @@ def create_event_data(event : CloudEvent) -> EventData:
     return event_data
 
 
-def feed(feed_connection_string: str, feed_event_hub_name: str, reference_connection_string: str | None, reference_event_hub_name: str | None, agency_tag: str, route: str | None):
-    """Poll vehicle locations and submit to an Event Hub"""
+def feed(feed_connection_string: str, feed_event_hub_name: str, reference_connection_string: str | None, reference_event_hub_name: str | None, agency_tag: str, route: str | None, once: bool = False):
+    """Poll vehicle locations and submit to an Event Hub."""
     feed_producer_client = EventHubProducerClient.from_connection_string(feed_connection_string, eventhub_name=feed_event_hub_name)
     reference_producer_client = None
     if reference_connection_string is not None:
@@ -337,12 +337,15 @@ def feed(feed_connection_string: str, feed_event_hub_name: str, reference_connec
                     poll_and_submit_messages(reference_producer_client, agency_tag)
                     last_messages_time = current_time
             last_vehicle_location_time = poll_and_submit_vehicle_locations(feed_producer_client, agency_tag, route, last_vehicle_location_time)
+            if once:
+                break
             time.sleep(poll_interval)
     except KeyboardInterrupt:
         print("Loop interrupted by user")
-
-    # Close the Event Hub producer client
-    feed_producer_client.close()
+    finally:
+        feed_producer_client.close()
+        if reference_producer_client is not None:
+            reference_producer_client.close()
 
 
 def print_vehicle_locations(agency, route):
@@ -394,8 +397,9 @@ def main():
     feed_parser.add_argument("--reference-event-hub-name", help="the name of the Event Hub to submit reference data to", default=_ref_hub, required=False)
     feed_parser.add_argument("--agency", help="the tag of the agency to poll vehicle locations for", default=_agency, required=_agency is None)
     feed_parser.add_argument("--route", help="the route to poll vehicle locations for, omit or '*' to poll all routes", required=False, default=os.environ.get("ROUTE", "*"))
-    feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=float(os.environ.get("POLL_INTERVAL", "10")))
+    feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=float(os.environ.get("POLLING_INTERVAL") or os.environ.get("POLL_INTERVAL", "10")))
     feed_parser.add_argument("--backoff-interval", help="the number of seconds to wait before retrying after an error", required=False, type=float, default=float(os.environ.get("BACKOFF_INTERVAL", "0")))
+    feed_parser.add_argument("--once", action="store_true", default=os.environ.get("ONCE_MODE", "").lower() in ("1", "true", "yes"), help="Run a single polling cycle and exit")
     feed_parser.set_defaults(func=lambda args: launch_feed(args))
 
     # Define the "vehicle-locations" command
@@ -426,9 +430,10 @@ def main():
         parser.print_help()
 
 def launch_feed(args):
+    global backoff_time, poll_interval
     backoff_time = args.backoff_interval
     poll_interval = args.poll_interval
-    feed(args.feed_connection_string, args.feed_event_hub_name, args.reference_connection_string, args.reference_event_hub_name, args.agency, args.route)
+    feed(args.feed_connection_string, args.feed_event_hub_name, args.reference_connection_string, args.reference_event_hub_name, args.agency, args.route, once=args.once)
 
 if __name__ == "__main__":
     main()
