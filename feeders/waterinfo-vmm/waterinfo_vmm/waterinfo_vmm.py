@@ -148,10 +148,11 @@ class WaterinfoVMMAPI:
                 station_id=str(station_dict.get("station_id", "")),
                 station_latitude=float(station_dict.get("station_latitude", 0) or 0),
                 station_longitude=float(station_dict.get("station_longitude", 0) or 0),
-                river_name=station_dict.get("river_name", "") or "",
-                stationparameter_name="",
-                ts_id="",
-                ts_unitname="",
+                river_name=station_dict.get("river_name") or None,
+                stationparameter_name=station_dict.get("stationparameter_name") or None,
+                ts_id=str(station_dict.get("ts_id", "")) or None,
+                ts_unitname=station_dict.get("ts_unitname") or None,
+                water_body=station_dict.get("water_body") or None,
             )
             waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_station(
                 station.station_no, station, flush_producer=False)
