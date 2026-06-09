@@ -14,7 +14,7 @@ description = "A project to fetch data from NextBus API"
 authors = [
     { name = "Clemens Vasters", email = "clemensv@microsoft.com" },
 ]
-requires-python = "^3.10"
+requires-python = ">=3.10,<4.0"
 dependencies = [
     "azure-eventhub>=5.15.1,<6.0.0",
     "cloudevents>=1.12.1,<2.0.0",
