@@ -1,0 +1,1 @@
+{"source":"usgs-earthquakes","status":"PASS","dispatch_count":9,"typed_table_counts":{"USGS.Earthquakes.Event":9},"error":null,"fix_applied":"Verified `_time=` bridge fix, forced local-wheel reinstall in the notebook, and pinned notebook cloudevents reinstall to <2.0.0 so `cloudevents.kafka` is available in Fabric.","timestamp":"2026-06-09T11:08:00Z"}
