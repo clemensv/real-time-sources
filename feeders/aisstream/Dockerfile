@@ -10,7 +10,9 @@ WORKDIR /app
 COPY . /app
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install --no-cache-dir ./aisstream_producer/aisstream_producer_data \
+ && pip install --no-cache-dir ./aisstream_producer/aisstream_producer_kafka_producer \
+ && pip install --no-cache-dir .
 
 ENV CONNECTION_STRING=""
 ENV AISSTREAM_API_KEY=""
