@@ -5,6 +5,7 @@ from cdec_reservoirs.cdec_reservoirs import (
     CdecReservoirsAPI,
     parse_cdec_timestamp,
     normalize_value,
+    extract_basin,
     _load_state,
     _save_state,
     BASE_URL,
@@ -98,6 +99,15 @@ class TestNormalizeValue:
 
     def test_large_value(self):
         assert normalize_value(10000000) == 10000000.0
+
+
+@pytest.mark.unit
+class TestExtractBasin:
+    def test_extracts_primary_basin_key(self):
+        assert extract_basin({"basin": "Sacramento"}) == "Sacramento"
+
+    def test_falls_back_to_alternate_basin_keys(self):
+        assert extract_basin({"drainageBasin": "Feather"}) == "Feather"
 
 
 @pytest.mark.unit

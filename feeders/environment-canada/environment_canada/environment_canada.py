@@ -101,6 +101,7 @@ class ECWeatherAPI:
         lon = float(coords[0]) if len(coords) > 0 else None
         lat = float(coords[1]) if len(coords) > 1 else None
         elev = float(coords[2]) if len(coords) > 2 else None
+        province = props.get("province") or props.get("province_territory", "")
 
         return Station(
             msc_id=str(props.get("msc_id", "")),
@@ -114,6 +115,7 @@ class ECWeatherAPI:
             latitude=lat,
             longitude=lon,
             elevation=elev,
+            province=province,
         )
 
     @staticmethod
@@ -151,6 +153,12 @@ class ECWeatherAPI:
             except (ValueError, TypeError):
                 return None
 
+        province = (
+            props.get("prov_state_terr-value")
+            or props.get("province-value")
+            or props.get("province_territory-value")
+        )
+
         return WeatherObservation(
             msc_id=msc_id,
             station_name=station_name,
@@ -174,7 +182,7 @@ class ECWeatherAPI:
             wind_gust_1hr=_float("max_wnd_spd_10m_pst1hr"),
             precipitation_24hr=_float("pcpn_amt_pst24hrs"),
             altimeter_setting=_float("altmetr_setng"),
-            province=props.get("prov_state_terr-value"),
+            province=province,
         )
 
 

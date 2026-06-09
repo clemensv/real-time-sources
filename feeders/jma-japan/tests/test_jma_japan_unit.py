@@ -292,6 +292,7 @@ class TestParseEntries:
         assert len(bulletins) == 2
         assert bulletins[0].title == "大雨危険度通知"
         assert bulletins[0].author == "気象庁"
+        assert bulletins[0].office == "気象庁"
         assert bulletins[0].feed_type.value == "regular"
 
     def test_parse_extra_entries(self):
@@ -300,6 +301,7 @@ class TestParseEntries:
         assert len(bulletins) == 2
         assert bulletins[0].title == "気象特別警報・警報・注意報"
         assert bulletins[0].author == "佐賀地方気象台"
+        assert bulletins[0].office == "佐賀地方気象台"
         assert bulletins[0].feed_type.value == "extra"
 
     def test_parse_entry_link(self):
@@ -464,6 +466,7 @@ class TestWeatherBulletinDataclass:
             link="https://example.com/bulletin.xml",
             content="【警報】",
             feed_type=FeedTypeenum.extra,
+            office="気象庁",
         )
         assert bulletin.bulletin_id == "abc123def456"
         assert bulletin.title == "気象特別警報"
@@ -481,6 +484,7 @@ class TestWeatherBulletinDataclass:
             link=None,
             content=None,
             feed_type=FeedTypeenum.regular,
+            office=None,
         )
         assert bulletin.author is None
         assert bulletin.link is None
@@ -497,6 +501,7 @@ class TestWeatherBulletinDataclass:
             link="https://example.com/test.xml",
             content="テスト内容",
             feed_type=FeedTypeenum.regular,
+            office="テスト局",
         )
         json_str = bulletin.to_json()
         data = json.loads(json_str)
@@ -514,6 +519,7 @@ class TestWeatherBulletinDataclass:
             "link": None,
             "content": None,
             "feed_type": "regular",
+            "office": None,
         }
         bulletin = WeatherBulletin.from_data(data)
         assert bulletin.bulletin_id == "fromdict"
@@ -582,6 +588,7 @@ class TestJapaneseTextHandling:
             link=None,
             content="大型の台風が接近中です。",
             feed_type=FeedTypeenum.extra,
+            office="気象庁",
         )
         json_str = bulletin.to_json()
         restored = WeatherBulletin.from_data(json_str, "application/json")

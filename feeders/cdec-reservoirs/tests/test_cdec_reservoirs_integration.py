@@ -176,6 +176,7 @@ class TestDataClassCreation:
             date="2026-04-01T00:00:00-08:00",
             dur_code="H",
             data_flag=" ",
+            basin="Sacramento",
         )
         assert reading.station_id == "SHA"
         assert reading.sensor_num == 15
@@ -193,6 +194,7 @@ class TestDataClassCreation:
             date="2026-04-01T00:00:00-08:00",
             dur_code="H",
             data_flag=" ",
+            basin="Sacramento",
         )
         assert reading.value is None
 
@@ -207,6 +209,7 @@ class TestDataClassCreation:
             date="2026-04-01T00:00:00-08:00",
             dur_code="H",
             data_flag=" ",
+            basin="Feather",
         )
         d = reading.to_serializer_dict()
         assert d['station_id'] == "ORO"
@@ -224,6 +227,7 @@ class TestDataClassCreation:
             date="2026-04-01T01:00:00-08:00",
             dur_code="H",
             data_flag=" ",
+            basin="American",
         )
         json_str = reading.to_json()
         restored = ReservoirReading.from_json(json_str)

@@ -405,7 +405,7 @@ class TestWeatherStationDataClass:
     def test_to_json_roundtrip(self):
         station = WeatherStation(
             station_id="11035", station_name="WIEN HOHE WARTE",
-            latitude=48.2486, longitude=16.3564, altitude=198.0, state="Wien",
+            latitude=48.2486, longitude=16.3564, altitude=198.0, state="Wien", bundesland="Wien",
         )
         json_str = station.to_json()
         data = json.loads(json_str)
@@ -415,7 +415,7 @@ class TestWeatherStationDataClass:
     def test_null_state_serialization(self):
         station = WeatherStation(
             station_id="99999", station_name="TEST",
-            latitude=47.0, longitude=15.0, altitude=500.0, state=None,
+            latitude=47.0, longitude=15.0, altitude=500.0, state=None, bundesland=None,
         )
         json_str = station.to_json()
         data = json.loads(json_str)
@@ -480,8 +480,8 @@ class TestSendStationEvents:
         fake = FakeProducer()
         producer = AtGeosphereTawesEventProducer(fake, "test-topic")
         stations = [
-            WeatherStation(station_id="11035", station_name="WIEN", latitude=48.0, longitude=16.0, altitude=200.0, state="Wien"),
-            WeatherStation(station_id="11266", station_name="ACHENKIRCH", latitude=47.5, longitude=11.7, altitude=931.0, state="Tirol"),
+            WeatherStation(station_id="11035", station_name="WIEN", latitude=48.0, longitude=16.0, altitude=200.0, state="Wien", bundesland="Wien"),
+            WeatherStation(station_id="11266", station_name="ACHENKIRCH", latitude=47.5, longitude=11.7, altitude=931.0, state="Tirol", bundesland="Tirol"),
         ]
         count = send_station_events(producer, stations)
         assert count == 2
@@ -497,7 +497,7 @@ class TestSendStationEvents:
         fake = FakeProducer()
         producer = AtGeosphereTawesEventProducer(fake, "test-topic")
         stations = [
-            WeatherStation(station_id="11035", station_name="WIEN", latitude=48.0, longitude=16.0, altitude=200.0, state="Wien"),
+            WeatherStation(station_id="11035", station_name="WIEN", latitude=48.0, longitude=16.0, altitude=200.0, state="Wien", bundesland="Wien"),
         ]
         send_station_events(producer, stations)
         msg = fake.messages[0]
@@ -507,7 +507,7 @@ class TestSendStationEvents:
         fake = FakeProducer()
         producer = AtGeosphereTawesEventProducer(fake, "test-topic")
         stations = [
-            WeatherStation(station_id="11035", station_name="WIEN", latitude=48.0, longitude=16.0, altitude=200.0, state="Wien"),
+            WeatherStation(station_id="11035", station_name="WIEN", latitude=48.0, longitude=16.0, altitude=200.0, state="Wien", bundesland="Wien"),
         ]
         send_station_events(producer, stations)
         value = json.loads(fake.messages[0]["value"])

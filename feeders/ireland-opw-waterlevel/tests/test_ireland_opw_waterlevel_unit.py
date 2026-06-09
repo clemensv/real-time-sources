@@ -211,6 +211,22 @@ class TestExtractReadings:
         assert r["value"] == pytest.approx(0.368)
         assert r["datetime"] == "2024-01-15T12:00:00Z"
         assert r["err_code"] == 99
+        assert r["basin"] is None
+
+    def test_extracts_basin_fallback(self):
+        readings = extract_readings([{
+            "properties": {
+                "station_ref": "0000001041",
+                "station_name": "Sandy Mills",
+                "sensor_ref": "0001",
+                "datetime": "2024-01-15T12:00:00Z",
+                "value": "0.368",
+                "err_code": 99,
+                "catchment": "Foyle",
+            },
+            "geometry": {"coordinates": [-7.575758, 54.838318]},
+        }])
+        assert readings[0]["basin"] == "Foyle"
 
     def test_different_sensor_refs(self):
         readings = extract_readings(SAMPLE_FEATURES)
