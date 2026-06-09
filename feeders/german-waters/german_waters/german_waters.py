@@ -172,7 +172,9 @@ def send_stations(producer_client: DEWatersHydrologyEventProducer,
     count = 0
     for s in stations:
         producer_client.send_de_waters_hydrology_station(
-            data=_station_to_event(s), flush_producer=False)
+            _station_id=s.station_id,
+            data=_station_to_event(s),
+            flush_producer=False)
         count += 1
     return count
 
@@ -191,7 +193,9 @@ def _refresh_station_metadata(producer_client: DEWatersHydrologyEventProducer,
             station_water_bodies[station.station_id] = station.water_body
         if station.station_id not in published_station_ids:
             producer_client.send_de_waters_hydrology_station(
-                data=_station_to_event(station), flush_producer=False)
+                _station_id=station.station_id,
+                data=_station_to_event(station),
+                flush_producer=False)
             published_station_ids.add(station.station_id)
 
 
@@ -226,7 +230,9 @@ def feed_observations(producer_client: DEWatersHydrologyEventProducer,
             if prev_ts == ts_key:
                 continue
             producer_client.send_de_waters_hydrology_water_level_observation(
-                data=_obs_to_event(o, water_body=water_body), flush_producer=False)
+                _station_id=o.station_id,
+                data=_obs_to_event(o, water_body=water_body),
+                flush_producer=False)
             previous_readings[o.station_id] = ts_key
             count += 1
     kafka_producer.flush()
@@ -234,7 +240,7 @@ def feed_observations(producer_client: DEWatersHydrologyEventProducer,
 
 
 def run_feed(kafka_config: dict, kafka_topic: str, polling_interval: int,
-             state_file: str, providers: List[BaseProvider]) -> None:
+             state_file: str, providers: List[BaseProvider], once: bool = False) -> None:
     """Main feed loop: emit stations once, then poll observations."""
     previous_readings: Dict[str, str] = _load_state(state_file)
     station_water_bodies: Dict[str, str] = {}
@@ -256,6 +262,7 @@ def run_feed(kafka_config: dict, kafka_topic: str, polling_interval: int,
                     station_water_bodies[station.station_id] = station.water_body
                 published_station_ids.add(station.station_id)
             n = send_stations(event_producer, stations)
+            kafka_producer.flush()
             total_stations += n
             logger.info("Sent %d station records from %s", n, provider.name)
         except Exception as e:
@@ -284,6 +291,9 @@ def run_feed(kafka_config: dict, kafka_topic: str, polling_interval: int,
                         n, elapsed,
                         (datetime.now(timezone.utc) + timedelta(seconds=wait)).isoformat())
             _save_state(state_file, previous_readings)
+            if once:
+                logger.info("Once mode enabled — exiting after one polling cycle.")
+                break
             if wait > 0:
                 time.sleep(wait)
         except KeyboardInterrupt:
@@ -291,6 +301,9 @@ def run_feed(kafka_config: dict, kafka_topic: str, polling_interval: int,
             break
         except Exception as e:
             logger.error("Error: %s", e, exc_info=True)
+            if once:
+                logger.info("Once mode enabled — exiting after error.")
+                raise
             logger.info("Retrying in %ds …", polling_interval)
             time.sleep(polling_interval)
     kafka_producer.flush()
@@ -330,6 +343,9 @@ def main() -> None:
                         help="Comma-separated provider keys to include")
     feed_p.add_argument("--exclude-providers", type=str, default=os.getenv("EXCLUDE_PROVIDERS"),
                         help="Comma-separated provider keys to exclude")
+    feed_p.add_argument("--once", action="store_true",
+                        default=os.getenv("ONCE_MODE", "false").lower() in ("true", "1", "yes"),
+                        help="Exit after one polling cycle")
 
     args = parser.parse_args()
 
@@ -384,7 +400,7 @@ def main() -> None:
 
         inc, exc = args.providers, args.exclude_providers
         providers = _resolve_providers(inc, exc)
-        run_feed(kafka_config, topic, args.polling_interval, args.state_file, providers)
+        run_feed(kafka_config, topic, args.polling_interval, args.state_file, providers, once=args.once)
         return
 
     parser.print_help()
