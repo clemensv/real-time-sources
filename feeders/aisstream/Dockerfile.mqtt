@@ -11,6 +11,8 @@ LABEL real-time-sources.enrichment.mid_iso.version="2024-01"
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
 
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+
 COPY . /app
 
 RUN pip install --no-cache-dir ./aisstream_mqtt_producer/aisstream_mqtt_producer_data \

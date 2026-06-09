@@ -4,6 +4,8 @@ import argparse, inspect, json, os, pathlib, re
 from datetime import datetime, timezone
 from urllib.parse import urlparse
 from proton import symbol
+
+DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
 from xceed_amqp_producer_amqp_producer import producer as producer_mod
 import xceed_amqp_producer_data as data_mod
 MANIFEST = pathlib.Path(os.getenv('SOURCE_MANIFEST', '/app/xreg/xceed.xreg.json'))
@@ -63,12 +65,25 @@ def _patch(p):
 def _parse(url):
     p=urlparse(url if '://' in url else 'amqp://'+url); tls=(p.scheme or 'amqp').lower() in ('amqps','ssl','tls'); return p.hostname or 'localhost', p.port or (5671 if tls else 5672), tls, p.username, p.password, (p.path or '').lstrip('/') or None
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('feed', nargs='?', default='feed'); ap.add_argument('--broker-url', default=os.getenv('AMQP_BROKER_URL')); ap.add_argument('--host', default=os.getenv('AMQP_HOST')); ap.add_argument('--port', type=int, default=int(os.getenv('AMQP_PORT','0')) or None); ap.add_argument('--address', default=os.getenv('AMQP_ADDRESS','xceed')); ap.add_argument('--username', default=os.getenv('AMQP_USERNAME')); ap.add_argument('--password', default=os.getenv('AMQP_PASSWORD')); ap.add_argument('--tls', action='store_true', default=os.getenv('AMQP_TLS','').lower() in ('1','true','yes')); ap.add_argument('--auth-mode', default=os.getenv('AMQP_AUTH_MODE','password')); args=ap.parse_args()
+    ap=argparse.ArgumentParser(); ap.add_argument('feed', nargs='?', default='feed'); ap.add_argument('--broker-url', default=os.getenv('AMQP_BROKER_URL')); ap.add_argument('--host', default=os.getenv('AMQP_HOST')); ap.add_argument('--port', type=int, default=int(os.getenv('AMQP_PORT','0')) or None); ap.add_argument('--address', default=os.getenv('AMQP_ADDRESS','xceed')); ap.add_argument('--username', default=os.getenv('AMQP_USERNAME')); ap.add_argument('--password', default=os.getenv('AMQP_PASSWORD')); ap.add_argument('--tls', action='store_true', default=os.getenv('AMQP_TLS','').lower() in ('1','true','yes')); ap.add_argument('--auth-mode', choices=('password','entra','sas'), default=os.getenv('AMQP_AUTH_MODE','password')); ap.add_argument('--entra-audience', default=os.getenv('AMQP_ENTRA_AUDIENCE', DEFAULT_ENTRA_AUDIENCE_SERVICEBUS)); ap.add_argument('--entra-client-id', default=os.getenv('AMQP_ENTRA_CLIENT_ID')); ap.add_argument('--sas-key-name', default=os.getenv('AMQP_SAS_KEY_NAME')); ap.add_argument('--sas-key', default=os.getenv('AMQP_SAS_KEY')); args=ap.parse_args()
     address=args.address
     if args.broker_url: host,port,tls,user,pwd,path=_parse(args.broker_url); address=path or address; username=args.username or user; password=args.password or pwd
     else: host=args.host or 'localhost'; tls=args.tls; port=args.port or (5671 if tls else 5672); username=args.username; password=args.password
+    tls = bool(tls) or args.auth_mode in ('entra', 'sas')
     classes=[v for v in vars(producer_mod).values() if isinstance(v,type) and v.__name__.endswith('Producer')]
-    producers=[_patch(cls(host=host,address=address,port=port,username=username,password=password,content_mode='binary',use_tls=tls)) for cls in classes]
+    producers=[]
+    for cls in classes:
+        kwargs=dict(host=host,address=address,port=port,content_mode='binary',use_tls=tls)
+        if args.auth_mode == 'entra':
+            from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+            kwargs.update(credential=ManagedIdentityCredential(client_id=args.entra_client_id) if args.entra_client_id else DefaultAzureCredential(), entra_audience=args.entra_audience)
+        elif args.auth_mode == 'sas':
+            if not args.sas_key_name or not args.sas_key:
+                raise RuntimeError('AMQP auth-mode=sas requires AMQP_SAS_KEY_NAME and AMQP_SAS_KEY')
+            kwargs.update(sas_key_name=args.sas_key_name, sas_key=args.sas_key)
+        else:
+            kwargs.update(username=username, password=password)
+        producers.append(_patch(cls(**kwargs)))
     try:
         for sh,payload in _iter_events():
             data=getattr(data_mod, sh)(**payload); values=dict(payload)

@@ -18,6 +18,10 @@ def build_parser(desc: str, default_address: str):
     parser.add_argument('--username', default=os.getenv('AMQP_USERNAME',''))
     parser.add_argument('--password', default=os.getenv('AMQP_PASSWORD',''))
     parser.add_argument('--auth-mode', default=os.getenv('AMQP_AUTH_MODE','password'), choices=('password','entra','sas'))
+    parser.add_argument('--entra-audience', default=os.getenv('AMQP_ENTRA_AUDIENCE', 'https://servicebus.azure.net/.default'))
+    parser.add_argument('--entra-client-id', default=os.getenv('AMQP_ENTRA_CLIENT_ID'))
+    parser.add_argument('--sas-key-name', default=os.getenv('AMQP_SAS_KEY_NAME'))
+    parser.add_argument('--sas-key', default=os.getenv('AMQP_SAS_KEY'))
     parser.add_argument('--tls', action=argparse.BooleanOptionalAction, default=os.getenv('AMQP_TLS','false').lower() in ('1','true','yes'))
     parser.add_argument('--content-mode', default=os.getenv('AMQP_CONTENT_MODE','binary'), choices=('binary','structured'))
     parser.add_argument('--polling-interval', type=int, default=int(os.getenv('POLLING_INTERVAL','60')))
@@ -27,8 +31,18 @@ def build_parser(desc: str, default_address: str):
 
 def make_producer(cls,args):
     if args.broker_url:
-        h,p,a,u,pw,t=parse_broker_url(args.broker_url); args.host=h; args.port=p; args.address=a or args.address; args.username=args.username or (u or ''); args.password=args.password or (pw or ''); args.tls=args.tls or t
-    return cls(host=args.host, address=args.address, port=args.port, username=args.username or None, password=args.password or None, content_mode=args.content_mode, use_tls=args.tls)
+        h,p,a,u,pw,t=parse_broker_url(args.broker_url); args.host=h; args.port=p; args.address=a or args.address; args.username=args.username or (u or ''); args.password=args.password or (pw or ''); args.tls = bool(args.tls or t or args.auth_mode in ('entra', 'sas'))
+    kwargs=dict(host=args.host, address=args.address, port=args.port, content_mode=args.content_mode, use_tls=args.tls)
+    if args.auth_mode == 'entra':
+        from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
+        kwargs.update(credential=ManagedIdentityCredential(client_id=args.entra_client_id) if args.entra_client_id else DefaultAzureCredential(), entra_audience=args.entra_audience)
+    elif args.auth_mode == 'sas':
+        if not args.sas_key_name or not args.sas_key:
+            raise RuntimeError('AMQP auth-mode=sas requires AMQP_SAS_KEY_NAME and AMQP_SAS_KEY')
+        kwargs.update(sas_key_name=args.sas_key_name, sas_key=args.sas_key)
+    else:
+        kwargs.update(username=args.username or None, password=args.password or None)
+    return cls(**kwargs)
 
 from datetime import datetime, timezone, timedelta
 from jma_bosai_amedas.jma_bosai_amedas import JmaBosaiAmedasAPI, STATION_TABLE_URL, DEFAULT_STATE_FILE, _load_state, _save_state, parse_point_station_codes

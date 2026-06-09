@@ -9,6 +9,8 @@ LABEL org.opencontainers.image.license="MIT"
 
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
+
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
 
 RUN pip install --no-cache-dir ./siri_producer/siri_producer_data \

@@ -7,6 +7,8 @@ LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-t
 LABEL org.opencontainers.image.license="MIT"
 ENV PYTHONUNBUFFERED=1
 WORKDIR /app
+
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
 RUN pip install --no-cache-dir ./ticketmaster_mqtt_producer/ticketmaster_mqtt_producer_data && pip install --no-cache-dir ./ticketmaster_mqtt_producer/ticketmaster_mqtt_producer_mqtt_client && pip install --no-cache-dir ./ticketmaster_mqtt
 CMD ["python", "-m", "ticketmaster_mqtt", "feed"]
