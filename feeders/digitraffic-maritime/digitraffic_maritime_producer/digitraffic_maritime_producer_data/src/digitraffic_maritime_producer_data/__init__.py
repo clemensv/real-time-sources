@@ -1,5 +1,5 @@
-from .vessellocation import VesselLocation
 from .vesselmetadata import VesselMetadata
+from .vessellocation import VesselLocation
 from .vesselconstruction import VesselConstruction
 from .vesseldimensions import VesselDimensions
 from .vesselregistration import VesselRegistration
@@ -12,4 +12,4 @@ from .portcallagent import PortCallAgent
 from .portcallareadetail import PortCallAreaDetail
 from .portcall import PortCall
 
-__all__ = ["VesselLocation", "VesselMetadata", "VesselConstruction", "VesselDimensions", "VesselRegistration", "VesselSystem", "VesselDetails", "PortArea", "Berth", "PortLocation", "PortCallAgent", "PortCallAreaDetail", "PortCall"]
+__all__ = ["VesselMetadata", "VesselLocation", "VesselConstruction", "VesselDimensions", "VesselRegistration", "VesselSystem", "VesselDetails", "PortArea", "Berth", "PortLocation", "PortCallAgent", "PortCallAreaDetail", "PortCall"]

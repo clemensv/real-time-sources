@@ -28,13 +28,13 @@ class Test_Visibility(unittest.TestCase):
         Create instance of Visibility for testing
         """
         instance = Visibility(
-            timestamp='dqpbbiyhpaqotkqnezyc',
-            value=float(97.12519533254257),
+            timestamp='hsvkunwtczhsctjqkfek',
+            value=float(23.648162605818346),
             max_visibility_exceeded=False,
             min_visibility_exceeded=False,
             rate_of_change_exceeded=True,
-            station_id='wczrmhiwpasaixjcvdeg',
-            region='flvkxqsgmnwoxjcmomrh'
+            station_id='khkzjiejmhaqqcrcijvs',
+            region='jtgaiwxpewjtvvmavkfi'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'dqpbbiyhpaqotkqnezyc'
+        test_value = 'hsvkunwtczhsctjqkfek'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -51,7 +51,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(97.12519533254257)
+        test_value = float(23.648162605818346)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -83,7 +83,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'wczrmhiwpasaixjcvdeg'
+        test_value = 'khkzjiejmhaqqcrcijvs'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -91,7 +91,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'flvkxqsgmnwoxjcmomrh'
+        test_value = 'jtgaiwxpewjtvvmavkfi'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

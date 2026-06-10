@@ -114,7 +114,7 @@ class USGSEarthquakesEventProducer:
              "type":"USGS.Earthquakes.Event",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{net}/{code}".format(net = _net,code = _code),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -240,7 +240,7 @@ class USGSEarthquakesMqttEventProducer:
              "type":"USGS.Earthquakes.Event",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{net}/{code}".format(net = _net,code = _code),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -366,7 +366,7 @@ class USGSEarthquakesAmqpEventProducer:
              "type":"USGS.Earthquakes.Event",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{net}/{code}".format(net = _net,code = _code),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

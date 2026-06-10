@@ -163,6 +163,6 @@ class TimeRange:
             An instance of the dataclass.
         """
         return cls(
-            start=int(65),
-            end=int(21)
+            start=int(39),
+            end=int(35)
         )

@@ -157,5 +157,5 @@ class Notices:
             An instance of the dataclass.
         """
         return cls(
-            self_='swuxgcjyuwchyryasbwi'
+            self_='nzupjfjgbnvibcxhgorl'
         )

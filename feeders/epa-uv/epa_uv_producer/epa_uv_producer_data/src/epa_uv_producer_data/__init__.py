@@ -1,4 +1,4 @@
-from .dailyforecast import DailyForecast
 from .hourlyforecast import HourlyForecast
+from .dailyforecast import DailyForecast
 
-__all__ = ["DailyForecast", "HourlyForecast"]
+__all__ = ["HourlyForecast", "DailyForecast"]

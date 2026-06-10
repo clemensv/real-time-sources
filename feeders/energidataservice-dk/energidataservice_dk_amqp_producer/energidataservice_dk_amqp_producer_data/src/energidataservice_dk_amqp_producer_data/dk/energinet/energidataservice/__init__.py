@@ -1,5 +1,5 @@
 from .powersystemsnapshot import PowerSystemSnapshot
-from .info import Info
 from .spotprice import SpotPrice
+from .info import Info
 
-__all__ = ["PowerSystemSnapshot", "Info", "SpotPrice"]
+__all__ = ["PowerSystemSnapshot", "SpotPrice", "Info"]

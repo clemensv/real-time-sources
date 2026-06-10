@@ -1,3 +1,3 @@
-from .np import WaterLevelReading, RiverStation
+from .np import RiverStation, WaterLevelReading
 
-__all__ = ["WaterLevelReading", "RiverStation"]
+__all__ = ["RiverStation", "WaterLevelReading"]

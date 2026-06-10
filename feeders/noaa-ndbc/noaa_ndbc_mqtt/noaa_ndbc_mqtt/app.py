@@ -2,6 +2,44 @@
 import dataclasses, importlib, inspect, os, pkgutil, sys, typing
 from datetime import datetime, timezone
 
+import json
+
+def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
+
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
+    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return resolved_client_id, str(username or ""), str(password or "")
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = resolved_client_id or str(username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_client_id, resolved_username, resolved_password
+
 def _slug(v):
     return str(v or 'unknown').replace('/', '-').replace(' ', '-').lower()
 
@@ -60,7 +98,8 @@ def _required_call_kwargs(method, data_pkg):
     return out
 
 import argparse, asyncio, logging
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 import noaa_ndbc_mqtt_producer_data
@@ -72,8 +111,16 @@ async def _publish_mock(client):
         await method(**_required_call_kwargs(method, noaa_ndbc_mqtt_producer_data))
 
 async def feed(host, port, username=None, password=None, tls=False, client_id=None, once=False, content_mode='binary'):
-    paho_client=mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=client_id or '', protocol=MQTTv5)
-    if username: paho_client.username_pw_set(username, password or '')
+    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+        username=username,
+        password=password or '',
+        client_id=client_id or '',
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
+    paho_client=mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    if resolved_username or resolved_password:
+        paho_client.username_pw_set(resolved_username, resolved_password)
     if tls: paho_client.tls_set()
     client_cls=next(obj for obj in globals().values() if isinstance(obj,type) and obj.__name__.endswith('MqttClient'))
     client=client_cls(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())

@@ -163,10 +163,10 @@ class BinaryAcknowledge:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(31),
-            RepeatIndicator=int(81),
-            UserID=int(49),
+            MessageID=int(5),
+            RepeatIndicator=int(86),
+            UserID=int(26),
             Valid=True,
-            Spare=int(97),
-            Destinations={'qrvnpjtxyyazamapymhx': 'ginndmysstyxukkxsuqr', 'lhlwjgiexhvdkcyfgrcn': 'mdumumwqvraetxylzwlv', 'gltlxcnzavopxzbalbjr': 'dkhpxtddfuilvwajudfp', 'ngkojqivhysxgjhqmyzu': 'wizqupmgufjuwkponnft', 'appslvtwbjvaliezzfab': 'hteyjedzviqwswxdrdek'}
+            Spare=int(0),
+            Destinations={'gfnvffiutjwbowvdmmgw': 'kwzsvggbamoxynodminr', 'sjjickqfxtrhnbqutkew': 'pppeihfpkgztkixmdlhq', 'whhrglrlqsczaiideoov': 'ypelqmnyikjkpnimzhrx'}
         )

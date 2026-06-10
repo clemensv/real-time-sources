@@ -96,9 +96,8 @@ async def test_uk_co_elexon_bmrs_mqtt_uk_co_elexon_bmrs_mqtt_generation_mix_py(m
             settlement_period=f"test_settlement_period_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            settlement_date="test_settlement_date",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -163,9 +162,8 @@ async def test_uk_co_elexon_bmrs_mqtt_uk_co_elexon_bmrs_mqtt_demand_outturn_py(m
             settlement_period=f"test_settlement_period_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            settlement_date="test_settlement_date",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -230,9 +228,8 @@ async def test_uk_co_elexon_bmrs_mqtt_uk_co_elexon_bmrs_mqtt_info_py(mosquitto_b
             settlement_period=f"test_settlement_period_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            settlement_date="test_settlement_date",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

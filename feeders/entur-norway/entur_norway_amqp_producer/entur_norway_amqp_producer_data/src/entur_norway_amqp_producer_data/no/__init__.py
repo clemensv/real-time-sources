@@ -1,3 +1,3 @@
-from .entur import EstimatedCall, EstimatedVehicleJourney, MonitoredVehicleJourney, ValidityPeriod, PtSituationElement
+from .entur import MonitoredVehicleJourney, EstimatedCall, EstimatedVehicleJourney, ValidityPeriod, PtSituationElement
 
-__all__ = ["EstimatedCall", "EstimatedVehicleJourney", "MonitoredVehicleJourney", "ValidityPeriod", "PtSituationElement"]
+__all__ = ["MonitoredVehicleJourney", "EstimatedCall", "EstimatedVehicleJourney", "ValidityPeriod", "PtSituationElement"]

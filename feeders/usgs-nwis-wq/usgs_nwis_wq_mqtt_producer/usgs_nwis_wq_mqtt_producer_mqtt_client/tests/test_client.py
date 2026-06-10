@@ -96,9 +96,8 @@ async def test_usgs_waterquality_sites_mqtt_usgs_water_quality_sites_mqtt_monito
             site_number=f"test_site_number_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -168,9 +167,8 @@ async def test_usgs_waterquality_readings_mqtt_usgs_water_quality_readings_mqtt_
             parameter_code=f"test_parameter_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

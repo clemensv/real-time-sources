@@ -1,4 +1,4 @@
-from .reference import Venue, Classification, Attraction
 from .events import Event
+from .reference import Attraction, Classification, Venue
 
-__all__ = ["Venue", "Classification", "Attraction", "Event"]
+__all__ = ["Event", "Attraction", "Classification", "Venue"]

@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_producer_data.station2 import Station2
 from aisstream_producer_data.station1msg1 import Station1Msg1
+from aisstream_producer_data.station2 import Station2
 from aisstream_producer_data.station1msg2 import Station1Msg2
 
 
@@ -170,11 +170,11 @@ class Interrogation:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(39),
-            RepeatIndicator=int(79),
-            UserID=int(21),
-            Valid=True,
-            Spare=int(9),
+            MessageID=int(57),
+            RepeatIndicator=int(7),
+            UserID=int(18),
+            Valid=False,
+            Spare=int(72),
             Station1Msg1=None,
             Station1Msg2=None,
             Station2=None

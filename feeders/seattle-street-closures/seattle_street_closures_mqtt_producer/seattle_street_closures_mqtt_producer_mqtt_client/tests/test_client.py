@@ -92,9 +92,8 @@ async def test_us_wa_seattle_streetclosures_mqtt_us_wa_seattle_street_closures_s
             closure_id=f"test_closure_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            neighborhood="test_neighborhood",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

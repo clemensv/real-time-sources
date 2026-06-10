@@ -165,11 +165,11 @@ class AirTemperature:
             An instance of the dataclass.
         """
         return cls(
-            station_id='eqnwecbotbasxboflkbg',
-            timestamp='hgalwjvwoslxehshgzhu',
-            value=float(23.470489434328833),
+            station_id='pwobcpubkxcxvppwtotv',
+            timestamp='usycilnxnhnrepoolthr',
+            value=float(95.55155033592678),
             max_temp_exceeded=True,
             min_temp_exceeded=True,
-            rate_of_change_exceeded=True,
-            region='bxryixvnkrhmstcdcnmy'
+            rate_of_change_exceeded=False,
+            region='echylvbpegjxsfqvaofa'
         )

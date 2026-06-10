@@ -28,12 +28,12 @@ class Test_TrafficFlowMeasurement(unittest.TestCase):
         Create instance of TrafficFlowMeasurement for testing
         """
         instance = TrafficFlowMeasurement(
-            site_id='sinfqtiqweotomjuklmt',
-            measurement_time='feyubfucpspqziwwetme',
-            vehicle_flow_rate=int(29),
-            average_speed=float(31.10239649335891),
-            input_values_flow=int(100),
-            input_values_speed=int(3)
+            site_id='ybldytodlezsqxyodtrt',
+            measurement_time='jfuibiyjstzyaxqiwzyx',
+            vehicle_flow_rate=int(65),
+            average_speed=float(49.87057743289065),
+            input_values_flow=int(9),
+            input_values_speed=int(49)
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_TrafficFlowMeasurement(unittest.TestCase):
         """
         Test site_id property
         """
-        test_value = 'sinfqtiqweotomjuklmt'
+        test_value = 'ybldytodlezsqxyodtrt'
         self.instance.site_id = test_value
         self.assertEqual(self.instance.site_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_TrafficFlowMeasurement(unittest.TestCase):
         """
         Test measurement_time property
         """
-        test_value = 'feyubfucpspqziwwetme'
+        test_value = 'jfuibiyjstzyaxqiwzyx'
         self.instance.measurement_time = test_value
         self.assertEqual(self.instance.measurement_time, test_value)
     
@@ -58,7 +58,7 @@ class Test_TrafficFlowMeasurement(unittest.TestCase):
         """
         Test vehicle_flow_rate property
         """
-        test_value = int(29)
+        test_value = int(65)
         self.instance.vehicle_flow_rate = test_value
         self.assertEqual(self.instance.vehicle_flow_rate, test_value)
     
@@ -66,7 +66,7 @@ class Test_TrafficFlowMeasurement(unittest.TestCase):
         """
         Test average_speed property
         """
-        test_value = float(31.10239649335891)
+        test_value = float(49.87057743289065)
         self.instance.average_speed = test_value
         self.assertEqual(self.instance.average_speed, test_value)
     
@@ -74,7 +74,7 @@ class Test_TrafficFlowMeasurement(unittest.TestCase):
         """
         Test input_values_flow property
         """
-        test_value = int(100)
+        test_value = int(9)
         self.instance.input_values_flow = test_value
         self.assertEqual(self.instance.input_values_flow, test_value)
     
@@ -82,7 +82,7 @@ class Test_TrafficFlowMeasurement(unittest.TestCase):
         """
         Test input_values_speed property
         """
-        test_value = int(3)
+        test_value = int(49)
         self.instance.input_values_speed = test_value
         self.assertEqual(self.instance.input_values_speed, test_value)
     

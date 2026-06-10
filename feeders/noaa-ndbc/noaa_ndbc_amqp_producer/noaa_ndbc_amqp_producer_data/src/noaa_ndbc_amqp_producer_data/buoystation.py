@@ -169,13 +169,13 @@ class BuoyStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='bzspgjssjvetvllzxjbi',
-            owner='wfffspchauhnhnrqxmiz',
-            station_type='haymtstolyspzyvsvhze',
-            hull='oamevhfbjhtmosjngsqi',
-            name='plvbpfkxmjajwofbttjc',
-            latitude=float(66.33962000600394),
-            longitude=float(95.57956797869936),
-            timezone='udehmrhjoenqsukimlkf',
-            region='gpowjmtorgepacudsfaz'
+            station_id='zvyecccvsfeiialbsmcd',
+            owner='mtkgaaglitavhhoeihkf',
+            station_type='bsmkxgfvgatmpyssoyxz',
+            hull='xqceiyfpdqmvzsvgatjs',
+            name='umcwmlrqomexcnlhwery',
+            latitude=float(44.17541054327573),
+            longitude=float(71.8443260932742),
+            timezone='woahdkhuarnxcbutyiha',
+            region='lzlkdztdqergvatirayu'
         )

@@ -284,6 +284,8 @@ class GovUsdaNrcsSnotelMqttMqttClient(_ClientBase):
         self.loop = loop
         self._topic_mappings = topic_mappings or get_default_topic_mappings_gov_usda_nrcs_snotel_mqtt()
         self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
+        self._connect_waiter: Optional[asyncio.Future[None]] = None
+        self._connected = False
         
         # Message handler callbacks (Dispatcher pattern)
         
@@ -294,6 +296,72 @@ class GovUsdaNrcsSnotelMqttMqttClient(_ClientBase):
         
         # Attach message callback
         self.client.on_message = self._on_message
+        self.client.on_connect = self._on_connect
+        self.client.on_disconnect = self._on_disconnect
+
+    @staticmethod
+    def _mqtt_reason_code_value(reason_code) -> Optional[int]:
+        """Best-effort numeric MQTT reason-code extraction across paho callback APIs."""
+        if reason_code is None:
+            return 0
+        value = getattr(reason_code, "value", reason_code)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _mqtt_reason_code_text(reason_code) -> str:
+        """Best-effort textual MQTT reason-code rendering across paho callback APIs."""
+        if reason_code is None:
+            return "unknown"
+        text = str(reason_code).strip()
+        if text:
+            return text
+        code = _ClientBase._mqtt_reason_code_value(reason_code)
+        return str(code) if code is not None else "unknown"
+
+    def _resolve_connect_waiter(self, exc: Optional[BaseException] = None):
+        waiter = self._connect_waiter
+        self._connect_waiter = None
+        if waiter is None or waiter.done():
+            return
+        if exc is None:
+            self._connected = True
+            waiter.set_result(None)
+            return
+        self._connected = False
+        waiter.set_exception(exc)
+
+    def _notify_connect_waiter(self, exc: Optional[BaseException] = None):
+        if self.loop is None:
+            return
+        self.loop.call_soon_threadsafe(self._resolve_connect_waiter, exc)
+
+    def _on_connect(self, client, userdata, flags, reason_code=0, properties=None):
+        """Resolve a pending async connect once the broker replies."""
+        if self._mqtt_reason_code_value(reason_code) == 0:
+            self._notify_connect_waiter()
+            return
+        detail = self._mqtt_reason_code_text(reason_code)
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    def _on_disconnect(self, client, userdata, *args):
+        """Fail a pending async connect when the broker disconnects before success."""
+        self._connected = False
+        if self._connect_waiter is None:
+            return
+        reason_code = None
+        if len(args) == 1:
+            reason_code = args[0]
+        elif len(args) == 2:
+            reason_code = args[0]
+        elif len(args) >= 3:
+            reason_code = args[1]
+        detail = self._mqtt_reason_code_text(reason_code)
+        if self._mqtt_reason_code_value(reason_code) in (None, 0):
+            detail = "connection closed before authentication completed"
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
 
     @property
     def topic_mappings(self) -> Dict[str, str]:
@@ -385,18 +453,41 @@ class GovUsdaNrcsSnotelMqttMqttClient(_ClientBase):
     
     async def connect(self, broker: str, port: int = 1883, keepalive: int = 60):
         """
-        Connect to MQTT broker.
+        Connect to MQTT broker and wait for authentication to complete.
 
         Args:
             broker: Broker hostname or IP
             port: Broker port
             keepalive: Keepalive interval in seconds
+
+        Raises:
+            ConnectionError: If the broker rejects the connection or disconnects before success
+            TimeoutError: If the broker does not acknowledge the connection in time
         """
-        self.client.connect(broker, port, keepalive)
-        self.client.loop_start()
+        if self._connect_waiter is not None and not self._connect_waiter.done():
+            raise RuntimeError("MQTT connect already in progress")
+        self.loop = asyncio.get_running_loop()
+        waiter = self.loop.create_future()
+        self._connect_waiter = waiter
+        self._connected = False
+        loop_started = False
+        try:
+            self.client.connect(broker, port, keepalive)
+            self.client.loop_start()
+            loop_started = True
+            timeout = float(keepalive) if keepalive and keepalive > 0 else 60.0
+            await asyncio.wait_for(waiter, timeout=timeout)
+        except Exception:
+            if self._connect_waiter is waiter:
+                self._connect_waiter = None
+            self._connected = False
+            if loop_started:
+                await asyncio.to_thread(self.client.loop_stop)
+            raise
     
     async def disconnect(self):
         """Disconnect from MQTT broker."""
+        self._connected = False
         self.client.loop_stop()
         self.client.disconnect()
 

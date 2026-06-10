@@ -165,11 +165,11 @@ class CoordinatedUTCInquiry:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(11),
-            RepeatIndicator=int(12),
-            UserID=int(7),
+            MessageID=int(6),
+            RepeatIndicator=int(91),
+            UserID=int(68),
             Valid=True,
-            Spare1=int(14),
-            DestinationID=int(42),
-            Spare2=int(59)
+            Spare1=int(39),
+            DestinationID=int(100),
+            Spare2=int(24)
         )

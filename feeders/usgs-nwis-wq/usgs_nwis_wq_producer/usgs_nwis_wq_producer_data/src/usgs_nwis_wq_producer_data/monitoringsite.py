@@ -173,15 +173,15 @@ class MonitoringSite:
             An instance of the dataclass.
         """
         return cls(
-            site_number='zjisyhtfekirjpnflzek',
-            site_name='qaviqzjhdfbrlujzfrjn',
-            agency_code='madoypitrtmqrpzwnjmb',
-            latitude=float(39.76319594312567),
-            longitude=float(57.34441424926481),
-            site_type='mkuzbqgkdrkseiwccenp',
-            state_code='zzlmgjywnqyiaityshcs',
-            county_code='wgudyyhgrnmihpcbtbbm',
-            huc_code='bgdyemjksbioivvhdbmn',
-            state='iqtlybqccyuuxwdkvhoo',
-            parameter_code='jhhsbbmnimaoracklzlk'
+            site_number='hdjtsyiyzbowxbpigckp',
+            site_name='dzsnnmpkzrkfquauaxcm',
+            agency_code='iketqyzhpmoglfqdnlue',
+            latitude=float(17.23102509477109),
+            longitude=float(37.68037548843412),
+            site_type='cfxdsmedrlavasmvhynt',
+            state_code='aarxkjtornicnufbygfd',
+            county_code='osvldzalasjezqwgkfxi',
+            huc_code='ittihctgpqjdgnwkcysg',
+            state='btwkoahxdmuxzelhixqe',
+            parameter_code='bbcflyzprcxxqxgnknle'
         )

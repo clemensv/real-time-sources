@@ -157,5 +157,5 @@ class Disclaimers:
             An instance of the dataclass.
         """
         return cls(
-            self_='chfqgxtisdxqmdhzztjp'
+            self_='glzdgyiymeokictcfijx'
         )

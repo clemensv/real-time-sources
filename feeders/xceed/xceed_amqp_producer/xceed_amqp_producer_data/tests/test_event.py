@@ -29,18 +29,18 @@ class Test_Event(unittest.TestCase):
         Create instance of Event for testing
         """
         instance = Event(
-            event_id='enigapfmifjkkflroojy',
-            legacy_id=int(58),
-            name='fgolcmdorgswnaccgfop',
-            slug='nqibwpndlqlyayqffwbk',
+            event_id='eincuvgzxxfmfwreedea',
+            legacy_id=int(11),
+            name='ukgijijwnlxeiigcsytv',
+            slug='xlneidxwfjlpqaeuekah',
             starting_time=datetime.datetime.now(datetime.timezone.utc),
             ending_time=datetime.datetime.now(datetime.timezone.utc),
-            cover_url='rlzxcdhhxyzvcizfpcmu',
-            external_sales_url='hbxvkrbwhltyilnfsqsq',
-            venue_id='wqxaikprfpsmaqibyfcy',
-            venue_name='dwckonkwftkigizizctz',
-            venue_city='euuqxtytyktekobcebvk',
-            venue_country_code='kqjmtmnjcxrdntlyfkxc'
+            cover_url='lvfaupgcysgbjybedqhp',
+            external_sales_url='jdnjrwaswqzuxodqqajk',
+            venue_id='lpclrknpyoqltaouspdz',
+            venue_name='stdlepljfgjufyxzbglb',
+            venue_city='agqroqrwasqelvspjepb',
+            venue_country_code='gphjvgjcholfrejeoklp'
         )
         return instance
 
@@ -49,7 +49,7 @@ class Test_Event(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'enigapfmifjkkflroojy'
+        test_value = 'eincuvgzxxfmfwreedea'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_Event(unittest.TestCase):
         """
         Test legacy_id property
         """
-        test_value = int(58)
+        test_value = int(11)
         self.instance.legacy_id = test_value
         self.assertEqual(self.instance.legacy_id, test_value)
     
@@ -65,7 +65,7 @@ class Test_Event(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'fgolcmdorgswnaccgfop'
+        test_value = 'ukgijijwnlxeiigcsytv'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -73,7 +73,7 @@ class Test_Event(unittest.TestCase):
         """
         Test slug property
         """
-        test_value = 'nqibwpndlqlyayqffwbk'
+        test_value = 'xlneidxwfjlpqaeuekah'
         self.instance.slug = test_value
         self.assertEqual(self.instance.slug, test_value)
     
@@ -97,7 +97,7 @@ class Test_Event(unittest.TestCase):
         """
         Test cover_url property
         """
-        test_value = 'rlzxcdhhxyzvcizfpcmu'
+        test_value = 'lvfaupgcysgbjybedqhp'
         self.instance.cover_url = test_value
         self.assertEqual(self.instance.cover_url, test_value)
     
@@ -105,7 +105,7 @@ class Test_Event(unittest.TestCase):
         """
         Test external_sales_url property
         """
-        test_value = 'hbxvkrbwhltyilnfsqsq'
+        test_value = 'jdnjrwaswqzuxodqqajk'
         self.instance.external_sales_url = test_value
         self.assertEqual(self.instance.external_sales_url, test_value)
     
@@ -113,7 +113,7 @@ class Test_Event(unittest.TestCase):
         """
         Test venue_id property
         """
-        test_value = 'wqxaikprfpsmaqibyfcy'
+        test_value = 'lpclrknpyoqltaouspdz'
         self.instance.venue_id = test_value
         self.assertEqual(self.instance.venue_id, test_value)
     
@@ -121,7 +121,7 @@ class Test_Event(unittest.TestCase):
         """
         Test venue_name property
         """
-        test_value = 'dwckonkwftkigizizctz'
+        test_value = 'stdlepljfgjufyxzbglb'
         self.instance.venue_name = test_value
         self.assertEqual(self.instance.venue_name, test_value)
     
@@ -129,7 +129,7 @@ class Test_Event(unittest.TestCase):
         """
         Test venue_city property
         """
-        test_value = 'euuqxtytyktekobcebvk'
+        test_value = 'agqroqrwasqelvspjepb'
         self.instance.venue_city = test_value
         self.assertEqual(self.instance.venue_city, test_value)
     
@@ -137,7 +137,7 @@ class Test_Event(unittest.TestCase):
         """
         Test venue_country_code property
         """
-        test_value = 'kqjmtmnjcxrdntlyfkxc'
+        test_value = 'gphjvgjcholfrejeoklp'
         self.instance.venue_country_code = test_value
         self.assertEqual(self.instance.venue_country_code, test_value)
     

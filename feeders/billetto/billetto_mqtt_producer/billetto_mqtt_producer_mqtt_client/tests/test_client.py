@@ -92,11 +92,8 @@ async def test_billetto_events_mqtt_billetto_events_mqtt_event_py(mosquitto_brok
             event_id=f"test_event_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            country="test_country",
-            city="test_city",
-            category="test_category",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

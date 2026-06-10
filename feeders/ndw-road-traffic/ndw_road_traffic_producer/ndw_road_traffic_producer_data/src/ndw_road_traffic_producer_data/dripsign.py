@@ -165,11 +165,11 @@ class DripSign:
             An instance of the dataclass.
         """
         return cls(
-            vms_controller_id='qhnqcyzwroghtukpygff',
-            vms_index='rmmzltnmznkbudqfpclx',
-            vms_type='rnzvfiqgouoemnetplfn',
-            latitude=float(21.202118632443266),
-            longitude=float(69.06037418631618),
-            road_name='qnpvubirooesxzfzxmfx',
-            description='dxwzrqfebfcevxapsavo'
+            vms_controller_id='xslfgkaeekcdvtdmfcrt',
+            vms_index='sxzodtxubwxfyuwreuss',
+            vms_type='thqkipueryiavlbkxtjt',
+            latitude=float(42.85233454655387),
+            longitude=float(87.17413545963846),
+            road_name='emjntrsxrpfbnulcmaio',
+            description='yfcubbcdrrjoixrydygl'
         )

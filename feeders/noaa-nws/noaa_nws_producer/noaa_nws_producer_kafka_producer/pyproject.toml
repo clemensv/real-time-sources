@@ -1,41 +1,27 @@
-[build-system]
-requires = [
-    "setuptools>=64",
-    "setuptools-scm>=8",
-]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "noaa-nws-producer-kafka-producer"
-dynamic = [
-    "version",
-]
 description = "noaa_nws_producer_kafka_producer Kafka producer library"
-authors = [
-    { name = "Your Name", email = "your.email@example.com" },
-]
-requires-python = "<4.0,>=3.10"
-dependencies = [
-    "cloudevents>=1.10.1,<2.0.0",
-    "confluent-kafka>=2.4.0",
-]
+authors = ["Your Name <your.email@example.com>"]
+version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
+packages = [{include = "noaa_nws_producer_kafka_producer", from = "src"}]
 
-[project.optional-dependencies]
-dev = [
-    "flake8>=7.1.0",
-    "mypy>=1.10.0",
-    "pylint>=3.2.3",
-    "pytest-asyncio>=0.23.7",
-    "pytest>=8.2.2",
-    "testcontainers>=4.5.1",
-]
+[tool.poetry.dependencies]
+python = "<4.0,>=3.10"
+noaa-nws-producer-data = {path = "../noaa_nws_producer_data", develop = true}
+confluent-kafka = ">=2.4.0"
+cloudevents = ">=1.10.1,<2.0.0"
 
-[tool.setuptools_scm]
-root = "../../../.."
-version_scheme = "post-release"
-local_scheme = "no-local-version"
+[tool.poetry.dev-dependencies]
+pytest = ">=8.2.2"
+flake8 = ">=7.1.0"
+pylint = ">=3.2.3"
+mypy = ">=1.10.0"
+testcontainers = ">=4.5.1"
+pytest-asyncio = ">=0.23.7"
 
-[tool.setuptools.packages.find]
-where = [
-    "src",
-]
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

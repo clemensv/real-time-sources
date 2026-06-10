@@ -169,12 +169,12 @@ class StaticDataReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(26),
-            RepeatIndicator=int(45),
-            UserID=int(89),
-            Valid=False,
-            Reserved=int(90),
-            PartNumber=False,
+            MessageID=int(45),
+            RepeatIndicator=int(62),
+            UserID=int(87),
+            Valid=True,
+            Reserved=int(71),
+            PartNumber=True,
             ReportA=None,
             ReportB=None
         )

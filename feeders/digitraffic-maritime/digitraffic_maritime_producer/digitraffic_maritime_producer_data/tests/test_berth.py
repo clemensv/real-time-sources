@@ -28,9 +28,9 @@ class Test_Berth(unittest.TestCase):
         Create instance of Berth for testing
         """
         instance = Berth(
-            port_area_code='ccjpglkwdqcgkxiejusq',
-            berth_code='dhuwwxuaecsmyaqkhkfh',
-            berth_name='hqiqcixndptkeggzmkea'
+            port_area_code='kxxdrzhqbetnwgmvqhmg',
+            berth_code='wwwoitvdoahpurstyrtd',
+            berth_name='ubeeftipoqfqvquyluin'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_Berth(unittest.TestCase):
         """
         Test port_area_code property
         """
-        test_value = 'ccjpglkwdqcgkxiejusq'
+        test_value = 'kxxdrzhqbetnwgmvqhmg'
         self.instance.port_area_code = test_value
         self.assertEqual(self.instance.port_area_code, test_value)
     
@@ -47,7 +47,7 @@ class Test_Berth(unittest.TestCase):
         """
         Test berth_code property
         """
-        test_value = 'dhuwwxuaecsmyaqkhkfh'
+        test_value = 'wwwoitvdoahpurstyrtd'
         self.instance.berth_code = test_value
         self.assertEqual(self.instance.berth_code, test_value)
     
@@ -55,7 +55,7 @@ class Test_Berth(unittest.TestCase):
         """
         Test berth_name property
         """
-        test_value = 'hqiqcixndptkeggzmkea'
+        test_value = 'ubeeftipoqfqvquyluin'
         self.instance.berth_name = test_value
         self.assertEqual(self.instance.berth_name, test_value)
     

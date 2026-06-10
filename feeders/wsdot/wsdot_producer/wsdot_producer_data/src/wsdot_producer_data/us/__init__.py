@@ -1,3 +1,3 @@
-from .wa import RegionEnum, FlowReadingenum, TrafficFlowReading, TrafficFlowStation
+from .wa import RegionEnum, TrafficFlowStation, FlowReadingenum, TrafficFlowReading
 
-__all__ = ["RegionEnum", "FlowReadingenum", "TrafficFlowReading", "TrafficFlowStation"]
+__all__ = ["RegionEnum", "TrafficFlowStation", "FlowReadingenum", "TrafficFlowReading"]

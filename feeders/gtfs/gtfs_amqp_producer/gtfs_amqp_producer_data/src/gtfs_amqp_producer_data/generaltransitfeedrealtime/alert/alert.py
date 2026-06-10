@@ -11,10 +11,10 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 from typing import Any
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -170,7 +170,7 @@ class Alert:
         """
         return cls(
             active_period=[None, None],
-            informed_entity=[None, None],
+            informed_entity=[None, None, None],
             cause=None,
             effect=None,
             url=None,

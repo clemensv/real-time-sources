@@ -12,13 +12,13 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from meteoalarm_producer_data.categoryenum import CategoryEnum
-from meteoalarm_producer_data.urgencyenum import UrgencyEnum
-from meteoalarm_producer_data.scopeenum import ScopeEnum
 from meteoalarm_producer_data.msgtypeenum import MsgTypeenum
-from meteoalarm_producer_data.severityenum import SeverityEnum
-from meteoalarm_producer_data.certaintyenum import CertaintyEnum
 from meteoalarm_producer_data.statusenum import StatusEnum
+from meteoalarm_producer_data.certaintyenum import CertaintyEnum
+from meteoalarm_producer_data.urgencyenum import UrgencyEnum
+from meteoalarm_producer_data.categoryenum import CategoryEnum
+from meteoalarm_producer_data.scopeenum import ScopeEnum
+from meteoalarm_producer_data.severityenum import SeverityEnum
 import datetime
 
 
@@ -212,30 +212,30 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            identifier='jtupcrgydpazyahiblis',
-            sender='euxicpbuijokullckcpy',
+            identifier='whkxyvtzgznelzwdivtr',
+            sender='ynelljhnfysxfkgdlwzk',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
             scope=ScopeEnum.Public,
-            country='vqqcukpamfjgxdxigvos',
-            event='bgborlokfsajnfopgixc',
+            country='oxuwecupnghgavwutdzj',
+            event='asktmweftcpebugehiip',
             category=CategoryEnum.Met,
             severity=SeverityEnum.Extreme,
             urgency=UrgencyEnum.Immediate,
             certainty=CertaintyEnum.Observed,
-            headline='wzbkalmuznknlolpaypc',
-            description='usxwdpqdibjmqivyvzwa',
-            instruction='uohojkhfhpozzlaazycb',
+            headline='towusfqkvwkmhbeekecw',
+            description='wwvwihhkvfzcbfnzszal',
+            instruction='vkrhknizoaoofjadfaqb',
             effective=datetime.datetime.now(datetime.timezone.utc),
             onset=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
-            web='crmkzqulioesagsluvkf',
-            contact='aqgzbbonmpvmvpfbbssj',
-            awareness_level='feuxaiofqnbbqnweodvm',
-            awareness_type='ombdhlndnpkommlkgybj',
-            area_desc='oncwhxucsbmhwcqnmyza',
-            geocodes='lqpsmwvglxuyajjvpsal',
-            language='owriwftvuulltrrccqtu',
-            awareness_type_raw='qquczutsybiexozyxlus'
+            web='hviblsrewmjmeyctftai',
+            contact='dgbmpdanlfdzmivxixyg',
+            awareness_level='osuxfjuzucjarzssbhxr',
+            awareness_type='imhlbkgfmeygrseamskl',
+            area_desc='vvqssxqbibaeljisgdhf',
+            geocodes='yqvubzavfmsqlapctafl',
+            language='vfxxqovpqolipguxtbbb',
+            awareness_type_raw='becmqgpbkqjtwuekyjkm'
         )

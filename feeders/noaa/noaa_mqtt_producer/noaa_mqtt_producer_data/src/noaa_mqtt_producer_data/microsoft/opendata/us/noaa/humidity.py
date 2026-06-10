@@ -165,11 +165,11 @@ class Humidity:
             An instance of the dataclass.
         """
         return cls(
-            station_id='quxxlycqnvjefgviwjta',
-            timestamp='ejvidtokvzrwzvwosurj',
-            value=float(48.93041114848958),
+            station_id='hdwphvduorizjdzfeblb',
+            timestamp='hccowkasrhodnffmsydy',
+            value=float(10.584761866965431),
             max_humidity_exceeded=True,
-            min_humidity_exceeded=False,
-            rate_of_change_exceeded=False,
-            region='wivlqboheqlfqwsomuhs'
+            min_humidity_exceeded=True,
+            rate_of_change_exceeded=True,
+            region='cuqwtrvuceejzrxtnhvn'
         )

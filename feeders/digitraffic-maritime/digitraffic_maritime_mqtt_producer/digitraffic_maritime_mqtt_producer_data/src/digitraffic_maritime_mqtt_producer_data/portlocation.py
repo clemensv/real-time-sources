@@ -171,12 +171,12 @@ class PortLocation:
             An instance of the dataclass.
         """
         return cls(
-            locode='pyxbueqcltbocusjfvkb',
+            locode='lxdqnklbzpbemwhnuttb',
             data_updated_time=datetime.datetime.now(datetime.timezone.utc),
-            location_name='exnjbtqlvmphfmtmpfgq',
-            country='ybivoyuieouyhjnsewox',
-            longitude=float(56.33215430133794),
-            latitude=float(78.10933741497091),
-            port_areas=[None, None, None, None, None],
-            berths=[None]
+            location_name='taifecwxylyaliuytluo',
+            country='kxrvbqxekygethjtvqbc',
+            longitude=float(35.781300555965025),
+            latitude=float(13.576663675759981),
+            port_areas=[None],
+            berths=[None, None]
         )

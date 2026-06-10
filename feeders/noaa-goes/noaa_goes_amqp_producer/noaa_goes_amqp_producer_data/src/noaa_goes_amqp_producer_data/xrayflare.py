@@ -175,16 +175,16 @@ class XrayFlare:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='wiqftcggcqefaszufghc',
-            begin_time='ufutfpdpadoqczbmlkth',
-            begin_class='qutwymkejvxjfixqkneg',
-            max_time='wajhwynbtsqvulqokcwn',
-            max_class='spqxiaooseszlpkvdzva',
-            max_xrlong=float(30.082177515454934),
-            max_ratio=float(28.952063458621314),
-            max_ratio_time='hoseccjzovyxhyvozmzi',
-            current_int_xrlong=float(13.346827076762269),
-            end_time='hdkkdtgpzyhgrocceaiw',
-            end_class='cmjldcrdnkjhvtinyyhs',
-            satellite=int(57)
+            time_tag='tswjtremtmpushuwecpy',
+            begin_time='thvkexvrypovlivvvfnc',
+            begin_class='bcelvkkpyvxmbrehojav',
+            max_time='slsgkjpqbxynznfaujjz',
+            max_class='xnqmeskzlwukmxnruqzm',
+            max_xrlong=float(94.91960368026704),
+            max_ratio=float(67.58537346909299),
+            max_ratio_time='bwoglxsfyyhoxrskydwi',
+            current_int_xrlong=float(59.60514183885648),
+            end_time='wenvuvtvmcwxqwwqtrzl',
+            end_class='ovzsrgndkrviktpfaxjx',
+            satellite=int(69)
         )

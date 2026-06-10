@@ -28,16 +28,16 @@ class Test_Observatory(unittest.TestCase):
         Create instance of Observatory for testing
         """
         instance = Observatory(
-            iaga_code='wbmkncnjhwbimnizznke',
-            name='snygcpeleozqgweityii',
-            agency='wskctigchbtzafbhkvti',
-            agency_name='oqhlxvavxtzhompfzboh',
-            latitude=float(14.404981787475613),
-            longitude=float(64.4649446107011),
-            elevation=float(82.31231487335056),
-            sensor_orientation='cgwixiqvtahamvqlnlih',
-            sensor_sampling_rate=float(48.53228473263225),
-            declination_base=float(22.959719151285007)
+            iaga_code='alkivlwwqzimzzrkqkew',
+            name='parbqcmgyhpqapzcyjfm',
+            agency='dwfeqvqizxvydwtuwnxe',
+            agency_name='mykoxlybshwnlpupized',
+            latitude=float(82.6122897219674),
+            longitude=float(40.1723589214341),
+            elevation=float(43.087440949741804),
+            sensor_orientation='ipfimhfmdsceqngwftip',
+            sensor_sampling_rate=float(5.014467944346023),
+            declination_base=float(37.88889414392435)
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_Observatory(unittest.TestCase):
         """
         Test iaga_code property
         """
-        test_value = 'wbmkncnjhwbimnizznke'
+        test_value = 'alkivlwwqzimzzrkqkew'
         self.instance.iaga_code = test_value
         self.assertEqual(self.instance.iaga_code, test_value)
     
@@ -54,7 +54,7 @@ class Test_Observatory(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'snygcpeleozqgweityii'
+        test_value = 'parbqcmgyhpqapzcyjfm'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -62,7 +62,7 @@ class Test_Observatory(unittest.TestCase):
         """
         Test agency property
         """
-        test_value = 'wskctigchbtzafbhkvti'
+        test_value = 'dwfeqvqizxvydwtuwnxe'
         self.instance.agency = test_value
         self.assertEqual(self.instance.agency, test_value)
     
@@ -70,7 +70,7 @@ class Test_Observatory(unittest.TestCase):
         """
         Test agency_name property
         """
-        test_value = 'oqhlxvavxtzhompfzboh'
+        test_value = 'mykoxlybshwnlpupized'
         self.instance.agency_name = test_value
         self.assertEqual(self.instance.agency_name, test_value)
     
@@ -78,7 +78,7 @@ class Test_Observatory(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(14.404981787475613)
+        test_value = float(82.6122897219674)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -86,7 +86,7 @@ class Test_Observatory(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(64.4649446107011)
+        test_value = float(40.1723589214341)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -94,7 +94,7 @@ class Test_Observatory(unittest.TestCase):
         """
         Test elevation property
         """
-        test_value = float(82.31231487335056)
+        test_value = float(43.087440949741804)
         self.instance.elevation = test_value
         self.assertEqual(self.instance.elevation, test_value)
     
@@ -102,7 +102,7 @@ class Test_Observatory(unittest.TestCase):
         """
         Test sensor_orientation property
         """
-        test_value = 'cgwixiqvtahamvqlnlih'
+        test_value = 'ipfimhfmdsceqngwftip'
         self.instance.sensor_orientation = test_value
         self.assertEqual(self.instance.sensor_orientation, test_value)
     
@@ -110,7 +110,7 @@ class Test_Observatory(unittest.TestCase):
         """
         Test sensor_sampling_rate property
         """
-        test_value = float(48.53228473263225)
+        test_value = float(5.014467944346023)
         self.instance.sensor_sampling_rate = test_value
         self.assertEqual(self.instance.sensor_sampling_rate, test_value)
     
@@ -118,7 +118,7 @@ class Test_Observatory(unittest.TestCase):
         """
         Test declination_base property
         """
-        test_value = float(22.959719151285007)
+        test_value = float(37.88889414392435)
         self.instance.declination_base = test_value
         self.assertEqual(self.instance.declination_base, test_value)
     

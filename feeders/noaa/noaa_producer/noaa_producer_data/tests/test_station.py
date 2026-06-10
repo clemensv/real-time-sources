@@ -29,9 +29,9 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            tidal=True,
-            greatlakes=True,
-            shefcode='likxhovfnshnqwymjist',
+            tidal=False,
+            greatlakes=False,
+            shefcode='tdhgufclhvxaudhdxmxv',
             details=None,
             sensors=None,
             floodlevels=None,
@@ -41,28 +41,28 @@ class Test_Station(unittest.TestCase):
             benchmarks=None,
             tidePredOffsets=None,
             ofsMapOffsets=None,
-            state='iwkcgdtzhlvsnzryzkdh',
-            timezone='oepuwthlfwlfijzaoika',
-            timezonecorr=int(4),
-            observedst=True,
+            state='zpovuizwavtlknaqmryb',
+            timezone='yctyfugpgiamrafalwlg',
+            timezonecorr=int(64),
+            observedst=False,
             stormsurge=True,
             nearby=None,
             forecast=True,
-            outlook=False,
-            HTFhistorical=True,
-            nonNavigational=True,
-            station_id='vqlfjjqdyrsxumepbkyo',
-            name='dscyrnkwspqcbdpfmsux',
-            lat=float(20.86934391546189),
-            lng=float(21.693180766916452),
-            affiliations='gdspnsnrofnuindjasyc',
-            portscode='cmqbufcfiapuyltuzwco',
+            outlook=True,
+            HTFhistorical=False,
+            nonNavigational=False,
+            station_id='kewerqcctcuzksrjqfxe',
+            name='rgmxrkkiuvnfahtvtghl',
+            lat=float(64.19059435545962),
+            lng=float(88.2274858939507),
+            affiliations='ogmuidpnyftdklfjjwvy',
+            portscode='jiyrhvzaoissvyxronbf',
             products=None,
             disclaimers=None,
             notices=None,
-            self_='tfbobtruuxzbcsouiioe',
-            expand='wfcggyyswbklpgtsfryq',
-            tideType='fzextczcpjsafemwhtoo'
+            self_='mapjvrlxelacjjdazaoj',
+            expand='xkbnruwkmhsqxhkdrfcm',
+            tideType='ubxjlwdbfcwadvbxfvsh'
         )
         return instance
 
@@ -71,7 +71,7 @@ class Test_Station(unittest.TestCase):
         """
         Test tidal property
         """
-        test_value = True
+        test_value = False
         self.instance.tidal = test_value
         self.assertEqual(self.instance.tidal, test_value)
     
@@ -79,7 +79,7 @@ class Test_Station(unittest.TestCase):
         """
         Test greatlakes property
         """
-        test_value = True
+        test_value = False
         self.instance.greatlakes = test_value
         self.assertEqual(self.instance.greatlakes, test_value)
     
@@ -87,7 +87,7 @@ class Test_Station(unittest.TestCase):
         """
         Test shefcode property
         """
-        test_value = 'likxhovfnshnqwymjist'
+        test_value = 'tdhgufclhvxaudhdxmxv'
         self.instance.shefcode = test_value
         self.assertEqual(self.instance.shefcode, test_value)
     
@@ -167,7 +167,7 @@ class Test_Station(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'iwkcgdtzhlvsnzryzkdh'
+        test_value = 'zpovuizwavtlknaqmryb'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -175,7 +175,7 @@ class Test_Station(unittest.TestCase):
         """
         Test timezone property
         """
-        test_value = 'oepuwthlfwlfijzaoika'
+        test_value = 'yctyfugpgiamrafalwlg'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
     
@@ -183,7 +183,7 @@ class Test_Station(unittest.TestCase):
         """
         Test timezonecorr property
         """
-        test_value = int(4)
+        test_value = int(64)
         self.instance.timezonecorr = test_value
         self.assertEqual(self.instance.timezonecorr, test_value)
     
@@ -191,7 +191,7 @@ class Test_Station(unittest.TestCase):
         """
         Test observedst property
         """
-        test_value = True
+        test_value = False
         self.instance.observedst = test_value
         self.assertEqual(self.instance.observedst, test_value)
     
@@ -223,7 +223,7 @@ class Test_Station(unittest.TestCase):
         """
         Test outlook property
         """
-        test_value = False
+        test_value = True
         self.instance.outlook = test_value
         self.assertEqual(self.instance.outlook, test_value)
     
@@ -231,7 +231,7 @@ class Test_Station(unittest.TestCase):
         """
         Test HTFhistorical property
         """
-        test_value = True
+        test_value = False
         self.instance.HTFhistorical = test_value
         self.assertEqual(self.instance.HTFhistorical, test_value)
     
@@ -239,7 +239,7 @@ class Test_Station(unittest.TestCase):
         """
         Test nonNavigational property
         """
-        test_value = True
+        test_value = False
         self.instance.nonNavigational = test_value
         self.assertEqual(self.instance.nonNavigational, test_value)
     
@@ -247,7 +247,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'vqlfjjqdyrsxumepbkyo'
+        test_value = 'kewerqcctcuzksrjqfxe'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -255,7 +255,7 @@ class Test_Station(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'dscyrnkwspqcbdpfmsux'
+        test_value = 'rgmxrkkiuvnfahtvtghl'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -263,7 +263,7 @@ class Test_Station(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(20.86934391546189)
+        test_value = float(64.19059435545962)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -271,7 +271,7 @@ class Test_Station(unittest.TestCase):
         """
         Test lng property
         """
-        test_value = float(21.693180766916452)
+        test_value = float(88.2274858939507)
         self.instance.lng = test_value
         self.assertEqual(self.instance.lng, test_value)
     
@@ -279,7 +279,7 @@ class Test_Station(unittest.TestCase):
         """
         Test affiliations property
         """
-        test_value = 'gdspnsnrofnuindjasyc'
+        test_value = 'ogmuidpnyftdklfjjwvy'
         self.instance.affiliations = test_value
         self.assertEqual(self.instance.affiliations, test_value)
     
@@ -287,7 +287,7 @@ class Test_Station(unittest.TestCase):
         """
         Test portscode property
         """
-        test_value = 'cmqbufcfiapuyltuzwco'
+        test_value = 'jiyrhvzaoissvyxronbf'
         self.instance.portscode = test_value
         self.assertEqual(self.instance.portscode, test_value)
     
@@ -319,7 +319,7 @@ class Test_Station(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'tfbobtruuxzbcsouiioe'
+        test_value = 'mapjvrlxelacjjdazaoj'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     
@@ -327,7 +327,7 @@ class Test_Station(unittest.TestCase):
         """
         Test expand property
         """
-        test_value = 'wfcggyyswbklpgtsfryq'
+        test_value = 'xkbnruwkmhsqxhkdrfcm'
         self.instance.expand = test_value
         self.assertEqual(self.instance.expand, test_value)
     
@@ -335,7 +335,7 @@ class Test_Station(unittest.TestCase):
         """
         Test tideType property
         """
-        test_value = 'fzextczcpjsafemwhtoo'
+        test_value = 'ubxjlwdbfcwadvbxfvsh'
         self.instance.tideType = test_value
         self.assertEqual(self.instance.tideType, test_value)
     

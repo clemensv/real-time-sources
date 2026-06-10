@@ -21,29 +21,29 @@
 | canada-aqhi | ✅ PASS | — | ✅ PASS | — |
 | canada-eccc-wateroffice | ❌ FAIL | — | ✅ PASS | — |
 | carbon-intensity | ✅ PASS | — | ✅ PASS | — |
-| cbp-border-wait | ✅ PASS | — | ❌ FAIL | — |
+| cbp-border-wait | ✅ PASS | — | ⚠️ FAIL (unresolved) | — |
 | cdec-reservoirs | ❌ FAIL | — | ✅ PASS | — |
 | chmi-hydro | ✅ PASS | — | ✅ PASS | — |
 | defra-aurn | ✅ PASS | — | ✅ PASS | — |
 | digitraffic-maritime | ❌ FAIL | — | — | — |
 | digitraffic-road | ❌ FAIL | — | — | — |
-| dwd | ✅ PASS | — | ❌ FAIL | — |
+| dwd | ✅ PASS | — | ✅ FIXED (PR #896 — LRO retry) | — |
 | dwd-pollenflug | ✅ PASS | — | ✅ PASS | — |
 | eaws-albina | ✅ PASS | — | ✅ PASS | — |
 | elexon-bmrs | ❌ FAIL | — | ✅ PASS | — |
 | energidataservice-dk | ✅ PASS | — | ✅ PASS | — |
 | energy-charts | ✅ PASS | — | ✅ PASS | — |
-| entsoe | ✅ PASS | — | ❌ FAIL | — |
-| entur-norway | ✅ PASS | — | ❌ FAIL | — |
+| entsoe | ✅ PASS | — | ✅ FIXED (PR #895 — kafka module name) | — |
+| entur-norway | ✅ PASS | — | ⚠️ FAIL (unresolved) | — |
 | environment-canada | ❌ FAIL | — | ✅ PASS | — |
-| epa-uv | ✅ PASS | — | ❌ FAIL | — |
+| epa-uv | ✅ PASS | — | ✅ FIXED (PR #897 — sys.argv flat parser) | — |
 | eurdep-radiation | ✅ PASS | — | ✅ PASS | — |
 | fdsn-seismology | ❌ FAIL | — | ✅ PASS | — |
 | fmi-finland | ✅ PASS | — | ✅ PASS | — |
 | french-road-traffic | ✅ PASS | — | ✅ PASS | — |
 | gbfs-bikeshare | ❌ FAIL | — | ✅ PASS | — |
 | gdacs | ❌ FAIL | — | ✅ PASS | — |
-| geosphere-austria | ❌ FAIL | — | ✅ PASS | — |
+| geosphere-austria | ✅ FIXED (PR #899 — schema nullable fields) | — | ✅ PASS | — |
 | german-waters | ❌ FAIL | — | ✅ PASS | — |
 | gios-poland | ✅ PASS | — | ✅ PASS | — |
 | gracedb | ✅ PASS | — | ✅ PASS | — |
@@ -71,22 +71,22 @@
 | mode-s | ❌ FAIL | — | — | — |
 | ndw-road-traffic | ❌ FAIL | — | ✅ PASS | — |
 | nepal-bipad-hydrology | ✅ PASS | — | ✅ PASS | — |
-| nextbus | ❌ FAIL | — | ❌ FAIL | #849 |
+| nextbus | ✅ PASS | — | ✅ FIXED (PR #901 — canonical notebook rewrite) | — |
 | nifc-usa-wildfires | ✅ PASS | — | ✅ PASS | — |
 | nina-bbk | ✅ PASS | — | ✅ PASS | — |
-| noaa | ❌ FAIL | — | ✅ PASS | — |
+| noaa | ✅ FIXED (PR #906 — missing region field + visibility args) | — | ✅ PASS | — |
 | noaa-goes | ✅ PASS | — | ✅ PASS | — |
 | noaa-ndbc | ✅ PASS | — | ✅ PASS | — |
 | noaa-nws | ✅ PASS | — | ✅ PASS | — |
-| noaa-swpc-l1 | ✅ PASS | — | ❌ FAIL | #848 |
-| nws-alerts | ✅ PASS | — | ❌ FAIL | — |
+| noaa-swpc-l1 | ✅ PASS | — | ✅ FIXED (#848 closed) | — |
+| nws-alerts | ✅ PASS | — | ✅ FIXED (#850 closed) | — |
 | nws-forecasts | ✅ PASS | — | — | — |
 | paris-bicycle-counters | ✅ PASS | — | ✅ PASS | — |
 | pegelonline | ✅ PASS | — | — | — |
 | ptwc-tsunami | ✅ PASS | — | ✅ PASS | — |
 | rss | ❌ FAIL | — | — | — |
 | rws-waterwebservices | ✅ PASS | — | ✅ PASS | — |
-| seattle-911 | ✅ PASS | — | ❌ FAIL | #851 |
+| seattle-911 | ✅ PASS | — | ✅ FIXED (#851 closed) | — |
 | seattle-street-closures | ✅ PASS | — | — | — |
 | sensor-community | ✅ PASS | — | — | — |
 | singapore-nea | ✅ PASS | — | ✅ PASS (dispatch=219) | — |
@@ -95,7 +95,7 @@
 | snotel | ✅ PASS | — | — | — |
 | syke-hydro | ❌ FAIL | — | — | — |
 | uba-airdata | ✅ PASS | — | — | — |
-| uk-ea-flood-monitoring | ❌ FAIL | — | ❌ FAIL | #856 |
+| uk-ea-flood-monitoring | ✅ FIXED (#856 closed) | — | ✅ FIXED (#856 closed) | — |
 | usgs-earthquakes | ✅ PASS | — | ✅ PASS (dispatch=9; USGS.Earthquakes.Event=9) | cleanup complete |
 | usgs-geomag | ✅ PASS | — | — | — |
 | usgs-iv | ✅ PASS | — | — | — |

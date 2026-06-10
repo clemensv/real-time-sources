@@ -165,11 +165,11 @@ class RelativeHumidity:
             An instance of the dataclass.
         """
         return cls(
-            site_no='jzfwenmtafkopxcyrrhh',
-            datetime='bhdftgspmddcjihbnqfv',
-            value=float(60.216442278851936),
-            exception='cnhebxdbuvfarbsbfdjr',
-            qualifiers=['agooljhzobbumjgsftly'],
-            parameter_cd='xgqbbdrmtsknuhgkzyrb',
-            timeseries_cd='oqmtgsntvaklvzzuxzge'
+            site_no='mlexkufcmhczwomcwldy',
+            datetime='lpxkzizalwlyfbusosnu',
+            value=float(98.4400689555518),
+            exception='aqkwaztkwrymduhlaxui',
+            qualifiers=['zznbfrbabmacfeofhfxc', 'fxpjdkgwsdkigiptoycw', 'rntgtqwvuleznsmajqkg', 'vmhjdwaomocjdlollppy'],
+            parameter_cd='paaokfavvzbuavuvsbnm',
+            timeseries_cd='deexjddtlgbbydykubqp'
         )

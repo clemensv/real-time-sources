@@ -28,13 +28,13 @@ class Test_DailyForecast(unittest.TestCase):
         Create instance of DailyForecast for testing
         """
         instance = DailyForecast(
-            location_id='rvsbfkbelvwbyhhpyjga',
-            city='dyrwhwcdilszltfszjir',
-            state='nzdxkicgsdqtjbppmgzz',
-            forecast_date='ndqacpgvbfdxltkrwtkg',
-            uv_index=int(52),
-            uv_alert='lesmyqyxxptkuyjdhtco',
-            city_slug='ztsoebwvzayaycgccjxn'
+            location_id='hwuyamvcarjhzbnhbrek',
+            city='ggdyzctpomjmgijmovwx',
+            state='hwztddcyfrijwermuscd',
+            forecast_date='pttjusbaejtxyckahcld',
+            uv_index=int(96),
+            uv_alert='ryobyyzaqbvgykcuanta',
+            city_slug='xfvswuaioemtxxmarbvt'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_DailyForecast(unittest.TestCase):
         """
         Test location_id property
         """
-        test_value = 'rvsbfkbelvwbyhhpyjga'
+        test_value = 'hwuyamvcarjhzbnhbrek'
         self.instance.location_id = test_value
         self.assertEqual(self.instance.location_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_DailyForecast(unittest.TestCase):
         """
         Test city property
         """
-        test_value = 'dyrwhwcdilszltfszjir'
+        test_value = 'ggdyzctpomjmgijmovwx'
         self.instance.city = test_value
         self.assertEqual(self.instance.city, test_value)
     
@@ -59,7 +59,7 @@ class Test_DailyForecast(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'nzdxkicgsdqtjbppmgzz'
+        test_value = 'hwztddcyfrijwermuscd'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -67,7 +67,7 @@ class Test_DailyForecast(unittest.TestCase):
         """
         Test forecast_date property
         """
-        test_value = 'ndqacpgvbfdxltkrwtkg'
+        test_value = 'pttjusbaejtxyckahcld'
         self.instance.forecast_date = test_value
         self.assertEqual(self.instance.forecast_date, test_value)
     
@@ -75,7 +75,7 @@ class Test_DailyForecast(unittest.TestCase):
         """
         Test uv_index property
         """
-        test_value = int(52)
+        test_value = int(96)
         self.instance.uv_index = test_value
         self.assertEqual(self.instance.uv_index, test_value)
     
@@ -83,7 +83,7 @@ class Test_DailyForecast(unittest.TestCase):
         """
         Test uv_alert property
         """
-        test_value = 'lesmyqyxxptkuyjdhtco'
+        test_value = 'ryobyyzaqbvgykcuanta'
         self.instance.uv_alert = test_value
         self.assertEqual(self.instance.uv_alert, test_value)
     
@@ -91,7 +91,7 @@ class Test_DailyForecast(unittest.TestCase):
         """
         Test city_slug property
         """
-        test_value = 'ztsoebwvzayaycgccjxn'
+        test_value = 'xfvswuaioemtxxmarbvt'
         self.instance.city_slug = test_value
         self.assertEqual(self.instance.city_slug, test_value)
     

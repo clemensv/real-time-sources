@@ -16,7 +16,8 @@ import os
 import sys
 from datetime import datetime, timezone
 from typing import Any, Dict, List, Optional
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
@@ -24,9 +25,45 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 from wallonia_issep.wallonia_issep import WalloniaISsePAPI, _load_state, _save_state
 from wallonia_issep_mqtt_producer_data import Observation, SensorConfiguration
 from wallonia_issep_mqtt_producer_mqtt_client.client import BeIssepAirqualitySensorsMqttMqttClient
+import json
+
+def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
+
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
+    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return resolved_client_id, str(username or ""), str(password or "")
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = resolved_client_id or str(username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_client_id, resolved_username, resolved_password
 
 logger = logging.getLogger(__name__)
-
 
 async def _publish_configurations(
     mqtt_client: BeIssepAirqualitySensorsMqttMqttClient,
@@ -47,7 +84,6 @@ async def _publish_configurations(
         )
     logger.info("Published %d sensor configuration info events", len(configs))
     return len(configs)
-
 
 def _build_observation_data(obs) -> Observation:
     """Build an MQTT Observation dataclass from a normalized upstream observation."""
@@ -97,7 +133,6 @@ def _build_observation_data(obs) -> Observation:
         pm10_rf=obs.pm10_rf,
     )
 
-
 async def _publish_observations(
     api: WalloniaISsePAPI,
     mqtt_client: BeIssepAirqualitySensorsMqttMqttClient,
@@ -125,7 +160,6 @@ async def _publish_observations(
             )
     return count, all_records
 
-
 async def feed(
     api: WalloniaISsePAPI,
     broker_host: str,
@@ -143,13 +177,19 @@ async def feed(
     """Run the MQTT feed loop."""
     state = _load_state(state_file)
 
-    paho_client = mqtt.Client(
-        callback_api_version=CallbackAPIVersion.VERSION2,
+    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+        username=username,
+        password=password or "",
         client_id=client_id or "",
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
+    paho_client = mqtt.Client(client_id=resolved_client_id or "", 
+        callback_api_version=CallbackAPIVersion.VERSION2,
         protocol=MQTTv5,
     )
-    if username:
-        paho_client.username_pw_set(username, password or "")
+    if resolved_username or resolved_password:
+        paho_client.username_pw_set(resolved_username, resolved_password)
     if tls:
         paho_client.tls_set()
 
@@ -220,7 +260,6 @@ async def feed(
     finally:
         await mqtt_client.disconnect()
 
-
 def _parse_broker_url(url: str) -> tuple:
     parsed = urlparse(url if "://" in url else f"mqtt://{url}")
     scheme = (parsed.scheme or "mqtt").lower()
@@ -230,7 +269,6 @@ def _parse_broker_url(url: str) -> tuple:
     user = parsed.username or None
     pwd = parsed.password or None
     return host, port, tls, user, pwd
-
 
 def _build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Wallonia ISSeP air quality → MQTT/UNS bridge.")
@@ -254,7 +292,6 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     feed_parser.add_argument("--once", action="store_true",
                              default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
     return parser
-
 
 def main(argv: Optional[list] = None) -> None:
     logging.basicConfig(level=logging.DEBUG if sys.gettrace() else logging.INFO)
@@ -288,7 +325,6 @@ def main(argv: Optional[list] = None) -> None:
             once=args.once, content_mode=args.content_mode,
         )
     )
-
 
 if __name__ == "__main__":
     main()

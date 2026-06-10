@@ -9,10 +9,10 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from ptwc_tsunami_amqp_producer_data.tsunamibulletin import TsunamiBulletin
-from ptwc_tsunami_amqp_producer_data.feedenum import FeedEnum
-from ptwc_tsunami_amqp_producer_data.basinenum import BasinEnum
-from ptwc_tsunami_amqp_producer_data.ptwclevelenum import PtwcLevelenum
 from ptwc_tsunami_amqp_producer_data.categoryenum import CategoryEnum
+from ptwc_tsunami_amqp_producer_data.feedenum import FeedEnum
+from ptwc_tsunami_amqp_producer_data.ptwclevelenum import PtwcLevelenum
+from ptwc_tsunami_amqp_producer_data.basinenum import BasinEnum
 import datetime
 
 
@@ -33,19 +33,19 @@ class Test_TsunamiBulletin(unittest.TestCase):
         Create instance of TsunamiBulletin for testing
         """
         instance = TsunamiBulletin(
-            bulletin_id='tjuicrizwnkhdzxiivwm',
+            bulletin_id='tpyrdcgfzgvfdjzpgtnz',
             feed=FeedEnum.PAAQ,
-            center='oaqxmjuzcmwjhgkpyyer',
-            title='rxpmogbdsxdpkcevizdo',
+            center='rsciiixcsomphixuwmjq',
+            title='kwyyzdaxpdhnycxqbjtc',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            latitude=float(83.07285102941738),
-            longitude=float(36.42554308893546),
+            latitude=float(1.9714838440555216),
+            longitude=float(40.49378439184422),
             category=CategoryEnum.Warning,
-            magnitude='vkvbeajndphtlawdzhcq',
-            affected_region='ehohdfushkiumfmbojvq',
-            note='qeozoanluuflbdciwinq',
-            bulletin_url='vmifdxzoieyslmwheors',
-            cap_url='trjfkasixrryqvaqpekr',
+            magnitude='ulrsummgxswmeaurqwzv',
+            affected_region='gqjyzxvnakifdkuhwwgf',
+            note='rxlirjjmeqeijqanqrng',
+            bulletin_url='gaafibntmuagmgbzzdoe',
+            cap_url='ljyhdwgvdddtnjsvrosa',
             basin=BasinEnum.pacific,
             ptwc_level=PtwcLevelenum.warning
         )
@@ -56,7 +56,7 @@ class Test_TsunamiBulletin(unittest.TestCase):
         """
         Test bulletin_id property
         """
-        test_value = 'tjuicrizwnkhdzxiivwm'
+        test_value = 'tpyrdcgfzgvfdjzpgtnz'
         self.instance.bulletin_id = test_value
         self.assertEqual(self.instance.bulletin_id, test_value)
     
@@ -72,7 +72,7 @@ class Test_TsunamiBulletin(unittest.TestCase):
         """
         Test center property
         """
-        test_value = 'oaqxmjuzcmwjhgkpyyer'
+        test_value = 'rsciiixcsomphixuwmjq'
         self.instance.center = test_value
         self.assertEqual(self.instance.center, test_value)
     
@@ -80,7 +80,7 @@ class Test_TsunamiBulletin(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'rxpmogbdsxdpkcevizdo'
+        test_value = 'kwyyzdaxpdhnycxqbjtc'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -96,7 +96,7 @@ class Test_TsunamiBulletin(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(83.07285102941738)
+        test_value = float(1.9714838440555216)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -104,7 +104,7 @@ class Test_TsunamiBulletin(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(36.42554308893546)
+        test_value = float(40.49378439184422)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -120,7 +120,7 @@ class Test_TsunamiBulletin(unittest.TestCase):
         """
         Test magnitude property
         """
-        test_value = 'vkvbeajndphtlawdzhcq'
+        test_value = 'ulrsummgxswmeaurqwzv'
         self.instance.magnitude = test_value
         self.assertEqual(self.instance.magnitude, test_value)
     
@@ -128,7 +128,7 @@ class Test_TsunamiBulletin(unittest.TestCase):
         """
         Test affected_region property
         """
-        test_value = 'ehohdfushkiumfmbojvq'
+        test_value = 'gqjyzxvnakifdkuhwwgf'
         self.instance.affected_region = test_value
         self.assertEqual(self.instance.affected_region, test_value)
     
@@ -136,7 +136,7 @@ class Test_TsunamiBulletin(unittest.TestCase):
         """
         Test note property
         """
-        test_value = 'qeozoanluuflbdciwinq'
+        test_value = 'rxlirjjmeqeijqanqrng'
         self.instance.note = test_value
         self.assertEqual(self.instance.note, test_value)
     
@@ -144,7 +144,7 @@ class Test_TsunamiBulletin(unittest.TestCase):
         """
         Test bulletin_url property
         """
-        test_value = 'vmifdxzoieyslmwheors'
+        test_value = 'gaafibntmuagmgbzzdoe'
         self.instance.bulletin_url = test_value
         self.assertEqual(self.instance.bulletin_url, test_value)
     
@@ -152,7 +152,7 @@ class Test_TsunamiBulletin(unittest.TestCase):
         """
         Test cap_url property
         """
-        test_value = 'trjfkasixrryqvaqpekr'
+        test_value = 'ljyhdwgvdddtnjsvrosa'
         self.instance.cap_url = test_value
         self.assertEqual(self.instance.cap_url, test_value)
     

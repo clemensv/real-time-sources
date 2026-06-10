@@ -9,10 +9,10 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.alert import Alert
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 from typing import Any
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 
 
 class Test_Alert(unittest.TestCase):
@@ -33,7 +33,7 @@ class Test_Alert(unittest.TestCase):
         """
         instance = Alert(
             active_period=[None, None],
-            informed_entity=[None, None],
+            informed_entity=[None, None, None],
             cause=None,
             effect=None,
             url=None,
@@ -55,7 +55,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test informed_entity property
         """
-        test_value = [None, None]
+        test_value = [None, None, None]
         self.instance.informed_entity = test_value
         self.assertEqual(self.instance.informed_entity, test_value)
     

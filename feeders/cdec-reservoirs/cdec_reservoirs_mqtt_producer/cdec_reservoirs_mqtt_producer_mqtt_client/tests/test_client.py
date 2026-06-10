@@ -94,9 +94,8 @@ async def test_gov_ca_water_cdec_mqtt_gov_ca_water_cdec_mqtt_reservoir_reading_p
             sensor_num=f"test_sensor_num_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            basin="test_basin",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

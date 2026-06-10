@@ -1,6 +1,7 @@
 # Ignore session output (per-run data, logs, results)
-sessions/*/
+sessions/*/*
 !sessions/.gitkeep
+!sessions/*/CHECKLIST.md
 
 # Ignore user config (secrets)
 config.json

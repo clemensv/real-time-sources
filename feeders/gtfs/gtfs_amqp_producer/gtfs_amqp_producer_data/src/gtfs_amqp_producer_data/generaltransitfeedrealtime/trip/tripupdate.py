@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate import StopTimeUpdate
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.vehicledescriptor import VehicleDescriptor
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate import StopTimeUpdate
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripdescriptor import TripDescriptor
 
 
@@ -170,7 +170,7 @@ class TripUpdate:
         return cls(
             trip=None,
             vehicle=None,
-            stop_time_update=[None, None],
-            timestamp=int(20),
-            delay=int(62)
+            stop_time_update=[None, None, None, None],
+            timestamp=int(67),
+            delay=int(67)
         )

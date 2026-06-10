@@ -169,12 +169,12 @@ class BuoySupplementalMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='wpbhnfgqmslxqpbnuosc',
+            station_id='nkeofakdogvsiguzwans',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            lowest_pressure=float(13.339877519235232),
-            lowest_pressure_time_code='kttlydhnxfbkgcnketqy',
-            highest_wind_speed=float(86.24742274411699),
-            highest_wind_direction=float(18.099601520073726),
-            highest_wind_time_code='dwksxcaxkdnskfdnfvbe',
-            region='luscqezocqwxwhofpzwq'
+            lowest_pressure=float(19.535328838849576),
+            lowest_pressure_time_code='pfknhiwfsuprwwxpojsp',
+            highest_wind_speed=float(35.53566002636541),
+            highest_wind_direction=float(79.13288745840184),
+            highest_wind_time_code='gabvsmtpjpwkwsvpvnmh',
+            region='rltcefjiooqclhqdggcs'
         )

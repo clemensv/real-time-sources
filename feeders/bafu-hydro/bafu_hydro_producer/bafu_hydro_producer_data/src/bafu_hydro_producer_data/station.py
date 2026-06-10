@@ -163,10 +163,10 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='fizfgkcnsdkkwouozlsk',
-            name='ymlojqoaicskqfekpcto',
-            water_body_name='henmqoyqantzbokcgydl',
-            water_body_type='wrkldmsjwhctylubqufp',
-            latitude=float(0.3474441017899621),
-            longitude=float(54.28279473230161)
+            station_id='kwvritvvqhtkgpjyfptb',
+            name='jrlcbkukkahjcroghwpr',
+            water_body_name='jgmlbcghcfgggcclvapk',
+            water_body_type='nzhcyxfoxshuxxyzrehv',
+            latitude=float(28.45362816986139),
+            longitude=float(8.934853895856998)
         )

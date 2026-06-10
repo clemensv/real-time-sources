@@ -1,3 +1,3 @@
-from .opw import WaterLevelReading, Station
+from .opw import Station, WaterLevelReading
 
-__all__ = ["WaterLevelReading", "Station"]
+__all__ = ["Station", "WaterLevelReading"]

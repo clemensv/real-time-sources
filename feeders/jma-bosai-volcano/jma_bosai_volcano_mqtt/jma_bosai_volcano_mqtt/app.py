@@ -1,11 +1,50 @@
 from __future__ import annotations
 import argparse, asyncio, logging, os, time
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 from jma_bosai_volcano.jma_bosai_volcano import JMABosaiVolcanoAPI, VOLCANO_LIST_URL, WARNING_URL, ERUPTION_URL, DEFAULT_STATE_FILE, Volcano, VolcanicWarning, VolcanicEruption, parse_volcano_catalog, parse_warning_record, parse_eruption_record
 from jma_bosai_volcano_mqtt_producer_data import Volcano as MVolcano, VolcanicWarning as MWarning, VolcanicEruption as MEruption
 from jma_bosai_volcano_mqtt_producer_mqtt_client.client import JPJMAVolcanoMqttMqttClient
+import json
+
+def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
+
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
+    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return resolved_client_id, str(username or ""), str(password or "")
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = resolved_client_id or str(username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_client_id, resolved_username, resolved_password
+
 class MockAPI(JMABosaiVolcanoAPI):
     def fetch_volcano_catalog(self): return parse_volcano_catalog([{'code':'101','nameJp':'桜島','nameEn':'Sakurajima','lat':31.58,'lon':130.66,'elevation':1117,'levelOperation':True}])
     def fetch_warnings(self): return [{'eventId':'v1','reportDatetime':'2026-01-01T00:00:00+09:00','volcanoInfos':[{'type':'噴火警報・予報（対象火山）','items':[{'code':'11','name':'活火山であることに留意','condition':'発表','areas':[{'code':'101'}]}]}]}]
@@ -22,8 +61,16 @@ async def run(api,c):
 def parse_url(u):
     p=urlparse(u if '://' in u else 'mqtt://'+u); t=(p.scheme or 'mqtt').lower() in ('mqtts','ssl','tls'); return p.hostname or 'localhost', p.port or (8883 if t else 1883), t
 async def feed(api,h,p,tls=False,username=None,password=None,content_mode='binary'):
-    pc=mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2,protocol=MQTTv5);
-    if username: pc.username_pw_set(username,password or '')
+    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+        username=username,
+        password=password or '',
+        client_id=None,
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
+    pc=mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2,protocol=MQTTv5);
+    if resolved_username or resolved_password:
+        pc.username_pw_set(resolved_username, resolved_password)
     if tls: pc.tls_set()
     c=JPJMAVolcanoMqttMqttClient(client=pc,content_mode=content_mode,loop=asyncio.get_running_loop()); await c.connect(h,p)
     try: await run(api,c)

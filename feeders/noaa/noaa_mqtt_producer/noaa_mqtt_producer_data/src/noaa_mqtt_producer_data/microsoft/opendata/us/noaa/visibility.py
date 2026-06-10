@@ -165,11 +165,11 @@ class Visibility:
             An instance of the dataclass.
         """
         return cls(
-            timestamp='qsndabewoptfpvhlwyeg',
-            value=float(69.63750648270096),
+            timestamp='pplqogbqupwjgvgzpshf',
+            value=float(52.90763334240487),
             max_visibility_exceeded=False,
             min_visibility_exceeded=True,
-            rate_of_change_exceeded=True,
-            station_id='suhuqduknwivnkjfbnoz',
-            region='yvgvsbwoqadlqmryhkhw'
+            rate_of_change_exceeded=False,
+            station_id='ntpbivxwdusnobxcdcad',
+            region='tuhyqofuiwkdisileoqo'
         )

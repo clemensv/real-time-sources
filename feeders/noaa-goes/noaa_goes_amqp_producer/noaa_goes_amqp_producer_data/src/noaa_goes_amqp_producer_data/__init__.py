@@ -1,8 +1,8 @@
-from .xrayflare import XrayFlare
+from .goeselectronflux import GoesElectronFlux
 from .goesmagnetometer import GoesMagnetometer
 from .goesxrayflux import GoesXrayFlux
-from .spaceweatheralert import SpaceWeatherAlert
-from .goeselectronflux import GoesElectronFlux
 from .goesprotonflux import GoesProtonFlux
+from .spaceweatheralert import SpaceWeatherAlert
+from .xrayflare import XrayFlare
 
-__all__ = ["XrayFlare", "GoesMagnetometer", "GoesXrayFlux", "SpaceWeatherAlert", "GoesElectronFlux", "GoesProtonFlux"]
+__all__ = ["GoesElectronFlux", "GoesMagnetometer", "GoesXrayFlux", "GoesProtonFlux", "SpaceWeatherAlert", "XrayFlare"]

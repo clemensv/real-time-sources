@@ -29,10 +29,10 @@ class Test_PM25Reading(unittest.TestCase):
         Create instance of PM25Reading for testing
         """
         instance = PM25Reading(
-            region='gpbofrltqkjxhqyeiyoh',
+            region='eidjzpeymmokgbgeacmv',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
             update_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            pm25_one_hourly=int(41)
+            pm25_one_hourly=int(14)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_PM25Reading(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'gpbofrltqkjxhqyeiyoh'
+        test_value = 'eidjzpeymmokgbgeacmv'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -65,7 +65,7 @@ class Test_PM25Reading(unittest.TestCase):
         """
         Test pm25_one_hourly property
         """
-        test_value = int(41)
+        test_value = int(14)
         self.instance.pm25_one_hourly = test_value
         self.assertEqual(self.instance.pm25_one_hourly, test_value)
     

@@ -28,9 +28,9 @@ class Test_PortCallAgent(unittest.TestCase):
         Create instance of PortCallAgent for testing
         """
         instance = PortCallAgent(
-            name='bvpdyszudzmxuwxlpcyg',
-            port_call_direction='ubofvxoisibafavigdmf',
-            role=int(79)
+            name='zhubtwwclodvvhguwcjb',
+            port_call_direction='vcawcrwsoicpumtxptub',
+            role=int(45)
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_PortCallAgent(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'bvpdyszudzmxuwxlpcyg'
+        test_value = 'zhubtwwclodvvhguwcjb'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -47,7 +47,7 @@ class Test_PortCallAgent(unittest.TestCase):
         """
         Test port_call_direction property
         """
-        test_value = 'ubofvxoisibafavigdmf'
+        test_value = 'vcawcrwsoicpumtxptub'
         self.instance.port_call_direction = test_value
         self.assertEqual(self.instance.port_call_direction, test_value)
     
@@ -55,7 +55,7 @@ class Test_PortCallAgent(unittest.TestCase):
         """
         Test role property
         """
-        test_value = int(79)
+        test_value = int(45)
         self.instance.role = test_value
         self.assertEqual(self.instance.role, test_value)
     

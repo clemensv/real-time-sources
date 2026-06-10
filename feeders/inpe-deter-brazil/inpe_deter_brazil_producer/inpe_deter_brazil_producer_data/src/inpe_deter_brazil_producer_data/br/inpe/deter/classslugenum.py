@@ -5,14 +5,14 @@ class ClassSlugenum(Enum):
     """
     Lowercase-kebab normalized DETER class used as a topic-safe MQTT routing axis, e.g. desmatamento-cr, degradacao, mineracao.
     """
-    desmatamento_cr = 'desmatamento-cr'
-    desmatamento_veg = 'desmatamento-veg'
+    desmatamento_MINUScr = 'desmatamento-cr'
+    desmatamento_MINUSveg = 'desmatamento-veg'
     degradacao = 'degradacao'
     mineracao = 'mineracao'
-    cs_desordenado = 'cs-desordenado'
-    cs_geometrico = 'cs-geometrico'
-    cicatriz_de_queimada = 'cicatriz-de-queimada'
-    corte_seletivo = 'corte-seletivo'
+    cs_MINUSdesordenado = 'cs-desordenado'
+    cs_MINUSgeometrico = 'cs-geometrico'
+    cicatriz_MINUSde_MINUSqueimada = 'cicatriz-de-queimada'
+    corte_MINUSseletivo = 'corte-seletivo'
     unknown = 'unknown'
 
     @classmethod

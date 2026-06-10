@@ -1,43 +1,33 @@
-[build-system]
-requires = [
-    "setuptools>=64",
-    "setuptools-scm>=8",
-]
-build-backend = "setuptools.build_meta"
 
-[project]
+[tool.poetry]
 name = "singapore-nea-amqp-producer-amqp-producer"
-dynamic = [
-    "version",
-]
 description = "singapore_nea_amqp_producer_amqp_producer AMQP 1.0 producer library (Azure servicebus CBS/Entra ID enabled)"
-authors = [
-    { name = "Your Name", email = "your.email@example.com" },
-]
-requires-python = "<4.0,>=3.10"
-dependencies = [
-    "azure-core>=1.30.0",
-    "azure-identity>=1.15.0",
-    "cloudevents>=1.10.1,<2.0.0",
-    "python-qpid-proton>=0.39.0",
+authors = ["Your Name <your.email@example.com>"]
+version = "0.1.0"  # Placeholder version, dynamic versioning can be handled with plugins
+packages = [{include = "singapore_nea_amqp_producer_amqp_producer", from = "src"}]
+
+[tool.poetry.dependencies]
+python = "<4.0,>=3.10"
+singapore-nea-amqp-producer-data = {path = "../singapore_nea_amqp_producer_data", develop = true}  
+python-qpid-proton = ">=0.39.0"
+cloudevents = ">=1.10.1,<2.0.0"
+azure-identity = ">=1.15.0"
+azure-core = ">=1.30.0"
+
+[tool.poetry.dev-dependencies]
+pytest = ">=8.2.2"
+flake8 = ">=7.1.0"
+pylint = ">=3.2.3"
+mypy = ">=1.10.0"
+testcontainers = ">=4.5.1"
+pytest-asyncio = ">=0.23.7"
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+filterwarnings = [
+    "ignore::DeprecationWarning:testcontainers.core.waiting_utils"
 ]
 
-[project.optional-dependencies]
-dev = [
-    "flake8>=7.1.0",
-    "mypy>=1.10.0",
-    "pylint>=3.2.3",
-    "pytest-asyncio>=0.23.7",
-    "pytest>=8.2.2",
-    "testcontainers>=4.5.1",
-]
-
-[tool.setuptools_scm]
-root = "../../../.."
-version_scheme = "post-release"
-local_scheme = "no-local-version"
-
-[tool.setuptools.packages.find]
-where = [
-    "src",
-]
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

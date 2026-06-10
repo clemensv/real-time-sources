@@ -169,13 +169,13 @@ class AddressedSafetyMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(8),
-            RepeatIndicator=int(86),
-            UserID=int(42),
+            MessageID=int(74),
+            RepeatIndicator=int(61),
+            UserID=int(68),
             Valid=False,
-            Sequenceinteger=int(93),
-            DestinationID=int(15),
+            Sequenceinteger=int(53),
+            DestinationID=int(76),
             Retransmission=False,
             Spare=True,
-            Text='zwtfhsuczsgwbharfxqe'
+            Text='ujrjjgiuxrqkmwgbnjnx'
         )

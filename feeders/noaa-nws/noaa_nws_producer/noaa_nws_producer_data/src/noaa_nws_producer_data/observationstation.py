@@ -169,13 +169,13 @@ class ObservationStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='jzpeuugffrvermxkeqyn',
-            name='pftxxlvfzcqcasivaaxc',
-            elevation_m=float(86.87129880719628),
-            time_zone='huijujwrigxskvjyrhxb',
-            forecast_zone='enkixoxpgvraqnrnnqmn',
-            county='tealfwaaijzenozprhzv',
-            fire_weather_zone='dmhopuprhgtcxcjiysaz',
-            state='udvwveenbclyggspiwvf',
-            zone_id='hbhjlqgwxyqdafqhpvvu'
+            station_id='msujmggoeuyxlldqeidb',
+            name='elauxyaykqggllxgfyqm',
+            elevation_m=float(78.42658689805135),
+            time_zone='pajywxqvmhonfvjppgux',
+            forecast_zone='csckwdieztqzsmatqdsv',
+            county='cnqnltnvtjvgganpelii',
+            fire_weather_zone='megioovmxpatpqaekkwy',
+            state='pfgnqwuxadpmmvekzhsm',
+            zone_id='pfwycgkgguwetwqxmntx'
         )

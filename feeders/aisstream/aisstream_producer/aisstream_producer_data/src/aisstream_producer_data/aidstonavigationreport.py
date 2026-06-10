@@ -190,23 +190,23 @@ class AidsToNavigationReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(13),
-            RepeatIndicator=int(54),
-            UserID=int(49),
-            Valid=False,
-            Type=int(69),
-            Name='vpkjenplkzvynpbfpzrl',
+            MessageID=int(36),
+            RepeatIndicator=int(46),
+            UserID=int(40),
+            Valid=True,
+            Type=int(13),
+            Name='wrsnclaiyqlebvohmhjs',
             PositionAccuracy=True,
-            Longitude=float(71.13633157066023),
-            Latitude=float(62.326171178251656),
+            Longitude=float(45.46340760570864),
+            Latitude=float(84.23147529788396),
             Dimension=None,
-            Fixtype=int(38),
-            Timestamp=int(76),
+            Fixtype=int(84),
+            Timestamp=int(97),
             OffPosition=False,
-            AtoN=int(92),
+            AtoN=int(82),
             Raim=True,
             VirtualAtoN=False,
-            AssignedMode=False,
-            Spare=True,
-            NameExtension='raxqelmtgspgtjkzccee'
+            AssignedMode=True,
+            Spare=False,
+            NameExtension='ykjebbnkebwiomvrrwiw'
         )

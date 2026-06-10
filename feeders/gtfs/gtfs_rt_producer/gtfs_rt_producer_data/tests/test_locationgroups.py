@@ -28,10 +28,10 @@ class Test_LocationGroups(unittest.TestCase):
         Create instance of LocationGroups for testing
         """
         instance = LocationGroups(
-            locationGroupId='qtnnfvqekcpkjiponfmd',
-            locationGroupName='ocldhimgntaexkqnwcpg',
-            locationGroupDesc='uwanbpibzswvdcahumtg',
-            locationGroupUrl='hwjcubrzxaybknboobab'
+            locationGroupId='hijrhqrwzgsdqbudkfou',
+            locationGroupName='jmuhpwmmccirqjfxxccb',
+            locationGroupDesc='gjasgdxbfxncioolzldq',
+            locationGroupUrl='iuzqlztgdtsbfwyyqhgz'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupId property
         """
-        test_value = 'qtnnfvqekcpkjiponfmd'
+        test_value = 'hijrhqrwzgsdqbudkfou'
         self.instance.locationGroupId = test_value
         self.assertEqual(self.instance.locationGroupId, test_value)
     
@@ -48,7 +48,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupName property
         """
-        test_value = 'ocldhimgntaexkqnwcpg'
+        test_value = 'jmuhpwmmccirqjfxxccb'
         self.instance.locationGroupName = test_value
         self.assertEqual(self.instance.locationGroupName, test_value)
     
@@ -56,7 +56,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupDesc property
         """
-        test_value = 'uwanbpibzswvdcahumtg'
+        test_value = 'gjasgdxbfxncioolzldq'
         self.instance.locationGroupDesc = test_value
         self.assertEqual(self.instance.locationGroupDesc, test_value)
     
@@ -64,7 +64,7 @@ class Test_LocationGroups(unittest.TestCase):
         """
         Test locationGroupUrl property
         """
-        test_value = 'hwjcubrzxaybknboobab'
+        test_value = 'iuzqlztgdtsbfwyyqhgz'
         self.instance.locationGroupUrl = test_value
         self.assertEqual(self.instance.locationGroupUrl, test_value)
     

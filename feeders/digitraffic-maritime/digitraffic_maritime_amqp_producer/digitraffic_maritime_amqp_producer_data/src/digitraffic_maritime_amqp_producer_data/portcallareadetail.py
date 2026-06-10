@@ -181,18 +181,18 @@ class PortCallAreaDetail:
             An instance of the dataclass.
         """
         return cls(
-            port_area_code='hzcmuftzgfllcnlszqnl',
-            port_area_name='xgmtbnizdfclvqkvjgdj',
-            berth_code='amoggnbnbuvphmcoeaqh',
-            berth_name='nhgzskorihhjnzyiwsbf',
+            port_area_code='fxcmjzodqprbvgcyoozj',
+            port_area_name='cnsvtvqtqkgrcdxjbcae',
+            berth_code='wkspgvigydfkmpuyjfay',
+            berth_name='zwyljgkzltqxvmjizqjd',
             eta=datetime.datetime.now(datetime.timezone.utc),
-            eta_source='fuljuefuwnmhzantewpe',
+            eta_source='djkuibecfshxvdblyxka',
             etd=datetime.datetime.now(datetime.timezone.utc),
-            etd_source='nemoxpjnfnjqvjipmzpj',
+            etd_source='mqvnmkhqirtstxglgtbx',
             ata=datetime.datetime.now(datetime.timezone.utc),
-            ata_source='isuptmavdkzfendtkoqc',
+            ata_source='gfblnytbyxembcltatuj',
             atd=datetime.datetime.now(datetime.timezone.utc),
-            atd_source='iwiiullznadlldqyoqwu',
-            arrival_draught=float(76.97493258155716),
-            departure_draught=float(69.47577797427321)
+            atd_source='qkxsqgqolfvnerdkvwer',
+            arrival_draught=float(85.65106461330512),
+            departure_draught=float(46.9574286066665)
         )

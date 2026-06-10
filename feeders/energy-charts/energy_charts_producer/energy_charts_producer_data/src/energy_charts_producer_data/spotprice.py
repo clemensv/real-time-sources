@@ -169,10 +169,10 @@ class SpotPrice:
             An instance of the dataclass.
         """
         return cls(
-            country='golgmgtclrctrcecacey',
-            bidding_zone='smftqahwwjneaucjlrwc',
+            country='nhspymqrbhstlzijjwsg',
+            bidding_zone='uovanhxwypbrtqipbzqp',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(36),
-            price_eur_per_mwh=float(34.46352561891119),
-            unit='fviqafnzyibcrbqzlaiw'
+            unix_seconds=int(22),
+            price_eur_per_mwh=float(88.6825279832771),
+            unit='zgpxugwbxdrbbsdzyslb'
         )

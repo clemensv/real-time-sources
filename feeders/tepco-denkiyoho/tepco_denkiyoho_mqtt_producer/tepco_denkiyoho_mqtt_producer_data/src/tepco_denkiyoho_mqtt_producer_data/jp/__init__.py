@@ -1,3 +1,3 @@
-from .tepco import PeakDemandForecast, DemandActual, SupplyCapacity, DemandForecast
+from .tepco import DemandActual, DemandForecast, SupplyCapacity, PeakDemandForecast
 
-__all__ = ["PeakDemandForecast", "DemandActual", "SupplyCapacity", "DemandForecast"]
+__all__ = ["DemandActual", "DemandForecast", "SupplyCapacity", "PeakDemandForecast"]

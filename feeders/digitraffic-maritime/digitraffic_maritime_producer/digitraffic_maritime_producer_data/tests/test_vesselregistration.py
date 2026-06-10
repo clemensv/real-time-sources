@@ -28,8 +28,8 @@ class Test_VesselRegistration(unittest.TestCase):
         Create instance of VesselRegistration for testing
         """
         instance = VesselRegistration(
-            nationality='cgjuofqizynrlqfdaosf',
-            port_of_registry='nzwxnqodeuxjujbwovjr'
+            nationality='vimfkubwezeuvuecozup',
+            port_of_registry='lfxggwvhziicfcskyuqs'
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_VesselRegistration(unittest.TestCase):
         """
         Test nationality property
         """
-        test_value = 'cgjuofqizynrlqfdaosf'
+        test_value = 'vimfkubwezeuvuecozup'
         self.instance.nationality = test_value
         self.assertEqual(self.instance.nationality, test_value)
     
@@ -46,7 +46,7 @@ class Test_VesselRegistration(unittest.TestCase):
         """
         Test port_of_registry property
         """
-        test_value = 'nzwxnqodeuxjujbwovjr'
+        test_value = 'lfxggwvhziicfcskyuqs'
         self.instance.port_of_registry = test_value
         self.assertEqual(self.instance.port_of_registry, test_value)
     

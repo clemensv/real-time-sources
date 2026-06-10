@@ -171,12 +171,12 @@ class RadarFileProduct:
             An instance of the dataclass.
         """
         return cls(
-            file_url='wvsqtlkbzhmkmqutqbdk',
-            product='mncdknivjpjzyrncwael',
-            file_name='rcuwsdxolapdvclxtaec',
-            modified='pqqrsydobeqcpxsiajmo',
-            size_bytes=int(49),
-            file_id='ceedjpiefbhzwsjtincw',
-            state='vpzijksiqkydrzbftwuy',
-            product_type='espogldofmqzatzveatg'
+            file_url='vjolsemzubthtgfkuvol',
+            product='owweesamipmzuztsgjxc',
+            file_name='anptghkvhyakcxwdzrhp',
+            modified='qksyddliotlvylpvtzfj',
+            size_bytes=int(14),
+            file_id='jkmmqkcjkeskgrzckyfi',
+            state='tucsrchuywfxvrriijwl',
+            product_type='lblupukouxljuyxlvlij'
         )

@@ -29,25 +29,25 @@ class Test_RegionalIntensity(unittest.TestCase):
         Create instance of RegionalIntensity for testing
         """
         instance = RegionalIntensity(
-            region_id=int(1),
-            dnoregion='qxxyoaqvwrvvmzwnsdrz',
-            shortname='xzoglwsuckxvhqkammay',
+            region_id=int(48),
+            dnoregion='xvsaqzpqsyieibbikehf',
+            shortname='akkbwyccudxmbgsvzqpr',
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            forecast=int(4),
-            index='puqckkuvappapmqzhhig',
-            biomass_pct=float(30.791238096389094),
-            coal_pct=float(26.135799081538778),
-            gas_pct=float(7.908524165131747),
-            hydro_pct=float(54.92624402513737),
-            imports_pct=float(23.139387113126876),
-            nuclear_pct=float(53.89833723052069),
-            oil_pct=float(1.8085916739323915),
-            other_pct=float(64.18022731794888),
-            solar_pct=float(93.42229243227406),
-            wind_pct=float(72.05013426413083),
-            region='gdkdqfzgfhlvjmaoswnu',
-            ce_id='mntkrmuxqxftwykskajj'
+            forecast=int(91),
+            index='nttagxfjgunyyawjvxfg',
+            biomass_pct=float(65.88275709516495),
+            coal_pct=float(62.36289150397102),
+            gas_pct=float(95.83013378086224),
+            hydro_pct=float(85.07714139973956),
+            imports_pct=float(6.963106615427317),
+            nuclear_pct=float(38.01886058524915),
+            oil_pct=float(38.40443957115127),
+            other_pct=float(22.94538533864784),
+            solar_pct=float(65.10839838170898),
+            wind_pct=float(76.42294815079038),
+            region='abkbbngnoctpdwwcdtqr',
+            ce_id='dqzkmhbpeobhsimafxpc'
         )
         return instance
 
@@ -56,7 +56,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = int(1)
+        test_value = int(48)
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -64,7 +64,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test dnoregion property
         """
-        test_value = 'qxxyoaqvwrvvmzwnsdrz'
+        test_value = 'xvsaqzpqsyieibbikehf'
         self.instance.dnoregion = test_value
         self.assertEqual(self.instance.dnoregion, test_value)
     
@@ -72,7 +72,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test shortname property
         """
-        test_value = 'xzoglwsuckxvhqkammay'
+        test_value = 'akkbwyccudxmbgsvzqpr'
         self.instance.shortname = test_value
         self.assertEqual(self.instance.shortname, test_value)
     
@@ -96,7 +96,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test forecast property
         """
-        test_value = int(4)
+        test_value = int(91)
         self.instance.forecast = test_value
         self.assertEqual(self.instance.forecast, test_value)
     
@@ -104,7 +104,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test index property
         """
-        test_value = 'puqckkuvappapmqzhhig'
+        test_value = 'nttagxfjgunyyawjvxfg'
         self.instance.index = test_value
         self.assertEqual(self.instance.index, test_value)
     
@@ -112,7 +112,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test biomass_pct property
         """
-        test_value = float(30.791238096389094)
+        test_value = float(65.88275709516495)
         self.instance.biomass_pct = test_value
         self.assertEqual(self.instance.biomass_pct, test_value)
     
@@ -120,7 +120,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test coal_pct property
         """
-        test_value = float(26.135799081538778)
+        test_value = float(62.36289150397102)
         self.instance.coal_pct = test_value
         self.assertEqual(self.instance.coal_pct, test_value)
     
@@ -128,7 +128,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test gas_pct property
         """
-        test_value = float(7.908524165131747)
+        test_value = float(95.83013378086224)
         self.instance.gas_pct = test_value
         self.assertEqual(self.instance.gas_pct, test_value)
     
@@ -136,7 +136,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test hydro_pct property
         """
-        test_value = float(54.92624402513737)
+        test_value = float(85.07714139973956)
         self.instance.hydro_pct = test_value
         self.assertEqual(self.instance.hydro_pct, test_value)
     
@@ -144,7 +144,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test imports_pct property
         """
-        test_value = float(23.139387113126876)
+        test_value = float(6.963106615427317)
         self.instance.imports_pct = test_value
         self.assertEqual(self.instance.imports_pct, test_value)
     
@@ -152,7 +152,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test nuclear_pct property
         """
-        test_value = float(53.89833723052069)
+        test_value = float(38.01886058524915)
         self.instance.nuclear_pct = test_value
         self.assertEqual(self.instance.nuclear_pct, test_value)
     
@@ -160,7 +160,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test oil_pct property
         """
-        test_value = float(1.8085916739323915)
+        test_value = float(38.40443957115127)
         self.instance.oil_pct = test_value
         self.assertEqual(self.instance.oil_pct, test_value)
     
@@ -168,7 +168,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test other_pct property
         """
-        test_value = float(64.18022731794888)
+        test_value = float(22.94538533864784)
         self.instance.other_pct = test_value
         self.assertEqual(self.instance.other_pct, test_value)
     
@@ -176,7 +176,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test solar_pct property
         """
-        test_value = float(93.42229243227406)
+        test_value = float(65.10839838170898)
         self.instance.solar_pct = test_value
         self.assertEqual(self.instance.solar_pct, test_value)
     
@@ -184,7 +184,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test wind_pct property
         """
-        test_value = float(72.05013426413083)
+        test_value = float(76.42294815079038)
         self.instance.wind_pct = test_value
         self.assertEqual(self.instance.wind_pct, test_value)
     
@@ -192,7 +192,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'gdkdqfzgfhlvjmaoswnu'
+        test_value = 'abkbbngnoctpdwwcdtqr'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -200,7 +200,7 @@ class Test_RegionalIntensity(unittest.TestCase):
         """
         Test ce_id property
         """
-        test_value = 'mntkrmuxqxftwykskajj'
+        test_value = 'dqzkmhbpeobhsimafxpc'
         self.instance.ce_id = test_value
         self.assertEqual(self.instance.ce_id, test_value)
     

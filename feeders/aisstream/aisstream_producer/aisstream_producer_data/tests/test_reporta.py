@@ -29,7 +29,7 @@ class Test_ReportA(unittest.TestCase):
         """
         instance = ReportA(
             Valid=False,
-            Name='vkiiqnqihpfycahiqnkk'
+            Name='etgsjnqofqwqnidudjsu'
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_ReportA(unittest.TestCase):
         """
         Test Name property
         """
-        test_value = 'vkiiqnqihpfycahiqnkk'
+        test_value = 'etgsjnqofqwqnidudjsu'
         self.instance.Name = test_value
         self.assertEqual(self.instance.Name, test_value)
     

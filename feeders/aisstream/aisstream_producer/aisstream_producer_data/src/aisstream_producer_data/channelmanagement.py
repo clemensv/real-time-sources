@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_producer_data.unicast import Unicast
 from aisstream_producer_data.area import Area
+from aisstream_producer_data.unicast import Unicast
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -185,20 +185,20 @@ class ChannelManagement:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(79),
-            RepeatIndicator=int(4),
-            UserID=int(54),
-            Valid=False,
-            Spare1=int(43),
-            ChannelA=int(59),
-            ChannelB=int(53),
-            TxRxMode=int(39),
-            LowPower=False,
+            MessageID=int(11),
+            RepeatIndicator=int(45),
+            UserID=int(76),
+            Valid=True,
+            Spare1=int(96),
+            ChannelA=int(66),
+            ChannelB=int(86),
+            TxRxMode=int(27),
+            LowPower=True,
             Area=None,
             Unicast=None,
-            IsAddressed=True,
-            BwA=False,
-            BwB=True,
-            TransitionalZoneSize=int(23),
-            Spare4=int(66)
+            IsAddressed=False,
+            BwA=True,
+            BwB=False,
+            TransitionalZoneSize=int(39),
+            Spare4=int(27)
         )

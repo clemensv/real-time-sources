@@ -16,18 +16,18 @@ class Test_BorderSlugenum(unittest.TestCase):
         """
         Setup test
         """
-        self.instance = BorderSlugenum.canadian_border
+        self.instance = BorderSlugenum.canadian_MINUSborder
 
     @staticmethod
     def create_instance():
         """
         Create instance of BorderSlugenum
         """
-        return BorderSlugenum.canadian_border
+        return BorderSlugenum.canadian_MINUSborder
 
     def test_enum_values(self):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(BorderSlugenum.canadian_border.value, 'canadian-border')
-        self.assertEqual(BorderSlugenum.mexican_border.value, 'mexican-border')
+        self.assertEqual(BorderSlugenum.canadian_MINUSborder.value, 'canadian-border')
+        self.assertEqual(BorderSlugenum.mexican_MINUSborder.value, 'mexican-border')

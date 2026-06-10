@@ -161,9 +161,9 @@ class RadarProductCatalog:
             An instance of the dataclass.
         """
         return cls(
-            product='tkraijuusnoxrvzxtgip',
-            file_url='rzvswowcrsptgjnbheif',
-            description='fzccpcqodgzhgtqvhgsi',
-            state='jhojfmipothfzsngjbnu',
-            kind='tzmwslwqwspbnhrlovti'
+            product='sepquakorhnyckgrmqco',
+            file_url='sbfqljtnxegohkazivvp',
+            description='ugamphjmyzixzzktauwp',
+            state='iikzwwhzaqdrizkyixkt',
+            kind='esrgyzfkdxjxaqqrnjvj'
         )

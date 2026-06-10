@@ -159,8 +159,8 @@ class SolarWindPlasma:
             An instance of the dataclass.
         """
         return cls(
-            observation_time='mgivbnawcxlnxzdecfwg',
-            density=float(14.079863726794384),
-            speed=float(48.78705290873224),
-            temperature=float(33.887817284180954)
+            observation_time='hoqrdbnxeoqgsmncpzop',
+            density=float(48.46592628276743),
+            speed=float(6.142636676985158),
+            temperature=float(25.530033519011564)
         )

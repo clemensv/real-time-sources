@@ -30,9 +30,9 @@ class Test_Timeframes(unittest.TestCase):
         Create instance of Timeframes for testing
         """
         instance = Timeframes(
-            timeframeGroupId='aotunwzhvwfyoaogwqyu',
-            startTime='yjbwsqnyuqzmidlfqcur',
-            endTime='nrdwffqhvlyfwmaqyage',
+            timeframeGroupId='fvihyqqgbxaujietvrdk',
+            startTime='hkhxoqaxscgskrrocszz',
+            endTime='tnaiujcbuwdzrfhchmop',
             serviceDates=None
         )
         return instance
@@ -42,7 +42,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test timeframeGroupId property
         """
-        test_value = 'aotunwzhvwfyoaogwqyu'
+        test_value = 'fvihyqqgbxaujietvrdk'
         self.instance.timeframeGroupId = test_value
         self.assertEqual(self.instance.timeframeGroupId, test_value)
     
@@ -50,7 +50,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test startTime property
         """
-        test_value = 'yjbwsqnyuqzmidlfqcur'
+        test_value = 'hkhxoqaxscgskrrocszz'
         self.instance.startTime = test_value
         self.assertEqual(self.instance.startTime, test_value)
     
@@ -58,7 +58,7 @@ class Test_Timeframes(unittest.TestCase):
         """
         Test endTime property
         """
-        test_value = 'nrdwffqhvlyfwmaqyage'
+        test_value = 'tnaiujcbuwdzrfhchmop'
         self.instance.endTime = test_value
         self.assertEqual(self.instance.endTime, test_value)
     

@@ -157,5 +157,5 @@ class OfsMapOffsets:
             An instance of the dataclass.
         """
         return cls(
-            self_='wjchtrarkvgvmnnfuzcz'
+            self_='nqmysbogqdrjeuxzhemn'
         )

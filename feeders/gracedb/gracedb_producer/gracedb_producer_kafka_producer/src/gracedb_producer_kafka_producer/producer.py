@@ -113,7 +113,7 @@ class OrgLigoGracedbEventProducer:
              "type":"org.ligo.gracedb.Superevent",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{superevent_id}".format(superevent_id = _superevent_id),
-             "time":"{created}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -238,7 +238,7 @@ class OrgLigoGracedbMqttEventProducer:
              "type":"org.ligo.gracedb.Superevent",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{superevent_id}".format(superevent_id = _superevent_id),
-             "time":"{created}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -363,7 +363,7 @@ class OrgLigoGracedbAmqpEventProducer:
              "type":"org.ligo.gracedb.Superevent",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{superevent_id}".format(superevent_id = _superevent_id),
-             "time":"{created}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

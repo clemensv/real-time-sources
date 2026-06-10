@@ -155,6 +155,6 @@ class VesselRegistration:
             An instance of the dataclass.
         """
         return cls(
-            nationality='ohzawprjmideccbwihjb',
-            port_of_registry='ybewpdrmtbtcmkjdquyq'
+            nationality='qbeeyeuxuzdmzfjdtxeq',
+            port_of_registry='emobqzkibzysbympovtq'
         )

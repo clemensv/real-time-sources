@@ -29,25 +29,25 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         Create instance of AidsToNavigationReport for testing
         """
         instance = AidsToNavigationReport(
-            MessageID=int(13),
-            RepeatIndicator=int(54),
-            UserID=int(49),
-            Valid=False,
-            Type=int(69),
-            Name='vpkjenplkzvynpbfpzrl',
+            MessageID=int(36),
+            RepeatIndicator=int(46),
+            UserID=int(40),
+            Valid=True,
+            Type=int(13),
+            Name='wrsnclaiyqlebvohmhjs',
             PositionAccuracy=True,
-            Longitude=float(71.13633157066023),
-            Latitude=float(62.326171178251656),
+            Longitude=float(45.46340760570864),
+            Latitude=float(84.23147529788396),
             Dimension=None,
-            Fixtype=int(38),
-            Timestamp=int(76),
+            Fixtype=int(84),
+            Timestamp=int(97),
             OffPosition=False,
-            AtoN=int(92),
+            AtoN=int(82),
             Raim=True,
             VirtualAtoN=False,
-            AssignedMode=False,
-            Spare=True,
-            NameExtension='raxqelmtgspgtjkzccee'
+            AssignedMode=True,
+            Spare=False,
+            NameExtension='ykjebbnkebwiomvrrwiw'
         )
         return instance
 
@@ -56,7 +56,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(13)
+        test_value = int(36)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -64,7 +64,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(54)
+        test_value = int(46)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -72,7 +72,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(49)
+        test_value = int(40)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -80,7 +80,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = False
+        test_value = True
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -88,7 +88,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test Type property
         """
-        test_value = int(69)
+        test_value = int(13)
         self.instance.Type = test_value
         self.assertEqual(self.instance.Type, test_value)
     
@@ -96,7 +96,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test Name property
         """
-        test_value = 'vpkjenplkzvynpbfpzrl'
+        test_value = 'wrsnclaiyqlebvohmhjs'
         self.instance.Name = test_value
         self.assertEqual(self.instance.Name, test_value)
     
@@ -112,7 +112,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test Longitude property
         """
-        test_value = float(71.13633157066023)
+        test_value = float(45.46340760570864)
         self.instance.Longitude = test_value
         self.assertEqual(self.instance.Longitude, test_value)
     
@@ -120,7 +120,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test Latitude property
         """
-        test_value = float(62.326171178251656)
+        test_value = float(84.23147529788396)
         self.instance.Latitude = test_value
         self.assertEqual(self.instance.Latitude, test_value)
     
@@ -136,7 +136,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test Fixtype property
         """
-        test_value = int(38)
+        test_value = int(84)
         self.instance.Fixtype = test_value
         self.assertEqual(self.instance.Fixtype, test_value)
     
@@ -144,7 +144,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test Timestamp property
         """
-        test_value = int(76)
+        test_value = int(97)
         self.instance.Timestamp = test_value
         self.assertEqual(self.instance.Timestamp, test_value)
     
@@ -160,7 +160,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test AtoN property
         """
-        test_value = int(92)
+        test_value = int(82)
         self.instance.AtoN = test_value
         self.assertEqual(self.instance.AtoN, test_value)
     
@@ -184,7 +184,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test AssignedMode property
         """
-        test_value = False
+        test_value = True
         self.instance.AssignedMode = test_value
         self.assertEqual(self.instance.AssignedMode, test_value)
     
@@ -192,7 +192,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = True
+        test_value = False
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -200,7 +200,7 @@ class Test_AidsToNavigationReport(unittest.TestCase):
         """
         Test NameExtension property
         """
-        test_value = 'raxqelmtgspgtjkzccee'
+        test_value = 'ykjebbnkebwiomvrrwiw'
         self.instance.NameExtension = test_value
         self.assertEqual(self.instance.NameExtension, test_value)
     

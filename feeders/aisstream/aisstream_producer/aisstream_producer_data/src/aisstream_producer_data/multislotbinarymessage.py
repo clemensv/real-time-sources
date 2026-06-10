@@ -178,17 +178,17 @@ class MultiSlotBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(45),
-            RepeatIndicator=int(53),
-            UserID=int(24),
+            MessageID=int(14),
+            RepeatIndicator=int(97),
+            UserID=int(34),
             Valid=True,
             DestinationIDValid=True,
-            ApplicationIDValid=True,
-            DestinationID=int(85),
-            Spare1=int(73),
+            ApplicationIDValid=False,
+            DestinationID=int(31),
+            Spare1=int(67),
             ApplicationID=None,
-            Payload='uxcpjyiuyjpqadkqcowr',
-            Spare2=int(18),
-            CommunicationStateIsItdma=False,
-            CommunicationState=int(8)
+            Payload='fbuikovetjguhbhqgvqz',
+            Spare2=int(34),
+            CommunicationStateIsItdma=True,
+            CommunicationState=int(96)
         )

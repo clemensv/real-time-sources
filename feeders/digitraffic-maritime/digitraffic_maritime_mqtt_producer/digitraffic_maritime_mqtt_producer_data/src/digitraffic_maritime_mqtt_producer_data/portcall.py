@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from digitraffic_maritime_mqtt_producer_data.portcallagent import PortCallAgent
 from digitraffic_maritime_mqtt_producer_data.portcallareadetail import PortCallAreaDetail
+from digitraffic_maritime_mqtt_producer_data.portcallagent import PortCallAgent
 import datetime
 
 
@@ -197,25 +197,25 @@ class PortCall:
             An instance of the dataclass.
         """
         return cls(
-            port_call_id=int(72),
+            port_call_id=int(24),
             updated_at=datetime.datetime.now(datetime.timezone.utc),
-            customs_reference='dvieanzuhedbzyrgwgcf',
-            port_to_visit='ajnigumrllgjfaotfwdn',
-            previous_port='iirikgddmnckicrtdyag',
-            next_port='elbtylhjmjipddvterjx',
-            mmsi=int(34),
-            imo_lloyds=int(13),
-            vessel_name='fnzekvcatfhszmtejhsc',
-            vessel_name_prefix='vbwmctuegpohzovpsjjh',
-            radio_call_sign='soybjhdwruyvurwibsgo',
-            nationality='zhdvcftyyqrotrvufgov',
-            vessel_type_code=int(23),
+            customs_reference='zhbzhradqpdfzklfdywk',
+            port_to_visit='pszwrrqdlqdkqlkezvdx',
+            previous_port='kpecikqdyaujkjozkqvq',
+            next_port='eupjwcvfhxqgojpmvunm',
+            mmsi=int(6),
+            imo_lloyds=int(75),
+            vessel_name='vmqnelutylqhktnehcvz',
+            vessel_name_prefix='rkqozovvmfkcbiqmcewn',
+            radio_call_sign='hxvkacnyznazdsrsesct',
+            nationality='xfstlfmdrfuqkantxhzj',
+            vessel_type_code=int(13),
             domestic_traffic_arrival=False,
-            domestic_traffic_departure=True,
+            domestic_traffic_departure=False,
             arrival_with_cargo=True,
-            not_loading=False,
-            discharge=int(24),
+            not_loading=True,
+            discharge=int(57),
             current_security_level=int(96),
-            agents=[None, None, None, None],
-            port_areas=[None]
+            agents=[None],
+            port_areas=[None, None, None, None]
         )

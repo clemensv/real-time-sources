@@ -3,7 +3,46 @@ from __future__ import annotations
 import argparse, asyncio, dataclasses, enum, importlib, inspect, logging, os, pkgutil, re, sys, time
 from datetime import datetime, timezone
 from typing import Any, Optional, get_args, get_origin
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
+
+import json
+
+def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
+
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
+    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return resolved_client_id, str(username or ""), str(password or "")
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = resolved_client_id or str(username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_client_id, resolved_username, resolved_password
 
 LOG=logging.getLogger(__name__)
 EVENT_SPECS = [{'class': 'SensorInfo', 'vars': {'feedurl': 'https://data.sensor.community/airrohr/v1/sensor/291/', 'country': 'nl', 'geohash5': 'u173z', 'sensor_id': '291'}, 'sample': {'country': 'nl', 'geohash5': 'u173z', 'sensor_id': '291', 'province': 'ON', 'community_name': 'ottawa', 'region': 'central', 'station_id': 'station-1', 'pollutant': 'pm25', 'fmisid': '1001', 'voivodeship': 'mazowieckie', 'borough': 'camden', 'site_code': 'BL0', 'species_code': 'NO2', 'station_number': 'NL001', 'formula': 'NO2', 'bundesland': 'wien', 'component_id': '1', 'timeseries_id': 'ts-1', 'sensor_code': 'PM10', 'sensor_type_name': 'SDS011', 'component_code': 'NO2', 'parameter_formula': 'PM10', 'phenomenon_id': 'NO2', 'municipality': 'uusimaa', 'station_name': 'Sample Station', 'site_name': 'Sample Site', 'station_label': 'Sample Station', 'label': 'Sample'}}, {'class': 'SensorReading', 'vars': {'feedurl': 'https://data.sensor.community/airrohr/v1/sensor/291/', 'country': 'nl', 'geohash5': 'u173z', 'sensor_id': '291'}, 'sample': {'country': 'nl', 'geohash5': 'u173z', 'sensor_id': '291', 'province': 'ON', 'community_name': 'ottawa', 'region': 'central', 'station_id': 'station-1', 'pollutant': 'pm25', 'fmisid': '1001', 'voivodeship': 'mazowieckie', 'borough': 'camden', 'site_code': 'BL0', 'species_code': 'NO2', 'station_number': 'NL001', 'formula': 'NO2', 'bundesland': 'wien', 'component_id': '1', 'timeseries_id': 'ts-1', 'sensor_code': 'PM10', 'sensor_type_name': 'SDS011', 'component_code': 'NO2', 'parameter_formula': 'PM10', 'phenomenon_id': 'NO2', 'municipality': 'uusimaa', 'station_name': 'Sample Station', 'site_name': 'Sample Site', 'station_label': 'Sample Station', 'label': 'Sample'}}]
@@ -115,8 +154,16 @@ def _client_classes():
 async def main_async(args):
     host, port, tls, user, pwd = _parse_mqtt_url(args.broker_url or args.broker_host)
     user=args.username or user; pwd=args.password or pwd
-    paho=mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=args.client_id or '', protocol=MQTTv5)
-    if user: paho.username_pw_set(user, pwd or '')
+    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+        username=user,
+        password=pwd or '',
+        client_id=args.client_id or '',
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
+    paho=mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    if resolved_username or resolved_password:
+        paho.username_pw_set(resolved_username, resolved_password)
     if tls or args.tls: paho.tls_set()
     clients=[cls(client=paho, content_mode=args.content_mode, loop=asyncio.get_running_loop()) for cls in _client_classes()]
     await clients[0].connect(host, args.broker_port or port)
@@ -141,9 +188,4 @@ def main():
     if args.command!='feed': ap.error("only 'feed' is supported")
     asyncio.run(main_async(args))
 if __name__=='__main__': main()
-
-
-
-
-
 

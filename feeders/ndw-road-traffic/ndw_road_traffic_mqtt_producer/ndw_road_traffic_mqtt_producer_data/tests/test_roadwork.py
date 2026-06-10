@@ -28,17 +28,17 @@ class Test_Roadwork(unittest.TestCase):
         Create instance of Roadwork for testing
         """
         instance = Roadwork(
-            situation_record_id='dfginfvkzvorhaefjtdi',
-            version_time='gqmyultykikunyddavhg',
-            validity_status='nnwukyzkydgocfjiuasl',
-            start_time='gvyvsafzvosphreytmro',
-            end_time='pybcvdtldqijwizizwjl',
-            road_name='jqzohscglmytufatonkj',
-            description='uzkebguxhpwzhaqjuxkh',
-            location_description='cmwiksnpencgpmbwxivq',
-            probability='ggureqtgymvxtyduhzae',
-            severity='bxaqgucijwubnlzdidkx',
-            management_type='cemgqsbakouxtnyfrsbd'
+            situation_record_id='rwzdyvlecvwnncrfurll',
+            version_time='stqbymnlfkutudkwfjts',
+            validity_status='odaolmfegnbggpbwkdng',
+            start_time='teflyahzvphogugdjfqm',
+            end_time='apvoxumkgintrbfbhhwd',
+            road_name='arzngoxdmdspurbtsvfp',
+            description='qmazdqipttatdczkmcxd',
+            location_description='dbtrtbkjqzqomjvbjaby',
+            probability='jkqfjzfolhiawphdlyfy',
+            severity='lezwwioylrkxcxdmjhzk',
+            management_type='lvrkwawtkaprkwpiczbt'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test situation_record_id property
         """
-        test_value = 'dfginfvkzvorhaefjtdi'
+        test_value = 'rwzdyvlecvwnncrfurll'
         self.instance.situation_record_id = test_value
         self.assertEqual(self.instance.situation_record_id, test_value)
     
@@ -55,7 +55,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test version_time property
         """
-        test_value = 'gqmyultykikunyddavhg'
+        test_value = 'stqbymnlfkutudkwfjts'
         self.instance.version_time = test_value
         self.assertEqual(self.instance.version_time, test_value)
     
@@ -63,7 +63,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test validity_status property
         """
-        test_value = 'nnwukyzkydgocfjiuasl'
+        test_value = 'odaolmfegnbggpbwkdng'
         self.instance.validity_status = test_value
         self.assertEqual(self.instance.validity_status, test_value)
     
@@ -71,7 +71,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'gvyvsafzvosphreytmro'
+        test_value = 'teflyahzvphogugdjfqm'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -79,7 +79,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test end_time property
         """
-        test_value = 'pybcvdtldqijwizizwjl'
+        test_value = 'apvoxumkgintrbfbhhwd'
         self.instance.end_time = test_value
         self.assertEqual(self.instance.end_time, test_value)
     
@@ -87,7 +87,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'jqzohscglmytufatonkj'
+        test_value = 'arzngoxdmdspurbtsvfp'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -95,7 +95,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'uzkebguxhpwzhaqjuxkh'
+        test_value = 'qmazdqipttatdczkmcxd'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -103,7 +103,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test location_description property
         """
-        test_value = 'cmwiksnpencgpmbwxivq'
+        test_value = 'dbtrtbkjqzqomjvbjaby'
         self.instance.location_description = test_value
         self.assertEqual(self.instance.location_description, test_value)
     
@@ -111,7 +111,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test probability property
         """
-        test_value = 'ggureqtgymvxtyduhzae'
+        test_value = 'jkqfjzfolhiawphdlyfy'
         self.instance.probability = test_value
         self.assertEqual(self.instance.probability, test_value)
     
@@ -119,7 +119,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = 'bxaqgucijwubnlzdidkx'
+        test_value = 'lezwwioylrkxcxdmjhzk'
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -127,7 +127,7 @@ class Test_Roadwork(unittest.TestCase):
         """
         Test management_type property
         """
-        test_value = 'cemgqsbakouxtnyfrsbd'
+        test_value = 'lvrkwawtkaprkwpiczbt'
         self.instance.management_type = test_value
         self.assertEqual(self.instance.management_type, test_value)
     

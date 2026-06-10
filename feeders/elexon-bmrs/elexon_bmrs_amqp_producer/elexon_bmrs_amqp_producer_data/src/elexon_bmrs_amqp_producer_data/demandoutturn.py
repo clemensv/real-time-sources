@@ -165,10 +165,10 @@ class DemandOutturn:
             An instance of the dataclass.
         """
         return cls(
-            settlement_period=int(35),
-            settlement_date='skdfdsqqptpixlaohsqh',
+            settlement_period=int(4),
+            settlement_date='qwrxevlqlaoycdbmzbgn',
             start_time=datetime.datetime.now(datetime.timezone.utc),
             publish_time=datetime.datetime.now(datetime.timezone.utc),
-            initial_demand_outturn_mw=float(81.2729524019187),
-            initial_transmission_system_demand_outturn_mw=float(42.23873502668501)
+            initial_demand_outturn_mw=float(21.670822567028537),
+            initial_transmission_system_demand_outturn_mw=float(88.64788945743352)
         )
