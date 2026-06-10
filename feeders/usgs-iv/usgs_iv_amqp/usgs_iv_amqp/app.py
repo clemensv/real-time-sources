@@ -152,7 +152,7 @@ class _MqttProducerAdapter:
     def __getattr__(self, name: str) -> Callable[..., None]:
         if not name.startswith("send_"):
             raise AttributeError(name)
-        publish_name = name.replace("send_", "publish_").replace(self._prefix, f"{self._prefix}mqtt_")
+        publish_name = name.replace("send_", "publish_")
         publish: Callable[..., Awaitable[None]] = getattr(self._client, publish_name)
 
         async def _publish_with_limit(**kwargs: Any) -> None:

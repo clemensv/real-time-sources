@@ -95,7 +95,7 @@ class _MqttProducerAdapter:
 
     async def _publish(self, **kwargs: Any) -> None:
         async with self._semaphore:
-            await self._client.publish_usgs_earthquakes_mqtt_event(**kwargs)
+            await self._client.publish_usgs_earthquakes_event(**kwargs)
 
     def _finish_task(self, task: asyncio.Task[None]) -> None:
         self._tasks.discard(task)
