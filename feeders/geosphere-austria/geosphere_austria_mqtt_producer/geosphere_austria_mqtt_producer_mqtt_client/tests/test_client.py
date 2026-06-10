@@ -94,9 +94,8 @@ async def test_at_geosphere_tawes_mqtt_at_geosphere_tawes_mqtt_weather_station_p
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            bundesland="test_bundesland",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -161,9 +160,8 @@ async def test_at_geosphere_tawes_mqtt_at_geosphere_tawes_mqtt_weather_observati
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            bundesland="test_bundesland",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

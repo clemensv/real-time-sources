@@ -17,32 +17,34 @@ import json
 @dataclass
 class WeatherObservation:
     """
-    10-minute weather observation from a GeoSphere Austria TAWES station. Each event contains the latest observation for a single station with all requested meteorological parameters. Values are null when the station does not report a parameter or the measurement is missing for the current interval.
+    10-minute weather observation from a GeoSphere Austria TAWES station, including temperature, humidity, precipitation, wind, pressure, sunshine duration, and global radiation.
     
     Attributes:
         station_id (str)
         observation_time (str)
-        temperature (typing.Optional[float])
-        humidity (typing.Optional[float])
-        precipitation (typing.Optional[float])
-        wind_direction (typing.Optional[float])
-        wind_speed (typing.Optional[float])
-        pressure (typing.Optional[float])
-        sunshine_duration (typing.Optional[float])
-        global_radiation (typing.Optional[float])
+        temperature (float)
+        humidity (float)
+        precipitation (float)
+        wind_direction (float)
+        wind_speed (float)
+        pressure (float)
+        sunshine_duration (float)
+        global_radiation (float)
+        bundesland (typing.Optional[str])
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     observation_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observation_time"))
-    temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="temperature"))
-    humidity: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="humidity"))
-    precipitation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation"))
-    wind_direction: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_direction"))
-    wind_speed: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed"))
-    pressure: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure"))
-    sunshine_duration: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunshine_duration"))
-    global_radiation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="global_radiation"))
+    temperature: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="temperature"))
+    humidity: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="humidity"))
+    precipitation: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation"))
+    wind_direction: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_direction"))
+    wind_speed: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed"))
+    pressure: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure"))
+    sunshine_duration: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunshine_duration"))
+    global_radiation: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="global_radiation"))
+    bundesland: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bundesland"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherObservation':
@@ -171,14 +173,15 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='jarhehaglpgspaayqtda',
-            observation_time='vaslkgeevcvytuasamev',
-            temperature=float(24.293021149299065),
-            humidity=float(81.14564159594562),
-            precipitation=float(95.94169065888012),
-            wind_direction=float(20.565104077482353),
-            wind_speed=float(38.60266702455546),
-            pressure=float(84.48324859243908),
-            sunshine_duration=float(68.0209321872694),
-            global_radiation=float(31.81101836589676)
+            station_id='emiardvoftfzzncjxppa',
+            observation_time='tnytrxtvuzqhcnztjlry',
+            temperature=float(0.37152541301949116),
+            humidity=float(36.54095539802813),
+            precipitation=float(26.205717342248057),
+            wind_direction=float(71.60275192851212),
+            wind_speed=float(21.41178773446768),
+            pressure=float(36.85288654660338),
+            sunshine_duration=float(51.27073621624327),
+            global_radiation=float(24.291829304439783),
+            bundesland='kqervterhexkraayancn'
         )
