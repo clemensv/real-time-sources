@@ -25,7 +25,7 @@ RUN set -eux; \
 COPY . /app
 
 RUN pip install --no-cache-dir ./digitraffic_maritime_amqp_producer/digitraffic_maritime_amqp_producer_data \
- && pip install --no-cache-dir ./digitraffic_maritime_amqp_producer/digitraffic_maritime_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./digitraffic_maritime_producer/digitraffic_maritime_producer_data && pip install --no-cache-dir ./digitraffic_maritime_amqp_producer/digitraffic_maritime_amqp_producer_amqp_producer \
  && pip install --no-cache-dir . \
  && pip install --no-cache-dir ./digitraffic_maritime_amqp \
  && apt-get purge -y --auto-remove \
