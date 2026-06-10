@@ -37,7 +37,8 @@ LOGGER = logging.getLogger(__name__)
 DEFAULT_ZONES = "WAZ312,WAZ315,WAZ316,WAZ317,PZZ130,PZZ131,PZZ132,PZZ133,PZZ134,PZZ135"
 ZONE_DETAIL_URL = "https://api.weather.gov/zones/forecast/{zone_id}"
 LAND_FORECAST_URL = "https://api.weather.gov/zones/forecast/{zone_id}/forecast"
-MARINE_FORECAST_URL = "https://tgftp.nws.noaa.gov/data/forecasts/marine/coastal/pz/{zone_id}.txt"
+MARINE_PRODUCTS_URL = "https://api.weather.gov/products?type=CWF&location={office}&limit=1"
+MARINE_PRODUCT_URL = "https://api.weather.gov/products/{product_id}"
 DEFAULT_POLL_INTERVAL_SECONDS = 900
 DEFAULT_REFERENCE_REFRESH_SECONDS = 21600
 DEFAULT_STATE_FILE = "/mnt/fileshare/nws_forecasts_state.json"
@@ -121,6 +122,9 @@ def build_kafka_config(args: argparse.Namespace) -> tuple[Dict[str, str], str]:
         topic = args.kafka_topic or parsed_topic
         if not topic:
             raise ValueError("Kafka topic must be provided in KAFKA_TOPIC or EntityPath.")
+        # Keep connection alive between infrequent poll cycles
+        config["socket.keepalive.enable"] = "true"
+        config["connections.max.idle.ms"] = "540000"  # 9 min (below Event Hubs 10-min idle timeout)
         return config, topic
 
     if not args.kafka_bootstrap_servers or not args.kafka_topic:
@@ -131,6 +135,8 @@ def build_kafka_config(args: argparse.Namespace) -> tuple[Dict[str, str], str]:
         "security.protocol": "SASL_SSL" if args.sasl_username and args.kafka_enable_tls else (
             "SASL_PLAINTEXT" if args.sasl_username else ("SSL" if args.kafka_enable_tls else "PLAINTEXT")
         ),
+        "socket.keepalive.enable": "true",
+        "connections.max.idle.ms": "540000",
     }
     if args.sasl_username:
         config["sasl.mechanisms"] = "PLAIN"
@@ -170,6 +176,7 @@ class NWSForecastPoller:
         self.producer = MicrosoftOpenDataUSNOAANWSForecastsEventProducer(self.kafka_client, kafka_topic)
         self.zone_cache: Dict[str, ForecastZone] = {}
         self._last_reference_refresh = 0.0
+        self._marine_offices: Dict[str, List[str]] = {}  # office -> [zone_ids]
 
     def load_state(self) -> Dict[str, Dict[str, str]]:
         if not os.path.exists(self.state_file):
@@ -191,11 +198,6 @@ class NWSForecastPoller:
         response = self.session.get(url, timeout=30)
         response.raise_for_status()
         return response.json()
-
-    def _get_text(self, url: str) -> str:
-        response = self.session.get(url, timeout=30)
-        response.raise_for_status()
-        return response.text
 
     @staticmethod
     def _station_ids(urls: Iterable[str]) -> List[str]:
@@ -227,6 +229,7 @@ class NWSForecastPoller:
 
     def refresh_zone_cache(self) -> None:
         next_cache = dict(self.zone_cache)
+        marine_offices: Dict[str, List[str]] = {}
         for zone_id in self.zones:
             try:
                 next_cache[zone_id] = self.fetch_zone(zone_id)
@@ -236,6 +239,12 @@ class NWSForecastPoller:
                 else:
                     LOGGER.error("Failed to fetch zone %s: %s", zone_id, exc)
         self.zone_cache = next_cache
+        # Build marine office → zone mapping from cached zone metadata
+        for zone_id, zone in self.zone_cache.items():
+            if zone.zone_type != ZoneTypeenum.public:
+                for cwa in (zone.cwa_ids or []):
+                    marine_offices.setdefault(cwa, []).append(zone_id)
+        self._marine_offices = marine_offices
         self._last_reference_refresh = time.time()
 
     def emit_reference_data(self) -> None:
@@ -277,13 +286,21 @@ class NWSForecastPoller:
 
     def parse_marine_forecast(self, zone_id: str, text: str) -> MarineZoneForecast:
         lines = [line.rstrip() for line in text.splitlines()]
+        # The tgftp format has an "Expires:" header; the API products format does not.
         expires_text = lines[0][len("Expires:"):].strip() if lines and lines[0].startswith("Expires:") else None
         non_empty = [line for line in lines if line.strip()]
 
-        wmo_header = non_empty[1] if len(non_empty) > 1 else None
-        bulletin_awips_id = non_empty[2] if len(non_empty) > 2 else None
-        product_title = non_empty[3] if len(non_empty) > 3 else None
-        office_name = non_empty[4] if len(non_empty) > 4 else None
+        # Locate standard bulletin headers (WMO header, AWIPS ID, product title, office)
+        # Skip leading noise tokens like "000" that appear in the API products format
+        header_start = 0
+        for idx, line in enumerate(non_empty):
+            if len(line.strip()) >= 10 and " " in line.strip():
+                header_start = idx
+                break
+        wmo_header = non_empty[header_start] if len(non_empty) > header_start else None
+        bulletin_awips_id = non_empty[header_start + 1] if len(non_empty) > header_start + 1 else None
+        product_title = non_empty[header_start + 2] if len(non_empty) > header_start + 2 else None
+        office_name = non_empty[header_start + 3] if len(non_empty) > header_start + 3 else None
 
         zone_header_index = next(
             (index for index, line in enumerate(lines) if ZONE_HEADER_RE.match(line.strip()) and line.startswith(zone_id)),
@@ -294,10 +311,15 @@ class NWSForecastPoller:
 
         zone_name_line = lines[zone_header_index + 1].strip()
         issued_at_text = lines[zone_header_index + 2].strip()
+        # Find the first zone header to delimit the bulletin preamble/synopsis area
+        first_zone_header = next(
+            (index for index, line in enumerate(lines) if ZONE_HEADER_RE.match(line.strip())),
+            zone_header_index,
+        )
         synopsis_lines = [
             line.strip()
-            for line in lines[5:zone_header_index]
-            if line.strip()
+            for line in lines[first_zone_header:zone_header_index]
+            if line.strip() and not ZONE_HEADER_RE.match(line.strip())
         ]
         synopsis = "\n".join(synopsis_lines) if synopsis_lines else None
 
@@ -351,7 +373,24 @@ class NWSForecastPoller:
         )
 
     def fetch_marine_forecast(self, zone_id: str) -> MarineZoneForecast:
-        text = self._get_text(MARINE_FORECAST_URL.format(zone_id=zone_id.lower()))
+        """Fetch the latest CWF bulletin from the NWS Products API and extract this zone."""
+        zone = self.zone_cache.get(zone_id)
+        if zone is None:
+            raise ValueError(f"No cached zone metadata for {zone_id}")
+        offices = zone.cwa_ids or []
+        if not offices:
+            raise ValueError(f"Zone {zone_id} has no CWA office identifier")
+        office = offices[0]
+        # Get the latest CWF product for this office
+        products_data = self._get_json(MARINE_PRODUCTS_URL.format(office=office))
+        products = products_data.get("@graph", [])
+        if not products:
+            raise ValueError(f"No CWF product found for office {office}")
+        product_id = products[0]["id"]
+        product_data = self._get_json(MARINE_PRODUCT_URL.format(product_id=product_id))
+        text = product_data.get("productText", "")
+        if not text:
+            raise ValueError(f"CWF product {product_id} has no text content")
         return self.parse_marine_forecast(zone_id, text)
 
     @staticmethod
