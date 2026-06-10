@@ -286,9 +286,9 @@ function Ensure-OneShotStateCleanup {
         foreach ($line in $src) {
             $newSrc.Add($line)
             if ($line -match "^\s*os\.environ\['ONCE_MODE'\]\s*=.*") {
-                $newSrc.Add("    if ONCE_MODE and os.path.exists(STATE_FILE):")
-                $newSrc.Add("        os.remove(STATE_FILE)")
-                $newSrc.Add("        _log('Cleared stale dedupe state before one-shot run')")
+                $newSrc.Add("    if ONCE_MODE and os.path.exists(STATE_FILE):`n")
+                $newSrc.Add("        os.remove(STATE_FILE)`n")
+                $newSrc.Add("        _log('Cleared stale dedupe state before one-shot run')`n")
                 $injected = $true
                 $changed = $true
             }
