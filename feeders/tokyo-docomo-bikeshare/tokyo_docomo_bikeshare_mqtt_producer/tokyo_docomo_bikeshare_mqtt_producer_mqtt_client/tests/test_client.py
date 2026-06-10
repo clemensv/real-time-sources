@@ -97,10 +97,8 @@ async def test_jp_odpt_docomobikeshare_system_mqtt_jp_odpt_docomo_bikeshare_bike
             system_id=f"test_system_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            ward="test_ward",
-            station_id="test_station_id",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -169,9 +167,8 @@ async def test_jp_odpt_docomobikeshare_stations_mqtt_jp_odpt_docomo_bikeshare_bi
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            ward="test_ward",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -237,9 +234,8 @@ async def test_jp_odpt_docomobikeshare_stations_mqtt_jp_odpt_docomo_bikeshare_bi
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            ward="test_ward",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

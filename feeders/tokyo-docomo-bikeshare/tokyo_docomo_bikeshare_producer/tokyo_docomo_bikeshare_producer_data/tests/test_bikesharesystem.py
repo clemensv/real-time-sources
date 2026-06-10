@@ -28,19 +28,19 @@ class Test_BikeshareSystem(unittest.TestCase):
         Create instance of BikeshareSystem for testing
         """
         instance = BikeshareSystem(
-            system_id='exsuwltfejvvfimxtjaq',
-            language='lcywvtrauosrlrgovwws',
-            name='ntklvkzmjaucedgvtwzg',
-            short_name='wtdavjklakurolfcywzq',
-            operator='yiezwrpgdfbwuxtabjls',
-            url='umfananigjcfmkpgqhzz',
-            purchase_url='ddavwfuszfyllvfsbaxn',
-            start_date='vixnkcwpxvckbkuwiugk',
-            phone_number='fxpfwdgmmofaonuqknkg',
-            email='qlioawlxxyzwvmhekose',
-            feed_contact_email='rfbrnrjycuuyvbjxyiup',
-            timezone='khqkgwzucxqzpzvtdbdd',
-            license_url='ftolzwuhksitcwbuwlxk'
+            system_id='mzrcxcyhtwkigknwiweo',
+            language='sgjxpwfibypjiopemktn',
+            name='udjimuncjtuzvzbhncpp',
+            short_name='folfvxmeveatamcamoow',
+            operator='lcrxlkpbwuthhwoieheu',
+            url='sycrxhxrsvsouwmuguoi',
+            purchase_url='aotfrcsqqvsurtueexfo',
+            start_date='fxdgsbueovugmykpwxzs',
+            phone_number='ejyvbwrytnumewtnvycm',
+            email='kcnxcymwqoziebeietkj',
+            feed_contact_email='nuhcktrahrmldzdkbjei',
+            timezone='rxulvbuhdmtqtkbjqrle',
+            license_url='egkeveukorkksuwslmvs'
         )
         return instance
 
@@ -49,7 +49,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test system_id property
         """
-        test_value = 'exsuwltfejvvfimxtjaq'
+        test_value = 'mzrcxcyhtwkigknwiweo'
         self.instance.system_id = test_value
         self.assertEqual(self.instance.system_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'lcywvtrauosrlrgovwws'
+        test_value = 'sgjxpwfibypjiopemktn'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -65,7 +65,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'ntklvkzmjaucedgvtwzg'
+        test_value = 'udjimuncjtuzvzbhncpp'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -73,7 +73,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test short_name property
         """
-        test_value = 'wtdavjklakurolfcywzq'
+        test_value = 'folfvxmeveatamcamoow'
         self.instance.short_name = test_value
         self.assertEqual(self.instance.short_name, test_value)
     
@@ -81,7 +81,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test operator property
         """
-        test_value = 'yiezwrpgdfbwuxtabjls'
+        test_value = 'lcrxlkpbwuthhwoieheu'
         self.instance.operator = test_value
         self.assertEqual(self.instance.operator, test_value)
     
@@ -89,7 +89,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'umfananigjcfmkpgqhzz'
+        test_value = 'sycrxhxrsvsouwmuguoi'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
@@ -97,7 +97,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test purchase_url property
         """
-        test_value = 'ddavwfuszfyllvfsbaxn'
+        test_value = 'aotfrcsqqvsurtueexfo'
         self.instance.purchase_url = test_value
         self.assertEqual(self.instance.purchase_url, test_value)
     
@@ -105,7 +105,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test start_date property
         """
-        test_value = 'vixnkcwpxvckbkuwiugk'
+        test_value = 'fxdgsbueovugmykpwxzs'
         self.instance.start_date = test_value
         self.assertEqual(self.instance.start_date, test_value)
     
@@ -113,7 +113,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test phone_number property
         """
-        test_value = 'fxpfwdgmmofaonuqknkg'
+        test_value = 'ejyvbwrytnumewtnvycm'
         self.instance.phone_number = test_value
         self.assertEqual(self.instance.phone_number, test_value)
     
@@ -121,7 +121,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test email property
         """
-        test_value = 'qlioawlxxyzwvmhekose'
+        test_value = 'kcnxcymwqoziebeietkj'
         self.instance.email = test_value
         self.assertEqual(self.instance.email, test_value)
     
@@ -129,7 +129,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test feed_contact_email property
         """
-        test_value = 'rfbrnrjycuuyvbjxyiup'
+        test_value = 'nuhcktrahrmldzdkbjei'
         self.instance.feed_contact_email = test_value
         self.assertEqual(self.instance.feed_contact_email, test_value)
     
@@ -137,7 +137,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test timezone property
         """
-        test_value = 'khqkgwzucxqzpzvtdbdd'
+        test_value = 'rxulvbuhdmtqtkbjqrle'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
     
@@ -145,7 +145,7 @@ class Test_BikeshareSystem(unittest.TestCase):
         """
         Test license_url property
         """
-        test_value = 'ftolzwuhksitcwbuwlxk'
+        test_value = 'egkeveukorkksuwslmvs'
         self.instance.license_url = test_value
         self.assertEqual(self.instance.license_url, test_value)
     

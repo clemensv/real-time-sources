@@ -96,11 +96,8 @@ async def test_microsoft_opendata_us_noaa_nws_forecasts_mqtt_microsoft_open_data
             zone_id=f"test_zone_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-            zone_type="test_zone_type",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -165,11 +162,8 @@ async def test_microsoft_opendata_us_noaa_nws_forecasts_mqtt_microsoft_open_data
             zone_id=f"test_zone_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-            zone_type="test_zone_type",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -234,11 +228,8 @@ async def test_microsoft_opendata_us_noaa_nws_forecasts_mqtt_microsoft_open_data
             zone_id=f"test_zone_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-            zone_type="test_zone_type",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

@@ -159,8 +159,8 @@ class SolarWindSummary:
             An instance of the dataclass.
         """
         return cls(
-            observation_time='fyobmzugjabnkjfsfrev',
-            wind_speed=float(82.33691923659573),
-            bt=float(39.29658075169639),
-            bz=float(8.183830361701972)
+            observation_time='soxpkntsirnklsmdtcvj',
+            wind_speed=float(5.526927744796184),
+            bt=float(88.1847619225022),
+            bz=float(6.465227981227873)
         )

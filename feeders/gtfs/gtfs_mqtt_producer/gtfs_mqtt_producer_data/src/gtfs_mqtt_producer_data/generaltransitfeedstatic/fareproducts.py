@@ -159,8 +159,8 @@ class FareProducts:
             An instance of the dataclass.
         """
         return cls(
-            fareProductId='mwdvfnuzkwtfbfufnrpy',
-            fareProductName='rqlqxstjuemxnnjnhhag',
-            fareProductDesc='dqqjsrkncdxllhvjoavk',
-            fareProductUrl='oqrdpoiscuzjfqhvvvgz'
+            fareProductId='ztnqyoeaytaoyjljupag',
+            fareProductName='voxkwkaxjxqtleaxauhm',
+            fareProductDesc='uzwzxxgsbcxqqmjfwxqt',
+            fareProductUrl='gunuewthxoitcqcolfxm'
         )

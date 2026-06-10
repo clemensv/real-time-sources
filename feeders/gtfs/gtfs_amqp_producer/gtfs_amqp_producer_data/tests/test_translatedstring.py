@@ -29,7 +29,7 @@ class Test_TranslatedString(unittest.TestCase):
         Create instance of TranslatedString for testing
         """
         instance = TranslatedString(
-            translation=[None]
+            translation=[None, None]
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_TranslatedString(unittest.TestCase):
         """
         Test translation property
         """
-        test_value = [None]
+        test_value = [None, None]
         self.instance.translation = test_value
         self.assertEqual(self.instance.translation, test_value)
     

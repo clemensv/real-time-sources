@@ -1,3 +1,3 @@
-from .bison_fute import TrafficFlowMeasurement, RoadEvent
+from .bison_fute import RoadEvent, TrafficFlowMeasurement
 
-__all__ = ["TrafficFlowMeasurement", "RoadEvent"]
+__all__ = ["RoadEvent", "TrafficFlowMeasurement"]

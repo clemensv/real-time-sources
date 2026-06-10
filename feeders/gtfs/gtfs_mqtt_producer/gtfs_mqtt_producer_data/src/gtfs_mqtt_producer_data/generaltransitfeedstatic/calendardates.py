@@ -158,7 +158,7 @@ class CalendarDates:
             An instance of the dataclass.
         """
         return cls(
-            serviceId='khyehstdfolblaxzvgol',
-            date='mnikexofmtexcwveqjvq',
+            serviceId='qmolngjcrewwkhivyekw',
+            date='irhhkeddrpbfwcmkmigd',
             exceptionType=None
         )

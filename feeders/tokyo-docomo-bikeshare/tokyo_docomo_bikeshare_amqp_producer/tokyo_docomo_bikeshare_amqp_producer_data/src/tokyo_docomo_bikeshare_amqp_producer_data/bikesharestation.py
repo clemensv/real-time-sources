@@ -175,16 +175,16 @@ class BikeshareStation:
             An instance of the dataclass.
         """
         return cls(
-            system_id='rojbzijvcnqsngdotcpd',
-            station_id='kndsenjcitovcmowdwjc',
-            name='zfyczbcudepzquaikeen',
-            short_name='dgdtbgdwxuuxawltfsio',
-            lat=float(91.48171449431327),
-            lon=float(97.16936282853655),
-            address='ywulgojanygthkxqnzwi',
-            cross_street='nupomwvayoelhkjztffg',
-            region_id='gucpjcdneaaztfnyadnj',
-            post_code='akciwkghcfbnglacoobu',
-            capacity=int(93),
-            is_virtual_station=True
+            system_id='hcdozjkukhmxaqmgzjnj',
+            station_id='prflcrnrcpqedmvmxgcg',
+            name='ivzjjpnghlhxtvgsseve',
+            short_name='zolbkhweqffvwsyqgggy',
+            lat=float(19.278573553583566),
+            lon=float(51.12723077349748),
+            address='tvhffdjsdpwokwraogad',
+            cross_street='iqykutozmcnjovavrwex',
+            region_id='ypphhabdumzkgaguttfm',
+            post_code='qocfhugxkgndcultvedc',
+            capacity=int(90),
+            is_virtual_station=False
         )

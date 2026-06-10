@@ -1,7 +1,7 @@
 from .weatherobservation import WeatherObservation
 from .region import Region
-from .psireading import PSIReading
-from .station import Station
 from .pm25reading import PM25Reading
+from .station import Station
+from .psireading import PSIReading
 
-__all__ = ["WeatherObservation", "Region", "PSIReading", "Station", "PM25Reading"]
+__all__ = ["WeatherObservation", "Region", "PM25Reading", "Station", "PSIReading"]

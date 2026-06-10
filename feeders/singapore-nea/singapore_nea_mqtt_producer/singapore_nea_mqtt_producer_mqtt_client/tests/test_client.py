@@ -101,10 +101,8 @@ async def test_sg_gov_nea_weather_mqtt_sg_gov_nea_weather_station_mqtt_py(mosqui
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -169,10 +167,8 @@ async def test_sg_gov_nea_weather_mqtt_sg_gov_nea_weather_weather_observation_mq
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -240,10 +236,8 @@ async def test_sg_gov_nea_airquality_mqtt_sg_gov_nea_air_quality_region_mqtt_py(
             region=f"test_region_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            station_id="test_station_id",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -308,10 +302,8 @@ async def test_sg_gov_nea_airquality_mqtt_sg_gov_nea_air_quality_psireading_mqtt
             region=f"test_region_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            station_id="test_station_id",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -376,10 +368,8 @@ async def test_sg_gov_nea_airquality_mqtt_sg_gov_nea_air_quality_pm25_reading_mq
             region=f"test_region_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            station_id="test_station_id",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

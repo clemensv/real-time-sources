@@ -157,7 +157,7 @@ class Region:
             An instance of the dataclass.
         """
         return cls(
-            region='xdrcgslmbhdcohapttcr',
-            latitude=float(60.24603269974017),
-            longitude=float(23.134147213221556)
+            region='pfhphzggcurlbbrxrcap',
+            latitude=float(41.48108012818884),
+            longitude=float(74.38904875858175)
         )

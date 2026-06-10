@@ -163,10 +163,10 @@ class Wind10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='tshwpwoujoqojzwbzutc',
-            timestamp='gioyqymaldcbfqhkttyn',
-            quality_level=int(52),
-            wind_speed=float(91.6645542428718),
-            wind_direction=float(37.05046506610535),
-            state='rylvzhsjevmliwigftgt'
+            station_id='sitbbzdktzyuiswulkjx',
+            timestamp='lfrplxnfqdfzfporerer',
+            quality_level=int(78),
+            wind_speed=float(96.96248175674164),
+            wind_direction=float(85.08541355670167),
+            state='azohzwoqmwafvobhjgfe'
         )

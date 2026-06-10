@@ -169,13 +169,13 @@ class PointMeasurementSite:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='yfizfgdhnuqoaffwnzev',
-            name='fyzvyuxthohpjgqsgxxw',
-            measurement_site_type='jnltmisfskhqbiligljx',
-            period=int(57),
-            latitude=float(41.813171068322205),
-            longitude=float(4.565103635446032),
-            road_name='amllgyqgrzdbqrxsmnkc',
-            lane_count=int(42),
-            carriageway_type='dltdyujhdpnwtkjrfmxc'
+            measurement_site_id='eljdrlqxxctstlamzemo',
+            name='vmvtulsjiqgzaugprfhl',
+            measurement_site_type='pzrnbzqmousfkjoklzxz',
+            period=int(100),
+            latitude=float(31.797762970796185),
+            longitude=float(21.8968056790641),
+            road_name='nhfvnygcxvvkhmfacsjf',
+            lane_count=int(46),
+            carriageway_type='kolhrixviclemblaopdb'
         )

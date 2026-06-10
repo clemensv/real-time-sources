@@ -170,13 +170,13 @@ class Volcano:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='raqysndtdhyejaoqzgmc',
-            name_jp='simkjjohhshgwdmjxdvr',
-            name_en='zonobpwtyujzkskzzzta',
-            latitude=float(99.575832284828),
-            longitude=float(54.6992868994032),
-            elevation_m=float(12.592787376097448),
+            volcano_code='kfzylmvikzvsefhfquft',
+            name_jp='tysalwuplxgojxdexzru',
+            name_en='monvtmpiyulxycltkjwh',
+            latitude=float(79.96177324787591),
+            longitude=float(77.75969500452852),
+            elevation_m=float(81.36654061353796),
             level_operation=True,
-            prefecture='gydxhflzqinmfchcuwrb',
+            prefecture='hprjozqbjqhuiynqqvzz',
             event=EventEnum.info
         )

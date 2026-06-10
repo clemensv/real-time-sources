@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendar import Calendar
 from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
+from gtfs_mqtt_producer_data.generaltransitfeedstatic.calendar import Calendar
 from typing import Any
 
 
@@ -176,15 +176,15 @@ class Trips:
             An instance of the dataclass.
         """
         return cls(
-            routeId='viunrsqaqeifrxsxctpg',
+            routeId='equvbuupdmzwjjcxhhov',
             serviceDates=None,
-            serviceExceptions=[None, None],
-            tripId='htgqejbiqeffpabcykku',
-            tripHeadsign='khcvzgaccyrgpqlwsgoz',
-            tripShortName='zozebimapykttkzgbvhw',
+            serviceExceptions=[None, None, None, None],
+            tripId='zgycbftacyvmupwsbzyg',
+            tripHeadsign='kaovcthrcfuurkozttbc',
+            tripShortName='odecratzficjhilkpurb',
             directionId=None,
-            blockId='gzjjhfsxwllusgwhesiw',
-            shapeId='skdpeyajmpdhqbbtgdbp',
+            blockId='kqbzalwboblnnaaszgam',
+            shapeId='zjxftvbylhrevhvdvnxl',
             wheelchairAccessible=None,
             bikesAllowed=None
         )

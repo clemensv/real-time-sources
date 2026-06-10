@@ -185,20 +185,20 @@ class Sigmet:
             An instance of the dataclass.
         """
         return cls(
-            icao_id='njbgpcvcimwbaufauhex',
-            series_id='awsktcdesdnaeufdefur',
+            icao_id='bnopmplzwfswoljbhkrg',
+            series_id='bvlflgzvdhqltmowqmsh',
             valid_time_from=datetime.datetime.now(datetime.timezone.utc),
             valid_time_to=datetime.datetime.now(datetime.timezone.utc),
-            hazard='ygcengkskpfzgrzaxlha',
-            qualifier='yskoogzjctdtkaalilhd',
-            sigmet_type='tvtscxgdicsonomcigoe',
-            altitude_hi=int(98),
-            altitude_low=int(78),
-            movement_dir='gotlujollnmwxizrkrfl',
-            movement_spd='frelkwpaxibhezwjregs',
-            severity='rqeceloenqpxogwycnzw',
-            raw_sigmet='rxttbpdblfrrbnsnoyno',
-            coords='ldawggthykrezzltrycv',
-            sigmet_id='botopyrjkcxtnrwovjxl',
-            region='nabcjbayzkbmzdyktcup'
+            hazard='ugbyaspoocdlarfagctm',
+            qualifier='ofwevkqqugpvxpurzwyo',
+            sigmet_type='kkywiitmamdycviwvrit',
+            altitude_hi=int(17),
+            altitude_low=int(8),
+            movement_dir='spdwrdffuwuhnbznsnfo',
+            movement_spd='hnmlbfzapcjsiqzrdmvb',
+            severity='liddthqlaodebofnqujy',
+            raw_sigmet='wbxsolkiucispjjyqxkx',
+            coords='xalzvhxgbldewnvbcquy',
+            sigmet_id='tgbctkranlmdmcnyfwyy',
+            region='wpqhrttyvsrkwukxgbxz'
         )

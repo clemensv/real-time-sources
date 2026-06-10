@@ -28,10 +28,10 @@ class Test_Transfers(unittest.TestCase):
         Create instance of Transfers for testing
         """
         instance = Transfers(
-            fromStopId='uosjotlwlohcjybqavpi',
-            toStopId='bqgislvuuhdkxinbdiaq',
-            transferType=int(36),
-            minTransferTime=int(75)
+            fromStopId='owuhnttdyurjkzgnhgjp',
+            toStopId='zztftfvxhxonjrfybyhl',
+            transferType=int(34),
+            minTransferTime=int(22)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test fromStopId property
         """
-        test_value = 'uosjotlwlohcjybqavpi'
+        test_value = 'owuhnttdyurjkzgnhgjp'
         self.instance.fromStopId = test_value
         self.assertEqual(self.instance.fromStopId, test_value)
     
@@ -48,7 +48,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test toStopId property
         """
-        test_value = 'bqgislvuuhdkxinbdiaq'
+        test_value = 'zztftfvxhxonjrfybyhl'
         self.instance.toStopId = test_value
         self.assertEqual(self.instance.toStopId, test_value)
     
@@ -56,7 +56,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test transferType property
         """
-        test_value = int(36)
+        test_value = int(34)
         self.instance.transferType = test_value
         self.assertEqual(self.instance.transferType, test_value)
     
@@ -64,7 +64,7 @@ class Test_Transfers(unittest.TestCase):
         """
         Test minTransferTime property
         """
-        test_value = int(75)
+        test_value = int(22)
         self.instance.minTransferTime = test_value
         self.assertEqual(self.instance.minTransferTime, test_value)
     

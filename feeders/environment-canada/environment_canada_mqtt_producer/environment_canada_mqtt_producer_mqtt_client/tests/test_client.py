@@ -94,9 +94,8 @@ async def test_ca_gov_eccc_weather_mqtt_ca_gov_eccc_weather_mqtt_station_py(mosq
             msc_id=f"test_msc_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            province="test_province",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -161,9 +160,8 @@ async def test_ca_gov_eccc_weather_mqtt_ca_gov_eccc_weather_mqtt_weather_observa
             msc_id=f"test_msc_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            province="test_province",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

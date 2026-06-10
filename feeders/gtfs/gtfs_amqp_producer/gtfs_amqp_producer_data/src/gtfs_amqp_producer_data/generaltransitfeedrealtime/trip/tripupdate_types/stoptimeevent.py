@@ -161,7 +161,7 @@ class StopTimeEvent:
             An instance of the dataclass.
         """
         return cls(
-            delay=int(37),
-            time=int(98),
-            uncertainty=int(5)
+            delay=int(51),
+            time=int(96),
+            uncertainty=int(91)
         )

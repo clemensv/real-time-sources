@@ -161,8 +161,8 @@ class PM25Reading:
             An instance of the dataclass.
         """
         return cls(
-            region='idtkabqfwiysicdxcaob',
+            region='jhenwzivwjxkjwdlqlbr',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
             update_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            pm25_one_hourly=int(40)
+            pm25_one_hourly=int(27)
         )

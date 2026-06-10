@@ -1,6 +1,6 @@
-from .message import Message
 from .vehicleposition import VehiclePosition
-from .routeconfig import RouteConfig
 from .schedule import Schedule
+from .message import Message
+from .routeconfig import RouteConfig
 
-__all__ = ["Message", "VehiclePosition", "RouteConfig", "Schedule"]
+__all__ = ["VehiclePosition", "Schedule", "Message", "RouteConfig"]

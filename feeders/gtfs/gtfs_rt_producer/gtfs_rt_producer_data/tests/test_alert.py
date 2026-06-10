@@ -32,8 +32,8 @@ class Test_Alert(unittest.TestCase):
         Create instance of Alert for testing
         """
         instance = Alert(
-            active_period=[None, None, None, None],
-            informed_entity=[None],
+            active_period=[None, None, None, None, None],
+            informed_entity=[None, None, None],
             cause=None,
             effect=None,
             url=None,
@@ -47,7 +47,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test active_period property
         """
-        test_value = [None, None, None, None]
+        test_value = [None, None, None, None, None]
         self.instance.active_period = test_value
         self.assertEqual(self.instance.active_period, test_value)
     
@@ -55,7 +55,7 @@ class Test_Alert(unittest.TestCase):
         """
         Test informed_entity property
         """
-        test_value = [None]
+        test_value = [None, None, None]
         self.instance.informed_entity = test_value
         self.assertEqual(self.instance.informed_entity, test_value)
     

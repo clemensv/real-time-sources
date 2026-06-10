@@ -1,3 +1,3 @@
-from .fr import TrafficFlowMeasurement, RoadEvent
+from .fr import RoadEvent, TrafficFlowMeasurement
 
-__all__ = ["TrafficFlowMeasurement", "RoadEvent"]
+__all__ = ["RoadEvent", "TrafficFlowMeasurement"]

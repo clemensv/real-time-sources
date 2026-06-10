@@ -169,13 +169,13 @@ class TemporarySpeedLimit:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='gmjixivschcievrdsgxg',
-            version_time='rwkhbuzgskshcyoarhdv',
-            validity_status='zoxebjyiqypzeotfjmdu',
-            start_time='wzbwremipjgppytndfdg',
-            end_time='slmptfhcjnezprfqafbc',
-            road_name='hudhofbobbcakojsnolr',
-            speed_limit_kmh=int(95),
-            description='bhbvkkuakswkrnsczmxi',
-            location_description='lwlglpsrmgguoyxpaagd'
+            situation_record_id='ngzvbazzudzumiltcntg',
+            version_time='oqvpnjqaikfedoauesjq',
+            validity_status='kqkaltmfkkpfoxuagwxf',
+            start_time='fdrorxkfpnsuwdvappvb',
+            end_time='iwjtyuadtffgxcxvgttk',
+            road_name='bosqculzxdcxrtonsvgh',
+            speed_limit_kmh=int(54),
+            description='btnjetodakwinfpcfgfx',
+            location_description='bpugjqvgbcsoxtisbwpj'
         )

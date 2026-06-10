@@ -169,11 +169,11 @@ class FareAttributes:
             An instance of the dataclass.
         """
         return cls(
-            fareId='mnwetuxkbjtklnjacuah',
-            price=float(47.06648786799592),
-            currencyType='mtcpxchhgfkqxoegdedh',
-            paymentMethod=int(75),
-            transfers=int(42),
-            agencyId='quqqwpdwlcywwzkhorol',
-            transferDuration=int(19)
+            fareId='hjiggoqqnkgvcabftjdt',
+            price=float(96.54086884872154),
+            currencyType='iigajxsydyroebjbeofr',
+            paymentMethod=int(82),
+            transfers=int(39),
+            agencyId='gaghxsmxapkklcrtyneu',
+            transferDuration=int(88)
         )

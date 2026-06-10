@@ -10,8 +10,8 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripupdate import TripUpdate
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripupdate_types.stoptimeupdate import StopTimeUpdate
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripdescriptor import TripDescriptor
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.vehicledescriptor import VehicleDescriptor
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.trip.tripdescriptor import TripDescriptor
 
 
 class Test_TripUpdate(unittest.TestCase):
@@ -33,9 +33,9 @@ class Test_TripUpdate(unittest.TestCase):
         instance = TripUpdate(
             trip=None,
             vehicle=None,
-            stop_time_update=[None, None, None, None],
-            timestamp=int(85),
-            delay=int(70)
+            stop_time_update=[None, None],
+            timestamp=int(20),
+            delay=int(62)
         )
         return instance
 
@@ -60,7 +60,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test stop_time_update property
         """
-        test_value = [None, None, None, None]
+        test_value = [None, None]
         self.instance.stop_time_update = test_value
         self.assertEqual(self.instance.stop_time_update, test_value)
     
@@ -68,7 +68,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(85)
+        test_value = int(20)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -76,7 +76,7 @@ class Test_TripUpdate(unittest.TestCase):
         """
         Test delay property
         """
-        test_value = int(70)
+        test_value = int(62)
         self.instance.delay = test_value
         self.assertEqual(self.instance.delay, test_value)
     

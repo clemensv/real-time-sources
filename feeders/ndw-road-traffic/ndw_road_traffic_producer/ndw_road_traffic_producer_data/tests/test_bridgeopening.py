@@ -28,14 +28,14 @@ class Test_BridgeOpening(unittest.TestCase):
         Create instance of BridgeOpening for testing
         """
         instance = BridgeOpening(
-            situation_record_id='ubyfmadskqodycvqvltq',
-            version_time='pdctghchjvzfdexiwava',
-            validity_status='ztendwbwoipdbwzimgur',
-            start_time='atjpxjcxxofliqgsfxpe',
-            end_time='gndedmxczuoeacwxnfol',
-            bridge_name='ijuogtmdnyhynydrcgtm',
-            road_name='zodhvbwytdsacgybvxdm',
-            description='qsdvojgygmhfhhkobyhy'
+            situation_record_id='qgttzyatadtugcssswue',
+            version_time='pxbykkiswkijojwoobda',
+            validity_status='qlfeklxspwlnesvntegg',
+            start_time='kamkzhhizaxfcmgvotcc',
+            end_time='mkoybmqnrqhwycuedmpu',
+            bridge_name='shozvqeljsrjcowaqskq',
+            road_name='ozlgsexvnpqkbnzfajau',
+            description='jozyloxytelvyhheslhw'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_BridgeOpening(unittest.TestCase):
         """
         Test situation_record_id property
         """
-        test_value = 'ubyfmadskqodycvqvltq'
+        test_value = 'qgttzyatadtugcssswue'
         self.instance.situation_record_id = test_value
         self.assertEqual(self.instance.situation_record_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_BridgeOpening(unittest.TestCase):
         """
         Test version_time property
         """
-        test_value = 'pdctghchjvzfdexiwava'
+        test_value = 'pxbykkiswkijojwoobda'
         self.instance.version_time = test_value
         self.assertEqual(self.instance.version_time, test_value)
     
@@ -60,7 +60,7 @@ class Test_BridgeOpening(unittest.TestCase):
         """
         Test validity_status property
         """
-        test_value = 'ztendwbwoipdbwzimgur'
+        test_value = 'qlfeklxspwlnesvntegg'
         self.instance.validity_status = test_value
         self.assertEqual(self.instance.validity_status, test_value)
     
@@ -68,7 +68,7 @@ class Test_BridgeOpening(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'atjpxjcxxofliqgsfxpe'
+        test_value = 'kamkzhhizaxfcmgvotcc'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -76,7 +76,7 @@ class Test_BridgeOpening(unittest.TestCase):
         """
         Test end_time property
         """
-        test_value = 'gndedmxczuoeacwxnfol'
+        test_value = 'mkoybmqnrqhwycuedmpu'
         self.instance.end_time = test_value
         self.assertEqual(self.instance.end_time, test_value)
     
@@ -84,7 +84,7 @@ class Test_BridgeOpening(unittest.TestCase):
         """
         Test bridge_name property
         """
-        test_value = 'ijuogtmdnyhynydrcgtm'
+        test_value = 'shozvqeljsrjcowaqskq'
         self.instance.bridge_name = test_value
         self.assertEqual(self.instance.bridge_name, test_value)
     
@@ -92,7 +92,7 @@ class Test_BridgeOpening(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'zodhvbwytdsacgybvxdm'
+        test_value = 'ozlgsexvnpqkbnzfajau'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -100,7 +100,7 @@ class Test_BridgeOpening(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'qsdvojgygmhfhhkobyhy'
+        test_value = 'jozyloxytelvyhheslhw'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
