@@ -24,7 +24,7 @@ class Observation:
     Attributes:
         code_station (str)
         date_obs (datetime.datetime)
-        resultat_obs (float)
+        resultat_obs (typing.Union[float, str])
         grandeur_hydro (str)
         libelle_methode_obs (typing.Optional[str])
         libelle_qualification_obs (typing.Optional[str])
@@ -34,7 +34,7 @@ class Observation:
     
     code_station: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code_station"))
     date_obs: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="date_obs", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
-    resultat_obs: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="resultat_obs"))
+    resultat_obs: typing.Union[float, str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="resultat_obs"))
     grandeur_hydro: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="grandeur_hydro"))
     libelle_methode_obs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_methode_obs"))
     libelle_qualification_obs: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="libelle_qualification_obs"))
@@ -167,11 +167,11 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            code_station='yopnrjzhyvkxasxgmwpd',
+            code_station='tmvjefbjlytuzxcklmvh',
             date_obs=datetime.datetime.now(datetime.timezone.utc),
-            resultat_obs=float(53.04306529726429),
-            grandeur_hydro='cqerekkeuayuxzllpivg',
-            libelle_methode_obs='sirihwlvkuuhympueunj',
-            libelle_qualification_obs='bgfrbtwhbkdqmqiqtknw',
-            basin='ktoylukutytmyccgiqed'
+            resultat_obs=float(88.65878485921328),
+            grandeur_hydro='xedgelsfsprqzhaejufv',
+            libelle_methode_obs='aneziveedrspvdeiazqe',
+            libelle_qualification_obs='kpcojaulmzvsyecbtibs',
+            basin='ifkaeigtqyaezgcftcis'
         )

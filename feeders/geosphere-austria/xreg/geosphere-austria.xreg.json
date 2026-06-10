@@ -255,6 +255,11 @@
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "$id": "https://geosphere.at/schemas/at/geosphere/tawes/WeatherStation",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
                 "name": "WeatherStation",
                 "$root": "#/definitions/at/geosphere/tawes/WeatherStation",
                 "definitions": {
@@ -268,8 +273,7 @@
                           "properties": {
                             "station_id": {
                               "type": "string",
-                              "description": "Stable GeoSphere Austria numeric station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata.",
-                              "pattern": "^[0-9]+$"
+                              "description": "Stable GeoSphere Austria station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata."
                             },
                             "station_name": {
                               "type": "string",
@@ -329,10 +333,8 @@
                               "description": "Observation timestamp in UTC from the GeoSphere API 'timestamps' array, formatted as an ISO-8601 instant such as '2024-01-15T13:00:00+00:00'."
                             },
                             "temperature": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Air temperature (Lufttemperatur) in degrees Celsius over the 10-minute interval, from the GeoSphere TL parameter. Null when the station does not report this parameter.",
                               "unit": "degree Celsius",
                               "symbol": "°C",
@@ -341,10 +343,8 @@
                               }
                             },
                             "humidity": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Relative humidity (Relative Feuchte) as a percentage over the 10-minute interval, from the GeoSphere RF parameter. Null when not reported.",
                               "unit": "percent",
                               "symbol": "%",
@@ -353,10 +353,8 @@
                               }
                             },
                             "precipitation": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Precipitation (Niederschlag) in millimeters accumulated during the 10-minute interval, from the GeoSphere RR parameter. Null when not reported.",
                               "unit": "millimeter",
                               "symbol": "mm",
@@ -365,10 +363,8 @@
                               }
                             },
                             "wind_direction": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Wind direction (Windrichtung) in degrees over the 10-minute interval, from the GeoSphere DD parameter. 0 indicates north, 90 east, 180 south, 270 west. Null when not reported.",
                               "unit": "degree",
                               "symbol": "°",
@@ -377,10 +373,8 @@
                               }
                             },
                             "wind_speed": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Wind speed (Windgeschwindigkeit) in meters per second over the 10-minute interval, from the GeoSphere FF parameter. Null when not reported.",
                               "unit": "meter per second",
                               "symbol": "m/s",
@@ -389,10 +383,8 @@
                               }
                             },
                             "pressure": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Atmospheric pressure (Luftdruck) in hectopascals at station level over the 10-minute interval, from the GeoSphere P parameter. Null when not reported.",
                               "unit": "hectopascal",
                               "symbol": "hPa",
@@ -401,10 +393,8 @@
                               }
                             },
                             "sunshine_duration": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Sunshine duration (Sonnenscheindauer) in seconds during the 10-minute interval, from the GeoSphere SO parameter. Null when the station does not have a sunshine sensor (has_sunshine=false) or the value is missing.",
                               "unit": "second",
                               "symbol": "s",
@@ -413,10 +403,8 @@
                               }
                             },
                             "global_radiation": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Global radiation (Globalstrahlung) in watts per square meter during the 10-minute interval, from the GeoSphere GLOW parameter. Null when the station does not have a radiation sensor (has_global_radiation=false) or the value is missing.",
                               "unit": "watt per square meter",
                               "symbol": "W/m²",
@@ -456,6 +444,11 @@
               "schema": {
                 "$schema": "https://json-structure.org/meta/extended/v0/#",
                 "$id": "https://geosphere.at/schemas/at/geosphere/tawes/WeatherObservation",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
                 "name": "WeatherObservation",
                 "$root": "#/definitions/at/geosphere/tawes/WeatherObservation",
                 "definitions": {
@@ -526,10 +519,8 @@
                               "description": "Observation timestamp in UTC from the GeoSphere API 'timestamps' array, formatted as an ISO-8601 instant such as '2024-01-15T13:00:00+00:00'."
                             },
                             "temperature": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Air temperature (Lufttemperatur) in degrees Celsius over the 10-minute interval, from the GeoSphere TL parameter. Null when the station does not report this parameter.",
                               "unit": "degree Celsius",
                               "symbol": "°C",
@@ -538,10 +529,8 @@
                               }
                             },
                             "humidity": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Relative humidity (Relative Feuchte) as a percentage over the 10-minute interval, from the GeoSphere RF parameter. Null when not reported.",
                               "unit": "percent",
                               "symbol": "%",
@@ -550,10 +539,8 @@
                               }
                             },
                             "precipitation": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Precipitation (Niederschlag) in millimeters accumulated during the 10-minute interval, from the GeoSphere RR parameter. Null when not reported.",
                               "unit": "millimeter",
                               "symbol": "mm",
@@ -562,10 +549,8 @@
                               }
                             },
                             "wind_direction": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Wind direction (Windrichtung) in degrees over the 10-minute interval, from the GeoSphere DD parameter. 0 indicates north, 90 east, 180 south, 270 west. Null when not reported.",
                               "unit": "degree",
                               "symbol": "°",
@@ -574,10 +559,8 @@
                               }
                             },
                             "wind_speed": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Wind speed (Windgeschwindigkeit) in meters per second over the 10-minute interval, from the GeoSphere FF parameter. Null when not reported.",
                               "unit": "meter per second",
                               "symbol": "m/s",
@@ -586,10 +569,8 @@
                               }
                             },
                             "pressure": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Atmospheric pressure (Luftdruck) in hectopascals at station level over the 10-minute interval, from the GeoSphere P parameter. Null when not reported.",
                               "unit": "hectopascal",
                               "symbol": "hPa",
@@ -598,10 +579,8 @@
                               }
                             },
                             "sunshine_duration": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Sunshine duration (Sonnenscheindauer) in seconds during the 10-minute interval, from the GeoSphere SO parameter. Null when the station does not have a sunshine sensor (has_sunshine=false) or the value is missing.",
                               "unit": "second",
                               "symbol": "s",
@@ -610,10 +589,8 @@
                               }
                             },
                             "global_radiation": {
-                              "type": [
-                                "double",
-                                "null"
-                              ],
+                              "type": "double",
+                              "nullable": true,
                               "description": "Global radiation (Globalstrahlung) in watts per square meter during the 10-minute interval, from the GeoSphere GLOW parameter. Null when the station does not have a radiation sensor (has_global_radiation=false) or the value is missing.",
                               "unit": "watt per square meter",
                               "symbol": "W/m²",

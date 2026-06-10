@@ -94,9 +94,8 @@ async def test_fr_gov_eaufrance_hubeau_hydrometrie_mqtt_fr_gov_eaufrance_hub_eau
             code_station=f"test_code_station_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            basin="test_basin",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -161,9 +160,8 @@ async def test_fr_gov_eaufrance_hubeau_hydrometrie_mqtt_fr_gov_eaufrance_hub_eau
             code_station=f"test_code_station_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            basin="test_basin",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
