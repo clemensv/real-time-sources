@@ -58,7 +58,7 @@ This feeder does that once and republishes the result as typed CloudEvents:
 
 | Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
-| **Kafka** | `ghcr.io/clemensv/real-time-sources-fdsn-seismology-kafka` | Apache Kafka 2.x compatible (Azure Event Hubs, Fabric Event Streams, plain Kafka) | One topic, structured CloudEvents, keys `{contributor}/{event_id}` for earthquakes and `{node_id}` for node reference records |
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-fdsn-seismology` | Apache Kafka 2.x compatible (Azure Event Hubs, Fabric Event Streams, plain Kafka) | One topic, structured CloudEvents, keys `{contributor}/{event_id}` for earthquakes and `{node_id}` for node reference records |
 | **MQTT** | `ghcr.io/clemensv/real-time-sources-fdsn-seismology-mqtt` | MQTT 5.0 brokers (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT) | UNS tree under `seismology/fdsn/...`, QoS 1, retained `Node` records, non-retained `Earthquake` events |
 | **AMQP** | `ghcr.io/clemensv/real-time-sources-fdsn-seismology-amqp` | AMQP 1.0 brokers and Azure Service Bus / Event Hubs | Single AMQP address, binary CloudEvents, SASL PLAIN / SAS CBS / Entra ID via AMQP CBS |
 

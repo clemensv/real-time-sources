@@ -6,7 +6,7 @@ This source ships three transport-specific images that all consume the same `GBF
 
 | Variant | Image | Default command |
 |---|---|---|
-| Kafka | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-kafka:latest` | `python -m gbfs_bikeshare feed` |
+| Kafka | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare:latest` | `python -m gbfs_bikeshare feed` |
 | MQTT | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-mqtt:latest` | `python -m gbfs_bikeshare_mqtt feed` |
 | AMQP | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-amqp:latest` | `python -m gbfs_bikeshare_amqp feed` |
 
@@ -44,7 +44,7 @@ docker run --rm \
   -e GBFS_FEEDS="https://gbfs.citibikenyc.com/gbfs/gbfs.json" \
   -e CONNECTION_STRING="BootstrapServer=<host:port>;EntityPath=gbfs-bikeshare" \
   -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-kafka:latest
+  ghcr.io/clemensv/real-time-sources-gbfs-bikeshare:latest
 ```
 
 ### Azure templates
