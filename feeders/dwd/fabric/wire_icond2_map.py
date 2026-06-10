@@ -249,17 +249,30 @@ def wire(workspace_id: str, map_id: str, kql_db_id: str,
             "payloadType": "InlineBase64",
         }
 
-    # 5. Push the updated definition.
+    # 5. Push the updated definition (retry up to 3 times; Fabric Map LRO
+    #    occasionally returns status=Failed with "unknown error" transiently).
     parts["map.json"]["payload"] = base64.b64encode(
         json.dumps(mp, indent=2).encode()).decode()
     print(f"definition: {len(mp['layerSources'])} sources, "
           f"{len(mp['layerSettings'])} settings")
-    r = fab.post(
-        f"{api_base}/workspaces/{workspace_id}/items/{map_id}/updateDefinition",
-        json={"definition": {"parts": list(parts.values())}})
-    print(f"updateDefinition HTTP {r.status_code}")
-    _poll_lro(fab, r)
-    print("OK")
+    last_err = None
+    for attempt in range(3):
+        r = fab.post(
+            f"{api_base}/workspaces/{workspace_id}/items/{map_id}/updateDefinition",
+            json={"definition": {"parts": list(parts.values())}})
+        print(f"updateDefinition HTTP {r.status_code} (attempt {attempt + 1})")
+        try:
+            _poll_lro(fab, r)
+            print("OK")
+            last_err = None
+            break
+        except RuntimeError as e:
+            last_err = e
+            if attempt < 2:
+                print(f"  LRO failed, retrying in 30s... ({e})")
+                time.sleep(30)
+    if last_err:
+        raise last_err
 
 
 def main(argv=None):
