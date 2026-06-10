@@ -53,3 +53,5 @@ secrets.json
 .azure/credentials
 # Local flag-image cache for share-card generator
 .cache/
+
+build/
