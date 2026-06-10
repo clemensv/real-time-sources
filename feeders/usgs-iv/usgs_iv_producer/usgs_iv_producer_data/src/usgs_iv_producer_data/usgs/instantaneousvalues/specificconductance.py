@@ -165,11 +165,11 @@ class SpecificConductance:
             An instance of the dataclass.
         """
         return cls(
-            site_no='qniekevnmwtxujpdvlai',
-            datetime='fzyzsozvmlogujmzpprq',
-            value=float(98.54458291793065),
-            exception='jyymnkaubqlnupuoweyl',
-            qualifiers=['teirvxrmjcjklyfrjtia'],
-            parameter_cd='ewllsouyahmiihdvizbj',
-            timeseries_cd='qmggsqtdjimheziptrsb'
+            site_no='lskxanunwbobbwopqcdm',
+            datetime='yursekqajdmhpgxlsufb',
+            value=float(14.279456645820531),
+            exception='osmgrukgxvblbudlucju',
+            qualifiers=['lbsvrpaajmsujnffsucq', 'dfsijlzpwawtuviappkl', 'egumisblgyittmazujdz'],
+            parameter_cd='zvomyuxeyxgfsyfpotmu',
+            timeseries_cd='kemeorhkmqasydmqjvqs'
         )

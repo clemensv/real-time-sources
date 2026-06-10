@@ -159,8 +159,8 @@ class Region:
             An instance of the dataclass.
         """
         return cls(
-            region_id='gucfolxjhqvecdszkqbk',
-            region_name='whfpcalzkjmjeygjmycp',
-            partregion_id=int(6),
-            partregion_name='awgbdurplzqemxixksat'
+            region_id='hglpnlxqmnwemypnsjng',
+            region_name='utjdndsexvzdtjrqsqxe',
+            partregion_id=int(74),
+            partregion_name='ygnnplciiogafwtbemun'
         )

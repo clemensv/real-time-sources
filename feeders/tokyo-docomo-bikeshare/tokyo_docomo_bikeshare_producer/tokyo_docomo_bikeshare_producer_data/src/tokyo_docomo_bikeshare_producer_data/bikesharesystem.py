@@ -177,17 +177,17 @@ class BikeshareSystem:
             An instance of the dataclass.
         """
         return cls(
-            system_id='mzrcxcyhtwkigknwiweo',
-            language='sgjxpwfibypjiopemktn',
-            name='udjimuncjtuzvzbhncpp',
-            short_name='folfvxmeveatamcamoow',
-            operator='lcrxlkpbwuthhwoieheu',
-            url='sycrxhxrsvsouwmuguoi',
-            purchase_url='aotfrcsqqvsurtueexfo',
-            start_date='fxdgsbueovugmykpwxzs',
-            phone_number='ejyvbwrytnumewtnvycm',
-            email='kcnxcymwqoziebeietkj',
-            feed_contact_email='nuhcktrahrmldzdkbjei',
-            timezone='rxulvbuhdmtqtkbjqrle',
-            license_url='egkeveukorkksuwslmvs'
+            system_id='ffkccyjxvvevknywzktz',
+            language='ptdahcaaxyislemrjzbt',
+            name='bjdojuwajsxpsbsxyiys',
+            short_name='jjtklfvksoofvnwnhwzc',
+            operator='bqoqorwlwsplpspwufna',
+            url='hfbpibzhqrjuotojqmeu',
+            purchase_url='mcwykxlhwlqiyzrxzhth',
+            start_date='xudrozanhhoembxxsffr',
+            phone_number='opqxzyenfgwfhunefeja',
+            email='bakxfxwnmctsnnzveodn',
+            feed_contact_email='kssfrpesmvkqubcpqicz',
+            timezone='idobfmkhikkzfbeokzku',
+            license_url='mstpaundglxpncmvanul'
         )

@@ -188,21 +188,21 @@ class AvalancheBulletin:
             An instance of the dataclass.
         """
         return cls(
-            region_id='xhsuygnrydefhzulgnmz',
-            region_name='qmqxlrydljyccohcjacz',
-            bulletin_id='ktuznhlrqvrnvgxlxphb',
+            region_id='axxppaxbocetyzgtwwio',
+            region_name='xgmvxlxkcbsperhrkhcm',
+            bulletin_id='gesglwwxlbkrbtjvpmfq',
             publication_time=datetime.datetime.now(datetime.timezone.utc),
             valid_time_start=datetime.datetime.now(datetime.timezone.utc),
             valid_time_end=datetime.datetime.now(datetime.timezone.utc),
-            lang='awycaaswujaadrkvjgvr',
+            lang='knhoilrsitoyvulxxwlz',
             max_danger_rating=MaxDangerRatingenum.low,
-            max_danger_rating_value=int(94),
-            danger_ratings_json='fdzypiaraxtohydzxoim',
-            avalanche_problems_json='fuduzgrpgsbzmxapqbfg',
-            tendency_type='ggaoanwbbicvyhhryhqf',
-            danger_patterns_json='hxpkxwfxvzihcpwwmyqa',
-            avalanche_activity_highlights='nlrmiumxgxasdjfgzcbn',
-            snowpack_structure_comment='gckooxmpvtpcxuwuhghy',
-            country='znxfncvyypdnlkelwzgq',
-            danger_level='wmpfdrjpoovtbksxepoo'
+            max_danger_rating_value=int(43),
+            danger_ratings_json='selmbmuzrtntkkskgfkv',
+            avalanche_problems_json='pfefnfvlbxuhdpqwxtoi',
+            tendency_type='jfpollorfxcjtrybgeom',
+            danger_patterns_json='xqpscqfebvhviixjavtn',
+            avalanche_activity_highlights='audflheyxljhtczugsoy',
+            snowpack_structure_comment='laynxdwqetbnhkoictyg',
+            country='wjbhflhindzxhkhqfsxm',
+            danger_level='tqwrplpebjbrazzxxkto'
         )

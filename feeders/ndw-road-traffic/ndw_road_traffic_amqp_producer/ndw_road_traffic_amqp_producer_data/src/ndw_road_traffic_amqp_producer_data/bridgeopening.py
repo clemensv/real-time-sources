@@ -167,12 +167,12 @@ class BridgeOpening:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='wrfmppysenrwcqmcctzi',
-            version_time='jnepnvmnxhsqgmdclsio',
-            validity_status='nmweuhpgnvochjwhacip',
-            start_time='xeahxptkjpgxtlqifjuc',
-            end_time='gibulbfuqfvemuhnxoll',
-            bridge_name='dwxwppcrgttefksegsxw',
-            road_name='lgnefczsqecslixytedp',
-            description='fgkczljwdazmwyychopo'
+            situation_record_id='ygrzicjazeilohzutpvl',
+            version_time='miuegteaxhtzzaaopmyv',
+            validity_status='hnovamekemnajdykrgku',
+            start_time='jcgekpmgvtnszhmkxcml',
+            end_time='arrfqrcqbubbgmlyshee',
+            bridge_name='sqgfjmlsizsvnxomtcjk',
+            road_name='gzmmnetjpuzecxbcpxqf',
+            description='msbfgsolmyyubdsrxcmu'
         )

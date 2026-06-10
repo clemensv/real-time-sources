@@ -28,7 +28,7 @@ class Test_Floodlevels(unittest.TestCase):
         Create instance of Floodlevels for testing
         """
         instance = Floodlevels(
-            self_='byswofunejnifokwxeag'
+            self_='qfhjpxitpfejmdgzdbbb'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Floodlevels(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'byswofunejnifokwxeag'
+        test_value = 'qfhjpxitpfejmdgzdbbb'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

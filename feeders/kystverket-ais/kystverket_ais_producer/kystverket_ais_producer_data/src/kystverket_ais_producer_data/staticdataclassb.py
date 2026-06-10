@@ -173,15 +173,15 @@ class StaticDataClassB:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(80),
-            part_number=int(96),
-            ship_name='laqlcdgcfrmyjcpydmsi',
-            ship_type=int(24),
-            callsign='tupphuaevrbbjqtglpsd',
-            dimension_to_bow=int(7),
-            dimension_to_stern=int(76),
-            dimension_to_port=int(29),
-            dimension_to_starboard=int(84),
-            timestamp='wfaqsmtqcbqpqeucvhmj',
-            station_id='qsxedwlesgaqwkxzbojd'
+            mmsi=int(54),
+            part_number=int(35),
+            ship_name='gsudxwabvntisyjhdugl',
+            ship_type=int(49),
+            callsign='xclafkahrglzugdbfczp',
+            dimension_to_bow=int(59),
+            dimension_to_stern=int(59),
+            dimension_to_port=int(97),
+            dimension_to_starboard=int(88),
+            timestamp='jzbzjlhuihraclvwdevn',
+            station_id='vsvgsbnqybtjgvpxztek'
         )

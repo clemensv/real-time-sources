@@ -1,3 +1,3 @@
-from .wsdot import TravelTimeRoute, MountainPassCondition, TollRate, CommercialVehicleRestriction, WeatherReading, WeatherStation, BorderCrossing, VesselLocation, RegionEnum, TrafficFlowStation, FlowReadingenum, TrafficFlowReading
+from .wsdot import MountainPassCondition, RegionEnum, FlowReadingenum, TrafficFlowReading, TrafficFlowStation, WeatherReading, WeatherStation, BorderCrossing, VesselLocation, CommercialVehicleRestriction, TravelTimeRoute, TollRate
 
-__all__ = ["TravelTimeRoute", "MountainPassCondition", "TollRate", "CommercialVehicleRestriction", "WeatherReading", "WeatherStation", "BorderCrossing", "VesselLocation", "RegionEnum", "TrafficFlowStation", "FlowReadingenum", "TrafficFlowReading"]
+__all__ = ["MountainPassCondition", "RegionEnum", "FlowReadingenum", "TrafficFlowReading", "TrafficFlowStation", "WeatherReading", "WeatherStation", "BorderCrossing", "VesselLocation", "CommercialVehicleRestriction", "TravelTimeRoute", "TollRate"]

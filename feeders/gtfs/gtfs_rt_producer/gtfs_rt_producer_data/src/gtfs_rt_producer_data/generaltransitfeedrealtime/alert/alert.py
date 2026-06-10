@@ -169,7 +169,7 @@ class Alert:
             An instance of the dataclass.
         """
         return cls(
-            active_period=[None, None, None, None, None],
+            active_period=[None],
             informed_entity=[None, None, None],
             cause=None,
             effect=None,

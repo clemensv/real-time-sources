@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from wsdot_mqtt_producer_data.us.wa.wsdot.traffic.regionenum import RegionEnum
 from wsdot_mqtt_producer_data.us.wa.wsdot.traffic.flowreadingenum import FlowReadingenum
+from wsdot_mqtt_producer_data.us.wa.wsdot.traffic.regionenum import RegionEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -163,9 +163,9 @@ class TrafficFlowReading:
             An instance of the dataclass.
         """
         return cls(
-            flow_data_id='kcprsiajchqgfdnlpbul',
-            station_name='glkcadfeashuzziamegp',
+            flow_data_id='nlxwzspkekzxguadecrk',
+            station_name='pqwwbfcmmbghnvisnoje',
             region=RegionEnum.Eastern,
             flow_reading=FlowReadingenum.Unknown,
-            reading_time='fooldcwsgswszsjlmhqz'
+            reading_time='wxkncwofjzjtbnsjrbud'
         )

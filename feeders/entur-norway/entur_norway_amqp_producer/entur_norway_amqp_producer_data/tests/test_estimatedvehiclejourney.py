@@ -30,23 +30,23 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         Create instance of EstimatedVehicleJourney for testing
         """
         instance = EstimatedVehicleJourney(
-            service_journey_id='cvoajonpfjpbfcaiwrry',
-            operating_day='yrxbpjwuvmcgveheyrkz',
-            line_ref='mzapiqmbkridpeywahfb',
-            operator_ref='cufmvgoaeqyjuvsoikfv',
-            direction_ref='ytlvlferuwgqbvvyfayl',
-            vehicle_mode='krpkcardooixfpbtjonn',
-            published_line_name='yjqpxmofqpiwehnufsuz',
-            route_ref='svldjzqlhkbodxtgmfwu',
-            origin_name='algwdbtwyzfjdqsyjlma',
-            destination_name='ggroskhpefuqgpqziffb',
+            service_journey_id='abkeexonbigndumxfhrf',
+            operating_day='fqrpfccgvzmiqvhranks',
+            line_ref='sahdmubzacsxnltllaph',
+            operator_ref='iabavtofyarlhmpksnma',
+            direction_ref='vbvrdwceclcacaegsywl',
+            vehicle_mode='gwbthzandwoxaixdumyp',
+            published_line_name='oxkdhqycsgaqowlbpoli',
+            route_ref='bytidwzaccnoavlekcra',
+            origin_name='epoyabkvcctotovltytx',
+            destination_name='ubhzkvsttuhydmvwdioe',
             is_cancellation=False,
             is_extra_journey=True,
-            is_complete_stop_sequence=True,
+            is_complete_stop_sequence=False,
             monitored=True,
-            data_source='jgxyaayxrwxofjizqifv',
+            data_source='kmhofqdmghbudbmnhayx',
             recorded_at_time=datetime.datetime.now(datetime.timezone.utc),
-            estimated_calls=[None, None]
+            estimated_calls=[None, None, None]
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test service_journey_id property
         """
-        test_value = 'cvoajonpfjpbfcaiwrry'
+        test_value = 'abkeexonbigndumxfhrf'
         self.instance.service_journey_id = test_value
         self.assertEqual(self.instance.service_journey_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test operating_day property
         """
-        test_value = 'yrxbpjwuvmcgveheyrkz'
+        test_value = 'fqrpfccgvzmiqvhranks'
         self.instance.operating_day = test_value
         self.assertEqual(self.instance.operating_day, test_value)
     
@@ -71,7 +71,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test line_ref property
         """
-        test_value = 'mzapiqmbkridpeywahfb'
+        test_value = 'sahdmubzacsxnltllaph'
         self.instance.line_ref = test_value
         self.assertEqual(self.instance.line_ref, test_value)
     
@@ -79,7 +79,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test operator_ref property
         """
-        test_value = 'cufmvgoaeqyjuvsoikfv'
+        test_value = 'iabavtofyarlhmpksnma'
         self.instance.operator_ref = test_value
         self.assertEqual(self.instance.operator_ref, test_value)
     
@@ -87,7 +87,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test direction_ref property
         """
-        test_value = 'ytlvlferuwgqbvvyfayl'
+        test_value = 'vbvrdwceclcacaegsywl'
         self.instance.direction_ref = test_value
         self.assertEqual(self.instance.direction_ref, test_value)
     
@@ -95,7 +95,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test vehicle_mode property
         """
-        test_value = 'krpkcardooixfpbtjonn'
+        test_value = 'gwbthzandwoxaixdumyp'
         self.instance.vehicle_mode = test_value
         self.assertEqual(self.instance.vehicle_mode, test_value)
     
@@ -103,7 +103,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test published_line_name property
         """
-        test_value = 'yjqpxmofqpiwehnufsuz'
+        test_value = 'oxkdhqycsgaqowlbpoli'
         self.instance.published_line_name = test_value
         self.assertEqual(self.instance.published_line_name, test_value)
     
@@ -111,7 +111,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test route_ref property
         """
-        test_value = 'svldjzqlhkbodxtgmfwu'
+        test_value = 'bytidwzaccnoavlekcra'
         self.instance.route_ref = test_value
         self.assertEqual(self.instance.route_ref, test_value)
     
@@ -119,7 +119,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test origin_name property
         """
-        test_value = 'algwdbtwyzfjdqsyjlma'
+        test_value = 'epoyabkvcctotovltytx'
         self.instance.origin_name = test_value
         self.assertEqual(self.instance.origin_name, test_value)
     
@@ -127,7 +127,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test destination_name property
         """
-        test_value = 'ggroskhpefuqgpqziffb'
+        test_value = 'ubhzkvsttuhydmvwdioe'
         self.instance.destination_name = test_value
         self.assertEqual(self.instance.destination_name, test_value)
     
@@ -151,7 +151,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test is_complete_stop_sequence property
         """
-        test_value = True
+        test_value = False
         self.instance.is_complete_stop_sequence = test_value
         self.assertEqual(self.instance.is_complete_stop_sequence, test_value)
     
@@ -167,7 +167,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test data_source property
         """
-        test_value = 'jgxyaayxrwxofjizqifv'
+        test_value = 'kmhofqdmghbudbmnhayx'
         self.instance.data_source = test_value
         self.assertEqual(self.instance.data_source, test_value)
     
@@ -183,7 +183,7 @@ class Test_EstimatedVehicleJourney(unittest.TestCase):
         """
         Test estimated_calls property
         """
-        test_value = [None, None]
+        test_value = [None, None, None]
         self.instance.estimated_calls = test_value
         self.assertEqual(self.instance.estimated_calls, test_value)
     

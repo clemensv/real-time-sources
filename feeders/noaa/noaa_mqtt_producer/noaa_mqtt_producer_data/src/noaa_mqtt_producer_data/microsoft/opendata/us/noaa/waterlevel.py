@@ -172,14 +172,14 @@ class WaterLevel:
             An instance of the dataclass.
         """
         return cls(
-            station_id='fkevlmlkaororhikwzqa',
-            timestamp='xubyybkshnhfhsfzchls',
-            value=float(49.523246703094),
-            stddev=float(8.083279573526491),
-            outside_sigma_band=True,
-            flat_tolerance_limit=True,
-            rate_of_change_limit=False,
-            max_min_expected_height=False,
+            station_id='ualegjplowavvqqeuvpp',
+            timestamp='rogwwexrzvxnpkoqdlii',
+            value=float(88.46403718473496),
+            stddev=float(18.18451302347276),
+            outside_sigma_band=False,
+            flat_tolerance_limit=False,
+            rate_of_change_limit=True,
+            max_min_expected_height=True,
             quality=QualityEnum.Preliminary,
-            region='akscsgjhysbmhaoszjfl'
+            region='rlmwahglmxgwlsectvap'
         )

@@ -28,27 +28,27 @@ class Test_VesselLocation(unittest.TestCase):
         Create instance of VesselLocation for testing
         """
         instance = VesselLocation(
-            vessel_id='mqhpjraptpsoxsramanv',
-            vessel_name='bybfxmtmeivcuivxwmkw',
-            mmsi=int(12),
-            in_service=True,
+            vessel_id='sefxprezyfocfnaangay',
+            vessel_name='ptcmubxsssryraxzndbc',
+            mmsi=int(24),
+            in_service=False,
             at_dock=True,
-            latitude=float(74.75228929854046),
-            longitude=float(35.710233267424364),
-            speed=float(93.93833918455957),
-            heading=int(86),
-            departing_terminal_id=int(90),
-            departing_terminal_name='kkmkosmfwzaecgoijimo',
-            departing_terminal_abbrev='afdxqwcnnkdzjesehyqx',
-            arriving_terminal_id=int(38),
-            arriving_terminal_name='moqrznjrfzxlkjwsurkv',
-            arriving_terminal_abbrev='hahqoryralfdyiqienrl',
-            scheduled_departure='caracgphseqolqbonqsq',
-            left_dock='tbakbrlplydlsrvxxnvc',
-            eta='bozamzrbekpdkajfemjp',
-            eta_basis='trjbihtfgepixkersllb',
-            route_abbreviation='cysvzwvaxpjkfodrpgsi',
-            timestamp='vdkntaespktnchouvtcf'
+            latitude=float(86.1015888167683),
+            longitude=float(0.7705936530909341),
+            speed=float(22.09378570224596),
+            heading=int(76),
+            departing_terminal_id=int(76),
+            departing_terminal_name='gfdikrkdsptviwohpewd',
+            departing_terminal_abbrev='zcjsfukeyolnjlyintwp',
+            arriving_terminal_id=int(83),
+            arriving_terminal_name='qmaozaaudvtrkrqlrvjp',
+            arriving_terminal_abbrev='htjlzimferahuawraike',
+            scheduled_departure='spbtrbjzttjxcxsrlpda',
+            left_dock='vhsixbudecjxlkkdesit',
+            eta='dispthepopbcqymktzyh',
+            eta_basis='ofjmultrzbdcvrkgycst',
+            route_abbreviation='zawjbxscohxqpjsoydov',
+            timestamp='eevsnjzobrcvjvfjmqub'
         )
         return instance
 
@@ -57,7 +57,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test vessel_id property
         """
-        test_value = 'mqhpjraptpsoxsramanv'
+        test_value = 'sefxprezyfocfnaangay'
         self.instance.vessel_id = test_value
         self.assertEqual(self.instance.vessel_id, test_value)
     
@@ -65,7 +65,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test vessel_name property
         """
-        test_value = 'bybfxmtmeivcuivxwmkw'
+        test_value = 'ptcmubxsssryraxzndbc'
         self.instance.vessel_name = test_value
         self.assertEqual(self.instance.vessel_name, test_value)
     
@@ -73,7 +73,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(12)
+        test_value = int(24)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -81,7 +81,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test in_service property
         """
-        test_value = True
+        test_value = False
         self.instance.in_service = test_value
         self.assertEqual(self.instance.in_service, test_value)
     
@@ -97,7 +97,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(74.75228929854046)
+        test_value = float(86.1015888167683)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -105,7 +105,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(35.710233267424364)
+        test_value = float(0.7705936530909341)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -113,7 +113,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(93.93833918455957)
+        test_value = float(22.09378570224596)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     
@@ -121,7 +121,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test heading property
         """
-        test_value = int(86)
+        test_value = int(76)
         self.instance.heading = test_value
         self.assertEqual(self.instance.heading, test_value)
     
@@ -129,7 +129,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test departing_terminal_id property
         """
-        test_value = int(90)
+        test_value = int(76)
         self.instance.departing_terminal_id = test_value
         self.assertEqual(self.instance.departing_terminal_id, test_value)
     
@@ -137,7 +137,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test departing_terminal_name property
         """
-        test_value = 'kkmkosmfwzaecgoijimo'
+        test_value = 'gfdikrkdsptviwohpewd'
         self.instance.departing_terminal_name = test_value
         self.assertEqual(self.instance.departing_terminal_name, test_value)
     
@@ -145,7 +145,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test departing_terminal_abbrev property
         """
-        test_value = 'afdxqwcnnkdzjesehyqx'
+        test_value = 'zcjsfukeyolnjlyintwp'
         self.instance.departing_terminal_abbrev = test_value
         self.assertEqual(self.instance.departing_terminal_abbrev, test_value)
     
@@ -153,7 +153,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test arriving_terminal_id property
         """
-        test_value = int(38)
+        test_value = int(83)
         self.instance.arriving_terminal_id = test_value
         self.assertEqual(self.instance.arriving_terminal_id, test_value)
     
@@ -161,7 +161,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test arriving_terminal_name property
         """
-        test_value = 'moqrznjrfzxlkjwsurkv'
+        test_value = 'qmaozaaudvtrkrqlrvjp'
         self.instance.arriving_terminal_name = test_value
         self.assertEqual(self.instance.arriving_terminal_name, test_value)
     
@@ -169,7 +169,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test arriving_terminal_abbrev property
         """
-        test_value = 'hahqoryralfdyiqienrl'
+        test_value = 'htjlzimferahuawraike'
         self.instance.arriving_terminal_abbrev = test_value
         self.assertEqual(self.instance.arriving_terminal_abbrev, test_value)
     
@@ -177,7 +177,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test scheduled_departure property
         """
-        test_value = 'caracgphseqolqbonqsq'
+        test_value = 'spbtrbjzttjxcxsrlpda'
         self.instance.scheduled_departure = test_value
         self.assertEqual(self.instance.scheduled_departure, test_value)
     
@@ -185,7 +185,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test left_dock property
         """
-        test_value = 'tbakbrlplydlsrvxxnvc'
+        test_value = 'vhsixbudecjxlkkdesit'
         self.instance.left_dock = test_value
         self.assertEqual(self.instance.left_dock, test_value)
     
@@ -193,7 +193,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test eta property
         """
-        test_value = 'bozamzrbekpdkajfemjp'
+        test_value = 'dispthepopbcqymktzyh'
         self.instance.eta = test_value
         self.assertEqual(self.instance.eta, test_value)
     
@@ -201,7 +201,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test eta_basis property
         """
-        test_value = 'trjbihtfgepixkersllb'
+        test_value = 'ofjmultrzbdcvrkgycst'
         self.instance.eta_basis = test_value
         self.assertEqual(self.instance.eta_basis, test_value)
     
@@ -209,7 +209,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test route_abbreviation property
         """
-        test_value = 'cysvzwvaxpjkfodrpgsi'
+        test_value = 'zawjbxscohxqpjsoydov'
         self.instance.route_abbreviation = test_value
         self.assertEqual(self.instance.route_abbreviation, test_value)
     
@@ -217,7 +217,7 @@ class Test_VesselLocation(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'vdkntaespktnchouvtcf'
+        test_value = 'eevsnjzobrcvjvfjmqub'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     

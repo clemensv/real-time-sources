@@ -175,16 +175,16 @@ class Pathways:
             An instance of the dataclass.
         """
         return cls(
-            pathwayId='ebdlzlgjyauawmgzxlul',
-            fromStopId='mpuygdwlaseuscfjveyq',
-            toStopId='oqbvfhyfxbhukwhsggdi',
-            pathwayMode=int(14),
-            isBidirectional=int(73),
-            length=float(9.414169126972261),
-            traversalTime=int(75),
-            stairCount=int(9),
-            maxSlope=float(6.178347288597719),
-            minWidth=float(85.51242192566218),
-            signpostedAs='rsuynpynwxizjnsqpgyx',
-            reversedSignpostedAs='tfbwggbmeuxqoujbqkek'
+            pathwayId='lzxjtoitozfvnwycejrw',
+            fromStopId='buudydyqicqwldwfgeno',
+            toStopId='jnmibjiqjdcpvrcnoyym',
+            pathwayMode=int(23),
+            isBidirectional=int(75),
+            length=float(80.90838026915621),
+            traversalTime=int(37),
+            stairCount=int(32),
+            maxSlope=float(21.91413494526644),
+            minWidth=float(26.930242165348872),
+            signpostedAs='zkpbmnemaajroivtmwjl',
+            reversedSignpostedAs='uhzfdvtzibojkyaaigmx'
         )

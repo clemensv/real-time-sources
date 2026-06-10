@@ -29,16 +29,16 @@ class Test_WaterLevelObservation(unittest.TestCase):
         Create instance of WaterLevelObservation for testing
         """
         instance = WaterLevelObservation(
-            station_id='vpdyamgxrsqfsfzqosma',
-            water_body_name='vsoaflctynuxqrzhoxeu',
-            water_level=float(29.41892222637067),
-            water_level_unit='lvliseteudcsirodsych',
+            station_id='wcefccdwlsfzqcmerqrp',
+            water_body_name='nkotdocgkwslijsysren',
+            water_level=float(14.378542936183635),
+            water_level_unit='cgeqgjcsahwoptduuzae',
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(83.90760817887988),
-            discharge_unit='jypqjjpgavotnxnyeltq',
+            discharge=float(15.949351878647832),
+            discharge_unit='cpfdqykqjajextclubdy',
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            water_temperature=float(67.808408099318),
-            water_temperature_unit='mrqwngiskeznuysjxmns',
+            water_temperature=float(45.324020347309826),
+            water_temperature_unit='harcyssbikywfkwpxovm',
             water_temperature_timestamp=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
@@ -48,7 +48,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'vpdyamgxrsqfsfzqosma'
+        test_value = 'wcefccdwlsfzqcmerqrp'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_body_name property
         """
-        test_value = 'vsoaflctynuxqrzhoxeu'
+        test_value = 'nkotdocgkwslijsysren'
         self.instance.water_body_name = test_value
         self.assertEqual(self.instance.water_body_name, test_value)
     
@@ -64,7 +64,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_level property
         """
-        test_value = float(29.41892222637067)
+        test_value = float(14.378542936183635)
         self.instance.water_level = test_value
         self.assertEqual(self.instance.water_level, test_value)
     
@@ -72,7 +72,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_level_unit property
         """
-        test_value = 'lvliseteudcsirodsych'
+        test_value = 'cgeqgjcsahwoptduuzae'
         self.instance.water_level_unit = test_value
         self.assertEqual(self.instance.water_level_unit, test_value)
     
@@ -88,7 +88,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test discharge property
         """
-        test_value = float(83.90760817887988)
+        test_value = float(15.949351878647832)
         self.instance.discharge = test_value
         self.assertEqual(self.instance.discharge, test_value)
     
@@ -96,7 +96,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test discharge_unit property
         """
-        test_value = 'jypqjjpgavotnxnyeltq'
+        test_value = 'cpfdqykqjajextclubdy'
         self.instance.discharge_unit = test_value
         self.assertEqual(self.instance.discharge_unit, test_value)
     
@@ -112,7 +112,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_temperature property
         """
-        test_value = float(67.808408099318)
+        test_value = float(45.324020347309826)
         self.instance.water_temperature = test_value
         self.assertEqual(self.instance.water_temperature, test_value)
     
@@ -120,7 +120,7 @@ class Test_WaterLevelObservation(unittest.TestCase):
         """
         Test water_temperature_unit property
         """
-        test_value = 'mrqwngiskeznuysjxmns'
+        test_value = 'harcyssbikywfkwpxovm'
         self.instance.water_temperature_unit = test_value
         self.assertEqual(self.instance.water_temperature_unit, test_value)
     

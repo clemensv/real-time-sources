@@ -28,20 +28,20 @@ class Test_VesselMetadata(unittest.TestCase):
         Create instance of VesselMetadata for testing
         """
         instance = VesselMetadata(
-            mmsi=int(24),
-            timestamp=int(67),
-            name='jmfamiewlfngedfbwvhy',
-            callSign='kmzuoryjcthoflypzqro',
-            imo=int(100),
-            type=int(39),
-            draught=int(0),
-            eta=int(45),
-            destination='hlliwoyivowaufqtkrqt',
-            posType=int(74),
-            refA=int(61),
-            refB=int(57),
-            refC=int(17),
-            refD=int(7)
+            mmsi=int(75),
+            timestamp=int(47),
+            name='ujqdfouwjjmhzguiqtgh',
+            callSign='wpctdoyzsicrbvctcmwu',
+            imo=int(90),
+            type=int(54),
+            draught=int(10),
+            eta=int(52),
+            destination='wfhuxrraehifbnzsxpjn',
+            posType=int(32),
+            refA=int(72),
+            refB=int(14),
+            refC=int(50),
+            refD=int(99)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(24)
+        test_value = int(75)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -58,7 +58,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(67)
+        test_value = int(47)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -66,7 +66,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'jmfamiewlfngedfbwvhy'
+        test_value = 'ujqdfouwjjmhzguiqtgh'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -74,7 +74,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test callSign property
         """
-        test_value = 'kmzuoryjcthoflypzqro'
+        test_value = 'wpctdoyzsicrbvctcmwu'
         self.instance.callSign = test_value
         self.assertEqual(self.instance.callSign, test_value)
     
@@ -82,7 +82,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test imo property
         """
-        test_value = int(100)
+        test_value = int(90)
         self.instance.imo = test_value
         self.assertEqual(self.instance.imo, test_value)
     
@@ -90,7 +90,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test type property
         """
-        test_value = int(39)
+        test_value = int(54)
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -98,7 +98,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test draught property
         """
-        test_value = int(0)
+        test_value = int(10)
         self.instance.draught = test_value
         self.assertEqual(self.instance.draught, test_value)
     
@@ -106,7 +106,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test eta property
         """
-        test_value = int(45)
+        test_value = int(52)
         self.instance.eta = test_value
         self.assertEqual(self.instance.eta, test_value)
     
@@ -114,7 +114,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test destination property
         """
-        test_value = 'hlliwoyivowaufqtkrqt'
+        test_value = 'wfhuxrraehifbnzsxpjn'
         self.instance.destination = test_value
         self.assertEqual(self.instance.destination, test_value)
     
@@ -122,7 +122,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test posType property
         """
-        test_value = int(74)
+        test_value = int(32)
         self.instance.posType = test_value
         self.assertEqual(self.instance.posType, test_value)
     
@@ -130,7 +130,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test refA property
         """
-        test_value = int(61)
+        test_value = int(72)
         self.instance.refA = test_value
         self.assertEqual(self.instance.refA, test_value)
     
@@ -138,7 +138,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test refB property
         """
-        test_value = int(57)
+        test_value = int(14)
         self.instance.refB = test_value
         self.assertEqual(self.instance.refB, test_value)
     
@@ -146,7 +146,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test refC property
         """
-        test_value = int(17)
+        test_value = int(50)
         self.instance.refC = test_value
         self.assertEqual(self.instance.refC, test_value)
     
@@ -154,7 +154,7 @@ class Test_VesselMetadata(unittest.TestCase):
         """
         Test refD property
         """
-        test_value = int(7)
+        test_value = int(99)
         self.instance.refD = test_value
         self.assertEqual(self.instance.refD, test_value)
     

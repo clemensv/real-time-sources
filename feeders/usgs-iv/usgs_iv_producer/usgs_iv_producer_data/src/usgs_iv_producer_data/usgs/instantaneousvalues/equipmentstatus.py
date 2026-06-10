@@ -161,9 +161,9 @@ class EquipmentStatus:
             An instance of the dataclass.
         """
         return cls(
-            site_no='idefiigcxjvohnamzcvw',
-            datetime='odmsjdkwhuwvudixjpup',
-            status='mosdrcqvpqfdvwkkzhtt',
-            parameter_cd='nfrizzrctheuujfulyxv',
-            timeseries_cd='tymgtlchgarwubzkupxa'
+            site_no='wlomklgzausjnizwizfk',
+            datetime='ufrkxiolfafthffeimlt',
+            status='mfdpekxgalnbrgdgmuio',
+            parameter_cd='micsyqdwafmuyiqitghf',
+            timeseries_cd='nzmuyexnsvvkukjbimpy'
         )

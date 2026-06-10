@@ -173,15 +173,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='vmqhmmuytjlriulmmsjw',
-            dbc='uttktyvqkxkbuepgdtzq',
-            station_name='egfytgvzwmcktkgrvsls',
-            stream_name='eppijbccgnsvwmjdgthj',
-            latitude=float(46.42435006399436),
-            longitude=float(18.99249956569127),
-            flood_level_1=float(56.68852186733007),
-            flood_level_2=float(44.63110474071971),
-            flood_level_3=float(77.17282518808193),
-            flood_level_4=float(78.81768780959575),
-            has_forecast=True
+            station_id='ujnynlexgxuampjppork',
+            dbc='cdkahpbwmqfqvmqyaatx',
+            station_name='midtpbeiemyfbwpbdkck',
+            stream_name='uffczugllembkzdjkitc',
+            latitude=float(49.92380638298722),
+            longitude=float(24.016746658241537),
+            flood_level_1=float(41.41168904020801),
+            flood_level_2=float(86.65262689453488),
+            flood_level_3=float(73.74951314374938),
+            flood_level_4=float(68.09245380044425),
+            has_forecast=False
         )

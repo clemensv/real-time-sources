@@ -171,14 +171,14 @@ class Observatory:
             An instance of the dataclass.
         """
         return cls(
-            iaga_code='wbmkncnjhwbimnizznke',
-            name='snygcpeleozqgweityii',
-            agency='wskctigchbtzafbhkvti',
-            agency_name='oqhlxvavxtzhompfzboh',
-            latitude=float(14.404981787475613),
-            longitude=float(64.4649446107011),
-            elevation=float(82.31231487335056),
-            sensor_orientation='cgwixiqvtahamvqlnlih',
-            sensor_sampling_rate=float(48.53228473263225),
-            declination_base=float(22.959719151285007)
+            iaga_code='alkivlwwqzimzzrkqkew',
+            name='parbqcmgyhpqapzcyjfm',
+            agency='dwfeqvqizxvydwtuwnxe',
+            agency_name='mykoxlybshwnlpupized',
+            latitude=float(82.6122897219674),
+            longitude=float(40.1723589214341),
+            elevation=float(43.087440949741804),
+            sensor_orientation='ipfimhfmdsceqngwftip',
+            sensor_sampling_rate=float(5.014467944346023),
+            declination_base=float(37.88889414392435)
         )

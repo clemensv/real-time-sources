@@ -28,17 +28,17 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            code_station='ydidiothknwkdrhsekuj',
-            libelle_station='ttfdekpvzragslrlovxw',
-            code_site='wgutzvtcfrhqfsksaxfl',
-            longitude_station=float(82.27219456001006),
-            latitude_station=float(92.44534096998315),
-            libelle_cours_eau='tsnbmvscvujjcaixdkax',
-            libelle_commune='mpmfyncijgzwoocbdpdz',
-            code_departement='yzzrgbisccicyljruuow',
-            en_service=False,
-            date_ouverture_station='adxeprzqlmwnxnfnijgd',
-            basin='niyeclrsxuwhoffbijsl'
+            code_station='rgsfmbpggonvajwcvhnk',
+            libelle_station='fihanupspopomjybofre',
+            code_site='rqvifccvshmnhxvmdjln',
+            longitude_station=float(4.881675867344248),
+            latitude_station=float(57.33252836658317),
+            libelle_cours_eau='qwywnxblpahwbrujhnte',
+            libelle_commune='hmpmehboadrxkqnywwov',
+            code_departement='gsmahhisazadiheceppz',
+            en_service=True,
+            date_ouverture_station='ptsheqvzkxqgelvrygnv',
+            basin='cvszfmajoqtzqibsywme'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Station(unittest.TestCase):
         """
         Test code_station property
         """
-        test_value = 'ydidiothknwkdrhsekuj'
+        test_value = 'rgsfmbpggonvajwcvhnk'
         self.instance.code_station = test_value
         self.assertEqual(self.instance.code_station, test_value)
     
@@ -55,7 +55,7 @@ class Test_Station(unittest.TestCase):
         """
         Test libelle_station property
         """
-        test_value = 'ttfdekpvzragslrlovxw'
+        test_value = 'fihanupspopomjybofre'
         self.instance.libelle_station = test_value
         self.assertEqual(self.instance.libelle_station, test_value)
     
@@ -63,7 +63,7 @@ class Test_Station(unittest.TestCase):
         """
         Test code_site property
         """
-        test_value = 'wgutzvtcfrhqfsksaxfl'
+        test_value = 'rqvifccvshmnhxvmdjln'
         self.instance.code_site = test_value
         self.assertEqual(self.instance.code_site, test_value)
     
@@ -71,7 +71,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude_station property
         """
-        test_value = float(82.27219456001006)
+        test_value = float(4.881675867344248)
         self.instance.longitude_station = test_value
         self.assertEqual(self.instance.longitude_station, test_value)
     
@@ -79,7 +79,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude_station property
         """
-        test_value = float(92.44534096998315)
+        test_value = float(57.33252836658317)
         self.instance.latitude_station = test_value
         self.assertEqual(self.instance.latitude_station, test_value)
     
@@ -87,7 +87,7 @@ class Test_Station(unittest.TestCase):
         """
         Test libelle_cours_eau property
         """
-        test_value = 'tsnbmvscvujjcaixdkax'
+        test_value = 'qwywnxblpahwbrujhnte'
         self.instance.libelle_cours_eau = test_value
         self.assertEqual(self.instance.libelle_cours_eau, test_value)
     
@@ -95,7 +95,7 @@ class Test_Station(unittest.TestCase):
         """
         Test libelle_commune property
         """
-        test_value = 'mpmfyncijgzwoocbdpdz'
+        test_value = 'hmpmehboadrxkqnywwov'
         self.instance.libelle_commune = test_value
         self.assertEqual(self.instance.libelle_commune, test_value)
     
@@ -103,7 +103,7 @@ class Test_Station(unittest.TestCase):
         """
         Test code_departement property
         """
-        test_value = 'yzzrgbisccicyljruuow'
+        test_value = 'gsmahhisazadiheceppz'
         self.instance.code_departement = test_value
         self.assertEqual(self.instance.code_departement, test_value)
     
@@ -111,7 +111,7 @@ class Test_Station(unittest.TestCase):
         """
         Test en_service property
         """
-        test_value = False
+        test_value = True
         self.instance.en_service = test_value
         self.assertEqual(self.instance.en_service, test_value)
     
@@ -119,7 +119,7 @@ class Test_Station(unittest.TestCase):
         """
         Test date_ouverture_station property
         """
-        test_value = 'adxeprzqlmwnxnfnijgd'
+        test_value = 'ptsheqvzkxqgelvrygnv'
         self.instance.date_ouverture_station = test_value
         self.assertEqual(self.instance.date_ouverture_station, test_value)
     
@@ -127,7 +127,7 @@ class Test_Station(unittest.TestCase):
         """
         Test basin property
         """
-        test_value = 'niyeclrsxuwhoffbijsl'
+        test_value = 'cvszfmajoqtzqibsywme'
         self.instance.basin = test_value
         self.assertEqual(self.instance.basin, test_value)
     

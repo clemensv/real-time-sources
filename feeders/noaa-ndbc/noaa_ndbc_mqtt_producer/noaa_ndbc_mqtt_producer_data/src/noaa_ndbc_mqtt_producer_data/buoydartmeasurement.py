@@ -163,9 +163,9 @@ class BuoyDartMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='xvdeagxuuapkaohxcwag',
+            station_id='mziuhlvgrlzxyphxgvvb',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            measurement_type_code=int(50),
-            water_column_height=float(65.22558333458578),
-            region='gayyxcfdoijiymrimrmj'
+            measurement_type_code=int(75),
+            water_column_height=float(98.48227622283414),
+            region='pnaweezvueoruvkkhdwy'
         )

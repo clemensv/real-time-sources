@@ -16,25 +16,25 @@ class Test_ClassSlugenum(unittest.TestCase):
         """
         Setup test
         """
-        self.instance = ClassSlugenum.desmatamento_cr
+        self.instance = ClassSlugenum.desmatamento_MINUScr
 
     @staticmethod
     def create_instance():
         """
         Create instance of ClassSlugenum
         """
-        return ClassSlugenum.desmatamento_cr
+        return ClassSlugenum.desmatamento_MINUScr
 
     def test_enum_values(self):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(ClassSlugenum.desmatamento_cr.value, 'desmatamento-cr')
-        self.assertEqual(ClassSlugenum.desmatamento_veg.value, 'desmatamento-veg')
+        self.assertEqual(ClassSlugenum.desmatamento_MINUScr.value, 'desmatamento-cr')
+        self.assertEqual(ClassSlugenum.desmatamento_MINUSveg.value, 'desmatamento-veg')
         self.assertEqual(ClassSlugenum.degradacao.value, 'degradacao')
         self.assertEqual(ClassSlugenum.mineracao.value, 'mineracao')
-        self.assertEqual(ClassSlugenum.cs_desordenado.value, 'cs-desordenado')
-        self.assertEqual(ClassSlugenum.cs_geometrico.value, 'cs-geometrico')
-        self.assertEqual(ClassSlugenum.cicatriz_de_queimada.value, 'cicatriz-de-queimada')
-        self.assertEqual(ClassSlugenum.corte_seletivo.value, 'corte-seletivo')
+        self.assertEqual(ClassSlugenum.cs_MINUSdesordenado.value, 'cs-desordenado')
+        self.assertEqual(ClassSlugenum.cs_MINUSgeometrico.value, 'cs-geometrico')
+        self.assertEqual(ClassSlugenum.cicatriz_MINUSde_MINUSqueimada.value, 'cicatriz-de-queimada')
+        self.assertEqual(ClassSlugenum.corte_MINUSseletivo.value, 'corte-seletivo')
         self.assertEqual(ClassSlugenum.unknown.value, 'unknown')

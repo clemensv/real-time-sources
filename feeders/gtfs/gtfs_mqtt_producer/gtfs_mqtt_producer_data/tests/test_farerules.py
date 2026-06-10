@@ -28,11 +28,11 @@ class Test_FareRules(unittest.TestCase):
         Create instance of FareRules for testing
         """
         instance = FareRules(
-            fareId='rosmeslrnhpkqxtrveps',
-            routeId='jvwavthuayqrblwhepeh',
-            originId='bumsdcouyfgyqpwzitju',
-            destinationId='euaofifvzhcwfnybwyph',
-            containsId='xyfufmkzxkrrwktevqab'
+            fareId='jxgxnjuwrdhhtldaqrqb',
+            routeId='nmgrlarjfihkwzecmasa',
+            originId='vltowchreerpbojpusji',
+            destinationId='wutwdgokwqyfqukjqzho',
+            containsId='psofrjqatgjrwsqdkyky'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test fareId property
         """
-        test_value = 'rosmeslrnhpkqxtrveps'
+        test_value = 'jxgxnjuwrdhhtldaqrqb'
         self.instance.fareId = test_value
         self.assertEqual(self.instance.fareId, test_value)
     
@@ -49,7 +49,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'jvwavthuayqrblwhepeh'
+        test_value = 'nmgrlarjfihkwzecmasa'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -57,7 +57,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test originId property
         """
-        test_value = 'bumsdcouyfgyqpwzitju'
+        test_value = 'vltowchreerpbojpusji'
         self.instance.originId = test_value
         self.assertEqual(self.instance.originId, test_value)
     
@@ -65,7 +65,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test destinationId property
         """
-        test_value = 'euaofifvzhcwfnybwyph'
+        test_value = 'wutwdgokwqyfqukjqzho'
         self.instance.destinationId = test_value
         self.assertEqual(self.instance.destinationId, test_value)
     
@@ -73,7 +73,7 @@ class Test_FareRules(unittest.TestCase):
         """
         Test containsId property
         """
-        test_value = 'xyfufmkzxkrrwktevqab'
+        test_value = 'psofrjqatgjrwsqdkyky'
         self.instance.containsId = test_value
         self.assertEqual(self.instance.containsId, test_value)
     

@@ -94,9 +94,8 @@ async def test_fi_syke_hydrology_mqtt_fi_syke_hydrology_mqtt_station_py(mosquitt
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            basin="test_basin",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -161,9 +160,8 @@ async def test_fi_syke_hydrology_mqtt_fi_syke_hydrology_mqtt_water_level_observa
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            basin="test_basin",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

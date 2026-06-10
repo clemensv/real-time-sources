@@ -28,13 +28,13 @@ class Test_DripSign(unittest.TestCase):
         Create instance of DripSign for testing
         """
         instance = DripSign(
-            vms_controller_id='qhnqcyzwroghtukpygff',
-            vms_index='rmmzltnmznkbudqfpclx',
-            vms_type='rnzvfiqgouoemnetplfn',
-            latitude=float(21.202118632443266),
-            longitude=float(69.06037418631618),
-            road_name='qnpvubirooesxzfzxmfx',
-            description='dxwzrqfebfcevxapsavo'
+            vms_controller_id='xslfgkaeekcdvtdmfcrt',
+            vms_index='sxzodtxubwxfyuwreuss',
+            vms_type='thqkipueryiavlbkxtjt',
+            latitude=float(42.85233454655387),
+            longitude=float(87.17413545963846),
+            road_name='emjntrsxrpfbnulcmaio',
+            description='yfcubbcdrrjoixrydygl'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_DripSign(unittest.TestCase):
         """
         Test vms_controller_id property
         """
-        test_value = 'qhnqcyzwroghtukpygff'
+        test_value = 'xslfgkaeekcdvtdmfcrt'
         self.instance.vms_controller_id = test_value
         self.assertEqual(self.instance.vms_controller_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_DripSign(unittest.TestCase):
         """
         Test vms_index property
         """
-        test_value = 'rmmzltnmznkbudqfpclx'
+        test_value = 'sxzodtxubwxfyuwreuss'
         self.instance.vms_index = test_value
         self.assertEqual(self.instance.vms_index, test_value)
     
@@ -59,7 +59,7 @@ class Test_DripSign(unittest.TestCase):
         """
         Test vms_type property
         """
-        test_value = 'rnzvfiqgouoemnetplfn'
+        test_value = 'thqkipueryiavlbkxtjt'
         self.instance.vms_type = test_value
         self.assertEqual(self.instance.vms_type, test_value)
     
@@ -67,7 +67,7 @@ class Test_DripSign(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(21.202118632443266)
+        test_value = float(42.85233454655387)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -75,7 +75,7 @@ class Test_DripSign(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(69.06037418631618)
+        test_value = float(87.17413545963846)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -83,7 +83,7 @@ class Test_DripSign(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'qnpvubirooesxzfzxmfx'
+        test_value = 'emjntrsxrpfbnulcmaio'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -91,7 +91,7 @@ class Test_DripSign(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'dxwzrqfebfcevxapsavo'
+        test_value = 'yfcubbcdrrjoixrydygl'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     

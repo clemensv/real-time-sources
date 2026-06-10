@@ -165,11 +165,11 @@ class Turbidity:
             An instance of the dataclass.
         """
         return cls(
-            site_no='hisekteimsmwqpqgpkdx',
-            datetime='oevaandtpkoosyejvskn',
-            value=float(10.79932574671706),
-            exception='zqcirnjonrrwazsntdss',
-            qualifiers=['rohipwimqbgxvxeqpsvt', 'pgndpoaaolmevavfqyqo', 'hzndfoeshnneqjtijjxb'],
-            parameter_cd='ewcriitybmjqdyjsyojx',
-            timeseries_cd='spqftfwbgsjfjqswdese'
+            site_no='wiiuygwuzsmmoovorbed',
+            datetime='aemanegpgweitzmashyk',
+            value=float(36.878092476103376),
+            exception='eherrsbkdgfwuywjocbp',
+            qualifiers=['fxdjwtpsgndtxbmdfakm', 'uheucoxkvjsyybcxgqxv', 'zypogtywbwmhcbempncr', 'faowxjmtlvkefheuxiee', 'nbtcuatsaderaykglush'],
+            parameter_cd='tsjptmlyarolcmljvyzz',
+            timeseries_cd='nzppfjczxqnvddczhijz'
         )

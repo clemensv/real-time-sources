@@ -1,3 +1,3 @@
-from .denkiyoho import PeakDemandForecast, DemandActual, SupplyCapacity, DemandForecast
+from .denkiyoho import DemandActual, DemandForecast, SupplyCapacity, PeakDemandForecast
 
-__all__ = ["PeakDemandForecast", "DemandActual", "SupplyCapacity", "DemandForecast"]
+__all__ = ["DemandActual", "DemandForecast", "SupplyCapacity", "PeakDemandForecast"]

@@ -94,9 +94,8 @@ async def test_be_vlaanderen_waterinfo_vmm_mqtt_be_vlaanderen_waterinfo_vmm_mqtt
             station_no=f"test_station_no_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            water_body="test_water_body",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -161,9 +160,8 @@ async def test_be_vlaanderen_waterinfo_vmm_mqtt_be_vlaanderen_waterinfo_vmm_mqtt
             station_no=f"test_station_no_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            water_body="test_water_body",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

@@ -179,17 +179,17 @@ class BuoyDetailedWaveSummary:
             An instance of the dataclass.
         """
         return cls(
-            station_id='jditlkzberdfdvxdqaeq',
+            station_id='njspklnqwzingfhspidr',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            significant_wave_height=float(28.339135432661777),
-            swell_height=float(83.87954091202208),
-            swell_period=float(89.66088916452489),
-            wind_wave_height=float(72.21049089975982),
-            wind_wave_period=float(11.075515684561266),
-            swell_direction='zqpmkznpadtvtilaomlk',
-            wind_wave_direction='ywfkakhmyrsnhpabjhvx',
-            steepness='uhqyibaxvdudkcrtxqvk',
-            average_wave_period=float(81.92636273152728),
-            mean_wave_direction=float(4.21805333292683),
-            region='qxcmoswlfvwvernixbsd'
+            significant_wave_height=float(42.286963021212344),
+            swell_height=float(10.15633573947079),
+            swell_period=float(47.660344311791405),
+            wind_wave_height=float(66.27517756276055),
+            wind_wave_period=float(32.11809853721594),
+            swell_direction='vcaufyekverxjpafxtgf',
+            wind_wave_direction='aakiqvregaxnjuhajyow',
+            steepness='lllcflrreyynsfhkhncv',
+            average_wave_period=float(90.15036727176167),
+            mean_wave_direction=float(0.20551038803300337),
+            region='rqjqvtddosnywziozphy'
         )

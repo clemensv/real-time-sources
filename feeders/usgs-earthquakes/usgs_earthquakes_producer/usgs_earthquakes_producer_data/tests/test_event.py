@@ -28,33 +28,33 @@ class Test_Event(unittest.TestCase):
         Create instance of Event for testing
         """
         instance = Event(
-            id='ugfvejcrlqllefpspfyf',
-            magnitude=float(19.2869532535221),
-            mag_type='chsscdgsfhhagtopwutz',
-            place='ucylfymgpbisfctzpwxk',
-            event_time='gtbzrbwnalpyuchucggq',
-            updated='gfpyowdxlcjffzemaqrd',
-            url='gfukhjrgbeljvfhuiqdy',
-            detail_url='pinhrbwyrbuyracfbqze',
-            felt=int(0),
-            cdi=float(33.22554433980667),
-            mmi=float(33.295593051573825),
-            alert='ovldswqmetwvsxfmzbfa',
-            status='grbmsmmstsbnhkqhxedk',
-            tsunami=int(20),
-            sig=int(99),
-            net='mcrbogmkvqghsdtheevj',
-            code='zlhefpxliwhtbtzdjfyn',
-            sources='yytaywgvycbxhkxeuqzr',
-            nst=int(75),
-            dmin=float(11.640702276192272),
-            rms=float(49.482617695850294),
-            gap=float(64.57920062824157),
-            event_type='txismxnbzwqxoipsviju',
-            latitude=float(60.26969425739552),
-            longitude=float(42.85005448875439),
-            depth=float(5.682403687610982),
-            magnitude_bucket='hkbuumdhqhuzlcucamxj'
+            id='jjaughsqkbmisdwzeqil',
+            magnitude=float(98.20719726717499),
+            mag_type='njrrfeznjuodfxomspvh',
+            place='xgukkyhnrmlrozmlgcoq',
+            event_time='uchummmhcuajvhvaxbmy',
+            updated='gwznpttyocyfnhjbagjc',
+            url='pqmhkoxgdckejlemajcl',
+            detail_url='gjquejmwofsxwimvshrs',
+            felt=int(5),
+            cdi=float(95.00091540971579),
+            mmi=float(94.84994138589062),
+            alert='giuwjslfxkouztenusdn',
+            status='hbvdvckvvmhbyddqzldj',
+            tsunami=int(17),
+            sig=int(76),
+            net='ilhppyipitjsamzuyjsr',
+            code='mmuyykqjryttgeerbvwd',
+            sources='uvhibnqklnztihwqifih',
+            nst=int(16),
+            dmin=float(48.05307085526146),
+            rms=float(83.23381490248467),
+            gap=float(69.45479631315663),
+            event_type='fzbkigvxrsndfvoulgqu',
+            latitude=float(11.735219636003414),
+            longitude=float(12.11533737653877),
+            depth=float(65.18769955315157),
+            magnitude_bucket='bzeepzhuywqorchfekvb'
         )
         return instance
 
@@ -63,7 +63,7 @@ class Test_Event(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'ugfvejcrlqllefpspfyf'
+        test_value = 'jjaughsqkbmisdwzeqil'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -71,7 +71,7 @@ class Test_Event(unittest.TestCase):
         """
         Test magnitude property
         """
-        test_value = float(19.2869532535221)
+        test_value = float(98.20719726717499)
         self.instance.magnitude = test_value
         self.assertEqual(self.instance.magnitude, test_value)
     
@@ -79,7 +79,7 @@ class Test_Event(unittest.TestCase):
         """
         Test mag_type property
         """
-        test_value = 'chsscdgsfhhagtopwutz'
+        test_value = 'njrrfeznjuodfxomspvh'
         self.instance.mag_type = test_value
         self.assertEqual(self.instance.mag_type, test_value)
     
@@ -87,7 +87,7 @@ class Test_Event(unittest.TestCase):
         """
         Test place property
         """
-        test_value = 'ucylfymgpbisfctzpwxk'
+        test_value = 'xgukkyhnrmlrozmlgcoq'
         self.instance.place = test_value
         self.assertEqual(self.instance.place, test_value)
     
@@ -95,7 +95,7 @@ class Test_Event(unittest.TestCase):
         """
         Test event_time property
         """
-        test_value = 'gtbzrbwnalpyuchucggq'
+        test_value = 'uchummmhcuajvhvaxbmy'
         self.instance.event_time = test_value
         self.assertEqual(self.instance.event_time, test_value)
     
@@ -103,7 +103,7 @@ class Test_Event(unittest.TestCase):
         """
         Test updated property
         """
-        test_value = 'gfpyowdxlcjffzemaqrd'
+        test_value = 'gwznpttyocyfnhjbagjc'
         self.instance.updated = test_value
         self.assertEqual(self.instance.updated, test_value)
     
@@ -111,7 +111,7 @@ class Test_Event(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'gfukhjrgbeljvfhuiqdy'
+        test_value = 'pqmhkoxgdckejlemajcl'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
@@ -119,7 +119,7 @@ class Test_Event(unittest.TestCase):
         """
         Test detail_url property
         """
-        test_value = 'pinhrbwyrbuyracfbqze'
+        test_value = 'gjquejmwofsxwimvshrs'
         self.instance.detail_url = test_value
         self.assertEqual(self.instance.detail_url, test_value)
     
@@ -127,7 +127,7 @@ class Test_Event(unittest.TestCase):
         """
         Test felt property
         """
-        test_value = int(0)
+        test_value = int(5)
         self.instance.felt = test_value
         self.assertEqual(self.instance.felt, test_value)
     
@@ -135,7 +135,7 @@ class Test_Event(unittest.TestCase):
         """
         Test cdi property
         """
-        test_value = float(33.22554433980667)
+        test_value = float(95.00091540971579)
         self.instance.cdi = test_value
         self.assertEqual(self.instance.cdi, test_value)
     
@@ -143,7 +143,7 @@ class Test_Event(unittest.TestCase):
         """
         Test mmi property
         """
-        test_value = float(33.295593051573825)
+        test_value = float(94.84994138589062)
         self.instance.mmi = test_value
         self.assertEqual(self.instance.mmi, test_value)
     
@@ -151,7 +151,7 @@ class Test_Event(unittest.TestCase):
         """
         Test alert property
         """
-        test_value = 'ovldswqmetwvsxfmzbfa'
+        test_value = 'giuwjslfxkouztenusdn'
         self.instance.alert = test_value
         self.assertEqual(self.instance.alert, test_value)
     
@@ -159,7 +159,7 @@ class Test_Event(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'grbmsmmstsbnhkqhxedk'
+        test_value = 'hbvdvckvvmhbyddqzldj'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     
@@ -167,7 +167,7 @@ class Test_Event(unittest.TestCase):
         """
         Test tsunami property
         """
-        test_value = int(20)
+        test_value = int(17)
         self.instance.tsunami = test_value
         self.assertEqual(self.instance.tsunami, test_value)
     
@@ -175,7 +175,7 @@ class Test_Event(unittest.TestCase):
         """
         Test sig property
         """
-        test_value = int(99)
+        test_value = int(76)
         self.instance.sig = test_value
         self.assertEqual(self.instance.sig, test_value)
     
@@ -183,7 +183,7 @@ class Test_Event(unittest.TestCase):
         """
         Test net property
         """
-        test_value = 'mcrbogmkvqghsdtheevj'
+        test_value = 'ilhppyipitjsamzuyjsr'
         self.instance.net = test_value
         self.assertEqual(self.instance.net, test_value)
     
@@ -191,7 +191,7 @@ class Test_Event(unittest.TestCase):
         """
         Test code property
         """
-        test_value = 'zlhefpxliwhtbtzdjfyn'
+        test_value = 'mmuyykqjryttgeerbvwd'
         self.instance.code = test_value
         self.assertEqual(self.instance.code, test_value)
     
@@ -199,7 +199,7 @@ class Test_Event(unittest.TestCase):
         """
         Test sources property
         """
-        test_value = 'yytaywgvycbxhkxeuqzr'
+        test_value = 'uvhibnqklnztihwqifih'
         self.instance.sources = test_value
         self.assertEqual(self.instance.sources, test_value)
     
@@ -207,7 +207,7 @@ class Test_Event(unittest.TestCase):
         """
         Test nst property
         """
-        test_value = int(75)
+        test_value = int(16)
         self.instance.nst = test_value
         self.assertEqual(self.instance.nst, test_value)
     
@@ -215,7 +215,7 @@ class Test_Event(unittest.TestCase):
         """
         Test dmin property
         """
-        test_value = float(11.640702276192272)
+        test_value = float(48.05307085526146)
         self.instance.dmin = test_value
         self.assertEqual(self.instance.dmin, test_value)
     
@@ -223,7 +223,7 @@ class Test_Event(unittest.TestCase):
         """
         Test rms property
         """
-        test_value = float(49.482617695850294)
+        test_value = float(83.23381490248467)
         self.instance.rms = test_value
         self.assertEqual(self.instance.rms, test_value)
     
@@ -231,7 +231,7 @@ class Test_Event(unittest.TestCase):
         """
         Test gap property
         """
-        test_value = float(64.57920062824157)
+        test_value = float(69.45479631315663)
         self.instance.gap = test_value
         self.assertEqual(self.instance.gap, test_value)
     
@@ -239,7 +239,7 @@ class Test_Event(unittest.TestCase):
         """
         Test event_type property
         """
-        test_value = 'txismxnbzwqxoipsviju'
+        test_value = 'fzbkigvxrsndfvoulgqu'
         self.instance.event_type = test_value
         self.assertEqual(self.instance.event_type, test_value)
     
@@ -247,7 +247,7 @@ class Test_Event(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(60.26969425739552)
+        test_value = float(11.735219636003414)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -255,7 +255,7 @@ class Test_Event(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(42.85005448875439)
+        test_value = float(12.11533737653877)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -263,7 +263,7 @@ class Test_Event(unittest.TestCase):
         """
         Test depth property
         """
-        test_value = float(5.682403687610982)
+        test_value = float(65.18769955315157)
         self.instance.depth = test_value
         self.assertEqual(self.instance.depth, test_value)
     
@@ -271,7 +271,7 @@ class Test_Event(unittest.TestCase):
         """
         Test magnitude_bucket property
         """
-        test_value = 'hkbuumdhqhuzlcucamxj'
+        test_value = 'bzeepzhuywqorchfekvb'
         self.instance.magnitude_bucket = test_value
         self.assertEqual(self.instance.magnitude_bucket, test_value)
     

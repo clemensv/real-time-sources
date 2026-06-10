@@ -172,14 +172,14 @@ class SingleSlotBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(91),
-            RepeatIndicator=int(62),
-            UserID=int(27),
+            MessageID=int(3),
+            RepeatIndicator=int(11),
+            UserID=int(48),
             Valid=True,
             DestinationIDValid=True,
             ApplicationIDValid=True,
-            DestinationID=int(9),
-            Spare=int(44),
+            DestinationID=int(27),
+            Spare=int(80),
             ApplicationID=None,
-            Payload='sbtgokppwyzuqgbrbcck'
+            Payload='xovzabwugcgsxmphhfhz'
         )

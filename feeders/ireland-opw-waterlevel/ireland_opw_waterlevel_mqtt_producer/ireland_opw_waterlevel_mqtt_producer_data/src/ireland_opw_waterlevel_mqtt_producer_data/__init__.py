@@ -1,3 +1,3 @@
-from .ie import Station, WaterLevelReading
+from .ie import WaterLevelReading, Station
 
-__all__ = ["Station", "WaterLevelReading"]
+__all__ = ["WaterLevelReading", "Station"]

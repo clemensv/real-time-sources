@@ -165,11 +165,11 @@ class GoesMagnetometer:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='ufqescsoriuiegiaytme',
-            satellite=int(15),
-            he=float(48.849503021956274),
-            hp=float(89.74575975666164),
-            hn=float(36.483338684562305),
-            total=float(73.23539888075503),
-            arcjet_flag=False
+            time_tag='cchiphhfdliwywdueegj',
+            satellite=int(46),
+            he=float(30.40055513528457),
+            hp=float(48.03681319822333),
+            hn=float(5.462102883997666),
+            total=float(18.147521862675674),
+            arcjet_flag=True
         )

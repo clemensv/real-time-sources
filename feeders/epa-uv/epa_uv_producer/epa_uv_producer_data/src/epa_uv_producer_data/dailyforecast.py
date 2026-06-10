@@ -165,11 +165,11 @@ class DailyForecast:
             An instance of the dataclass.
         """
         return cls(
-            location_id='rvsbfkbelvwbyhhpyjga',
-            city='dyrwhwcdilszltfszjir',
-            state='nzdxkicgsdqtjbppmgzz',
-            forecast_date='ndqacpgvbfdxltkrwtkg',
-            uv_index=int(52),
-            uv_alert='lesmyqyxxptkuyjdhtco',
-            city_slug='ztsoebwvzayaycgccjxn'
+            location_id='hwuyamvcarjhzbnhbrek',
+            city='ggdyzctpomjmgijmovwx',
+            state='hwztddcyfrijwermuscd',
+            forecast_date='pttjusbaejtxyckahcld',
+            uv_index=int(96),
+            uv_alert='ryobyyzaqbvgykcuanta',
+            city_slug='xfvswuaioemtxxmarbvt'
         )

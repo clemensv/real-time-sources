@@ -169,13 +169,13 @@ class ReservoirReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='wihwfehgafzbndtehnjn',
-            sensor_num=int(47),
-            sensor_type='cbiopbrdcczbfisdlcsq',
-            value=float(31.541767224463214),
-            units='zofngyhjcvwmylcwztle',
-            date='wzdokkydqhusphdalpkx',
-            dur_code='fjfmogdxtcmwkeooljpq',
-            data_flag='pfknkgpackgejbvaxvdg',
-            basin='mvdoggiehzorptvwxeac'
+            station_id='opdkljbxievkiurqmsqx',
+            sensor_num=int(51),
+            sensor_type='zhqjxitpmwnqfexhjlxq',
+            value=float(15.298654873183825),
+            units='dmvujbpwyrsljedoqehj',
+            date='nejvwbzqflerksakghti',
+            dur_code='hoobueddqhdmafamqadf',
+            data_flag='boeirgcjsgrtttwicicy',
+            basin='hcvdghjmxdfxntutyfqg'
         )

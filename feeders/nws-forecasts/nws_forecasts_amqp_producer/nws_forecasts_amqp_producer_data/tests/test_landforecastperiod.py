@@ -28,9 +28,9 @@ class Test_LandForecastPeriod(unittest.TestCase):
         Create instance of LandForecastPeriod for testing
         """
         instance = LandForecastPeriod(
-            period_number=int(78),
-            period_name='ctwwdyxzdqsoibgbgine',
-            detailed_forecast='ufsviyxvphzhksvzfiio'
+            period_number=int(54),
+            period_name='hubvkkovtsdmewdzlrwl',
+            detailed_forecast='edzpmfuqoebcepafluaw'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_LandForecastPeriod(unittest.TestCase):
         """
         Test period_number property
         """
-        test_value = int(78)
+        test_value = int(54)
         self.instance.period_number = test_value
         self.assertEqual(self.instance.period_number, test_value)
     
@@ -47,7 +47,7 @@ class Test_LandForecastPeriod(unittest.TestCase):
         """
         Test period_name property
         """
-        test_value = 'ctwwdyxzdqsoibgbgine'
+        test_value = 'hubvkkovtsdmewdzlrwl'
         self.instance.period_name = test_value
         self.assertEqual(self.instance.period_name, test_value)
     
@@ -55,7 +55,7 @@ class Test_LandForecastPeriod(unittest.TestCase):
         """
         Test detailed_forecast property
         """
-        test_value = 'ufsviyxvphzhksvzfiio'
+        test_value = 'edzpmfuqoebcepafluaw'
         self.instance.detailed_forecast = test_value
         self.assertEqual(self.instance.detailed_forecast, test_value)
     

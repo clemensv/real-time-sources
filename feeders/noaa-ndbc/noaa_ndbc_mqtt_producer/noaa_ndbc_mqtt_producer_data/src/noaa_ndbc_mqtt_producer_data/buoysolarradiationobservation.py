@@ -165,10 +165,10 @@ class BuoySolarRadiationObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='wkzzjpozpvvdazyyfvdj',
+            station_id='hsocfnsynhwbtmmzogpk',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            shortwave_radiation_licor=float(76.35493001728234),
-            shortwave_radiation_eppley=float(9.284758823815542),
-            longwave_radiation=float(67.05022529576785),
-            region='kslztsrnvixyjbuidibe'
+            shortwave_radiation_licor=float(57.654077370508304),
+            shortwave_radiation_eppley=float(44.347280501066635),
+            longwave_radiation=float(75.62855054566764),
+            region='jgjhfsfqbxjibamkquhr'
         )

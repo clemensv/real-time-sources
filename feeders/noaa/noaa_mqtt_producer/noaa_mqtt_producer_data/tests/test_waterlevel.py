@@ -29,16 +29,16 @@ class Test_WaterLevel(unittest.TestCase):
         Create instance of WaterLevel for testing
         """
         instance = WaterLevel(
-            station_id='fkevlmlkaororhikwzqa',
-            timestamp='xubyybkshnhfhsfzchls',
-            value=float(49.523246703094),
-            stddev=float(8.083279573526491),
-            outside_sigma_band=True,
-            flat_tolerance_limit=True,
-            rate_of_change_limit=False,
-            max_min_expected_height=False,
+            station_id='ualegjplowavvqqeuvpp',
+            timestamp='rogwwexrzvxnpkoqdlii',
+            value=float(88.46403718473496),
+            stddev=float(18.18451302347276),
+            outside_sigma_band=False,
+            flat_tolerance_limit=False,
+            rate_of_change_limit=True,
+            max_min_expected_height=True,
             quality=QualityEnum.Preliminary,
-            region='akscsgjhysbmhaoszjfl'
+            region='rlmwahglmxgwlsectvap'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'fkevlmlkaororhikwzqa'
+        test_value = 'ualegjplowavvqqeuvpp'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -55,7 +55,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'xubyybkshnhfhsfzchls'
+        test_value = 'rogwwexrzvxnpkoqdlii'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -63,7 +63,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(49.523246703094)
+        test_value = float(88.46403718473496)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -71,7 +71,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test stddev property
         """
-        test_value = float(8.083279573526491)
+        test_value = float(18.18451302347276)
         self.instance.stddev = test_value
         self.assertEqual(self.instance.stddev, test_value)
     
@@ -79,7 +79,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test outside_sigma_band property
         """
-        test_value = True
+        test_value = False
         self.instance.outside_sigma_band = test_value
         self.assertEqual(self.instance.outside_sigma_band, test_value)
     
@@ -87,7 +87,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test flat_tolerance_limit property
         """
-        test_value = True
+        test_value = False
         self.instance.flat_tolerance_limit = test_value
         self.assertEqual(self.instance.flat_tolerance_limit, test_value)
     
@@ -95,7 +95,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test rate_of_change_limit property
         """
-        test_value = False
+        test_value = True
         self.instance.rate_of_change_limit = test_value
         self.assertEqual(self.instance.rate_of_change_limit, test_value)
     
@@ -103,7 +103,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test max_min_expected_height property
         """
-        test_value = False
+        test_value = True
         self.instance.max_min_expected_height = test_value
         self.assertEqual(self.instance.max_min_expected_height, test_value)
     
@@ -119,7 +119,7 @@ class Test_WaterLevel(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'akscsgjhysbmhaoszjfl'
+        test_value = 'rlmwahglmxgwlsectvap'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

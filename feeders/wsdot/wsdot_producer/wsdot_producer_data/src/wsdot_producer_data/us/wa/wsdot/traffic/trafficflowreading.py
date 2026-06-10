@@ -163,9 +163,9 @@ class TrafficFlowReading:
             An instance of the dataclass.
         """
         return cls(
-            flow_data_id='egwoviuqnwvgskhcpjol',
-            station_name='qjvclufjhowluycyhvmw',
+            flow_data_id='opmlrhsouvrrsvrzgeho',
+            station_name='sqlroyufdpwwpxcsteuh',
             region=RegionEnum.Eastern,
             flow_reading=FlowReadingenum.Unknown,
-            reading_time='kqpkqzlvikprvepayvtb'
+            reading_time='grxylrhvmsuqypshewdr'
         )

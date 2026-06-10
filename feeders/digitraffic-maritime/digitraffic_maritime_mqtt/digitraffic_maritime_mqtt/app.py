@@ -5,7 +5,8 @@ import asyncio
 import logging
 import os
 from typing import Any, Dict, Optional
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 
 import paho.mqtt.client as mqtt
 
@@ -19,13 +20,49 @@ from digitraffic_maritime_mqtt_producer_mqtt_client.client import (
     FiDigitrafficMarinePortcallVesseldetailsMqttMqttClient,
 )
 
-logger = logging.getLogger(__name__)
+import json
 
+def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
+
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
+    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return resolved_client_id, str(username or ""), str(password or "")
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = resolved_client_id or str(username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_client_id, resolved_username, resolved_password
+
+logger = logging.getLogger(__name__)
 
 class _NoopFlush:
     def flush(self) -> None:
         return
-
 
 class _AisAdapter:
     def __init__(self, client: FiDigitrafficMarineAisMqttMqttClient):
@@ -36,7 +73,6 @@ class _AisAdapter:
 
     def send_fi_digitraffic_marine_ais_vessel_metadata(self, *, _mmsi: str, data: VesselMetadata, flush_producer: bool = False):
         asyncio.run(self._client.publish_fi_digitraffic_marine_ais_mqtt_metadata(mmsi=_mmsi, data=data))
-
 
 class _PortCallAdapter:
     def __init__(
@@ -73,7 +109,6 @@ class _PortCallAdapter:
             )
         )
 
-
 def _parse_broker_url(url: str) -> tuple[str, int, bool]:
     parsed = urlparse(url if '://' in url else f'mqtt://{url}')
     scheme = (parsed.scheme or 'mqtt').lower()
@@ -82,18 +117,23 @@ def _parse_broker_url(url: str) -> tuple[str, int, bool]:
     port = parsed.port or (8883 if tls else 1883)
     return host, port, tls
 
-
 def _build_clients(args: argparse.Namespace):
     host, port, tls_from_url = _parse_broker_url(args.broker_url)
     tls = tls_from_url if args.enable_tls is None else args.enable_tls
 
-    paho_client = mqtt.Client(
+    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+        username=args.username,
+        password=args.password or '',
+        client_id=args.client_id or '',
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
+    paho_client = mqtt.Client(client_id=resolved_client_id or "", 
         callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
         protocol=mqtt.MQTTv5,
-        client_id=args.client_id or '',
-    )
-    if args.username:
-        paho_client.username_pw_set(args.username, args.password or '')
+        )
+    if resolved_username or resolved_password:
+        paho_client.username_pw_set(resolved_username, resolved_password)
     if tls:
         paho_client.tls_set(ca_certs=args.ca_file or None)
 
@@ -105,7 +145,6 @@ def _build_clients(args: argparse.Namespace):
     vessel_details_client = FiDigitrafficMarinePortcallVesseldetailsMqttMqttClient(paho_client, content_mode=args.content_mode)
     port_location_client = FiDigitrafficMarinePortcallPortlocationMqttMqttClient(paho_client, content_mode=args.content_mode)
     return paho_client, _AisAdapter(ais_client), _PortCallAdapter(port_call_client, vessel_details_client, port_location_client)
-
 
 def _run_stream(args: argparse.Namespace, ais_adapter: _AisAdapter):
     subs = [s.strip() for s in args.subscribe.split(',') if s.strip()]
@@ -143,7 +182,6 @@ def _run_stream(args: argparse.Namespace, ais_adapter: _AisAdapter):
         if seen['count']:
             logger.info('ONCE_MODE enabled: exiting after first emitted AIS message')
 
-
 def _run_port_calls(args: argparse.Namespace, port_call_adapter: _PortCallAdapter):
     poller = DigitrafficPortCallPoller(
         kafka_producer=_NoopFlush(),
@@ -154,7 +192,6 @@ def _run_port_calls(args: argparse.Namespace, port_call_adapter: _PortCallAdapte
         poll_interval=args.poll_interval,
     )
     poller.poll_and_send(once=args.once)
-
 
 def main() -> None:
     parser = argparse.ArgumentParser(description='Digitraffic Maritime MQTT feeder')
@@ -187,7 +224,6 @@ def main() -> None:
     finally:
         paho_client.loop_stop()
         paho_client.disconnect()
-
 
 if __name__ == '__main__':
     main()

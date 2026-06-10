@@ -179,18 +179,18 @@ class TollRate:
             An instance of the dataclass.
         """
         return cls(
-            trip_name='jeokdfilnfmwxhafrzjb',
-            state_route='nsyfbgpontwzkyljlxbr',
-            travel_direction='zzdooerambqoegrbnywq',
-            current_toll=int(15),
-            current_message='irfsnehmiqyjuppeuvce',
-            time_updated='bhjjwrxyndtsnmhxazcf',
-            start_location_name='hstebpdibuxgjnajtpjf',
-            start_latitude=float(24.57267244328175),
-            start_longitude=float(23.859247461918443),
-            start_milepost=float(27.986556026991593),
-            end_location_name='bimuodebekcjlbvrwotf',
-            end_latitude=float(46.716003937599424),
-            end_longitude=float(49.335829458659276),
-            end_milepost=float(54.02187904682183)
+            trip_name='dktafzaokizucwubxade',
+            state_route='psvjqkxubxhficyabuud',
+            travel_direction='mlbfixgqnygaehqqulmf',
+            current_toll=int(83),
+            current_message='prtiqqpxsmdqyswbqkaz',
+            time_updated='apmywzqcxdwgnhlxtyax',
+            start_location_name='zdimigjtzmcqsmzmlsbl',
+            start_latitude=float(26.29658951814424),
+            start_longitude=float(84.43761456653608),
+            start_milepost=float(48.71568104745262),
+            end_location_name='yjvjpeseyvyhzcpkburc',
+            end_latitude=float(28.229314056476152),
+            end_longitude=float(29.54212459301614),
+            end_milepost=float(35.84559973597702)
         )

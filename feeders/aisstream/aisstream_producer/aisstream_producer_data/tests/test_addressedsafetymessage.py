@@ -28,15 +28,15 @@ class Test_AddressedSafetyMessage(unittest.TestCase):
         Create instance of AddressedSafetyMessage for testing
         """
         instance = AddressedSafetyMessage(
-            MessageID=int(8),
-            RepeatIndicator=int(86),
-            UserID=int(42),
+            MessageID=int(74),
+            RepeatIndicator=int(61),
+            UserID=int(68),
             Valid=False,
-            Sequenceinteger=int(93),
-            DestinationID=int(15),
+            Sequenceinteger=int(53),
+            DestinationID=int(76),
             Retransmission=False,
             Spare=True,
-            Text='zwtfhsuczsgwbharfxqe'
+            Text='ujrjjgiuxrqkmwgbnjnx'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_AddressedSafetyMessage(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(8)
+        test_value = int(74)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -53,7 +53,7 @@ class Test_AddressedSafetyMessage(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(86)
+        test_value = int(61)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -61,7 +61,7 @@ class Test_AddressedSafetyMessage(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(42)
+        test_value = int(68)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -77,7 +77,7 @@ class Test_AddressedSafetyMessage(unittest.TestCase):
         """
         Test Sequenceinteger property
         """
-        test_value = int(93)
+        test_value = int(53)
         self.instance.Sequenceinteger = test_value
         self.assertEqual(self.instance.Sequenceinteger, test_value)
     
@@ -85,7 +85,7 @@ class Test_AddressedSafetyMessage(unittest.TestCase):
         """
         Test DestinationID property
         """
-        test_value = int(15)
+        test_value = int(76)
         self.instance.DestinationID = test_value
         self.assertEqual(self.instance.DestinationID, test_value)
     
@@ -109,7 +109,7 @@ class Test_AddressedSafetyMessage(unittest.TestCase):
         """
         Test Text property
         """
-        test_value = 'zwtfhsuczsgwbharfxqe'
+        test_value = 'ujrjjgiuxrqkmwgbnjnx'
         self.instance.Text = test_value
         self.assertEqual(self.instance.Text, test_value)
     

@@ -177,16 +177,16 @@ class VesselDimensions:
             An instance of the dataclass.
         """
         return cls(
-            tonnage_certificate_issuer='vxxeyggnxpoyoxnqorgx',
+            tonnage_certificate_issuer='ztraabjaiglmgyiqnwin',
             date_of_issue=datetime.datetime.now(datetime.timezone.utc),
-            gross_tonnage=int(20),
-            net_tonnage=int(98),
-            dead_weight=int(58),
-            length=float(84.05364995122241),
-            overall_length=float(12.55863987413246),
-            height=float(98.54162983223085),
-            breadth=float(31.475820846564297),
-            draught=float(37.66380581863745),
-            max_speed=float(1.7410426061241435),
-            engine_power='bkbvosvjnsrbdxttgulj'
+            gross_tonnage=int(17),
+            net_tonnage=int(27),
+            dead_weight=int(34),
+            length=float(81.72042867173793),
+            overall_length=float(84.09355759819181),
+            height=float(43.47449625742469),
+            breadth=float(76.2071265984324),
+            draught=float(80.66154127537364),
+            max_speed=float(25.575461965736668),
+            engine_power='cbjfwxmwsydbsmoduvrq'
         )

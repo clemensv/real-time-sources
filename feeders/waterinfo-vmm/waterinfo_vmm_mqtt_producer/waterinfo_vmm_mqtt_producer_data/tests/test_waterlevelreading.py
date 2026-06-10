@@ -29,14 +29,14 @@ class Test_WaterLevelReading(unittest.TestCase):
         Create instance of WaterLevelReading for testing
         """
         instance = WaterLevelReading(
-            ts_id='xfojgvgvwownrfcefhfs',
-            station_no='urvhhrnoqkcpucfqnich',
-            station_name='shustaktppawczbirdxg',
+            ts_id='mdpotlexkmpymtlxvjsq',
+            station_no='svjmlsiwcmbitetcbmjc',
+            station_name='ssocwroqydrfbjqluift',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(86.7441563453944),
-            unit_name='fbipooaacsglthipbhmu',
-            parameter_name='bjpceoyiijhnqwazblbi',
-            water_body='bsetzqphyywyzjrucxdr'
+            value=float(24.178563056442147),
+            unit_name='nsmdyyccsmjugsebbbgs',
+            parameter_name='qsqtsumnhfenivyjiimw',
+            water_body='yjxaacgtpvdcpzlnyxdd'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test ts_id property
         """
-        test_value = 'xfojgvgvwownrfcefhfs'
+        test_value = 'mdpotlexkmpymtlxvjsq'
         self.instance.ts_id = test_value
         self.assertEqual(self.instance.ts_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test station_no property
         """
-        test_value = 'urvhhrnoqkcpucfqnich'
+        test_value = 'svjmlsiwcmbitetcbmjc'
         self.instance.station_no = test_value
         self.assertEqual(self.instance.station_no, test_value)
     
@@ -61,7 +61,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'shustaktppawczbirdxg'
+        test_value = 'ssocwroqydrfbjqluift'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -77,7 +77,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(86.7441563453944)
+        test_value = float(24.178563056442147)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -85,7 +85,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test unit_name property
         """
-        test_value = 'fbipooaacsglthipbhmu'
+        test_value = 'nsmdyyccsmjugsebbbgs'
         self.instance.unit_name = test_value
         self.assertEqual(self.instance.unit_name, test_value)
     
@@ -93,7 +93,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test parameter_name property
         """
-        test_value = 'bjpceoyiijhnqwazblbi'
+        test_value = 'qsqtsumnhfenivyjiimw'
         self.instance.parameter_name = test_value
         self.assertEqual(self.instance.parameter_name, test_value)
     
@@ -101,7 +101,7 @@ class Test_WaterLevelReading(unittest.TestCase):
         """
         Test water_body property
         """
-        test_value = 'bsetzqphyywyzjrucxdr'
+        test_value = 'yjxaacgtpvdcpzlnyxdd'
         self.instance.water_body = test_value
         self.assertEqual(self.instance.water_body, test_value)
     

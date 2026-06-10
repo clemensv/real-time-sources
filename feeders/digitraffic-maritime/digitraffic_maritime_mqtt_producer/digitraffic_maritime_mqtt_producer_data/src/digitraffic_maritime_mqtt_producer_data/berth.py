@@ -157,7 +157,7 @@ class Berth:
             An instance of the dataclass.
         """
         return cls(
-            port_area_code='qrifphreaoztxcejrmin',
-            berth_code='nyiipxokpqeexpujhdcy',
-            berth_name='rrivknrudkcxaejnrkhu'
+            port_area_code='mpqriihofibvdxdbddqi',
+            berth_code='jfihjvoqcmwplgmnuilf',
+            berth_name='tvbeekbzluawpzyoazoc'
         )

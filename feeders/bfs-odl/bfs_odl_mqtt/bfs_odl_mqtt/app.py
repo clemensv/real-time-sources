@@ -18,7 +18,8 @@ import os
 import sys
 from datetime import datetime, timedelta, timezone
 from typing import Any, Dict, Optional
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
@@ -26,6 +27,43 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 from bfs_odl.bfs_odl import BfsOdlAPI, _load_state, _save_state, FEED_URL
 from bfs_odl_mqtt_producer_data import Station, DoseRateMeasurement
 from bfs_odl_mqtt_producer_mqtt_client.client import DeBfsOdlMqttMqttClient
+import json
+
+def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
+
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
+    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return resolved_client_id, str(username or ""), str(password or "")
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = resolved_client_id or str(username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_client_id, resolved_username, resolved_password
 
 logger = logging.getLogger(__name__)
 
@@ -53,7 +91,6 @@ _UNS_REPLACEMENTS = str.maketrans({
     "ä": "ae", "ö": "oe", "ü": "ue", "Ä": "ae", "Ö": "oe", "Ü": "ue", "ß": "ss",
 })
 
-
 def _uns_slug(value: str) -> str:
     """Normalize an arbitrary upstream label to a UNS-safe lowercase kebab segment."""
     if not value:
@@ -72,12 +109,10 @@ def _uns_slug(value: str) -> str:
         slug = slug.replace("--", "-")
     return slug or "unknown"
 
-
 def _state_from_station_id(station_id: str) -> str:
     """Derive the Bundesland slug from a BfS station Kennziffer (AGS prefix)."""
     prefix = station_id[:2] if len(station_id) >= 2 else ""
     return _AGS_TO_STATE.get(prefix, "unknown")
-
 
 def _build_station(feature: Dict[str, Any], state: str) -> Station:
     """Build MQTT Station dataclass from a WFS GeoJSON feature."""
@@ -98,7 +133,6 @@ def _build_station(feature: Dict[str, Any], state: str) -> Station:
         latitude=coords[1] if coords[1] is not None else 0.0,
     )
 
-
 def _build_measurement(feature: Dict[str, Any], state: str) -> DoseRateMeasurement:
     """Build MQTT DoseRateMeasurement dataclass from a WFS GeoJSON feature."""
     props = feature["properties"]
@@ -114,12 +148,10 @@ def _build_measurement(feature: Dict[str, Any], state: str) -> DoseRateMeasureme
         nuclide=props.get("nuclide", ""),
     )
 
-
 def _sample_features():
     station = {"type": "Feature", "properties": {"kenn": "033510091", "id": "DEZ0305", "name": "Sample Station", "plz": "30159", "site_status": 1, "site_status_text": "in Betrieb", "kid": 1, "height_above_sea": 55.0}, "geometry": {"type": "Point", "coordinates": [9.73, 52.37]}}
     measurement = {"type": "Feature", "properties": {"kenn": "033510091", "start_measure": "2026-01-01T00:00:00Z", "end_measure": "2026-01-01T01:00:00Z", "value": 0.08, "value_cosmic": 0.03, "value_terrestrial": 0.05, "validated": 1, "nuclide": "Gamma-ODL-Brutto"}, "geometry": {"type": "Point", "coordinates": [9.73, 52.37]}}
     return [station], [measurement]
-
 
 async def _publish_stations(
     mqtt_client: DeBfsOdlMqttMqttClient,
@@ -138,7 +170,6 @@ async def _publish_stations(
             )
         except Exception as exc:
             logger.error("Error publishing station %s: %s", station_id, exc)
-
 
 async def _publish_measurements(
     mqtt_client: DeBfsOdlMqttMqttClient,
@@ -166,7 +197,6 @@ async def _publish_measurements(
             logger.error("Error publishing measurement for %s: %s", station_id, exc)
     return sent
 
-
 async def feed(
     api: BfsOdlAPI,
     broker_host: str,
@@ -183,13 +213,19 @@ async def feed(
 ) -> None:
     previous_readings = _load_state(state_file)
 
-    paho_client = mqtt.Client(
-        callback_api_version=CallbackAPIVersion.VERSION2,
+    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+        username=username,
+        password=password or "",
         client_id=client_id or "",
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
+    paho_client = mqtt.Client(client_id=resolved_client_id or "", 
+        callback_api_version=CallbackAPIVersion.VERSION2,
         protocol=MQTTv5,
     )
-    if username:
-        paho_client.username_pw_set(username, password or "")
+    if resolved_username or resolved_password:
+        paho_client.username_pw_set(resolved_username, resolved_password)
     if tls:
         paho_client.tls_set()
 
@@ -239,7 +275,6 @@ async def feed(
     finally:
         await mqtt_client.disconnect()
 
-
 def _parse_broker_url(url: str) -> tuple:
     parsed = urlparse(url if "://" in url else f"mqtt://{url}")
     scheme = (parsed.scheme or "mqtt").lower()
@@ -249,7 +284,6 @@ def _parse_broker_url(url: str) -> tuple:
     user = parsed.username or None
     pwd = parsed.password or None
     return host, port, tls, user, pwd
-
 
 def _build_arg_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="BfS ODL → MQTT/UNS bridge.")
@@ -273,7 +307,6 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     feed_parser.add_argument("--once", action="store_true",
                              default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
     return parser
-
 
 def main(argv: Optional[list] = None) -> None:
     logging.basicConfig(level=logging.DEBUG if sys.gettrace() else logging.INFO)
@@ -307,7 +340,6 @@ def main(argv: Optional[list] = None) -> None:
             once=args.once, content_mode=args.content_mode,
         )
     )
-
 
 if __name__ == "__main__":
     main()

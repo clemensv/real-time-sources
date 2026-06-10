@@ -9,7 +9,8 @@ import logging
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Optional
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
@@ -17,8 +18,43 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 from usgs_geomag.usgs_geomag import DEFAULT_OBSERVATORIES, POLL_INTERVAL_SECONDS, USGSGeomagPoller
 from usgs_geomag_mqtt_producer_mqtt_client.client import GovUsgsGeomagMqttMqttClient
 
-logger = logging.getLogger(__name__)
+def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
 
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
+    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return resolved_client_id, str(username or ""), str(password or "")
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = resolved_client_id or str(username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_client_id, resolved_username, resolved_password
+
+logger = logging.getLogger(__name__)
 
 def _load_state(path: str) -> Dict:
     try:
@@ -32,14 +68,12 @@ def _load_state(path: str) -> Dict:
         logger.warning("Could not load state %s: %s", path, exc)
     return {"last_timestamps": {}}
 
-
 def _save_state(path: str, state: Dict) -> None:
     if not path:
         return
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(state, f)
-
 
 async def _publish_observatories(client: GovUsgsGeomagMqttMqttClient, observatories: List[str]) -> None:
     features = USGSGeomagPoller.fetch_observatories()
@@ -52,7 +86,6 @@ async def _publish_observatories(client: GovUsgsGeomagMqttMqttClient, observator
             iaga_code=obs.iaga_code.lower(),
             data=obs,
         )
-
 
 async def _publish_readings(
     client: GovUsgsGeomagMqttMqttClient,
@@ -85,7 +118,6 @@ async def _publish_readings(
             last_timestamps[iaga_code] = latest_ts
     return sent
 
-
 async def feed(
     broker_host: str,
     broker_port: int,
@@ -99,9 +131,16 @@ async def feed(
     once: bool = False,
     content_mode: str = "binary",
 ) -> None:
-    paho_client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=client_id or "", protocol=MQTTv5)
-    if username:
-        paho_client.username_pw_set(username, password or "")
+    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+        username=username,
+        password=password or "",
+        client_id=client_id or "",
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
+    paho_client = mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    if resolved_username or resolved_password:
+        paho_client.username_pw_set(resolved_username, resolved_password)
     if tls:
         paho_client.tls_set()
     mqtt_client = GovUsgsGeomagMqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())
@@ -120,16 +159,13 @@ async def feed(
     finally:
         await mqtt_client.disconnect()
 
-
 def _parse_broker_url(url: str) -> tuple[str, int, bool]:
     parsed = urlparse(url if "://" in url else f"mqtt://{url}")
     scheme = (parsed.scheme or "mqtt").lower()
     return parsed.hostname or "localhost", parsed.port or (8883 if scheme in ("mqtts", "ssl", "tls") else 1883), scheme in ("mqtts", "ssl", "tls")
 
-
 def _parse_observatories(raw: str) -> List[str]:
     return [part.strip().upper() for part in raw.split(",") if part.strip()] or DEFAULT_OBSERVATORIES
-
 
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")

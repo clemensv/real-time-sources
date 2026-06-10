@@ -28,10 +28,10 @@ class Test_Area(unittest.TestCase):
         Create instance of Area for testing
         """
         instance = Area(
-            Longitude1=float(42.296506114715214),
-            Latitude1=float(11.606200399783672),
-            Longitude2=float(46.829124497375695),
-            Latitude2=float(16.92481256863354)
+            Longitude1=float(80.75060883633004),
+            Latitude1=float(12.7458554153279),
+            Longitude2=float(10.93694862666098),
+            Latitude2=float(44.096242123537486)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Area(unittest.TestCase):
         """
         Test Longitude1 property
         """
-        test_value = float(42.296506114715214)
+        test_value = float(80.75060883633004)
         self.instance.Longitude1 = test_value
         self.assertEqual(self.instance.Longitude1, test_value)
     
@@ -48,7 +48,7 @@ class Test_Area(unittest.TestCase):
         """
         Test Latitude1 property
         """
-        test_value = float(11.606200399783672)
+        test_value = float(12.7458554153279)
         self.instance.Latitude1 = test_value
         self.assertEqual(self.instance.Latitude1, test_value)
     
@@ -56,7 +56,7 @@ class Test_Area(unittest.TestCase):
         """
         Test Longitude2 property
         """
-        test_value = float(46.829124497375695)
+        test_value = float(10.93694862666098)
         self.instance.Longitude2 = test_value
         self.assertEqual(self.instance.Longitude2, test_value)
     
@@ -64,7 +64,7 @@ class Test_Area(unittest.TestCase):
         """
         Test Latitude2 property
         """
-        test_value = float(16.92481256863354)
+        test_value = float(44.096242123537486)
         self.instance.Latitude2 = test_value
         self.assertEqual(self.instance.Latitude2, test_value)
     

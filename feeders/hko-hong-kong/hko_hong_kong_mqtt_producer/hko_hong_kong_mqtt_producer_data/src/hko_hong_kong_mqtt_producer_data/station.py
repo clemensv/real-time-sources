@@ -159,8 +159,8 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            place_id='tmqtqmftezddagxdkqer',
-            name='fyfjscjmvnjtuakkrrqe',
-            data_types='xodxkaahacyuxihylmac',
-            district='dfkqkopsjgqrpfcxnkfx'
+            place_id='urioatfrsoczshxupdkg',
+            name='zbmlcswgizmurxkjaryu',
+            data_types='vwnxvugfniqqkhyrters',
+            district='yjgphaogztmggfsfydoy'
         )

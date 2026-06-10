@@ -28,48 +28,48 @@ class Test_Site(unittest.TestCase):
         Create instance of Site for testing
         """
         instance = Site(
-            agency_cd='qrntjuwuokehlruvjpob',
-            site_no='pbthxvijttppvaelpchx',
-            station_nm='fhaeykcuuldtihwdgyqr',
-            site_tp_cd='tmcetfyiuolswczjkado',
-            lat_va='nhrhntuphtxucgarucyg',
-            long_va='fkpgfavixqqkyfhhndys',
-            dec_lat_va=float(46.33152986945679),
-            dec_long_va=float(0.13127724922855633),
-            coord_meth_cd='zvxaqlktlrpcgkificuw',
-            coord_acy_cd='njpkbffiqcsrprazhexz',
-            coord_datum_cd='uywjcklezayqnbhgzyqi',
-            dec_coord_datum_cd='stkfuqawfgauhapqhynl',
-            district_cd='ehiakwwhbijirwzttpki',
-            state_cd='tjgxekowujrmluhmzvvp',
-            county_cd='xhflxxzuvmaqvfvgvmaf',
-            country_cd='hzxpanumjaovfxnavljb',
-            land_net_ds='fydukbggneagtetwxtul',
-            map_nm='digicszdzxcdwxwxgxqs',
-            map_scale_fc=float(66.95002770689608),
-            alt_va=float(65.92766075886071),
-            alt_meth_cd='mqykchiuplcvihxfoump',
-            alt_acy_va=float(32.48505890829074),
-            alt_datum_cd='ucecuuptkwateejptixc',
-            huc_cd='kwgxgojgsgguzfzjspdp',
-            basin_cd='rqrljjlljxxycritjxvj',
-            topo_cd='nxyflwgfqclkflmaxgsv',
-            instruments_cd='ajotapedajmdjaevspsx',
-            construction_dt='dkmsmodkkbkdnwzccsyj',
-            inventory_dt='odbswxzcwgknloqcnjdq',
-            drain_area_va=float(65.58511906127572),
-            contrib_drain_area_va=float(58.63514250527045),
-            tz_cd='xsfqhoxwvmucikbuwtri',
+            agency_cd='pkmjimmhcjxrmmypabsn',
+            site_no='rlodoydhawrtkavcyeys',
+            station_nm='diiqesgwkjogtzojreis',
+            site_tp_cd='abraxgxaurqlubpmjzkt',
+            lat_va='qtgsbvmchikdbqmpznph',
+            long_va='uxwbjjwvfcxpsaranagc',
+            dec_lat_va=float(50.44394509645467),
+            dec_long_va=float(27.59247969462847),
+            coord_meth_cd='xkxtcijesaksvtdpszau',
+            coord_acy_cd='hxldiveoqgcjotsoarge',
+            coord_datum_cd='yycveumabiftyhgwilvv',
+            dec_coord_datum_cd='vjsjzltswsyggwxychlq',
+            district_cd='dhiuwhcfuidlacgpqwnb',
+            state_cd='xtvcurnxnzihqeqtegyy',
+            county_cd='mustilekoafytidnjszt',
+            country_cd='iesiejslrundeurcefkm',
+            land_net_ds='xyodnmsgkllvqtquwcor',
+            map_nm='vswpqjagyyrdlqtlswry',
+            map_scale_fc=float(46.638118188201496),
+            alt_va=float(2.2201163098746868),
+            alt_meth_cd='akpogekitsngigsulaor',
+            alt_acy_va=float(94.7673055082616),
+            alt_datum_cd='vnsedjsktqqzrdfllsdj',
+            huc_cd='hlpdyraolxalwcqyqknh',
+            basin_cd='bibtabvzsrbswnxwyhxr',
+            topo_cd='tnuhowsjjwaafvcednpz',
+            instruments_cd='ebdvndffpfgqhxjulbak',
+            construction_dt='kqcvrfxeaohjkggeytco',
+            inventory_dt='owjaeprizttfygprppdh',
+            drain_area_va=float(1.3940120624103103),
+            contrib_drain_area_va=float(29.538892306756924),
+            tz_cd='wzmxuacgfosvjbadstou',
             local_time_fg=True,
-            reliability_cd='yqtngeovekuhdwxdhzfi',
-            gw_file_cd='xwudbfqlwjopxirrsoid',
-            nat_aqfr_cd='slkgahxxupnxixfxgzty',
-            aqfr_cd='xeynpjbnwdzvskyqevkt',
-            aqfr_type_cd='mhecztzajgmgkbyusobl',
-            well_depth_va=float(69.7448376406673),
-            hole_depth_va=float(11.262455349539756),
-            depth_src_cd='uhkneipsrwmqopbnsbwl',
-            project_no='lrshhwpgvptkszjamrwo'
+            reliability_cd='ghmmpjqqbcceiqynwfpw',
+            gw_file_cd='kbvicymfgvwxjuxcruip',
+            nat_aqfr_cd='vuvmjtaziwombtepyznq',
+            aqfr_cd='jpodcrlbswfxfgmwmcej',
+            aqfr_type_cd='pibpsjvxwavxkkogvffw',
+            well_depth_va=float(46.6607892815963),
+            hole_depth_va=float(44.81395734911722),
+            depth_src_cd='snkapogilupeisgwlekp',
+            project_no='ivwkljfnseslcyyubxsh'
         )
         return instance
 
@@ -78,7 +78,7 @@ class Test_Site(unittest.TestCase):
         """
         Test agency_cd property
         """
-        test_value = 'qrntjuwuokehlruvjpob'
+        test_value = 'pkmjimmhcjxrmmypabsn'
         self.instance.agency_cd = test_value
         self.assertEqual(self.instance.agency_cd, test_value)
     
@@ -86,7 +86,7 @@ class Test_Site(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'pbthxvijttppvaelpchx'
+        test_value = 'rlodoydhawrtkavcyeys'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -94,7 +94,7 @@ class Test_Site(unittest.TestCase):
         """
         Test station_nm property
         """
-        test_value = 'fhaeykcuuldtihwdgyqr'
+        test_value = 'diiqesgwkjogtzojreis'
         self.instance.station_nm = test_value
         self.assertEqual(self.instance.station_nm, test_value)
     
@@ -102,7 +102,7 @@ class Test_Site(unittest.TestCase):
         """
         Test site_tp_cd property
         """
-        test_value = 'tmcetfyiuolswczjkado'
+        test_value = 'abraxgxaurqlubpmjzkt'
         self.instance.site_tp_cd = test_value
         self.assertEqual(self.instance.site_tp_cd, test_value)
     
@@ -110,7 +110,7 @@ class Test_Site(unittest.TestCase):
         """
         Test lat_va property
         """
-        test_value = 'nhrhntuphtxucgarucyg'
+        test_value = 'qtgsbvmchikdbqmpznph'
         self.instance.lat_va = test_value
         self.assertEqual(self.instance.lat_va, test_value)
     
@@ -118,7 +118,7 @@ class Test_Site(unittest.TestCase):
         """
         Test long_va property
         """
-        test_value = 'fkpgfavixqqkyfhhndys'
+        test_value = 'uxwbjjwvfcxpsaranagc'
         self.instance.long_va = test_value
         self.assertEqual(self.instance.long_va, test_value)
     
@@ -126,7 +126,7 @@ class Test_Site(unittest.TestCase):
         """
         Test dec_lat_va property
         """
-        test_value = float(46.33152986945679)
+        test_value = float(50.44394509645467)
         self.instance.dec_lat_va = test_value
         self.assertEqual(self.instance.dec_lat_va, test_value)
     
@@ -134,7 +134,7 @@ class Test_Site(unittest.TestCase):
         """
         Test dec_long_va property
         """
-        test_value = float(0.13127724922855633)
+        test_value = float(27.59247969462847)
         self.instance.dec_long_va = test_value
         self.assertEqual(self.instance.dec_long_va, test_value)
     
@@ -142,7 +142,7 @@ class Test_Site(unittest.TestCase):
         """
         Test coord_meth_cd property
         """
-        test_value = 'zvxaqlktlrpcgkificuw'
+        test_value = 'xkxtcijesaksvtdpszau'
         self.instance.coord_meth_cd = test_value
         self.assertEqual(self.instance.coord_meth_cd, test_value)
     
@@ -150,7 +150,7 @@ class Test_Site(unittest.TestCase):
         """
         Test coord_acy_cd property
         """
-        test_value = 'njpkbffiqcsrprazhexz'
+        test_value = 'hxldiveoqgcjotsoarge'
         self.instance.coord_acy_cd = test_value
         self.assertEqual(self.instance.coord_acy_cd, test_value)
     
@@ -158,7 +158,7 @@ class Test_Site(unittest.TestCase):
         """
         Test coord_datum_cd property
         """
-        test_value = 'uywjcklezayqnbhgzyqi'
+        test_value = 'yycveumabiftyhgwilvv'
         self.instance.coord_datum_cd = test_value
         self.assertEqual(self.instance.coord_datum_cd, test_value)
     
@@ -166,7 +166,7 @@ class Test_Site(unittest.TestCase):
         """
         Test dec_coord_datum_cd property
         """
-        test_value = 'stkfuqawfgauhapqhynl'
+        test_value = 'vjsjzltswsyggwxychlq'
         self.instance.dec_coord_datum_cd = test_value
         self.assertEqual(self.instance.dec_coord_datum_cd, test_value)
     
@@ -174,7 +174,7 @@ class Test_Site(unittest.TestCase):
         """
         Test district_cd property
         """
-        test_value = 'ehiakwwhbijirwzttpki'
+        test_value = 'dhiuwhcfuidlacgpqwnb'
         self.instance.district_cd = test_value
         self.assertEqual(self.instance.district_cd, test_value)
     
@@ -182,7 +182,7 @@ class Test_Site(unittest.TestCase):
         """
         Test state_cd property
         """
-        test_value = 'tjgxekowujrmluhmzvvp'
+        test_value = 'xtvcurnxnzihqeqtegyy'
         self.instance.state_cd = test_value
         self.assertEqual(self.instance.state_cd, test_value)
     
@@ -190,7 +190,7 @@ class Test_Site(unittest.TestCase):
         """
         Test county_cd property
         """
-        test_value = 'xhflxxzuvmaqvfvgvmaf'
+        test_value = 'mustilekoafytidnjszt'
         self.instance.county_cd = test_value
         self.assertEqual(self.instance.county_cd, test_value)
     
@@ -198,7 +198,7 @@ class Test_Site(unittest.TestCase):
         """
         Test country_cd property
         """
-        test_value = 'hzxpanumjaovfxnavljb'
+        test_value = 'iesiejslrundeurcefkm'
         self.instance.country_cd = test_value
         self.assertEqual(self.instance.country_cd, test_value)
     
@@ -206,7 +206,7 @@ class Test_Site(unittest.TestCase):
         """
         Test land_net_ds property
         """
-        test_value = 'fydukbggneagtetwxtul'
+        test_value = 'xyodnmsgkllvqtquwcor'
         self.instance.land_net_ds = test_value
         self.assertEqual(self.instance.land_net_ds, test_value)
     
@@ -214,7 +214,7 @@ class Test_Site(unittest.TestCase):
         """
         Test map_nm property
         """
-        test_value = 'digicszdzxcdwxwxgxqs'
+        test_value = 'vswpqjagyyrdlqtlswry'
         self.instance.map_nm = test_value
         self.assertEqual(self.instance.map_nm, test_value)
     
@@ -222,7 +222,7 @@ class Test_Site(unittest.TestCase):
         """
         Test map_scale_fc property
         """
-        test_value = float(66.95002770689608)
+        test_value = float(46.638118188201496)
         self.instance.map_scale_fc = test_value
         self.assertEqual(self.instance.map_scale_fc, test_value)
     
@@ -230,7 +230,7 @@ class Test_Site(unittest.TestCase):
         """
         Test alt_va property
         """
-        test_value = float(65.92766075886071)
+        test_value = float(2.2201163098746868)
         self.instance.alt_va = test_value
         self.assertEqual(self.instance.alt_va, test_value)
     
@@ -238,7 +238,7 @@ class Test_Site(unittest.TestCase):
         """
         Test alt_meth_cd property
         """
-        test_value = 'mqykchiuplcvihxfoump'
+        test_value = 'akpogekitsngigsulaor'
         self.instance.alt_meth_cd = test_value
         self.assertEqual(self.instance.alt_meth_cd, test_value)
     
@@ -246,7 +246,7 @@ class Test_Site(unittest.TestCase):
         """
         Test alt_acy_va property
         """
-        test_value = float(32.48505890829074)
+        test_value = float(94.7673055082616)
         self.instance.alt_acy_va = test_value
         self.assertEqual(self.instance.alt_acy_va, test_value)
     
@@ -254,7 +254,7 @@ class Test_Site(unittest.TestCase):
         """
         Test alt_datum_cd property
         """
-        test_value = 'ucecuuptkwateejptixc'
+        test_value = 'vnsedjsktqqzrdfllsdj'
         self.instance.alt_datum_cd = test_value
         self.assertEqual(self.instance.alt_datum_cd, test_value)
     
@@ -262,7 +262,7 @@ class Test_Site(unittest.TestCase):
         """
         Test huc_cd property
         """
-        test_value = 'kwgxgojgsgguzfzjspdp'
+        test_value = 'hlpdyraolxalwcqyqknh'
         self.instance.huc_cd = test_value
         self.assertEqual(self.instance.huc_cd, test_value)
     
@@ -270,7 +270,7 @@ class Test_Site(unittest.TestCase):
         """
         Test basin_cd property
         """
-        test_value = 'rqrljjlljxxycritjxvj'
+        test_value = 'bibtabvzsrbswnxwyhxr'
         self.instance.basin_cd = test_value
         self.assertEqual(self.instance.basin_cd, test_value)
     
@@ -278,7 +278,7 @@ class Test_Site(unittest.TestCase):
         """
         Test topo_cd property
         """
-        test_value = 'nxyflwgfqclkflmaxgsv'
+        test_value = 'tnuhowsjjwaafvcednpz'
         self.instance.topo_cd = test_value
         self.assertEqual(self.instance.topo_cd, test_value)
     
@@ -286,7 +286,7 @@ class Test_Site(unittest.TestCase):
         """
         Test instruments_cd property
         """
-        test_value = 'ajotapedajmdjaevspsx'
+        test_value = 'ebdvndffpfgqhxjulbak'
         self.instance.instruments_cd = test_value
         self.assertEqual(self.instance.instruments_cd, test_value)
     
@@ -294,7 +294,7 @@ class Test_Site(unittest.TestCase):
         """
         Test construction_dt property
         """
-        test_value = 'dkmsmodkkbkdnwzccsyj'
+        test_value = 'kqcvrfxeaohjkggeytco'
         self.instance.construction_dt = test_value
         self.assertEqual(self.instance.construction_dt, test_value)
     
@@ -302,7 +302,7 @@ class Test_Site(unittest.TestCase):
         """
         Test inventory_dt property
         """
-        test_value = 'odbswxzcwgknloqcnjdq'
+        test_value = 'owjaeprizttfygprppdh'
         self.instance.inventory_dt = test_value
         self.assertEqual(self.instance.inventory_dt, test_value)
     
@@ -310,7 +310,7 @@ class Test_Site(unittest.TestCase):
         """
         Test drain_area_va property
         """
-        test_value = float(65.58511906127572)
+        test_value = float(1.3940120624103103)
         self.instance.drain_area_va = test_value
         self.assertEqual(self.instance.drain_area_va, test_value)
     
@@ -318,7 +318,7 @@ class Test_Site(unittest.TestCase):
         """
         Test contrib_drain_area_va property
         """
-        test_value = float(58.63514250527045)
+        test_value = float(29.538892306756924)
         self.instance.contrib_drain_area_va = test_value
         self.assertEqual(self.instance.contrib_drain_area_va, test_value)
     
@@ -326,7 +326,7 @@ class Test_Site(unittest.TestCase):
         """
         Test tz_cd property
         """
-        test_value = 'xsfqhoxwvmucikbuwtri'
+        test_value = 'wzmxuacgfosvjbadstou'
         self.instance.tz_cd = test_value
         self.assertEqual(self.instance.tz_cd, test_value)
     
@@ -342,7 +342,7 @@ class Test_Site(unittest.TestCase):
         """
         Test reliability_cd property
         """
-        test_value = 'yqtngeovekuhdwxdhzfi'
+        test_value = 'ghmmpjqqbcceiqynwfpw'
         self.instance.reliability_cd = test_value
         self.assertEqual(self.instance.reliability_cd, test_value)
     
@@ -350,7 +350,7 @@ class Test_Site(unittest.TestCase):
         """
         Test gw_file_cd property
         """
-        test_value = 'xwudbfqlwjopxirrsoid'
+        test_value = 'kbvicymfgvwxjuxcruip'
         self.instance.gw_file_cd = test_value
         self.assertEqual(self.instance.gw_file_cd, test_value)
     
@@ -358,7 +358,7 @@ class Test_Site(unittest.TestCase):
         """
         Test nat_aqfr_cd property
         """
-        test_value = 'slkgahxxupnxixfxgzty'
+        test_value = 'vuvmjtaziwombtepyznq'
         self.instance.nat_aqfr_cd = test_value
         self.assertEqual(self.instance.nat_aqfr_cd, test_value)
     
@@ -366,7 +366,7 @@ class Test_Site(unittest.TestCase):
         """
         Test aqfr_cd property
         """
-        test_value = 'xeynpjbnwdzvskyqevkt'
+        test_value = 'jpodcrlbswfxfgmwmcej'
         self.instance.aqfr_cd = test_value
         self.assertEqual(self.instance.aqfr_cd, test_value)
     
@@ -374,7 +374,7 @@ class Test_Site(unittest.TestCase):
         """
         Test aqfr_type_cd property
         """
-        test_value = 'mhecztzajgmgkbyusobl'
+        test_value = 'pibpsjvxwavxkkogvffw'
         self.instance.aqfr_type_cd = test_value
         self.assertEqual(self.instance.aqfr_type_cd, test_value)
     
@@ -382,7 +382,7 @@ class Test_Site(unittest.TestCase):
         """
         Test well_depth_va property
         """
-        test_value = float(69.7448376406673)
+        test_value = float(46.6607892815963)
         self.instance.well_depth_va = test_value
         self.assertEqual(self.instance.well_depth_va, test_value)
     
@@ -390,7 +390,7 @@ class Test_Site(unittest.TestCase):
         """
         Test hole_depth_va property
         """
-        test_value = float(11.262455349539756)
+        test_value = float(44.81395734911722)
         self.instance.hole_depth_va = test_value
         self.assertEqual(self.instance.hole_depth_va, test_value)
     
@@ -398,7 +398,7 @@ class Test_Site(unittest.TestCase):
         """
         Test depth_src_cd property
         """
-        test_value = 'uhkneipsrwmqopbnsbwl'
+        test_value = 'snkapogilupeisgwlekp'
         self.instance.depth_src_cd = test_value
         self.assertEqual(self.instance.depth_src_cd, test_value)
     
@@ -406,7 +406,7 @@ class Test_Site(unittest.TestCase):
         """
         Test project_no property
         """
-        test_value = 'lrshhwpgvptkszjamrwo'
+        test_value = 'ivwkljfnseslcyyubxsh'
         self.instance.project_no = test_value
         self.assertEqual(self.instance.project_no, test_value)
     

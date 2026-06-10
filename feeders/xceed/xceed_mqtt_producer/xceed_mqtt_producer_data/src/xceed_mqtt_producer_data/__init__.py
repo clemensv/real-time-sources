@@ -1,4 +1,4 @@
-from .event import Event
 from .eventadmission import EventAdmission
+from .event import Event
 
-__all__ = ["Event", "EventAdmission"]
+__all__ = ["EventAdmission", "Event"]

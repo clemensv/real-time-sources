@@ -171,14 +171,14 @@ class PositionReportClassB:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(97),
-            speed_over_ground=float(68.65945658095536),
-            position_accuracy=int(87),
-            longitude=float(85.3580755731573),
-            latitude=float(23.760846558547065),
-            course_over_ground=float(26.93440407156943),
-            true_heading=int(52),
-            timestamp='yffarhaywnrmubqkkqwj',
-            station_id='xcnpkialtjkzmqkmbrki',
-            msg_type=int(68)
+            mmsi=int(47),
+            speed_over_ground=float(61.84215230114158),
+            position_accuracy=int(49),
+            longitude=float(48.100611812383185),
+            latitude=float(1.4116092418831272),
+            course_over_ground=float(71.6820455447372),
+            true_heading=int(64),
+            timestamp='tquhyewmcsgvbpwbbmro',
+            station_id='znyxwkjqiyycsrmavupe',
+            msg_type=int(43)
         )

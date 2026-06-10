@@ -28,15 +28,15 @@ class Test_AirTemperature10Min(unittest.TestCase):
         Create instance of AirTemperature10Min for testing
         """
         instance = AirTemperature10Min(
-            station_id='xrswhpfatsfylsjpsbdb',
-            timestamp='qbrwnmyyndujnljjlozz',
-            quality_level=int(88),
-            pressure_station_level=float(93.100487375825),
-            air_temperature_2m=float(84.21352407632254),
-            air_temperature_5cm=float(2.40857328571612),
-            relative_humidity=float(4.249055484477882),
-            dew_point_temperature=float(54.90424988348387),
-            state='blsynovjkanbxoxkebdk'
+            station_id='mahgbsoibyqggeaxxkce',
+            timestamp='wkblcimumkpstekultgl',
+            quality_level=int(96),
+            pressure_station_level=float(30.924017518179546),
+            air_temperature_2m=float(63.6586341954256),
+            air_temperature_5cm=float(13.217610498999887),
+            relative_humidity=float(65.1961522167628),
+            dew_point_temperature=float(15.023724784713332),
+            state='quxswgxmkbuxevjofcii'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'xrswhpfatsfylsjpsbdb'
+        test_value = 'mahgbsoibyqggeaxxkce'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'qbrwnmyyndujnljjlozz'
+        test_value = 'wkblcimumkpstekultgl'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -61,7 +61,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(88)
+        test_value = int(96)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -69,7 +69,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test pressure_station_level property
         """
-        test_value = float(93.100487375825)
+        test_value = float(30.924017518179546)
         self.instance.pressure_station_level = test_value
         self.assertEqual(self.instance.pressure_station_level, test_value)
     
@@ -77,7 +77,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test air_temperature_2m property
         """
-        test_value = float(84.21352407632254)
+        test_value = float(63.6586341954256)
         self.instance.air_temperature_2m = test_value
         self.assertEqual(self.instance.air_temperature_2m, test_value)
     
@@ -85,7 +85,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test air_temperature_5cm property
         """
-        test_value = float(2.40857328571612)
+        test_value = float(13.217610498999887)
         self.instance.air_temperature_5cm = test_value
         self.assertEqual(self.instance.air_temperature_5cm, test_value)
     
@@ -93,7 +93,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test relative_humidity property
         """
-        test_value = float(4.249055484477882)
+        test_value = float(65.1961522167628)
         self.instance.relative_humidity = test_value
         self.assertEqual(self.instance.relative_humidity, test_value)
     
@@ -101,7 +101,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test dew_point_temperature property
         """
-        test_value = float(54.90424988348387)
+        test_value = float(15.023724784713332)
         self.instance.dew_point_temperature = test_value
         self.assertEqual(self.instance.dew_point_temperature, test_value)
     
@@ -109,7 +109,7 @@ class Test_AirTemperature10Min(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'blsynovjkanbxoxkebdk'
+        test_value = 'quxswgxmkbuxevjofcii'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     

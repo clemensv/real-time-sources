@@ -28,13 +28,13 @@ class Test_ReservoirStorage(unittest.TestCase):
         Create instance of ReservoirStorage for testing
         """
         instance = ReservoirStorage(
-            site_no='nyzlxoqnqvrkjslaufzd',
-            datetime='yjwubunqjftohzqulvea',
-            value=float(99.00803909676038),
-            exception='saubxapsmussydbhejxt',
-            qualifiers=['kjrtlxmlyrqnvnotsdju', 'wtintjprueoigagfbkbj'],
-            parameter_cd='nsxafnzyfvoozhxhqqfe',
-            timeseries_cd='ntpgakqjldzlsobfqmzp'
+            site_no='ayyjverordotfbsirnqs',
+            datetime='sqmnvhpobecfnhvmaysy',
+            value=float(56.21239480255665),
+            exception='rbxcvwmkrzmaifgkdzsu',
+            qualifiers=['qoglongbagrwsagfbpyf', 'syykrlpfxxynvhxucdyq', 'mgouovngqrzmtpwlxaqd', 'usbyvegrwjpvihqcpsmf'],
+            parameter_cd='lzlwdkychuuzgghtobif',
+            timeseries_cd='abjutrvqztvfclhifkcs'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_ReservoirStorage(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'nyzlxoqnqvrkjslaufzd'
+        test_value = 'ayyjverordotfbsirnqs'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_ReservoirStorage(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'yjwubunqjftohzqulvea'
+        test_value = 'sqmnvhpobecfnhvmaysy'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_ReservoirStorage(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(99.00803909676038)
+        test_value = float(56.21239480255665)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_ReservoirStorage(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'saubxapsmussydbhejxt'
+        test_value = 'rbxcvwmkrzmaifgkdzsu'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_ReservoirStorage(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['kjrtlxmlyrqnvnotsdju', 'wtintjprueoigagfbkbj']
+        test_value = ['qoglongbagrwsagfbpyf', 'syykrlpfxxynvhxucdyq', 'mgouovngqrzmtpwlxaqd', 'usbyvegrwjpvihqcpsmf']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_ReservoirStorage(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'nsxafnzyfvoozhxhqqfe'
+        test_value = 'lzlwdkychuuzgghtobif'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_ReservoirStorage(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'ntpgakqjldzlsobfqmzp'
+        test_value = 'abjutrvqztvfclhifkcs'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

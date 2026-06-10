@@ -28,13 +28,13 @@ class Test_WeatherStation(unittest.TestCase):
         Create instance of WeatherStation for testing
         """
         instance = WeatherStation(
-            station_id='uoqyhdmostviviaadsvc',
-            station_name='porgecscfajjepxjykcm',
-            latitude=float(95.89780849457169),
-            longitude=float(94.57223373932399),
-            altitude=float(9.746592668305931),
-            state='qcpcymmwpyjuwnhjguqp',
-            bundesland='dustdsqrohdtoreimsfz'
+            station_id='iqebqmupgdgunanfeaxm',
+            station_name='rqejvypdqmcvrtjpmgtd',
+            latitude=float(22.586298914795734),
+            longitude=float(84.11227528124455),
+            altitude=float(79.06425834704642),
+            state='dwywiopkvjpetnxczggg',
+            bundesland='mvimisdumwodbnhskyjf'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'uoqyhdmostviviaadsvc'
+        test_value = 'iqebqmupgdgunanfeaxm'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'porgecscfajjepxjykcm'
+        test_value = 'rqejvypdqmcvrtjpmgtd'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -59,7 +59,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(95.89780849457169)
+        test_value = float(22.586298914795734)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -67,7 +67,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(94.57223373932399)
+        test_value = float(84.11227528124455)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -75,7 +75,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test altitude property
         """
-        test_value = float(9.746592668305931)
+        test_value = float(79.06425834704642)
         self.instance.altitude = test_value
         self.assertEqual(self.instance.altitude, test_value)
     
@@ -83,7 +83,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'qcpcymmwpyjuwnhjguqp'
+        test_value = 'dwywiopkvjpetnxczggg'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -91,7 +91,7 @@ class Test_WeatherStation(unittest.TestCase):
         """
         Test bundesland property
         """
-        test_value = 'dustdsqrohdtoreimsfz'
+        test_value = 'mvimisdumwodbnhskyjf'
         self.instance.bundesland = test_value
         self.assertEqual(self.instance.bundesland, test_value)
     

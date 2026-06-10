@@ -183,19 +183,19 @@ class PSIReading:
             An instance of the dataclass.
         """
         return cls(
-            region='qwwghvzpkakbbpcromww',
+            region='ikmboqyybaeidfnwaois',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
             update_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            psi_twenty_four_hourly=int(38),
-            o3_sub_index=int(62),
-            pm10_sub_index=int(13),
-            pm10_twenty_four_hourly=int(91),
-            pm25_sub_index=int(16),
-            pm25_twenty_four_hourly=int(91),
-            co_sub_index=int(47),
-            co_eight_hour_max=int(96),
-            so2_sub_index=int(56),
-            so2_twenty_four_hourly=int(82),
-            no2_one_hour_max=int(34),
-            o3_eight_hour_max=int(62)
+            psi_twenty_four_hourly=int(7),
+            o3_sub_index=int(19),
+            pm10_sub_index=int(75),
+            pm10_twenty_four_hourly=int(25),
+            pm25_sub_index=int(28),
+            pm25_twenty_four_hourly=int(45),
+            co_sub_index=int(85),
+            co_eight_hour_max=int(90),
+            so2_sub_index=int(94),
+            so2_twenty_four_hourly=int(36),
+            no2_one_hour_max=int(72),
+            o3_eight_hour_max=int(73)
         )

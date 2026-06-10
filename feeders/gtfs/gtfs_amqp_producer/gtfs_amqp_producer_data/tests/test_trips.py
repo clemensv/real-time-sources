@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from gtfs_amqp_producer_data.generaltransitfeedstatic.trips import Trips
-from gtfs_amqp_producer_data.generaltransitfeedstatic.calendar import Calendar
 from typing import Any
+from gtfs_amqp_producer_data.generaltransitfeedstatic.calendar import Calendar
 from gtfs_amqp_producer_data.generaltransitfeedstatic.calendardates import CalendarDates
 
 
@@ -31,15 +31,15 @@ class Test_Trips(unittest.TestCase):
         Create instance of Trips for testing
         """
         instance = Trips(
-            routeId='lirrpbjbynguermytkft',
+            routeId='gjylxzubllqvrjiqvdyx',
             serviceDates=None,
             serviceExceptions=[None],
-            tripId='eupdjkxukjsyfwrnceap',
-            tripHeadsign='pokfqsdnydjssnqtirub',
-            tripShortName='rfunclmbrljfkqztekrw',
+            tripId='kxdyqmxpnvcpopsqfxth',
+            tripHeadsign='rqhchheixmvujttnekrp',
+            tripShortName='yducozuzbcwkeshzjtbb',
             directionId=None,
-            blockId='tqeagqudrzngyoratipy',
-            shapeId='feqpursjtkiuhjkycuhk',
+            blockId='jlrmpqybyoqulhseueoz',
+            shapeId='gyakmpnsatwvsuifrsyw',
             wheelchairAccessible=None,
             bikesAllowed=None
         )
@@ -50,7 +50,7 @@ class Test_Trips(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'lirrpbjbynguermytkft'
+        test_value = 'gjylxzubllqvrjiqvdyx'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -74,7 +74,7 @@ class Test_Trips(unittest.TestCase):
         """
         Test tripId property
         """
-        test_value = 'eupdjkxukjsyfwrnceap'
+        test_value = 'kxdyqmxpnvcpopsqfxth'
         self.instance.tripId = test_value
         self.assertEqual(self.instance.tripId, test_value)
     
@@ -82,7 +82,7 @@ class Test_Trips(unittest.TestCase):
         """
         Test tripHeadsign property
         """
-        test_value = 'pokfqsdnydjssnqtirub'
+        test_value = 'rqhchheixmvujttnekrp'
         self.instance.tripHeadsign = test_value
         self.assertEqual(self.instance.tripHeadsign, test_value)
     
@@ -90,7 +90,7 @@ class Test_Trips(unittest.TestCase):
         """
         Test tripShortName property
         """
-        test_value = 'rfunclmbrljfkqztekrw'
+        test_value = 'yducozuzbcwkeshzjtbb'
         self.instance.tripShortName = test_value
         self.assertEqual(self.instance.tripShortName, test_value)
     
@@ -106,7 +106,7 @@ class Test_Trips(unittest.TestCase):
         """
         Test blockId property
         """
-        test_value = 'tqeagqudrzngyoratipy'
+        test_value = 'jlrmpqybyoqulhseueoz'
         self.instance.blockId = test_value
         self.assertEqual(self.instance.blockId, test_value)
     
@@ -114,7 +114,7 @@ class Test_Trips(unittest.TestCase):
         """
         Test shapeId property
         """
-        test_value = 'feqpursjtkiuhjkycuhk'
+        test_value = 'gyakmpnsatwvsuifrsyw'
         self.instance.shapeId = test_value
         self.assertEqual(self.instance.shapeId, test_value)
     

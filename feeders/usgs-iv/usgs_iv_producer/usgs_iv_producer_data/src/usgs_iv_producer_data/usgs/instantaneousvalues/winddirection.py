@@ -165,11 +165,11 @@ class WindDirection:
             An instance of the dataclass.
         """
         return cls(
-            site_no='lobdhonrjyxligedfagv',
-            datetime='lgapffiwrnrmdukybaip',
-            value=float(59.18055125888194),
-            exception='hvcwmlvsnbxvifvfjsub',
-            qualifiers=['wecopbpeogtgpzxsosvh', 'gcdozvpdwssfvnhnvqxa', 'yofazxcoyzafmbpdpbtf', 'qstgzsvxlbkqmaaczytn', 'ylddplvbbqggxenqehbz'],
-            parameter_cd='blqxmxbqrztyixbounrw',
-            timeseries_cd='xewbniasdcztpckapxnh'
+            site_no='uodaihaqedkqcegrfdgl',
+            datetime='tkvmvrggfcjwyzodhesc',
+            value=float(87.1196123513372),
+            exception='ayoqshdmcgkzznqhrexk',
+            qualifiers=['btyyjwppisojcykejhob'],
+            parameter_cd='wtbvwqewayuzlftkrzuw',
+            timeseries_cd='zktjmcosuskqafhxwdxv'
         )

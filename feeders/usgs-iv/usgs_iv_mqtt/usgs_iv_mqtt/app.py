@@ -7,7 +7,8 @@ import asyncio
 import logging
 import os
 from typing import Any, Awaitable, Callable, Optional
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
@@ -17,9 +18,45 @@ from usgs_iv_mqtt_producer_mqtt_client.client import (
     USGSInstantaneousValuesMqttMqttClient,
     USGSSitesMqttMqttClient,
 )
+import json
+
+def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
+
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
+    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return resolved_client_id, str(username or ""), str(password or "")
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = resolved_client_id or str(username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_client_id, resolved_username, resolved_password
 
 logger = logging.getLogger(__name__)
-
 
 class _MqttProducerAdapter:
     def __init__(self, client: Any, prefix: str):
@@ -67,7 +104,6 @@ class _MqttProducerAdapter:
         if self._failures:
             raise RuntimeError("one or more MQTT publishes failed") from self._failures[0]
 
-
 async def feed(
     poller: USGSDataPoller,
     broker_host: str,
@@ -79,13 +115,30 @@ async def feed(
     client_id: Optional[str] = None,
     content_mode: str = "binary",
 ) -> None:
-    site_paho = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=f"{client_id or 'usgs-iv'}-sites", protocol=MQTTv5)
-    values_paho = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=f"{client_id or 'usgs-iv'}-values", protocol=MQTTv5)
-    for paho_client in (site_paho, values_paho):
-        if username:
-            paho_client.username_pw_set(username, password or "")
-        if tls:
-            paho_client.tls_set()
+    site_client_id = f"{client_id or 'usgs-iv'}-sites"
+    values_client_id = f"{client_id or 'usgs-iv'}-values"
+    _, site_username, site_password = _resolve_mqtt_connection_settings(
+        username=username,
+        password=password or "",
+        client_id=site_client_id,
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+    _, values_username, values_password = _resolve_mqtt_connection_settings(
+        username=username,
+        password=password or "",
+        client_id=values_client_id,
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
+    site_paho = mqtt.Client(client_id=site_client_id, callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    values_paho = mqtt.Client(client_id=values_client_id, callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    if site_username or site_password:
+        site_paho.username_pw_set(site_username, site_password)
+    if values_username or values_password:
+        values_paho.username_pw_set(values_username, values_password)
+    if tls:
+        site_paho.tls_set()
+        values_paho.tls_set()
     site_client = USGSSitesMqttMqttClient(client=site_paho, content_mode=content_mode, loop=asyncio.get_running_loop())
     values_client = USGSInstantaneousValuesMqttMqttClient(client=values_paho, content_mode=content_mode, loop=asyncio.get_running_loop())
     await site_client.connect(broker_host, broker_port)
@@ -102,13 +155,11 @@ async def feed(
         await site_client.disconnect()
         await values_client.disconnect()
 
-
 def _parse_broker_url(url: str) -> tuple[str, int, bool]:
     parsed = urlparse(url if "://" in url else f"mqtt://{url}")
     scheme = (parsed.scheme or "mqtt").lower()
     tls = scheme in ("mqtts", "ssl", "tls")
     return parsed.hostname or "localhost", parsed.port or (8883 if tls else 1883), tls
-
 
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")

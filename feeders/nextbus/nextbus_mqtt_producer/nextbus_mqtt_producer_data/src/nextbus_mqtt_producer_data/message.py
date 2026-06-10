@@ -161,9 +161,9 @@ class Message:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='ktltqveyidtktybmqspy',
-            route_tag='nmodaekuamwbrnpxiwwq',
-            stop_or_vehicle_id='ydtjxeqxldsmqhxxfeir',
-            event_type='tkryshxknzkfitwdrank',
-            message='qfxsjmvtwvitxpjilxhe'
+            agency_id='zmpgxpxsbvmbfvefnbev',
+            route_tag='wtxttpqvywnagkqdnuon',
+            stop_or_vehicle_id='vriuxalyhiwgvlldetha',
+            event_type='jijmjowmcgoydgpvnpqm',
+            message='cxhjsevafpxisijbgpyv'
         )

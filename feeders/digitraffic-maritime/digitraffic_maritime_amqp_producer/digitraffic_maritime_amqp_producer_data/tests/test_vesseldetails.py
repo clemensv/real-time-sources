@@ -10,9 +10,9 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from digitraffic_maritime_amqp_producer_data.vesseldetails import VesselDetails
 from digitraffic_maritime_amqp_producer_data.vesselregistration import VesselRegistration
+from digitraffic_maritime_amqp_producer_data.vesselsystem import VesselSystem
 from digitraffic_maritime_amqp_producer_data.vesseldimensions import VesselDimensions
 from digitraffic_maritime_amqp_producer_data.vesselconstruction import VesselConstruction
-from digitraffic_maritime_amqp_producer_data.vesselsystem import VesselSystem
 import datetime
 
 
@@ -33,15 +33,15 @@ class Test_VesselDetails(unittest.TestCase):
         Create instance of VesselDetails for testing
         """
         instance = VesselDetails(
-            vessel_id=int(32),
+            vessel_id=int(20),
             updated_at=datetime.datetime.now(datetime.timezone.utc),
-            mmsi=int(70),
-            name='xjlucpdneoxqlnmoqtuy',
-            name_prefix='zklrheezgfoprwyfocac',
-            imo_lloyds=int(23),
-            radio_call_sign='byvunfhodkoxeyvohqka',
-            radio_call_sign_type='cameajikwttpqjrgbeyi',
-            data_source='fpysdritkwtytnlrhwye',
+            mmsi=int(56),
+            name='nturbzrvgymazismkoyd',
+            name_prefix='priqanzelgneizhgrcpe',
+            imo_lloyds=int(53),
+            radio_call_sign='bguieflczfccnzfidbst',
+            radio_call_sign_type='bkuizaeomwdvjksospby',
+            data_source='ptfkzvoltubbuluroylo',
             vessel_construction=None,
             vessel_dimensions=None,
             vessel_registration=None,
@@ -54,7 +54,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test vessel_id property
         """
-        test_value = int(32)
+        test_value = int(20)
         self.instance.vessel_id = test_value
         self.assertEqual(self.instance.vessel_id, test_value)
     
@@ -70,7 +70,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(70)
+        test_value = int(56)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -78,7 +78,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'xjlucpdneoxqlnmoqtuy'
+        test_value = 'nturbzrvgymazismkoyd'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -86,7 +86,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test name_prefix property
         """
-        test_value = 'zklrheezgfoprwyfocac'
+        test_value = 'priqanzelgneizhgrcpe'
         self.instance.name_prefix = test_value
         self.assertEqual(self.instance.name_prefix, test_value)
     
@@ -94,7 +94,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test imo_lloyds property
         """
-        test_value = int(23)
+        test_value = int(53)
         self.instance.imo_lloyds = test_value
         self.assertEqual(self.instance.imo_lloyds, test_value)
     
@@ -102,7 +102,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test radio_call_sign property
         """
-        test_value = 'byvunfhodkoxeyvohqka'
+        test_value = 'bguieflczfccnzfidbst'
         self.instance.radio_call_sign = test_value
         self.assertEqual(self.instance.radio_call_sign, test_value)
     
@@ -110,7 +110,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test radio_call_sign_type property
         """
-        test_value = 'cameajikwttpqjrgbeyi'
+        test_value = 'bkuizaeomwdvjksospby'
         self.instance.radio_call_sign_type = test_value
         self.assertEqual(self.instance.radio_call_sign_type, test_value)
     
@@ -118,7 +118,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test data_source property
         """
-        test_value = 'fpysdritkwtytnlrhwye'
+        test_value = 'ptfkzvoltubbuluroylo'
         self.instance.data_source = test_value
         self.assertEqual(self.instance.data_source, test_value)
     

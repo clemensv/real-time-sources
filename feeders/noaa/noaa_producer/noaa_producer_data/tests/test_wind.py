@@ -28,15 +28,15 @@ class Test_Wind(unittest.TestCase):
         Create instance of Wind for testing
         """
         instance = Wind(
-            station_id='hfghgdhivuxvcryqahje',
-            timestamp='wqsqcyendeglqxhwoqde',
-            speed=float(70.08570755160662),
-            direction_degrees='bgnxlhcbhjthzstpwzmy',
-            direction_text='mrcuytgrxcfqnhzjiwlr',
-            gusts=float(45.38522966165803),
+            station_id='zodryifbhbyoujrjhrwj',
+            timestamp='vdhwvmhlkugxrdbnxpsy',
+            speed=float(94.75324360697283),
+            direction_degrees='rouyxfbxsrhzwebpgtug',
+            direction_text='coujxkyhdlebxueucykj',
+            gusts=float(87.88335950975942),
             max_wind_speed_exceeded=True,
-            rate_of_change_exceeded=True,
-            region='inaqqpnmeukdhmyulzyv'
+            rate_of_change_exceeded=False,
+            region='qcgvrkeinluqdvfvfjqh'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'hfghgdhivuxvcryqahje'
+        test_value = 'zodryifbhbyoujrjhrwj'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'wqsqcyendeglqxhwoqde'
+        test_value = 'vdhwvmhlkugxrdbnxpsy'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -61,7 +61,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(70.08570755160662)
+        test_value = float(94.75324360697283)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     
@@ -69,7 +69,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test direction_degrees property
         """
-        test_value = 'bgnxlhcbhjthzstpwzmy'
+        test_value = 'rouyxfbxsrhzwebpgtug'
         self.instance.direction_degrees = test_value
         self.assertEqual(self.instance.direction_degrees, test_value)
     
@@ -77,7 +77,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test direction_text property
         """
-        test_value = 'mrcuytgrxcfqnhzjiwlr'
+        test_value = 'coujxkyhdlebxueucykj'
         self.instance.direction_text = test_value
         self.assertEqual(self.instance.direction_text, test_value)
     
@@ -85,7 +85,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test gusts property
         """
-        test_value = float(45.38522966165803)
+        test_value = float(87.88335950975942)
         self.instance.gusts = test_value
         self.assertEqual(self.instance.gusts, test_value)
     
@@ -101,7 +101,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = True
+        test_value = False
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     
@@ -109,7 +109,7 @@ class Test_Wind(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'inaqqpnmeukdhmyulzyv'
+        test_value = 'qcgvrkeinluqdvfvfjqh'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

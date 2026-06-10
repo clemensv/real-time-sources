@@ -165,11 +165,11 @@ class WaterDepth:
             An instance of the dataclass.
         """
         return cls(
-            site_no='exsvwvjcmjsxurzdevjw',
-            datetime='neadbsuzmkmkooqahzrj',
-            value=float(29.366265186862172),
-            exception='utaztxedfzizpfapxopd',
-            qualifiers=['ezegendjnceliuiththx'],
-            parameter_cd='bwplvvfcoltwpyrsxwsc',
-            timeseries_cd='ctowjlnfwqcrhcvryfqn'
+            site_no='zdqsgupkdsdmhvjrvttr',
+            datetime='bbwusufieklmhpohbwnt',
+            value=float(64.84446239462434),
+            exception='leccfygeaizyjwtuymum',
+            qualifiers=['gaujmxeuvfcmpwmaahpd', 'nohoceqkaadxhcxymfbo', 'mwsxjmkjmcuffucsrhnl'],
+            parameter_cd='nryurdgrnazjdycqwose',
+            timeseries_cd='rpgcesxanrefzbjrxomm'
         )

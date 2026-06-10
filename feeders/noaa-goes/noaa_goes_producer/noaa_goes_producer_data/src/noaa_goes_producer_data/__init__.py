@@ -1,12 +1,12 @@
-from .solarwindplasma import SolarWindPlasma
-from .goeselectronflux import GoesElectronFlux
 from .planetarykindex import PlanetaryKIndex
-from .solarwindmagfield import SolarWindMagField
-from .solarwindsummary import SolarWindSummary
-from .xrayflare import XrayFlare
-from .goesxrayflux import GoesXrayFlux
-from .goesprotonflux import GoesProtonFlux
-from .goesmagnetometer import GoesMagnetometer
 from .spaceweatheralert import SpaceWeatherAlert
+from .goeselectronflux import GoesElectronFlux
+from .goesprotonflux import GoesProtonFlux
+from .goesxrayflux import GoesXrayFlux
+from .goesmagnetometer import GoesMagnetometer
+from .solarwindplasma import SolarWindPlasma
+from .solarwindmagfield import SolarWindMagField
+from .xrayflare import XrayFlare
+from .solarwindsummary import SolarWindSummary
 
-__all__ = ["SolarWindPlasma", "GoesElectronFlux", "PlanetaryKIndex", "SolarWindMagField", "SolarWindSummary", "XrayFlare", "GoesXrayFlux", "GoesProtonFlux", "GoesMagnetometer", "SpaceWeatherAlert"]
+__all__ = ["PlanetaryKIndex", "SpaceWeatherAlert", "GoesElectronFlux", "GoesProtonFlux", "GoesXrayFlux", "GoesMagnetometer", "SolarWindPlasma", "SolarWindMagField", "XrayFlare", "SolarWindSummary"]

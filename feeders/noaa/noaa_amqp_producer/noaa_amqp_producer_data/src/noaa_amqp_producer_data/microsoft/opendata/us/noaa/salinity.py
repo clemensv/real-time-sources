@@ -161,9 +161,9 @@ class Salinity:
             An instance of the dataclass.
         """
         return cls(
-            station_id='cdlhfbaxutblokhcgozc',
-            timestamp='kpjshxvktqnubjemxvkx',
-            salinity=float(51.86937038768797),
-            grams_per_kg=float(49.17607295949572),
-            region='pszppqhpcaumvhgzisud'
+            station_id='urfljmxzshgtuegleikc',
+            timestamp='fuwdsjitdkciyikhbwjn',
+            salinity=float(17.72689558568321),
+            grams_per_kg=float(88.33842876731735),
+            region='souwyboypqbrvgshhcyz'
         )

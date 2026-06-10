@@ -5,8 +5,8 @@ class BorderSlugenum(Enum):
     """
     Lowercase kebab-case MQTT/UNS routing segment derived from the CBP border field. Expected values are canadian-border or mexican-border.
     """
-    canadian_border = 'canadian-border'
-    mexican_border = 'mexican-border'
+    canadian_MINUSborder = 'canadian-border'
+    mexican_MINUSborder = 'mexican-border'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'BorderSlugenum':

@@ -95,9 +95,8 @@ async def test_np_gov_bipad_hydrology_mqtt_np_gov_bipad_hydrology_mqtt_river_sta
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            basin="test_basin",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -163,9 +162,8 @@ async def test_np_gov_bipad_hydrology_mqtt_np_gov_bipad_hydrology_mqtt_water_lev
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            basin="test_basin",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

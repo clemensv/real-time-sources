@@ -159,8 +159,8 @@ class Eta:
             An instance of the dataclass.
         """
         return cls(
-            Month=int(30),
-            Day=int(17),
-            Hour=int(93),
-            Minute=int(31)
+            Month=int(2),
+            Day=int(61),
+            Hour=int(76),
+            Minute=int(18)
         )

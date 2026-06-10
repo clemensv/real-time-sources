@@ -173,15 +173,15 @@ class Attributions:
             An instance of the dataclass.
         """
         return cls(
-            attributionId='fqtkyuezgqozzegaskhj',
-            agencyId='vzlxlohghiagkwtgdbza',
-            routeId='mmishjcupbtkxsshuvkk',
-            tripId='pgarnyeopyblcgxpffaj',
-            organizationName='mifdvmwripetrjqlpndz',
-            isProducer=int(60),
-            isOperator=int(7),
-            isAuthority=int(89),
-            attributionUrl='ohfplailcjyygtfdpzll',
-            attributionEmail='hchwktnildkglrrbiajh',
-            attributionPhone='kqeqylpefprpaaosfdtg'
+            attributionId='mukiekkgpwwlbmnkbegc',
+            agencyId='bpdwtbbtjveyedmajgxq',
+            routeId='xfvbfcrqnnlaaumikygv',
+            tripId='ncclyatwwzwuveeijpze',
+            organizationName='szbdrgwghhhvshmycflj',
+            isProducer=int(40),
+            isOperator=int(5),
+            isAuthority=int(44),
+            attributionUrl='htrxxojwmveawrthzvst',
+            attributionEmail='qfctkvfkjdbtovqyuyex',
+            attributionPhone='kxzadcmfmsfmjckrhzfh'
         )

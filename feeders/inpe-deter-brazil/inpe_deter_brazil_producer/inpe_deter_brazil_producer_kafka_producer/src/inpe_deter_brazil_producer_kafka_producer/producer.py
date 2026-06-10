@@ -114,7 +114,7 @@ class BRINPEDETEREventProducer:
              "type":"BR.INPE.DETER.DeforestationAlert",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{biome}/{alert_id}".format(biome = _biome,alert_id = _alert_id),
-             "time":"{view_date}T00:00:00Z"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -240,7 +240,7 @@ class BRINPEDETERMqttEventProducer:
              "type":"BR.INPE.DETER.DeforestationAlert",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{biome}/{alert_id}".format(biome = _biome,alert_id = _alert_id),
-             "time":"{view_date}T00:00:00Z"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -366,7 +366,7 @@ class BRINPEDETERAmqpEventProducer:
              "type":"BR.INPE.DETER.DeforestationAlert",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{biome}/{alert_id}".format(biome = _biome,alert_id = _alert_id),
-             "time":"{view_date}T00:00:00Z"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

@@ -9,7 +9,8 @@ import os
 import time
 from datetime import datetime, timezone
 from typing import Optional
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
@@ -30,9 +31,45 @@ from jma_bosai_warning.jma_bosai_warning import (
 )
 from jma_bosai_warning_mqtt_producer_data import Office, WeatherWarning, TsunamiAlert
 from jma_bosai_warning_mqtt_producer_mqtt_client.client import JPJMAWarningMqttMqttClient
+import json
+
+def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
+
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
+    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return resolved_client_id, str(username or ""), str(password or "")
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = resolved_client_id or str(username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_client_id, resolved_username, resolved_password
 
 logger = logging.getLogger(__name__)
-
 
 class MockAPI(JmaBosaiWarningAPI):
     def refresh_area_catalog(self) -> bool:
@@ -49,7 +86,6 @@ class MockAPI(JmaBosaiWarningAPI):
     def fetch_tsunami_detail(self, filename: str):
         return {"Body":{"Tsunami":{"Forecast":[{"Area":{"Code":"100","Name":"東京湾内湾"},"Category":"津波警報"}]}}}
 
-
 async def _publish_offices(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqttMqttClient) -> int:
     count = 0
     for record in api.office_records():
@@ -64,7 +100,6 @@ async def _publish_offices(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqt
         )
         count += 1
     return count
-
 
 async def _publish_warning_cycle(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqttMqttClient, state: BridgeState, office_codes: list[str]) -> int:
     pending: list[str] = []
@@ -93,7 +128,6 @@ async def _publish_warning_cycle(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarn
             emitted += 1
     state.seen_weather = _cap_list(state.seen_weather + pending)
     return emitted
-
 
 async def _publish_tsunami_cycle(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarningMqttMqttClient, state: BridgeState) -> int:
     pending: list[str] = []
@@ -127,7 +161,6 @@ async def _publish_tsunami_cycle(api: JmaBosaiWarningAPI, mqtt_client: JPJMAWarn
     state.seen_tsunami = _cap_list(state.seen_tsunami + pending)
     return emitted
 
-
 async def feed(
     api: JmaBosaiWarningAPI,
     broker_host: str,
@@ -144,9 +177,16 @@ async def feed(
     content_mode: str = "binary",
     once: bool = False,
 ) -> None:
-    paho_client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, client_id=client_id or "", protocol=MQTTv5)
-    if username:
-        paho_client.username_pw_set(username, password or "")
+    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+        username=username,
+        password=password or "",
+        client_id=client_id or "",
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
+    paho_client = mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+    if resolved_username or resolved_password:
+        paho_client.username_pw_set(resolved_username, resolved_password)
     if tls:
         paho_client.tls_set()
     mqtt_client = JPJMAWarningMqttMqttClient(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop())
@@ -179,13 +219,11 @@ async def feed(
     finally:
         await mqtt_client.disconnect()
 
-
 def _parse_broker_url(url: str) -> tuple[str, int, bool]:
     parsed = urlparse(url if "://" in url else f"mqtt://{url}")
     scheme = (parsed.scheme or "mqtt").lower()
     tls = scheme in ("mqtts", "ssl", "tls")
     return parsed.hostname or "localhost", parsed.port or (8883 if tls else 1883), tls
-
 
 def main() -> None:
     logging.basicConfig(level=os.getenv("LOG_LEVEL", "INFO").upper(), format="%(asctime)s %(levelname)s %(message)s")

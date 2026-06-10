@@ -29,25 +29,25 @@ class Test_GenerationMix(unittest.TestCase):
         Create instance of GenerationMix for testing
         """
         instance = GenerationMix(
-            settlement_period=int(24),
+            settlement_period=int(49),
             start_time=datetime.datetime.now(datetime.timezone.utc),
-            biomass_mw=float(62.796345692763126),
-            ccgt_mw=float(95.84760104966172),
-            coal_mw=float(50.75750921882452),
-            nuclear_mw=float(10.40317462406014),
-            wind_mw=float(7.696576906698116),
-            ocgt_mw=float(38.703462434045974),
-            oil_mw=float(19.757575874822052),
-            npshyd_mw=float(59.231240681377926),
-            ps_mw=float(5.1964479903442),
-            intfr_mw=float(60.514513246906944),
-            intned_mw=float(2.459387708244054),
-            intnem_mw=float(73.31742288299058),
-            intelec_mw=float(42.50529775603832),
-            intifa2_mw=float(39.9925907354439),
-            intnsl_mw=float(40.73225745610621),
-            intvkl_mw=float(78.69177631022681),
-            other_mw=float(67.06343505297234)
+            biomass_mw=float(59.127534797584104),
+            ccgt_mw=float(1.1985649100643148),
+            coal_mw=float(69.66885434958019),
+            nuclear_mw=float(6.119718802434326),
+            wind_mw=float(19.983574410973304),
+            ocgt_mw=float(47.09048335151893),
+            oil_mw=float(21.857587162140803),
+            npshyd_mw=float(4.027252957163007),
+            ps_mw=float(99.52529157253322),
+            intfr_mw=float(75.46613140437722),
+            intned_mw=float(58.421134011382506),
+            intnem_mw=float(35.90789977929013),
+            intelec_mw=float(11.793727067384319),
+            intifa2_mw=float(76.59303521466249),
+            intnsl_mw=float(38.752115637348105),
+            intvkl_mw=float(39.6217484982043),
+            other_mw=float(39.11572056435364)
         )
         return instance
 
@@ -56,7 +56,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test settlement_period property
         """
-        test_value = int(24)
+        test_value = int(49)
         self.instance.settlement_period = test_value
         self.assertEqual(self.instance.settlement_period, test_value)
     
@@ -72,7 +72,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test biomass_mw property
         """
-        test_value = float(62.796345692763126)
+        test_value = float(59.127534797584104)
         self.instance.biomass_mw = test_value
         self.assertEqual(self.instance.biomass_mw, test_value)
     
@@ -80,7 +80,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test ccgt_mw property
         """
-        test_value = float(95.84760104966172)
+        test_value = float(1.1985649100643148)
         self.instance.ccgt_mw = test_value
         self.assertEqual(self.instance.ccgt_mw, test_value)
     
@@ -88,7 +88,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test coal_mw property
         """
-        test_value = float(50.75750921882452)
+        test_value = float(69.66885434958019)
         self.instance.coal_mw = test_value
         self.assertEqual(self.instance.coal_mw, test_value)
     
@@ -96,7 +96,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test nuclear_mw property
         """
-        test_value = float(10.40317462406014)
+        test_value = float(6.119718802434326)
         self.instance.nuclear_mw = test_value
         self.assertEqual(self.instance.nuclear_mw, test_value)
     
@@ -104,7 +104,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test wind_mw property
         """
-        test_value = float(7.696576906698116)
+        test_value = float(19.983574410973304)
         self.instance.wind_mw = test_value
         self.assertEqual(self.instance.wind_mw, test_value)
     
@@ -112,7 +112,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test ocgt_mw property
         """
-        test_value = float(38.703462434045974)
+        test_value = float(47.09048335151893)
         self.instance.ocgt_mw = test_value
         self.assertEqual(self.instance.ocgt_mw, test_value)
     
@@ -120,7 +120,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test oil_mw property
         """
-        test_value = float(19.757575874822052)
+        test_value = float(21.857587162140803)
         self.instance.oil_mw = test_value
         self.assertEqual(self.instance.oil_mw, test_value)
     
@@ -128,7 +128,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test npshyd_mw property
         """
-        test_value = float(59.231240681377926)
+        test_value = float(4.027252957163007)
         self.instance.npshyd_mw = test_value
         self.assertEqual(self.instance.npshyd_mw, test_value)
     
@@ -136,7 +136,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test ps_mw property
         """
-        test_value = float(5.1964479903442)
+        test_value = float(99.52529157253322)
         self.instance.ps_mw = test_value
         self.assertEqual(self.instance.ps_mw, test_value)
     
@@ -144,7 +144,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test intfr_mw property
         """
-        test_value = float(60.514513246906944)
+        test_value = float(75.46613140437722)
         self.instance.intfr_mw = test_value
         self.assertEqual(self.instance.intfr_mw, test_value)
     
@@ -152,7 +152,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test intned_mw property
         """
-        test_value = float(2.459387708244054)
+        test_value = float(58.421134011382506)
         self.instance.intned_mw = test_value
         self.assertEqual(self.instance.intned_mw, test_value)
     
@@ -160,7 +160,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test intnem_mw property
         """
-        test_value = float(73.31742288299058)
+        test_value = float(35.90789977929013)
         self.instance.intnem_mw = test_value
         self.assertEqual(self.instance.intnem_mw, test_value)
     
@@ -168,7 +168,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test intelec_mw property
         """
-        test_value = float(42.50529775603832)
+        test_value = float(11.793727067384319)
         self.instance.intelec_mw = test_value
         self.assertEqual(self.instance.intelec_mw, test_value)
     
@@ -176,7 +176,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test intifa2_mw property
         """
-        test_value = float(39.9925907354439)
+        test_value = float(76.59303521466249)
         self.instance.intifa2_mw = test_value
         self.assertEqual(self.instance.intifa2_mw, test_value)
     
@@ -184,7 +184,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test intnsl_mw property
         """
-        test_value = float(40.73225745610621)
+        test_value = float(38.752115637348105)
         self.instance.intnsl_mw = test_value
         self.assertEqual(self.instance.intnsl_mw, test_value)
     
@@ -192,7 +192,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test intvkl_mw property
         """
-        test_value = float(78.69177631022681)
+        test_value = float(39.6217484982043)
         self.instance.intvkl_mw = test_value
         self.assertEqual(self.instance.intvkl_mw, test_value)
     
@@ -200,7 +200,7 @@ class Test_GenerationMix(unittest.TestCase):
         """
         Test other_mw property
         """
-        test_value = float(67.06343505297234)
+        test_value = float(39.11572056435364)
         self.instance.other_mw = test_value
         self.assertEqual(self.instance.other_mw, test_value)
     

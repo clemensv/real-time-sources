@@ -159,8 +159,8 @@ class GoesProtonFlux:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='mszifnkmmqudydupfkkj',
-            satellite=int(44),
-            flux=float(24.454780174591683),
-            energy='etcsipzohemkwltoyinq'
+            time_tag='trgvumahdalshzyhpjld',
+            satellite=int(81),
+            flux=float(79.61273641801044),
+            energy='mzrbwioqbtgrvpfqsfkl'
         )

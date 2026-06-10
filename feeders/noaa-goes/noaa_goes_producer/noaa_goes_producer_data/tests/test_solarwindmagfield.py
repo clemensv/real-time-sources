@@ -28,13 +28,13 @@ class Test_SolarWindMagField(unittest.TestCase):
         Create instance of SolarWindMagField for testing
         """
         instance = SolarWindMagField(
-            observation_time='iztjalrkoukbhkawwzva',
-            bx_gsm=float(1.9495697296645798),
-            by_gsm=float(37.44988869355168),
-            bz_gsm=float(76.55092133534545),
-            lon_gsm=float(8.825748404197142),
-            lat_gsm=float(21.476475652365068),
-            bt=float(94.5276370698631)
+            observation_time='ktypvvplidcmlcyndrie',
+            bx_gsm=float(34.58381498905274),
+            by_gsm=float(59.03942222230136),
+            bz_gsm=float(82.57646785651622),
+            lon_gsm=float(17.91091277654261),
+            lat_gsm=float(80.66526137116627),
+            bt=float(26.512684183599234)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_SolarWindMagField(unittest.TestCase):
         """
         Test observation_time property
         """
-        test_value = 'iztjalrkoukbhkawwzva'
+        test_value = 'ktypvvplidcmlcyndrie'
         self.instance.observation_time = test_value
         self.assertEqual(self.instance.observation_time, test_value)
     
@@ -51,7 +51,7 @@ class Test_SolarWindMagField(unittest.TestCase):
         """
         Test bx_gsm property
         """
-        test_value = float(1.9495697296645798)
+        test_value = float(34.58381498905274)
         self.instance.bx_gsm = test_value
         self.assertEqual(self.instance.bx_gsm, test_value)
     
@@ -59,7 +59,7 @@ class Test_SolarWindMagField(unittest.TestCase):
         """
         Test by_gsm property
         """
-        test_value = float(37.44988869355168)
+        test_value = float(59.03942222230136)
         self.instance.by_gsm = test_value
         self.assertEqual(self.instance.by_gsm, test_value)
     
@@ -67,7 +67,7 @@ class Test_SolarWindMagField(unittest.TestCase):
         """
         Test bz_gsm property
         """
-        test_value = float(76.55092133534545)
+        test_value = float(82.57646785651622)
         self.instance.bz_gsm = test_value
         self.assertEqual(self.instance.bz_gsm, test_value)
     
@@ -75,7 +75,7 @@ class Test_SolarWindMagField(unittest.TestCase):
         """
         Test lon_gsm property
         """
-        test_value = float(8.825748404197142)
+        test_value = float(17.91091277654261)
         self.instance.lon_gsm = test_value
         self.assertEqual(self.instance.lon_gsm, test_value)
     
@@ -83,7 +83,7 @@ class Test_SolarWindMagField(unittest.TestCase):
         """
         Test lat_gsm property
         """
-        test_value = float(21.476475652365068)
+        test_value = float(80.66526137116627)
         self.instance.lat_gsm = test_value
         self.assertEqual(self.instance.lat_gsm, test_value)
     
@@ -91,7 +91,7 @@ class Test_SolarWindMagField(unittest.TestCase):
         """
         Test bt property
         """
-        test_value = float(94.5276370698631)
+        test_value = float(26.512684183599234)
         self.instance.bt = test_value
         self.assertEqual(self.instance.bt, test_value)
     

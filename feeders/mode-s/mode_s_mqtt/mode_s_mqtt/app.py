@@ -35,16 +35,53 @@ import os
 import sys
 import threading
 from typing import Any, Dict, List, Optional, Tuple
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 
 from mode_s_mqtt_producer_data import Record
 from mode_s_mqtt_producer_mqtt_client.client import ModeSMqttMqttClient
+import json
+
+def _fetch_entra_mqtt_token(audience, managed_identity_client_id=None):
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
+
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id=None, auth_mode=None):
+    resolved_client_id = str(client_id or os.getenv("MQTT_CLIENT_ID") or "").strip()
+    auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return resolved_client_id, str(username or ""), str(password or "")
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = resolved_client_id or str(username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_client_id, resolved_username, resolved_password
 
 logger = logging.getLogger("mode_s_mqtt")
-
 
 # ---------------------------------------------------------------------------
 # DF -> msg_type mapping
@@ -62,23 +99,19 @@ DF_TO_MSG_TYPE: Dict[int, str] = {
     21: "df21-comm-b",
 }
 
-
 def _norm_segment(value: Optional[str]) -> str:
     if not value:
         return ""
     return str(value).strip().lower().replace("/", "_").replace("#", "_").replace("+", "_")
-
 
 def _hex_icao(icao_value: Optional[str]) -> str:
     if not icao_value:
         return ""
     return _norm_segment(icao_value)
 
-
 # ---------------------------------------------------------------------------
 # Decoder
 # ---------------------------------------------------------------------------
-
 
 def _decode_rssi(raw_msg: bytes) -> Optional[float]:
     """Decode the Beast 1-byte RSSI field (byte 7 of a raw Beast frame)."""
@@ -90,7 +123,6 @@ def _decode_rssi(raw_msg: bytes) -> Optional[float]:
     rssi_ratio = raw_rssi / 255
     signal_level = rssi_ratio ** 2
     return round(10 * math.log10(signal_level), 2)
-
 
 def decode_one(msg_hex: str, ts_ms: int, receiver_id: str,
                ref_lat: float = 0.0, ref_lon: float = 0.0) -> Optional[Record]:
@@ -176,11 +208,9 @@ def decode_one(msg_hex: str, ts_ms: int, receiver_id: str,
 
     return rec
 
-
 # ---------------------------------------------------------------------------
 # MQTT bridge
 # ---------------------------------------------------------------------------
-
 
 _PUBLISH_BY_MSG_TYPE = {
     "df17-adsb":        "publish_mode_s_adsb_mqtt",
@@ -190,7 +220,6 @@ _PUBLISH_BY_MSG_TYPE = {
     "df20-comm-b":      "publish_mode_s_comm_baltitude_mqtt",
     "df21-comm-b":      "publish_mode_s_comm_bidentity_mqtt",
 }
-
 
 class ModeSMqttBridge:
     """Beast/dump1090 -> MQTT/UNS pump."""
@@ -303,11 +332,9 @@ class ModeSMqttBridge:
             )
             await self.publish_record(rec)
 
-
 # ---------------------------------------------------------------------------
 # CLI
 # ---------------------------------------------------------------------------
-
 
 def _parse_broker(url: str) -> Tuple[str, int, bool]:
     parsed = urlparse(url if "://" in url else f"mqtt://{url}")
@@ -316,18 +343,23 @@ def _parse_broker(url: str) -> Tuple[str, int, bool]:
     port = parsed.port or (8883 if scheme == "mqtts" else 1883)
     return host, port, scheme == "mqtts"
 
-
 async def _run(args: argparse.Namespace) -> None:
     broker_host, broker_port, tls = _parse_broker(args.mqtt_broker_url)
     tls = tls or args.mqtt_enable_tls
 
-    paho_client = mqtt.Client(
-        callback_api_version=CallbackAPIVersion.VERSION2,
+    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+        username=args.mqtt_username,
+        password=args.mqtt_password or "",
         client_id=args.mqtt_client_id or "",
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
+    paho_client = mqtt.Client(client_id=resolved_client_id or "", 
+        callback_api_version=CallbackAPIVersion.VERSION2,
         protocol=MQTTv5,
     )
-    if args.mqtt_username:
-        paho_client.username_pw_set(args.mqtt_username, args.mqtt_password or "")
+    if resolved_username or resolved_password:
+        paho_client.username_pw_set(resolved_username, resolved_password)
     if tls:
         paho_client.tls_set()
 
@@ -368,7 +400,6 @@ async def _run(args: argparse.Namespace) -> None:
                                        max_events=args.max_events)
     finally:
         await client.disconnect()
-
 
 def main() -> None:
     if sys.gettrace() is not None:
@@ -414,7 +445,6 @@ def main() -> None:
         asyncio.run(_run(args))
     except KeyboardInterrupt:
         logger.info("Shutting down")
-
 
 if __name__ == "__main__":
     main()

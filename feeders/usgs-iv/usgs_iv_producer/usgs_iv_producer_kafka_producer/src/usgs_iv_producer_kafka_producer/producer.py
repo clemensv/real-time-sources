@@ -397,7 +397,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.OtherParameter",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -436,7 +436,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.Precipitation",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -475,7 +475,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.Streamflow",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -514,7 +514,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.GageHeight",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -553,7 +553,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.WaterTemperature",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -592,7 +592,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.DissolvedOxygen",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -631,7 +631,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.pH",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -670,7 +670,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.SpecificConductance",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -709,7 +709,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.Turbidity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -748,7 +748,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.AirTemperature",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -787,7 +787,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.WindSpeed",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -826,7 +826,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.WindDirection",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -865,7 +865,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.RelativeHumidity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -904,7 +904,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.BarometricPressure",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -943,7 +943,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.TurbidityFNU",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -982,7 +982,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.fDOM",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1021,7 +1021,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.ReservoirStorage",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1060,7 +1060,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.LakeElevationNGVD29",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1099,7 +1099,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.WaterDepth",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1138,7 +1138,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.EquipmentStatus",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1177,7 +1177,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.TidallyFilteredDischarge",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1216,7 +1216,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.WaterVelocity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1255,7 +1255,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.EstuaryElevationNGVD29",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1294,7 +1294,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.LakeElevationNAVD88",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1333,7 +1333,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.Salinity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1372,7 +1372,7 @@ class USGSInstantaneousValuesEventProducer:
              "type":"USGS.InstantaneousValues.GateOpening",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1752,7 +1752,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.OtherParameter",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1790,7 +1790,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.Precipitation",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1828,7 +1828,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.Streamflow",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1866,7 +1866,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.GageHeight",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1904,7 +1904,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.WaterTemperature",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1942,7 +1942,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.DissolvedOxygen",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -1980,7 +1980,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.pH",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2018,7 +2018,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.SpecificConductance",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2056,7 +2056,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.Turbidity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2094,7 +2094,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.AirTemperature",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2132,7 +2132,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.WindSpeed",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2170,7 +2170,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.WindDirection",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2208,7 +2208,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.RelativeHumidity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2246,7 +2246,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.BarometricPressure",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2284,7 +2284,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.TurbidityFNU",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2322,7 +2322,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.fDOM",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2360,7 +2360,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.ReservoirStorage",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2398,7 +2398,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.LakeElevationNGVD29",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2436,7 +2436,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.WaterDepth",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2474,7 +2474,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.EquipmentStatus",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2512,7 +2512,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.TidallyFilteredDischarge",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2550,7 +2550,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.WaterVelocity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2588,7 +2588,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.EstuaryElevationNGVD29",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2626,7 +2626,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.LakeElevationNAVD88",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2664,7 +2664,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.Salinity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -2702,7 +2702,7 @@ class USGSInstantaneousValuesMqttEventProducer:
              "type":"USGS.InstantaneousValues.GateOpening",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3082,7 +3082,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.OtherParameter",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3120,7 +3120,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.Precipitation",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3158,7 +3158,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.Streamflow",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3196,7 +3196,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.GageHeight",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3234,7 +3234,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.WaterTemperature",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3272,7 +3272,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.DissolvedOxygen",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3310,7 +3310,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.pH",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3348,7 +3348,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.SpecificConductance",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3386,7 +3386,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.Turbidity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3424,7 +3424,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.AirTemperature",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3462,7 +3462,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.WindSpeed",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3500,7 +3500,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.WindDirection",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3538,7 +3538,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.RelativeHumidity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3576,7 +3576,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.BarometricPressure",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3614,7 +3614,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.TurbidityFNU",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3652,7 +3652,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.fDOM",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3690,7 +3690,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.ReservoirStorage",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3728,7 +3728,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.LakeElevationNGVD29",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3766,7 +3766,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.WaterDepth",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3804,7 +3804,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.EquipmentStatus",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3842,7 +3842,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.TidallyFilteredDischarge",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3880,7 +3880,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.WaterVelocity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3918,7 +3918,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.EstuaryElevationNGVD29",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3956,7 +3956,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.LakeElevationNAVD88",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -3994,7 +3994,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.Salinity",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -4032,7 +4032,7 @@ class USGSInstantaneousValuesAmqpEventProducer:
              "type":"USGS.InstantaneousValues.GateOpening",
              "source":"{source_uri}".format(source_uri = _source_uri),
              "subject":"{agency_cd}/{site_no}/{parameter_cd}/{timeseries_cd}".format(agency_cd = _agency_cd,site_no = _site_no,parameter_cd = _parameter_cd,timeseries_cd = _timeseries_cd),
-             "time":"{datetime}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

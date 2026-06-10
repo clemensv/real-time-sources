@@ -28,13 +28,13 @@ class Test_HourlyForecast(unittest.TestCase):
         Create instance of HourlyForecast for testing
         """
         instance = HourlyForecast(
-            location_id='uetglbvcceyfpueflsxi',
-            city='qkfvmtxhzqgpadqdoxnj',
-            state='otcjwxdrizfadcdjtimt',
-            forecast_datetime='xoyougihactvluzmzlff',
-            uv_index=int(27),
-            city_slug='aubpspwyuudrldivmuqe',
-            forecast_hour='wumtemdfrgwejbcmxukv'
+            location_id='izoogidmkuxeyyydzpxr',
+            city='rrnswsgzrjddgbwjsuif',
+            state='pspfokipkvvamjghqbpi',
+            forecast_datetime='knmwqdmurzzljzlqdxvb',
+            uv_index=int(11),
+            city_slug='knbmtwrkeszetswnuylb',
+            forecast_hour='gbtxdzcsjyfsomkcqmoz'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         Test location_id property
         """
-        test_value = 'uetglbvcceyfpueflsxi'
+        test_value = 'izoogidmkuxeyyydzpxr'
         self.instance.location_id = test_value
         self.assertEqual(self.instance.location_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         Test city property
         """
-        test_value = 'qkfvmtxhzqgpadqdoxnj'
+        test_value = 'rrnswsgzrjddgbwjsuif'
         self.instance.city = test_value
         self.assertEqual(self.instance.city, test_value)
     
@@ -59,7 +59,7 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'otcjwxdrizfadcdjtimt'
+        test_value = 'pspfokipkvvamjghqbpi'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -67,7 +67,7 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         Test forecast_datetime property
         """
-        test_value = 'xoyougihactvluzmzlff'
+        test_value = 'knmwqdmurzzljzlqdxvb'
         self.instance.forecast_datetime = test_value
         self.assertEqual(self.instance.forecast_datetime, test_value)
     
@@ -75,7 +75,7 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         Test uv_index property
         """
-        test_value = int(27)
+        test_value = int(11)
         self.instance.uv_index = test_value
         self.assertEqual(self.instance.uv_index, test_value)
     
@@ -83,7 +83,7 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         Test city_slug property
         """
-        test_value = 'aubpspwyuudrldivmuqe'
+        test_value = 'knbmtwrkeszetswnuylb'
         self.instance.city_slug = test_value
         self.assertEqual(self.instance.city_slug, test_value)
     
@@ -91,7 +91,7 @@ class Test_HourlyForecast(unittest.TestCase):
         """
         Test forecast_hour property
         """
-        test_value = 'wumtemdfrgwejbcmxukv'
+        test_value = 'gbtxdzcsjyfsomkcqmoz'
         self.instance.forecast_hour = test_value
         self.assertEqual(self.instance.forecast_hour, test_value)
     

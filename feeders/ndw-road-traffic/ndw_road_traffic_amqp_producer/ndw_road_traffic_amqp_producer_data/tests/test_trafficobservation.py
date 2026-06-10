@@ -28,10 +28,10 @@ class Test_TrafficObservation(unittest.TestCase):
         Create instance of TrafficObservation for testing
         """
         instance = TrafficObservation(
-            measurement_site_id='bzirsnluvobhlrkzxuwn',
-            measurement_time='rtjfvkukaaogctwwctkb',
-            average_speed=float(41.44384223135987),
-            vehicle_flow_rate=int(39),
+            measurement_site_id='qbnfwtionowhxwctmyff',
+            measurement_time='ommducramgmireiaruia',
+            average_speed=float(42.446354680558976),
+            vehicle_flow_rate=int(8),
             number_of_lanes_with_data=int(77)
         )
         return instance
@@ -41,7 +41,7 @@ class Test_TrafficObservation(unittest.TestCase):
         """
         Test measurement_site_id property
         """
-        test_value = 'bzirsnluvobhlrkzxuwn'
+        test_value = 'qbnfwtionowhxwctmyff'
         self.instance.measurement_site_id = test_value
         self.assertEqual(self.instance.measurement_site_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_TrafficObservation(unittest.TestCase):
         """
         Test measurement_time property
         """
-        test_value = 'rtjfvkukaaogctwwctkb'
+        test_value = 'ommducramgmireiaruia'
         self.instance.measurement_time = test_value
         self.assertEqual(self.instance.measurement_time, test_value)
     
@@ -57,7 +57,7 @@ class Test_TrafficObservation(unittest.TestCase):
         """
         Test average_speed property
         """
-        test_value = float(41.44384223135987)
+        test_value = float(42.446354680558976)
         self.instance.average_speed = test_value
         self.assertEqual(self.instance.average_speed, test_value)
     
@@ -65,7 +65,7 @@ class Test_TrafficObservation(unittest.TestCase):
         """
         Test vehicle_flow_rate property
         """
-        test_value = int(39)
+        test_value = int(8)
         self.instance.vehicle_flow_rate = test_value
         self.assertEqual(self.instance.vehicle_flow_rate, test_value)
     

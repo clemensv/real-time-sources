@@ -159,8 +159,8 @@ class GoesElectronFlux:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='pychjkdjplmhspgekwvx',
-            satellite=int(34),
-            flux=float(77.4693374093375),
-            energy='lrmlruildhslxnpckjaq'
+            time_tag='vgkjhpokhxkklkoirkzc',
+            satellite=int(52),
+            flux=float(20.012502186037317),
+            energy='fpomqwdfsvkeualjfuhu'
         )

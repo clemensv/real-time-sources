@@ -173,15 +173,15 @@ class Follow:
             An instance of the dataclass.
         """
         return cls(
-            uri='teapjevoyxsczoyedwhd',
-            cid='ngnpegyuriancvmlqopn',
-            did='cfxdawlbgloxpzqducmf',
-            handle='vcnuxlnuegdxemgqfdho',
-            subject='irgdkphpipqgtjpjnhds',
-            subject_handle='rfisiwxcqnzvmyzpmhrq',
-            created_at='ilegtawhxlxsferkljde',
-            indexed_at='qoweutftyovizvqarpax',
-            seq=int(63),
-            collection='dmorltwkgvwiykbvqeoc',
-            lang='bvlgrfbkluoijbqlnjtk'
+            uri='bsnwdhixzwkgzajijzax',
+            cid='jkvbkzxxjpywhtlmkknm',
+            did='uakxwwrbqnqluyltblfn',
+            handle='ehjkwjflhojjyahaklaw',
+            subject='geldumarcqvcyitrgxfy',
+            subject_handle='mbqwoidpkncpvuscmuxk',
+            created_at='qybqloewbjwayrfnrbyn',
+            indexed_at='omfmvpmhfocrmyxpgsat',
+            seq=int(82),
+            collection='iwtkfeawguffdkrmjwyc',
+            lang='jnnnnbgwghhymvymujab'
         )

@@ -5,9 +5,9 @@ class MsgTypeenum(Enum):
     """
     Kebab-case event family used as the trailing UNS topic segment. Always equals the segment baked into the message's MQTT topic template.
     """
-    position_report = 'position-report'
+    position_MINUSreport = 'position-report'
     static = 'static'
-    aid_to_navigation = 'aid-to-navigation'
+    aid_MINUSto_MINUSnavigation = 'aid-to-navigation'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'MsgTypeenum':

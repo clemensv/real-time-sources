@@ -29,12 +29,12 @@ class Test_TrafficReading(unittest.TestCase):
         Create instance of TrafficReading for testing
         """
         instance = TrafficReading(
-            sensor_id='iuphczmrjcrqbpefrdix',
-            intensity=int(53),
-            occupancy=int(35),
-            load=int(6),
-            service_level=int(58),
-            error_flag='gszxoclnrxdbkurqagts',
+            sensor_id='bxiudwxinrjkdfddxyau',
+            intensity=int(25),
+            occupancy=int(25),
+            load=int(48),
+            service_level=int(15),
+            error_flag='spszgowxwlkvzjhmepyf',
             timestamp=datetime.datetime.now(datetime.timezone.utc)
         )
         return instance
@@ -44,7 +44,7 @@ class Test_TrafficReading(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = 'iuphczmrjcrqbpefrdix'
+        test_value = 'bxiudwxinrjkdfddxyau'
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_TrafficReading(unittest.TestCase):
         """
         Test intensity property
         """
-        test_value = int(53)
+        test_value = int(25)
         self.instance.intensity = test_value
         self.assertEqual(self.instance.intensity, test_value)
     
@@ -60,7 +60,7 @@ class Test_TrafficReading(unittest.TestCase):
         """
         Test occupancy property
         """
-        test_value = int(35)
+        test_value = int(25)
         self.instance.occupancy = test_value
         self.assertEqual(self.instance.occupancy, test_value)
     
@@ -68,7 +68,7 @@ class Test_TrafficReading(unittest.TestCase):
         """
         Test load property
         """
-        test_value = int(6)
+        test_value = int(48)
         self.instance.load = test_value
         self.assertEqual(self.instance.load, test_value)
     
@@ -76,7 +76,7 @@ class Test_TrafficReading(unittest.TestCase):
         """
         Test service_level property
         """
-        test_value = int(58)
+        test_value = int(15)
         self.instance.service_level = test_value
         self.assertEqual(self.instance.service_level, test_value)
     
@@ -84,7 +84,7 @@ class Test_TrafficReading(unittest.TestCase):
         """
         Test error_flag property
         """
-        test_value = 'gszxoclnrxdbkurqagts'
+        test_value = 'spszgowxwlkvzjhmepyf'
         self.instance.error_flag = test_value
         self.assertEqual(self.instance.error_flag, test_value)
     

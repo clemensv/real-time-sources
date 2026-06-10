@@ -28,10 +28,10 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            place_id='koumxkuxzjsmozrufxek',
-            name='pzbxhzzeshmafropyeuo',
-            data_types='bbiopsukflvbjnwlkyjh',
-            district='mssbivmlftjvvkfseldl'
+            place_id='dibryudfxjjzxienbmmy',
+            name='mwrnrdxkkzrrfqeksirq',
+            data_types='dzogniaxhwksydzpiyzo',
+            district='rkfczndbcwlgexdvujow'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Station(unittest.TestCase):
         """
         Test place_id property
         """
-        test_value = 'koumxkuxzjsmozrufxek'
+        test_value = 'dibryudfxjjzxienbmmy'
         self.instance.place_id = test_value
         self.assertEqual(self.instance.place_id, test_value)
     
@@ -48,7 +48,7 @@ class Test_Station(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'pzbxhzzeshmafropyeuo'
+        test_value = 'mwrnrdxkkzrrfqeksirq'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -56,7 +56,7 @@ class Test_Station(unittest.TestCase):
         """
         Test data_types property
         """
-        test_value = 'bbiopsukflvbjnwlkyjh'
+        test_value = 'dzogniaxhwksydzpiyzo'
         self.instance.data_types = test_value
         self.assertEqual(self.instance.data_types, test_value)
     
@@ -64,7 +64,7 @@ class Test_Station(unittest.TestCase):
         """
         Test district property
         """
-        test_value = 'mssbivmlftjvvkfseldl'
+        test_value = 'rkfczndbcwlgexdvujow'
         self.instance.district = test_value
         self.assertEqual(self.instance.district, test_value)
     

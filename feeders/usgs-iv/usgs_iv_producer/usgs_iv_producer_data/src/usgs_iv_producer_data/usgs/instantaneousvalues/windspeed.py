@@ -165,11 +165,11 @@ class WindSpeed:
             An instance of the dataclass.
         """
         return cls(
-            site_no='vygmgwecsoabyncldcse',
-            datetime='pkqdfdpxugxhyflzvxxs',
-            value=float(94.9124831505124),
-            exception='qjhhgluoomaqfaxigexo',
-            qualifiers=['dytxhcgtmhxilqmcqiaf', 'fqnmnypscyztrhlfhmxs', 'yktgtykhwchokkeunhdh', 'picdfbijkvjxychzbvda'],
-            parameter_cd='xeyeuzpdlxmdnsotgjva',
-            timeseries_cd='qomfrhufznouzguufuhz'
+            site_no='rycqxkvujgnoxtpgwpfc',
+            datetime='ebogqkabliihyoyxrnsk',
+            value=float(39.410467108085875),
+            exception='iqluxlxxqijxxaoxrvay',
+            qualifiers=['oqzmivlfwafklfjsvxbd', 'gidpxgiwmgpusuqqkubz', 'rhalthcamtbfawkyrhhr'],
+            parameter_cd='piicyfawkasvaifenuvc',
+            timeseries_cd='ltwikeftpysyrfkzfnrz'
         )

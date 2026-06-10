@@ -29,31 +29,31 @@ class Test_PublicPower(unittest.TestCase):
         Create instance of PublicPower for testing
         """
         instance = PublicPower(
-            country='ipqgsttwxjmrdylzzcut',
+            country='wvmkrmemrasnpvcvmzdv',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(100),
-            hydro_pumped_storage_consumption_mw=float(99.55551092407902),
-            cross_border_electricity_trading_mw=float(97.14279867492124),
-            hydro_run_of_river_mw=float(5.698673368463936),
-            biomass_mw=float(34.30979138074459),
-            fossil_brown_coal_lignite_mw=float(8.294291414593214),
-            fossil_hard_coal_mw=float(32.07246106268767),
-            fossil_oil_mw=float(53.41191780830934),
-            fossil_coal_derived_gas_mw=float(43.006203551654906),
-            fossil_gas_mw=float(47.75483673774651),
-            geothermal_mw=float(92.82003148826443),
-            hydro_water_reservoir_mw=float(88.94791795554947),
-            hydro_pumped_storage_mw=float(96.93024766938152),
-            others_mw=float(68.16769605895031),
-            waste_mw=float(55.9160221212324),
-            wind_offshore_mw=float(19.868679630970288),
-            wind_onshore_mw=float(55.53235132020128),
-            solar_mw=float(0.2982231388977796),
-            nuclear_mw=float(71.98977160984225),
-            load_mw=float(49.966116593653254),
-            residual_load_mw=float(41.22003405725412),
-            renewable_share_of_generation_pct=float(7.039935657267316),
-            renewable_share_of_load_pct=float(17.845954313523084)
+            unix_seconds=int(63),
+            hydro_pumped_storage_consumption_mw=float(41.04763499544869),
+            cross_border_electricity_trading_mw=float(36.87509207231495),
+            hydro_run_of_river_mw=float(25.82171977233555),
+            biomass_mw=float(52.98231190565238),
+            fossil_brown_coal_lignite_mw=float(48.43048829538835),
+            fossil_hard_coal_mw=float(54.99614789437626),
+            fossil_oil_mw=float(27.465575238326334),
+            fossil_coal_derived_gas_mw=float(29.1076317641342),
+            fossil_gas_mw=float(46.457168020538376),
+            geothermal_mw=float(76.15817897638712),
+            hydro_water_reservoir_mw=float(17.93588359470739),
+            hydro_pumped_storage_mw=float(9.87258894254296),
+            others_mw=float(15.029122932648386),
+            waste_mw=float(54.50191318895398),
+            wind_offshore_mw=float(50.64376941607569),
+            wind_onshore_mw=float(6.756162190871029),
+            solar_mw=float(12.001316541878149),
+            nuclear_mw=float(26.433728716544103),
+            load_mw=float(63.971272134631164),
+            residual_load_mw=float(33.650870682426294),
+            renewable_share_of_generation_pct=float(81.053994752525),
+            renewable_share_of_load_pct=float(43.69591625390948)
         )
         return instance
 
@@ -62,7 +62,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'ipqgsttwxjmrdylzzcut'
+        test_value = 'wvmkrmemrasnpvcvmzdv'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -78,7 +78,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test unix_seconds property
         """
-        test_value = int(100)
+        test_value = int(63)
         self.instance.unix_seconds = test_value
         self.assertEqual(self.instance.unix_seconds, test_value)
     
@@ -86,7 +86,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test hydro_pumped_storage_consumption_mw property
         """
-        test_value = float(99.55551092407902)
+        test_value = float(41.04763499544869)
         self.instance.hydro_pumped_storage_consumption_mw = test_value
         self.assertEqual(self.instance.hydro_pumped_storage_consumption_mw, test_value)
     
@@ -94,7 +94,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test cross_border_electricity_trading_mw property
         """
-        test_value = float(97.14279867492124)
+        test_value = float(36.87509207231495)
         self.instance.cross_border_electricity_trading_mw = test_value
         self.assertEqual(self.instance.cross_border_electricity_trading_mw, test_value)
     
@@ -102,7 +102,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test hydro_run_of_river_mw property
         """
-        test_value = float(5.698673368463936)
+        test_value = float(25.82171977233555)
         self.instance.hydro_run_of_river_mw = test_value
         self.assertEqual(self.instance.hydro_run_of_river_mw, test_value)
     
@@ -110,7 +110,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test biomass_mw property
         """
-        test_value = float(34.30979138074459)
+        test_value = float(52.98231190565238)
         self.instance.biomass_mw = test_value
         self.assertEqual(self.instance.biomass_mw, test_value)
     
@@ -118,7 +118,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test fossil_brown_coal_lignite_mw property
         """
-        test_value = float(8.294291414593214)
+        test_value = float(48.43048829538835)
         self.instance.fossil_brown_coal_lignite_mw = test_value
         self.assertEqual(self.instance.fossil_brown_coal_lignite_mw, test_value)
     
@@ -126,7 +126,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test fossil_hard_coal_mw property
         """
-        test_value = float(32.07246106268767)
+        test_value = float(54.99614789437626)
         self.instance.fossil_hard_coal_mw = test_value
         self.assertEqual(self.instance.fossil_hard_coal_mw, test_value)
     
@@ -134,7 +134,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test fossil_oil_mw property
         """
-        test_value = float(53.41191780830934)
+        test_value = float(27.465575238326334)
         self.instance.fossil_oil_mw = test_value
         self.assertEqual(self.instance.fossil_oil_mw, test_value)
     
@@ -142,7 +142,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test fossil_coal_derived_gas_mw property
         """
-        test_value = float(43.006203551654906)
+        test_value = float(29.1076317641342)
         self.instance.fossil_coal_derived_gas_mw = test_value
         self.assertEqual(self.instance.fossil_coal_derived_gas_mw, test_value)
     
@@ -150,7 +150,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test fossil_gas_mw property
         """
-        test_value = float(47.75483673774651)
+        test_value = float(46.457168020538376)
         self.instance.fossil_gas_mw = test_value
         self.assertEqual(self.instance.fossil_gas_mw, test_value)
     
@@ -158,7 +158,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test geothermal_mw property
         """
-        test_value = float(92.82003148826443)
+        test_value = float(76.15817897638712)
         self.instance.geothermal_mw = test_value
         self.assertEqual(self.instance.geothermal_mw, test_value)
     
@@ -166,7 +166,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test hydro_water_reservoir_mw property
         """
-        test_value = float(88.94791795554947)
+        test_value = float(17.93588359470739)
         self.instance.hydro_water_reservoir_mw = test_value
         self.assertEqual(self.instance.hydro_water_reservoir_mw, test_value)
     
@@ -174,7 +174,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test hydro_pumped_storage_mw property
         """
-        test_value = float(96.93024766938152)
+        test_value = float(9.87258894254296)
         self.instance.hydro_pumped_storage_mw = test_value
         self.assertEqual(self.instance.hydro_pumped_storage_mw, test_value)
     
@@ -182,7 +182,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test others_mw property
         """
-        test_value = float(68.16769605895031)
+        test_value = float(15.029122932648386)
         self.instance.others_mw = test_value
         self.assertEqual(self.instance.others_mw, test_value)
     
@@ -190,7 +190,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test waste_mw property
         """
-        test_value = float(55.9160221212324)
+        test_value = float(54.50191318895398)
         self.instance.waste_mw = test_value
         self.assertEqual(self.instance.waste_mw, test_value)
     
@@ -198,7 +198,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test wind_offshore_mw property
         """
-        test_value = float(19.868679630970288)
+        test_value = float(50.64376941607569)
         self.instance.wind_offshore_mw = test_value
         self.assertEqual(self.instance.wind_offshore_mw, test_value)
     
@@ -206,7 +206,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test wind_onshore_mw property
         """
-        test_value = float(55.53235132020128)
+        test_value = float(6.756162190871029)
         self.instance.wind_onshore_mw = test_value
         self.assertEqual(self.instance.wind_onshore_mw, test_value)
     
@@ -214,7 +214,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test solar_mw property
         """
-        test_value = float(0.2982231388977796)
+        test_value = float(12.001316541878149)
         self.instance.solar_mw = test_value
         self.assertEqual(self.instance.solar_mw, test_value)
     
@@ -222,7 +222,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test nuclear_mw property
         """
-        test_value = float(71.98977160984225)
+        test_value = float(26.433728716544103)
         self.instance.nuclear_mw = test_value
         self.assertEqual(self.instance.nuclear_mw, test_value)
     
@@ -230,7 +230,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test load_mw property
         """
-        test_value = float(49.966116593653254)
+        test_value = float(63.971272134631164)
         self.instance.load_mw = test_value
         self.assertEqual(self.instance.load_mw, test_value)
     
@@ -238,7 +238,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test residual_load_mw property
         """
-        test_value = float(41.22003405725412)
+        test_value = float(33.650870682426294)
         self.instance.residual_load_mw = test_value
         self.assertEqual(self.instance.residual_load_mw, test_value)
     
@@ -246,7 +246,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test renewable_share_of_generation_pct property
         """
-        test_value = float(7.039935657267316)
+        test_value = float(81.053994752525)
         self.instance.renewable_share_of_generation_pct = test_value
         self.assertEqual(self.instance.renewable_share_of_generation_pct, test_value)
     
@@ -254,7 +254,7 @@ class Test_PublicPower(unittest.TestCase):
         """
         Test renewable_share_of_load_pct property
         """
-        test_value = float(17.845954313523084)
+        test_value = float(43.69591625390948)
         self.instance.renewable_share_of_load_pct = test_value
         self.assertEqual(self.instance.renewable_share_of_load_pct, test_value)
     

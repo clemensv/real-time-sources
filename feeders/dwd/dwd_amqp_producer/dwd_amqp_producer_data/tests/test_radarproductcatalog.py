@@ -28,11 +28,11 @@ class Test_RadarProductCatalog(unittest.TestCase):
         Create instance of RadarProductCatalog for testing
         """
         instance = RadarProductCatalog(
-            product='tkraijuusnoxrvzxtgip',
-            file_url='rzvswowcrsptgjnbheif',
-            description='fzccpcqodgzhgtqvhgsi',
-            state='jhojfmipothfzsngjbnu',
-            kind='tzmwslwqwspbnhrlovti'
+            product='sepquakorhnyckgrmqco',
+            file_url='sbfqljtnxegohkazivvp',
+            description='ugamphjmyzixzzktauwp',
+            state='iikzwwhzaqdrizkyixkt',
+            kind='esrgyzfkdxjxaqqrnjvj'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test product property
         """
-        test_value = 'tkraijuusnoxrvzxtgip'
+        test_value = 'sepquakorhnyckgrmqco'
         self.instance.product = test_value
         self.assertEqual(self.instance.product, test_value)
     
@@ -49,7 +49,7 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test file_url property
         """
-        test_value = 'rzvswowcrsptgjnbheif'
+        test_value = 'sbfqljtnxegohkazivvp'
         self.instance.file_url = test_value
         self.assertEqual(self.instance.file_url, test_value)
     
@@ -57,7 +57,7 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'fzccpcqodgzhgtqvhgsi'
+        test_value = 'ugamphjmyzixzzktauwp'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -65,7 +65,7 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'jhojfmipothfzsngjbnu'
+        test_value = 'iikzwwhzaqdrizkyixkt'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -73,7 +73,7 @@ class Test_RadarProductCatalog(unittest.TestCase):
         """
         Test kind property
         """
-        test_value = 'tzmwslwqwspbnhrlovti'
+        test_value = 'esrgyzfkdxjxaqqrnjvj'
         self.instance.kind = test_value
         self.assertEqual(self.instance.kind, test_value)
     

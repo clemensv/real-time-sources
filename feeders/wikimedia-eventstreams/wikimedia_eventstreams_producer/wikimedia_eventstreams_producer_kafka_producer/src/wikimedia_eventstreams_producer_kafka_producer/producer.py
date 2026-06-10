@@ -112,7 +112,7 @@ class WikimediaEventStreamsEventProducer:
              "type":"Wikimedia.EventStreams.RecentChange",
              "source":"https://stream.wikimedia.org/v2/stream/recentchange",
              "subject":"{event_id}".format(event_id = _event_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -238,7 +238,7 @@ class WikimediaEventStreamsMqttEventProducer:
              "type":"Wikimedia.EventStreams.RecentChange",
              "source":"https://stream.wikimedia.org/v2/stream/recentchange",
              "subject":"{wiki}/{namespace}/{event_id}".format(wiki = _wiki,namespace = _namespace,event_id = _event_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
@@ -362,7 +362,7 @@ class WikimediaEventStreamsAmqpEventProducer:
              "type":"Wikimedia.EventStreams.RecentChange",
              "source":"https://stream.wikimedia.org/v2/stream/recentchange",
              "subject":"{event_id}".format(event_id = _event_id),
-             "time":"{event_time}"
+             "time":None
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

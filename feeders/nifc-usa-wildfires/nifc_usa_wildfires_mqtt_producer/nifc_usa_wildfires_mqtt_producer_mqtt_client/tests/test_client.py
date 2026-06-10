@@ -93,10 +93,8 @@ async def test_gov_nifc_wildfires_mqtt_gov_nifc_wildfires_mqtt_wildfire_incident
             irwin_id=f"test_irwin_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-            status="test_status",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
