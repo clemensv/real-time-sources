@@ -7,6 +7,7 @@ import json
 import logging
 import os
 import re
+import sys
 import time
 from datetime import datetime
 from typing import Dict, List, Tuple
@@ -238,7 +239,10 @@ def main() -> None:
         help="Path to the dedupe state file",
     )
     parser.add_argument("--once", action="store_true", help="Poll once and exit")
-    args = parser.parse_args()
+    _argv = sys.argv[1:]
+    if _argv and _argv[0] == 'feed':
+        _argv = _argv[1:]
+    args = parser.parse_args(_argv)
 
     kafka_config = parse_connection_string(args.connection_string)
     kafka_topic = kafka_config.pop("kafka_topic", None)

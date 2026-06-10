@@ -25,4 +25,4 @@ ENV GEOMAG_LAST_POLLED_FILE="/mnt/fileshare/usgs_geomag_last_polled.json"
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "usgs_geomag"]
+CMD ["python", "-m", "usgs_geomag", "feed"]

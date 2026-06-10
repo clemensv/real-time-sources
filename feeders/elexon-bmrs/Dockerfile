@@ -25,4 +25,4 @@ ENV BMRS_LAST_POLLED_FILE="/mnt/fileshare/bmrs_last_polled.json"
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "elexon_bmrs"]
+CMD ["python", "-m", "elexon_bmrs", "feed"]

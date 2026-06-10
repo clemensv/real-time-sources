@@ -25,4 +25,4 @@ ENV SWPC_LAST_POLLED_FILE="/mnt/fileshare/swpc_last_polled.json"
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "noaa_goes"]
+CMD ["python", "-m", "noaa_goes", "feed"]

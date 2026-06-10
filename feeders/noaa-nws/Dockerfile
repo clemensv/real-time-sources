@@ -25,4 +25,4 @@ ENV NWS_LAST_POLLED_FILE="/mnt/fileshare/nws_last_polled.json"
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "noaa_nws"]
+CMD ["python", "-m", "noaa_nws", "feed"]

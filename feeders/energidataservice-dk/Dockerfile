@@ -25,4 +25,4 @@ ENV EDS_LAST_POLLED_FILE="/mnt/fileshare/eds_last_polled.json"
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "energidataservice_dk"]
+CMD ["python", "-m", "energidataservice_dk", "feed"]

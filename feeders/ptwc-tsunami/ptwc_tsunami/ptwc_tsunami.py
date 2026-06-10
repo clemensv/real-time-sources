@@ -324,7 +324,10 @@ def main():
     parser.add_argument("--feeds", type=str, help="Comma-separated list of feeds (PAAQ, PHEB)")
     parser.add_argument("--once", action="store_true", help="Poll once and exit")
     parser.add_argument("--log-level", type=str, default="INFO", help="Logging level")
-    args = parser.parse_args()
+    _argv = sys.argv[1:]
+    if _argv and _argv[0] == 'feed':
+        _argv = _argv[1:]
+    args = parser.parse_args(_argv)
 
     if not args.connection_string:
         args.connection_string = os.getenv("PTWC_TSUNAMI_CONNECTION_STRING") or os.getenv("CONNECTION_STRING")

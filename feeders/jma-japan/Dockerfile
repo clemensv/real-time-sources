@@ -25,4 +25,4 @@ ENV JMA_LAST_POLLED_FILE="/mnt/fileshare/jma_last_polled.json"
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "jma_japan"]
+CMD ["python", "-m", "jma_japan", "feed"]

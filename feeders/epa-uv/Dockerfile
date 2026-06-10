@@ -18,4 +18,4 @@ ENV EPA_UV_STATE_FILE="/mnt/fileshare/epa_uv_state.json"
 ENV EPA_UV_LOCATIONS="Seattle,WA"
 ENV CONNECTION_STRING=""
 
-CMD ["python", "-m", "epa_uv"]
+CMD ["python", "-m", "epa_uv", "feed"]

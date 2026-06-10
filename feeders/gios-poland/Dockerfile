@@ -25,4 +25,4 @@ ENV GIOS_LAST_POLLED_FILE="/mnt/fileshare/gios_last_polled.json"
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "gios_poland"]
+CMD ["python", "-m", "gios_poland", "feed"]
