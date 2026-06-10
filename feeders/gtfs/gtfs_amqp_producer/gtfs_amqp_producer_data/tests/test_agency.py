@@ -28,14 +28,14 @@ class Test_Agency(unittest.TestCase):
         Create instance of Agency for testing
         """
         instance = Agency(
-            agencyId='ikjsaqisxdykoqldekjx',
-            agencyName='pnxifkorwcnwfvcuxboa',
-            agencyUrl='xtczlhjzcchqeeroyhpa',
-            agencyTimezone='nnftldgdbvyygxjexqov',
-            agencyLang='jzpxtrjbjjgoidncxdis',
-            agencyPhone='mnjgltxnzwftqiivcqfk',
-            agencyFareUrl='ktcwyphqhcfvqpjuwqky',
-            agencyEmail='ahibdcfqohmxkddewrkd'
+            agencyId='xxjtkqdrycbqjtxlskrd',
+            agencyName='mrahmtfczpmudrrdgxix',
+            agencyUrl='haphgnqksldbqxisxugn',
+            agencyTimezone='thpygxfkcjygnrmqyxtb',
+            agencyLang='rzkpnazdjvhkweifqztr',
+            agencyPhone='cwutcstqtrukpmiwptdy',
+            agencyFareUrl='rlwqtwflwvbitavjsnng',
+            agencyEmail='dgnvdnfjyawdlptiatzf'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_Agency(unittest.TestCase):
         """
         Test agencyId property
         """
-        test_value = 'ikjsaqisxdykoqldekjx'
+        test_value = 'xxjtkqdrycbqjtxlskrd'
         self.instance.agencyId = test_value
         self.assertEqual(self.instance.agencyId, test_value)
     
@@ -52,7 +52,7 @@ class Test_Agency(unittest.TestCase):
         """
         Test agencyName property
         """
-        test_value = 'pnxifkorwcnwfvcuxboa'
+        test_value = 'mrahmtfczpmudrrdgxix'
         self.instance.agencyName = test_value
         self.assertEqual(self.instance.agencyName, test_value)
     
@@ -60,7 +60,7 @@ class Test_Agency(unittest.TestCase):
         """
         Test agencyUrl property
         """
-        test_value = 'xtczlhjzcchqeeroyhpa'
+        test_value = 'haphgnqksldbqxisxugn'
         self.instance.agencyUrl = test_value
         self.assertEqual(self.instance.agencyUrl, test_value)
     
@@ -68,7 +68,7 @@ class Test_Agency(unittest.TestCase):
         """
         Test agencyTimezone property
         """
-        test_value = 'nnftldgdbvyygxjexqov'
+        test_value = 'thpygxfkcjygnrmqyxtb'
         self.instance.agencyTimezone = test_value
         self.assertEqual(self.instance.agencyTimezone, test_value)
     
@@ -76,7 +76,7 @@ class Test_Agency(unittest.TestCase):
         """
         Test agencyLang property
         """
-        test_value = 'jzpxtrjbjjgoidncxdis'
+        test_value = 'rzkpnazdjvhkweifqztr'
         self.instance.agencyLang = test_value
         self.assertEqual(self.instance.agencyLang, test_value)
     
@@ -84,7 +84,7 @@ class Test_Agency(unittest.TestCase):
         """
         Test agencyPhone property
         """
-        test_value = 'mnjgltxnzwftqiivcqfk'
+        test_value = 'cwutcstqtrukpmiwptdy'
         self.instance.agencyPhone = test_value
         self.assertEqual(self.instance.agencyPhone, test_value)
     
@@ -92,7 +92,7 @@ class Test_Agency(unittest.TestCase):
         """
         Test agencyFareUrl property
         """
-        test_value = 'ktcwyphqhcfvqpjuwqky'
+        test_value = 'rlwqtwflwvbitavjsnng'
         self.instance.agencyFareUrl = test_value
         self.assertEqual(self.instance.agencyFareUrl, test_value)
     
@@ -100,7 +100,7 @@ class Test_Agency(unittest.TestCase):
         """
         Test agencyEmail property
         """
-        test_value = 'ahibdcfqohmxkddewrkd'
+        test_value = 'dgnvdnfjyawdlptiatzf'
         self.instance.agencyEmail = test_value
         self.assertEqual(self.instance.agencyEmail, test_value)
     

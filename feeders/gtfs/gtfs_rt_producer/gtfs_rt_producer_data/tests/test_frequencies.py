@@ -28,11 +28,11 @@ class Test_Frequencies(unittest.TestCase):
         Create instance of Frequencies for testing
         """
         instance = Frequencies(
-            tripId='etibbkbaivbocdmldhwt',
-            startTime='evkeevskbshpwxclvsmg',
-            endTime='oagqpvmsipgfibwlnavu',
-            headwaySecs=int(20),
-            exactTimes=int(66)
+            tripId='vdfcjvyqorlobnevfzes',
+            startTime='keucnakjxsbescgfkfwy',
+            endTime='uvopnguomqupzdirsvii',
+            headwaySecs=int(3),
+            exactTimes=int(5)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test tripId property
         """
-        test_value = 'etibbkbaivbocdmldhwt'
+        test_value = 'vdfcjvyqorlobnevfzes'
         self.instance.tripId = test_value
         self.assertEqual(self.instance.tripId, test_value)
     
@@ -49,7 +49,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test startTime property
         """
-        test_value = 'evkeevskbshpwxclvsmg'
+        test_value = 'keucnakjxsbescgfkfwy'
         self.instance.startTime = test_value
         self.assertEqual(self.instance.startTime, test_value)
     
@@ -57,7 +57,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test endTime property
         """
-        test_value = 'oagqpvmsipgfibwlnavu'
+        test_value = 'uvopnguomqupzdirsvii'
         self.instance.endTime = test_value
         self.assertEqual(self.instance.endTime, test_value)
     
@@ -65,7 +65,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test headwaySecs property
         """
-        test_value = int(20)
+        test_value = int(3)
         self.instance.headwaySecs = test_value
         self.assertEqual(self.instance.headwaySecs, test_value)
     
@@ -73,7 +73,7 @@ class Test_Frequencies(unittest.TestCase):
         """
         Test exactTimes property
         """
-        test_value = int(66)
+        test_value = int(5)
         self.instance.exactTimes = test_value
         self.assertEqual(self.instance.exactTimes, test_value)
     

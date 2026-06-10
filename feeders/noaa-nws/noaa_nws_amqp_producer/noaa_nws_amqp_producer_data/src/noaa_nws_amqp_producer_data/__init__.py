@@ -1,3 +1,4 @@
+from .weatherobservation import WeatherObservation
 from .statusenum import StatusEnum
 from .messagetypeenum import MessageTypeenum
 from .categoryenum import CategoryEnum
@@ -6,6 +7,5 @@ from .certaintyenum import CertaintyEnum
 from .urgencyenum import UrgencyEnum
 from .weatheralert import WeatherAlert
 from .observationstation import ObservationStation
-from .weatherobservation import WeatherObservation
 
-__all__ = ["StatusEnum", "MessageTypeenum", "CategoryEnum", "SeverityEnum", "CertaintyEnum", "UrgencyEnum", "WeatherAlert", "ObservationStation", "WeatherObservation"]
+__all__ = ["WeatherObservation", "StatusEnum", "MessageTypeenum", "CategoryEnum", "SeverityEnum", "CertaintyEnum", "UrgencyEnum", "WeatherAlert", "ObservationStation"]

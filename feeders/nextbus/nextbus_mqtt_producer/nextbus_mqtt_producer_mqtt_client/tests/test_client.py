@@ -100,10 +100,8 @@ async def test_nextbus_mqtt_nextbus_vehicle_position_mqtt_py(mosquitto_broker):
             vehicle_id=f"test_vehicle_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            event_type="test_event_type",
-            stop_or_vehicle_id="test_stop_or_vehicle_id",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -170,9 +168,8 @@ async def test_nextbus_mqtt_nextbus_route_config_mqtt_py(mosquitto_broker):
             stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            event_type="test_event_type",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -239,9 +236,8 @@ async def test_nextbus_mqtt_nextbus_schedule_mqtt_py(mosquitto_broker):
             stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            event_type="test_event_type",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -308,9 +304,8 @@ async def test_nextbus_mqtt_nextbus_message_mqtt_py(mosquitto_broker):
             stop_or_vehicle_id=f"test_stop_or_vehicle_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            event_type="test_event_type",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

@@ -165,11 +165,11 @@ class DripDisplayState:
             An instance of the dataclass.
         """
         return cls(
-            vms_controller_id='uyimowitwitfeaffacdw',
-            vms_index='lvofxgwnnkxntedrxlqz',
-            publication_time='acburokufwqjnxrkldxx',
+            vms_controller_id='rapsbzhzsztqsszilwoh',
+            vms_index='iioggoxtogpzfizaljoe',
+            publication_time='nxjnqngahucagzltpqre',
             active=False,
-            vms_text='yiujmcmvpyhpkygupmvr',
-            pictogram_code='mdgdhzuqecayvpqwqjzg',
-            state='srdgpeaiqbpfvlowfydv'
+            vms_text='wszgruwjdwaniuhfcrdm',
+            pictogram_code='jbbmftvnaqibgcwjuvhy',
+            state='quvfpumfwfjeclqadqrl'
         )

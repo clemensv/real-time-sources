@@ -30,11 +30,11 @@ class Test_TrafficFlowReading(unittest.TestCase):
         Create instance of TrafficFlowReading for testing
         """
         instance = TrafficFlowReading(
-            flow_data_id='mvmquylagppbqpeqkdea',
-            station_name='gpgzjmwdkemngmdvtowl',
+            flow_data_id='hsrlnrzxyljoubdplifw',
+            station_name='llaftzysxcrynwnpljxe',
             region=RegionEnum.Eastern,
             flow_reading=FlowReadingenum.Unknown,
-            reading_time='zpxqayvqbjikmadflccu'
+            reading_time='lzyurwmuvftqgtlamaly'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_TrafficFlowReading(unittest.TestCase):
         """
         Test flow_data_id property
         """
-        test_value = 'mvmquylagppbqpeqkdea'
+        test_value = 'hsrlnrzxyljoubdplifw'
         self.instance.flow_data_id = test_value
         self.assertEqual(self.instance.flow_data_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_TrafficFlowReading(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'gpgzjmwdkemngmdvtowl'
+        test_value = 'llaftzysxcrynwnpljxe'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -75,7 +75,7 @@ class Test_TrafficFlowReading(unittest.TestCase):
         """
         Test reading_time property
         """
-        test_value = 'zpxqayvqbjikmadflccu'
+        test_value = 'lzyurwmuvftqgtlamaly'
         self.instance.reading_time = test_value
         self.assertEqual(self.instance.reading_time, test_value)
     

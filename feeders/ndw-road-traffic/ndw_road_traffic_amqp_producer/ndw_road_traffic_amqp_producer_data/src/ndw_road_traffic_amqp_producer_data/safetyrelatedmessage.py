@@ -169,13 +169,13 @@ class SafetyRelatedMessage:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='ldupwbvpohcrjaqffnng',
-            version_time='zpzgbyozdmvsdsgryxqj',
-            validity_status='snmbxpvikafojidujowt',
-            start_time='lojzidexhejvuaymmsdh',
-            end_time='zghtzddbfgvtpfytxhmu',
-            road_name='uagqoemqebjbjlbkfsww',
-            message_type='saxjtestncaojsiuwpzu',
-            description='wkrvkfjikjkmjsygmqdj',
-            urgency='bnuxbpiazjciqrccewxh'
+            situation_record_id='wcieybcscoagnfyvdhlk',
+            version_time='ovdurvlvjkxqftcownuz',
+            validity_status='xnrsdnboazpkwgigsezh',
+            start_time='tffnvtpgpunllobweafa',
+            end_time='oelljdxlfuohnodsglcy',
+            road_name='jvzzemqxophyhqvrrfdp',
+            message_type='rjwkjhcudmvngpvguqde',
+            description='nliqfsyqxcpbzzdsxbxn',
+            urgency='glokjitzizfrdxsicqrm'
         )

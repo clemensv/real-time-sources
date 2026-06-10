@@ -119,9 +119,8 @@ async def test_nl_ndw_avg_mqtt_nl_ndw_avg_point_measurement_site_mqtt_py(mosquit
             measurement_site_id=f"test_measurement_site_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -186,9 +185,8 @@ async def test_nl_ndw_avg_mqtt_nl_ndw_avg_route_measurement_site_mqtt_py(mosquit
             measurement_site_id=f"test_measurement_site_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -253,9 +251,8 @@ async def test_nl_ndw_avg_mqtt_nl_ndw_avg_traffic_observation_mqtt_py(mosquitto_
             measurement_site_id=f"test_measurement_site_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -320,9 +317,8 @@ async def test_nl_ndw_avg_mqtt_nl_ndw_avg_travel_time_observation_mqtt_py(mosqui
             measurement_site_id=f"test_measurement_site_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -391,9 +387,8 @@ async def test_nl_ndw_drip_mqtt_nl_ndw_drip_drip_sign_mqtt_py(mosquitto_broker):
             vms_index=f"test_vms_index_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -459,9 +454,8 @@ async def test_nl_ndw_drip_mqtt_nl_ndw_drip_drip_display_state_mqtt_py(mosquitto
             vms_index=f"test_vms_index_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -529,9 +523,8 @@ async def test_nl_ndw_msi_mqtt_nl_ndw_msi_msi_sign_mqtt_py(mosquitto_broker):
             sign_id=f"test_sign_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -596,9 +589,8 @@ async def test_nl_ndw_msi_mqtt_nl_ndw_msi_msi_display_state_mqtt_py(mosquitto_br
             sign_id=f"test_sign_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -666,9 +658,8 @@ async def test_nl_ndw_situations_mqtt_nl_ndw_situations_roadwork_mqtt_py(mosquit
             situation_record_id=f"test_situation_record_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -733,9 +724,8 @@ async def test_nl_ndw_situations_mqtt_nl_ndw_situations_bridge_opening_mqtt_py(m
             situation_record_id=f"test_situation_record_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -800,9 +790,8 @@ async def test_nl_ndw_situations_mqtt_nl_ndw_situations_temporary_closure_mqtt_p
             situation_record_id=f"test_situation_record_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -867,9 +856,8 @@ async def test_nl_ndw_situations_mqtt_nl_ndw_situations_temporary_speed_limit_mq
             situation_record_id=f"test_situation_record_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -934,9 +922,8 @@ async def test_nl_ndw_situations_mqtt_nl_ndw_situations_safety_related_message_m
             situation_record_id=f"test_situation_record_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            road="test_road",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

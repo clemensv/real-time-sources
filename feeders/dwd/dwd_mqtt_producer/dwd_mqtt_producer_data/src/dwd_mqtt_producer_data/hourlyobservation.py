@@ -165,11 +165,11 @@ class HourlyObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='wegyxewpsuayxhfndebt',
-            timestamp='yhmwjnpijjjoiucbgvau',
-            quality_level=int(28),
-            parameter='jgkarnkgtudftwfpyili',
-            value=float(53.98118010099212),
-            unit='bxrxsgbwqndznuwzbroa',
-            state='miwjndwvcjjngdpotggi'
+            station_id='mbioddliwbftvbnrobbn',
+            timestamp='vpnjsfbrpjzdvfzecwqw',
+            quality_level=int(34),
+            parameter='ixowrwvxvjrzdnbiingf',
+            value=float(52.10966960237433),
+            unit='zhcycjrnhqeruhtlnsnf',
+            state='nclzmaaslinuysxnnuxz'
         )

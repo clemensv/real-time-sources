@@ -28,12 +28,12 @@ class Test_GoesMagnetometer(unittest.TestCase):
         Create instance of GoesMagnetometer for testing
         """
         instance = GoesMagnetometer(
-            time_tag='uixtvisutohgjjsspyzr',
-            satellite=int(74),
-            he=float(87.28382802630712),
-            hp=float(93.66226499962329),
-            hn=float(55.71984095049884),
-            total=float(45.57029525022431),
+            time_tag='ufqescsoriuiegiaytme',
+            satellite=int(15),
+            he=float(48.849503021956274),
+            hp=float(89.74575975666164),
+            hn=float(36.483338684562305),
+            total=float(73.23539888075503),
             arcjet_flag=False
         )
         return instance
@@ -43,7 +43,7 @@ class Test_GoesMagnetometer(unittest.TestCase):
         """
         Test time_tag property
         """
-        test_value = 'uixtvisutohgjjsspyzr'
+        test_value = 'ufqescsoriuiegiaytme'
         self.instance.time_tag = test_value
         self.assertEqual(self.instance.time_tag, test_value)
     
@@ -51,7 +51,7 @@ class Test_GoesMagnetometer(unittest.TestCase):
         """
         Test satellite property
         """
-        test_value = int(74)
+        test_value = int(15)
         self.instance.satellite = test_value
         self.assertEqual(self.instance.satellite, test_value)
     
@@ -59,7 +59,7 @@ class Test_GoesMagnetometer(unittest.TestCase):
         """
         Test he property
         """
-        test_value = float(87.28382802630712)
+        test_value = float(48.849503021956274)
         self.instance.he = test_value
         self.assertEqual(self.instance.he, test_value)
     
@@ -67,7 +67,7 @@ class Test_GoesMagnetometer(unittest.TestCase):
         """
         Test hp property
         """
-        test_value = float(93.66226499962329)
+        test_value = float(89.74575975666164)
         self.instance.hp = test_value
         self.assertEqual(self.instance.hp, test_value)
     
@@ -75,7 +75,7 @@ class Test_GoesMagnetometer(unittest.TestCase):
         """
         Test hn property
         """
-        test_value = float(55.71984095049884)
+        test_value = float(36.483338684562305)
         self.instance.hn = test_value
         self.assertEqual(self.instance.hn, test_value)
     
@@ -83,7 +83,7 @@ class Test_GoesMagnetometer(unittest.TestCase):
         """
         Test total property
         """
-        test_value = float(45.57029525022431)
+        test_value = float(73.23539888075503)
         self.instance.total = test_value
         self.assertEqual(self.instance.total, test_value)
     

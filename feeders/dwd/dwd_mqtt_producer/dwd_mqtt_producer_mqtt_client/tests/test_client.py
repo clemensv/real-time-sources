@@ -119,9 +119,8 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_station_metadata_py(mosquitto_bro
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -186,9 +185,8 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_air_temperature10_min_py(mosquitt
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -253,9 +251,8 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_precipitation10_min_py(mosquitto_
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -320,9 +317,8 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_wind10_min_py(mosquitto_broker):
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -387,9 +383,8 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_solar10_min_py(mosquitto_broker):
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -454,9 +449,8 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_hourly_observation_py(mosquitto_b
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -521,9 +515,8 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_extreme_wind10_min_py(mosquitto_b
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -588,9 +581,8 @@ async def test_de_dwd_cdc_mqtt_de_dwd_cdc_mqtt_extreme_temperature10_min_py(mosq
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

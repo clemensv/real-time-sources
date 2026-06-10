@@ -97,10 +97,8 @@ async def test_jp_jma_volcano_mqtt_jp_jma_volcano_mqtt_volcano_py(mosquitto_brok
             volcano_code=f"test_volcano_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            prefecture="test_prefecture",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -166,10 +164,8 @@ async def test_jp_jma_volcano_mqtt_jp_jma_volcano_mqtt_volcanic_warning_py(mosqu
             volcano_code=f"test_volcano_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            prefecture="test_prefecture",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -235,10 +231,8 @@ async def test_jp_jma_volcano_mqtt_jp_jma_volcano_mqtt_volcanic_eruption_py(mosq
             volcano_code=f"test_volcano_code_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            prefecture="test_prefecture",
-            event="test_event",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

@@ -28,16 +28,16 @@ class Test_BikeshareStationStatus(unittest.TestCase):
         Create instance of BikeshareStationStatus for testing
         """
         instance = BikeshareStationStatus(
-            system_id='kxdidpbegjwxpqrknfzp',
-            station_id='dyloghogpfixlbppgpkb',
-            num_bikes_available=int(96),
-            num_bikes_disabled=int(2),
-            num_docks_available=int(53),
-            num_docks_disabled=int(76),
+            system_id='gqeksdsihsgnvylmwguu',
+            station_id='kzufhcfakvuaohhpzkuc',
+            num_bikes_available=int(60),
+            num_bikes_disabled=int(33),
+            num_docks_available=int(71),
+            num_docks_disabled=int(8),
             is_installed=False,
             is_renting=True,
-            is_returning=True,
-            last_reported=int(27)
+            is_returning=False,
+            last_reported=int(36)
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_BikeshareStationStatus(unittest.TestCase):
         """
         Test system_id property
         """
-        test_value = 'kxdidpbegjwxpqrknfzp'
+        test_value = 'gqeksdsihsgnvylmwguu'
         self.instance.system_id = test_value
         self.assertEqual(self.instance.system_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_BikeshareStationStatus(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'dyloghogpfixlbppgpkb'
+        test_value = 'kzufhcfakvuaohhpzkuc'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -62,7 +62,7 @@ class Test_BikeshareStationStatus(unittest.TestCase):
         """
         Test num_bikes_available property
         """
-        test_value = int(96)
+        test_value = int(60)
         self.instance.num_bikes_available = test_value
         self.assertEqual(self.instance.num_bikes_available, test_value)
     
@@ -70,7 +70,7 @@ class Test_BikeshareStationStatus(unittest.TestCase):
         """
         Test num_bikes_disabled property
         """
-        test_value = int(2)
+        test_value = int(33)
         self.instance.num_bikes_disabled = test_value
         self.assertEqual(self.instance.num_bikes_disabled, test_value)
     
@@ -78,7 +78,7 @@ class Test_BikeshareStationStatus(unittest.TestCase):
         """
         Test num_docks_available property
         """
-        test_value = int(53)
+        test_value = int(71)
         self.instance.num_docks_available = test_value
         self.assertEqual(self.instance.num_docks_available, test_value)
     
@@ -86,7 +86,7 @@ class Test_BikeshareStationStatus(unittest.TestCase):
         """
         Test num_docks_disabled property
         """
-        test_value = int(76)
+        test_value = int(8)
         self.instance.num_docks_disabled = test_value
         self.assertEqual(self.instance.num_docks_disabled, test_value)
     
@@ -110,7 +110,7 @@ class Test_BikeshareStationStatus(unittest.TestCase):
         """
         Test is_returning property
         """
-        test_value = True
+        test_value = False
         self.instance.is_returning = test_value
         self.assertEqual(self.instance.is_returning, test_value)
     
@@ -118,7 +118,7 @@ class Test_BikeshareStationStatus(unittest.TestCase):
         """
         Test last_reported property
         """
-        test_value = int(27)
+        test_value = int(36)
         self.instance.last_reported = test_value
         self.assertEqual(self.instance.last_reported, test_value)
     

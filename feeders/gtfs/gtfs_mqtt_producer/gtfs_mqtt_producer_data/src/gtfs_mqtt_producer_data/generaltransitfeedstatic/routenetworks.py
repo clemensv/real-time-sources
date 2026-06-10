@@ -157,7 +157,7 @@ class RouteNetworks:
             An instance of the dataclass.
         """
         return cls(
-            routeNetworkId='dwwvunzyykzkfrogkemg',
-            routeId='mxxhyruajrctlmynlvox',
-            networkId='nlanottmzoitpvuvurze'
+            routeNetworkId='xibovzccsdmqwiddsnai',
+            routeId='qgezsrrihieortdarvaq',
+            networkId='zkkqrtdibilpigluihrk'
         )

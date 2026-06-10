@@ -17,7 +17,7 @@ import json
 @dataclass
 class WeatherStation:
     """
-    Reference data for a GeoSphere Austria TAWES (Teilautomatische Wetterstationen) automatic weather station. The station identifier is the GeoSphere numeric station ID. Metadata is sourced from the TAWES v1 10-minute current dataset metadata endpoint.
+    Reference data for a GeoSphere Austria TAWES automatic weather station, including location, elevation, and federal state.
     
     Attributes:
         station_id (str)
@@ -26,6 +26,7 @@ class WeatherStation:
         longitude (float)
         altitude (float)
         state (typing.Optional[str])
+        bundesland (typing.Optional[str])
     """
     
     
@@ -35,6 +36,7 @@ class WeatherStation:
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     altitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="altitude"))
     state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    bundesland: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bundesland"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherStation':
@@ -163,10 +165,11 @@ class WeatherStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='vkeegbmbfqsmnvkiclgn',
-            station_name='onbkzoinaazeruthxgfg',
-            latitude=float(14.505745151012084),
-            longitude=float(75.64382172548164),
-            altitude=float(36.2755476204767),
-            state='ikomhelrjaqxbvgpwskv'
+            station_id='uoqyhdmostviviaadsvc',
+            station_name='porgecscfajjepxjykcm',
+            latitude=float(95.89780849457169),
+            longitude=float(94.57223373932399),
+            altitude=float(9.746592668305931),
+            state='qcpcymmwpyjuwnhjguqp',
+            bundesland='dustdsqrohdtoreimsfz'
         )

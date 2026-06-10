@@ -118,9 +118,8 @@ async def test_us_wa_wsdot_traffic_mqtt_us_wa_wsdot_traffic_traffic_flow_station
             flow_data_id=f"test_flow_data_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -186,9 +185,8 @@ async def test_us_wa_wsdot_traffic_mqtt_us_wa_wsdot_traffic_traffic_flow_reading
             flow_data_id=f"test_flow_data_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -257,9 +255,8 @@ async def test_us_wa_wsdot_traveltimes_mqtt_us_wa_wsdot_traveltimes_travel_time_
             travel_time_id=f"test_travel_time_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -328,9 +325,8 @@ async def test_us_wa_wsdot_mountainpass_mqtt_us_wa_wsdot_mountainpass_mountain_p
             mountain_pass_id=f"test_mountain_pass_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -399,9 +395,8 @@ async def test_us_wa_wsdot_weather_mqtt_us_wa_wsdot_weather_weather_station_mqtt
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -467,9 +462,8 @@ async def test_us_wa_wsdot_weather_mqtt_us_wa_wsdot_weather_weather_reading_mqtt
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -538,9 +532,8 @@ async def test_us_wa_wsdot_tolls_mqtt_us_wa_wsdot_tolls_toll_rate_mqtt_py(mosqui
             trip_name=f"test_trip_name_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -610,9 +603,8 @@ async def test_us_wa_wsdot_cvrestrictions_mqtt_us_wa_wsdot_cvrestrictions_commer
             bridge_number=f"test_bridge_number_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -681,9 +673,8 @@ async def test_us_wa_wsdot_border_mqtt_us_wa_wsdot_border_border_crossing_mqtt_p
             crossing_name=f"test_crossing_name_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -752,9 +743,8 @@ async def test_us_wa_wsdot_ferries_mqtt_us_wa_wsdot_ferries_vessel_location_mqtt
             vessel_id=f"test_vessel_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            region="test_region",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
