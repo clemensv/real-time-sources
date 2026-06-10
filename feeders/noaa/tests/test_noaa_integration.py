@@ -321,6 +321,77 @@ class TestPollAndSendResilience:
         assert len(poller.stations) == 1
         assert poller.stations[0].station_id == '8454000'
 
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
+    def test_visibility_events_use_named_required_cloudevents_fields(self, mock_ep_cls):
+        """Visibility events must populate the generated producer's required datacontenttype/dataschema fields."""
+        mock_ep = MagicMock()
+        mock_ep.producer = MagicMock()
+        mock_ep_cls.return_value = mock_ep
+
+        mock_station = MagicMock()
+        mock_station.station_id = '8454000'
+        mock_station.name = 'Providence'
+        mock_station.region = 'new-england'
+
+        poller = self._make_poller(mock_ep_cls, [mock_station])
+        poller.PRODUCTS = {'visibility': 'product=visibility'}
+
+        visibility_record = {
+            't': '2026-06-10 12:00',
+            'v': '5.5',
+            'f': '0,0,0',
+        }
+
+        with patch.object(poller, 'load_last_polled_times', return_value={}), \
+             patch.object(poller, 'poll_noaa_api', return_value=[visibility_record]), \
+             patch.object(poller, 'save_last_polled_times', side_effect=KeyboardInterrupt):
+            with pytest.raises(KeyboardInterrupt):
+                poller.poll_and_send()
+
+        mock_ep.send_microsoft_open_data_us_noaa_visibility.assert_called_once()
+        call = mock_ep.send_microsoft_open_data_us_noaa_visibility.call_args
+        assert call.kwargs['_datacontenttype'] == 'application/json'
+        assert call.kwargs['_dataschema'] == (
+            '#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/'
+            'Microsoft.OpenData.US.NOAA.Visibility'
+        )
+        assert call.kwargs['_station_id'] == '8454000'
+        assert call.kwargs['_time'] == '2026-06-10T12:00:00+00:00'
+        assert call.kwargs['flush_producer'] is False
+
+    @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
+    def test_water_level_records_include_region_from_station_metadata(self, mock_ep_cls):
+        """NOAA measurement dataclasses need region populated from station metadata."""
+        mock_ep = MagicMock()
+        mock_ep.producer = MagicMock()
+        mock_ep_cls.return_value = mock_ep
+
+        mock_station = MagicMock()
+        mock_station.station_id = '8454000'
+        mock_station.name = 'Providence'
+        mock_station.region = 'new-england'
+
+        poller = self._make_poller(mock_ep_cls, [mock_station])
+        poller.PRODUCTS = {'water_level': 'product=water_level'}
+
+        water_level_record = {
+            't': '2026-06-10 12:00',
+            'v': '1.2',
+            's': '0.1',
+            'f': '0,0,0,0',
+            'q': 'v',
+        }
+
+        with patch.object(poller, 'load_last_polled_times', return_value={}), \
+             patch.object(poller, 'poll_noaa_api', return_value=[water_level_record]), \
+             patch.object(poller, 'save_last_polled_times', side_effect=KeyboardInterrupt):
+            with pytest.raises(KeyboardInterrupt):
+                poller.poll_and_send()
+
+        mock_ep.send_microsoft_open_data_us_noaa_water_level.assert_called_once()
+        water_level = mock_ep.send_microsoft_open_data_us_noaa_water_level.call_args.args[1]
+        assert water_level.region == 'new-england'
+
 
 if __name__ == '__main__':
     pytest.main([__file__, '-v'])

@@ -29,35 +29,17 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install Poetry
-        run: |
-          curl -sSL https://install.python-poetry.org | python3 -
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Configure Poetry
-        run: |
-          poetry config virtualenvs.create true
-          poetry config virtualenvs.in-project true
-
-      - name: Cache Poetry dependencies
-        uses: actions/cache@v5
-        with:
-          path: ./feeders/noaa/.venv
-          key: venv-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
-          restore-keys: |
-            venv-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: poetry install --no-interaction --no-ansi
+      - name: Install package with dev extras
+        run: pip install --quiet -e ".[dev]"
 
       - name: Run unit tests
-        run: poetry run pytest tests/test_noaa_unit.py -v --tb=short
+        run: pytest tests/test_noaa_unit.py -v --tb=short
 
       - name: Run integration tests
-        run: poetry run pytest tests/test_noaa_integration.py -v --tb=short
+        run: pytest tests/test_noaa_integration.py -v --tb=short
 
       - name: Run all tests with coverage (excluding e2e)
-        run: poetry run pytest tests/ -v --cov=noaa --cov-report=term-missing --cov-report=xml --cov-fail-under=20 -m "not e2e"
+        run: pytest tests/ -v --cov=noaa --cov-report=term-missing --cov-report=xml --cov-fail-under=20 -m "not e2e"
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v7
