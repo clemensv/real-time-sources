@@ -25,4 +25,4 @@ ENV DWD_POLLENFLUG_LAST_POLLED_FILE="/mnt/fileshare/dwd_pollenflug_last_polled.j
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "dwd_pollenflug"]
+CMD ["python", "-m", "dwd_pollenflug", "feed"]

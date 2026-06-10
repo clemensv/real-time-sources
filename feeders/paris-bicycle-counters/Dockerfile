@@ -26,4 +26,4 @@ ENV PARIS_VELO_LAST_POLLED_FILE="/mnt/fileshare/paris_velo_last_polled.json"
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "paris_bicycle_counters"]
+CMD ["python", "-m", "paris_bicycle_counters", "feed"]

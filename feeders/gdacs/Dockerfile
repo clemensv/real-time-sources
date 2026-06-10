@@ -17,4 +17,4 @@ RUN pip install --no-cache-dir .
 ENV CONNECTION_STRING=""
 ENV LOG_LEVEL="INFO"
 
-CMD ["python", "-m", "gdacs"]
+CMD ["python", "-m", "gdacs", "feed"]

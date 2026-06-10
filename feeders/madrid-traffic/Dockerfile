@@ -14,4 +14,4 @@ RUN pip install --no-cache-dir .
 
 ENV CONNECTION_STRING=""
 
-CMD ["python", "-m", "madrid_traffic"]
+CMD ["python", "-m", "madrid_traffic", "feed"]

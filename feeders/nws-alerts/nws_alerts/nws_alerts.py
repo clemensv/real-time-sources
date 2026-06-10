@@ -308,7 +308,10 @@ def main():
     parser.add_argument("--poll-interval", type=int, default=DEFAULT_POLL_INTERVAL, help="Poll interval in seconds")
     parser.add_argument("--once", action="store_true", help="Poll once and exit")
     parser.add_argument("--log-level", type=str, default="INFO", help="Logging level")
-    args = parser.parse_args()
+    _argv = sys.argv[1:]
+    if _argv and _argv[0] == 'feed':
+        _argv = _argv[1:]
+    args = parser.parse_args(_argv)
 
     if not args.connection_string:
         args.connection_string = os.getenv("NWS_CONNECTION_STRING") or os.getenv("CONNECTION_STRING")

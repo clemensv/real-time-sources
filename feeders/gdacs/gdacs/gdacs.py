@@ -417,7 +417,10 @@ def main():
                         help='Publish one deterministic mock alert and exit')
     parser.add_argument('--log-level', type=str, default='INFO',
                         help='Logging level (default: INFO)')
-    args = parser.parse_args()
+    _argv = sys.argv[1:]
+    if _argv and _argv[0] == 'feed':
+        _argv = _argv[1:]
+    args = parser.parse_args(_argv)
 
     # Environment variable fallbacks
     if not args.connection_string:

@@ -17,4 +17,4 @@ RUN pip install ./seattle_street_closures_producer/seattle_street_closures_produ
 ENV SEATTLE_STREET_CLOSURES_STATE_FILE="/mnt/fileshare/seattle_street_closures_state.json"
 ENV CONNECTION_STRING=""
 
-CMD ["python", "-m", "seattle_street_closures"]
+CMD ["python", "-m", "seattle_street_closures", "feed"]

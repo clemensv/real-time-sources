@@ -10,4 +10,4 @@ ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
 RUN pip install --no-cache-dir .
 ENV CONNECTION_STRING=""
 ENV LOG_LEVEL="INFO"
-CMD ["python", "-m", "nws_alerts"]
+CMD ["python", "-m", "nws_alerts", "feed"]

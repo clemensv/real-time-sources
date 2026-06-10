@@ -459,7 +459,10 @@ def main():
                         help="Run a single polling cycle and exit (used by Fabric notebook hosting)")
     subparsers = parser.add_subparsers(dest="command")
     subparsers.add_parser("list", help="List current incidents")
-    subparsers.add_parser("feed", help="Feed data to Kafka")
+    feed_parser = subparsers.add_parser("feed", help="Feed data to Kafka")
+    feed_parser.add_argument("--once", action="store_true",
+                             default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
+                             help='Exit after one polling cycle (also via ONCE_MODE env var).')
     args = parser.parse_args()
     logging.basicConfig(level=logging.INFO)
 

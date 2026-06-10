@@ -25,4 +25,4 @@ ENV NDBC_LAST_POLLED_FILE="/mnt/fileshare/ndbc_last_polled.json"
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "noaa_ndbc"]
+CMD ["python", "-m", "noaa_ndbc", "feed"]

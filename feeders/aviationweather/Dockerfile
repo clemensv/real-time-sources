@@ -25,4 +25,4 @@ ENV AVIATIONWEATHER_LAST_POLLED_FILE="/mnt/fileshare/aviationweather_last_polled
 ENV CONNECTION_STRING=""
 
 # Run the application
-CMD ["python", "-m", "aviationweather"]
+CMD ["python", "-m", "aviationweather", "feed"]

@@ -281,7 +281,10 @@ def main():
                         default=os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes'),
                         help='Exit after one polling cycle (also via ONCE_MODE env var). Used by the Fabric notebook scheduler.')
 
-    args = parser.parse_args()
+    _argv = sys.argv[1:]
+    if _argv and _argv[0] == 'feed':
+        _argv = _argv[1:]
+    args = parser.parse_args(_argv)
 
     if not args.connection_string:
         args.connection_string = os.getenv('CONNECTION_STRING')

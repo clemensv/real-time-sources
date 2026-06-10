@@ -15,4 +15,4 @@ RUN pip install --no-cache-dir \
     ptwc_tsunami_producer/ptwc_tsunami_producer_kafka_producer \
     .
 
-CMD ["python", "-m", "ptwc_tsunami"]
+CMD ["python", "-m", "ptwc_tsunami", "feed"]

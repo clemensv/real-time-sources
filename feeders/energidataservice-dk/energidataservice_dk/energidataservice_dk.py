@@ -302,7 +302,10 @@ def main():
     parser.add_argument('--once', action='store_true',
                         help='Run a single polling cycle and exit (used by Fabric notebook scheduler).')
 
-    args = parser.parse_args()
+    _argv = sys.argv[1:]
+    if _argv and _argv[0] == 'feed':
+        _argv = _argv[1:]
+    args = parser.parse_args(_argv)
 
     once_mode = args.once or os.getenv('ONCE_MODE', '').lower() in ('1', 'true', 'yes')
 

@@ -27,4 +27,4 @@ ENV COUNTRY="de"
 ENV BIDDING_ZONE="DE-LU"
 
 # Run the application
-CMD ["python", "-m", "energy_charts"]
+CMD ["python", "-m", "energy_charts", "feed"]

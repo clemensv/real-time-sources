@@ -17,4 +17,4 @@ RUN pip install ./king_county_marine_producer/king_county_marine_producer_data \
 ENV KING_COUNTY_MARINE_STATE_FILE="/mnt/fileshare/king_county_marine_state.json"
 ENV CONNECTION_STRING=""
 
-CMD ["python", "-m", "king_county_marine"]
+CMD ["python", "-m", "king_county_marine", "feed"]
