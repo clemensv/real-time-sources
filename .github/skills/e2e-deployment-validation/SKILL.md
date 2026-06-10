@@ -841,3 +841,141 @@ Summary:
 
 **Fix**: Always run the deploy script without `-SkipEnvironment` for the first deploy of a source (wheels have never been uploaded). `-SkipEnvironment` is safe only when wheels are already in the Lakehouse from a prior run.
 
+**Extended diagnosis — distinguishing two "before-first-cell" root causes:**
+
+| Symptom | Root Cause | Fix |
+|---------|-----------|-----|
+| 404 log + no Lakehouse wheels | `-SkipEnvironment` on first deploy | Re-run without flag |
+| 404 log + wheels present + passes validator | **SyntaxError in any cell** (see #17) | Fix notebook source |
+| 404 log + wheels present + known good notebook | Fabric capacity / Environment not published | Wait 10 min, retry; check `/staging/sparkcompute` publish status |
+
+### Pitfall #17: SyntaxError in any cell causes the entire session to fail before cell 0 executes
+
+**Symptom**: `System_Cancelled_Session_Statements_Failed`, OneLake `last-run.log` returns 404, even though wheels are present and the notebook otherwise looks correct.
+
+**Root cause**: Fabric pre-compiles **all** cells as a single AST before executing any of them. A SyntaxError in cell 5 will abort the session before cell 0 runs — so no Python ever executes, and the log file is never created.
+
+**Most common sources of injected SyntaxErrors in this repo:**
+
+1. **Deploy script `Ensure-OneShotStateCleanup` injection** (now fixed in `deploy-feeder-notebook.ps1`): The function injected Python lines by appending strings to the `cell.source` array without trailing `\n`. Jupyter concatenates `source` array elements with no separator, so multi-line injections become one long line. `if ONCE_MODE:` followed immediately by `os.remove(STATE_FILE)` becomes `if ONCE_MODE:        os.remove(STATE_FILE)` — valid as one line. But `if ONCE_MODE:` injected alone (with the body as a separate element that is not properly indented) becomes a bare `if ONCE_MODE:` with no body → `SyntaxError: expected an indented block`.
+
+2. **Notebook files committed before the deploy script fix**: If a notebook was deployed and then committed to the repo with the injected SyntaxError baked in, all future redeploys will fail until the notebook source is corrected.
+
+**Detection**: Inspect the run cell source programmatically — look for any bare `if ...:` that has an empty string or only whitespace as the next array element:
+```powershell
+$nb = Get-Content "feeders/<source>/notebook/<source>-feed.ipynb" | ConvertFrom-Json
+$nb.cells | ForEach-Object { $i = 0 } {
+    $src = $_.source -join ""
+    if ($src -match "if [^:]+:\s*$") { Write-Host "BARE IF in cell $i" }
+    $i++
+}
+```
+
+**Fix**: Edit the notebook source so `if ONCE_MODE:` has a proper body:
+```python
+if ONCE_MODE:
+    sys.argv.append('--once')
+```
+
+After fixing, re-validate with `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <source>` and confirm 0 blockers.
+
+### Pitfall #18: `--force-reinstall` on PyPI deps causes silent SIGKILL before any log is written
+
+**Symptom**: `System_Cancelled_Session_Statements_Failed`, OneLake `last-run.log` returns 404. Wheels are present. No SyntaxError in notebook. The session is killed approximately 27–30 seconds after kernel start.
+
+**Root cause**: Using `--force-reinstall` for binary C extensions (specifically `confluent_kafka`) in the pip-install cell forces pip to re-download and recompile the extension even when it is already cached in the Fabric Environment. This process takes >27 s. Fabric SIGKILLs the kernel process after its per-cell timeout. SIGKILL bypasses all Python exception handlers and `try/except` blocks — no log file is written, the run cell never starts.
+
+**Detection**: Check the pip-install cell for `--force-reinstall` combined with PyPI packages (not local wheels):
+```python
+# BAD — kills the kernel via SIGKILL after ~27s
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q',
+    '--upgrade', '--force-reinstall',   # <-- this flag
+    'avro>=1.11.3', 'confluent_kafka>=2.5.3', ...])
+
+# GOOD — fast upgrade check, no recompile if already present
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q',
+    '--upgrade',                        # no --force-reinstall
+    'avro>=1.11.3', 'confluent_kafka>=2.5.3', ...])
+```
+
+`--force-reinstall` is fine for **local wheels** (pure Python, no compilation):
+```python
+# OK — local wheels are pure Python, fast even with force-reinstall
+subprocess.check_call([sys.executable, '-m', 'pip', 'install', '-q',
+    '--force-reinstall', '--no-deps'] + local_wheels)
+```
+
+**Fleet check**: If a fleet-wide `System_Cancelled_Session_Statements_Failed` pattern appears across many sources after a deploy script change, first check whether `--force-reinstall` was added to the PyPI line:
+```powershell
+Select-String -Path "feeders\*\notebook\*-feed.ipynb" -Pattern "force-reinstall" | Where-Object { $_ -match "confluent_kafka|avro|cloudevents" }
+```
+
+### Pitfall #19: AMQP companion app ignores `AMQP_AUTH_MODE=entra` in older generated sources
+
+**Symptom**: ACI container deploys and appears to start (reaches `Running` state), container log shows no output at all or very little, 0 messages received on Service Bus queue/topic.
+
+**Root cause**: Sources regenerated before the xrcg template gained Entra auth support have an AMQP `app.py` that only reads `AMQP_USERNAME` / `AMQP_PASSWORD`. The `azure-template-with-servicebus.json` ARM template sets `AMQP_AUTH_MODE=entra`, `AMQP_ENTRA_AUDIENCE`, and `AMQP_ENTRA_CLIENT_ID` — but the old app.py ignores all three and connects to Service Bus with empty credentials → AMQP auth failure → 0 messages.
+
+**Detection**: Check for `AMQP_AUTH_MODE` in the source's AMQP app.py:
+```powershell
+Select-String -Path "feeders/<source>/*_amqp/*_amqp/app.py" -Pattern "AMQP_AUTH_MODE" -Quiet
+```
+If this returns `False`, the source needs regeneration.
+
+**Fleet-wide check**:
+```powershell
+$files = Get-ChildItem "feeders" -Recurse -Filter "app.py" | Where-Object { $_.FullName -match "_amqp\\" }
+$missing = $files | Where-Object { -not (Select-String -Path $_.FullName -Pattern "AMQP_AUTH_MODE" -Quiet) }
+Write-Host "$($missing.Count) sources need regeneration"
+```
+
+**Fix**: For each affected source, run `pwsh feeders/<source>/generate_producer.ps1` to regenerate with the latest xrcg template. Do NOT hand-edit the generated app.py. Commit the regenerated files and verify `AMQP_AUTH_MODE` is present.
+
+**Note**: This failure is distinct from a container startup failure — the container reaches `Running` state and may log initial startup messages, but then produces nothing. Always check SB queue depth after 60–120 s, not just container state.
+
+### Pitfall #20: ACI container never reaches `Running` — wrong image tag or missing required env vars
+
+**Symptom**: `az container show` reports `Waiting` or `Terminated` indefinitely. The ARM template deploys without error, but the container never becomes `Running` within the 180 s poll window.
+
+**Root cause A — Wrong GHCR image tag**: The ARM template references a GHCR image tag that does not exist (e.g. `ghcr.io/clemensv/real-time-sources-<source>-kafka:latest` when the published image is `ghcr.io/clemensv/real-time-sources-<source>:latest`). The container runtime can't pull the image → `ImagePullBackoff` → never `Running`.
+
+**Detection**: Check container events via:
+```powershell
+az container show --resource-group $rg --name $containerName --query "containers[0].instanceView.events" --output json
+```
+Look for `Failed to pull image` or `ErrImagePull` events.
+
+**Fix**: Correct the image tag in the ARM template. The canonical tag pattern is `ghcr.io/clemensv/real-time-sources-<source>:latest` (no transport suffix on the primary Kafka image). AMQP and MQTT variants use `:latest` on their respective images.
+
+**Root cause B — Missing required env vars that cause immediate exit**: Some feeders require specific env vars to start (e.g. `GBFS_FEEDS` for gbfs-bikeshare). If the ARM template doesn't pass them, the feeder calls `sys.exit(1)` immediately after argparse fails → container state goes `Terminated` within seconds.
+
+**Detection**: Check container exit code and logs:
+```powershell
+az container logs --resource-group $rg --name $containerName
+az container show --resource-group $rg --name $containerName --query "containers[0].instanceView.currentState" --output json
+```
+An exit code of 2 indicates argparse failure (missing required argument).
+
+**Fix**: Add the missing env vars to the ARM template. Check the feeder's `__main__.py` or `argparse` setup for required arguments with no `default` value.
+
+### Pitfall #21: Non-canonical notebook patterns fail silently in Fabric
+
+**Symptom**: Notebook deploys, runs, exits `OK`, but 0 messages appear in KQL tables. Or notebook fails with obscure import errors that don't appear in other sources.
+
+**Root cause**: The notebook diverges from the canonical 4-cell pattern in ways that work locally but fail in Fabric:
+- Using `azure-eventhub` (`EventHubProducerClient`) instead of the Kafka (`confluent_kafka`) pattern used by the rest of the fleet
+- Calling feeder helper functions directly (`feeder.poll_and_submit()`) instead of `feeder.main()` — misses env var setup that `main()` performs
+- `t.join()` with no timeout — notebook runs indefinitely, never exits, Fabric eventually kills it
+- Log cell comes AFTER the pip-install cell — pip failures leave no trace
+
+**Detection**: Any notebook that fails consistently without a clear log should be checked against the canonical pattern. Compare with `feeders/pegelonline/notebook/pegelonline-feed.ipynb`.
+
+Required canonical structure:
+1. Markdown intro
+2. Parameters cell (with `parameters` tag): `EVENTSTREAM_NAME`, `STATE_FILE`, `POLLING_INTERVAL`, `RUN_DURATION`, `ONCE_MODE`, `WORKSPACE_ID`
+3. Early-log + pip-install cell: **opens log file first**, then installs wheels
+4. CS-lookup cell: Topology API pattern
+5. Run cell: `feeder.main()` via worker thread, `t.join(timeout=RUN_DURATION)`, `notebookutils.notebook.exit("OK"|"FAIL: ...")`
+
+**Validator**: Run `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <source>` — it enforces the structural rules mechanically. A notebook that passes the validator with 0 blockers is structurally sound. A notebook that bypasses the validator may look fine but break in Fabric.
+
