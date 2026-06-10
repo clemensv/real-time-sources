@@ -79,6 +79,15 @@ def normalize_value(raw_value: Any) -> Optional[float]:
     return val
 
 
+def extract_basin(raw: Dict[str, Any]) -> Optional[str]:
+    """Extract watershed / basin metadata from a CDEC reading payload."""
+    for key in ("basin", "Basin", "riverBasin", "watershed", "drainageBasin"):
+        value = raw.get(key)
+        if value:
+            return str(value).strip()
+    return None
+
+
 class CdecReservoirsAPI:
     """Client for the CDEC JSON Data Servlet."""
 
@@ -210,7 +219,7 @@ class CdecReservoirsAPI:
                         date=iso_date,
                         dur_code=raw.get("durCode", "").strip(),
                         data_flag=raw.get("dataFlag", " "),
-                        basin=raw.get("basin"),
+                        basin=extract_basin(raw),
                     )
 
                     cdec_producer.send_gov_ca_water_cdec_reservoir_reading(

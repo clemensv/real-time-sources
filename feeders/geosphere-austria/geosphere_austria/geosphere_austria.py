@@ -107,6 +107,7 @@ def fetch_station_metadata(session: requests.Session) -> typing.List[typing.Dict
 
 def parse_station(raw: typing.Dict) -> WeatherStation:
     """Convert a raw metadata dict to a WeatherStation data class."""
+    bundesland = raw.get("bundesland") or raw.get("federal_state") or raw.get("state")
     return WeatherStation(
         station_id=str(raw["id"]),
         station_name=raw.get("name", ""),
@@ -114,7 +115,7 @@ def parse_station(raw: typing.Dict) -> WeatherStation:
         longitude=float(raw["lon"]),
         altitude=float(raw.get("altitude", 0.0)),
         state=raw.get("state") or None,
-        bundesland=raw.get("bundesland") or None,
+        bundesland=bundesland or None,
     )
 
 

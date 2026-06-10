@@ -74,6 +74,15 @@ class SMHIWeatherAPI:
         return response.json()
 
     @staticmethod
+    def extract_lan(station_data: dict) -> typing.Optional[str]:
+        """Extract the Swedish county code/name from a station payload."""
+        for key in ("lan", "county", "countyCode", "countyName"):
+            value = station_data.get(key)
+            if value:
+                return str(value)
+        return None
+
+    @staticmethod
     def parse_station(station_data: dict) -> Station:
         """Parse a station entry from the parameter station list."""
         summary = station_data.get("summary", "")
@@ -110,7 +119,7 @@ class SMHIWeatherAPI:
             height=float(station_data.get("height", 0.0)),
             latitude=lat,
             longitude=lon,
-            lan=station_data.get("lan") or None,
+            lan=SMHIWeatherAPI.extract_lan(station_data),
         )
 
     @staticmethod
@@ -136,12 +145,17 @@ class SMHIWeatherAPI:
                 "observation_time": ts,
                 "quality": quality,
                 "value": float(val),
+                "lan": SMHIWeatherAPI.extract_lan(station_data),
             }
         return result
 
 
-def _merge_observations(param_data: dict[int, dict[str, dict]]) -> list[WeatherObservation]:
+def _merge_observations(
+    param_data: dict[int, dict[str, dict]],
+    station_lan_by_id: typing.Optional[dict[str, typing.Optional[str]]] = None,
+) -> list[WeatherObservation]:
     """Merge per-parameter observations into WeatherObservation objects per station."""
+    station_lan_by_id = station_lan_by_id or {}
     all_stations: set[str] = set()
     for pdata in param_data.values():
         all_stations.update(pdata.keys())
@@ -178,7 +192,7 @@ def _merge_observations(param_data: dict[int, dict[str, dict]]) -> list[WeatherO
             global_irradiance=param_data.get(PARAM_IRRADIANCE, {}).get(sid, {}).get("value"),
             precipitation_intensity=param_data.get(PARAM_PRECIP_INTENSITY, {}).get(sid, {}).get("value"),
             quality=temp_data.get("quality", ""),
-            lan=None,
+            lan=temp_data.get("lan") or station_lan_by_id.get(sid),
         )
         observations.append(obs)
     return observations
@@ -262,6 +276,13 @@ def send_stations(api: SMHIWeatherAPI, producer: SEGovSMHIWeatherEventProducer) 
 def feed_observations(api: SMHIWeatherAPI, producer: SEGovSMHIWeatherEventProducer,
                       previous_readings: dict) -> int:
     """Fetch latest observations for all parameters and emit merged observations."""
+    station_lan_by_id: dict[str, typing.Optional[str]] = {}
+    try:
+        for station_data in api.get_stations_for_parameter(PARAM_AIR_TEMP):
+            station_lan_by_id[str(station_data.get("key", ""))] = api.extract_lan(station_data)
+    except Exception as e:
+        logger.warning("Failed to fetch station county metadata: %s", e)
+
     param_data: dict[int, dict[str, dict]] = {}
     for param_id in ALL_PARAMS:
         try:
@@ -270,7 +291,7 @@ def feed_observations(api: SMHIWeatherAPI, producer: SEGovSMHIWeatherEventProduc
         except Exception as e:
             logger.warning("Failed to fetch parameter %d: %s", param_id, e)
 
-    observations = _merge_observations(param_data)
+    observations = _merge_observations(param_data, station_lan_by_id=station_lan_by_id)
     sent = 0
     for obs in observations:
         reading_key = f"{obs.station_id}:{obs.observation_time.isoformat()}"

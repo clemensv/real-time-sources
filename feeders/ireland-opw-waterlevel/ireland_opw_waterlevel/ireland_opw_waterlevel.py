@@ -96,6 +96,12 @@ def extract_readings(features: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
             "value": parse_value(props.get("value")),
             "datetime": props.get("datetime", ""),
             "err_code": int(props.get("err_code") or 0),
+            "basin": (
+                props.get("basin")
+                or props.get("catchment")
+                or props.get("river_basin")
+                or props.get("river_name")
+            ),
         })
     return readings
 

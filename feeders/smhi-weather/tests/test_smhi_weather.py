@@ -146,6 +146,7 @@ class TestParseStation:
         assert station.height == 452.0
         assert station.latitude == 67.82
         assert station.longitude == 20.33
+        assert station.lan is None
 
     def test_parse_station_with_title_dash(self):
         station = SMHIWeatherAPI.parse_station(SAMPLE_STATION_RESPONSE["station"][1])
@@ -213,6 +214,13 @@ class TestMergeObservations:
         kiruna = [o for o in obs_list if o.station_id == "98210"][0]
         assert kiruna.air_temperature == -5.2
         assert kiruna.wind_gust == 12.5
+
+    def test_merge_uses_station_lan_lookup(self):
+        temp_data = SMHIWeatherAPI.parse_bulk_observations(SAMPLE_BULK_RESPONSE)
+        param_data = {PARAM_AIR_TEMP: temp_data}
+        obs_list = _merge_observations(param_data, station_lan_by_id={"98210": "Norrbottens län"})
+        kiruna = [o for o in obs_list if o.station_id == "98210"][0]
+        assert kiruna.lan == "Norrbottens län"
 
     def test_merge_station_only_in_wind(self):
         wind_only = {"station": [{"key": "99999", "name": "Test", "value": [{"date": 1712505600000, "value": "8.0", "quality": "G"}]}]}

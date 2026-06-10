@@ -100,6 +100,7 @@ class TestParseStation:
         assert station.iata_id == "YOW"
         assert station.wmo_id == 71628
         assert station.province_territory == "ON"
+        assert station.province == "ON"
         assert station.data_provider == "MSC"
         assert station.latitude == 45.32
         assert station.longitude == -75.67
@@ -147,6 +148,22 @@ class TestParseObservation:
         assert obs.wind_gust_1hr == 28.0
         assert obs.precipitation_24hr == 1.4
         assert obs.altimeter_setting == 30.01
+        assert obs.province is None
+
+    def test_parse_observation_province_fallbacks(self):
+        feature = {
+            "type": "Feature",
+            "geometry": None,
+            "properties": {
+                "msc_id-value": "6106000",
+                "stn_nam-value": "OTTAWA INTL A",
+                "obs_date_tm": "2026-04-07T12:00:00Z",
+                "province-value": "ON",
+            },
+        }
+        obs = ECWeatherAPI.parse_observation(feature)
+        assert obs is not None
+        assert obs.province == "ON"
 
     def test_parse_observation_no_msc(self):
         obs = ECWeatherAPI.parse_observation(SAMPLE_OBS_FEATURE_NO_MSC)
