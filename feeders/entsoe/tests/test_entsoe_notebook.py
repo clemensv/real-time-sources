@@ -21,15 +21,15 @@ def test_entsoe_fabric_notebook_structure():
     assert 'EVENTSTREAM_NAME = "entsoe-ingest"' in parameters_source
     assert 'STATE_FILE       = "/lakehouse/default/Files/feeder-state/entsoe/state.json"' in parameters_source
 
-    lookup_source = "".join(notebook["cells"][3]["source"])
+    lookup_source = "".join(notebook["cells"][4]["source"])
     assert "notebookutils.credentials.getToken('pbi')" in lookup_source
     assert "'Bearer ' + _get_pbi_token()" in lookup_source
     assert "/workspaces/{workspace_id}/eventstreams" in lookup_source
     assert "/sources/{src[\"id\"]}/connection" in lookup_source
 
-    run_source = "".join(notebook["cells"][5]["source"])
-    assert "from entsoe_kafka import app as feeder" in run_source
-    assert "sys.argv = ['entsoe-kafka', 'feed', '--once']" in run_source
+    run_source = "".join(notebook["cells"][6]["source"])
+    assert "from entsoe import entsoe as feeder" in run_source
+    assert "sys.argv = ['entsoe', 'feed', '--once'] if ONCE_MODE else ['entsoe', 'feed']" in run_source
     assert "ENTSOE_SECURITY_TOKEN present" in run_source
     assert "threading.Thread" in run_source
     assert "notebookutils.notebook.exit('OK')" in run_source
