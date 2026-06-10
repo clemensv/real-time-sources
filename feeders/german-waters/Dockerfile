@@ -10,6 +10,9 @@ LABEL org.opencontainers.image.license="MIT"
 # Set the working directory in the container
 WORKDIR /app
 
+ENV PYTHONIOENCODING=utf-8
+ENV LANG=C.UTF-8
+
 # Copy the current directory contents into the container at /app
 COPY . /app
 
