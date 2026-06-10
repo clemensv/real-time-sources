@@ -152,12 +152,12 @@ class HubEauHydrometrieAPI:
             station_data = Station(
                 code_station=station.get("code_station", ""),
                 libelle_station=station.get("libelle_station", ""),
-                code_site=station.get("code_site", ""),
+                code_site=str(station.get("code_site") or "") or None,
                 longitude_station=station.get("longitude_station", 0.0) or 0.0,
                 latitude_station=station.get("latitude_station", 0.0) or 0.0,
                 libelle_cours_eau=station.get("libelle_cours_eau", "") or "",
                 libelle_commune=station.get("libelle_commune", "") or "",
-                code_departement=station.get("code_departement", "") or "",
+                code_departement=str(station.get("code_departement") or "") or None,
                 en_service=station.get("en_service", False) or False,
                 date_ouverture_station=station.get("date_ouverture_station", "") or "",
                 basin=station.get("libelle_bassin", None)
