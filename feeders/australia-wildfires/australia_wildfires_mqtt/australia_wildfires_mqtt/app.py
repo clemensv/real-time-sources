@@ -5,12 +5,14 @@ from __future__ import annotations
 import argparse
 import asyncio
 import dataclasses
+import json
 import logging
 import os
 import re
 import unicodedata
 from typing import Optional
-from urllib.parse import urlparse
+from urllib.parse import urlencode, urlparse
+from urllib.request import Request, urlopen
 
 import paho.mqtt.client as mqtt
 from paho.mqtt.client import CallbackAPIVersion, MQTTv5
@@ -55,6 +57,51 @@ def _to_mqtt_incident(incident) -> MqttFireIncident:
     return MqttFireIncident(**payload)
 
 
+def _fetch_entra_mqtt_token(audience: str, managed_identity_client_id: Optional[str] = None) -> str:
+    """Fetch an Entra access token for Event Grid MQTT from the IMDS endpoint."""
+    params = {
+        "api-version": "2018-02-01",
+        "resource": audience or "https://eventgrid.azure.net/",
+    }
+    if managed_identity_client_id:
+        params["client_id"] = managed_identity_client_id
+
+    request = Request(
+        "http://169.254.169.254/metadata/identity/oauth2/token?" + urlencode(params),
+        headers={"Metadata": "true"},
+    )
+    with urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+
+    token = payload.get("accessToken") or payload.get("access_token")
+    if not token:
+        raise RuntimeError("IMDS token response did not contain an access token")
+    return str(token)
+
+
+def _resolve_mqtt_auth(
+    *,
+    username: Optional[str],
+    password: Optional[str],
+    client_id: Optional[str],
+    auth_mode: Optional[str] = None,
+) -> tuple[str, str]:
+    """Resolve MQTT credentials for password or Entra JWT authentication modes."""
+    auth_mode = (auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
+
+    if auth_mode != "entra":
+        return username or "", password or ""
+
+    audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
+    managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
+    resolved_username = (client_id or os.getenv("MQTT_CLIENT_ID") or username or "").strip()
+    if not resolved_username:
+        raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
+
+    resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
+    return resolved_username, resolved_password
+
+
 async def feed(
     broker_host: str,
     broker_port: int,
@@ -67,13 +114,20 @@ async def feed(
     content_mode: str = "binary",
     polling_interval: int = 300,
 ) -> None:
+    resolved_username, resolved_password = _resolve_mqtt_auth(
+        username=username,
+        password=password,
+        client_id=client_id,
+        auth_mode=os.getenv("MQTT_AUTH_MODE"),
+    )
+
     paho_client = mqtt.Client(
         callback_api_version=CallbackAPIVersion.VERSION2,
         client_id=client_id or "",
         protocol=MQTTv5,
     )
-    if username:
-        paho_client.username_pw_set(username, password or "")
+    if resolved_username or resolved_password:
+        paho_client.username_pw_set(resolved_username, resolved_password)
     if tls:
         paho_client.tls_set()
 
