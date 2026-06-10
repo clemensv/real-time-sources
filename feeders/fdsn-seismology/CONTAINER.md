@@ -31,7 +31,7 @@ This document covers the published OCI images for **FDSN Seismology**, their env
 
 | Image | Transport | Default behavior |
 |---|---|---|
-| `ghcr.io/clemensv/real-time-sources-fdsn-seismology-kafka` | Kafka | One topic, structured CloudEvents, `Node` reference events at startup, `Earthquake` telemetry on every poll cycle |
+| `ghcr.io/clemensv/real-time-sources-fdsn-seismology` | Kafka | One topic, structured CloudEvents, `Node` reference events at startup, `Earthquake` telemetry on every poll cycle |
 | `ghcr.io/clemensv/real-time-sources-fdsn-seismology-mqtt` | MQTT 5.0 | `seismology/fdsn/{node_id}/info` retained node records and `seismology/fdsn/{contributor}/{event_id}` event topics |
 | `ghcr.io/clemensv/real-time-sources-fdsn-seismology-amqp` | AMQP 1.0 | One AMQP address (`fdsn-seismology` by default), binary CloudEvents, generic or Azure auth |
 
@@ -54,7 +54,7 @@ This document covers the published OCI images for **FDSN Seismology**, their env
 docker run --rm \
   -e CONNECTION_STRING="Endpoint=sb://<ns>.servicebus.windows.net/;SharedAccessKeyName=...;SharedAccessKey=...;EntityPath=fdsn-seismology" \
   -e MIN_MAGNITUDE=2.5 \
-  ghcr.io/clemensv/real-time-sources-fdsn-seismology-kafka:latest
+  ghcr.io/clemensv/real-time-sources-fdsn-seismology:latest
 ```
 
 For plain Kafka in Docker E2E or local development, use:
@@ -63,7 +63,7 @@ For plain Kafka in Docker E2E or local development, use:
 docker run --rm \
   -e CONNECTION_STRING="BootstrapServer=<broker>:9092;EntityPath=fdsn-seismology" \
   -e KAFKA_ENABLE_TLS=false \
-  ghcr.io/clemensv/real-time-sources-fdsn-seismology-kafka:latest
+  ghcr.io/clemensv/real-time-sources-fdsn-seismology:latest
 ```
 
 ## Using the MQTT image

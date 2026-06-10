@@ -58,7 +58,7 @@
   "variables": {
     "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
     "fileShareName": "bridge-state",
-    "imageName": "ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-kafka:latest",
+    "imageName": "ghcr.io/clemensv/real-time-sources-gbfs-bikeshare:latest",
     "eventHubNamespaceName": "[concat(parameters('containerGroupName'), '-ehns')]",
     "eventHubName": "[parameters('containerGroupName')]",
     "authRuleName": "bridge-send-listen",
@@ -191,6 +191,22 @@
                   "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
                 },
                 {
+                  "name": "GBFS_FEEDS",
+                  "value": "[parameters('gbfsFeeds')]"
+                },
+                {
+                  "name": "GBFS_SYSTEM_IDS",
+                  "value": "[parameters('gbfsSystemIds')]"
+                },
+                {
+                  "name": "POLL_INTERVAL",
+                  "value": "[string(parameters('pollInterval'))]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
+                },
+                {
                   "name": "LOG_LEVEL",
                   "value": "INFO"
                 },
@@ -240,7 +256,6 @@
     }
   }
 }
-
 
 
 

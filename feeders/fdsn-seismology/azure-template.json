@@ -23,7 +23,7 @@
     },
     "imageName": {
       "type": "string",
-      "defaultValue": "ghcr.io/clemensv/real-time-sources-fdsn-seismology-kafka:latest",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-fdsn-seismology:latest",
       "metadata": {
         "description": "Kafka container image reference."
       }

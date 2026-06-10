@@ -30,6 +30,21 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
+    },
+    "pollInterval": {
+      "type": "int",
+      "defaultValue": 3600,
+      "minValue": 60,
+      "metadata": {
+        "description": "Polling interval in seconds."
+      }
+    },
+    "stateFile": {
+      "type": "string",
+      "defaultValue": "/mnt/bridge-state/hongkong_epd_state.json",
+      "metadata": {
+        "description": "State file path for persisted AQHI dedupe state."
+      }
     }
   },
   "variables": {
@@ -166,6 +181,14 @@
                 {
                   "name": "CONNECTION_STRING",
                   "secureValue": "[listKeys(variables('authRuleResourceId'), '2024-01-01').primaryConnectionString]"
+                },
+                {
+                  "name": "POLLING_INTERVAL",
+                  "value": "[string(parameters('pollInterval'))]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "[parameters('stateFile')]"
                 },
                 {
                   "name": "LOG_LEVEL",

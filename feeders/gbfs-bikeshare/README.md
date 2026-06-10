@@ -51,7 +51,7 @@ This feeder provides one reusable bridge for common mobility scenarios:
 
 | Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
-| **Kafka** | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-kafka` | Apache Kafka / Event Hubs / Fabric Event Streams | topic `gbfs-bikeshare`; keys follow the CloudEvents subject (`{system_id}`, `{system_id}/{station_id}`, `{system_id}/{bike_id}`) |
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare` | Apache Kafka / Event Hubs / Fabric Event Streams | topic `gbfs-bikeshare`; keys follow the CloudEvents subject (`{system_id}`, `{system_id}/{station_id}`, `{system_id}/{bike_id}`) |
 | **MQTT** | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-mqtt` | MQTT 5.0 / Unified Namespace | `mobility/gbfs/...` topic tree with retained reference events |
 | **AMQP** | `ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-amqp` | AMQP 1.0 / Service Bus / Artemis / RabbitMQ AMQP 1.0 | address `gbfs-bikeshare`, binary-mode CloudEvents |
 
@@ -77,7 +77,7 @@ docker run --rm \
   -e GBFS_FEEDS="https://gbfs.citibikenyc.com/gbfs/gbfs.json,https://gbfs.lyft.com/gbfs/2.3/chi/gbfs.json" \
   -e GBFS_SYSTEM_IDS="citibike-nyc,divvy-chicago" \
   -e CONNECTION_STRING="BootstrapServer=<host:port>;EntityPath=gbfs-bikeshare" \
-  ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-kafka:latest
+  ghcr.io/clemensv/real-time-sources-gbfs-bikeshare:latest
 ```
 
 ## Upstream data-channel audit
