@@ -10,7 +10,9 @@ WORKDIR /app
 COPY . /app
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install ./epa_uv_producer/epa_uv_producer_data \
+ && pip install ./epa_uv_producer/epa_uv_producer_kafka_producer \
+ && pip install .
 
 ENV EPA_UV_STATE_FILE="/mnt/fileshare/epa_uv_state.json"
 ENV EPA_UV_LOCATIONS="Seattle,WA"

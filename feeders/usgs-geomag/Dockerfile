@@ -16,7 +16,9 @@ COPY . /app
 # Install the required Python packages
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install ./usgs_geomag_producer/usgs_geomag_producer_data \
+ && pip install ./usgs_geomag_producer/usgs_geomag_producer_kafka_producer \
+ && pip install .
 
 # Define environment variables (default values)
 ENV GEOMAG_LAST_POLLED_FILE="/mnt/fileshare/usgs_geomag_last_polled.json"
