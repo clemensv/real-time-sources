@@ -247,6 +247,24 @@ class NWSForecastPoller:
         self._marine_offices = marine_offices
         self._last_reference_refresh = time.time()
 
+    def _flush_with_retry(self, timeout: int = 30, retries: int = 3, context: str = "messages") -> None:
+        """Flush Kafka producer with retries and exponential backoff."""
+        for attempt in range(1, retries + 1):
+            remaining = self.kafka_client.flush(timeout=timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                backoff = 2 ** attempt
+                LOGGER.warning(
+                    "Kafka flush left %d %s unsent (attempt %d/%d), retrying in %ds...",
+                    remaining, context, attempt, retries, backoff,
+                )
+                time.sleep(backoff)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} {context} unsent after {retries} attempts."
+                )
+
     def emit_reference_data(self) -> None:
         if not self.zone_cache:
             self.refresh_zone_cache()
@@ -259,9 +277,7 @@ class NWSForecastPoller:
                 zone_id, zone, flush_producer=False
             )
 
-        remaining = self.kafka_client.flush(timeout=30)
-        if remaining != 0:
-            raise RuntimeError(f"Kafka flush left {remaining} reference messages unsent.")
+        self._flush_with_retry(context="reference messages")
 
     def fetch_land_forecast(self, zone_id: str) -> LandZoneForecast:
         data = self._get_json(LAND_FORECAST_URL.format(zone_id=zone_id))
@@ -435,9 +451,7 @@ class NWSForecastPoller:
             except (requests.RequestException, ValueError, KeyError) as exc:
                 LOGGER.error("Failed to process forecast slice %s: %s", zone_id, exc)
 
-        remaining = self.kafka_client.flush(timeout=30)
-        if remaining != 0:
-            raise RuntimeError(f"Kafka flush left {remaining} forecast messages unsent.")
+        self._flush_with_retry(context="forecast messages")
 
         if emitted > 0:
             self.save_state(
@@ -451,19 +465,39 @@ class NWSForecastPoller:
     def run(self, once: bool = False) -> None:
         LOGGER.info("Starting NWS forecast poller for zones: %s", ", ".join(self.zones))
         self.refresh_zone_cache()
-        self.emit_reference_data()
+        self._emit_reference_with_backoff()
+
+        consecutive_failures = 0
+        max_consecutive_failures = 5
 
         while True:
             now = time.time()
             if now - self._last_reference_refresh >= self.reference_refresh_seconds:
                 self.refresh_zone_cache()
-                self.emit_reference_data()
+                self._emit_reference_with_backoff()
 
-            emitted = self.poll_once()
-            LOGGER.info("Completed forecast poll; emitted %s changed forecast snapshot(s).", emitted)
+            try:
+                emitted = self.poll_once()
+                consecutive_failures = 0
+                LOGGER.info("Completed forecast poll; emitted %s changed forecast snapshot(s).", emitted)
+            except RuntimeError as exc:
+                consecutive_failures += 1
+                LOGGER.error("Poll cycle failed (%d/%d): %s", consecutive_failures, max_consecutive_failures, exc)
+                if consecutive_failures >= max_consecutive_failures:
+                    raise RuntimeError(
+                        f"Kafka delivery failed {max_consecutive_failures} consecutive times, giving up."
+                    ) from exc
+
             if once:
                 return
             time.sleep(self.poll_interval_seconds)
+
+    def _emit_reference_with_backoff(self) -> None:
+        """Emit reference data with tolerance for initial Kafka unavailability."""
+        try:
+            self.emit_reference_data()
+        except RuntimeError as exc:
+            LOGGER.warning("Reference data emission failed (will retry next refresh): %s", exc)
 
 
 def build_argument_parser() -> argparse.ArgumentParser:
