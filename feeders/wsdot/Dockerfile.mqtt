@@ -10,6 +10,8 @@ WORKDIR /app
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
-RUN pip install --no-cache-dir ./wsdot_mqtt
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./wsdot_producer/wsdot_producer_kafka_producer \
+ && pip install --no-cache-dir ./wsdot_mqtt
 ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "wsdot_mqtt", "feed"]

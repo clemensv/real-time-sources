@@ -10,6 +10,8 @@ WORKDIR /app
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
-RUN pip install --no-cache-dir ./ndw_road_traffic_mqtt
+RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./ndw_road_traffic_producer/ndw_road_traffic_producer_kafka_producer \
+ && pip install --no-cache-dir ./ndw_road_traffic_mqtt
 ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "ndw_road_traffic_mqtt", "feed"]

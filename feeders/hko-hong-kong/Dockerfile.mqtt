@@ -11,6 +11,8 @@
 
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
         COPY . /app
-        RUN pip install --no-cache-dir ./hko_hong_kong_mqtt
+        RUN pip install --no-cache-dir confluent-kafka \
+         && pip install --no-cache-dir ./hko_hong_kong_producer/hko_hong_kong_producer_kafka_producer \
+         && pip install --no-cache-dir ./hko_hong_kong_mqtt
         ENV MQTT_BROKER_URL=""
 CMD ["python", "-m", "hko_hong_kong_mqtt", "feed"]
