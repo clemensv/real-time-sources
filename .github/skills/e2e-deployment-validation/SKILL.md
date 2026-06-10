@@ -739,6 +739,188 @@ with CE attributes in the JSON body) or **binary** mode (CE attributes as Kafka
 to determine mode; in structured mode there are **no** `ce_type`/`ce_source`/
 `ce_subject` Kafka headers.
 
+### 16. "Before-first-cell + 404 log" — three distinct root causes
+
+When a Fabric notebook job fails with `System_Cancelled_Session_Statements_Failed`
+**and** `last-run.log` is HTTP 404 (never written), the failure happened before
+any Python executed. Three distinct causes:
+
+| Symptom | Root cause | Fix |
+|---------|-----------|-----|
+| First-ever deploy, 404 log | `-SkipEnvironment` used on first deploy — no wheels in Lakehouse | Re-deploy without `-SkipEnvironment` |
+| SyntaxError in **any** cell | Fabric pre-compiles **all** cells before executing cell 0; any bare `if X:` with empty body or other SyntaxError aborts the session | Fix the syntax error in the offending cell |
+| Fabric capacity not ready | Environment not yet published, or capacity in cooldown | Retry after 10 min |
+
+The SyntaxError variant was triggered by the old `deploy-feeder-notebook.ps1`
+`Ensure-OneShotStateCleanup` function, which injected a bare `if ONCE_MODE:\n`
+with no body into the run cell. Fixed in commit `85adb3dde`. Notebooks deployed
+before that fix must be manually corrected.
+
+**Detection:** Use `GET /lakehouse/.../Files/feeder-state/<source>/last-run.log`
+with `https://storage.azure.com` audience. If 404 after a failed run, it's
+always a before-cell-0 failure — check for SyntaxError first.
+
+### 17. Fabric pre-compiles all cells before executing any
+
+A SyntaxError in **any** cell (even the last one) causes
+`System_Cancelled_Session_Statements_Failed` before cell 0 ever runs.
+The OneLake `last-run.log` stays 404 because no Python executes.
+
+**Common injected SyntaxErrors:**
+- Bare `if ONCE_MODE:` with no body (old deploy script)
+- Bare `if condition:` with only a comment body (`# nothing`)
+- Missing `pass` in any empty conditional block
+
+**Prevention:** Run `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <slug>`
+before every deploy. The validator AST-parses the run cell and catches empty
+conditional bodies.
+
+### 18. `--force-reinstall` on PyPI deps → SIGKILL at ~27 s, no log
+
+`confluent_kafka` (and other C-extension packages) with `--force-reinstall`
+re-downloads and recompiles even when cached. Fabric SIGKILLs the kernel at
+~27 s; no exception handler runs, `last-run.log` is never written.
+
+**Fix:** Use `--upgrade` for PyPI deps; keep `--force-reinstall --no-deps` only
+for local wheels (pure Python, fast). The fleet-wide fix was applied in
+commit `85adb3dde`.
+
+### 19. Old AMQP `app.py` missing `AMQP_AUTH_MODE=entra`
+
+22 sources shipped with xrcg-generated AMQP `app.py` files that only read
+`AMQP_USERNAME`/`AMQP_PASSWORD` and ignore `AMQP_AUTH_MODE`. These sources
+silently connect with no credentials against Azure Service Bus (which requires
+Entra auth) and get an `amqp:unauthorized-access` error.
+
+**Detection:**
+```powershell
+Select-String -Path "feeders/*_amqp/*_amqp/app.py" -Pattern "AMQP_AUTH_MODE" -Quiet
+```
+If this returns nothing, the file is old. **Fix:** regenerate with
+`generate_producer.ps1` (latest xrcg template has full Entra support).
+
+### 20. ACI startup failures — two distinct patterns
+
+**Pattern A — Wrong GHCR image tag:**
+ARM template uses `ghcr.io/...-kafka:latest` but published image is
+`ghcr.io/...:latest` (no `-kafka` suffix). Container immediately enters
+`ImagePullBackoff`.
+Detection: `az container show --query "containers[0].instanceView.events"`
+
+**Pattern B — Missing required env vars:**
+Source uses argparse and a required argument has no default. If the env var
+that maps to it is absent from the ARM template, argparse exits with code 2
+and the container terminates immediately. No application log is written.
+Detection: exit code 2 in container events; check argparse `required=True`
+parameters against the ARM template env vars.
+
+### 21. Non-canonical notebook patterns fail silently
+
+Notebooks that deviate from the 4-cell canonical structure (markdown → parameters
+→ CS-lookup → run) fail in ways that produce no diagnostic output:
+
+- `asyncio.run()` in a cell → `RuntimeError: This event loop is already running`
+  (Fabric kernel owns the loop)
+- `%pip install` in a cell → 60–120 s startup overhead; SIGKILL on some capacities
+- Missing `notebookutils.notebook.exit()` → scheduled run shows "Completed" even
+  when the feeder crashed mid-run
+- `CONNECTION_STRING` as a notebook parameter → exposed in Fabric UI; use
+  Topology API lookup instead
+
+**Fix:** Run `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <slug>`
+before deploying. The validator enforces the canonical structure.
+
+### 22. `--once` placed on top-level parser instead of `feed` subparser
+
+28 feeders had `--once` defined on the top-level `ArgumentParser` rather than
+on the `feed` subparser. `CMD ["python", "-m", "module", "feed", "--once"]`
+in a Dockerfile caused `sys.exit(2)` because `feed` consumed the argv and
+`--once` was not recognized by the subparser.
+
+**Flat-parser feeders (no subparsers):** Apply an argv shim that strips `feed`
+before `parse_args()`, and update the Dockerfile CMD to include `feed`.
+**Subparser feeders:** Add `--once` to the `feed` subparser in addition to the
+top-level parser (keep both for backwards compat).
+
+Fixed fleet-wide in PR #904.
+
+### 23. `noaa` measurement events silently dropped before first emission
+
+The `noaa` bridge instantiated measurement dataclasses without a required
+`region` field. The missing field caused a crash on the first measurement
+record — before any events were emitted to Kafka. Container log showed the
+bridge starting normally; no error was surfaced until the first poll cycle.
+
+Additionally, the visibility-measurement path called the generated producer
+with positional arguments in the wrong order, passing `None` as the
+CloudEvents `source` attribute (which the producer silently accepted, emitting
+a malformed event).
+
+**Detection:** E2E test returns 0 messages for `noaa` despite container running.
+**Fix:** PR #906.
+
+### 24. `test-noaa` CI workflow used Poetry against a setuptools `pyproject.toml`
+
+The `test-noaa.yml` workflow installed Poetry and ran `poetry install`, but
+`feeders/noaa/pyproject.toml` uses `setuptools` as the build backend (no
+`[tool.poetry]` table). `poetry install` failed with:
+`"Either [project.version] or [tool.poetry.version] is required in package mode."`
+
+This caused the CI job to fail on every PR touching `feeders/noaa/**` — a
+pre-existing failure that masked real test regressions.
+
+**Fix:** Replace Poetry install steps with `pip install -e ".[dev]"`. The
+`conftest.py` adds producer sub-packages to `sys.path` directly, so they
+don't need to be pip-installed separately (PR #906).
+
+**General rule:** Before attributing a CI failure to your PR changes, check
+if the same job was already failing on `main`:
+```powershell
+gh api "/repos/clemensv/real-time-sources/actions/workflows/<workflow>.yml/runs?branch=main&per_page=5" |
+  ConvertFrom-Json | Select-Object -ExpandProperty workflow_runs |
+  Select-Object conclusion
+```
+
+### 25. Stale worktrees from merged PRs accumulate silently
+
+After merging PRs from worktrees, the worktrees remain on disk and in
+`git worktree list`. Stale worktrees:
+- Confuse `git worktree list` output
+- Hold file locks on Windows that can block future `git` operations
+- Can be mistaken for in-progress work in future sessions
+
+**Cleanup after each session:**
+```powershell
+git worktree list  # identify merged branches
+git worktree remove --force <path>  # for each merged worktree
+```
+
+**Detection of already-merged branches before creating new PRs:**
+```powershell
+git -C <worktree> log main..HEAD --oneline
+# If empty: branch is already merged; no PR needed
+```
+
+### 26. Transient Docker Hub network failures are not code failures
+
+GitHub Actions runners intermittently fail to pull `python:3.10-slim` or
+`docker/dockerfile:1.6` from Docker Hub with:
+- `context deadline exceeded`
+- `net/http: request canceled while waiting for connection`
+- `read: connection reset by peer`
+
+These are infrastructure failures, not code regressions. **Never revert or
+modify source code** based solely on a Docker build failure.
+
+**Protocol:**
+1. Check the error message — if it contains `registry-1.docker.io` or
+   `auth.docker.io` and a network error, it is transient.
+2. Rerun only the failed jobs: `gh run rerun <run-id> --repo <repo> --failed`
+3. Wait for the rerun before merging. Do not merge with `--admin` to bypass
+   Docker build checks unless the overall run status is `completed/success`
+   (which means GitHub Actions considers the run green despite stale job
+   entries in the PR checks UI).
+
 ### 11. MQTT user properties use bare names (no `ce-` prefix)
 
 The generated MQTT client's `_ce_headers_to_mqtt5_properties` helper strips the
