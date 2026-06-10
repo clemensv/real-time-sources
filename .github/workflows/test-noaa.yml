@@ -29,15 +29,6 @@ jobs:
           python-version: '3.11'
           cache: 'pip'
 
-      - name: Install producer sub-packages
-        run: |
-          pip install --quiet ./noaa_producer/noaa_producer_data && \
-          pip install --quiet ./noaa_producer/noaa_producer_kafka_producer && \
-          pip install --quiet ./noaa_amqp_producer/noaa_amqp_producer_data && \
-          pip install --quiet ./noaa_amqp_producer/noaa_amqp_producer_kafka_producer && \
-          pip install --quiet ./noaa_mqtt_producer/noaa_mqtt_producer_data && \
-          pip install --quiet ./noaa_mqtt_producer/noaa_mqtt_producer_kafka_producer
-
       - name: Install package with dev extras
         run: pip install --quiet -e ".[dev]"
 
