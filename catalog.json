@@ -652,6 +652,17 @@
     "mqtt": true,
     "amqp": true
   },
+{
+    "id": "uk-bods-siri",
+    "name": "UK BODS SIRI",
+    "cat": "Transport",
+    "key": true,
+    "desc": "England — 28,000+ buses, BODS AVL (requires free API key)",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
   {
     "id": "madrid-traffic",
     "name": "Madrid Traffic",
