@@ -369,11 +369,13 @@ class TestEntsoeAmqpDockerFlow:
             # application properties; extract the short class name from the suffix.
             assert ce.get("type", "").split(".")[-1] in {"DayAheadPrices", "CrossBorderPhysicalFlows", "ActualGenerationPerType", "ActualTotalLoad", "WindSolarForecast", "LoadForecastMargin", "GenerationForecast", "ReservoirFillingInformation", "ActualGeneration", "WindSolarGeneration", "InstalledGenerationCapacityPerType"}
             if "inDomain" in data:
-                assert ce.get("inDomain") == data["inDomain"]
-            if "outDomain" in data and "outDomain" in ce:
-                assert ce.get("outDomain") == data["outDomain"]
-            if "psrType" in data:
-                assert ce.get("psrType") == data["psrType"]
+                # Generated producers use either camelCase (cloudEvents: prefixed) or
+                # hyphenated (non-prefixed) naming depending on the producer template.
+                assert (ce.get("inDomain") or ce.get("in-domain")) == data["inDomain"]
+            if "outDomain" in data and ("outDomain" in ce or "out-domain" in ce):
+                assert (ce.get("outDomain") or ce.get("out-domain")) == data["outDomain"]
+            if "psrType" in data and ("psrType" in ce or "psr-type" in ce):
+                assert (ce.get("psrType") or ce.get("psr-type")) == data["psrType"]
             annotations = dict(getattr(m, "annotations", None) or {})
             partition_key = annotations.get(symbol("x-opt-partition-key")) or annotations.get("x-opt-partition-key")
             assert partition_key == ce["subject"]
