@@ -202,7 +202,6 @@
                                       "double",
                                       "null"
                                     ],
-                                    "unit": "km/s",
                                     "symbol": "km/s",
                                     "minimum": 0,
                                     "maximum": 3000,
@@ -213,7 +212,6 @@
                                       "double",
                                       "null"
                                     ],
-                                    "unit": "1/cm3",
                                     "symbol": "cm⁻³",
                                     "minimum": 0,
                                     "maximum": 1000,
@@ -224,7 +222,6 @@
                                       "double",
                                       "null"
                                     ],
-                                    "unit": "K",
                                     "symbol": "K",
                                     "minimum": 0,
                                     "maximum": 10000000,
@@ -235,7 +232,6 @@
                                       "double",
                                       "null"
                                     ],
-                                    "unit": "nT",
                                     "symbol": "nT",
                                     "minimum": -100,
                                     "maximum": 100,
@@ -246,7 +242,6 @@
                                       "double",
                                       "null"
                                     ],
-                                    "unit": "nT",
                                     "symbol": "nT",
                                     "minimum": -100,
                                     "maximum": 100,
@@ -257,7 +252,6 @@
                                       "double",
                                       "null"
                                     ],
-                                    "unit": "nT",
                                     "symbol": "nT",
                                     "minimum": -100,
                                     "maximum": 100,
@@ -268,7 +262,6 @@
                                       "double",
                                       "null"
                                     ],
-                                    "unit": "nT",
                                     "symbol": "nT",
                                     "minimum": 0,
                                     "maximum": 200,
@@ -279,7 +272,6 @@
                                       "double",
                                       "null"
                                     ],
-                                    "unit": "km/s",
                                     "symbol": "km/s",
                                     "minimum": -3000,
                                     "maximum": 3000,
@@ -290,7 +282,6 @@
                                       "double",
                                       "null"
                                     ],
-                                    "unit": "km/s",
                                     "symbol": "km/s",
                                     "minimum": -3000,
                                     "maximum": 3000,
@@ -301,7 +292,6 @@
                                       "double",
                                       "null"
                                     ],
-                                    "unit": "km/s",
                                     "symbol": "km/s",
                                     "minimum": -3000,
                                     "maximum": 3000,
