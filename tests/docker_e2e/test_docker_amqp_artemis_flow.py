@@ -365,7 +365,9 @@ class TestEntsoeAmqpDockerFlow:
             data = _body_to_obj(m)
             assert isinstance(data, dict), data
             app_props = dict(getattr(m, "properties", None) or {})
-            assert app_props.get("eventType") in {"DayAheadPrices", "CrossBorderPhysicalFlows", "ActualGenerationPerType", "ActualTotalLoad", "WindSolarForecast", "LoadForecastMargin", "GenerationForecast", "ReservoirFillingInformation", "ActualGeneration", "WindSolarGeneration", "InstalledGenerationCapacityPerType"}
+            # CloudEvents AMQP binary mode stores type as "cloudEvents:type" in
+            # application properties; extract the short class name from the suffix.
+            assert ce.get("type", "").split(".")[-1] in {"DayAheadPrices", "CrossBorderPhysicalFlows", "ActualGenerationPerType", "ActualTotalLoad", "WindSolarForecast", "LoadForecastMargin", "GenerationForecast", "ReservoirFillingInformation", "ActualGeneration", "WindSolarGeneration", "InstalledGenerationCapacityPerType"}
             if "inDomain" in data:
                 assert app_props.get("inDomain") == data["inDomain"]
             if "outDomain" in data and "outDomain" in app_props:
