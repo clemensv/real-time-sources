@@ -16,7 +16,9 @@ COPY . /app
 # Install the required Python packages
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install ./cdec_reservoirs_producer/cdec_reservoirs_producer_data \
+ && pip install ./cdec_reservoirs_producer/cdec_reservoirs_producer_kafka_producer \
+ && pip install .
 
 # Define environment variables (default values)
 ENV CONNECTION_STRING=""

@@ -10,7 +10,9 @@ WORKDIR /app
 COPY . /app
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install ./digitraffic_maritime_producer/digitraffic_maritime_producer_data \
+ && pip install ./digitraffic_maritime_producer/digitraffic_maritime_producer_kafka_producer \
+ && pip install .
 
 ENV CONNECTION_STRING=""
 ENV DIGITRAFFIC_SUBSCRIBE="location,metadata"

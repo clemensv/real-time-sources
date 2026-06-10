@@ -10,7 +10,9 @@ WORKDIR /app
 COPY . /app
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install ./seattle_street_closures_producer/seattle_street_closures_producer_data \
+ && pip install ./seattle_street_closures_producer/seattle_street_closures_producer_kafka_producer \
+ && pip install .
 
 ENV SEATTLE_STREET_CLOSURES_STATE_FILE="/mnt/fileshare/seattle_street_closures_state.json"
 ENV CONNECTION_STRING=""

@@ -10,7 +10,9 @@ WORKDIR /app
 COPY . /app
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install ./wikimedia_osm_diffs_producer/wikimedia_osm_diffs_producer_data \
+ && pip install ./wikimedia_osm_diffs_producer/wikimedia_osm_diffs_producer_kafka_producer \
+ && pip install .
 
 ENV CONNECTION_STRING=""
 ENV LOG_LEVEL="INFO"

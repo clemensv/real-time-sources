@@ -10,7 +10,9 @@ WORKDIR /app
 COPY . /app
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install ./king_county_marine_producer/king_county_marine_producer_data \
+ && pip install ./king_county_marine_producer/king_county_marine_producer_kafka_producer \
+ && pip install .
 
 ENV KING_COUNTY_MARINE_STATE_FILE="/mnt/fileshare/king_county_marine_state.json"
 ENV CONNECTION_STRING=""

@@ -16,7 +16,9 @@ COPY . /app
 # Install the required Python packages
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install ./noaa_goes_producer/noaa_goes_producer_data \
+ && pip install ./noaa_goes_producer/noaa_goes_producer_kafka_producer \
+ && pip install .
 
 # Define environment variables (default values)
 ENV SWPC_LAST_POLLED_FILE="/mnt/fileshare/swpc_last_polled.json"

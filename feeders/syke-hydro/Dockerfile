@@ -9,7 +9,9 @@ WORKDIR /app
 COPY . /app
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install .
+RUN pip install ./syke_hydro_producer/syke_hydro_producer_data \
+ && pip install ./syke_hydro_producer/syke_hydro_producer_kafka_producer \
+ && pip install .
 
 ENV CONNECTION_STRING=""
 
