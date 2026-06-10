@@ -38,6 +38,9 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
     + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
 )
 
+VISIBILITY_DATASCHEMA = "#/schemagroups/Microsoft.OpenData.US.NOAA.jstruct/schemas/Microsoft.OpenData.US.NOAA.Visibility"
+VISIBILITY_DATACONTENTTYPE = "application/json"
+
 class NOAADataPoller:
     """
     Class to poll NOAA data and send it to a Kafka topic.
@@ -244,6 +247,7 @@ class NOAADataPoller:
         while True:
             for station in self.stations if not self.station else [self.station]:
                 station_id = station.station_id
+                station_region = getattr(station, "region", None)
                 for product in self.PRODUCTS:
                     print(f"Polling {product} data for station {station_id}: {station.name}:", end='')
                     last_polled_time = last_polled_times.get(product, {}).get(
@@ -260,6 +264,7 @@ class NOAADataPoller:
                         if product == "water_level":
                             water_level = WaterLevel(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 stddev=float(record['s']) if 's' in record and record['s'] else 0.0,
@@ -275,6 +280,7 @@ class NOAADataPoller:
                         elif product == "predictions":
                             prediction = Predictions(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                             )
@@ -283,6 +289,7 @@ class NOAADataPoller:
                         elif product == "air_temperature":
                             air_temperature = AirTemperature(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_temp_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
@@ -294,6 +301,7 @@ class NOAADataPoller:
                         elif product == "wind":
                             wind = Wind(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 speed=float(record['s']) if 's' in record and record['s'] else 0.0,
                                 direction_degrees=record['d'] if 'd' in record and record['d'] else 0.0,
@@ -306,6 +314,7 @@ class NOAADataPoller:
                         elif product == "air_pressure":
                             air_pressure = AirPressure(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_pressure_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
@@ -317,6 +326,7 @@ class NOAADataPoller:
                         elif product == "water_temperature":
                             water_temperature = WaterTemperature(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_temp_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
@@ -328,6 +338,7 @@ class NOAADataPoller:
                         elif product == "conductivity":
                             conductivity = Conductivity(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_conductivity_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
@@ -339,6 +350,7 @@ class NOAADataPoller:
                         elif product == "visibility":
                             visibility = Visibility(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_visibility_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
@@ -346,10 +358,16 @@ class NOAADataPoller:
                                 rate_of_change_exceeded=bool(record.get('f', '').split(',')[2] == '1')
                             )
                             self.producer.send_microsoft_open_data_us_noaa_visibility(
-                                "application/json", visibility.timestamp, "", station_id, visibility, flush_producer=False)
+                                _datacontenttype=VISIBILITY_DATACONTENTTYPE,
+                                _dataschema=VISIBILITY_DATASCHEMA,
+                                _station_id=station_id,
+                                data=visibility,
+                                _time=visibility.timestamp,
+                                flush_producer=False)
                         elif product == "humidity":
                             humidity = Humidity(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 value=float(record['v']) if 'v' in record and record['v'] else 0.0,
                                 max_humidity_exceeded=bool(record.get('f', '').split(',')[0] == '1'),
@@ -361,6 +379,7 @@ class NOAADataPoller:
                         elif product == "salinity":
                             salinity = Salinity(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 salinity=float(record['s']) if 's' in record and record['s'] else 0.0,
                                 grams_per_kg=float(record['g']) if 'g' in record and record['g'] else 0.0,
@@ -370,6 +389,7 @@ class NOAADataPoller:
                         elif product == "currents":
                             currents_record = Currents(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 speed=float(record['s']) if 's' in record and record['s'] else 0.0,
                                 direction_degrees=float(record['d']) if 'd' in record and record['d'] else 0.0,
@@ -380,6 +400,7 @@ class NOAADataPoller:
                         elif product == "currents_predictions":
                             current_prediction = CurrentPredictions(
                                 station_id=station_id,
+                                region=station_region,
                                 timestamp=timestamp.isoformat(),
                                 velocity_major=float(record['Velocity_Major']) if 'Velocity_Major' in record and record['Velocity_Major'] else 0.0,
                                 mean_flood_dir=float(record['meanFloodDir']) if 'meanFloodDir' in record and record['meanFloodDir'] else 0.0,
