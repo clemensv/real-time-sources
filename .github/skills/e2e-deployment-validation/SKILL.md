@@ -244,8 +244,15 @@ az monitor metrics list `
 ```
 
 If `Mqtt.Connections` is 0, the feeder is not connected. Check whether the
-feeder `app.py` implements `MQTT_AUTH_MODE=entra` (many early feeders do not —
-see issue #840).
+feeder `app.py` implements `MQTT_AUTH_MODE=entra` — many sources were generated
+before this was added to the xrcg template and must be regenerated with
+`pwsh feeders/<source>/generate_producer.ps1`.
+
+**Detection of unfixed sources:**
+```powershell
+Select-String -Path "feeders/<source>/*_mqtt/*_mqtt/app.py" -Pattern "MQTT_AUTH_MODE" -Quiet
+```
+If this returns nothing, regenerate the producer. Do **not** hand-edit the file.
 
 #### Step 3: Validate Messages (Known Limitation)
 
@@ -253,19 +260,23 @@ see issue #840).
 non-Azure machines without explicit client certificate registration. RBAC roles
 (`EventGrid TopicSpaces Subscriber`) alone are insufficient — the namespace also
 requires the subscriber to authenticate with a registered certificate or an Entra
-JWT whose subject matches a registered client.
-
-Until the tooling supports creating test client registrations with certificates,
-the MQTT E2E validation reports as **BLOCKED** (not PASS, not FAIL).
+JWT whose subject matches a registered `Microsoft.EventGrid/namespaces/clients`
+entry. The ARM template does not create a `clients` resource.
 
 The topic subscription pattern must be derived from the xreg manifest's topic
 space template — not hardcoded. The generated client strips the `ce-` prefix from
 CloudEvents attribute names before setting MQTT v5 user properties (bare names:
 `type`, `source`, `subject` — not `ce-type`, `ce-source`, `ce-subject`).
 
-**Mark result as FAIL and file/reference issue #840** if the feeder is not
-publishing (0 connections in metrics). Mark as **BLOCKED** if feeder is
-publishing but external subscription cannot be verified.
+**Result determination:**
+- **FAIL** — `Mqtt.Connections` is 0 (feeder not publishing). File a new issue
+  titled `[E2E] <source> - azure-mqtt: no-data` with root cause (missing
+  `MQTT_AUTH_MODE` or other). Do **not** reference the closed issue #840.
+- **BLOCKED** — `Mqtt.Connections` > 0 but external subscription cannot be
+  verified (expected for all sources until client certificate registration is
+  automated). This is not a failure of the source itself.
+- **PASS** — Not achievable by this validator until external subscription
+  tooling is implemented. Record BLOCKED, not PASS.
 
 #### Step 4: Teardown
 
@@ -704,9 +715,13 @@ identity and three env vars: `MQTT_AUTH_MODE=entra`, `MQTT_ENTRA_AUDIENCE`,
 `MQTT_ENTRA_CLIENT_ID`. These two authZ layers are separate and both failed:
 
 **Layer 1 — Feeder → EG broker (publish path):**
-The feeder's `app.py` ignores all three env vars. It connects with no credentials
-and gets CONNACK rc=5. The managed identity role assignment in the ARM template is
-wasted. The fix is in the feeder code (issue #840), not the ARM template.
+Early xrcg-generated MQTT `app.py` files did not read `MQTT_AUTH_MODE`,
+`MQTT_ENTRA_AUDIENCE`, or `MQTT_ENTRA_CLIENT_ID`. Sources not yet regenerated
+with a current xrcg template will connect with no credentials and receive
+CONNACK rc=5. Detect with `Select-String -Path "feeders/<source>/*_mqtt/*_mqtt/app.py" -Pattern "MQTT_AUTH_MODE" -Quiet`.
+If missing, regenerate via `generate_producer.ps1` — do not hand-edit. Mark
+the feeder-publishing step as **FAIL** and file a **new** issue per source;
+do not reference the closed issue #840.
 
 **Layer 2 — Test validator → EG broker (subscribe path):**
 `EventGrid TopicSpaces Subscriber` RBAC alone does **not** authorize external MQTT
@@ -717,9 +732,9 @@ registered test identity to authenticate with even if the validator acquired a t
 Connections from local dev or CI return CONNACK rc=5 (Not authorized).
 
 Use Azure Monitor metrics (`Mqtt.Connections`, `Mqtt.SuccessfulPublishedMessages`)
-as the only available validation proxy until both layers are fixed. Mark the
-external-subscribe step as BLOCKED; mark the feeder-publishing step as FAIL if
-metrics show 0 connections.
+as the only available validation proxy for Layer 1. Mark the external-subscribe
+step as **BLOCKED** (not a source failure); mark the feeder-publishing step as
+**FAIL** (with a new per-source issue) if metrics show 0 connections.
 
 ### 9. Generated MQTT client's `connect()` is not awaited
 
