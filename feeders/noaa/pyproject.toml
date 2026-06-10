@@ -43,3 +43,6 @@ local_scheme = "no-local-version"
 packages = [
     "noaa",
 ]
+
+[tool.poetry]
+package-mode = false
