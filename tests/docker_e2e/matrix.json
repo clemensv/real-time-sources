@@ -1849,6 +1849,24 @@
       "image": "wikimedia-osm-diffs",
       "file": "Dockerfile",
       "module": "wikimedia_osm_diffs"
+    },
+    {
+      "dir": "feeders/uk-bods-siri",
+      "image": "uk-bods-siri-kafka",
+      "file": "Dockerfile.kafka",
+      "module": "uk_bods_siri_kafka"
+    },
+    {
+      "dir": "feeders/uk-bods-siri",
+      "image": "uk-bods-siri-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "uk_bods_siri_mqtt"
+    },
+    {
+      "dir": "feeders/uk-bods-siri",
+      "image": "uk-bods-siri-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "uk_bods_siri_amqp"
     }
   ],
   "flow": [
@@ -4094,6 +4112,23 @@
       "file": "Dockerfile",
       "test_file": "test_docker_kafka_flow.py",
       "test_class": "TestWikimediaOsmDiffsDockerFlow"
+    },
+    {
+      "dir": "feeders/uk-bods-siri",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestUkBodsSiriKafkaDockerFlow"
+    },
+    {
+      "dir": "feeders/uk-bods-siri",
+      "image": "uk-bods-siri-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestUkBodsSiriMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/uk-bods-siri",
+      "image": "uk-bods-siri-amqp",
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestUkBodsSiriAmqpDockerFlow"
     }
   ],
   "include": [

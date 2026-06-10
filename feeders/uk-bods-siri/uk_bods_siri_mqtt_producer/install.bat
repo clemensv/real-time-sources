@@ -1,0 +1,2 @@
+pip install .\uk_bods_siri_mqtt_producer_data
+pip install .\uk_bods_siri_mqtt_producer_mqtt_client
