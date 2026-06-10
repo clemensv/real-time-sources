@@ -369,11 +369,11 @@ class TestEntsoeAmqpDockerFlow:
             # application properties; extract the short class name from the suffix.
             assert ce.get("type", "").split(".")[-1] in {"DayAheadPrices", "CrossBorderPhysicalFlows", "ActualGenerationPerType", "ActualTotalLoad", "WindSolarForecast", "LoadForecastMargin", "GenerationForecast", "ReservoirFillingInformation", "ActualGeneration", "WindSolarGeneration", "InstalledGenerationCapacityPerType"}
             if "inDomain" in data:
-                assert app_props.get("inDomain") == data["inDomain"]
-            if "outDomain" in data and "outDomain" in app_props:
-                assert app_props.get("outDomain") == data["outDomain"]
+                assert ce.get("inDomain") == data["inDomain"]
+            if "outDomain" in data and "outDomain" in ce:
+                assert ce.get("outDomain") == data["outDomain"]
             if "psrType" in data:
-                assert app_props.get("psrType") == data["psrType"]
+                assert ce.get("psrType") == data["psrType"]
             annotations = dict(getattr(m, "annotations", None) or {})
             partition_key = annotations.get(symbol("x-opt-partition-key")) or annotations.get("x-opt-partition-key")
             assert partition_key == ce["subject"]
