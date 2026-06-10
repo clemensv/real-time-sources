@@ -315,8 +315,11 @@
                     "description": "Observation timestamp published by Hub'Eau for this measurement."
                   },
                   "resultat_obs": {
-                    "type": "double",
-                    "description": "Measured hydrometric value. Interpret the quantity and unit from `grandeur_hydro`, such as discharge or water height."
+                    "type": [
+                      "double",
+                      "string"
+                    ],
+                    "description": "Measured hydrometric value. Interpret the quantity and unit from `grandeur_hydro`, such as discharge or water height. The upstream Hub'Eau API may return this field as a string when the value is non-numeric."
                   },
                   "grandeur_hydro": {
                     "type": "string",

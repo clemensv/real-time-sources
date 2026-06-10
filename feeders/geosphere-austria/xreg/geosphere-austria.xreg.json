@@ -268,8 +268,7 @@
                           "properties": {
                             "station_id": {
                               "type": "string",
-                              "description": "Stable GeoSphere Austria numeric station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata.",
-                              "pattern": "^[0-9]+$"
+                              "description": "Stable GeoSphere Austria station identifier used as the Kafka key and CloudEvents subject. Mapped from the upstream 'id' field in the station metadata."
                             },
                             "station_name": {
                               "type": "string",
