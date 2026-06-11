@@ -90,14 +90,40 @@ class TestNOAADataPoller:
             # Verify
             assert poller.kafka_topic == 'test-topic'
             assert poller.last_polled_file == '/tmp/test_last_polled.json'
-            assert poller.station is not None
-            assert poller.station.station_id == '8454000'
+            assert poller.selected_stations is not None
+            assert len(poller.selected_stations) == 1
+            assert poller.selected_stations[0].station_id == '8454000'
             mock_producer_class.assert_called_once_with(mock_kafka_config)
             mock_event_producer.assert_called_once_with(mock_kafka_producer, 'test-topic')
 
     @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')
     @patch('noaa.noaa.requests.get')
-    def test_init_without_station(self, mock_get, mock_producer, mock_kafka_config, mock_stations_response):
+    def test_init_with_station_list(self, mock_get, mock_producer, mock_kafka_config, mock_stations_response):
+        """Test NOAADataPoller initialization with a comma-separated list of stations"""
+        mock_response = Mock()
+        mock_response.json.return_value = mock_stations_response
+        mock_response.raise_for_status = Mock()
+        mock_get.return_value = mock_response
+
+        with patch('noaa.noaa.Station.schema') as mock_schema:
+            mock_stations = [
+                Mock(station_id='8454000', name='Providence'),
+                Mock(station_id='9414290', name='San Francisco'),
+                Mock(station_id='9447130', name='Seattle'),
+            ]
+            mock_schema.return_value.load.return_value = mock_stations
+
+            # Whitespace around IDs must be tolerated
+            poller = NOAADataPoller(
+                kafka_config=mock_kafka_config,
+                kafka_topic='test-topic',
+                last_polled_file='/tmp/test_last_polled.json',
+                station='8454000, 9447130'
+            )
+
+            assert poller.selected_stations is not None
+            selected_ids = {s.station_id for s in poller.selected_stations}
+            assert selected_ids == {'8454000', '9447130'}
         """Test NOAADataPoller initialization without specific station"""
         # Setup mock response
         mock_response = Mock()
@@ -117,7 +143,7 @@ class TestNOAADataPoller:
             )
 
             # Verify
-            assert poller.station is None
+            assert poller.selected_stations is None
             assert poller.kafka_topic == 'test-topic'
 
     @patch('noaa.noaa.MicrosoftOpenDataUSNOAAEventProducer')

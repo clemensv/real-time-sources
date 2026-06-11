@@ -114,14 +114,16 @@ docker run --rm \
     ghcr.io/clemensv/real-time-sources-noaa:latest
 ```
 
-### Polling a single station
+### Polling specific stations
 
-Restrict the poller to one NOAA station when you want a narrower feed:
+Restrict the poller to one or more NOAA stations when you want a narrower feed.
+`NOAA_STATIONS` (or the `--station` argument) accepts a single station ID or a
+comma-separated list; omit it to poll the full catalog:
 
 ```bash
 docker run --rm \
     -e CONNECTION_STRING='<connection-string>' \
-    -e NOAA_STATION='9414290' \
+    -e NOAA_STATIONS='9414290,9447130,9446484' \
     ghcr.io/clemensv/real-time-sources-noaa:latest
 ```
 
@@ -228,6 +230,7 @@ For live Azure namespaces, set `AMQP_TLS=true` and `AMQP_PORT=5671`.
 
 | Variable | Description |
 |---|---|
+| `NOAA_STATIONS` | Optional single station ID or comma-separated list of station IDs to poll (e.g. `9447130,9446484`). Also accepted as `NOAA_STATION` or the `--station` argument. Omit to poll the full station catalog. |
 | `NOAA_LAST_POLLED_FILE` | Path to the checkpoint file that stores the last successful poll watermark per station/product. Default `~/.noaa_last_polled.json`. |
 | `POLLING_INTERVAL` | Optional global polling interval override in seconds. |
 

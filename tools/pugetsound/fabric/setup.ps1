@@ -7,17 +7,25 @@
     1. A KQL database in an existing Eventhouse
     2. A raw CloudEvents landing table and typed tables via KQL scripts
     3. A Fabric Event Stream with a Custom Endpoint source and Eventhouse destination
+
+.PARAMETER Workspace
+    Fabric workspace name or GUID. (Alias: WorkspaceId)
+
+.PARAMETER Eventhouse
+    Eventhouse name or GUID within the workspace. (Alias: EventhouseId)
 #>
 
 param(
     [Parameter(Mandatory = $true)]
-    [string]$WorkspaceId,
+    [Alias("WorkspaceId")]
+    [string]$Workspace,
 
     [Parameter(Mandatory = $true)]
-    [string]$EventhouseId,
+    [Alias("EventhouseId")]
+    [string]$Eventhouse,
 
-    [string]$DatabaseName = "pugetsound",
-    [string]$EventStreamName = "pugetsound-ingest"
+    [string]$DatabaseName = "pugetsound-live",
+    [string]$EventStreamName = "pugetsound-live-ingest"
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,6 +33,7 @@ $ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
 $RepoRoot = Split-Path -Parent (Split-Path -Parent (Split-Path -Parent $ScriptDir))
 $FabricApi = "https://api.fabric.microsoft.com/v1"
 $StreamName = "$EventStreamName-stream"
+$GuidRx = '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
 
 function Invoke-FabricApi {
     param(
@@ -33,7 +42,7 @@ function Invoke-FabricApi {
         [object]$Body
     )
 
-    $azArgs = @("rest", "--method", $Method, "--url", $Url, "--resource", "https://api.fabric.microsoft.com")
+    $azArgs = @("rest", "--method", $Method, "--url", $Url, "--resource", "https://api.fabric.microsoft.com", "--output", "json")
     if ($Body) {
         $bodyFile = Join-Path $env:TEMP "fabric_api_body_$(Get-Random).json"
         $json = if ($Body -is [string]) { $Body } else { $Body | ConvertTo-Json -Depth 20 -Compress }
@@ -41,12 +50,18 @@ function Invoke-FabricApi {
         $azArgs += @("--body", "@$bodyFile", "--headers", "Content-Type=application/json")
     }
 
-    $result = & az @azArgs 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        throw "Fabric API error: $($result | Out-String)"
+    $outFile = Join-Path $env:TEMP "fabric_api_out_$(Get-Random).json"
+    $errFile = Join-Path $env:TEMP "fabric_api_err_$(Get-Random).txt"
+    & az @azArgs 1> $outFile 2> $errFile
+    $exit = $LASTEXITCODE
+    $stdout = if (Test-Path $outFile) { Get-Content -Path $outFile -Raw } else { "" }
+    $stderr = if (Test-Path $errFile) { Get-Content -Path $errFile -Raw } else { "" }
+    Remove-Item $outFile, $errFile -ErrorAction SilentlyContinue
+    if ($exit -ne 0) {
+        throw "Fabric API error: $stderr"
     }
-    if ($result) {
-        return $result | ConvertFrom-Json
+    if ($stdout -and $stdout.Trim()) {
+        return $stdout | ConvertFrom-Json
     }
     return $null
 }
@@ -71,18 +86,25 @@ function Invoke-KqlScript {
         [System.Text.UTF8Encoding]::new($false)
     )
 
-    $result = az rest `
+    $outFile = Join-Path $env:TEMP "kql_out_$(Get-Random).json"
+    $errFile = Join-Path $env:TEMP "kql_err_$(Get-Random).txt"
+    & az rest `
         --method POST `
         --url "$QueryUri/v1/rest/mgmt" `
         --resource $QueryUri `
         --body "@$bodyFile" `
-        --headers "Content-Type=application/json" 2>&1
+        --headers "Content-Type=application/json" `
+        --output json 1> $outFile 2> $errFile
+    $exit = $LASTEXITCODE
+    $stdout = if (Test-Path $outFile) { Get-Content -Path $outFile -Raw } else { "" }
+    $stderr = if (Test-Path $errFile) { Get-Content -Path $errFile -Raw } else { "" }
+    Remove-Item $outFile, $errFile -ErrorAction SilentlyContinue
 
-    if ($LASTEXITCODE -ne 0) {
-        throw "KQL script failed for $ScriptPath`n$result"
+    if ($exit -ne 0) {
+        throw "KQL script failed for $ScriptPath`n$stderr"
     }
 
-    $parsed = $result | ConvertFrom-Json
+    $parsed = $stdout | ConvertFrom-Json
     $rows = @()
     if ($parsed.Tables.Count -gt 0) {
         $rows = $parsed.Tables[0].Rows
@@ -96,15 +118,35 @@ function Invoke-KqlScript {
 
 Write-Host "=== Puget Sound Fabric Setup ===" -ForegroundColor Cyan
 
-Write-Host "`nVerifying workspace..." -ForegroundColor Yellow
-$workspace = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId"
-Write-Host "  Workspace: $($workspace.displayName)" -ForegroundColor Green
+Write-Host "`nResolving workspace..." -ForegroundColor Yellow
+if ($Workspace -match $GuidRx) {
+    $WorkspaceId = $Workspace
+} else {
+    $allWs = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces"
+    $ws = $allWs.value | Where-Object { $_.displayName -eq $Workspace } | Select-Object -First 1
+    if (-not $ws) { throw "Workspace '$Workspace' not found." }
+    $WorkspaceId = $ws.id
+}
+$wsObj = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId"
+Write-Host "  Workspace: $($wsObj.displayName) ($WorkspaceId)" -ForegroundColor Green
 
-Write-Host "Verifying eventhouse..." -ForegroundColor Yellow
-$eventhouse = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
-Write-Host "  Eventhouse: $($eventhouse.displayName)" -ForegroundColor Green
+Write-Host "Resolving eventhouse..." -ForegroundColor Yellow
+if ($Eventhouse -match $GuidRx) {
+    $EventhouseId = $Eventhouse
+} else {
+    $ehList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
+    $eh = $ehList.value | Where-Object { $_.displayName -eq $Eventhouse } | Select-Object -First 1
+    if (-not $eh) { throw "Eventhouse '$Eventhouse' not found in workspace." }
+    $EventhouseId = $eh.id
+}
+$ehObj = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId"
+Write-Host "  Eventhouse: $($ehObj.displayName) ($EventhouseId)" -ForegroundColor Green
 
-$queryUri = $eventhouse.properties.queryServiceUri
+$queryUri = $ehObj.properties.queryServiceUri
+if (-not $queryUri) {
+    throw "Eventhouse '$EventhouseId' returned no queryServiceUri."
+}
+Write-Host "  Query URI: $queryUri" -ForegroundColor Green
 
 Write-Host "`n[1/3] Creating KQL database '$DatabaseName'..." -ForegroundColor Yellow
 $databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
@@ -133,8 +175,6 @@ if ($existingDb) {
 }
 
 Write-Host "  Applying KQL assets..." -ForegroundColor Yellow
-Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName -ScriptPath (Join-Path $RepoRoot "noaa\kql\noaa.kql")
-Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName -ScriptPath (Join-Path $RepoRoot "wsdot\kql\wsdot.kql")
 Invoke-KqlScript -QueryUri $queryUri -Database $DatabaseName -ScriptPath (Join-Path $ScriptDir "pugetsound.kql")
 
 Write-Host "`n[2/3] Creating Event Stream '$EventStreamName'..." -ForegroundColor Yellow
@@ -161,7 +201,7 @@ Write-Host "`n[3/3] Configuring Event Stream topology..." -ForegroundColor Yello
 $eventstreamDef = @{
     sources = @(
         @{
-            name = "pugetsound-input"
+            name = "pugetsound-live-input"
             type = "CustomEndpoint"
             properties = @{}
         }
@@ -197,7 +237,7 @@ $eventstreamDef = @{
             properties = @{}
             inputNodes = @(
                 @{
-                    name = "pugetsound-input"
+                    name = "pugetsound-live-input"
                 }
             )
         }
@@ -218,7 +258,7 @@ $updateRequest = @{
         )
     }
 }
-$updateFile = Join-Path $env:TEMP "pugetsound_es_update.json"
+$updateFile = Join-Path $env:TEMP "pugetsound-live_es_update.json"
 [System.IO.File]::WriteAllText(
     $updateFile,
     ($updateRequest | ConvertTo-Json -Depth 20 -Compress),
@@ -239,7 +279,7 @@ if ($LASTEXITCODE -ne 0) {
 Write-Host "  Event Stream topology updated." -ForegroundColor Green
 
 Write-Host "`n=== Setup Complete ===" -ForegroundColor Cyan
-Write-Host "  Eventhouse:   $($eventhouse.displayName) ($EventhouseId)" -ForegroundColor White
+Write-Host "  Eventhouse:   $($ehObj.displayName) ($EventhouseId)" -ForegroundColor White
 Write-Host "  KQL Database: $DatabaseName ($databaseId)" -ForegroundColor White
 Write-Host "  Event Stream: $EventStreamName ($eventstreamId)" -ForegroundColor White
 Write-Host ""
