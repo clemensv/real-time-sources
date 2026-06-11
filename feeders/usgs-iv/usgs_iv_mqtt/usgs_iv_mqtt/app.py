@@ -45,7 +45,7 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
     auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
 
     if auth_mode != "entra":
-        return resolved_client_id, str(username or ""), str(password or "")
+        return resolved_client_id, str(username or ""), str(password or ""), None
 
     audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
     managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
@@ -54,7 +54,13 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
         raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
 
     resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    return resolved_client_id, resolved_username, resolved_password
+    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+    from paho.mqtt.properties import Properties as _MqttConnProps
+    from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
+    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
+    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
+    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
+    return resolved_client_id, resolved_username, resolved_password, _connect_props
 
 logger = logging.getLogger(__name__)
 
@@ -117,13 +123,13 @@ async def feed(
 ) -> None:
     site_client_id = f"{client_id or 'usgs-iv'}-sites"
     values_client_id = f"{client_id or 'usgs-iv'}-values"
-    _, site_username, site_password = _resolve_mqtt_connection_settings(
+    _, site_username, site_password, _entra_props = _resolve_mqtt_connection_settings(
         username=username,
         password=password or "",
         client_id=site_client_id,
         auth_mode=os.getenv("MQTT_AUTH_MODE"),
     )
-    _, values_username, values_password = _resolve_mqtt_connection_settings(
+    _, values_username, values_password, _ = _resolve_mqtt_connection_settings(
         username=username,
         password=password or "",
         client_id=values_client_id,
@@ -132,17 +138,27 @@ async def feed(
 
     site_paho = mqtt.Client(client_id=site_client_id, callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
     values_paho = mqtt.Client(client_id=values_client_id, callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
-    if site_username or site_password:
+    if _entra_props is None and (site_username or site_password):
         site_paho.username_pw_set(site_username, site_password)
-    if values_username or values_password:
+    if _entra_props is None and (values_username or values_password):
         values_paho.username_pw_set(values_username, values_password)
-    if tls:
+    if tls or _entra_props is not None:
         site_paho.tls_set()
         values_paho.tls_set()
     site_client = USGSSitesMqttMqttClient(client=site_paho, content_mode=content_mode, loop=asyncio.get_running_loop())
     values_client = USGSInstantaneousValuesMqttMqttClient(client=values_paho, content_mode=content_mode, loop=asyncio.get_running_loop())
-    await site_client.connect(broker_host, broker_port)
-    await values_client.connect(broker_host, broker_port)
+    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+    if _entra_props is not None:
+        import paho.mqtt.properties as _mqtt_props_mod
+        from paho.mqtt.properties import Properties as _EP
+        from paho.mqtt.packettypes import PacketTypes as _PKT
+        _site_props = _EP(_PKT.CONNECT); _site_props.AuthenticationMethod = "OAUTH2-JWT"; _site_props.AuthenticationData = _entra_props.AuthenticationData
+        _vals_props = _EP(_PKT.CONNECT); _vals_props.AuthenticationMethod = "OAUTH2-JWT"; _vals_props.AuthenticationData = _entra_props.AuthenticationData
+        site_paho.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_site_props); site_paho.loop_start()
+        values_paho.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_vals_props); values_paho.loop_start()
+    else:
+        await site_client.connect(broker_host, broker_port)
+        await values_client.connect(broker_host, broker_port)
     site_adapter = _MqttProducerAdapter(site_client, "usgs_sites_")
     values_adapter = _MqttProducerAdapter(values_client, "usgs_instantaneous_values_")
     poller.site_producer = site_adapter

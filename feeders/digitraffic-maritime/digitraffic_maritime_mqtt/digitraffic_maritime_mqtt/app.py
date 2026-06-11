@@ -47,7 +47,7 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
     auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
 
     if auth_mode != "entra":
-        return resolved_client_id, str(username or ""), str(password or "")
+        return resolved_client_id, str(username or ""), str(password or ""), None
 
     audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
     managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
@@ -56,7 +56,13 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
         raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
 
     resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    return resolved_client_id, resolved_username, resolved_password
+    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+    from paho.mqtt.properties import Properties as _MqttConnProps
+    from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
+    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
+    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
+    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
+    return resolved_client_id, resolved_username, resolved_password, _connect_props
 
 logger = logging.getLogger(__name__)
 
@@ -121,7 +127,7 @@ def _build_clients(args: argparse.Namespace):
     host, port, tls_from_url = _parse_broker_url(args.broker_url)
     tls = tls_from_url if args.enable_tls is None else args.enable_tls
 
-    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+    resolved_client_id, resolved_username, resolved_password, _entra_props = _resolve_mqtt_connection_settings(
         username=args.username,
         password=args.password or '',
         client_id=args.client_id or '',
@@ -132,7 +138,7 @@ def _build_clients(args: argparse.Namespace):
         callback_api_version=mqtt.CallbackAPIVersion.VERSION2,
         protocol=mqtt.MQTTv5,
         )
-    if resolved_username or resolved_password:
+    if _entra_props is None and (resolved_username or resolved_password):
         paho_client.username_pw_set(resolved_username, resolved_password)
     if tls:
         paho_client.tls_set(ca_certs=args.ca_file or None)

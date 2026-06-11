@@ -37,7 +37,7 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
     auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
 
     if auth_mode != "entra":
-        return resolved_client_id, str(username or ""), str(password or "")
+        return resolved_client_id, str(username or ""), str(password or ""), None
 
     audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
     managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
@@ -46,7 +46,13 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
         raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
 
     resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    return resolved_client_id, resolved_username, resolved_password
+    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+    from paho.mqtt.properties import Properties as _MqttConnProps
+    from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
+    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
+    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
+    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
+    return resolved_client_id, resolved_username, resolved_password, _connect_props
 
 logger=logging.getLogger(__name__)
 def _parse(url):
@@ -55,7 +61,7 @@ def _sample():
  return [WildfireIncident(irwin_id='sample-irwin-001', state='ca', status='active', incident_name='Sample Fire', unique_fire_identifier='2026-CANIF-000001', incident_type_category='WF', incident_type_kind='FI', fire_discovery_datetime='2026-01-01T00:00:00+00:00', daily_acres=100.0, calculated_acres=None, discovery_acres=10.0, percent_contained=0.0, poo_state='US-CA', poo_county='Sample', latitude=38.5, longitude=-121.5, fire_cause='Undetermined', fire_cause_general=None, gacc='ONCC', total_incident_personnel=None, incident_management_organization=None, fire_mgmt_complexity=None, residences_destroyed=None, other_structures_destroyed=None, injuries=None, fatalities=None, containment_datetime=None, control_datetime=None, fire_out_datetime=None, final_acres=None, modified_on_datetime='2026-01-01T01:00:00+00:00')]
 def _to_mqtt(i): return WildfireIncident(**dataclasses.asdict(i))
 async def feed(host,port,*,username:Optional[str]=None,password:Optional[str]=None,tls=False,client_id:Optional[str]=None,once=False,content_mode='binary',polling_interval=300):
- resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+ resolved_client_id, resolved_username, resolved_password, _entra_props = _resolve_mqtt_connection_settings(
      username=username,
      password=password or '',
      client_id=client_id or '',
@@ -63,11 +69,16 @@ async def feed(host,port,*,username:Optional[str]=None,password:Optional[str]=No
  )
 
  paho=mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
- if resolved_username or resolved_password:
+ if _entra_props is None and (resolved_username or resolved_password):
      paho.username_pw_set(resolved_username, resolved_password)
  if tls: paho.tls_set()
  client=GovNIFCWildfiresMqttMqttClient(client=paho, content_mode=content_mode, loop=asyncio.get_running_loop())
- await client.connect(host,port)
+ # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+ if _entra_props is not None:
+     paho.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props)
+     paho.loop_start()
+ else:
+     await client.connect(host, port)
  try:
   while True:
    if os.getenv('NIFC_USA_WILDFIRES_SAMPLE_MODE','').lower() in ('1','true','yes'): incidents=_sample()
