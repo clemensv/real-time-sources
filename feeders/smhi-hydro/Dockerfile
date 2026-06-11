@@ -8,6 +8,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 ARG SETUPTOOLS_SCM_PRETEND_VERSION=0.0.0
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=$SETUPTOOLS_SCM_PRETEND_VERSION
-RUN pip install --no-cache-dir -e .
+RUN pip install --no-cache-dir ./smhi_hydro_producer/smhi_hydro_producer_data \
+ && pip install --no-cache-dir ./smhi_hydro_producer/smhi_hydro_producer_kafka_producer \
+ && pip install --no-cache-dir -e .
 
 CMD ["python", "-m", "smhi_hydro", "feed"]
