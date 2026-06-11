@@ -32,3 +32,6 @@ local_scheme = "no-local-version"
 packages = [
     "aisstream_mqtt",
 ]
+
+[tool.setuptools.package-data]
+aisstream_mqtt = ["*.csv"]
