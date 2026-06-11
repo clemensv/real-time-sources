@@ -1167,7 +1167,7 @@
     "name": "WSDOT",
     "cat": "Transport",
     "key": true,
-    "desc": "Washington State \u00e2\u20ac\u201d ~1,000 traffic flow sensors (requires free key)",
+    "desc": "Washington State \u00e2\u20ac\u201d traffic, travel times, weather, road weather, alerts, cameras, bridge clearances, tolls, border waits & ferries (requires free key)",
     "kql": true,
     "notebook": true,
     "mqtt": true,
