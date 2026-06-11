@@ -137,7 +137,7 @@ try {
     # Step 3: Wait for container to start
     # NOTE: `az container list` may return empty instanceView.state; use `az container show` instead.
     Write-Host "[3/4] Waiting for ACI container to reach Running state..."
-    $aciStartTimeout = 180
+    $aciStartTimeout = 420  # 7 minutes — some containers have large deps or slow startup
     $aciStart = Get-Date
     $running = $false
     $containerName = az container list --resource-group $rgName --subscription $Subscription `
@@ -154,11 +154,24 @@ try {
                 $running = $true
                 break
             }
+            # Fail fast if the container has already terminated
+            if ($state -eq "Failed" -or $state -eq "Terminated") {
+                $logs = az container logs --resource-group $rgName --name $containerName `
+                    --subscription $Subscription 2>&1 | Out-String
+                throw "ACI container entered '$state' state. Logs (last 20 lines): $(($logs -split "`n" | Select-Object -Last 20) -join "`n")"
+            }
         }
         Start-Sleep -Seconds 10
     }
     if (-not $running) {
-        throw "ACI container did not reach Running state within ${aciStartTimeout}s"
+        # Capture logs before reporting timeout
+        if ($containerName) {
+            $logs = az container logs --resource-group $rgName --name $containerName `
+                --subscription $Subscription 2>&1 | Out-String
+            $logTail = ($logs -split "`n" | Select-Object -Last 20) -join "`n"
+            throw "ACI container did not reach Running state within ${aciStartTimeout}s. Last state: $state. Logs: $logTail"
+        }
+        throw "ACI container did not reach Running state within ${aciStartTimeout}s (container not found in resource group)"
     }
     $result.steps["aci_running"] = $true
 

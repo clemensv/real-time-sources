@@ -80,8 +80,12 @@ print(json.dumps({"messages": messages, "count": len(messages), "validation_erro
 $scriptPath = Join-Path $SessionDir "$Source-sb-consumer.py"
 $consumerScript | Set-Content $scriptPath -Encoding utf8
 
+if (-not (Test-Path $scriptPath)) {
+    throw "Failed to write consumer script to '$scriptPath'. Ensure SessionDir exists: $SessionDir"
+}
+
 $stderrFile = [System.IO.Path]::GetTempFileName()
-$pyResult = python $scriptPath $FullyQualifiedNamespace $EntityName $EntityType $SubscriptionName $TimeoutSeconds $MinMessages 2>$stderrFile | Out-String
+$pyResult = & python $scriptPath $FullyQualifiedNamespace $EntityName $EntityType $SubscriptionName $TimeoutSeconds $MinMessages 2>$stderrFile | Out-String
 $stderrContent = ((Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue) ?? "").Trim()
 Remove-Item $stderrFile -ErrorAction SilentlyContinue
 Remove-Item $scriptPath -ErrorAction SilentlyContinue

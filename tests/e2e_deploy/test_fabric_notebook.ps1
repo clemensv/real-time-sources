@@ -88,50 +88,60 @@ try {
     $result.notebook_id = $notebook.id
     Write-Host "  Notebook ID: $($notebook.id)"
 
-    # Step 2: Trigger notebook run
-    Write-Host "[2/6] Triggering notebook run..."
-    $runResponse = Invoke-RestMethod `
-        -Uri "$fabricBase/workspaces/$WorkspaceId/items/$($notebook.id)/jobs/instances?jobType=RunNotebook" `
-        -Headers $headers `
-        -Method Post
-    $result.steps["run_triggered"] = $true
+    # Step 2: Trigger notebook run (with retry for transient Spark failures)
+    $maxRunAttempts = 2
+    for ($runAttempt = 1; $runAttempt -le $maxRunAttempts; $runAttempt++) {
+        Write-Host "[2/6] Triggering notebook run (attempt $runAttempt/$maxRunAttempts)..."
+        $runResponse = Invoke-RestMethod `
+            -Uri "$fabricBase/workspaces/$WorkspaceId/items/$($notebook.id)/jobs/instances?jobType=RunNotebook" `
+            -Headers $headers `
+            -Method Post
+        $result.steps["run_triggered"] = $true
 
-    # Get the job instance location from response headers or poll
-    $jobLocation = $runResponse # May need to parse Location header
+        # Get the job instance location from response headers or poll
+        $jobLocation = $runResponse # May need to parse Location header
 
-    # Step 3: Wait for completion
-    Write-Host "[3/6] Waiting for notebook completion (timeout: ${TimeoutSeconds}s)..."
-    $startTime = Get-Date
-    $completed = $false
-    $jobStatus = "Unknown"
+        # Step 3: Wait for completion
+        Write-Host "[3/6] Waiting for notebook completion (timeout: ${TimeoutSeconds}s)..."
+        $startTime = Get-Date
+        $completed = $false
+        $jobStatus = "Unknown"
 
-    while (((Get-Date) - $startTime).TotalSeconds -lt $TimeoutSeconds) {
-        Start-Sleep -Seconds 30
-        try {
-            $statusResponse = Invoke-RestMethod `
-                -Uri "$fabricBase/workspaces/$WorkspaceId/items/$($notebook.id)/jobs/instances?jobType=RunNotebook" `
-                -Headers $headers `
-                -Method Get
-            $latestJob = $statusResponse.value | Sort-Object -Property startTimeUtc -Descending | Select-Object -First 1
-            if ($latestJob) {
-                $jobStatus = $latestJob.status
-                Write-Host "  Job status: $jobStatus"
-                if ($jobStatus -in @("Completed", "Failed", "Cancelled")) {
-                    $completed = $true
-                    break
+        while (((Get-Date) - $startTime).TotalSeconds -lt $TimeoutSeconds) {
+            Start-Sleep -Seconds 30
+            try {
+                $statusResponse = Invoke-RestMethod `
+                    -Uri "$fabricBase/workspaces/$WorkspaceId/items/$($notebook.id)/jobs/instances?jobType=RunNotebook" `
+                    -Headers $headers `
+                    -Method Get
+                $latestJob = $statusResponse.value | Sort-Object -Property startTimeUtc -Descending | Select-Object -First 1
+                if ($latestJob) {
+                    $jobStatus = $latestJob.status
+                    Write-Host "  Job status: $jobStatus"
+                    if ($jobStatus -in @("Completed", "Failed", "Cancelled")) {
+                        $completed = $true
+                        break
+                    }
                 }
             }
+            catch {
+                Write-Host "  Status poll error: $($_.Exception.Message)" -ForegroundColor Yellow
+            }
         }
-        catch {
-            Write-Host "  Status poll error: $($_.Exception.Message)" -ForegroundColor Yellow
-        }
-    }
 
-    if (-not $completed) {
-        throw "Notebook did not complete within ${TimeoutSeconds}s (last status: $jobStatus)"
-    }
-    if ($jobStatus -ne "Completed") {
-        throw "Notebook run failed with status: $jobStatus"
+        if (-not $completed) {
+            throw "Notebook did not complete within ${TimeoutSeconds}s (last status: $jobStatus)"
+        }
+        if ($jobStatus -eq "Completed") {
+            break
+        }
+        # Retry on Failed/Cancelled (transient Spark session issues) unless last attempt
+        if ($runAttempt -lt $maxRunAttempts) {
+            Write-Warning "Notebook run $runAttempt failed with status '$jobStatus'. Retrying after 30s..."
+            Start-Sleep -Seconds 30
+        } else {
+            throw "Notebook run failed with status: $jobStatus (after $maxRunAttempts attempts)"
+        }
     }
     $result.steps["run_completed"] = $true
 
