@@ -25,324 +25,3196 @@
 ]
 ```
 
-.create-merge table [SeattleFire911Incident] (
-    [incident_number]: string,
-    [incident_type]: string,
-    [incident_datetime]: string,
-    [address]: string,
-    [latitude]: real,
-    [longitude]: real,
-    [___type]: string,
-    [___source]: string,
-    [___id]: string,
-    [___time]: datetime,
-    [___subject]: string
+.create-merge table ['US.WA.Seattle.Fire911.Incident'] (
+   [incident_number]: string,
+   [incident_type]: string,
+   [incident_datetime]: string,
+   [address]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
 );
 
-.drop materialized-view SeattleFire911IncidentLatest ifexists;
+.alter table ['US.WA.Seattle.Fire911.Incident'] docstring "{\"description\": \"Seattle Fire Department 911 dispatch record from the City of Seattle real-time fire calls dataset.\"}";
 
-.create materialized-view with (backfill=true) SeattleFire911IncidentLatest on table SeattleFire911Incident {
-    SeattleFire911Incident | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.alter table ['US.WA.Seattle.Fire911.Incident'] column-docstrings (
+   [incident_number]: "{\"description\": \"Stable Seattle Fire Department incident identifier for the dispatch record.\"}",
+   [incident_type]: "{\"description\": \"Seattle Fire Department response type for the incident, such as Aid Response or Medic Response.\"}",
+   [incident_datetime]: "{\"description\": \"Date and time of the call as published by the Seattle Open Data dataset, in local dataset timestamp form without an explicit UTC offset.\"}",
+   [address]: "{\"description\": \"Incident location text as published by the dataset.\"}",
+   [latitude]: "{\"description\": \"Latitude of the incident location in decimal degrees north.\"}",
+   [longitude]: "{\"description\": \"Longitude of the incident location in decimal degrees east of Greenwich; Seattle values are negative because they lie west of Greenwich.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['US.WA.Seattle.Fire911.Incident'] ingestion json mapping "US.WA.Seattle.Fire911.Incident_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "incident_number", "path": "$.incident_number"},
+  {"column": "incident_type", "path": "$.incident_type"},
+  {"column": "incident_datetime", "path": "$.incident_datetime"},
+  {"column": "address", "path": "$.address"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table ['US.WA.Seattle.Fire911.Incident'] ingestion json mapping "US.WA.Seattle.Fire911.Incident_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "incident_number", "path": "$.data.incident_number"},
+  {"column": "incident_type", "path": "$.data.incident_type"},
+  {"column": "incident_datetime", "path": "$.data.incident_datetime"},
+  {"column": "address", "path": "$.data.address"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view ['US.WA.Seattle.Fire911.IncidentLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['US.WA.Seattle.Fire911.IncidentLatest'] on table ['US.WA.Seattle.Fire911.Incident'] {
+    ['US.WA.Seattle.Fire911.Incident'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [SeattleFire911Incident] policy update
+.alter table ['US.WA.Seattle.Fire911.Incident'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.WA.Seattle.Fire911.Incident') | project['incident_number'] = tostring(data.['incident_number']),['incident_type'] = tostring(data.['incident_type']),['incident_datetime'] = tostring(data.['incident_datetime']),['address'] = tostring(data.['address']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'US.WA.Seattle.Fire911.Incident') | project['incident_number'] = tostring(data.['incident_number']),['incident_type'] = tostring(data.['incident_type']),['incident_datetime'] = tostring(data.['incident_datetime']),['address'] = tostring(data.['address']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [SeattleStreetClosure] (
-    [closure_id]: string,
-    [permit_number]: string,
-    [permit_type]: string,
-    [project_name]: string,
-    [project_description]: string,
-    [start_date]: string,
-    [end_date]: string,
-    [sunday]: string,
-    [monday]: string,
-    [tuesday]: string,
-    [wednesday]: string,
-    [thursday]: string,
-    [friday]: string,
-    [saturday]: string,
-    [street_on]: string,
-    [street_from]: string,
-    [street_to]: string,
-    [segkey]: string,
-    [geometry_json]: string,
-    [___type]: string,
-    [___source]: string,
-    [___id]: string,
-    [___time]: datetime,
-    [___subject]: string
+
+
+.create-merge table ['us.wa.seattle.streetclosures.StreetClosure'] (
+   [closure_id]: string,
+   [permit_number]: string,
+   [permit_type]: string,
+   [project_name]: string,
+   [project_description]: string,
+   [start_date]: string,
+   [end_date]: string,
+   [sunday]: string,
+   [monday]: string,
+   [tuesday]: string,
+   [wednesday]: string,
+   [thursday]: string,
+   [friday]: string,
+   [saturday]: string,
+   [street_on]: string,
+   [street_from]: string,
+   [street_to]: string,
+   [segkey]: string,
+   [geometry_json]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
 );
 
-.drop materialized-view SeattleStreetClosureLatest ifexists;
+.alter table ['us.wa.seattle.streetclosures.StreetClosure'] docstring "{\"description\": \"Street closure row from the Seattle Department of Transportation street closures dataset, describing one closed street segment and its active occurrence window.\"}";
 
-.create materialized-view with (backfill=true) SeattleStreetClosureLatest on table SeattleStreetClosure {
-    SeattleStreetClosure | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.alter table ['us.wa.seattle.streetclosures.StreetClosure'] column-docstrings (
+   [closure_id]: "{\"description\": \"Derived stable identity for the closure row, composed from permit number, street segment key, start date, and end date.\"}",
+   [permit_number]: "{\"description\": \"Identifier for the permit record granting authorization to close the street.\"}",
+   [permit_type]: "{\"description\": \"Type of permit, such as Block Party, Play Street, Farmers Market, or Temporary Activation.\"}",
+   [project_name]: "{\"description\": \"Short title used by Seattle to quickly identify the closure permit.\"}",
+   [project_description]: "{\"description\": \"Longer description of the permit, including issuance notes and closure details.\"}",
+   [start_date]: "{\"description\": \"Date on which the closure event begins, normalized to YYYY-MM-DD.\"}",
+   [end_date]: "{\"description\": \"Date on which the closure event ends, normalized to YYYY-MM-DD.\"}",
+   [sunday]: "{\"description\": \"Time period, if any, during which the closure occurs on Sundays between the start and end dates.\"}",
+   [monday]: "{\"description\": \"Time period, if any, during which the closure occurs on Mondays between the start and end dates.\"}",
+   [tuesday]: "{\"description\": \"Time period, if any, during which the closure occurs on Tuesdays between the start and end dates.\"}",
+   [wednesday]: "{\"description\": \"Time period, if any, during which the closure occurs on Wednesdays between the start and end dates.\"}",
+   [thursday]: "{\"description\": \"Time period, if any, during which the closure occurs on Thursdays between the start and end dates.\"}",
+   [friday]: "{\"description\": \"Time period, if any, during which the closure occurs on Fridays between the start and end dates.\"}",
+   [saturday]: "{\"description\": \"Time period, if any, during which the closure occurs on Saturdays between the start and end dates.\"}",
+   [street_on]: "{\"description\": \"Street name of the closed street segment.\"}",
+   [street_from]: "{\"description\": \"Name of the intersecting street at the low end of the closed segment.\"}",
+   [street_to]: "{\"description\": \"Name of the intersecting street at the high end of the closed segment.\"}",
+   [segkey]: "{\"description\": \"Identifier for the street segment that is closed.\"}",
+   [geometry_json]: "{\"description\": \"Serialized GeoJSON LineString geometry for the closed street block.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.seattle.streetclosures.StreetClosure'] ingestion json mapping "us.wa.seattle.streetclosures.StreetClosure_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "closure_id", "path": "$.closure_id"},
+  {"column": "permit_number", "path": "$.permit_number"},
+  {"column": "permit_type", "path": "$.permit_type"},
+  {"column": "project_name", "path": "$.project_name"},
+  {"column": "project_description", "path": "$.project_description"},
+  {"column": "start_date", "path": "$.start_date"},
+  {"column": "end_date", "path": "$.end_date"},
+  {"column": "sunday", "path": "$.sunday"},
+  {"column": "monday", "path": "$.monday"},
+  {"column": "tuesday", "path": "$.tuesday"},
+  {"column": "wednesday", "path": "$.wednesday"},
+  {"column": "thursday", "path": "$.thursday"},
+  {"column": "friday", "path": "$.friday"},
+  {"column": "saturday", "path": "$.saturday"},
+  {"column": "street_on", "path": "$.street_on"},
+  {"column": "street_from", "path": "$.street_from"},
+  {"column": "street_to", "path": "$.street_to"},
+  {"column": "segkey", "path": "$.segkey"},
+  {"column": "geometry_json", "path": "$.geometry_json"},
+]
+```
+
+.create-or-alter table ['us.wa.seattle.streetclosures.StreetClosure'] ingestion json mapping "us.wa.seattle.streetclosures.StreetClosure_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "closure_id", "path": "$.data.closure_id"},
+  {"column": "permit_number", "path": "$.data.permit_number"},
+  {"column": "permit_type", "path": "$.data.permit_type"},
+  {"column": "project_name", "path": "$.data.project_name"},
+  {"column": "project_description", "path": "$.data.project_description"},
+  {"column": "start_date", "path": "$.data.start_date"},
+  {"column": "end_date", "path": "$.data.end_date"},
+  {"column": "sunday", "path": "$.data.sunday"},
+  {"column": "monday", "path": "$.data.monday"},
+  {"column": "tuesday", "path": "$.data.tuesday"},
+  {"column": "wednesday", "path": "$.data.wednesday"},
+  {"column": "thursday", "path": "$.data.thursday"},
+  {"column": "friday", "path": "$.data.friday"},
+  {"column": "saturday", "path": "$.data.saturday"},
+  {"column": "street_on", "path": "$.data.street_on"},
+  {"column": "street_from", "path": "$.data.street_from"},
+  {"column": "street_to", "path": "$.data.street_to"},
+  {"column": "segkey", "path": "$.data.segkey"},
+  {"column": "geometry_json", "path": "$.data.geometry_json"},
+]
+```
+
+.drop materialized-view ['us.wa.seattle.streetclosures.StreetClosureLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.seattle.streetclosures.StreetClosureLatest'] on table ['us.wa.seattle.streetclosures.StreetClosure'] {
+    ['us.wa.seattle.streetclosures.StreetClosure'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [SeattleStreetClosure] policy update
+.alter table ['us.wa.seattle.streetclosures.StreetClosure'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.WA.Seattle.StreetClosures.StreetClosure') | project['closure_id'] = tostring(data.['closure_id']),['permit_number'] = tostring(data.['permit_number']),['permit_type'] = tostring(data.['permit_type']),['project_name'] = tostring(data.['project_name']),['project_description'] = tostring(data.['project_description']),['start_date'] = tostring(data.['start_date']),['end_date'] = tostring(data.['end_date']),['sunday'] = tostring(data.['sunday']),['monday'] = tostring(data.['monday']),['tuesday'] = tostring(data.['tuesday']),['wednesday'] = tostring(data.['wednesday']),['thursday'] = tostring(data.['thursday']),['friday'] = tostring(data.['friday']),['saturday'] = tostring(data.['saturday']),['street_on'] = tostring(data.['street_on']),['street_from'] = tostring(data.['street_from']),['street_to'] = tostring(data.['street_to']),['segkey'] = tostring(data.['segkey']),['geometry_json'] = tostring(data.['geometry_json']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'US.WA.Seattle.StreetClosures.StreetClosure') | project['closure_id'] = tostring(data.['closure_id']),['permit_number'] = tostring(data.['permit_number']),['permit_type'] = tostring(data.['permit_type']),['project_name'] = tostring(data.['project_name']),['project_description'] = tostring(data.['project_description']),['start_date'] = tostring(data.['start_date']),['end_date'] = tostring(data.['end_date']),['sunday'] = tostring(data.['sunday']),['monday'] = tostring(data.['monday']),['tuesday'] = tostring(data.['tuesday']),['wednesday'] = tostring(data.['wednesday']),['thursday'] = tostring(data.['thursday']),['friday'] = tostring(data.['friday']),['saturday'] = tostring(data.['saturday']),['street_on'] = tostring(data.['street_on']),['street_from'] = tostring(data.['street_from']),['street_to'] = tostring(data.['street_to']),['segkey'] = tostring(data.['segkey']),['geometry_json'] = tostring(data.['geometry_json']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [KingCountyMarineStation] (
-    [station_id]: string,
-    [station_name]: string,
-    [dataset_id]: string,
-    [dataset_name]: string,
-    [dataset_url]: string,
-    [sensor_level]: string,
-    [latitude]: real,
-    [longitude]: real,
-    [___type]: string,
-    [___source]: string,
-    [___id]: string,
-    [___time]: datetime,
-    [___subject]: string
+
+
+.create-merge table ['us.wa.kingcounty.marine.Station'] (
+   [station_id]: string,
+   [station_name]: string,
+   [dataset_id]: string,
+   [dataset_name]: string,
+   [dataset_url]: string,
+   [sensor_level]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
 );
 
-.drop materialized-view KingCountyMarineStationLatest ifexists;
+.alter table ['us.wa.kingcounty.marine.Station'] docstring "{\"description\": \"Reference metadata for one active King County buoy or mooring raw-data dataset.\"}";
 
-.create materialized-view with (backfill=true) KingCountyMarineStationLatest on table KingCountyMarineStation {
-    KingCountyMarineStation | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.alter table ['us.wa.kingcounty.marine.Station'] column-docstrings (
+   [station_id]: "{\"description\": \"Stable bridge identifier for the buoy or mooring dataset.\"}",
+   [station_name]: "{\"description\": \"Human-readable station name derived from the dataset title.\"}",
+   [dataset_id]: "{\"description\": \"Socrata dataset identifier for the source dataset.\"}",
+   [dataset_name]: "{\"description\": \"Original King County dataset title.\"}",
+   [dataset_url]: "{\"description\": \"Dataset page URL on data.kingcounty.gov.\"}",
+   [sensor_level]: "{\"description\": \"Sensor position classification inferred from the dataset title, such as surface, bottom, or water-column.\"}",
+   [latitude]: "{\"description\": \"Station latitude in decimal degrees north, parsed from the dataset description.\"}",
+   [longitude]: "{\"description\": \"Station longitude in decimal degrees east of Greenwich; King County locations are negative because they lie west of Greenwich.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.kingcounty.marine.Station'] ingestion json mapping "us.wa.kingcounty.marine.Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "dataset_id", "path": "$.dataset_id"},
+  {"column": "dataset_name", "path": "$.dataset_name"},
+  {"column": "dataset_url", "path": "$.dataset_url"},
+  {"column": "sensor_level", "path": "$.sensor_level"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table ['us.wa.kingcounty.marine.Station'] ingestion json mapping "us.wa.kingcounty.marine.Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "dataset_id", "path": "$.data.dataset_id"},
+  {"column": "dataset_name", "path": "$.data.dataset_name"},
+  {"column": "dataset_url", "path": "$.data.dataset_url"},
+  {"column": "sensor_level", "path": "$.data.sensor_level"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view ['us.wa.kingcounty.marine.StationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.kingcounty.marine.StationLatest'] on table ['us.wa.kingcounty.marine.Station'] {
+    ['us.wa.kingcounty.marine.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [KingCountyMarineStation] policy update
+.alter table ['us.wa.kingcounty.marine.Station'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.WA.KingCounty.Marine.Station') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['dataset_id'] = tostring(data.['dataset_id']),['dataset_name'] = tostring(data.['dataset_name']),['dataset_url'] = tostring(data.['dataset_url']),['sensor_level'] = tostring(data.['sensor_level']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'US.WA.KingCounty.Marine.Station') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['dataset_id'] = tostring(data.['dataset_id']),['dataset_name'] = tostring(data.['dataset_name']),['dataset_url'] = tostring(data.['dataset_url']),['sensor_level'] = tostring(data.['sensor_level']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [KingCountyMarineWaterQualityReading] (
-    [station_id]: string,
-    [station_name]: string,
-    [observation_time]: string,
-    [water_temperature_c]: real,
-    [conductivity_s_m]: real,
-    [pressure_dbar]: real,
-    [dissolved_oxygen_mg_l]: real,
-    [ph]: real,
-    [chlorophyll_ug_l]: real,
-    [turbidity_ntu]: real,
-    [chlorophyll_stddev_ug_l]: real,
-    [turbidity_stddev_ntu]: real,
-    [salinity_psu]: real,
-    [specific_conductivity_s_m]: real,
-    [dissolved_oxygen_saturation_pct]: real,
-    [nitrate_umol]: real,
-    [nitrate_mg_l]: real,
-    [wind_direction_deg]: real,
-    [wind_speed_m_s]: real,
-    [photosynthetically_active_radiation_umol_s_m2]: real,
-    [air_temperature_f]: real,
-    [air_humidity_pct]: real,
-    [air_pressure_in_hg]: real,
-    [system_battery_v]: real,
-    [sensor_battery_v]: real,
-    [___type]: string,
-    [___source]: string,
-    [___id]: string,
-    [___time]: datetime,
-    [___subject]: string
+.create-merge table ['us.wa.kingcounty.marine.WaterQualityReading'] (
+   [station_id]: string,
+   [station_name]: string,
+   [observation_time]: string,
+   [water_temperature_c]: real,
+   [conductivity_s_m]: real,
+   [pressure_dbar]: real,
+   [dissolved_oxygen_mg_l]: real,
+   [ph]: real,
+   [chlorophyll_ug_l]: real,
+   [turbidity_ntu]: real,
+   [chlorophyll_stddev_ug_l]: real,
+   [turbidity_stddev_ntu]: real,
+   [salinity_psu]: real,
+   [specific_conductivity_s_m]: real,
+   [dissolved_oxygen_saturation_pct]: real,
+   [nitrate_umol]: real,
+   [nitrate_mg_l]: real,
+   [wind_direction_deg]: real,
+   [wind_speed_m_s]: real,
+   [photosynthetically_active_radiation_umol_s_m2]: real,
+   [air_temperature_f]: real,
+   [air_humidity_pct]: real,
+   [air_pressure_in_hg]: real,
+   [system_battery_v]: real,
+   [sensor_battery_v]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
 );
 
-.drop materialized-view KingCountyMarineWaterQualityReadingLatest ifexists;
+.alter table ['us.wa.kingcounty.marine.WaterQualityReading'] docstring "{\"description\": \"Normalized King County buoy or mooring reading carrying the documented water-quality and weather measurements published by the current raw-data datasets.\"}";
 
-.create materialized-view with (backfill=true) KingCountyMarineWaterQualityReadingLatest on table KingCountyMarineWaterQualityReading {
-    KingCountyMarineWaterQualityReading | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.alter table ['us.wa.kingcounty.marine.WaterQualityReading'] column-docstrings (
+   [station_id]: "{\"description\": \"Stable bridge identifier for the buoy or mooring dataset.\"}",
+   [station_name]: "{\"description\": \"Human-readable station name derived from the dataset title.\"}",
+   [observation_time]: "{\"description\": \"Observation timestamp normalized to UTC ISO 8601 form.\"}",
+   [water_temperature_c]: "{\"description\": \"Water temperature in degrees Celsius.\"}",
+   [conductivity_s_m]: "{\"description\": \"Electrical conductivity in siemens per meter.\"}",
+   [pressure_dbar]: "{\"description\": \"Water pressure in decibar as published by the raw datasets.\"}",
+   [dissolved_oxygen_mg_l]: "{\"description\": \"Dissolved oxygen concentration in milligrams per liter.\"}",
+   [ph]: "{\"description\": \"Measured pH value.\"}",
+   [chlorophyll_ug_l]: "{\"description\": \"Chlorophyll fluorescence or chlorophyll concentration in micrograms per liter.\"}",
+   [turbidity_ntu]: "{\"description\": \"Turbidity in nephelometric turbidity units.\"}",
+   [chlorophyll_stddev_ug_l]: "{\"description\": \"Standard deviation of chlorophyll fluorescence in micrograms per liter.\"}",
+   [turbidity_stddev_ntu]: "{\"description\": \"Standard deviation of turbidity in nephelometric turbidity units.\"}",
+   [salinity_psu]: "{\"description\": \"Salinity in practical salinity units.\"}",
+   [specific_conductivity_s_m]: "{\"description\": \"Specific conductivity in siemens per meter.\"}",
+   [dissolved_oxygen_saturation_pct]: "{\"description\": \"Dissolved oxygen saturation as a percentage.\"}",
+   [nitrate_umol]: "{\"description\": \"Nitrate or nitrate-plus-nitrite concentration in micromoles.\"}",
+   [nitrate_mg_l]: "{\"description\": \"Nitrate or nitrate-plus-nitrite concentration in milligrams per liter.\"}",
+   [wind_direction_deg]: "{\"description\": \"Wind direction in degrees at the buoy surface.\"}",
+   [wind_speed_m_s]: "{\"description\": \"Wind speed in meters per second at the buoy surface.\"}",
+   [photosynthetically_active_radiation_umol_s_m2]: "{\"description\": \"Photosynthetically active radiation in micromoles per second per square meter.\"}",
+   [air_temperature_f]: "{\"description\": \"Air temperature in degrees Fahrenheit.\"}",
+   [air_humidity_pct]: "{\"description\": \"Relative humidity percentage.\"}",
+   [air_pressure_in_hg]: "{\"description\": \"Air pressure in inches of mercury.\"}",
+   [system_battery_v]: "{\"description\": \"System battery voltage in volts.\"}",
+   [sensor_battery_v]: "{\"description\": \"Sensor or sonde battery voltage in volts.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.kingcounty.marine.WaterQualityReading'] ingestion json mapping "us.wa.kingcounty.marine.WaterQualityReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "observation_time", "path": "$.observation_time"},
+  {"column": "water_temperature_c", "path": "$.water_temperature_c"},
+  {"column": "conductivity_s_m", "path": "$.conductivity_s_m"},
+  {"column": "pressure_dbar", "path": "$.pressure_dbar"},
+  {"column": "dissolved_oxygen_mg_l", "path": "$.dissolved_oxygen_mg_l"},
+  {"column": "ph", "path": "$.ph"},
+  {"column": "chlorophyll_ug_l", "path": "$.chlorophyll_ug_l"},
+  {"column": "turbidity_ntu", "path": "$.turbidity_ntu"},
+  {"column": "chlorophyll_stddev_ug_l", "path": "$.chlorophyll_stddev_ug_l"},
+  {"column": "turbidity_stddev_ntu", "path": "$.turbidity_stddev_ntu"},
+  {"column": "salinity_psu", "path": "$.salinity_psu"},
+  {"column": "specific_conductivity_s_m", "path": "$.specific_conductivity_s_m"},
+  {"column": "dissolved_oxygen_saturation_pct", "path": "$.dissolved_oxygen_saturation_pct"},
+  {"column": "nitrate_umol", "path": "$.nitrate_umol"},
+  {"column": "nitrate_mg_l", "path": "$.nitrate_mg_l"},
+  {"column": "wind_direction_deg", "path": "$.wind_direction_deg"},
+  {"column": "wind_speed_m_s", "path": "$.wind_speed_m_s"},
+  {"column": "photosynthetically_active_radiation_umol_s_m2", "path": "$.photosynthetically_active_radiation_umol_s_m2"},
+  {"column": "air_temperature_f", "path": "$.air_temperature_f"},
+  {"column": "air_humidity_pct", "path": "$.air_humidity_pct"},
+  {"column": "air_pressure_in_hg", "path": "$.air_pressure_in_hg"},
+  {"column": "system_battery_v", "path": "$.system_battery_v"},
+  {"column": "sensor_battery_v", "path": "$.sensor_battery_v"},
+]
+```
+
+.create-or-alter table ['us.wa.kingcounty.marine.WaterQualityReading'] ingestion json mapping "us.wa.kingcounty.marine.WaterQualityReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "observation_time", "path": "$.data.observation_time"},
+  {"column": "water_temperature_c", "path": "$.data.water_temperature_c"},
+  {"column": "conductivity_s_m", "path": "$.data.conductivity_s_m"},
+  {"column": "pressure_dbar", "path": "$.data.pressure_dbar"},
+  {"column": "dissolved_oxygen_mg_l", "path": "$.data.dissolved_oxygen_mg_l"},
+  {"column": "ph", "path": "$.data.ph"},
+  {"column": "chlorophyll_ug_l", "path": "$.data.chlorophyll_ug_l"},
+  {"column": "turbidity_ntu", "path": "$.data.turbidity_ntu"},
+  {"column": "chlorophyll_stddev_ug_l", "path": "$.data.chlorophyll_stddev_ug_l"},
+  {"column": "turbidity_stddev_ntu", "path": "$.data.turbidity_stddev_ntu"},
+  {"column": "salinity_psu", "path": "$.data.salinity_psu"},
+  {"column": "specific_conductivity_s_m", "path": "$.data.specific_conductivity_s_m"},
+  {"column": "dissolved_oxygen_saturation_pct", "path": "$.data.dissolved_oxygen_saturation_pct"},
+  {"column": "nitrate_umol", "path": "$.data.nitrate_umol"},
+  {"column": "nitrate_mg_l", "path": "$.data.nitrate_mg_l"},
+  {"column": "wind_direction_deg", "path": "$.data.wind_direction_deg"},
+  {"column": "wind_speed_m_s", "path": "$.data.wind_speed_m_s"},
+  {"column": "photosynthetically_active_radiation_umol_s_m2", "path": "$.data.photosynthetically_active_radiation_umol_s_m2"},
+  {"column": "air_temperature_f", "path": "$.data.air_temperature_f"},
+  {"column": "air_humidity_pct", "path": "$.data.air_humidity_pct"},
+  {"column": "air_pressure_in_hg", "path": "$.data.air_pressure_in_hg"},
+  {"column": "system_battery_v", "path": "$.data.system_battery_v"},
+  {"column": "sensor_battery_v", "path": "$.data.sensor_battery_v"},
+]
+```
+
+.drop materialized-view ['us.wa.kingcounty.marine.WaterQualityReadingLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.kingcounty.marine.WaterQualityReadingLatest'] on table ['us.wa.kingcounty.marine.WaterQualityReading'] {
+    ['us.wa.kingcounty.marine.WaterQualityReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [KingCountyMarineWaterQualityReading] policy update
+.alter table ['us.wa.kingcounty.marine.WaterQualityReading'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.WA.KingCounty.Marine.WaterQualityReading') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['observation_time'] = tostring(data.['observation_time']),['water_temperature_c'] = toreal(data.['water_temperature_c']),['conductivity_s_m'] = toreal(data.['conductivity_s_m']),['pressure_dbar'] = toreal(data.['pressure_dbar']),['dissolved_oxygen_mg_l'] = toreal(data.['dissolved_oxygen_mg_l']),['ph'] = toreal(data.['ph']),['chlorophyll_ug_l'] = toreal(data.['chlorophyll_ug_l']),['turbidity_ntu'] = toreal(data.['turbidity_ntu']),['chlorophyll_stddev_ug_l'] = toreal(data.['chlorophyll_stddev_ug_l']),['turbidity_stddev_ntu'] = toreal(data.['turbidity_stddev_ntu']),['salinity_psu'] = toreal(data.['salinity_psu']),['specific_conductivity_s_m'] = toreal(data.['specific_conductivity_s_m']),['dissolved_oxygen_saturation_pct'] = toreal(data.['dissolved_oxygen_saturation_pct']),['nitrate_umol'] = toreal(data.['nitrate_umol']),['nitrate_mg_l'] = toreal(data.['nitrate_mg_l']),['wind_direction_deg'] = toreal(data.['wind_direction_deg']),['wind_speed_m_s'] = toreal(data.['wind_speed_m_s']),['photosynthetically_active_radiation_umol_s_m2'] = toreal(data.['photosynthetically_active_radiation_umol_s_m2']),['air_temperature_f'] = toreal(data.['air_temperature_f']),['air_humidity_pct'] = toreal(data.['air_humidity_pct']),['air_pressure_in_hg'] = toreal(data.['air_pressure_in_hg']),['system_battery_v'] = toreal(data.['system_battery_v']),['sensor_battery_v'] = toreal(data.['sensor_battery_v']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'US.WA.KingCounty.Marine.WaterQualityReading') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['observation_time'] = tostring(data.['observation_time']),['water_temperature_c'] = toreal(data.['water_temperature_c']),['conductivity_s_m'] = toreal(data.['conductivity_s_m']),['pressure_dbar'] = toreal(data.['pressure_dbar']),['dissolved_oxygen_mg_l'] = toreal(data.['dissolved_oxygen_mg_l']),['ph'] = toreal(data.['ph']),['chlorophyll_ug_l'] = toreal(data.['chlorophyll_ug_l']),['turbidity_ntu'] = toreal(data.['turbidity_ntu']),['chlorophyll_stddev_ug_l'] = toreal(data.['chlorophyll_stddev_ug_l']),['turbidity_stddev_ntu'] = toreal(data.['turbidity_stddev_ntu']),['salinity_psu'] = toreal(data.['salinity_psu']),['specific_conductivity_s_m'] = toreal(data.['specific_conductivity_s_m']),['dissolved_oxygen_saturation_pct'] = toreal(data.['dissolved_oxygen_saturation_pct']),['nitrate_umol'] = toreal(data.['nitrate_umol']),['nitrate_mg_l'] = toreal(data.['nitrate_mg_l']),['wind_direction_deg'] = toreal(data.['wind_direction_deg']),['wind_speed_m_s'] = toreal(data.['wind_speed_m_s']),['photosynthetically_active_radiation_umol_s_m2'] = toreal(data.['photosynthetically_active_radiation_umol_s_m2']),['air_temperature_f'] = toreal(data.['air_temperature_f']),['air_humidity_pct'] = toreal(data.['air_humidity_pct']),['air_pressure_in_hg'] = toreal(data.['air_pressure_in_hg']),['system_battery_v'] = toreal(data.['system_battery_v']),['sensor_battery_v'] = toreal(data.['sensor_battery_v']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [EPAUVHourlyForecast] (
-    [location_id]: string,
-    [city]: string,
-    [state]: string,
-    [forecast_datetime]: string,
-    [uv_index]: int,
-    [___type]: string,
-    [___source]: string,
-    [___id]: string,
-    [___time]: datetime,
-    [___subject]: string
+
+
+.create-merge table ['us.epa.uvindex.HourlyForecast'] (
+   [location_id]: string,
+   [city]: string,
+   [state]: string,
+   [forecast_datetime]: string,
+   [uv_index]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
 );
 
-.drop materialized-view EPAUVHourlyForecastLatest ifexists;
+.alter table ['us.epa.uvindex.HourlyForecast'] docstring "{\"description\": \"Hourly UV Index forecast for a configured city and state from the EPA Envirofacts UV hourly service.\"}";
 
-.create materialized-view with (backfill=true) EPAUVHourlyForecastLatest on table EPAUVHourlyForecast {
-    EPAUVHourlyForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.alter table ['us.epa.uvindex.HourlyForecast'] column-docstrings (
+   [location_id]: "{\"description\": \"Stable slug derived from the configured city and state.\"}",
+   [city]: "{\"description\": \"City for which the hourly UV forecast was requested.\"}",
+   [state]: "{\"description\": \"Two-letter state abbreviation for the requested city.\"}",
+   [forecast_datetime]: "{\"description\": \"Forecast timestamp normalized to ISO local datetime form without an explicit UTC offset.\"}",
+   [uv_index]: "{\"description\": \"Hourly UV Index forecast value.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.epa.uvindex.HourlyForecast'] ingestion json mapping "us.epa.uvindex.HourlyForecast_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.location_id"},
+  {"column": "city", "path": "$.city"},
+  {"column": "state", "path": "$.state"},
+  {"column": "forecast_datetime", "path": "$.forecast_datetime"},
+  {"column": "uv_index", "path": "$.uv_index"},
+]
+```
+
+.create-or-alter table ['us.epa.uvindex.HourlyForecast'] ingestion json mapping "us.epa.uvindex.HourlyForecast_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.data.location_id"},
+  {"column": "city", "path": "$.data.city"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "forecast_datetime", "path": "$.data.forecast_datetime"},
+  {"column": "uv_index", "path": "$.data.uv_index"},
+]
+```
+
+.drop materialized-view ['us.epa.uvindex.HourlyForecastLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.epa.uvindex.HourlyForecastLatest'] on table ['us.epa.uvindex.HourlyForecast'] {
+    ['us.epa.uvindex.HourlyForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [EPAUVHourlyForecast] policy update
+.alter table ['us.epa.uvindex.HourlyForecast'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.EPA.UVIndex.HourlyForecast') | project['location_id'] = tostring(data.['location_id']),['city'] = tostring(data.['city']),['state'] = tostring(data.['state']),['forecast_datetime'] = tostring(data.['forecast_datetime']),['uv_index'] = toint(data.['uv_index']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'US.EPA.UVIndex.HourlyForecast') | project['location_id'] = tostring(data.['location_id']),['city'] = tostring(data.['city']),['state'] = tostring(data.['state']),['forecast_datetime'] = tostring(data.['forecast_datetime']),['uv_index'] = toint(data.['uv_index']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [EPAUVDailyForecast] (
-    [location_id]: string,
-    [city]: string,
-    [state]: string,
-    [forecast_date]: string,
-    [uv_index]: int,
-    [uv_alert]: string,
-    [___type]: string,
-    [___source]: string,
-    [___id]: string,
-    [___time]: datetime,
-    [___subject]: string
+.create-merge table ['us.epa.uvindex.DailyForecast'] (
+   [location_id]: string,
+   [city]: string,
+   [state]: string,
+   [forecast_date]: string,
+   [uv_index]: int,
+   [uv_alert]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
 );
 
-.drop materialized-view EPAUVDailyForecastLatest ifexists;
+.alter table ['us.epa.uvindex.DailyForecast'] docstring "{\"description\": \"Daily UV Index forecast and alert flag for a configured city and state from the EPA Envirofacts UV daily service.\"}";
 
-.create materialized-view with (backfill=true) EPAUVDailyForecastLatest on table EPAUVDailyForecast {
-    EPAUVDailyForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.alter table ['us.epa.uvindex.DailyForecast'] column-docstrings (
+   [location_id]: "{\"description\": \"Stable slug derived from the configured city and state.\"}",
+   [city]: "{\"description\": \"City for which the daily UV forecast was requested.\"}",
+   [state]: "{\"description\": \"Two-letter state abbreviation for the requested city.\"}",
+   [forecast_date]: "{\"description\": \"Forecast date normalized to YYYY-MM-DD.\"}",
+   [uv_index]: "{\"description\": \"Daily UV Index forecast value.\"}",
+   [uv_alert]: "{\"description\": \"Character flag indicating whether a UV alert is issued for the forecast day.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.epa.uvindex.DailyForecast'] ingestion json mapping "us.epa.uvindex.DailyForecast_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.location_id"},
+  {"column": "city", "path": "$.city"},
+  {"column": "state", "path": "$.state"},
+  {"column": "forecast_date", "path": "$.forecast_date"},
+  {"column": "uv_index", "path": "$.uv_index"},
+  {"column": "uv_alert", "path": "$.uv_alert"},
+]
+```
+
+.create-or-alter table ['us.epa.uvindex.DailyForecast'] ingestion json mapping "us.epa.uvindex.DailyForecast_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.data.location_id"},
+  {"column": "city", "path": "$.data.city"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "forecast_date", "path": "$.data.forecast_date"},
+  {"column": "uv_index", "path": "$.data.uv_index"},
+  {"column": "uv_alert", "path": "$.data.uv_alert"},
+]
+```
+
+.drop materialized-view ['us.epa.uvindex.DailyForecastLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.epa.uvindex.DailyForecastLatest'] on table ['us.epa.uvindex.DailyForecast'] {
+    ['us.epa.uvindex.DailyForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [EPAUVDailyForecast] policy update
+.alter table ['us.epa.uvindex.DailyForecast'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'US.EPA.UVIndex.DailyForecast') | project['location_id'] = tostring(data.['location_id']),['city'] = tostring(data.['city']),['state'] = tostring(data.['state']),['forecast_date'] = tostring(data.['forecast_date']),['uv_index'] = toint(data.['uv_index']),['uv_alert'] = tostring(data.['uv_alert']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'US.EPA.UVIndex.DailyForecast') | project['location_id'] = tostring(data.['location_id']),['city'] = tostring(data.['city']),['state'] = tostring(data.['state']),['forecast_date'] = tostring(data.['forecast_date']),['uv_index'] = toint(data.['uv_index']),['uv_alert'] = tostring(data.['uv_alert']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [NWSForecastZone] (
-    [zone_id]: string,
-    [zone_type]: string,
-    [name]: string,
-    [state]: string,
-    [forecast_office_url]: string,
-    [grid_identifier]: string,
-    [awips_location_identifier]: string,
-    [cwa_ids]: dynamic,
-    [forecast_office_urls]: dynamic,
-    [time_zones]: dynamic,
-    [observation_station_ids]: dynamic,
-    [radar_station]: string,
-    [effective_date]: datetime,
-    [expiration_date]: datetime,
-    [___type]: string,
-    [___source]: string,
-    [___id]: string,
-    [___time]: datetime,
-    [___subject]: string
+
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] (
+   [zone_id]: string,
+   [zone_type]: string,
+   [name]: string,
+   [state]: string,
+   [forecast_office_url]: string,
+   [grid_identifier]: string,
+   [awips_location_identifier]: string,
+   [cwa_ids]: dynamic,
+   [forecast_office_urls]: dynamic,
+   [time_zones]: dynamic,
+   [observation_station_ids]: dynamic,
+   [radar_station]: string,
+   [effective_date]: datetime,
+   [expiration_date]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
 );
 
-.drop materialized-view NWSForecastZoneLatest ifexists;
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] docstring "{\"description\": \"Reference data for an NWS forecast zone selected by the bridge. The api.weather.gov /zones/forecast/{zoneId} endpoint returns both public land forecast zones such as WAZ315 and marine forecast zones such as PZZ135. The bridge emits this reference event at startup and on periodic refresh so downstream consumers can correlate forecast snapshots with stable zone metadata.\"}";
 
-.create materialized-view with (backfill=true) NWSForecastZoneLatest on table NWSForecastZone {
-    NWSForecastZone | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] column-docstrings (
+   [zone_id]: "{\"description\": \"NWS forecast zone identifier from the upstream properties.id field, such as WAZ315 for the City of Seattle public forecast zone or PZZ135 for the Puget Sound and Hood Canal marine zone.\"}",
+   [zone_type]: "{\"description\": \"NWS zone category from the upstream properties.type field. Forecast-zone responses use 'public' for land forecast zones and marine-oriented values such as 'coastal', 'offshore', or 'marine' for waters forecasts.\"}",
+   [name]: "{\"description\": \"Human-readable NWS zone name from properties.name, for example 'City of Seattle' or 'Puget Sound and Hood Canal'.\"}",
+   [state]: "{\"description\": \"Two-letter state or marine area code from properties.state. Washington forecast zones use WA for public zones and PZ for Washington coastal and inland waters marine zones.\"}",
+   [forecast_office_url]: "{\"description\": \"Canonical api.weather.gov URL of the primary Weather Forecast Office responsible for the zone, from properties.forecastOffice.\"}",
+   [grid_identifier]: "{\"description\": \"Grid identifier from properties.gridIdentifier. For Seattle forecast zones this is commonly the three-letter WFO grid identifier such as SEW. Marine zones can omit this field.\"}",
+   [awips_location_identifier]: "{\"description\": \"AWIPS location identifier from properties.awipsLocationIdentifier when the zone has a matching AWIPS code.\"}",
+   [cwa_ids]: "{\"description\": \"List of Weather Forecast Office county warning area identifiers from properties.cwa. The NWS publishes this as an array because a zone can be served by one or more CWAs.\", \"schema\": {\"type\": \"array\", \"description\": \"List of Weather Forecast Office county warning area identifiers from properties.cwa. The NWS publishes this as an array because a zone can be served by one or more CWAs.\", \"items\": {\"type\": \"string\", \"pattern\": \"^[A-Z]{3}$\"}}}",
+   [forecast_office_urls]: "{\"description\": \"List of api.weather.gov office URLs from properties.forecastOffices. The public zone detail currently repeats the primary office here, but the endpoint models it as a list.\", \"schema\": {\"type\": \"array\", \"description\": \"List of api.weather.gov office URLs from properties.forecastOffices. The public zone detail currently repeats the primary office here, but the endpoint models it as a list.\", \"items\": {\"type\": \"string\"}}}",
+   [time_zones]: "{\"description\": \"Ordered list of IANA timezone names from properties.timeZone for the zone boundary. Most Puget Sound zones use a single entry of America/Los_Angeles.\", \"schema\": {\"type\": \"array\", \"description\": \"Ordered list of IANA timezone names from properties.timeZone for the zone boundary. Most Puget Sound zones use a single entry of America/Los_Angeles.\", \"items\": {\"type\": \"string\"}}}",
+   [observation_station_ids]: "{\"description\": \"Ordered list of observation station identifiers derived from the properties.observationStations URL array. The bridge strips the common URL prefix and emits only the terminal station identifier for compact reference data.\", \"schema\": {\"type\": \"array\", \"description\": \"Ordered list of observation station identifiers derived from the properties.observationStations URL array. The bridge strips the common URL prefix and emits only the terminal station identifier for compact reference data.\", \"items\": {\"type\": \"string\"}}}",
+   [radar_station]: "{\"description\": \"Nearest NEXRAD radar station identifier from properties.radarStation, such as ATX for Seattle-area land zones, or null when the zone metadata does not declare a radar station.\"}",
+   [effective_date]: "{\"description\": \"Date and time at which this zone definition became effective, from properties.effectiveDate.\"}",
+   [expiration_date]: "{\"description\": \"Date and time at which this zone definition expires, from properties.expirationDate. NWS currently uses a far-future sentinel date for active zone definitions.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.zone_id"},
+  {"column": "zone_type", "path": "$.zone_type"},
+  {"column": "name", "path": "$.name"},
+  {"column": "state", "path": "$.state"},
+  {"column": "forecast_office_url", "path": "$.forecast_office_url"},
+  {"column": "grid_identifier", "path": "$.grid_identifier"},
+  {"column": "awips_location_identifier", "path": "$.awips_location_identifier"},
+  {"column": "cwa_ids", "path": "$.cwa_ids"},
+  {"column": "forecast_office_urls", "path": "$.forecast_office_urls"},
+  {"column": "time_zones", "path": "$.time_zones"},
+  {"column": "observation_station_ids", "path": "$.observation_station_ids"},
+  {"column": "radar_station", "path": "$.radar_station"},
+  {"column": "effective_date", "path": "$.effective_date"},
+  {"column": "expiration_date", "path": "$.expiration_date"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.data.zone_id"},
+  {"column": "zone_type", "path": "$.data.zone_type"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "forecast_office_url", "path": "$.data.forecast_office_url"},
+  {"column": "grid_identifier", "path": "$.data.grid_identifier"},
+  {"column": "awips_location_identifier", "path": "$.data.awips_location_identifier"},
+  {"column": "cwa_ids", "path": "$.data.cwa_ids"},
+  {"column": "forecast_office_urls", "path": "$.data.forecast_office_urls"},
+  {"column": "time_zones", "path": "$.data.time_zones"},
+  {"column": "observation_station_ids", "path": "$.data.observation_station_ids"},
+  {"column": "radar_station", "path": "$.data.radar_station"},
+  {"column": "effective_date", "path": "$.data.effective_date"},
+  {"column": "expiration_date", "path": "$.data.expiration_date"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZoneLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZoneLatest'] on table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] {
+    ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [NWSForecastZone] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.ForecastZone'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'Microsoft.OpenData.US.NOAA.NWS.ForecastZone') | project['zone_id'] = tostring(data.['zone_id']),['zone_type'] = tostring(data.['zone_type']),['name'] = tostring(data.['name']),['state'] = tostring(data.['state']),['forecast_office_url'] = tostring(data.['forecast_office_url']),['grid_identifier'] = tostring(data.['grid_identifier']),['awips_location_identifier'] = tostring(data.['awips_location_identifier']),['cwa_ids'] = todynamic(data.['cwa_ids']),['forecast_office_urls'] = todynamic(data.['forecast_office_urls']),['time_zones'] = todynamic(data.['time_zones']),['observation_station_ids'] = todynamic(data.['observation_station_ids']),['radar_station'] = tostring(data.['radar_station']),['effective_date'] = todatetime(data.['effective_date']),['expiration_date'] = todatetime(data.['expiration_date']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NWS.ForecastZone') | project['zone_id'] = tostring(data.['zone_id']),['zone_type'] = tostring(data.['zone_type']),['name'] = tostring(data.['name']),['state'] = tostring(data.['state']),['forecast_office_url'] = tostring(data.['forecast_office_url']),['grid_identifier'] = tostring(data.['grid_identifier']),['awips_location_identifier'] = tostring(data.['awips_location_identifier']),['cwa_ids'] = todynamic(data.['cwa_ids']),['forecast_office_urls'] = todynamic(data.['forecast_office_urls']),['time_zones'] = todynamic(data.['time_zones']),['observation_station_ids'] = todynamic(data.['observation_station_ids']),['radar_station'] = tostring(data.['radar_station']),['effective_date'] = todatetime(data.['effective_date']),['expiration_date'] = todatetime(data.['expiration_date']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [NWSLandZoneForecast] (
-    [zone_id]: string,
-    [updated]: datetime,
-    [periods]: dynamic,
-    [___type]: string,
-    [___source]: string,
-    [___id]: string,
-    [___time]: datetime,
-    [___subject]: string
+.create-merge table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] (
+   [zone_id]: string,
+   [updated]: datetime,
+   [periods]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
 );
 
-.drop materialized-view NWSLandZoneForecastLatest ifexists;
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] docstring "{\"description\": \"Public land-zone forecast snapshot from api.weather.gov /zones/forecast/{zoneId}/forecast. This endpoint returns narrative forecast periods for a land forecast zone such as Seattle or Tacoma. The bridge preserves the ordered forecast periods and emits the zone identifier as the Kafka key so each event represents the current forecast snapshot for one zone.\"}";
 
-.create materialized-view with (backfill=true) NWSLandZoneForecastLatest on table NWSLandZoneForecast {
-    NWSLandZoneForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] column-docstrings (
+   [zone_id]: "{\"description\": \"Forecast zone identifier for the land forecast snapshot. This matches the configured zone identifier and the upstream properties.zone URL suffix.\"}",
+   [updated]: "{\"description\": \"Timestamp from properties.updated indicating when the NWS most recently updated this zone forecast.\"}",
+   [periods]: "{\"description\": \"Ordered narrative forecast periods from properties.periods. Each element represents one named daypart or day-level outlook such as Tonight, Tuesday, or Tuesday Night.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.zone_id"},
+  {"column": "updated", "path": "$.updated"},
+  {"column": "periods", "path": "$.periods"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.data.zone_id"},
+  {"column": "updated", "path": "$.data.updated"},
+  {"column": "periods", "path": "$.data.periods"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecastLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecastLatest'] on table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] {
+    ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [NWSLandZoneForecast] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.LandZoneForecast'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast') | project['zone_id'] = tostring(data.['zone_id']),['updated'] = todatetime(data.['updated']),['periods'] = todynamic(data.['periods']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NWS.LandZoneForecast') | project['zone_id'] = tostring(data.['zone_id']),['updated'] = todatetime(data.['updated']),['periods'] = todynamic(data.['periods']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [NWSMarineZoneForecast] (
-    [zone_id]: string,
-    [zone_name]: string,
-    [product_title]: string,
-    [office_name]: string,
-    [issued_at_text]: string,
-    [expires_text]: string,
-    [wmo_header]: string,
-    [bulletin_awips_id]: string,
-    [synopsis]: string,
-    [periods]: dynamic,
-    [bulletin_text]: string,
-    [___type]: string,
-    [___source]: string,
-    [___id]: string,
-    [___time]: datetime,
-    [___subject]: string
+.create-merge table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] (
+   [zone_id]: string,
+   [zone_name]: string,
+   [product_title]: string,
+   [office_name]: string,
+   [issued_at_text]: string,
+   [expires_text]: string,
+   [wmo_header]: string,
+   [bulletin_awips_id]: string,
+   [synopsis]: string,
+   [periods]: dynamic,
+   [bulletin_text]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
 );
 
-.drop materialized-view NWSMarineZoneForecastLatest ifexists;
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] docstring "{\"description\": \"Marine forecast bulletin snapshot parsed from the NOAA/NWS coastal waters text feed under tgftp.nws.noaa.gov/data/forecasts/marine/coastal/pz/. The upstream feed is plain text rather than structured JSON, so the bridge emits the bulletin metadata plus an ordered array of named narrative periods for the selected marine zone.\"}";
 
-.create materialized-view with (backfill=true) NWSMarineZoneForecastLatest on table NWSMarineZoneForecast {
-    NWSMarineZoneForecast | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] column-docstrings (
+   [zone_id]: "{\"description\": \"Marine forecast zone identifier parsed from the bulletin zone header line, such as PZZ135 for Puget Sound and Hood Canal.\"}",
+   [zone_name]: "{\"description\": \"Marine zone display name parsed from the zone header line immediately following the zone identifier in the text bulletin.\"}",
+   [product_title]: "{\"description\": \"Bulletin title line, such as 'Coastal Waters Forecast for Washington'.\"}",
+   [office_name]: "{\"description\": \"Issuing office line from the bulletin header, for example 'National Weather Service Seattle WA'.\"}",
+   [issued_at_text]: "{\"description\": \"Issue time line from the zone-specific section of the marine bulletin, preserved as the original text because the feed uses local-office time abbreviations such as PDT.\"}",
+   [expires_text]: "{\"description\": \"Raw Expires header value from the bulletin preamble, preserved as text because the feed does not provide an explicit timezone annotation in ISO form.\"}",
+   [wmo_header]: "{\"description\": \"WMO abbreviated heading line from the marine bulletin, for example 'FZUS56 KSEW 132142'.\"}",
+   [bulletin_awips_id]: "{\"description\": \"AWIPS product identifier line from the bulletin, for example CWFSEW.\"}",
+   [synopsis]: "{\"description\": \"Narrative synopsis paragraph that appears before the zone-specific section and describes the broader marine area covered by the bulletin.\"}",
+   [periods]: "{\"description\": \"Ordered narrative forecast periods parsed from the zone-specific section. Each element preserves the named period heading and its free-text forecast text.\", \"schema\": \"{ \\\"doc\\\": \\\"Schema too large to inline. Please refer to the JSON Structure schema for more details.\\\" }\"}",
+   [bulletin_text]: "{\"description\": \"Zone-specific marine bulletin body including the ordered period sections, preserved as plain text so downstream consumers can retain the original marine forecast wording.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.zone_id"},
+  {"column": "zone_name", "path": "$.zone_name"},
+  {"column": "product_title", "path": "$.product_title"},
+  {"column": "office_name", "path": "$.office_name"},
+  {"column": "issued_at_text", "path": "$.issued_at_text"},
+  {"column": "expires_text", "path": "$.expires_text"},
+  {"column": "wmo_header", "path": "$.wmo_header"},
+  {"column": "bulletin_awips_id", "path": "$.bulletin_awips_id"},
+  {"column": "synopsis", "path": "$.synopsis"},
+  {"column": "periods", "path": "$.periods"},
+  {"column": "bulletin_text", "path": "$.bulletin_text"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] ingestion json mapping "Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "zone_id", "path": "$.data.zone_id"},
+  {"column": "zone_name", "path": "$.data.zone_name"},
+  {"column": "product_title", "path": "$.data.product_title"},
+  {"column": "office_name", "path": "$.data.office_name"},
+  {"column": "issued_at_text", "path": "$.data.issued_at_text"},
+  {"column": "expires_text", "path": "$.data.expires_text"},
+  {"column": "wmo_header", "path": "$.data.wmo_header"},
+  {"column": "bulletin_awips_id", "path": "$.data.bulletin_awips_id"},
+  {"column": "synopsis", "path": "$.data.synopsis"},
+  {"column": "periods", "path": "$.data.periods"},
+  {"column": "bulletin_text", "path": "$.data.bulletin_text"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecastLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecastLatest'] on table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] {
+    ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [NWSMarineZoneForecast] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.NWS.Forecasts.MarineZoneForecast'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type =~ 'Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast') | project['zone_id'] = tostring(data.['zone_id']),['zone_name'] = tostring(data.['zone_name']),['product_title'] = tostring(data.['product_title']),['office_name'] = tostring(data.['office_name']),['issued_at_text'] = tostring(data.['issued_at_text']),['expires_text'] = tostring(data.['expires_text']),['wmo_header'] = tostring(data.['wmo_header']),['bulletin_awips_id'] = tostring(data.['bulletin_awips_id']),['synopsis'] = tostring(data.['synopsis']),['periods'] = todynamic(data.['periods']),['bulletin_text'] = tostring(data.['bulletin_text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.NWS.MarineZoneForecast') | project['zone_id'] = tostring(data.['zone_id']),['zone_name'] = tostring(data.['zone_name']),['product_title'] = tostring(data.['product_title']),['office_name'] = tostring(data.['office_name']),['issued_at_text'] = tostring(data.['issued_at_text']),['expires_text'] = tostring(data.['expires_text']),['wmo_header'] = tostring(data.['wmo_header']),['bulletin_awips_id'] = tostring(data.['bulletin_awips_id']),['synopsis'] = tostring(data.['synopsis']),['periods'] = todynamic(data.['periods']),['bulletin_text'] = tostring(data.['bulletin_text']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
+
+
+
+.create-merge table ['us.wa.wsdot.traffic.TrafficFlowStation'] (
+   [flow_data_id]: string,
+   [station_name]: string,
+   [region]: string,
+   [description]: string,
+   [road_name]: string,
+   [direction]: string,
+   [milepost]: real,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] docstring "{\"description\": \"Metadata for a traffic flow sensor station in the WSDOT network. Each sensor is identified by a unique FlowDataID integer.\"}";
+
+.alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] column-docstrings (
+   [flow_data_id]: "{\"description\": \"Unique numeric identifier for this traffic flow sensor station, stringified from upstream FlowDataID.\"}",
+   [station_name]: "{\"description\": \"Descriptive name of the flow sensor station.\"}",
+   [region]: "{\"description\": \"WSDOT geographic coverage region.\"}",
+   [description]: "{\"description\": \"Location description. Null if not provided.\"}",
+   [road_name]: "{\"description\": \"Road designation where the sensor is installed.\"}",
+   [direction]: "{\"description\": \"Direction of travel monitored. Examples: NB, SB, EB, WB.\"}",
+   [milepost]: "{\"description\": \"Milepost marker along the roadway.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84 decimal degrees.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84 decimal degrees.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] ingestion json mapping "us.wa.wsdot.traffic.TrafficFlowStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "flow_data_id", "path": "$.flow_data_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "region", "path": "$.region"},
+  {"column": "description", "path": "$.description"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "direction", "path": "$.direction"},
+  {"column": "milepost", "path": "$.milepost"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] ingestion json mapping "us.wa.wsdot.traffic.TrafficFlowStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "flow_data_id", "path": "$.data.flow_data_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "region", "path": "$.data.region"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "direction", "path": "$.data.direction"},
+  {"column": "milepost", "path": "$.data.milepost"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view ['us.wa.wsdot.traffic.TrafficFlowStationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.wsdot.traffic.TrafficFlowStationLatest'] on table ['us.wa.wsdot.traffic.TrafficFlowStation'] {
+    ['us.wa.wsdot.traffic.TrafficFlowStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.wsdot.traffic.TrafficFlowStation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.traffic.TrafficFlowStation') | project['flow_data_id'] = tostring(data.['flow_data_id']),['station_name'] = tostring(data.['station_name']),['region'] = tostring(data.['region']),['description'] = tostring(data.['description']),['road_name'] = tostring(data.['road_name']),['direction'] = tostring(data.['direction']),['milepost'] = toreal(data.['milepost']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['us.wa.wsdot.traffic.TrafficFlowReading'] (
+   [flow_data_id]: string,
+   [station_name]: string,
+   [region]: string,
+   [flow_reading]: string,
+   [reading_time]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] docstring "{\"description\": \"A traffic flow reading from a WSDOT sensor station.\"}";
+
+.alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] column-docstrings (
+   [flow_data_id]: "{\"description\": \"Sensor station identifier, stringified from upstream FlowDataID.\"}",
+   [station_name]: "{\"description\": \"Station name.\"}",
+   [region]: "{\"description\": \"WSDOT region.\"}",
+   [flow_reading]: "{\"description\": \"Current traffic Level of Service. Converted from upstream FlowReadingValue byte.\"}",
+   [reading_time]: "{\"description\": \"ISO 8601 UTC timestamp of the reading.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] ingestion json mapping "us.wa.wsdot.traffic.TrafficFlowReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "flow_data_id", "path": "$.flow_data_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "region", "path": "$.region"},
+  {"column": "flow_reading", "path": "$.flow_reading"},
+  {"column": "reading_time", "path": "$.reading_time"},
+]
+```
+
+.create-or-alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] ingestion json mapping "us.wa.wsdot.traffic.TrafficFlowReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "flow_data_id", "path": "$.data.flow_data_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "region", "path": "$.data.region"},
+  {"column": "flow_reading", "path": "$.data.flow_reading"},
+  {"column": "reading_time", "path": "$.data.reading_time"},
+]
+```
+
+.drop materialized-view ['us.wa.wsdot.traffic.TrafficFlowReadingLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.wsdot.traffic.TrafficFlowReadingLatest'] on table ['us.wa.wsdot.traffic.TrafficFlowReading'] {
+    ['us.wa.wsdot.traffic.TrafficFlowReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.wsdot.traffic.TrafficFlowReading'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.traffic.TrafficFlowReading') | project['flow_data_id'] = tostring(data.['flow_data_id']),['station_name'] = tostring(data.['station_name']),['region'] = tostring(data.['region']),['flow_reading'] = tostring(data.['flow_reading']),['reading_time'] = tostring(data.['reading_time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] (
+   [travel_time_id]: string,
+   [name]: string,
+   [description]: string,
+   [distance]: real,
+   [average_time]: int,
+   [current_time]: int,
+   [time_updated]: string,
+   [start_description]: string,
+   [start_road_name]: string,
+   [start_direction]: string,
+   [start_milepost]: real,
+   [start_latitude]: real,
+   [start_longitude]: real,
+   [end_description]: string,
+   [end_road_name]: string,
+   [end_direction]: string,
+   [end_milepost]: real,
+   [end_latitude]: real,
+   [end_longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] docstring "{\"description\": \"A named travel time route monitored by WSDOT with historical average and current real-time travel times in minutes.\"}";
+
+.alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] column-docstrings (
+   [travel_time_id]: "{\"description\": \"Unique route identifier, stringified from upstream TravelTimeID.\"}",
+   [name]: "{\"description\": \"Short route segment name.\"}",
+   [description]: "{\"description\": \"Longer description including lane type.\"}",
+   [distance]: "{\"description\": \"Route distance in miles.\"}",
+   [average_time]: "{\"description\": \"Historical average travel time in minutes.\"}",
+   [current_time]: "{\"description\": \"Current real-time travel time in minutes.\"}",
+   [time_updated]: "{\"description\": \"ISO 8601 UTC timestamp of last update.\"}",
+   [start_description]: "{\"description\": \"Start point description.\"}",
+   [start_road_name]: "{\"description\": \"Road at start point.\"}",
+   [start_direction]: "{\"description\": \"Direction at start point.\"}",
+   [start_milepost]: "{\"description\": \"Milepost at start.\"}",
+   [start_latitude]: "{\"description\": \"Start latitude in WGS84.\"}",
+   [start_longitude]: "{\"description\": \"Start longitude in WGS84.\"}",
+   [end_description]: "{\"description\": \"End point description.\"}",
+   [end_road_name]: "{\"description\": \"Road at end point.\"}",
+   [end_direction]: "{\"description\": \"Direction at end point.\"}",
+   [end_milepost]: "{\"description\": \"Milepost at end.\"}",
+   [end_latitude]: "{\"description\": \"End latitude in WGS84.\"}",
+   [end_longitude]: "{\"description\": \"End longitude in WGS84.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] ingestion json mapping "us.wa.wsdot.traveltimes.TravelTimeRoute_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "travel_time_id", "path": "$.travel_time_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "description", "path": "$.description"},
+  {"column": "distance", "path": "$.distance"},
+  {"column": "average_time", "path": "$.average_time"},
+  {"column": "current_time", "path": "$.current_time"},
+  {"column": "time_updated", "path": "$.time_updated"},
+  {"column": "start_description", "path": "$.start_description"},
+  {"column": "start_road_name", "path": "$.start_road_name"},
+  {"column": "start_direction", "path": "$.start_direction"},
+  {"column": "start_milepost", "path": "$.start_milepost"},
+  {"column": "start_latitude", "path": "$.start_latitude"},
+  {"column": "start_longitude", "path": "$.start_longitude"},
+  {"column": "end_description", "path": "$.end_description"},
+  {"column": "end_road_name", "path": "$.end_road_name"},
+  {"column": "end_direction", "path": "$.end_direction"},
+  {"column": "end_milepost", "path": "$.end_milepost"},
+  {"column": "end_latitude", "path": "$.end_latitude"},
+  {"column": "end_longitude", "path": "$.end_longitude"},
+]
+```
+
+.create-or-alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] ingestion json mapping "us.wa.wsdot.traveltimes.TravelTimeRoute_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "travel_time_id", "path": "$.data.travel_time_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "distance", "path": "$.data.distance"},
+  {"column": "average_time", "path": "$.data.average_time"},
+  {"column": "current_time", "path": "$.data.current_time"},
+  {"column": "time_updated", "path": "$.data.time_updated"},
+  {"column": "start_description", "path": "$.data.start_description"},
+  {"column": "start_road_name", "path": "$.data.start_road_name"},
+  {"column": "start_direction", "path": "$.data.start_direction"},
+  {"column": "start_milepost", "path": "$.data.start_milepost"},
+  {"column": "start_latitude", "path": "$.data.start_latitude"},
+  {"column": "start_longitude", "path": "$.data.start_longitude"},
+  {"column": "end_description", "path": "$.data.end_description"},
+  {"column": "end_road_name", "path": "$.data.end_road_name"},
+  {"column": "end_direction", "path": "$.data.end_direction"},
+  {"column": "end_milepost", "path": "$.data.end_milepost"},
+  {"column": "end_latitude", "path": "$.data.end_latitude"},
+  {"column": "end_longitude", "path": "$.data.end_longitude"},
+]
+```
+
+.drop materialized-view ['us.wa.wsdot.traveltimes.TravelTimeRouteLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.wsdot.traveltimes.TravelTimeRouteLatest'] on table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] {
+    ['us.wa.wsdot.traveltimes.TravelTimeRoute'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.wsdot.traveltimes.TravelTimeRoute'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.traveltimes.TravelTimeRoute') | project['travel_time_id'] = tostring(data.['travel_time_id']),['name'] = tostring(data.['name']),['description'] = tostring(data.['description']),['distance'] = toreal(data.['distance']),['average_time'] = toint(data.['average_time']),['current_time'] = toint(data.['current_time']),['time_updated'] = tostring(data.['time_updated']),['start_description'] = tostring(data.['start_description']),['start_road_name'] = tostring(data.['start_road_name']),['start_direction'] = tostring(data.['start_direction']),['start_milepost'] = toreal(data.['start_milepost']),['start_latitude'] = toreal(data.['start_latitude']),['start_longitude'] = toreal(data.['start_longitude']),['end_description'] = tostring(data.['end_description']),['end_road_name'] = tostring(data.['end_road_name']),['end_direction'] = tostring(data.['end_direction']),['end_milepost'] = toreal(data.['end_milepost']),['end_latitude'] = toreal(data.['end_latitude']),['end_longitude'] = toreal(data.['end_longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['us.wa.wsdot.mountainpass.MountainPassCondition'] (
+   [mountain_pass_id]: string,
+   [mountain_pass_name]: string,
+   [elevation_in_feet]: int,
+   [latitude]: real,
+   [longitude]: real,
+   [temperature_in_fahrenheit]: int,
+   [weather_condition]: string,
+   [road_condition]: string,
+   [travel_advisory_active]: bool,
+   [restriction_one_direction]: string,
+   [restriction_one_text]: string,
+   [restriction_two_direction]: string,
+   [restriction_two_text]: string,
+   [date_updated]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] docstring "{\"description\": \"Current conditions at a Washington State mountain pass. WSDOT monitors 16 mountain passes reporting temperature, weather, road conditions, travel advisories, and directional restrictions.\"}";
+
+.alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] column-docstrings (
+   [mountain_pass_id]: "{\"description\": \"Unique pass identifier, stringified from upstream MountainPassId.\"}",
+   [mountain_pass_name]: "{\"description\": \"Pass name with highway designation.\"}",
+   [elevation_in_feet]: "{\"description\": \"Summit elevation in feet above sea level.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [temperature_in_fahrenheit]: "{\"description\": \"Temperature at the summit in Fahrenheit. Null if not reporting.\"}",
+   [weather_condition]: "{\"description\": \"Current weather condition text. Examples: Clear, Rain, Snow, Fog.\"}",
+   [road_condition]: "{\"description\": \"Road surface condition text. Examples: Dry, Wet, Compact Snow, Ice.\"}",
+   [travel_advisory_active]: "{\"description\": \"True if a travel advisory is in effect.\"}",
+   [restriction_one_direction]: "{\"description\": \"Direction for first restriction.\"}",
+   [restriction_one_text]: "{\"description\": \"First restriction text.\"}",
+   [restriction_two_direction]: "{\"description\": \"Direction for second restriction.\"}",
+   [restriction_two_text]: "{\"description\": \"Second restriction text.\"}",
+   [date_updated]: "{\"description\": \"ISO 8601 UTC timestamp of last update.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] ingestion json mapping "us.wa.wsdot.mountainpass.MountainPassCondition_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mountain_pass_id", "path": "$.mountain_pass_id"},
+  {"column": "mountain_pass_name", "path": "$.mountain_pass_name"},
+  {"column": "elevation_in_feet", "path": "$.elevation_in_feet"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "temperature_in_fahrenheit", "path": "$.temperature_in_fahrenheit"},
+  {"column": "weather_condition", "path": "$.weather_condition"},
+  {"column": "road_condition", "path": "$.road_condition"},
+  {"column": "travel_advisory_active", "path": "$.travel_advisory_active"},
+  {"column": "restriction_one_direction", "path": "$.restriction_one_direction"},
+  {"column": "restriction_one_text", "path": "$.restriction_one_text"},
+  {"column": "restriction_two_direction", "path": "$.restriction_two_direction"},
+  {"column": "restriction_two_text", "path": "$.restriction_two_text"},
+  {"column": "date_updated", "path": "$.date_updated"},
+]
+```
+
+.create-or-alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] ingestion json mapping "us.wa.wsdot.mountainpass.MountainPassCondition_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "mountain_pass_id", "path": "$.data.mountain_pass_id"},
+  {"column": "mountain_pass_name", "path": "$.data.mountain_pass_name"},
+  {"column": "elevation_in_feet", "path": "$.data.elevation_in_feet"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "temperature_in_fahrenheit", "path": "$.data.temperature_in_fahrenheit"},
+  {"column": "weather_condition", "path": "$.data.weather_condition"},
+  {"column": "road_condition", "path": "$.data.road_condition"},
+  {"column": "travel_advisory_active", "path": "$.data.travel_advisory_active"},
+  {"column": "restriction_one_direction", "path": "$.data.restriction_one_direction"},
+  {"column": "restriction_one_text", "path": "$.data.restriction_one_text"},
+  {"column": "restriction_two_direction", "path": "$.data.restriction_two_direction"},
+  {"column": "restriction_two_text", "path": "$.data.restriction_two_text"},
+  {"column": "date_updated", "path": "$.data.date_updated"},
+]
+```
+
+.drop materialized-view ['us.wa.wsdot.mountainpass.MountainPassConditionLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.wsdot.mountainpass.MountainPassConditionLatest'] on table ['us.wa.wsdot.mountainpass.MountainPassCondition'] {
+    ['us.wa.wsdot.mountainpass.MountainPassCondition'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.wsdot.mountainpass.MountainPassCondition'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.mountainpass.MountainPassCondition') | project['mountain_pass_id'] = tostring(data.['mountain_pass_id']),['mountain_pass_name'] = tostring(data.['mountain_pass_name']),['elevation_in_feet'] = toint(data.['elevation_in_feet']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['temperature_in_fahrenheit'] = toint(data.['temperature_in_fahrenheit']),['weather_condition'] = tostring(data.['weather_condition']),['road_condition'] = tostring(data.['road_condition']),['travel_advisory_active'] = tobool(data.['travel_advisory_active']),['restriction_one_direction'] = tostring(data.['restriction_one_direction']),['restriction_one_text'] = tostring(data.['restriction_one_text']),['restriction_two_direction'] = tostring(data.['restriction_two_direction']),['restriction_two_text'] = tostring(data.['restriction_two_text']),['date_updated'] = tostring(data.['date_updated']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['us.wa.wsdot.weather.WeatherStation'] (
+   [station_id]: string,
+   [station_name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.wsdot.weather.WeatherStation'] docstring "{\"description\": \"Metadata for a WSDOT RWIS station.\"}";
+
+.alter table ['us.wa.wsdot.weather.WeatherStation'] column-docstrings (
+   [station_id]: "{\"description\": \"Station identifier from upstream StationCode.\"}",
+   [station_name]: "{\"description\": \"Station name with highway and milepost.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.wsdot.weather.WeatherStation'] ingestion json mapping "us.wa.wsdot.weather.WeatherStation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table ['us.wa.wsdot.weather.WeatherStation'] ingestion json mapping "us.wa.wsdot.weather.WeatherStation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view ['us.wa.wsdot.weather.WeatherStationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.wsdot.weather.WeatherStationLatest'] on table ['us.wa.wsdot.weather.WeatherStation'] {
+    ['us.wa.wsdot.weather.WeatherStation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.wsdot.weather.WeatherStation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.weather.WeatherStation') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['us.wa.wsdot.weather.WeatherReading'] (
+   [station_id]: string,
+   [station_name]: string,
+   [reading_time]: string,
+   [temperature_in_fahrenheit]: real,
+   [precipitation_in_inches]: real,
+   [wind_speed_in_mph]: real,
+   [wind_gust_speed_in_mph]: real,
+   [wind_direction]: int,
+   [wind_direction_cardinal]: string,
+   [barometric_pressure]: real,
+   [relative_humidity]: int,
+   [visibility]: real,
+   [sky_coverage]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.wsdot.weather.WeatherReading'] docstring "{\"description\": \"A current weather reading from a WSDOT RWIS station.\"}";
+
+.alter table ['us.wa.wsdot.weather.WeatherReading'] column-docstrings (
+   [station_id]: "{\"description\": \"Station identifier from upstream StationID.\"}",
+   [station_name]: "{\"description\": \"Station name.\"}",
+   [reading_time]: "{\"description\": \"ISO 8601 UTC timestamp.\"}",
+   [temperature_in_fahrenheit]: "{\"description\": \"Air temperature in Fahrenheit.\"}",
+   [precipitation_in_inches]: "{\"description\": \"Precipitation in inches.\"}",
+   [wind_speed_in_mph]: "{\"description\": \"Wind speed in mph.\"}",
+   [wind_gust_speed_in_mph]: "{\"description\": \"Wind gust speed in mph.\"}",
+   [wind_direction]: "{\"description\": \"Wind direction in degrees from true north.\"}",
+   [wind_direction_cardinal]: "{\"description\": \"Wind direction as cardinal abbreviation.\"}",
+   [barometric_pressure]: "{\"description\": \"Barometric pressure in hPa.\"}",
+   [relative_humidity]: "{\"description\": \"Relative humidity percentage.\"}",
+   [visibility]: "{\"description\": \"Visibility distance.\"}",
+   [sky_coverage]: "{\"description\": \"Sky coverage description.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.wsdot.weather.WeatherReading'] ingestion json mapping "us.wa.wsdot.weather.WeatherReading_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "reading_time", "path": "$.reading_time"},
+  {"column": "temperature_in_fahrenheit", "path": "$.temperature_in_fahrenheit"},
+  {"column": "precipitation_in_inches", "path": "$.precipitation_in_inches"},
+  {"column": "wind_speed_in_mph", "path": "$.wind_speed_in_mph"},
+  {"column": "wind_gust_speed_in_mph", "path": "$.wind_gust_speed_in_mph"},
+  {"column": "wind_direction", "path": "$.wind_direction"},
+  {"column": "wind_direction_cardinal", "path": "$.wind_direction_cardinal"},
+  {"column": "barometric_pressure", "path": "$.barometric_pressure"},
+  {"column": "relative_humidity", "path": "$.relative_humidity"},
+  {"column": "visibility", "path": "$.visibility"},
+  {"column": "sky_coverage", "path": "$.sky_coverage"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table ['us.wa.wsdot.weather.WeatherReading'] ingestion json mapping "us.wa.wsdot.weather.WeatherReading_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "reading_time", "path": "$.data.reading_time"},
+  {"column": "temperature_in_fahrenheit", "path": "$.data.temperature_in_fahrenheit"},
+  {"column": "precipitation_in_inches", "path": "$.data.precipitation_in_inches"},
+  {"column": "wind_speed_in_mph", "path": "$.data.wind_speed_in_mph"},
+  {"column": "wind_gust_speed_in_mph", "path": "$.data.wind_gust_speed_in_mph"},
+  {"column": "wind_direction", "path": "$.data.wind_direction"},
+  {"column": "wind_direction_cardinal", "path": "$.data.wind_direction_cardinal"},
+  {"column": "barometric_pressure", "path": "$.data.barometric_pressure"},
+  {"column": "relative_humidity", "path": "$.data.relative_humidity"},
+  {"column": "visibility", "path": "$.data.visibility"},
+  {"column": "sky_coverage", "path": "$.data.sky_coverage"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view ['us.wa.wsdot.weather.WeatherReadingLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.wsdot.weather.WeatherReadingLatest'] on table ['us.wa.wsdot.weather.WeatherReading'] {
+    ['us.wa.wsdot.weather.WeatherReading'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.wsdot.weather.WeatherReading'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.weather.WeatherReading') | project['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['reading_time'] = tostring(data.['reading_time']),['temperature_in_fahrenheit'] = toreal(data.['temperature_in_fahrenheit']),['precipitation_in_inches'] = toreal(data.['precipitation_in_inches']),['wind_speed_in_mph'] = toreal(data.['wind_speed_in_mph']),['wind_gust_speed_in_mph'] = toreal(data.['wind_gust_speed_in_mph']),['wind_direction'] = toint(data.['wind_direction']),['wind_direction_cardinal'] = tostring(data.['wind_direction_cardinal']),['barometric_pressure'] = toreal(data.['barometric_pressure']),['relative_humidity'] = toint(data.['relative_humidity']),['visibility'] = toreal(data.['visibility']),['sky_coverage'] = tostring(data.['sky_coverage']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['us.wa.wsdot.tolls.TollRate'] (
+   [trip_name]: string,
+   [state_route]: string,
+   [travel_direction]: string,
+   [current_toll]: int,
+   [current_message]: string,
+   [time_updated]: string,
+   [start_location_name]: string,
+   [start_latitude]: real,
+   [start_longitude]: real,
+   [start_milepost]: real,
+   [end_location_name]: string,
+   [end_latitude]: real,
+   [end_longitude]: real,
+   [end_milepost]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.wsdot.tolls.TollRate'] docstring "{\"description\": \"Current toll rate for a WSDOT tolled route segment with dynamic pricing.\"}";
+
+.alter table ['us.wa.wsdot.tolls.TollRate'] column-docstrings (
+   [trip_name]: "{\"description\": \"Tolled route segment identifier.\"}",
+   [state_route]: "{\"description\": \"State route number.\"}",
+   [travel_direction]: "{\"description\": \"Travel direction: N, S, E, W.\"}",
+   [current_toll]: "{\"description\": \"Current toll in cents.\"}",
+   [current_message]: "{\"description\": \"Optional status message.\"}",
+   [time_updated]: "{\"description\": \"ISO 8601 UTC timestamp.\"}",
+   [start_location_name]: "{\"description\": \"Start location name.\"}",
+   [start_latitude]: "{\"description\": \"Start latitude.\"}",
+   [start_longitude]: "{\"description\": \"Start longitude.\"}",
+   [start_milepost]: "{\"description\": \"Start milepost.\"}",
+   [end_location_name]: "{\"description\": \"End location name.\"}",
+   [end_latitude]: "{\"description\": \"End latitude.\"}",
+   [end_longitude]: "{\"description\": \"End longitude.\"}",
+   [end_milepost]: "{\"description\": \"End milepost.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.wsdot.tolls.TollRate'] ingestion json mapping "us.wa.wsdot.tolls.TollRate_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip_name", "path": "$.trip_name"},
+  {"column": "state_route", "path": "$.state_route"},
+  {"column": "travel_direction", "path": "$.travel_direction"},
+  {"column": "current_toll", "path": "$.current_toll"},
+  {"column": "current_message", "path": "$.current_message"},
+  {"column": "time_updated", "path": "$.time_updated"},
+  {"column": "start_location_name", "path": "$.start_location_name"},
+  {"column": "start_latitude", "path": "$.start_latitude"},
+  {"column": "start_longitude", "path": "$.start_longitude"},
+  {"column": "start_milepost", "path": "$.start_milepost"},
+  {"column": "end_location_name", "path": "$.end_location_name"},
+  {"column": "end_latitude", "path": "$.end_latitude"},
+  {"column": "end_longitude", "path": "$.end_longitude"},
+  {"column": "end_milepost", "path": "$.end_milepost"},
+]
+```
+
+.create-or-alter table ['us.wa.wsdot.tolls.TollRate'] ingestion json mapping "us.wa.wsdot.tolls.TollRate_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "trip_name", "path": "$.data.trip_name"},
+  {"column": "state_route", "path": "$.data.state_route"},
+  {"column": "travel_direction", "path": "$.data.travel_direction"},
+  {"column": "current_toll", "path": "$.data.current_toll"},
+  {"column": "current_message", "path": "$.data.current_message"},
+  {"column": "time_updated", "path": "$.data.time_updated"},
+  {"column": "start_location_name", "path": "$.data.start_location_name"},
+  {"column": "start_latitude", "path": "$.data.start_latitude"},
+  {"column": "start_longitude", "path": "$.data.start_longitude"},
+  {"column": "start_milepost", "path": "$.data.start_milepost"},
+  {"column": "end_location_name", "path": "$.data.end_location_name"},
+  {"column": "end_latitude", "path": "$.data.end_latitude"},
+  {"column": "end_longitude", "path": "$.data.end_longitude"},
+  {"column": "end_milepost", "path": "$.data.end_milepost"},
+]
+```
+
+.drop materialized-view ['us.wa.wsdot.tolls.TollRateLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.wsdot.tolls.TollRateLatest'] on table ['us.wa.wsdot.tolls.TollRate'] {
+    ['us.wa.wsdot.tolls.TollRate'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.wsdot.tolls.TollRate'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.tolls.TollRate') | project['trip_name'] = tostring(data.['trip_name']),['state_route'] = tostring(data.['state_route']),['travel_direction'] = tostring(data.['travel_direction']),['current_toll'] = toint(data.['current_toll']),['current_message'] = tostring(data.['current_message']),['time_updated'] = tostring(data.['time_updated']),['start_location_name'] = tostring(data.['start_location_name']),['start_latitude'] = toreal(data.['start_latitude']),['start_longitude'] = toreal(data.['start_longitude']),['start_milepost'] = toreal(data.['start_milepost']),['end_location_name'] = tostring(data.['end_location_name']),['end_latitude'] = toreal(data.['end_latitude']),['end_longitude'] = toreal(data.['end_longitude']),['end_milepost'] = toreal(data.['end_milepost']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] (
+   [state_route_id]: string,
+   [bridge_number]: string,
+   [bridge_name]: string,
+   [location_name]: string,
+   [location_description]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [state]: string,
+   [restriction_type]: string,
+   [vehicle_type]: string,
+   [restriction_weight_in_pounds]: int,
+   [maximum_gross_vehicle_weight_in_pounds]: int,
+   [restriction_height_in_inches]: int,
+   [restriction_width_in_inches]: int,
+   [restriction_length_in_inches]: int,
+   [is_permanent_restriction]: bool,
+   [is_warning]: bool,
+   [is_detour_available]: bool,
+   [is_exceptions_allowed]: bool,
+   [restriction_comment]: string,
+   [date_posted]: string,
+   [date_effective]: string,
+   [date_expires]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] docstring "{\"description\": \"A commercial vehicle restriction on a Washington State highway bridge or road segment.\"}";
+
+.alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] column-docstrings (
+   [state_route_id]: "{\"description\": \"State route identifier, first part of composite key.\"}",
+   [bridge_number]: "{\"description\": \"Bridge or structure number, second part of composite key.\"}",
+   [bridge_name]: "{\"description\": \"Bridge or structure name.\"}",
+   [location_name]: "{\"description\": \"Location relative to landmarks.\"}",
+   [location_description]: "{\"description\": \"Detailed location description.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [state]: "{\"description\": \"State abbreviation, typically WA.\"}",
+   [restriction_type]: "{\"description\": \"Type: BridgeRestriction, RoadRestriction.\"}",
+   [vehicle_type]: "{\"description\": \"Affected vehicle type.\"}",
+   [restriction_weight_in_pounds]: "{\"description\": \"Axle weight limit in pounds.\"}",
+   [maximum_gross_vehicle_weight_in_pounds]: "{\"description\": \"GVW limit in pounds.\"}",
+   [restriction_height_in_inches]: "{\"description\": \"Height limit in inches.\"}",
+   [restriction_width_in_inches]: "{\"description\": \"Width limit in inches.\"}",
+   [restriction_length_in_inches]: "{\"description\": \"Length limit in inches.\"}",
+   [is_permanent_restriction]: "{\"description\": \"True if permanent.\"}",
+   [is_warning]: "{\"description\": \"True if warning only.\"}",
+   [is_detour_available]: "{\"description\": \"True if detour exists.\"}",
+   [is_exceptions_allowed]: "{\"description\": \"True if permits available.\"}",
+   [restriction_comment]: "{\"description\": \"Additional details.\"}",
+   [date_posted]: "{\"description\": \"ISO 8601 UTC date posted.\"}",
+   [date_effective]: "{\"description\": \"ISO 8601 UTC date effective.\"}",
+   [date_expires]: "{\"description\": \"ISO 8601 UTC date expires.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] ingestion json mapping "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "state_route_id", "path": "$.state_route_id"},
+  {"column": "bridge_number", "path": "$.bridge_number"},
+  {"column": "bridge_name", "path": "$.bridge_name"},
+  {"column": "location_name", "path": "$.location_name"},
+  {"column": "location_description", "path": "$.location_description"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "state", "path": "$.state"},
+  {"column": "restriction_type", "path": "$.restriction_type"},
+  {"column": "vehicle_type", "path": "$.vehicle_type"},
+  {"column": "restriction_weight_in_pounds", "path": "$.restriction_weight_in_pounds"},
+  {"column": "maximum_gross_vehicle_weight_in_pounds", "path": "$.maximum_gross_vehicle_weight_in_pounds"},
+  {"column": "restriction_height_in_inches", "path": "$.restriction_height_in_inches"},
+  {"column": "restriction_width_in_inches", "path": "$.restriction_width_in_inches"},
+  {"column": "restriction_length_in_inches", "path": "$.restriction_length_in_inches"},
+  {"column": "is_permanent_restriction", "path": "$.is_permanent_restriction"},
+  {"column": "is_warning", "path": "$.is_warning"},
+  {"column": "is_detour_available", "path": "$.is_detour_available"},
+  {"column": "is_exceptions_allowed", "path": "$.is_exceptions_allowed"},
+  {"column": "restriction_comment", "path": "$.restriction_comment"},
+  {"column": "date_posted", "path": "$.date_posted"},
+  {"column": "date_effective", "path": "$.date_effective"},
+  {"column": "date_expires", "path": "$.date_expires"},
+]
+```
+
+.create-or-alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] ingestion json mapping "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "state_route_id", "path": "$.data.state_route_id"},
+  {"column": "bridge_number", "path": "$.data.bridge_number"},
+  {"column": "bridge_name", "path": "$.data.bridge_name"},
+  {"column": "location_name", "path": "$.data.location_name"},
+  {"column": "location_description", "path": "$.data.location_description"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "restriction_type", "path": "$.data.restriction_type"},
+  {"column": "vehicle_type", "path": "$.data.vehicle_type"},
+  {"column": "restriction_weight_in_pounds", "path": "$.data.restriction_weight_in_pounds"},
+  {"column": "maximum_gross_vehicle_weight_in_pounds", "path": "$.data.maximum_gross_vehicle_weight_in_pounds"},
+  {"column": "restriction_height_in_inches", "path": "$.data.restriction_height_in_inches"},
+  {"column": "restriction_width_in_inches", "path": "$.data.restriction_width_in_inches"},
+  {"column": "restriction_length_in_inches", "path": "$.data.restriction_length_in_inches"},
+  {"column": "is_permanent_restriction", "path": "$.data.is_permanent_restriction"},
+  {"column": "is_warning", "path": "$.data.is_warning"},
+  {"column": "is_detour_available", "path": "$.data.is_detour_available"},
+  {"column": "is_exceptions_allowed", "path": "$.data.is_exceptions_allowed"},
+  {"column": "restriction_comment", "path": "$.data.restriction_comment"},
+  {"column": "date_posted", "path": "$.data.date_posted"},
+  {"column": "date_effective", "path": "$.data.date_effective"},
+  {"column": "date_expires", "path": "$.data.date_expires"},
+]
+```
+
+.drop materialized-view ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestrictionLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestrictionLatest'] on table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] {
+    ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction') | project['state_route_id'] = tostring(data.['state_route_id']),['bridge_number'] = tostring(data.['bridge_number']),['bridge_name'] = tostring(data.['bridge_name']),['location_name'] = tostring(data.['location_name']),['location_description'] = tostring(data.['location_description']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['state'] = tostring(data.['state']),['restriction_type'] = tostring(data.['restriction_type']),['vehicle_type'] = tostring(data.['vehicle_type']),['restriction_weight_in_pounds'] = toint(data.['restriction_weight_in_pounds']),['maximum_gross_vehicle_weight_in_pounds'] = toint(data.['maximum_gross_vehicle_weight_in_pounds']),['restriction_height_in_inches'] = toint(data.['restriction_height_in_inches']),['restriction_width_in_inches'] = toint(data.['restriction_width_in_inches']),['restriction_length_in_inches'] = toint(data.['restriction_length_in_inches']),['is_permanent_restriction'] = tobool(data.['is_permanent_restriction']),['is_warning'] = tobool(data.['is_warning']),['is_detour_available'] = tobool(data.['is_detour_available']),['is_exceptions_allowed'] = tobool(data.['is_exceptions_allowed']),['restriction_comment'] = tostring(data.['restriction_comment']),['date_posted'] = tostring(data.['date_posted']),['date_effective'] = tostring(data.['date_effective']),['date_expires'] = tostring(data.['date_expires']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['us.wa.wsdot.border.BorderCrossing'] (
+   [crossing_name]: string,
+   [wait_time]: int,
+   [time]: string,
+   [description]: string,
+   [road_name]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.wsdot.border.BorderCrossing'] docstring "{\"description\": \"US-Canada border crossing wait time in Washington State.\"}";
+
+.alter table ['us.wa.wsdot.border.BorderCrossing'] column-docstrings (
+   [crossing_name]: "{\"description\": \"Crossing lane identifier.\"}",
+   [wait_time]: "{\"description\": \"Wait time in minutes.\"}",
+   [time]: "{\"description\": \"ISO 8601 UTC measurement timestamp.\"}",
+   [description]: "{\"description\": \"Lane description.\"}",
+   [road_name]: "{\"description\": \"Road designation.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.wsdot.border.BorderCrossing'] ingestion json mapping "us.wa.wsdot.border.BorderCrossing_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "crossing_name", "path": "$.crossing_name"},
+  {"column": "wait_time", "path": "$.wait_time"},
+  {"column": "time", "path": "$.time"},
+  {"column": "description", "path": "$.description"},
+  {"column": "road_name", "path": "$.road_name"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+]
+```
+
+.create-or-alter table ['us.wa.wsdot.border.BorderCrossing'] ingestion json mapping "us.wa.wsdot.border.BorderCrossing_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "crossing_name", "path": "$.data.crossing_name"},
+  {"column": "wait_time", "path": "$.data.wait_time"},
+  {"column": "time", "path": "$.data.time"},
+  {"column": "description", "path": "$.data.description"},
+  {"column": "road_name", "path": "$.data.road_name"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+]
+```
+
+.drop materialized-view ['us.wa.wsdot.border.BorderCrossingLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.wsdot.border.BorderCrossingLatest'] on table ['us.wa.wsdot.border.BorderCrossing'] {
+    ['us.wa.wsdot.border.BorderCrossing'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.wsdot.border.BorderCrossing'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.border.BorderCrossing') | project['crossing_name'] = tostring(data.['crossing_name']),['wait_time'] = toint(data.['wait_time']),['time'] = tostring(data.['time']),['description'] = tostring(data.['description']),['road_name'] = tostring(data.['road_name']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['us.wa.wsdot.ferries.VesselLocation'] (
+   [vessel_id]: string,
+   [vessel_name]: string,
+   [mmsi]: int,
+   [in_service]: bool,
+   [at_dock]: bool,
+   [latitude]: real,
+   [longitude]: real,
+   [speed]: real,
+   [heading]: int,
+   [departing_terminal_id]: int,
+   [departing_terminal_name]: string,
+   [departing_terminal_abbrev]: string,
+   [arriving_terminal_id]: int,
+   [arriving_terminal_name]: string,
+   [arriving_terminal_abbrev]: string,
+   [scheduled_departure]: string,
+   [left_dock]: string,
+   [eta]: string,
+   [eta_basis]: string,
+   [route_abbreviation]: string,
+   [timestamp]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['us.wa.wsdot.ferries.VesselLocation'] docstring "{\"description\": \"Real-time location and status of a Washington State Ferries vessel.\"}";
+
+.alter table ['us.wa.wsdot.ferries.VesselLocation'] column-docstrings (
+   [vessel_id]: "{\"description\": \"Vessel identifier, stringified from upstream VesselID.\"}",
+   [vessel_name]: "{\"description\": \"Ferry vessel name.\"}",
+   [mmsi]: "{\"description\": \"Maritime Mobile Service Identity for AIS.\"}",
+   [in_service]: "{\"description\": \"True if in active service.\"}",
+   [at_dock]: "{\"description\": \"True if docked.\"}",
+   [latitude]: "{\"description\": \"Latitude in WGS84.\"}",
+   [longitude]: "{\"description\": \"Longitude in WGS84.\"}",
+   [speed]: "{\"description\": \"Speed in knots.\"}",
+   [heading]: "{\"description\": \"Heading in degrees.\"}",
+   [departing_terminal_id]: "{\"description\": \"Departure terminal ID.\"}",
+   [departing_terminal_name]: "{\"description\": \"Departure terminal name.\"}",
+   [departing_terminal_abbrev]: "{\"description\": \"Departure terminal abbreviation.\"}",
+   [arriving_terminal_id]: "{\"description\": \"Arrival terminal ID.\"}",
+   [arriving_terminal_name]: "{\"description\": \"Arrival terminal name.\"}",
+   [arriving_terminal_abbrev]: "{\"description\": \"Arrival terminal abbreviation.\"}",
+   [scheduled_departure]: "{\"description\": \"ISO 8601 UTC scheduled departure.\"}",
+   [left_dock]: "{\"description\": \"ISO 8601 UTC actual departure.\"}",
+   [eta]: "{\"description\": \"ISO 8601 UTC estimated arrival.\"}",
+   [eta_basis]: "{\"description\": \"ETA calculation description.\"}",
+   [route_abbreviation]: "{\"description\": \"Current route abbreviation.\"}",
+   [timestamp]: "{\"description\": \"ISO 8601 UTC position timestamp.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['us.wa.wsdot.ferries.VesselLocation'] ingestion json mapping "us.wa.wsdot.ferries.VesselLocation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "vessel_id", "path": "$.vessel_id"},
+  {"column": "vessel_name", "path": "$.vessel_name"},
+  {"column": "mmsi", "path": "$.mmsi"},
+  {"column": "in_service", "path": "$.in_service"},
+  {"column": "at_dock", "path": "$.at_dock"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "speed", "path": "$.speed"},
+  {"column": "heading", "path": "$.heading"},
+  {"column": "departing_terminal_id", "path": "$.departing_terminal_id"},
+  {"column": "departing_terminal_name", "path": "$.departing_terminal_name"},
+  {"column": "departing_terminal_abbrev", "path": "$.departing_terminal_abbrev"},
+  {"column": "arriving_terminal_id", "path": "$.arriving_terminal_id"},
+  {"column": "arriving_terminal_name", "path": "$.arriving_terminal_name"},
+  {"column": "arriving_terminal_abbrev", "path": "$.arriving_terminal_abbrev"},
+  {"column": "scheduled_departure", "path": "$.scheduled_departure"},
+  {"column": "left_dock", "path": "$.left_dock"},
+  {"column": "eta", "path": "$.eta"},
+  {"column": "eta_basis", "path": "$.eta_basis"},
+  {"column": "route_abbreviation", "path": "$.route_abbreviation"},
+  {"column": "timestamp", "path": "$.timestamp"},
+]
+```
+
+.create-or-alter table ['us.wa.wsdot.ferries.VesselLocation'] ingestion json mapping "us.wa.wsdot.ferries.VesselLocation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "vessel_id", "path": "$.data.vessel_id"},
+  {"column": "vessel_name", "path": "$.data.vessel_name"},
+  {"column": "mmsi", "path": "$.data.mmsi"},
+  {"column": "in_service", "path": "$.data.in_service"},
+  {"column": "at_dock", "path": "$.data.at_dock"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "speed", "path": "$.data.speed"},
+  {"column": "heading", "path": "$.data.heading"},
+  {"column": "departing_terminal_id", "path": "$.data.departing_terminal_id"},
+  {"column": "departing_terminal_name", "path": "$.data.departing_terminal_name"},
+  {"column": "departing_terminal_abbrev", "path": "$.data.departing_terminal_abbrev"},
+  {"column": "arriving_terminal_id", "path": "$.data.arriving_terminal_id"},
+  {"column": "arriving_terminal_name", "path": "$.data.arriving_terminal_name"},
+  {"column": "arriving_terminal_abbrev", "path": "$.data.arriving_terminal_abbrev"},
+  {"column": "scheduled_departure", "path": "$.data.scheduled_departure"},
+  {"column": "left_dock", "path": "$.data.left_dock"},
+  {"column": "eta", "path": "$.data.eta"},
+  {"column": "eta_basis", "path": "$.data.eta_basis"},
+  {"column": "route_abbreviation", "path": "$.data.route_abbreviation"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+]
+```
+
+.drop materialized-view ['us.wa.wsdot.ferries.VesselLocationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['us.wa.wsdot.ferries.VesselLocationLatest'] on table ['us.wa.wsdot.ferries.VesselLocation'] {
+    ['us.wa.wsdot.ferries.VesselLocation'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['us.wa.wsdot.ferries.VesselLocation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'us.wa.wsdot.ferries.VesselLocation') | project['vessel_id'] = tostring(data.['vessel_id']),['vessel_name'] = tostring(data.['vessel_name']),['mmsi'] = toint(data.['mmsi']),['in_service'] = tobool(data.['in_service']),['at_dock'] = tobool(data.['at_dock']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['speed'] = toreal(data.['speed']),['heading'] = toint(data.['heading']),['departing_terminal_id'] = toint(data.['departing_terminal_id']),['departing_terminal_name'] = tostring(data.['departing_terminal_name']),['departing_terminal_abbrev'] = tostring(data.['departing_terminal_abbrev']),['arriving_terminal_id'] = toint(data.['arriving_terminal_id']),['arriving_terminal_name'] = tostring(data.['arriving_terminal_name']),['arriving_terminal_abbrev'] = tostring(data.['arriving_terminal_abbrev']),['scheduled_departure'] = tostring(data.['scheduled_departure']),['left_dock'] = tostring(data.['left_dock']),['eta'] = tostring(data.['eta']),['eta_basis'] = tostring(data.['eta_basis']),['route_abbreviation'] = tostring(data.['route_abbreviation']),['timestamp'] = tostring(data.['timestamp']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.WaterLevel'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [stddev]: real,
+   [outside_sigma_band]: bool,
+   [flat_tolerance_limit]: bool,
+   [rate_of_change_limit]: bool,
+   [max_min_expected_height]: bool,
+   [quality]: string,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.WaterLevel'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the water level measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the water level\\\"}\"}",
+   [stddev]: "{\"description\": \"{\\\"description\\\": \\\"Standard deviation of 1-second samples used to compute the water level height\\\"}\"}",
+   [outside_sigma_band]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the water level is outside a 3-sigma band. Possible values: 'false' (not outside), 'true' (outside).\\\"}\"}",
+   [flat_tolerance_limit]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\\\"}\"}",
+   [rate_of_change_limit]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\\\"}\"}",
+   [max_min_expected_height]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\\\"}\"}",
+   [quality]: "{\"description\": \"Quality Assurance/Quality Control level reported by NOAA for the water level measurement.\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.WaterLevel'] ingestion json mapping "Microsoft.OpenData.US.NOAA.WaterLevel_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "stddev", "path": "$.stddev"},
+  {"column": "outside_sigma_band", "path": "$.outside_sigma_band"},
+  {"column": "flat_tolerance_limit", "path": "$.flat_tolerance_limit"},
+  {"column": "rate_of_change_limit", "path": "$.rate_of_change_limit"},
+  {"column": "max_min_expected_height", "path": "$.max_min_expected_height"},
+  {"column": "quality", "path": "$.quality"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.WaterLevel'] ingestion json mapping "Microsoft.OpenData.US.NOAA.WaterLevel_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "stddev", "path": "$.data.stddev"},
+  {"column": "outside_sigma_band", "path": "$.data.outside_sigma_band"},
+  {"column": "flat_tolerance_limit", "path": "$.data.flat_tolerance_limit"},
+  {"column": "rate_of_change_limit", "path": "$.data.rate_of_change_limit"},
+  {"column": "max_min_expected_height", "path": "$.data.max_min_expected_height"},
+  {"column": "quality", "path": "$.data.quality"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.WaterLevelLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.WaterLevelLatest'] on table ['Microsoft.OpenData.US.NOAA.WaterLevel'] {
+    ['Microsoft.OpenData.US.NOAA.WaterLevel'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.WaterLevel'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.WaterLevel') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['stddev'] = toreal(data.['stddev']),['outside_sigma_band'] = tobool(data.['outside_sigma_band']),['flat_tolerance_limit'] = tobool(data.['flat_tolerance_limit']),['rate_of_change_limit'] = tobool(data.['rate_of_change_limit']),['max_min_expected_height'] = tobool(data.['max_min_expected_height']),['quality'] = tostring(data.['quality']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.Predictions'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.Predictions'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the prediction\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the prediction\\\"}\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Predictions'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Predictions_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Predictions'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Predictions_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.PredictionsLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.PredictionsLatest'] on table ['Microsoft.OpenData.US.NOAA.Predictions'] {
+    ['Microsoft.OpenData.US.NOAA.Predictions'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.Predictions'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Predictions') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.AirPressure'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [max_pressure_exceeded]: bool,
+   [min_pressure_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.AirPressure'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the air pressure measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the air pressure\\\"}\"}",
+   [max_pressure_exceeded]: "{\"description\": \"Flag indicating if the maximum expected air pressure was exceeded\"}",
+   [min_pressure_exceeded]: "{\"description\": \"Flag indicating if the minimum expected air pressure was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.AirPressure'] ingestion json mapping "Microsoft.OpenData.US.NOAA.AirPressure_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_pressure_exceeded", "path": "$.max_pressure_exceeded"},
+  {"column": "min_pressure_exceeded", "path": "$.min_pressure_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.AirPressure'] ingestion json mapping "Microsoft.OpenData.US.NOAA.AirPressure_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_pressure_exceeded", "path": "$.data.max_pressure_exceeded"},
+  {"column": "min_pressure_exceeded", "path": "$.data.min_pressure_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.AirPressureLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.AirPressureLatest'] on table ['Microsoft.OpenData.US.NOAA.AirPressure'] {
+    ['Microsoft.OpenData.US.NOAA.AirPressure'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.AirPressure'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.AirPressure') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_pressure_exceeded'] = tobool(data.['max_pressure_exceeded']),['min_pressure_exceeded'] = tobool(data.['min_pressure_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.AirTemperature'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [max_temp_exceeded]: bool,
+   [min_temp_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.AirTemperature'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the air temperature measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the air temperature\\\"}\"}",
+   [max_temp_exceeded]: "{\"description\": \"Flag indicating if the maximum expected air temperature was exceeded\"}",
+   [min_temp_exceeded]: "{\"description\": \"Flag indicating if the minimum expected air temperature was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.AirTemperature'] ingestion json mapping "Microsoft.OpenData.US.NOAA.AirTemperature_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_temp_exceeded", "path": "$.max_temp_exceeded"},
+  {"column": "min_temp_exceeded", "path": "$.min_temp_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.AirTemperature'] ingestion json mapping "Microsoft.OpenData.US.NOAA.AirTemperature_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_temp_exceeded", "path": "$.data.max_temp_exceeded"},
+  {"column": "min_temp_exceeded", "path": "$.data.min_temp_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.AirTemperatureLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.AirTemperatureLatest'] on table ['Microsoft.OpenData.US.NOAA.AirTemperature'] {
+    ['Microsoft.OpenData.US.NOAA.AirTemperature'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.AirTemperature'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.AirTemperature') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_temp_exceeded'] = tobool(data.['max_temp_exceeded']),['min_temp_exceeded'] = tobool(data.['min_temp_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [max_temp_exceeded]: bool,
+   [min_temp_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the water temperature measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the water temperature\\\"}\"}",
+   [max_temp_exceeded]: "{\"description\": \"Flag indicating if the maximum expected water temperature was exceeded\"}",
+   [min_temp_exceeded]: "{\"description\": \"Flag indicating if the minimum expected water temperature was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] ingestion json mapping "Microsoft.OpenData.US.NOAA.WaterTemperature_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_temp_exceeded", "path": "$.max_temp_exceeded"},
+  {"column": "min_temp_exceeded", "path": "$.min_temp_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] ingestion json mapping "Microsoft.OpenData.US.NOAA.WaterTemperature_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_temp_exceeded", "path": "$.data.max_temp_exceeded"},
+  {"column": "min_temp_exceeded", "path": "$.data.min_temp_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.WaterTemperatureLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.WaterTemperatureLatest'] on table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] {
+    ['Microsoft.OpenData.US.NOAA.WaterTemperature'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.WaterTemperature') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_temp_exceeded'] = tobool(data.['max_temp_exceeded']),['min_temp_exceeded'] = tobool(data.['min_temp_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.Wind'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [speed]: real,
+   [direction_degrees]: string,
+   [direction_text]: string,
+   [gusts]: real,
+   [max_wind_speed_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.Wind'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the wind measurement\\\"}\"}",
+   [speed]: "{\"description\": \"{\\\"description\\\": \\\"Wind speed\\\"}\"}",
+   [direction_degrees]: "{\"description\": \"{\\\"description\\\": \\\"Wind direction\\\"}\"}",
+   [direction_text]: "{\"description\": \"{\\\"description\\\": \\\"Direction - wind direction in text.\\\"}\"}",
+   [gusts]: "{\"description\": \"{\\\"description\\\": \\\"Wind gust speed\\\"}\"}",
+   [max_wind_speed_exceeded]: "{\"description\": \"Flag indicating if the maximum wind speed was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Wind'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Wind_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "speed", "path": "$.speed"},
+  {"column": "direction_degrees", "path": "$.direction_degrees"},
+  {"column": "direction_text", "path": "$.direction_text"},
+  {"column": "gusts", "path": "$.gusts"},
+  {"column": "max_wind_speed_exceeded", "path": "$.max_wind_speed_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Wind'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Wind_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "speed", "path": "$.data.speed"},
+  {"column": "direction_degrees", "path": "$.data.direction_degrees"},
+  {"column": "direction_text", "path": "$.data.direction_text"},
+  {"column": "gusts", "path": "$.data.gusts"},
+  {"column": "max_wind_speed_exceeded", "path": "$.data.max_wind_speed_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.WindLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.WindLatest'] on table ['Microsoft.OpenData.US.NOAA.Wind'] {
+    ['Microsoft.OpenData.US.NOAA.Wind'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.Wind'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Wind') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['speed'] = toreal(data.['speed']),['direction_degrees'] = tostring(data.['direction_degrees']),['direction_text'] = tostring(data.['direction_text']),['gusts'] = toreal(data.['gusts']),['max_wind_speed_exceeded'] = tobool(data.['max_wind_speed_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.Humidity'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [max_humidity_exceeded]: bool,
+   [min_humidity_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.Humidity'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the humidity measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the humidity\\\"}\"}",
+   [max_humidity_exceeded]: "{\"description\": \"Flag indicating if the maximum expected humidity was exceeded\"}",
+   [min_humidity_exceeded]: "{\"description\": \"Flag indicating if the minimum expected humidity was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Humidity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Humidity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_humidity_exceeded", "path": "$.max_humidity_exceeded"},
+  {"column": "min_humidity_exceeded", "path": "$.min_humidity_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Humidity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Humidity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_humidity_exceeded", "path": "$.data.max_humidity_exceeded"},
+  {"column": "min_humidity_exceeded", "path": "$.data.min_humidity_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.HumidityLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.HumidityLatest'] on table ['Microsoft.OpenData.US.NOAA.Humidity'] {
+    ['Microsoft.OpenData.US.NOAA.Humidity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.Humidity'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Humidity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_humidity_exceeded'] = tobool(data.['max_humidity_exceeded']),['min_humidity_exceeded'] = tobool(data.['min_humidity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.Conductivity'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [value]: real,
+   [max_conductivity_exceeded]: bool,
+   [min_conductivity_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.Conductivity'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the conductivity measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the conductivity\\\"}\"}",
+   [max_conductivity_exceeded]: "{\"description\": \"Flag indicating if the maximum expected conductivity was exceeded\"}",
+   [min_conductivity_exceeded]: "{\"description\": \"Flag indicating if the minimum expected conductivity was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Conductivity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Conductivity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_conductivity_exceeded", "path": "$.max_conductivity_exceeded"},
+  {"column": "min_conductivity_exceeded", "path": "$.min_conductivity_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Conductivity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Conductivity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_conductivity_exceeded", "path": "$.data.max_conductivity_exceeded"},
+  {"column": "min_conductivity_exceeded", "path": "$.data.min_conductivity_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.ConductivityLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.ConductivityLatest'] on table ['Microsoft.OpenData.US.NOAA.Conductivity'] {
+    ['Microsoft.OpenData.US.NOAA.Conductivity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.Conductivity'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Conductivity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_conductivity_exceeded'] = tobool(data.['max_conductivity_exceeded']),['min_conductivity_exceeded'] = tobool(data.['min_conductivity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.Salinity'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [salinity]: real,
+   [grams_per_kg]: real,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.Salinity'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the salinity measurement\\\"}\"}",
+   [salinity]: "{\"description\": \"{\\\"description\\\": \\\"Value of the salinity\\\"}\"}",
+   [grams_per_kg]: "{\"description\": \"{\\\"description\\\": \\\"Grams of salt per kilogram of water\\\"}\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Salinity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Salinity_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "salinity", "path": "$.salinity"},
+  {"column": "grams_per_kg", "path": "$.grams_per_kg"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Salinity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Salinity_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "salinity", "path": "$.data.salinity"},
+  {"column": "grams_per_kg", "path": "$.data.grams_per_kg"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.SalinityLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.SalinityLatest'] on table ['Microsoft.OpenData.US.NOAA.Salinity'] {
+    ['Microsoft.OpenData.US.NOAA.Salinity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.Salinity'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Salinity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['salinity'] = toreal(data.['salinity']),['grams_per_kg'] = toreal(data.['grams_per_kg']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.Station'] (
+   [tidal]: bool,
+   [greatlakes]: bool,
+   [shefcode]: string,
+   [details]: dynamic,
+   [sensors]: dynamic,
+   [floodlevels]: dynamic,
+   [datums]: dynamic,
+   [supersededdatums]: dynamic,
+   [harmonicConstituents]: dynamic,
+   [benchmarks]: dynamic,
+   [tidePredOffsets]: dynamic,
+   [ofsMapOffsets]: dynamic,
+   [state]: string,
+   [timezone]: string,
+   [timezonecorr]: int,
+   [observedst]: bool,
+   [stormsurge]: bool,
+   [nearby]: dynamic,
+   [forecast]: bool,
+   [outlook]: bool,
+   [HTFhistorical]: bool,
+   [nonNavigational]: bool,
+   [station_id]: string,
+   [name]: string,
+   [lat]: real,
+   [lng]: real,
+   [affiliations]: string,
+   [portscode]: string,
+   [products]: dynamic,
+   [disclaimers]: dynamic,
+   [notices]: dynamic,
+   [self]: string,
+   [expand]: string,
+   [tideType]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.Station'] column-docstrings (
+   [tidal]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station measures tidal data.\\\"}\"}",
+   [greatlakes]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station is located in the Great Lakes region.\\\"}\"}",
+   [shefcode]: "{\"description\": \"{\\\"description\\\": \\\"Standard Hydrologic Exchange Format code for the station.\\\"}\"}",
+   [details]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}, \"region\": {\"type\": \"string\", \"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}, \"station_id\": {\"type\": \"string\", \"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [sensors]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [floodlevels]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [datums]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [supersededdatums]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [harmonicConstituents]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [benchmarks]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [tidePredOffsets]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [ofsMapOffsets]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [state]: "{\"description\": \"{\\\"description\\\": \\\"State where the station is located.\\\"}\"}",
+   [timezone]: "{\"description\": \"{\\\"description\\\": \\\"Timezone of the station.\\\"}\"}",
+   [timezonecorr]: "{\"description\": \"{\\\"description\\\": \\\"Timezone correction in minutes for the station.\\\"}\"}",
+   [observedst]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station observes Daylight Saving Time.\\\"}\"}",
+   [stormsurge]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station measures storm surge data.\\\"}\"}",
+   [nearby]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [forecast]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station provides forecast data.\\\"}\"}",
+   [outlook]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station provides outlook data.\\\"}\"}",
+   [HTFhistorical]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station has historical High Tide Flooding data.\\\"}\"}",
+   [nonNavigational]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station is non-navigational.\\\"}\"}",
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"Unique identifier for the station.\\\"}\"}",
+   [name]: "{\"description\": \"{\\\"description\\\": \\\"Name of the station.\\\"}\"}",
+   [lat]: "{\"description\": \"{\\\"description\\\": \\\"Latitude of the station.\\\"}\"}",
+   [lng]: "{\"description\": \"{\\\"description\\\": \\\"Longitude of the station.\\\"}\"}",
+   [affiliations]: "{\"description\": \"{\\\"description\\\": \\\"Affiliations of the station.\\\"}\"}",
+   [portscode]: "{\"description\": \"{\\\"description\\\": \\\"PORTS code for the station.\\\"}\"}",
+   [products]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [disclaimers]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [notices]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [self]: "{\"description\": \"{\\\"description\\\": \\\"URL to the station's data.\\\"}\"}",
+   [expand]: "{\"description\": \"{\\\"description\\\": \\\"URL to expanded information about the station.\\\"}\"}",
+   [tideType]: "{\"description\": \"{\\\"description\\\": \\\"Type of tide measured by the station.\\\"}\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Station'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Station_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tidal", "path": "$.tidal"},
+  {"column": "greatlakes", "path": "$.greatlakes"},
+  {"column": "shefcode", "path": "$.shefcode"},
+  {"column": "details", "path": "$.details"},
+  {"column": "sensors", "path": "$.sensors"},
+  {"column": "floodlevels", "path": "$.floodlevels"},
+  {"column": "datums", "path": "$.datums"},
+  {"column": "supersededdatums", "path": "$.supersededdatums"},
+  {"column": "harmonicConstituents", "path": "$.harmonicConstituents"},
+  {"column": "benchmarks", "path": "$.benchmarks"},
+  {"column": "tidePredOffsets", "path": "$.tidePredOffsets"},
+  {"column": "ofsMapOffsets", "path": "$.ofsMapOffsets"},
+  {"column": "state", "path": "$.state"},
+  {"column": "timezone", "path": "$.timezone"},
+  {"column": "timezonecorr", "path": "$.timezonecorr"},
+  {"column": "observedst", "path": "$.observedst"},
+  {"column": "stormsurge", "path": "$.stormsurge"},
+  {"column": "nearby", "path": "$.nearby"},
+  {"column": "forecast", "path": "$.forecast"},
+  {"column": "outlook", "path": "$.outlook"},
+  {"column": "HTFhistorical", "path": "$.HTFhistorical"},
+  {"column": "nonNavigational", "path": "$.nonNavigational"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "lat", "path": "$.lat"},
+  {"column": "lng", "path": "$.lng"},
+  {"column": "affiliations", "path": "$.affiliations"},
+  {"column": "portscode", "path": "$.portscode"},
+  {"column": "products", "path": "$.products"},
+  {"column": "disclaimers", "path": "$.disclaimers"},
+  {"column": "notices", "path": "$.notices"},
+  {"column": "self", "path": "$.self"},
+  {"column": "expand", "path": "$.expand"},
+  {"column": "tideType", "path": "$.tideType"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Station'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Station_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "tidal", "path": "$.data.tidal"},
+  {"column": "greatlakes", "path": "$.data.greatlakes"},
+  {"column": "shefcode", "path": "$.data.shefcode"},
+  {"column": "details", "path": "$.data.details"},
+  {"column": "sensors", "path": "$.data.sensors"},
+  {"column": "floodlevels", "path": "$.data.floodlevels"},
+  {"column": "datums", "path": "$.data.datums"},
+  {"column": "supersededdatums", "path": "$.data.supersededdatums"},
+  {"column": "harmonicConstituents", "path": "$.data.harmonicConstituents"},
+  {"column": "benchmarks", "path": "$.data.benchmarks"},
+  {"column": "tidePredOffsets", "path": "$.data.tidePredOffsets"},
+  {"column": "ofsMapOffsets", "path": "$.data.ofsMapOffsets"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "timezone", "path": "$.data.timezone"},
+  {"column": "timezonecorr", "path": "$.data.timezonecorr"},
+  {"column": "observedst", "path": "$.data.observedst"},
+  {"column": "stormsurge", "path": "$.data.stormsurge"},
+  {"column": "nearby", "path": "$.data.nearby"},
+  {"column": "forecast", "path": "$.data.forecast"},
+  {"column": "outlook", "path": "$.data.outlook"},
+  {"column": "HTFhistorical", "path": "$.data.HTFhistorical"},
+  {"column": "nonNavigational", "path": "$.data.nonNavigational"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "lat", "path": "$.data.lat"},
+  {"column": "lng", "path": "$.data.lng"},
+  {"column": "affiliations", "path": "$.data.affiliations"},
+  {"column": "portscode", "path": "$.data.portscode"},
+  {"column": "products", "path": "$.data.products"},
+  {"column": "disclaimers", "path": "$.data.disclaimers"},
+  {"column": "notices", "path": "$.data.notices"},
+  {"column": "self", "path": "$.data.self"},
+  {"column": "expand", "path": "$.data.expand"},
+  {"column": "tideType", "path": "$.data.tideType"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.StationLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.StationLatest'] on table ['Microsoft.OpenData.US.NOAA.Station'] {
+    ['Microsoft.OpenData.US.NOAA.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.Station'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Station') | project['tidal'] = tobool(data.['tidal']),['greatlakes'] = tobool(data.['greatlakes']),['shefcode'] = tostring(data.['shefcode']),['details'] = todynamic(data.['details']),['sensors'] = todynamic(data.['sensors']),['floodlevels'] = todynamic(data.['floodlevels']),['datums'] = todynamic(data.['datums']),['supersededdatums'] = todynamic(data.['supersededdatums']),['harmonicConstituents'] = todynamic(data.['harmonicConstituents']),['benchmarks'] = todynamic(data.['benchmarks']),['tidePredOffsets'] = todynamic(data.['tidePredOffsets']),['ofsMapOffsets'] = todynamic(data.['ofsMapOffsets']),['state'] = tostring(data.['state']),['timezone'] = tostring(data.['timezone']),['timezonecorr'] = toint(data.['timezonecorr']),['observedst'] = tobool(data.['observedst']),['stormsurge'] = tobool(data.['stormsurge']),['nearby'] = todynamic(data.['nearby']),['forecast'] = tobool(data.['forecast']),['outlook'] = tobool(data.['outlook']),['HTFhistorical'] = tobool(data.['HTFhistorical']),['nonNavigational'] = tobool(data.['nonNavigational']),['station_id'] = tostring(data.['station_id']),['name'] = tostring(data.['name']),['lat'] = toreal(data.['lat']),['lng'] = toreal(data.['lng']),['affiliations'] = tostring(data.['affiliations']),['portscode'] = tostring(data.['portscode']),['products'] = todynamic(data.['products']),['disclaimers'] = todynamic(data.['disclaimers']),['notices'] = todynamic(data.['notices']),['self'] = tostring(data.['self']),['expand'] = tostring(data.['expand']),['tideType'] = tostring(data.['tideType']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.Visibility'] (
+   [timestamp]: string,
+   [value]: real,
+   [max_visibility_exceeded]: bool,
+   [min_visibility_exceeded]: bool,
+   [rate_of_change_exceeded]: bool,
+   [station_id]: string,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.Visibility'] column-docstrings (
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the visibility measurement\\\"}\"}",
+   [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the visibility\\\"}\"}",
+   [max_visibility_exceeded]: "{\"description\": \"A flag that indicates whether the maximum expected visibility was exceeded\"}",
+   [min_visibility_exceeded]: "{\"description\": \"A flag that indicates whether the minimum expected visibility was exceeded\"}",
+   [rate_of_change_exceeded]: "{\"description\": \"A flag that indicates whether the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Visibility'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Visibility_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "value", "path": "$.value"},
+  {"column": "max_visibility_exceeded", "path": "$.max_visibility_exceeded"},
+  {"column": "min_visibility_exceeded", "path": "$.min_visibility_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Visibility'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Visibility_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "max_visibility_exceeded", "path": "$.data.max_visibility_exceeded"},
+  {"column": "min_visibility_exceeded", "path": "$.data.min_visibility_exceeded"},
+  {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.VisibilityLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.VisibilityLatest'] on table ['Microsoft.OpenData.US.NOAA.Visibility'] {
+    ['Microsoft.OpenData.US.NOAA.Visibility'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.Visibility'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Visibility') | project['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_visibility_exceeded'] = tobool(data.['max_visibility_exceeded']),['min_visibility_exceeded'] = tobool(data.['min_visibility_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['station_id'] = tostring(data.['station_id']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.Currents'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [speed]: real,
+   [direction_degrees]: real,
+   [bin]: string,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.Currents'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the currents measurement\\\"}\"}",
+   [speed]: "{\"description\": \"{\\\"description\\\": \\\"Current speed\\\"}\"}",
+   [direction_degrees]: "{\"description\": \"{\\\"description\\\": \\\"Current direction in degrees\\\"}\"}",
+   [bin]: "{\"description\": \"{\\\"description\\\": \\\"Bin number\\\"}\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Currents'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Currents_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "speed", "path": "$.speed"},
+  {"column": "direction_degrees", "path": "$.direction_degrees"},
+  {"column": "bin", "path": "$.bin"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Currents'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Currents_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "speed", "path": "$.data.speed"},
+  {"column": "direction_degrees", "path": "$.data.direction_degrees"},
+  {"column": "bin", "path": "$.data.bin"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.CurrentsLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.CurrentsLatest'] on table ['Microsoft.OpenData.US.NOAA.Currents'] {
+    ['Microsoft.OpenData.US.NOAA.Currents'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.Currents'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Currents') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['speed'] = toreal(data.['speed']),['direction_degrees'] = toreal(data.['direction_degrees']),['bin'] = tostring(data.['bin']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+
+.create-merge table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] (
+   [station_id]: string,
+   [timestamp]: string,
+   [velocity_major]: real,
+   [mean_flood_dir]: real,
+   [mean_ebb_dir]: real,
+   [depth]: real,
+   [bin]: string,
+   [region]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] column-docstrings (
+   [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
+   [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the current prediction\\\"}\"}",
+   [velocity_major]: "{\"description\": \"{\\\"description\\\": \\\"Major axis velocity\\\"}\"}",
+   [mean_flood_dir]: "{\"description\": \"{\\\"description\\\": \\\"Mean flood direction in degrees\\\"}\"}",
+   [mean_ebb_dir]: "{\"description\": \"{\\\"description\\\": \\\"Mean ebb direction in degrees\\\"}\"}",
+   [depth]: "{\"description\": \"{\\\"description\\\": \\\"Depth of measurement\\\"}\"}",
+   [bin]: "{\"description\": \"{\\\"description\\\": \\\"Bin number\\\"}\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] ingestion json mapping "Microsoft.OpenData.US.NOAA.CurrentPredictions_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "timestamp", "path": "$.timestamp"},
+  {"column": "velocity_major", "path": "$.velocity_major"},
+  {"column": "mean_flood_dir", "path": "$.mean_flood_dir"},
+  {"column": "mean_ebb_dir", "path": "$.mean_ebb_dir"},
+  {"column": "depth", "path": "$.depth"},
+  {"column": "bin", "path": "$.bin"},
+  {"column": "region", "path": "$.region"},
+]
+```
+
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] ingestion json mapping "Microsoft.OpenData.US.NOAA.CurrentPredictions_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "timestamp", "path": "$.data.timestamp"},
+  {"column": "velocity_major", "path": "$.data.velocity_major"},
+  {"column": "mean_flood_dir", "path": "$.data.mean_flood_dir"},
+  {"column": "mean_ebb_dir", "path": "$.data.mean_ebb_dir"},
+  {"column": "depth", "path": "$.data.depth"},
+  {"column": "bin", "path": "$.data.bin"},
+  {"column": "region", "path": "$.data.region"},
+]
+```
+
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.CurrentPredictionsLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.CurrentPredictionsLatest'] on table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] {
+    ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.CurrentPredictions') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['velocity_major'] = toreal(data.['velocity_major']),['mean_flood_dir'] = toreal(data.['mean_flood_dir']),['mean_ebb_dir'] = toreal(data.['mean_ebb_dir']),['depth'] = toreal(data.['depth']),['bin'] = tostring(data.['bin']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true,
+}]
+```
+

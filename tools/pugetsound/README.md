@@ -34,13 +34,13 @@ Most bridges here are I/O-bound pollers. A small ACI group is sufficient.
 
 | | Standard container | Heavier containers | Total |
 |---|---|---|---|
-| CPU | 0.1 cores | WSDOT 0.2, seven NOAA sidecars at 0.2 each | 2.1 cores |
-| Memory | 0.3 GB | WSDOT 0.5, seven NOAA sidecars at 0.4 each | 4.8 GB |
+| CPU | 0.1 cores | WSDOT 0.2, NOAA 0.3 | 1.0 cores |
+| Memory | 0.3 GB | WSDOT 0.5, NOAA 0.6 | 2.6 GB |
 
 ## Deploy to Azure Container Instances
 
 ```powershell
-./deploy.ps1 -ResourceGroupName pugetsound-rg -ConnectionString "Endpoint=sb://..." -WsdotAccessCode "<code>"
+./deploy.ps1 -ResourceGroupName pugetsound-live-rg -ConnectionString "Endpoint=sb://..." -WsdotAccessCode "<code>"
 ```
 
 The script creates the resource group if needed and deploys the ARM template in
@@ -60,7 +60,7 @@ docker compose up -d
 
 ```powershell
 $env:KAFKA_BOOTSTRAP_SERVERS = "broker:9092"
-$env:KAFKA_TOPIC = "pugetsound"
+$env:KAFKA_TOPIC = "pugetsound-live"
 $env:KAFKA_ENABLE_TLS = "false"
 $env:WSDOT_ACCESS_CODE = "<code>"
 docker compose up -d
@@ -84,7 +84,8 @@ restarts.
 ## Fabric
 
 The Fabric assets in [fabric](fabric/README.md) create a raw CloudEvents landing
-database and Event Stream. Existing bridge-local KQL is reused for WSDOT and
-NOAA, and supplemental KQL fans out Seattle 911, Seattle street closures, King
-County marine, EPA UV, and NWS forecast zones from the shared
-`_cloudevents_dispatch` table.
+database (`pugetsound-live`) and Event Stream (`pugetsound-live-ingest`). A
+single combined KQL script (`fabric/pugetsound.kql`) fans the shared
+`_cloudevents_dispatch` table out into fully namespace-qualified typed tables
+for all sources: Seattle 911, Seattle street closures, King County marine,
+EPA UV, NWS forecast zones, WSDOT, and NOAA.

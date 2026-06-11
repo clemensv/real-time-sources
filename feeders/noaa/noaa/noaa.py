@@ -79,12 +79,17 @@ class NOAADataPoller:
         self.producer = MicrosoftOpenDataUSNOAAEventProducer(kafka_producer, kafka_topic)
         self.stations = self.fetch_all_stations()
         if station:
-            self.station = next((s for s in self.stations if s.station_id == station), None)
-            if not self.station:
-                print(f"Station {station} not found.")
+            requested = [s.strip() for s in str(station).split(',') if s.strip()]
+            self.selected_stations = [s for s in self.stations if s.station_id in requested]
+            found_ids = {s.station_id for s in self.selected_stations}
+            missing = [r for r in requested if r not in found_ids]
+            if missing:
+                print(f"Station(s) not found: {', '.join(missing)}")
+            if not self.selected_stations:
+                print(f"None of the requested stations were found: {', '.join(requested)}")
                 sys.exit(1)
         else:
-            self.station = None
+            self.selected_stations = None
 
     def fetch_all_stations(self) -> List[Station]:
         """
@@ -103,6 +108,19 @@ class NOAADataPoller:
                 if s.get('portscode') is None:
                     s['portscode'] = ''
                 s['station_id'] = s.pop('id', '')
+                # The generated Station schema models every nested link object
+                # with the generic UnnamedClass, whose optional `region` and
+                # `station_id` fields are emitted without a `None` default.
+                # dataclasses_json therefore requires those keys on every nested
+                # object, but the NOAA station list returns bare `{"self": ...}`
+                # link stubs that omit them. Backfill the optional keys so the
+                # decode succeeds. (Upstream codegen bug: optional fields must
+                # default to None.)
+                for value in s.values():
+                    for item in (value if isinstance(value, list) else [value]):
+                        if isinstance(item, dict):
+                            item.setdefault('region', None)
+                            item.setdefault('station_id', None)
 # pylint: disable=no-member
             stations = Station.schema().load(raw_stations, many=True)
 # pylint: enable=no-member
@@ -240,12 +258,14 @@ class NOAADataPoller:
         """
         last_polled_times = self.load_last_polled_times()
 
-        for station in self.stations:
+        stations_to_poll = self.selected_stations if self.selected_stations else self.stations
+
+        for station in stations_to_poll:
             self.producer.send_microsoft_open_data_us_noaa_station(station.station_id, station, flush_producer=False)
         self.producer.producer.flush()
 
         while True:
-            for station in self.stations if not self.station else [self.station]:
+            for station in stations_to_poll:
                 station_id = station.station_id
                 station_region = getattr(station, "region", None)
                 for product in self.PRODUCTS:
@@ -471,12 +491,14 @@ def main():
     parser.add_argument('--connection-string', type=str,
                         help='Microsoft Event Hubs or Microsoft Fabric Event Stream connection string')
     parser.add_argument('--station', type=str,
-                        help='Station ID to poll data for. If not provided, data for all stations will be polled.')
+                        help='Comma-separated list of station IDs to poll. If not provided, data for all stations will be polled.')
 
     args = parser.parse_args()
 
     if not args.connection_string:
         args.connection_string = os.getenv('CONNECTION_STRING')
+    if not args.station:
+        args.station = os.getenv('NOAA_STATIONS') or os.getenv('NOAA_STATION')
     if not args.last_polled_file:
         args.last_polled_file = os.getenv('NOAA_LAST_POLLED_FILE')
         if not args.last_polled_file:

@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table [WaterLevel] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.WaterLevel'] (
    [station_id]: string,
    [timestamp]: string,
    [value]: real,
@@ -35,6 +35,7 @@
    [rate_of_change_limit]: bool,
    [max_min_expected_height]: bool,
    [quality]: string,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -42,7 +43,7 @@
    [___subject]: string
 );
 
-.alter table [WaterLevel] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.WaterLevel'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the water level measurement\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the water level\\\"}\"}",
@@ -51,6 +52,8 @@
    [flat_tolerance_limit]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the flat tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\\\"}\"}",
    [rate_of_change_limit]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the rate of change tolerance limit is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\\\"}\"}",
    [max_min_expected_height]: "{\"description\": \"{\\\"description\\\": \\\"Flag indicating if the max/min expected water level height is exceeded. Possible values: 'false' (not exceeded), 'true' (exceeded).\\\"}\"}",
+   [quality]: "{\"description\": \"Quality Assurance/Quality Control level reported by NOAA for the water level measurement.\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -58,7 +61,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WaterLevel] ingestion json mapping "WaterLevel_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.WaterLevel'] ingestion json mapping "Microsoft.OpenData.US.NOAA.WaterLevel_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -75,10 +78,11 @@
   {"column": "rate_of_change_limit", "path": "$.rate_of_change_limit"},
   {"column": "max_min_expected_height", "path": "$.max_min_expected_height"},
   {"column": "quality", "path": "$.quality"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [WaterLevel] ingestion json mapping "WaterLevel_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.WaterLevel'] ingestion json mapping "Microsoft.OpenData.US.NOAA.WaterLevel_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -95,30 +99,32 @@
   {"column": "rate_of_change_limit", "path": "$.data.rate_of_change_limit"},
   {"column": "max_min_expected_height", "path": "$.data.max_min_expected_height"},
   {"column": "quality", "path": "$.data.quality"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view WaterLevelLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.WaterLevelLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterLevelLatest on table WaterLevel {
-    WaterLevel | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.WaterLevelLatest'] on table ['Microsoft.OpenData.US.NOAA.WaterLevel'] {
+    ['Microsoft.OpenData.US.NOAA.WaterLevel'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterLevel] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.WaterLevel'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.WaterLevel') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['stddev'] = toreal(data.['stddev']),['outside_sigma_band'] = tobool(data.['outside_sigma_band']),['flat_tolerance_limit'] = tobool(data.['flat_tolerance_limit']),['rate_of_change_limit'] = tobool(data.['rate_of_change_limit']),['max_min_expected_height'] = tobool(data.['max_min_expected_height']),['quality'] = tostring(data.['quality']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.WaterLevel') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['stddev'] = toreal(data.['stddev']),['outside_sigma_band'] = tobool(data.['outside_sigma_band']),['flat_tolerance_limit'] = tobool(data.['flat_tolerance_limit']),['rate_of_change_limit'] = tobool(data.['rate_of_change_limit']),['max_min_expected_height'] = tobool(data.['max_min_expected_height']),['quality'] = tostring(data.['quality']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [Predictions] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.Predictions'] (
    [station_id]: string,
    [timestamp]: string,
    [value]: real,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -126,10 +132,11 @@
    [___subject]: string
 );
 
-.alter table [Predictions] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.Predictions'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the prediction\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the prediction\\\"}\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -137,7 +144,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Predictions] ingestion json mapping "Predictions_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Predictions'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Predictions_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -148,10 +155,11 @@
   {"column": "station_id", "path": "$.station_id"},
   {"column": "timestamp", "path": "$.timestamp"},
   {"column": "value", "path": "$.value"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [Predictions] ingestion json mapping "Predictions_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Predictions'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Predictions_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -162,33 +170,35 @@
   {"column": "station_id", "path": "$.data.station_id"},
   {"column": "timestamp", "path": "$.data.timestamp"},
   {"column": "value", "path": "$.data.value"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view PredictionsLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.PredictionsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) PredictionsLatest on table Predictions {
-    Predictions | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.PredictionsLatest'] on table ['Microsoft.OpenData.US.NOAA.Predictions'] {
+    ['Microsoft.OpenData.US.NOAA.Predictions'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Predictions] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.Predictions'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Predictions') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Predictions') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [AirPressure] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.AirPressure'] (
    [station_id]: string,
    [timestamp]: string,
    [value]: real,
    [max_pressure_exceeded]: bool,
    [min_pressure_exceeded]: bool,
    [rate_of_change_exceeded]: bool,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -196,13 +206,14 @@
    [___subject]: string
 );
 
-.alter table [AirPressure] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.AirPressure'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the air pressure measurement\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the air pressure\\\"}\"}",
    [max_pressure_exceeded]: "{\"description\": \"Flag indicating if the maximum expected air pressure was exceeded\"}",
    [min_pressure_exceeded]: "{\"description\": \"Flag indicating if the minimum expected air pressure was exceeded\"}",
    [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -210,7 +221,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [AirPressure] ingestion json mapping "AirPressure_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.AirPressure'] ingestion json mapping "Microsoft.OpenData.US.NOAA.AirPressure_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -224,10 +235,11 @@
   {"column": "max_pressure_exceeded", "path": "$.max_pressure_exceeded"},
   {"column": "min_pressure_exceeded", "path": "$.min_pressure_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [AirPressure] ingestion json mapping "AirPressure_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.AirPressure'] ingestion json mapping "Microsoft.OpenData.US.NOAA.AirPressure_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -241,33 +253,35 @@
   {"column": "max_pressure_exceeded", "path": "$.data.max_pressure_exceeded"},
   {"column": "min_pressure_exceeded", "path": "$.data.min_pressure_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view AirPressureLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.AirPressureLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AirPressureLatest on table AirPressure {
-    AirPressure | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.AirPressureLatest'] on table ['Microsoft.OpenData.US.NOAA.AirPressure'] {
+    ['Microsoft.OpenData.US.NOAA.AirPressure'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [AirPressure] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.AirPressure'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.AirPressure') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_pressure_exceeded'] = tobool(data.['max_pressure_exceeded']),['min_pressure_exceeded'] = tobool(data.['min_pressure_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.AirPressure') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_pressure_exceeded'] = tobool(data.['max_pressure_exceeded']),['min_pressure_exceeded'] = tobool(data.['min_pressure_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [AirTemperature] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.AirTemperature'] (
    [station_id]: string,
    [timestamp]: string,
    [value]: real,
    [max_temp_exceeded]: bool,
    [min_temp_exceeded]: bool,
    [rate_of_change_exceeded]: bool,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -275,13 +289,14 @@
    [___subject]: string
 );
 
-.alter table [AirTemperature] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.AirTemperature'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the air temperature measurement\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the air temperature\\\"}\"}",
    [max_temp_exceeded]: "{\"description\": \"Flag indicating if the maximum expected air temperature was exceeded\"}",
    [min_temp_exceeded]: "{\"description\": \"Flag indicating if the minimum expected air temperature was exceeded\"}",
    [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -289,7 +304,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.AirTemperature'] ingestion json mapping "Microsoft.OpenData.US.NOAA.AirTemperature_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -303,10 +318,11 @@
   {"column": "max_temp_exceeded", "path": "$.max_temp_exceeded"},
   {"column": "min_temp_exceeded", "path": "$.min_temp_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [AirTemperature] ingestion json mapping "AirTemperature_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.AirTemperature'] ingestion json mapping "Microsoft.OpenData.US.NOAA.AirTemperature_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -320,33 +336,35 @@
   {"column": "max_temp_exceeded", "path": "$.data.max_temp_exceeded"},
   {"column": "min_temp_exceeded", "path": "$.data.min_temp_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view AirTemperatureLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.AirTemperatureLatest'] ifexists;
 
-.create materialized-view with (backfill=true) AirTemperatureLatest on table AirTemperature {
-    AirTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.AirTemperatureLatest'] on table ['Microsoft.OpenData.US.NOAA.AirTemperature'] {
+    ['Microsoft.OpenData.US.NOAA.AirTemperature'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [AirTemperature] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.AirTemperature'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.AirTemperature') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_temp_exceeded'] = tobool(data.['max_temp_exceeded']),['min_temp_exceeded'] = tobool(data.['min_temp_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.AirTemperature') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_temp_exceeded'] = tobool(data.['max_temp_exceeded']),['min_temp_exceeded'] = tobool(data.['min_temp_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [WaterTemperature] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] (
    [station_id]: string,
    [timestamp]: string,
    [value]: real,
    [max_temp_exceeded]: bool,
    [min_temp_exceeded]: bool,
    [rate_of_change_exceeded]: bool,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -354,13 +372,14 @@
    [___subject]: string
 );
 
-.alter table [WaterTemperature] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the water temperature measurement\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the water temperature\\\"}\"}",
    [max_temp_exceeded]: "{\"description\": \"Flag indicating if the maximum expected water temperature was exceeded\"}",
    [min_temp_exceeded]: "{\"description\": \"Flag indicating if the minimum expected water temperature was exceeded\"}",
    [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -368,7 +387,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [WaterTemperature] ingestion json mapping "WaterTemperature_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] ingestion json mapping "Microsoft.OpenData.US.NOAA.WaterTemperature_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -382,10 +401,11 @@
   {"column": "max_temp_exceeded", "path": "$.max_temp_exceeded"},
   {"column": "min_temp_exceeded", "path": "$.min_temp_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [WaterTemperature] ingestion json mapping "WaterTemperature_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] ingestion json mapping "Microsoft.OpenData.US.NOAA.WaterTemperature_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -399,27 +419,28 @@
   {"column": "max_temp_exceeded", "path": "$.data.max_temp_exceeded"},
   {"column": "min_temp_exceeded", "path": "$.data.min_temp_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view WaterTemperatureLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.WaterTemperatureLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WaterTemperatureLatest on table WaterTemperature {
-    WaterTemperature | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.WaterTemperatureLatest'] on table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] {
+    ['Microsoft.OpenData.US.NOAA.WaterTemperature'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [WaterTemperature] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.WaterTemperature'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.WaterTemperature') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_temp_exceeded'] = tobool(data.['max_temp_exceeded']),['min_temp_exceeded'] = tobool(data.['min_temp_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.WaterTemperature') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_temp_exceeded'] = tobool(data.['max_temp_exceeded']),['min_temp_exceeded'] = tobool(data.['min_temp_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [Wind] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.Wind'] (
    [station_id]: string,
    [timestamp]: string,
    [speed]: real,
@@ -428,6 +449,7 @@
    [gusts]: real,
    [max_wind_speed_exceeded]: bool,
    [rate_of_change_exceeded]: bool,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -435,7 +457,7 @@
    [___subject]: string
 );
 
-.alter table [Wind] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.Wind'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the wind measurement\\\"}\"}",
    [speed]: "{\"description\": \"{\\\"description\\\": \\\"Wind speed\\\"}\"}",
@@ -444,6 +466,7 @@
    [gusts]: "{\"description\": \"{\\\"description\\\": \\\"Wind gust speed\\\"}\"}",
    [max_wind_speed_exceeded]: "{\"description\": \"Flag indicating if the maximum wind speed was exceeded\"}",
    [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -451,7 +474,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Wind] ingestion json mapping "Wind_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Wind'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Wind_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -467,10 +490,11 @@
   {"column": "gusts", "path": "$.gusts"},
   {"column": "max_wind_speed_exceeded", "path": "$.max_wind_speed_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [Wind] ingestion json mapping "Wind_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Wind'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Wind_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -486,33 +510,35 @@
   {"column": "gusts", "path": "$.data.gusts"},
   {"column": "max_wind_speed_exceeded", "path": "$.data.max_wind_speed_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view WindLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.WindLatest'] ifexists;
 
-.create materialized-view with (backfill=true) WindLatest on table Wind {
-    Wind | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.WindLatest'] on table ['Microsoft.OpenData.US.NOAA.Wind'] {
+    ['Microsoft.OpenData.US.NOAA.Wind'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Wind] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.Wind'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Wind') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['speed'] = toreal(data.['speed']),['direction_degrees'] = tostring(data.['direction_degrees']),['direction_text'] = tostring(data.['direction_text']),['gusts'] = toreal(data.['gusts']),['max_wind_speed_exceeded'] = tobool(data.['max_wind_speed_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Wind') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['speed'] = toreal(data.['speed']),['direction_degrees'] = tostring(data.['direction_degrees']),['direction_text'] = tostring(data.['direction_text']),['gusts'] = toreal(data.['gusts']),['max_wind_speed_exceeded'] = tobool(data.['max_wind_speed_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [Humidity] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.Humidity'] (
    [station_id]: string,
    [timestamp]: string,
    [value]: real,
    [max_humidity_exceeded]: bool,
    [min_humidity_exceeded]: bool,
    [rate_of_change_exceeded]: bool,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -520,13 +546,14 @@
    [___subject]: string
 );
 
-.alter table [Humidity] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.Humidity'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the humidity measurement\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the humidity\\\"}\"}",
    [max_humidity_exceeded]: "{\"description\": \"Flag indicating if the maximum expected humidity was exceeded\"}",
    [min_humidity_exceeded]: "{\"description\": \"Flag indicating if the minimum expected humidity was exceeded\"}",
    [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -534,7 +561,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Humidity] ingestion json mapping "Humidity_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Humidity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Humidity_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -548,10 +575,11 @@
   {"column": "max_humidity_exceeded", "path": "$.max_humidity_exceeded"},
   {"column": "min_humidity_exceeded", "path": "$.min_humidity_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [Humidity] ingestion json mapping "Humidity_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Humidity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Humidity_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -565,33 +593,35 @@
   {"column": "max_humidity_exceeded", "path": "$.data.max_humidity_exceeded"},
   {"column": "min_humidity_exceeded", "path": "$.data.min_humidity_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view HumidityLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.HumidityLatest'] ifexists;
 
-.create materialized-view with (backfill=true) HumidityLatest on table Humidity {
-    Humidity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.HumidityLatest'] on table ['Microsoft.OpenData.US.NOAA.Humidity'] {
+    ['Microsoft.OpenData.US.NOAA.Humidity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Humidity] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.Humidity'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Humidity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_humidity_exceeded'] = tobool(data.['max_humidity_exceeded']),['min_humidity_exceeded'] = tobool(data.['min_humidity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Humidity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_humidity_exceeded'] = tobool(data.['max_humidity_exceeded']),['min_humidity_exceeded'] = tobool(data.['min_humidity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [Conductivity] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.Conductivity'] (
    [station_id]: string,
    [timestamp]: string,
    [value]: real,
    [max_conductivity_exceeded]: bool,
    [min_conductivity_exceeded]: bool,
    [rate_of_change_exceeded]: bool,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -599,13 +629,14 @@
    [___subject]: string
 );
 
-.alter table [Conductivity] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.Conductivity'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the conductivity measurement\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the conductivity\\\"}\"}",
    [max_conductivity_exceeded]: "{\"description\": \"Flag indicating if the maximum expected conductivity was exceeded\"}",
    [min_conductivity_exceeded]: "{\"description\": \"Flag indicating if the minimum expected conductivity was exceeded\"}",
    [rate_of_change_exceeded]: "{\"description\": \"Flag indicating if the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -613,7 +644,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Conductivity] ingestion json mapping "Conductivity_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Conductivity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Conductivity_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -627,10 +658,11 @@
   {"column": "max_conductivity_exceeded", "path": "$.max_conductivity_exceeded"},
   {"column": "min_conductivity_exceeded", "path": "$.min_conductivity_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [Conductivity] ingestion json mapping "Conductivity_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Conductivity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Conductivity_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -644,31 +676,33 @@
   {"column": "max_conductivity_exceeded", "path": "$.data.max_conductivity_exceeded"},
   {"column": "min_conductivity_exceeded", "path": "$.data.min_conductivity_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view ConductivityLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.ConductivityLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ConductivityLatest on table Conductivity {
-    Conductivity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.ConductivityLatest'] on table ['Microsoft.OpenData.US.NOAA.Conductivity'] {
+    ['Microsoft.OpenData.US.NOAA.Conductivity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Conductivity] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.Conductivity'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Conductivity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_conductivity_exceeded'] = tobool(data.['max_conductivity_exceeded']),['min_conductivity_exceeded'] = tobool(data.['min_conductivity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Conductivity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_conductivity_exceeded'] = tobool(data.['max_conductivity_exceeded']),['min_conductivity_exceeded'] = tobool(data.['min_conductivity_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [Salinity] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.Salinity'] (
    [station_id]: string,
    [timestamp]: string,
    [salinity]: real,
    [grams_per_kg]: real,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -676,11 +710,12 @@
    [___subject]: string
 );
 
-.alter table [Salinity] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.Salinity'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the salinity measurement\\\"}\"}",
    [salinity]: "{\"description\": \"{\\\"description\\\": \\\"Value of the salinity\\\"}\"}",
    [grams_per_kg]: "{\"description\": \"{\\\"description\\\": \\\"Grams of salt per kilogram of water\\\"}\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -688,7 +723,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Salinity] ingestion json mapping "Salinity_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Salinity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Salinity_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -700,10 +735,11 @@
   {"column": "timestamp", "path": "$.timestamp"},
   {"column": "salinity", "path": "$.salinity"},
   {"column": "grams_per_kg", "path": "$.grams_per_kg"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [Salinity] ingestion json mapping "Salinity_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Salinity'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Salinity_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -715,27 +751,28 @@
   {"column": "timestamp", "path": "$.data.timestamp"},
   {"column": "salinity", "path": "$.data.salinity"},
   {"column": "grams_per_kg", "path": "$.data.grams_per_kg"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view SalinityLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.SalinityLatest'] ifexists;
 
-.create materialized-view with (backfill=true) SalinityLatest on table Salinity {
-    Salinity | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.SalinityLatest'] on table ['Microsoft.OpenData.US.NOAA.Salinity'] {
+    ['Microsoft.OpenData.US.NOAA.Salinity'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Salinity] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.Salinity'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Salinity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['salinity'] = toreal(data.['salinity']),['grams_per_kg'] = toreal(data.['grams_per_kg']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Salinity') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['salinity'] = toreal(data.['salinity']),['grams_per_kg'] = toreal(data.['grams_per_kg']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [Station] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.Station'] (
    [tidal]: bool,
    [greatlakes]: bool,
    [shefcode]: string,
@@ -777,15 +814,25 @@
    [___subject]: string
 );
 
-.alter table [Station] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.Station'] column-docstrings (
    [tidal]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station measures tidal data.\\\"}\"}",
    [greatlakes]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station is located in the Great Lakes region.\\\"}\"}",
    [shefcode]: "{\"description\": \"{\\\"description\\\": \\\"Standard Hydrologic Exchange Format code for the station.\\\"}\"}",
+   [details]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}, \"region\": {\"type\": \"string\", \"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}, \"station_id\": {\"type\": \"string\", \"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [sensors]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [floodlevels]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [datums]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [supersededdatums]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [harmonicConstituents]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [benchmarks]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [tidePredOffsets]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [ofsMapOffsets]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
    [state]: "{\"description\": \"{\\\"description\\\": \\\"State where the station is located.\\\"}\"}",
    [timezone]: "{\"description\": \"{\\\"description\\\": \\\"Timezone of the station.\\\"}\"}",
    [timezonecorr]: "{\"description\": \"{\\\"description\\\": \\\"Timezone correction in minutes for the station.\\\"}\"}",
    [observedst]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station observes Daylight Saving Time.\\\"}\"}",
    [stormsurge]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station measures storm surge data.\\\"}\"}",
+   [nearby]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
    [forecast]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station provides forecast data.\\\"}\"}",
    [outlook]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station provides outlook data.\\\"}\"}",
    [HTFhistorical]: "{\"description\": \"{\\\"description\\\": \\\"Indicates whether the station has historical High Tide Flooding data.\\\"}\"}",
@@ -796,6 +843,9 @@
    [lng]: "{\"description\": \"{\\\"description\\\": \\\"Longitude of the station.\\\"}\"}",
    [affiliations]: "{\"description\": \"{\\\"description\\\": \\\"Affiliations of the station.\\\"}\"}",
    [portscode]: "{\"description\": \"{\\\"description\\\": \\\"PORTS code for the station.\\\"}\"}",
+   [products]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [disclaimers]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
+   [notices]: "{\"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"schema\": {\"type\": \"object\", \"properties\": {\"self\": {\"type\": \"string\"}}, \"description\": \"Referenced nested object from the NOAA Tides and Currents station metadata schema.\", \"required\": \"self\"}}",
    [self]: "{\"description\": \"{\\\"description\\\": \\\"URL to the station's data.\\\"}\"}",
    [expand]: "{\"description\": \"{\\\"description\\\": \\\"URL to expanded information about the station.\\\"}\"}",
    [tideType]: "{\"description\": \"{\\\"description\\\": \\\"Type of tide measured by the station.\\\"}\"}",
@@ -806,7 +856,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Station'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Station_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -851,7 +901,7 @@
 ]
 ```
 
-.create-or-alter table [Station] ingestion json mapping "Station_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Station'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Station_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -896,13 +946,13 @@
 ]
 ```
 
-.drop materialized-view StationLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.StationLatest'] ifexists;
 
-.create materialized-view with (backfill=true) StationLatest on table Station {
-    Station | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.StationLatest'] on table ['Microsoft.OpenData.US.NOAA.Station'] {
+    ['Microsoft.OpenData.US.NOAA.Station'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Station] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.Station'] policy update
 ```
 [{
   "IsEnabled": true,
@@ -913,13 +963,14 @@
 }]
 ```
 
-.create-merge table [Visibility] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.Visibility'] (
    [timestamp]: string,
    [value]: real,
    [max_visibility_exceeded]: bool,
    [min_visibility_exceeded]: bool,
    [rate_of_change_exceeded]: bool,
    [station_id]: string,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -927,12 +978,13 @@
    [___subject]: string
 );
 
-.alter table [Visibility] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.Visibility'] column-docstrings (
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the visibility measurement\\\"}\"}",
    [value]: "{\"description\": \"{\\\"description\\\": \\\"Value of the visibility\\\"}\"}",
    [max_visibility_exceeded]: "{\"description\": \"A flag that indicates whether the maximum expected visibility was exceeded\"}",
    [min_visibility_exceeded]: "{\"description\": \"A flag that indicates whether the minimum expected visibility was exceeded\"}",
    [rate_of_change_exceeded]: "{\"description\": \"A flag that indicates whether the rate of change tolerance limit was exceeded\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -940,7 +992,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Visibility] ingestion json mapping "Visibility_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Visibility'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Visibility_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -954,10 +1006,11 @@
   {"column": "min_visibility_exceeded", "path": "$.min_visibility_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.rate_of_change_exceeded"},
   {"column": "station_id", "path": "$.station_id"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [Visibility] ingestion json mapping "Visibility_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Visibility'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Visibility_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -971,32 +1024,34 @@
   {"column": "min_visibility_exceeded", "path": "$.data.min_visibility_exceeded"},
   {"column": "rate_of_change_exceeded", "path": "$.data.rate_of_change_exceeded"},
   {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view VisibilityLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.VisibilityLatest'] ifexists;
 
-.create materialized-view with (backfill=true) VisibilityLatest on table Visibility {
-    Visibility | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.VisibilityLatest'] on table ['Microsoft.OpenData.US.NOAA.Visibility'] {
+    ['Microsoft.OpenData.US.NOAA.Visibility'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Visibility] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.Visibility'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Visibility') | project['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_visibility_exceeded'] = tobool(data.['max_visibility_exceeded']),['min_visibility_exceeded'] = tobool(data.['min_visibility_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['station_id'] = tostring(data.['station_id']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Visibility') | project['timestamp'] = tostring(data.['timestamp']),['value'] = toreal(data.['value']),['max_visibility_exceeded'] = tobool(data.['max_visibility_exceeded']),['min_visibility_exceeded'] = tobool(data.['min_visibility_exceeded']),['rate_of_change_exceeded'] = tobool(data.['rate_of_change_exceeded']),['station_id'] = tostring(data.['station_id']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [Currents] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.Currents'] (
    [station_id]: string,
    [timestamp]: string,
    [speed]: real,
    [direction_degrees]: real,
    [bin]: string,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -1004,12 +1059,13 @@
    [___subject]: string
 );
 
-.alter table [Currents] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.Currents'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the currents measurement\\\"}\"}",
    [speed]: "{\"description\": \"{\\\"description\\\": \\\"Current speed\\\"}\"}",
    [direction_degrees]: "{\"description\": \"{\\\"description\\\": \\\"Current direction in degrees\\\"}\"}",
    [bin]: "{\"description\": \"{\\\"description\\\": \\\"Bin number\\\"}\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1017,7 +1073,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [Currents] ingestion json mapping "Currents_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Currents'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Currents_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1030,10 +1086,11 @@
   {"column": "speed", "path": "$.speed"},
   {"column": "direction_degrees", "path": "$.direction_degrees"},
   {"column": "bin", "path": "$.bin"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [Currents] ingestion json mapping "Currents_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.Currents'] ingestion json mapping "Microsoft.OpenData.US.NOAA.Currents_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1046,27 +1103,28 @@
   {"column": "speed", "path": "$.data.speed"},
   {"column": "direction_degrees", "path": "$.data.direction_degrees"},
   {"column": "bin", "path": "$.data.bin"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view CurrentsLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.CurrentsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) CurrentsLatest on table Currents {
-    Currents | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.CurrentsLatest'] on table ['Microsoft.OpenData.US.NOAA.Currents'] {
+    ['Microsoft.OpenData.US.NOAA.Currents'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [Currents] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.Currents'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Currents') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['speed'] = toreal(data.['speed']),['direction_degrees'] = toreal(data.['direction_degrees']),['bin'] = tostring(data.['bin']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.Currents') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['speed'] = toreal(data.['speed']),['direction_degrees'] = toreal(data.['direction_degrees']),['bin'] = tostring(data.['bin']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
 ```
 
-.create-merge table [CurrentPredictions] (
+.create-merge table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] (
    [station_id]: string,
    [timestamp]: string,
    [velocity_major]: real,
@@ -1074,6 +1132,7 @@
    [mean_ebb_dir]: real,
    [depth]: real,
    [bin]: string,
+   [region]: string,
    [___type]: string,
    [___source]: string,
    [___id]: string,
@@ -1081,7 +1140,7 @@
    [___subject]: string
 );
 
-.alter table [CurrentPredictions] column-docstrings (
+.alter table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] column-docstrings (
    [station_id]: "{\"description\": \"{\\\"description\\\": \\\"7 character station ID, or a currents station ID.\\\"}\"}",
    [timestamp]: "{\"description\": \"{\\\"description\\\": \\\"Timestamp of the current prediction\\\"}\"}",
    [velocity_major]: "{\"description\": \"{\\\"description\\\": \\\"Major axis velocity\\\"}\"}",
@@ -1089,6 +1148,7 @@
    [mean_ebb_dir]: "{\"description\": \"{\\\"description\\\": \\\"Mean ebb direction in degrees\\\"}\"}",
    [depth]: "{\"description\": \"{\\\"description\\\": \\\"Depth of measurement\\\"}\"}",
    [bin]: "{\"description\": \"{\\\"description\\\": \\\"Bin number\\\"}\"}",
+   [region]: "{\"description\": \"Stable routing axis used by MQTT and AMQP transport templates for noaa.\"}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -1096,7 +1156,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table [CurrentPredictions] ingestion json mapping "CurrentPredictions_json_flat"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] ingestion json mapping "Microsoft.OpenData.US.NOAA.CurrentPredictions_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1111,10 +1171,11 @@
   {"column": "mean_ebb_dir", "path": "$.mean_ebb_dir"},
   {"column": "depth", "path": "$.depth"},
   {"column": "bin", "path": "$.bin"},
+  {"column": "region", "path": "$.region"},
 ]
 ```
 
-.create-or-alter table [CurrentPredictions] ingestion json mapping "CurrentPredictions_json_ce_structured"
+.create-or-alter table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] ingestion json mapping "Microsoft.OpenData.US.NOAA.CurrentPredictions_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -1129,21 +1190,22 @@
   {"column": "mean_ebb_dir", "path": "$.data.mean_ebb_dir"},
   {"column": "depth", "path": "$.data.depth"},
   {"column": "bin", "path": "$.data.bin"},
+  {"column": "region", "path": "$.data.region"},
 ]
 ```
 
-.drop materialized-view CurrentPredictionsLatest ifexists;
+.drop materialized-view ['Microsoft.OpenData.US.NOAA.CurrentPredictionsLatest'] ifexists;
 
-.create materialized-view with (backfill=true) CurrentPredictionsLatest on table CurrentPredictions {
-    CurrentPredictions | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['Microsoft.OpenData.US.NOAA.CurrentPredictionsLatest'] on table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] {
+    ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table [CurrentPredictions] policy update
+.alter table ['Microsoft.OpenData.US.NOAA.CurrentPredictions'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.CurrentPredictions') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['velocity_major'] = toreal(data.['velocity_major']),['mean_flood_dir'] = toreal(data.['mean_flood_dir']),['mean_ebb_dir'] = toreal(data.['mean_ebb_dir']),['depth'] = toreal(data.['depth']),['bin'] = tostring(data.['bin']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'Microsoft.OpenData.US.NOAA.CurrentPredictions') | project['station_id'] = tostring(data.['station_id']),['timestamp'] = tostring(data.['timestamp']),['velocity_major'] = toreal(data.['velocity_major']),['mean_flood_dir'] = toreal(data.['mean_flood_dir']),['mean_ebb_dir'] = toreal(data.['mean_ebb_dir']),['depth'] = toreal(data.['depth']),['bin'] = tostring(data.['bin']),['region'] = tostring(data.['region']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
   "PropagateIngestionProperties": true,
 }]
