@@ -217,7 +217,7 @@ def mqtt_feed() -> None:
         client.username_pw_set(resolved_username, resolved_password)
     if parsed.scheme == 'mqtts' or os.getenv('MQTT_TLS','').lower() in ('1','true','yes'):
         client.tls_set()
-    client.connect(host, port, 30); client.loop_start(); time.sleep(0.5)
+    client.connect(host, port, 30, properties=_entra_props); client.loop_start(); time.sleep(0.5)
     for c in iter_contracts('MQTT'):
         topic, qos, retain = topic_options(c['message'])
         topic = render(topic, {**c['context'], **(c['data'] if isinstance(c['data'],dict) else {})})

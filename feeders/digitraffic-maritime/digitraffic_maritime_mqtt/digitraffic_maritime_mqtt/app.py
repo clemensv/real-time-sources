@@ -143,7 +143,7 @@ def _build_clients(args: argparse.Namespace):
     if tls:
         paho_client.tls_set(ca_certs=args.ca_file or None)
 
-    paho_client.connect(host, port, keepalive=60)
+    paho_client.connect(host, port, keepalive=60, properties=_entra_props)
     paho_client.loop_start()
 
     ais_client = FiDigitrafficMarineAisMqttMqttClient(paho_client, content_mode=args.content_mode)

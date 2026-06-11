@@ -174,8 +174,8 @@ def publish_mqtt(args: argparse.Namespace) -> None:
     client = mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
     if _entra_props is None and (resolved_username or resolved_password):
         client.username_pw_set(resolved_username, resolved_password)
-    if parsed.scheme in ("mqtts", "ssl", "tls") or args.tls: client.tls_set()
-    client.connect(parsed.hostname or "localhost", parsed.port or (8883 if parsed.scheme == "mqtts" else 1883), 30)
+    if parsed.scheme in ("mqtts", "ssl", "tls") or args.tls or _entra_props is not None: client.tls_set()
+    client.connect(parsed.hostname or "localhost", parsed.port or (8883 if parsed.scheme == "mqtts" else 1883), 30, properties=_entra_props)
     client.loop_start()
     try:
         for c in _contracts("MQTT"):
