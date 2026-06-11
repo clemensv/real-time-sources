@@ -269,7 +269,7 @@ class NOAADataPoller:
         while True:
             for station in stations_to_poll:
                 station_id = station.station_id
-                station_region = getattr(station, "region", None)
+                station_region = getattr(station, "region", None) or "unknown"
                 for product in self.PRODUCTS:
                     print(f"Polling {product} data for station {station_id}: {station.name}:", end='')
                     last_polled_time = last_polled_times.get(product, {}).get(

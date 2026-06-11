@@ -232,7 +232,10 @@ def feed(
         while True:
             for st in stations:
                 station_id = st.station_id
-                region = getattr(st, "region", None)
+                # `region` is a required string in the telemetry schemas; many
+                # NOAA stations have no region, so default to a stable
+                # placeholder rather than emitting null.
+                region = getattr(st, "region", None) or "unknown"
                 region_slug = _slug(region)
                 datum = NOAAClient.datum_for_tide_type(getattr(st, "tideType", None))
                 for product in noaa_core.PRODUCT_ORDER:
