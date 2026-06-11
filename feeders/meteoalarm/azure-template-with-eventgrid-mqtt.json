@@ -54,7 +54,7 @@
       "metadata": {
         "description": "Feeder-prefixed alias for POLLING_INTERVAL; useful in Azure templates that surface Meteoalarm-specific settings."
       },
-      "defaultValue": ""
+      "defaultValue": "300"
     },
     "meteoalarmMqttStateFile": {
       "type": "string",

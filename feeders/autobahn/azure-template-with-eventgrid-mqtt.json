@@ -47,7 +47,7 @@
       "metadata": {
         "description": "Polling interval in seconds (where supported by the runtime variant)."
       },
-      "defaultValue": ""
+      "defaultValue": "300"
     },
     "autobahnStateFile": {
       "type": "string",
