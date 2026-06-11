@@ -744,8 +744,15 @@ class TestWSDOTAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "wsdot"
     image = "wsdot-amqp"
     env = {"ONCE_MODE": "true"}
-    expected_types = {'us.wa.wsdot.weather.WeatherStation', 'us.wa.wsdot.traffic.TrafficFlowStation', 'us.wa.wsdot.tolls.TollRate', 'us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction', 'us.wa.wsdot.ferries.VesselLocation', 'us.wa.wsdot.traveltimes.TravelTimeRoute', 'us.wa.wsdot.traffic.TrafficFlowReading', 'us.wa.wsdot.border.BorderCrossing', 'us.wa.wsdot.mountainpass.MountainPassCondition', 'us.wa.wsdot.weather.WeatherReading'}
-    expected_count = 10
+    expected_types = {'us.wa.wsdot.weather.WeatherStation', 'us.wa.wsdot.traffic.TrafficFlowStation', 'us.wa.wsdot.tolls.TollRate', 'us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction', 'us.wa.wsdot.ferries.VesselLocation', 'us.wa.wsdot.traveltimes.TravelTimeRoute', 'us.wa.wsdot.traffic.TrafficFlowReading', 'us.wa.wsdot.border.BorderCrossing', 'us.wa.wsdot.mountainpass.MountainPassCondition', 'us.wa.wsdot.weather.WeatherReading', 'us.wa.wsdot.roadweather.RoadWeatherStation', 'us.wa.wsdot.roadweather.RoadWeatherReading', 'us.wa.wsdot.alerts.HighwayAlert', 'us.wa.wsdot.cameras.HighwayCamera', 'us.wa.wsdot.bridgeclearances.BridgeClearance', 'us.wa.wsdot.ferryterminals.TerminalSailingSpace'}
+    expected_count = 16
+
+    @pytest.fixture(autouse=True)
+    def _require_access_code(self):
+        code = os.environ.get("WSDOT_ACCESS_CODE", "")
+        if not code:
+            pytest.skip("WSDOT_ACCESS_CODE not set")
+        self.env = {**type(self).env, "WSDOT_ACCESS_CODE": code}
 
 
 

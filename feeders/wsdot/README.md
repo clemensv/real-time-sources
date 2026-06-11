@@ -59,7 +59,7 @@ State traffic centers, ferry operations, logistics planners, and public traveler
 
 | Variant | Container image | Transport | Default delivery shape |
 |---|---|---|---|
-| **Kafka** | `ghcr.io/clemensv/real-time-sources-wsdot` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents (binary mode), key templates `{crossing_name}, {flow_data_id}, {mountain_pass_id}, {state_route_id}/{bridge_number}, {station_id}, {travel_time_id}, {trip_name}, {vessel_id}` |
+| **Kafka** | `ghcr.io/clemensv/real-time-sources-wsdot` | Apache Kafka 2.x compatible (incl. Azure Event Hubs and Microsoft Fabric Event Streams) | JSON CloudEvents (binary mode), key templates `{alert_id}, {camera_id}, {crossing_location_id}, {crossing_name}, {flow_data_id}, {mountain_pass_id}, {state_route_id}/{bridge_number}, {station_id}, {terminal_id}, {travel_time_id}, {trip_name}, {vessel_id}` |
 | **MQTT** | `ghcr.io/clemensv/real-time-sources-wsdot-mqtt` | MQTT 5.0 broker (incl. Azure Event Grid MQTT) | Unified-Namespace topic tree rooted under `mobility/us/wa/wsdot/...` |
 | **AMQP** | `ghcr.io/clemensv/real-time-sources-wsdot-amqp` | AMQP 1.0 brokers incl. Azure Service Bus / Event Hubs | Binary CloudEvents to AMQP address `wsdot` |
 
@@ -156,6 +156,11 @@ This source emits the following event families (see [EVENTS.md](EVENTS.md) for f
 - **us.wa.wsdot.cvrestrictions** — 1 event type(s): us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.
 - **us.wa.wsdot.border** — 1 event type(s): us.wa.wsdot.border.BorderCrossing.
 - **us.wa.wsdot.ferries** — 1 event type(s): us.wa.wsdot.ferries.VesselLocation.
+- **us.wa.wsdot.roadweather** — 2 event type(s): us.wa.wsdot.roadweather.RoadWeatherStation, us.wa.wsdot.roadweather.RoadWeatherReading.
+- **us.wa.wsdot.alerts** — 1 event type(s): us.wa.wsdot.alerts.HighwayAlert.
+- **us.wa.wsdot.cameras** — 1 event type(s): us.wa.wsdot.cameras.HighwayCamera.
+- **us.wa.wsdot.bridgeclearances** — 1 event type(s): us.wa.wsdot.bridgeclearances.BridgeClearance.
+- **us.wa.wsdot.ferryterminals** — 1 event type(s): us.wa.wsdot.ferryterminals.TerminalSailingSpace.
 
 <!-- source-deploy:begin -->
 ## Deploy

@@ -1,4 +1,4 @@
-from .weatherreading import WeatherReading
 from .weatherstation import WeatherStation
+from .weatherreading import WeatherReading
 
-__all__ = ["WeatherReading", "WeatherStation"]
+__all__ = ["WeatherStation", "WeatherReading"]

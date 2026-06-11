@@ -1,47 +1,48 @@
 """ VesselLocation dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class VesselLocation:
     """
-    WSF vessel location.
+    Real-time location and status of a Washington State Ferries vessel. WSF operates approximately 21 vessels across Puget Sound routes.
+    
     Attributes:
-        vessel_id (str): 
-        vessel_name (str): 
-        mmsi (typing.Optional[int]): 
-        in_service (bool): 
-        at_dock (bool): 
-        latitude (float): 
-        longitude (float): 
-        speed (typing.Optional[float]): 
-        heading (typing.Optional[int]): 
-        departing_terminal_id (typing.Optional[int]): 
-        departing_terminal_name (typing.Optional[str]): 
-        departing_terminal_abbrev (typing.Optional[str]): 
-        arriving_terminal_id (typing.Optional[int]): 
-        arriving_terminal_name (typing.Optional[str]): 
-        arriving_terminal_abbrev (typing.Optional[str]): 
-        scheduled_departure (typing.Optional[str]): 
-        left_dock (typing.Optional[str]): 
-        eta (typing.Optional[str]): 
-        eta_basis (typing.Optional[str]): 
-        route_abbreviation (typing.Optional[str]): 
-        timestamp (str): """
+        vessel_id (str)
+        vessel_name (str)
+        mmsi (typing.Optional[int])
+        in_service (bool)
+        at_dock (bool)
+        latitude (float)
+        longitude (float)
+        speed (typing.Optional[float])
+        heading (typing.Optional[int])
+        departing_terminal_id (typing.Optional[int])
+        departing_terminal_name (typing.Optional[str])
+        departing_terminal_abbrev (typing.Optional[str])
+        arriving_terminal_id (typing.Optional[int])
+        arriving_terminal_name (typing.Optional[str])
+        arriving_terminal_abbrev (typing.Optional[str])
+        scheduled_departure (typing.Optional[str])
+        left_dock (typing.Optional[str])
+        eta (typing.Optional[str])
+        eta_basis (typing.Optional[str])
+        route_abbreviation (typing.Optional[str])
+        timestamp (str)
+    """
+    
     
     vessel_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vessel_id"))
     vessel_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vessel_name"))
@@ -64,34 +65,6 @@ class VesselLocation:
     eta_basis: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="eta_basis"))
     route_abbreviation: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="route_abbreviation"))
     timestamp: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="timestamp"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"VesselLocation\", \"namespace\": \"us.wa.wsdot.ferries\", \"doc\": \"WSF vessel location.\", \"fields\": [{\"name\": \"vessel_id\", \"type\": \"string\"}, {\"name\": \"vessel_name\", \"type\": \"string\"}, {\"name\": \"mmsi\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"in_service\", \"type\": \"boolean\"}, {\"name\": \"at_dock\", \"type\": \"boolean\"}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}, {\"name\": \"speed\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"heading\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"departing_terminal_id\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"departing_terminal_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"departing_terminal_abbrev\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"arriving_terminal_id\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"arriving_terminal_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"arriving_terminal_abbrev\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"scheduled_departure\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"left_dock\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"eta\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"eta_basis\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"route_abbreviation\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"timestamp\", \"type\": \"string\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.vessel_id=str(self.vessel_id)
-        self.vessel_name=str(self.vessel_name)
-        self.mmsi=int(self.mmsi) if self.mmsi else None
-        self.in_service=bool(self.in_service)
-        self.at_dock=bool(self.at_dock)
-        self.latitude=float(self.latitude)
-        self.longitude=float(self.longitude)
-        self.speed=float(self.speed) if self.speed else None
-        self.heading=int(self.heading) if self.heading else None
-        self.departing_terminal_id=int(self.departing_terminal_id) if self.departing_terminal_id else None
-        self.departing_terminal_name=str(self.departing_terminal_name) if self.departing_terminal_name else None
-        self.departing_terminal_abbrev=str(self.departing_terminal_abbrev) if self.departing_terminal_abbrev else None
-        self.arriving_terminal_id=int(self.arriving_terminal_id) if self.arriving_terminal_id else None
-        self.arriving_terminal_name=str(self.arriving_terminal_name) if self.arriving_terminal_name else None
-        self.arriving_terminal_abbrev=str(self.arriving_terminal_abbrev) if self.arriving_terminal_abbrev else None
-        self.scheduled_departure=str(self.scheduled_departure) if self.scheduled_departure else None
-        self.left_dock=str(self.left_dock) if self.left_dock else None
-        self.eta=str(self.eta) if self.eta else None
-        self.eta_basis=str(self.eta_basis) if self.eta_basis else None
-        self.route_abbreviation=str(self.route_abbreviation) if self.route_abbreviation else None
-        self.timestamp=str(self.timestamp)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'VesselLocation':
@@ -102,7 +75,7 @@ class VesselLocation:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -121,7 +94,7 @@ class VesselLocation:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -135,8 +108,6 @@ class VesselLocation:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -149,20 +120,10 @@ class VesselLocation:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
-            if isinstance(result, str):
-                result = result.encode('utf-8')
-            if isinstance(result, str):
-                result = result.encode('utf-8')
             if isinstance(result, str):
                 result = result.encode('utf-8')
 
@@ -189,10 +150,6 @@ class VesselLocation:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -218,18 +175,6 @@ class VesselLocation:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return VesselLocation.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -237,5 +182,36 @@ class VesselLocation:
                 return VesselLocation.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'VesselLocation':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            vessel_id='niwwjivkuiabiucsxont',
+            vessel_name='wnitzqdvjydowglvpltq',
+            mmsi=int(12),
+            in_service=False,
+            at_dock=True,
+            latitude=float(24.023204987027324),
+            longitude=float(6.668266083068463),
+            speed=float(32.437191476425184),
+            heading=int(26),
+            departing_terminal_id=int(1),
+            departing_terminal_name='dulapmuacpvhvvrynhjz',
+            departing_terminal_abbrev='jadkbmbdlnsqdazsyhdt',
+            arriving_terminal_id=int(13),
+            arriving_terminal_name='ogfgfvrepjmbcdvgroqb',
+            arriving_terminal_abbrev='lyeastsqdehpmmrwqomz',
+            scheduled_departure='rzwdizjtpctpepolrwbc',
+            left_dock='olthtceaszpxstunfpvm',
+            eta='qiqimmqptkhapfupxgjo',
+            eta_basis='iibhrtqxnenbgbblfbjx',
+            route_abbreviation='dntqjywbudgvabugjyym',
+            timestamp='wkjilqchcizsbtlyahuv'
+        )

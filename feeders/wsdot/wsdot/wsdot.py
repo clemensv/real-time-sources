@@ -22,6 +22,16 @@ from wsdot_producer_data.us.wa.wsdot.tolls.tollrate import TollRate
 from wsdot_producer_data.us.wa.wsdot.cvrestrictions.commercialvehiclerestriction import CommercialVehicleRestriction
 from wsdot_producer_data.us.wa.wsdot.border.bordercrossing import BorderCrossing
 from wsdot_producer_data.us.wa.wsdot.ferries.vessellocation import VesselLocation
+from wsdot_producer_data.us.wa.wsdot.roadweather.roadweatherstation import RoadWeatherStation
+from wsdot_producer_data.us.wa.wsdot.roadweather.roadweatherreading import RoadWeatherReading
+from wsdot_producer_data.us.wa.wsdot.roadweather.surfacemeasurement import SurfaceMeasurement
+from wsdot_producer_data.us.wa.wsdot.roadweather.subsurfacemeasurement import SubSurfaceMeasurement
+from wsdot_producer_data.us.wa.wsdot.alerts.highwayalert import HighwayAlert
+from wsdot_producer_data.us.wa.wsdot.cameras.highwaycamera import HighwayCamera
+from wsdot_producer_data.us.wa.wsdot.bridgeclearances.bridgeclearance import BridgeClearance
+from wsdot_producer_data.us.wa.wsdot.ferryterminals.terminalsailingspace import TerminalSailingSpace
+from wsdot_producer_data.us.wa.wsdot.ferryterminals.departingspace import DepartingSpace
+from wsdot_producer_data.us.wa.wsdot.ferryterminals.spaceforarrivalterminal import SpaceForArrivalTerminal
 from cloudevents.http import CloudEvent
 from cloudevents.kafka import to_binary, to_structured
 from wsdot_producer_kafka_producer.producer import UsWaWsdotTrafficEventProducer
@@ -90,6 +100,34 @@ class UsWaWsdotFerriesEventProducer(_WsdotEventProducer):
         self._send("us.wa.wsdot.ferries.VesselLocation", _feedurl, _vessel_id, _vessel_id, data, content_type, flush_producer, key_mapper)
 
 
+class UsWaWsdotRoadweatherEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_roadweather_road_weather_station(self, _feedurl: str, _station_id: str, data: RoadWeatherStation, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.roadweather.RoadWeatherStation", _feedurl, _station_id, _station_id, data, content_type, flush_producer, key_mapper)
+
+    def send_us_wa_wsdot_roadweather_road_weather_reading(self, _feedurl: str, _station_id: str, data: RoadWeatherReading, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.roadweather.RoadWeatherReading", _feedurl, _station_id, _station_id, data, content_type, flush_producer, key_mapper)
+
+
+class UsWaWsdotAlertsEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_alerts_highway_alert(self, _feedurl: str, _alert_id: str, data: HighwayAlert, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.alerts.HighwayAlert", _feedurl, _alert_id, _alert_id, data, content_type, flush_producer, key_mapper)
+
+
+class UsWaWsdotCamerasEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_cameras_highway_camera(self, _feedurl: str, _camera_id: str, data: HighwayCamera, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.cameras.HighwayCamera", _feedurl, _camera_id, _camera_id, data, content_type, flush_producer, key_mapper)
+
+
+class UsWaWsdotBridgeclearancesEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_bridgeclearances_bridge_clearance(self, _feedurl: str, _crossing_location_id: str, data: BridgeClearance, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.bridgeclearances.BridgeClearance", _feedurl, _crossing_location_id, _crossing_location_id, data, content_type, flush_producer, key_mapper)
+
+
+class UsWaWsdotFerryterminalsEventProducer(_WsdotEventProducer):
+    def send_us_wa_wsdot_ferryterminals_terminal_sailing_space(self, _feedurl: str, _terminal_id: str, data: TerminalSailingSpace, content_type: str = "application/json", flush_producer=True, key_mapper=None) -> None:
+        self._send("us.wa.wsdot.ferryterminals.TerminalSailingSpace", _feedurl, _terminal_id, _terminal_id, data, content_type, flush_producer, key_mapper)
+
+
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
 else:
@@ -97,6 +135,14 @@ else:
 
 TRAVELER_BASE = "https://www.wsdot.wa.gov/Traffic/api"
 FERRIES_BASE = "https://www.wsdot.wa.gov/ferries/api/vessels/rest"
+FERRIES_TERMINALS_BASE = "https://www.wsdot.wa.gov/ferries/api/terminals/rest"
+# WSDOT Scanweb (RWIS) road weather endpoint. Distinct host/path from the
+# Traveler Information REST services; takes an AccessCode query parameter.
+SCANWEB_URL = "https://wsdot.wa.gov/traffic/api/api/Scanweb"
+# Bridge vertical clearances are served by the Bridges service under a
+# differently-named .svc (ClearanceREST, not BridgesREST), so it does not fit
+# the generic _traveler_get pattern and has its own fetch method.
+BRIDGE_CLEARANCES_URL = "https://www.wsdot.wa.gov/Traffic/api/Bridges/ClearanceREST.svc/GetClearancesAsJson"
 FEED_URL = "https://www.wsdot.wa.gov/Traffic/api"
 # Outbound HTTP identity. Operators can override the entire string with the
 # USER_AGENT env var, or just the contact token with USER_AGENT_CONTACT.
@@ -126,6 +172,30 @@ def _parse_wcf_date(wcf_date: str) -> str:
     millis = int(m.group(1))
     dt = datetime.fromtimestamp(millis / 1000.0, tz=timezone.utc)
     return dt.isoformat()
+
+
+def _normalize_dt(value: Any) -> Optional[str]:
+    """Normalize an upstream timestamp to ISO 8601 UTC.
+
+    Handles both the legacy WCF ``/Date(...)/`` form and ISO 8601 strings that
+    already carry a timezone offset (the HighwayAlerts/Bridges/terminals
+    services return ``DateTimeOffset`` values serialized as ISO 8601). Returns
+    ``None`` for empty input and falls back to the original string if it cannot
+    be parsed.
+    """
+    if not value:
+        return None
+    if not isinstance(value, str):
+        return None
+    if _WCF_DATE_RE.search(value):
+        return _parse_wcf_date(value)
+    try:
+        dt = datetime.fromisoformat(value)
+    except ValueError:
+        return value
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc).isoformat()
 
 
 def _safe_float(v: Any) -> Optional[float]:
@@ -178,9 +248,6 @@ class WSDOTApi:
     def fetch_weather_information(self) -> List[Dict[str, Any]]:
         return self._traveler_get("WeatherInformation", "CurrentWeatherInformation")
 
-    def fetch_weather_stations(self) -> List[Dict[str, Any]]:
-        return self._traveler_get("WeatherStations", "WeatherStations")
-
     def fetch_toll_rates(self) -> List[Dict[str, Any]]:
         return self._traveler_get("TollRates", "TollRates")
 
@@ -193,6 +260,39 @@ class WSDOTApi:
     def fetch_vessel_locations(self) -> List[Dict[str, Any]]:
         resp = self.session.get(
             f"{FERRIES_BASE}/vessellocations",
+            params={"apiaccesscode": self.access_code},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    def fetch_road_weather(self) -> List[Dict[str, Any]]:
+        resp = self.session.get(
+            SCANWEB_URL,
+            params={"AccessCode": self.access_code},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    def fetch_highway_alerts(self) -> List[Dict[str, Any]]:
+        return self._traveler_get("HighwayAlerts", "Alerts")
+
+    def fetch_highway_cameras(self) -> List[Dict[str, Any]]:
+        return self._traveler_get("HighwayCameras", "Cameras")
+
+    def fetch_bridge_clearances(self) -> List[Dict[str, Any]]:
+        resp = self.session.get(
+            BRIDGE_CLEARANCES_URL,
+            params={"AccessCode": self.access_code},
+            timeout=30,
+        )
+        resp.raise_for_status()
+        return resp.json()
+
+    def fetch_terminal_sailing_space(self) -> List[Dict[str, Any]]:
+        resp = self.session.get(
+            f"{FERRIES_TERMINALS_BASE}/terminalsailingspace",
             params={"apiaccesscode": self.access_code},
             timeout=30,
         )
@@ -279,8 +379,11 @@ class WSDOTApi:
 
     @staticmethod
     def parse_weather_station(raw: Dict[str, Any]) -> WeatherStation:
+        # Station reference is synthesized from the current-readings payload
+        # (the legacy WeatherStations endpoint was decommissioned), so the
+        # identity field is the numeric StationID that the readings also carry.
         return WeatherStation(
-            station_id=str(raw.get("StationCode", "")),
+            station_id=str(raw.get("StationID", "")),
             station_name=raw.get("StationName", ""),
             latitude=float(raw.get("Latitude", 0.0)),
             longitude=float(raw.get("Longitude", 0.0)),
@@ -405,6 +508,191 @@ class WSDOTApi:
             timestamp=_parse_wcf_date(ts) if ts else datetime.now(timezone.utc).isoformat(),
         )
 
+    @staticmethod
+    def _road_weather_station_id(raw: Dict[str, Any]) -> str:
+        # A few Scanweb stations report a blank StationId (whitespace); fall
+        # back to the unique StationName so every station has a stable,
+        # non-empty key that aligns subject and Kafka key.
+        sid = (raw.get("StationId") or "").strip()
+        return sid or (raw.get("StationName") or "").strip()
+
+    @staticmethod
+    def parse_road_weather_station(raw: Dict[str, Any]) -> RoadWeatherStation:
+        return RoadWeatherStation(
+            station_id=WSDOTApi._road_weather_station_id(raw),
+            station_name=raw.get("StationName", ""),
+            latitude=float(raw.get("Latitude", 0.0)),
+            longitude=float(raw.get("Longitude", 0.0)),
+            elevation=_safe_int(raw.get("Elevation")),
+        )
+
+    @staticmethod
+    def parse_road_weather_reading(raw: Dict[str, Any]) -> RoadWeatherReading:
+        surfaces = [
+            SurfaceMeasurement(
+                sensor_id=_safe_int(sm.get("SensorId")) or 0,
+                surface_temperature=_safe_float(sm.get("SurfaceTemperature")),
+                road_freezing_temperature=_safe_float(sm.get("RoadFreezingTemperature")),
+                road_surface_condition=_safe_int(sm.get("RoadSurfaceCondition")),
+            )
+            for sm in (raw.get("SurfaceMeasurements") or [])
+        ]
+        sub_surfaces = [
+            SubSurfaceMeasurement(
+                sensor_id=_safe_int(sm.get("SensorId")) or 0,
+                sub_surface_temperature=_safe_float(sm.get("SubSurfaceTemperature")),
+            )
+            for sm in (raw.get("SubSurfaceMeasurements") or [])
+        ]
+        return RoadWeatherReading(
+            station_id=WSDOTApi._road_weather_station_id(raw),
+            station_name=raw.get("StationName", ""),
+            latitude=float(raw.get("Latitude", 0.0)),
+            longitude=float(raw.get("Longitude", 0.0)),
+            elevation=_safe_int(raw.get("Elevation")),
+            # ReadingTime has no timezone offset; the schema documents it as the
+            # station's local reporting clock, so it is preserved verbatim.
+            reading_time=raw.get("ReadingTime") or datetime.now(timezone.utc).isoformat(),
+            air_temperature=_safe_float(raw.get("AirTemperature")),
+            relative_humidity=_safe_int(raw.get("RelativeHumidty")),
+            average_wind_speed=_safe_float(raw.get("AverageWindSpeed")),
+            average_wind_direction=_safe_int(raw.get("AverageWindDirection")),
+            wind_gust=_safe_float(raw.get("WindGust")),
+            visibility=_safe_int(raw.get("Visibility")),
+            precipitation_intensity=_safe_int(raw.get("PrecipitationIntensity")),
+            precipitation_type=_safe_int(raw.get("PrecipitationType")),
+            precipitation_past_1_hour=_safe_float(raw.get("PrecipitationPast1Hour")),
+            precipitation_past_3_hours=_safe_float(raw.get("PrecipitationPast3Hours")),
+            precipitation_past_6_hours=_safe_float(raw.get("PrecipitationPast6Hours")),
+            precipitation_past_12_hours=_safe_float(raw.get("PrecipitationPast12Hours")),
+            precipitation_past_24_hours=_safe_float(raw.get("PrecipitationPast24Hours")),
+            precipitation_accumulation=_safe_float(raw.get("PrecipitationAccumulation")),
+            barometric_pressure=_safe_float(raw.get("BarometricPressure")),
+            snow_depth=_safe_float(raw.get("SnowDepth")),
+            surface_measurements=surfaces,
+            sub_surface_measurements=sub_surfaces,
+        )
+
+    @staticmethod
+    def parse_highway_alert(raw: Dict[str, Any]) -> HighwayAlert:
+        start_loc = raw.get("StartRoadwayLocation") or {}
+        end_loc = raw.get("EndRoadwayLocation") or {}
+        return HighwayAlert(
+            alert_id=str(raw.get("AlertID", "")),
+            county=raw.get("County") or None,
+            region=raw.get("Region") or None,
+            priority=raw.get("Priority") or None,
+            event_category=raw.get("EventCategory") or None,
+            event_status=raw.get("EventStatus") or None,
+            headline_description=raw.get("HeadlineDescription") or None,
+            extended_description=raw.get("ExtendedDescription") or None,
+            start_time=_normalize_dt(raw.get("StartTime")),
+            end_time=_normalize_dt(raw.get("EndTime")),
+            last_updated_time=_normalize_dt(raw.get("LastUpdatedTime")),
+            start_description=start_loc.get("Description") or None,
+            start_direction=start_loc.get("Direction") or None,
+            start_road_name=start_loc.get("RoadName") or None,
+            start_milepost=_safe_float(start_loc.get("MilePost")),
+            start_latitude=_safe_float(start_loc.get("Latitude")),
+            start_longitude=_safe_float(start_loc.get("Longitude")),
+            end_description=end_loc.get("Description") or None,
+            end_direction=end_loc.get("Direction") or None,
+            end_road_name=end_loc.get("RoadName") or None,
+            end_milepost=_safe_float(end_loc.get("MilePost")),
+            end_latitude=_safe_float(end_loc.get("Latitude")),
+            end_longitude=_safe_float(end_loc.get("Longitude")),
+        )
+
+    @staticmethod
+    def parse_highway_camera(raw: Dict[str, Any]) -> HighwayCamera:
+        loc = raw.get("CameraLocation") or {}
+        return HighwayCamera(
+            camera_id=str(raw.get("CameraID", "")),
+            title=raw.get("Title") or None,
+            description=raw.get("Description") or None,
+            camera_owner=raw.get("CameraOwner") or None,
+            owner_url=raw.get("OwnerURL") or None,
+            image_url=raw.get("ImageURL", ""),
+            image_width=_safe_int(raw.get("ImageWidth")),
+            image_height=_safe_int(raw.get("ImageHeight")),
+            is_active=bool(raw.get("IsActive", False)),
+            region=raw.get("Region") or None,
+            sort_order=_safe_int(raw.get("SortOrder")),
+            display_latitude=_safe_float(raw.get("DisplayLatitude")),
+            display_longitude=_safe_float(raw.get("DisplayLongitude")),
+            location_description=loc.get("Description") or None,
+            location_direction=loc.get("Direction") or None,
+            location_road_name=loc.get("RoadName") or None,
+            location_milepost=_safe_float(loc.get("MilePost")),
+            location_latitude=_safe_float(loc.get("Latitude")),
+            location_longitude=_safe_float(loc.get("Longitude")),
+        )
+
+    @staticmethod
+    def parse_bridge_clearance(raw: Dict[str, Any]) -> BridgeClearance:
+        return BridgeClearance(
+            crossing_location_id=str(raw.get("CrossingLocationId", "")),
+            bridge_number=raw.get("BridgeNumber") or None,
+            state_route_id=(str(raw["StateRouteID"]) if raw.get("StateRouteID") is not None else None),
+            state_structure_id=raw.get("StateStructureId") or None,
+            crossing_description=raw.get("CrossingDescription") or None,
+            inventory_direction=raw.get("InventoryDirection") or None,
+            srmp=_safe_float(raw.get("SRMP")),
+            srmp_ahead_back_indicator=raw.get("SRMPAheadBackIndicator") or None,
+            latitude=_safe_float(raw.get("Latitude")),
+            longitude=_safe_float(raw.get("Longitude")),
+            vertical_clearance_maximum_inches=_safe_int(raw.get("VerticalClearanceMaximumInches")),
+            vertical_clearance_maximum_feet_inch=raw.get("VerticalClearanceMaximumFeetInch") or None,
+            vertical_clearance_minimum_inches=_safe_int(raw.get("VerticalClearanceMinimumInches")),
+            vertical_clearance_minimum_feet_inch=raw.get("VerticalClearanceMinimumFeetInch") or None,
+            control_entity_guid=raw.get("ControlEntityGuid") or None,
+            crossing_record_guid=raw.get("CrossingRecordGuid") or None,
+            location_guid=raw.get("LocationGuid") or None,
+            route_date=_normalize_dt(raw.get("RouteDate")),
+            api_last_update=_normalize_dt(raw.get("APILastUpdate")),
+        )
+
+    @staticmethod
+    def parse_terminal_sailing_space(raw: Dict[str, Any]) -> TerminalSailingSpace:
+        departing = []
+        for ds in (raw.get("DepartingSpaces") or []):
+            arrivals = [
+                SpaceForArrivalTerminal(
+                    terminal_id=_safe_int(sa.get("TerminalID")),
+                    terminal_name=sa.get("TerminalName") or None,
+                    vessel_id=_safe_int(sa.get("VesselID")),
+                    vessel_name=sa.get("VesselName") or None,
+                    display_reservable_space=bool(sa.get("DisplayReservableSpace", False)),
+                    reservable_space_count=_safe_int(sa.get("ReservableSpaceCount")),
+                    reservable_space_hex_color=sa.get("ReservableSpaceHexColor") or None,
+                    display_drive_up_space=bool(sa.get("DisplayDriveUpSpace", False)),
+                    drive_up_space_count=_safe_int(sa.get("DriveUpSpaceCount")),
+                    drive_up_space_hex_color=sa.get("DriveUpSpaceHexColor") or None,
+                    max_space_count=_safe_int(sa.get("MaxSpaceCount")),
+                    arrival_terminal_ids=[int(t) for t in (sa.get("ArrivalTerminalIDs") or []) if t is not None],
+                )
+                for sa in (ds.get("SpaceForArrivalTerminals") or [])
+            ]
+            departing.append(DepartingSpace(
+                departure=_normalize_dt(ds.get("Departure")),
+                is_cancelled=bool(ds.get("IsCancelled", False)),
+                vessel_id=_safe_int(ds.get("VesselID")),
+                vessel_name=ds.get("VesselName") or None,
+                max_space_count=_safe_int(ds.get("MaxSpaceCount")),
+                space_for_arrival_terminals=arrivals,
+            ))
+        return TerminalSailingSpace(
+            terminal_id=str(raw.get("TerminalID", "")),
+            terminal_subject_id=_safe_int(raw.get("TerminalSubjectID")),
+            region_id=_safe_int(raw.get("RegionID")),
+            terminal_name=raw.get("TerminalName") or None,
+            terminal_abbrev=raw.get("TerminalAbbrev") or None,
+            sort_seq=_safe_int(raw.get("SortSeq")),
+            departing_spaces=departing,
+            is_no_fare_collected=(bool(raw["IsNoFareCollected"]) if raw.get("IsNoFareCollected") is not None else None),
+            no_fare_collected_msg=raw.get("NoFareCollectedMsg") or None,
+        )
+
 
 def _parse_connection_string(connection_string: str):
     """Parse the connection string and extract Kafka config and topic."""
@@ -479,6 +767,11 @@ def feed(args):
     cvrestrictions_ep = UsWaWsdotCvrestrictionsEventProducer(producer, kafka_topic)
     border_ep = UsWaWsdotBorderEventProducer(producer, kafka_topic)
     ferries_ep = UsWaWsdotFerriesEventProducer(producer, kafka_topic)
+    roadweather_ep = UsWaWsdotRoadweatherEventProducer(producer, kafka_topic)
+    alerts_ep = UsWaWsdotAlertsEventProducer(producer, kafka_topic)
+    cameras_ep = UsWaWsdotCamerasEventProducer(producer, kafka_topic)
+    bridgeclearances_ep = UsWaWsdotBridgeclearancesEventProducer(producer, kafka_topic)
+    ferryterminals_ep = UsWaWsdotFerryterminalsEventProducer(producer, kafka_topic)
     api = WSDOTApi(access_code)
 
     logging.info("Starting WSDOT feed to Kafka topic %s", kafka_topic)
@@ -530,24 +823,36 @@ def feed(args):
         except Exception as e:
             logging.error("Error fetching mountain passes: %s", e)
 
-        # --- Weather ---
+        # --- Weather (current readings + synthesized station reference) ---
         try:
+            weather = api.fetch_weather_information()
+        except Exception as e:
+            logging.error("Error fetching weather information: %s", e)
+            weather = None
+
+        if weather is not None:
             if emit_reference:
-                stations = api.fetch_weather_stations()
+                # The legacy WeatherStations endpoint was decommissioned, so the
+                # WeatherStation reference events are synthesized from the
+                # current-readings payload, deduplicated by StationID. This keeps
+                # the {station_id} key aligned with the WeatherReading events.
+                seen_stations: Dict[str, Dict[str, Any]] = {}
+                for raw in weather:
+                    sid = str(raw.get("StationID", ""))
+                    if sid and sid not in seen_stations:
+                        seen_stations[sid] = raw
                 c = _emit_batch(producer, lambda raw: weather_ep.send_us_wa_wsdot_weather_weather_station(
-                    _feedurl=FEED_URL, _station_id=str(raw.get("StationCode", "")),
-                    data=WSDOTApi.parse_weather_station(raw), flush_producer=False), stations, "weather station")
+                    _feedurl=FEED_URL, _station_id=str(raw.get("StationID", "")),
+                    data=WSDOTApi.parse_weather_station(raw), flush_producer=False),
+                    list(seen_stations.values()), "weather station")
                 total += c
                 logging.info("Sent %d weather stations", c)
 
-            weather = api.fetch_weather_information()
             c = _emit_batch(producer, lambda raw: weather_ep.send_us_wa_wsdot_weather_weather_reading(
                 _feedurl=FEED_URL, _station_id=str(raw.get("StationID", "")),
                 data=WSDOTApi.parse_weather_reading(raw), flush_producer=False), weather, "weather reading")
             total += c
             logging.info("Sent %d weather readings", c)
-        except Exception as e:
-            logging.error("Error fetching weather: %s", e)
 
         # --- Toll Rates ---
         try:
@@ -594,6 +899,81 @@ def feed(args):
             logging.info("Sent %d vessel locations", c)
         except Exception as e:
             logging.error("Error fetching vessel locations: %s", e)
+
+        # --- Road Weather (Scanweb RWIS): station reference + telemetry reading ---
+        try:
+            road_weather = api.fetch_road_weather()
+        except Exception as e:
+            logging.error("Error fetching road weather: %s", e)
+            road_weather = None
+
+        if road_weather is not None:
+            if emit_reference:
+                # Deduplicate station reference by the resolved station id so
+                # the {station_id} key aligns with the reading events.
+                seen_rw: Dict[str, Dict[str, Any]] = {}
+                for raw in road_weather:
+                    sid = WSDOTApi._road_weather_station_id(raw)
+                    if sid and sid not in seen_rw:
+                        seen_rw[sid] = raw
+                c = _emit_batch(producer, lambda raw: roadweather_ep.send_us_wa_wsdot_roadweather_road_weather_station(
+                    _feedurl=FEED_URL, _station_id=WSDOTApi._road_weather_station_id(raw),
+                    data=WSDOTApi.parse_road_weather_station(raw), flush_producer=False),
+                    list(seen_rw.values()), "road weather station")
+                total += c
+                logging.info("Sent %d road weather stations", c)
+
+            c = _emit_batch(producer, lambda raw: roadweather_ep.send_us_wa_wsdot_roadweather_road_weather_reading(
+                _feedurl=FEED_URL, _station_id=WSDOTApi._road_weather_station_id(raw),
+                data=WSDOTApi.parse_road_weather_reading(raw), flush_producer=False), road_weather, "road weather reading")
+            total += c
+            logging.info("Sent %d road weather readings", c)
+
+        # --- Highway Alerts (telemetry) ---
+        try:
+            alerts = api.fetch_highway_alerts()
+            c = _emit_batch(producer, lambda raw: alerts_ep.send_us_wa_wsdot_alerts_highway_alert(
+                _feedurl=FEED_URL, _alert_id=str(raw.get("AlertID", "")),
+                data=WSDOTApi.parse_highway_alert(raw), flush_producer=False), alerts, "highway alert")
+            total += c
+            logging.info("Sent %d highway alerts", c)
+        except Exception as e:
+            logging.error("Error fetching highway alerts: %s", e)
+
+        # --- Highway Cameras (reference / claim-check; refreshed periodically) ---
+        try:
+            if emit_reference or is_initial:
+                cameras = api.fetch_highway_cameras()
+                c = _emit_batch(producer, lambda raw: cameras_ep.send_us_wa_wsdot_cameras_highway_camera(
+                    _feedurl=FEED_URL, _camera_id=str(raw.get("CameraID", "")),
+                    data=WSDOTApi.parse_highway_camera(raw), flush_producer=False), cameras, "highway camera")
+                total += c
+                logging.info("Sent %d highway cameras", c)
+        except Exception as e:
+            logging.error("Error fetching highway cameras: %s", e)
+
+        # --- Bridge Clearances (reference; refreshed periodically) ---
+        try:
+            if emit_reference or is_initial:
+                clearances = api.fetch_bridge_clearances()
+                c = _emit_batch(producer, lambda raw: bridgeclearances_ep.send_us_wa_wsdot_bridgeclearances_bridge_clearance(
+                    _feedurl=FEED_URL, _crossing_location_id=str(raw.get("CrossingLocationId", "")),
+                    data=WSDOTApi.parse_bridge_clearance(raw), flush_producer=False), clearances, "bridge clearance")
+                total += c
+                logging.info("Sent %d bridge clearances", c)
+        except Exception as e:
+            logging.error("Error fetching bridge clearances: %s", e)
+
+        # --- Ferry Terminal Sailing Space (telemetry) ---
+        try:
+            terminals = api.fetch_terminal_sailing_space()
+            c = _emit_batch(producer, lambda raw: ferryterminals_ep.send_us_wa_wsdot_ferryterminals_terminal_sailing_space(
+                _feedurl=FEED_URL, _terminal_id=str(raw.get("TerminalID", "")),
+                data=WSDOTApi.parse_terminal_sailing_space(raw), flush_producer=False), terminals, "terminal sailing space")
+            total += c
+            logging.info("Sent %d terminal sailing spaces", c)
+        except Exception as e:
+            logging.error("Error fetching terminal sailing space: %s", e)
 
         return total
 

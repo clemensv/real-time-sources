@@ -11,6 +11,7 @@ from wsdot.wsdot import (
     WSDOTApi,
     _parse_connection_string,
     _parse_wcf_date,
+    _normalize_dt,
     _FLOW_READING_MAP,
     _emit_batch,
 )
@@ -350,7 +351,7 @@ SAMPLE_MOUNTAIN_PASS = {
 }
 
 SAMPLE_WEATHER_STATION = {
-    "StationCode": 504,
+    "StationID": 504,
     "StationName": "S 144th St on SB I-5 at mp 155.32",
     "Latitude": 47.458,
     "Longitude": -122.267,
@@ -457,6 +458,162 @@ SAMPLE_VESSEL_LOCATION = {
     "EtaBasis": "Vessel Chelan departed Anacortes going to Friday Harbor",
     "OpRouteAbbrev": ["ana-sj"],
     "TimeStamp": "/Date(1617236000000)/",
+}
+
+
+# --- New families (Scanweb road weather, alerts, cameras, bridge clearances,
+#     ferry terminal sailing space). Shapes mirror saved upstream probes. ---
+
+SAMPLE_ROAD_WEATHER = {
+    "StationId": "1909",
+    "StationName": "I-90 Snoqualmie Pass",
+    "Latitude": 47.392,
+    "Longitude": -121.401,
+    "Elevation": 921,
+    "ReadingTime": "2026-06-11T03:45:00",
+    "AirTemperature": 8.8,
+    "RelativeHumidty": 72,
+    "AverageWindSpeed": 3.2,
+    "AverageWindDirection": 210,
+    "WindGust": 6.1,
+    "Visibility": 1609,
+    "PrecipitationIntensity": None,
+    "PrecipitationType": None,
+    "PrecipitationPast1Hour": 0.0,
+    "PrecipitationPast3Hours": 0.5,
+    "PrecipitationPast6Hours": 1.2,
+    "PrecipitationPast12Hours": 2.4,
+    "PrecipitationPast24Hours": 5.0,
+    "PrecipitationAccumulation": None,
+    "BarometricPressure": 905.0,
+    "SnowDepth": None,
+    "SurfaceMeasurements": [
+        {"SensorId": 1, "SurfaceTemperature": 8.8, "RoadFreezingTemperature": None, "RoadSurfaceCondition": 4},
+    ],
+    "SubSurfaceMeasurements": [
+        {"SensorId": 1, "SubSurfaceTemperature": 9.5},
+    ],
+}
+
+# Scanweb station that reports a blank id (whitespace) -> bridge falls back to name.
+SAMPLE_ROAD_WEATHER_BLANK_ID = {
+    **SAMPLE_ROAD_WEATHER,
+    "StationId": "          ",
+    "StationName": "Lauderdale Junction",
+    "SurfaceMeasurements": [],
+    "SubSurfaceMeasurements": [],
+}
+
+SAMPLE_HIGHWAY_ALERT = {
+    "AlertID": 700526,
+    "County": "King",
+    "Region": "Northwest",
+    "Priority": "High",
+    "EventCategory": "Construction",
+    "EventStatus": "Open",
+    "HeadlineDescription": "Lane closure on I-5",
+    "ExtendedDescription": "Right lane closed for paving.",
+    "StartTime": "2026-06-04T22:25:00+02:00",
+    "EndTime": "2026-06-21T02:30:00+02:00",
+    "LastUpdatedTime": "2026-06-04T22:32:55.12+02:00",
+    "StartRoadwayLocation": {
+        "Description": "I-5 @ MP 165",
+        "Direction": "NB",
+        "RoadName": "I-5",
+        "MilePost": 165.0,
+        "Latitude": 47.59,
+        "Longitude": -122.33,
+    },
+    "EndRoadwayLocation": {
+        "Description": "I-5 @ MP 167",
+        "Direction": "NB",
+        "RoadName": "I-5",
+        "MilePost": 167.0,
+        "Latitude": 47.61,
+        "Longitude": -122.33,
+    },
+}
+
+SAMPLE_HIGHWAY_CAMERA = {
+    "CameraID": 9818,
+    "Title": "Anacortes Airport",
+    "Description": None,
+    "CameraOwner": "WSDOT",
+    "OwnerURL": "https://wsdot.wa.gov",
+    "ImageURL": "https://images.wsdot.wa.gov/airports/anacortes.jpg",
+    "ImageWidth": 640,
+    "ImageHeight": 480,
+    "IsActive": True,
+    "Region": "Northwest",
+    "SortOrder": 100,
+    "DisplayLatitude": 48.499,
+    "DisplayLongitude": -122.662,
+    "CameraLocation": {
+        "Description": "SR 20 @ Anacortes",
+        "Direction": "B",
+        "RoadName": "SR 20",
+        "MilePost": 47.0,
+        "Latitude": 48.499,
+        "Longitude": -122.662,
+    },
+}
+
+SAMPLE_BRIDGE_CLEARANCE = {
+    "CrossingLocationId": 9603,
+    "BridgeNumber": "5/123",
+    "StateRouteID": None,
+    "StateStructureId": "0012345A",
+    "CrossingDescription": "I-5 OVER MAIN ST",
+    "InventoryDirection": None,
+    "SRMP": 165.2,
+    "SRMPAheadBackIndicator": None,
+    "Latitude": 47.59,
+    "Longitude": -122.33,
+    "VerticalClearanceMaximumInches": 195,
+    "VerticalClearanceMaximumFeetInch": "16 ft 3 in",
+    "VerticalClearanceMinimumInches": 189,
+    "VerticalClearanceMinimumFeetInch": "15 ft 9 in",
+    "ControlEntityGuid": "11111111-1111-1111-1111-111111111111",
+    "CrossingRecordGuid": "22222222-2222-2222-2222-222222222222",
+    "LocationGuid": "33333333-3333-3333-3333-333333333333",
+    "RouteDate": "2016-12-31T09:00:00+01:00",
+    "APILastUpdate": "2026-05-04T12:30:02.617+02:00",
+}
+
+SAMPLE_TERMINAL_SAILING_SPACE = {
+    "TerminalID": 1,
+    "TerminalSubjectID": 1,
+    "RegionID": 1,
+    "TerminalName": "Anacortes",
+    "TerminalAbbrev": "ANA",
+    "SortSeq": 10,
+    "IsNoFareCollected": None,
+    "NoFareCollectedMsg": None,
+    "DepartingSpaces": [
+        {
+            "Departure": "2026-06-11T13:05:00+02:00",
+            "IsCancelled": False,
+            "VesselID": 7,
+            "VesselName": "Chelan",
+            "MaxSpaceCount": 144,
+            "SpaceForArrivalTerminals": [
+                {
+                    "TerminalID": 10,
+                    "TerminalName": "Friday Harbor",
+                    "VesselID": 7,
+                    "VesselName": "Chelan",
+                    "DisplayReservableSpace": True,
+                    "ReservableSpaceCount": None,
+                    "ReservableSpaceHexColor": "#FF0000",
+                    "DisplayDriveUpSpace": True,
+                    "DriveUpSpaceCount": 42,
+                    "DriveUpSpaceHexColor": "#00FF00",
+                    "MaxSpaceCount": 144,
+                    "ArrivalTerminalIDs": [10, 15],
+                },
+            ],
+        },
+    ],
 }
 
 
@@ -738,6 +895,195 @@ class TestParseVesselLocation:
 
 
 # ---------------------------------------------------------------------------
+# Datetime normalization (ISO-with-offset and WCF)
+# ---------------------------------------------------------------------------
+
+class TestNormalizeDt:
+    def test_iso_with_offset_converted_to_utc(self):
+        assert _normalize_dt("2026-06-04T22:25:00+02:00") == "2026-06-04T20:25:00+00:00"
+
+    def test_iso_fractional_offset(self):
+        assert _normalize_dt("2026-06-04T22:32:55.12+02:00") == "2026-06-04T20:32:55.120000+00:00"
+
+    def test_naive_iso_assumed_utc(self):
+        assert _normalize_dt("2026-06-11T03:45:00") == "2026-06-11T03:45:00+00:00"
+
+    def test_wcf_date(self):
+        assert _normalize_dt("/Date(1617235200000)/") == "2021-04-01T00:00:00+00:00"
+
+    def test_empty_is_none(self):
+        assert _normalize_dt("") is None
+        assert _normalize_dt(None) is None
+
+    def test_unparseable_passthrough(self):
+        assert _normalize_dt("not a date") == "not a date"
+
+
+# ---------------------------------------------------------------------------
+# Road weather (Scanweb) parsing
+# ---------------------------------------------------------------------------
+
+class TestParseRoadWeather:
+    def test_station_full_record(self):
+        s = WSDOTApi.parse_road_weather_station(SAMPLE_ROAD_WEATHER)
+        assert s.station_id == "1909"
+        assert s.station_name == "I-90 Snoqualmie Pass"
+        assert s.elevation == 921
+        assert s.latitude == pytest.approx(47.392)
+
+    def test_station_blank_id_falls_back_to_name(self):
+        s = WSDOTApi.parse_road_weather_station(SAMPLE_ROAD_WEATHER_BLANK_ID)
+        assert s.station_id == "Lauderdale Junction"
+
+    def test_reading_full_record(self):
+        r = WSDOTApi.parse_road_weather_reading(SAMPLE_ROAD_WEATHER)
+        assert r.station_id == "1909"
+        assert r.air_temperature == pytest.approx(8.8)
+        assert r.relative_humidity == 72
+        assert len(r.surface_measurements) == 1
+        assert r.surface_measurements[0].sensor_id == 1
+        assert r.surface_measurements[0].road_surface_condition == 4
+        assert len(r.sub_surface_measurements) == 1
+        assert r.sub_surface_measurements[0].sub_surface_temperature == pytest.approx(9.5)
+
+    def test_reading_preserves_local_reading_time(self):
+        # ReadingTime has no offset and is preserved verbatim (station local clock).
+        r = WSDOTApi.parse_road_weather_reading(SAMPLE_ROAD_WEATHER)
+        assert r.reading_time == "2026-06-11T03:45:00"
+
+    def test_reading_blank_id_falls_back_to_name(self):
+        r = WSDOTApi.parse_road_weather_reading(SAMPLE_ROAD_WEATHER_BLANK_ID)
+        assert r.station_id == "Lauderdale Junction"
+        assert r.surface_measurements == []
+
+    def test_reading_serialization(self):
+        r = WSDOTApi.parse_road_weather_reading(SAMPLE_ROAD_WEATHER)
+        data = json.loads(r.to_json())
+        assert data["station_id"] == "1909"
+        assert data["surface_measurements"][0]["sensor_id"] == 1
+        assert data["precipitation_intensity"] is None
+
+
+# ---------------------------------------------------------------------------
+# Highway alert parsing
+# ---------------------------------------------------------------------------
+
+class TestParseHighwayAlert:
+    def test_full_record(self):
+        a = WSDOTApi.parse_highway_alert(SAMPLE_HIGHWAY_ALERT)
+        assert a.alert_id == "700526"
+        assert a.county == "King"
+        assert a.event_category == "Construction"
+        assert a.start_road_name == "I-5"
+        assert a.start_milepost == pytest.approx(165.0)
+        assert a.end_milepost == pytest.approx(167.0)
+
+    def test_times_normalized_to_utc(self):
+        a = WSDOTApi.parse_highway_alert(SAMPLE_HIGHWAY_ALERT)
+        assert a.start_time == "2026-06-04T20:25:00+00:00"
+        assert a.end_time == "2026-06-21T00:30:00+00:00"
+
+    def test_alert_id_is_string(self):
+        a = WSDOTApi.parse_highway_alert(SAMPLE_HIGHWAY_ALERT)
+        assert isinstance(a.alert_id, str)
+
+    def test_serialization(self):
+        a = WSDOTApi.parse_highway_alert(SAMPLE_HIGHWAY_ALERT)
+        data = json.loads(a.to_json())
+        assert data["alert_id"] == "700526"
+        assert data["start_latitude"] == pytest.approx(47.59)
+
+
+# ---------------------------------------------------------------------------
+# Highway camera parsing
+# ---------------------------------------------------------------------------
+
+class TestParseHighwayCamera:
+    def test_full_record(self):
+        c = WSDOTApi.parse_highway_camera(SAMPLE_HIGHWAY_CAMERA)
+        assert c.camera_id == "9818"
+        assert c.image_url == "https://images.wsdot.wa.gov/airports/anacortes.jpg"
+        assert c.is_active is True
+        assert c.location_road_name == "SR 20"
+        assert c.location_milepost == pytest.approx(47.0)
+
+    def test_camera_id_is_string(self):
+        c = WSDOTApi.parse_highway_camera(SAMPLE_HIGHWAY_CAMERA)
+        assert isinstance(c.camera_id, str)
+
+    def test_serialization(self):
+        c = WSDOTApi.parse_highway_camera(SAMPLE_HIGHWAY_CAMERA)
+        data = json.loads(c.to_json())
+        assert data["camera_id"] == "9818"
+        assert data["image_url"].endswith("anacortes.jpg")
+
+
+# ---------------------------------------------------------------------------
+# Bridge clearance parsing
+# ---------------------------------------------------------------------------
+
+class TestParseBridgeClearance:
+    def test_full_record(self):
+        b = WSDOTApi.parse_bridge_clearance(SAMPLE_BRIDGE_CLEARANCE)
+        assert b.crossing_location_id == "9603"
+        assert b.bridge_number == "5/123"
+        assert b.state_route_id is None
+        assert b.vertical_clearance_maximum_inches == 195
+        assert b.vertical_clearance_minimum_feet_inch == "15 ft 9 in"
+
+    def test_crossing_location_id_is_string(self):
+        b = WSDOTApi.parse_bridge_clearance(SAMPLE_BRIDGE_CLEARANCE)
+        assert isinstance(b.crossing_location_id, str)
+
+    def test_dates_normalized(self):
+        b = WSDOTApi.parse_bridge_clearance(SAMPLE_BRIDGE_CLEARANCE)
+        assert b.route_date == "2016-12-31T08:00:00+00:00"
+        assert b.api_last_update == "2026-05-04T10:30:02.617000+00:00"
+
+    def test_serialization(self):
+        b = WSDOTApi.parse_bridge_clearance(SAMPLE_BRIDGE_CLEARANCE)
+        data = json.loads(b.to_json())
+        assert data["crossing_location_id"] == "9603"
+        assert data["state_route_id"] is None
+
+
+# ---------------------------------------------------------------------------
+# Ferry terminal sailing space parsing
+# ---------------------------------------------------------------------------
+
+class TestParseTerminalSailingSpace:
+    def test_full_record(self):
+        t = WSDOTApi.parse_terminal_sailing_space(SAMPLE_TERMINAL_SAILING_SPACE)
+        assert t.terminal_id == "1"
+        assert t.terminal_name == "Anacortes"
+        assert t.is_no_fare_collected is None
+        assert len(t.departing_spaces) == 1
+        ds = t.departing_spaces[0]
+        assert ds.is_cancelled is False
+        assert ds.vessel_name == "Chelan"
+        assert len(ds.space_for_arrival_terminals) == 1
+        sa = ds.space_for_arrival_terminals[0]
+        assert sa.terminal_id == 10
+        assert sa.reservable_space_count is None
+        assert sa.drive_up_space_count == 42
+        assert sa.arrival_terminal_ids == [10, 15]
+
+    def test_departure_normalized_to_utc(self):
+        t = WSDOTApi.parse_terminal_sailing_space(SAMPLE_TERMINAL_SAILING_SPACE)
+        assert t.departing_spaces[0].departure == "2026-06-11T11:05:00+00:00"
+
+    def test_terminal_id_is_string(self):
+        t = WSDOTApi.parse_terminal_sailing_space(SAMPLE_TERMINAL_SAILING_SPACE)
+        assert isinstance(t.terminal_id, str)
+
+    def test_serialization(self):
+        t = WSDOTApi.parse_terminal_sailing_space(SAMPLE_TERMINAL_SAILING_SPACE)
+        data = json.loads(t.to_json())
+        assert data["terminal_id"] == "1"
+        assert data["departing_spaces"][0]["space_for_arrival_terminals"][0]["arrival_terminal_ids"] == [10, 15]
+
+
+# ---------------------------------------------------------------------------
 # API client extended methods
 # ---------------------------------------------------------------------------
 
@@ -790,6 +1136,46 @@ class TestWSDOTApiExtended:
         assert len(result) == 1
         call_url = mock_get.call_args[0][0]
         assert "ferries" in call_url
+        assert mock_get.call_args[1]["params"]["apiaccesscode"] == "test-key"
+
+    def test_fetch_road_weather(self):
+        api = WSDOTApi(access_code="test-key")
+        result, mock_get = self._mock_api_call(api, "fetch_road_weather", [SAMPLE_ROAD_WEATHER])
+        assert len(result) == 1
+        call_url = mock_get.call_args[0][0]
+        assert "Scanweb" in call_url
+        assert mock_get.call_args[1]["params"]["AccessCode"] == "test-key"
+
+    def test_fetch_highway_alerts(self):
+        api = WSDOTApi(access_code="test-key")
+        result, mock_get = self._mock_api_call(api, "fetch_highway_alerts", [SAMPLE_HIGHWAY_ALERT])
+        assert len(result) == 1
+        call_url = mock_get.call_args[0][0]
+        assert "HighwayAlerts" in call_url
+        assert "GetAlertsAsJson" in call_url
+
+    def test_fetch_highway_cameras(self):
+        api = WSDOTApi(access_code="test-key")
+        result, mock_get = self._mock_api_call(api, "fetch_highway_cameras", [SAMPLE_HIGHWAY_CAMERA])
+        assert len(result) == 1
+        call_url = mock_get.call_args[0][0]
+        assert "HighwayCameras" in call_url
+        assert "GetCamerasAsJson" in call_url
+
+    def test_fetch_bridge_clearances(self):
+        api = WSDOTApi(access_code="test-key")
+        result, mock_get = self._mock_api_call(api, "fetch_bridge_clearances", [SAMPLE_BRIDGE_CLEARANCE])
+        assert len(result) == 1
+        call_url = mock_get.call_args[0][0]
+        assert "Bridges/ClearanceREST.svc/GetClearancesAsJson" in call_url
+        assert mock_get.call_args[1]["params"]["AccessCode"] == "test-key"
+
+    def test_fetch_terminal_sailing_space(self):
+        api = WSDOTApi(access_code="test-key")
+        result, mock_get = self._mock_api_call(api, "fetch_terminal_sailing_space", [SAMPLE_TERMINAL_SAILING_SPACE])
+        assert len(result) == 1
+        call_url = mock_get.call_args[0][0]
+        assert "terminals/rest/terminalsailingspace" in call_url
         assert mock_get.call_args[1]["params"]["apiaccesscode"] == "test-key"
 
 
@@ -859,6 +1245,44 @@ class TestFeedProducerRouting:
             def send_us_wa_wsdot_ferries_vessel_location(self, **_kwargs):
                 sent.append("vessel_location")
 
+        class FakeRoadweatherProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_roadweather_road_weather_station(self, **_kwargs):
+                sent.append("road_weather_station")
+
+            def send_us_wa_wsdot_roadweather_road_weather_reading(self, **_kwargs):
+                sent.append("road_weather_reading")
+
+        class FakeAlertsProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_alerts_highway_alert(self, **_kwargs):
+                sent.append("highway_alert")
+
+        class FakeCamerasProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_cameras_highway_camera(self, **_kwargs):
+                sent.append("highway_camera")
+
+        class FakeBridgeclearancesProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_bridgeclearances_bridge_clearance(self, **_kwargs):
+                sent.append("bridge_clearance")
+
+        class FakeFerryterminalsProducer:
+            def __init__(self, *_args, **_kwargs):
+                pass
+
+            def send_us_wa_wsdot_ferryterminals_terminal_sailing_space(self, **_kwargs):
+                sent.append("terminal_sailing_space")
+
         fake_kafka_producer = MagicMock()
 
         args = Namespace(
@@ -870,23 +1294,34 @@ class TestFeedProducerRouting:
 
         with patch("wsdot.wsdot._parse_connection_string", return_value=({"bootstrap.servers": "localhost:9092"}, "test-topic")), \
              patch("wsdot.wsdot.Producer", return_value=fake_kafka_producer), \
-             patch("wsdot.wsdot.UsWaWsdotTrafficEventProducer", FakeTrafficProducer), \
-             patch("wsdot.wsdot.UsWaWsdotTraveltimesEventProducer", FakeTraveltimesProducer), \
-             patch("wsdot.wsdot.UsWaWsdotMountainpassEventProducer", FakeMountainpassProducer), \
-             patch("wsdot.wsdot.UsWaWsdotWeatherEventProducer", FakeWeatherProducer), \
-             patch("wsdot.wsdot.UsWaWsdotTollsEventProducer", FakeTollsProducer), \
-             patch("wsdot.wsdot.UsWaWsdotCvrestrictionsEventProducer", FakeCvRestrictionsProducer), \
-             patch("wsdot.wsdot.UsWaWsdotBorderEventProducer", FakeBorderProducer), \
-             patch("wsdot.wsdot.UsWaWsdotFerriesEventProducer", FakeFerriesProducer), \
-             patch.object(WSDOTApi, "fetch_traffic_flows", return_value=[SAMPLE_FLOW_DATA]), \
-             patch.object(WSDOTApi, "fetch_travel_times", return_value=[SAMPLE_TRAVEL_TIME]), \
-             patch.object(WSDOTApi, "fetch_mountain_pass_conditions", return_value=[SAMPLE_MOUNTAIN_PASS]), \
-             patch.object(WSDOTApi, "fetch_weather_stations", return_value=[SAMPLE_WEATHER_STATION]), \
-             patch.object(WSDOTApi, "fetch_weather_information", return_value=[SAMPLE_WEATHER_READING]), \
-             patch.object(WSDOTApi, "fetch_toll_rates", return_value=[SAMPLE_TOLL_RATE]), \
-             patch.object(WSDOTApi, "fetch_cv_restrictions", return_value=[SAMPLE_CV_RESTRICTION]), \
-             patch.object(WSDOTApi, "fetch_border_crossings", return_value=[SAMPLE_BORDER_CROSSING]), \
-             patch.object(WSDOTApi, "fetch_vessel_locations", return_value=[SAMPLE_VESSEL_LOCATION]), \
+             patch.multiple("wsdot.wsdot",
+                            UsWaWsdotTrafficEventProducer=FakeTrafficProducer,
+                            UsWaWsdotTraveltimesEventProducer=FakeTraveltimesProducer,
+                            UsWaWsdotMountainpassEventProducer=FakeMountainpassProducer,
+                            UsWaWsdotWeatherEventProducer=FakeWeatherProducer,
+                            UsWaWsdotTollsEventProducer=FakeTollsProducer,
+                            UsWaWsdotCvrestrictionsEventProducer=FakeCvRestrictionsProducer,
+                            UsWaWsdotBorderEventProducer=FakeBorderProducer,
+                            UsWaWsdotFerriesEventProducer=FakeFerriesProducer,
+                            UsWaWsdotRoadweatherEventProducer=FakeRoadweatherProducer,
+                            UsWaWsdotAlertsEventProducer=FakeAlertsProducer,
+                            UsWaWsdotCamerasEventProducer=FakeCamerasProducer,
+                            UsWaWsdotBridgeclearancesEventProducer=FakeBridgeclearancesProducer,
+                            UsWaWsdotFerryterminalsEventProducer=FakeFerryterminalsProducer), \
+             patch.multiple(WSDOTApi,
+                            fetch_traffic_flows=MagicMock(return_value=[SAMPLE_FLOW_DATA]),
+                            fetch_travel_times=MagicMock(return_value=[SAMPLE_TRAVEL_TIME]),
+                            fetch_mountain_pass_conditions=MagicMock(return_value=[SAMPLE_MOUNTAIN_PASS]),
+                            fetch_weather_information=MagicMock(return_value=[SAMPLE_WEATHER_READING]),
+                            fetch_toll_rates=MagicMock(return_value=[SAMPLE_TOLL_RATE]),
+                            fetch_cv_restrictions=MagicMock(return_value=[SAMPLE_CV_RESTRICTION]),
+                            fetch_border_crossings=MagicMock(return_value=[SAMPLE_BORDER_CROSSING]),
+                            fetch_vessel_locations=MagicMock(return_value=[SAMPLE_VESSEL_LOCATION]),
+                            fetch_road_weather=MagicMock(return_value=[SAMPLE_ROAD_WEATHER]),
+                            fetch_highway_alerts=MagicMock(return_value=[SAMPLE_HIGHWAY_ALERT]),
+                            fetch_highway_cameras=MagicMock(return_value=[SAMPLE_HIGHWAY_CAMERA]),
+                            fetch_bridge_clearances=MagicMock(return_value=[SAMPLE_BRIDGE_CLEARANCE]),
+                            fetch_terminal_sailing_space=MagicMock(return_value=[SAMPLE_TERMINAL_SAILING_SPACE])), \
              patch("wsdot.wsdot.time.sleep", side_effect=KeyboardInterrupt):
             feed(args)
 
@@ -901,6 +1336,12 @@ class TestFeedProducerRouting:
             "cv_restriction",
             "border_crossing",
             "vessel_location",
+            "road_weather_station",
+            "road_weather_reading",
+            "highway_alert",
+            "highway_camera",
+            "bridge_clearance",
+            "terminal_sailing_space",
         ]
 
 
@@ -980,23 +1421,34 @@ class TestPartialChannelFailure:
         with patch("wsdot.wsdot._parse_connection_string",
                    return_value=({"bootstrap.servers": "localhost:9092"}, "test-topic")), \
              patch("wsdot.wsdot.Producer", return_value=fake_kafka), \
-             patch("wsdot.wsdot.UsWaWsdotTrafficEventProducer", FakeTrafficEP), \
-             patch("wsdot.wsdot.UsWaWsdotTraveltimesEventProducer", FakeTraveltimesEP), \
-             patch("wsdot.wsdot.UsWaWsdotMountainpassEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotWeatherEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotTollsEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotCvrestrictionsEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotBorderEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotFerriesEventProducer", _NoOpEP), \
-             patch.object(WSDOTApi, "fetch_traffic_flows", side_effect=RuntimeError("API down")), \
-             patch.object(WSDOTApi, "fetch_travel_times", return_value=[SAMPLE_TRAVEL_TIME]), \
-             patch.object(WSDOTApi, "fetch_mountain_pass_conditions", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_weather_stations", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_weather_information", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_toll_rates", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_cv_restrictions", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_border_crossings", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_vessel_locations", return_value=[]), \
+             patch.multiple("wsdot.wsdot",
+                            UsWaWsdotTrafficEventProducer=FakeTrafficEP,
+                            UsWaWsdotTraveltimesEventProducer=FakeTraveltimesEP,
+                            UsWaWsdotMountainpassEventProducer=_NoOpEP,
+                            UsWaWsdotWeatherEventProducer=_NoOpEP,
+                            UsWaWsdotTollsEventProducer=_NoOpEP,
+                            UsWaWsdotCvrestrictionsEventProducer=_NoOpEP,
+                            UsWaWsdotBorderEventProducer=_NoOpEP,
+                            UsWaWsdotFerriesEventProducer=_NoOpEP,
+                            UsWaWsdotRoadweatherEventProducer=_NoOpEP,
+                            UsWaWsdotAlertsEventProducer=_NoOpEP,
+                            UsWaWsdotCamerasEventProducer=_NoOpEP,
+                            UsWaWsdotBridgeclearancesEventProducer=_NoOpEP,
+                            UsWaWsdotFerryterminalsEventProducer=_NoOpEP), \
+             patch.multiple(WSDOTApi,
+                            fetch_traffic_flows=MagicMock(side_effect=RuntimeError("API down")),
+                            fetch_travel_times=MagicMock(return_value=[SAMPLE_TRAVEL_TIME]),
+                            fetch_mountain_pass_conditions=MagicMock(return_value=[]),
+                            fetch_weather_information=MagicMock(return_value=[]),
+                            fetch_toll_rates=MagicMock(return_value=[]),
+                            fetch_cv_restrictions=MagicMock(return_value=[]),
+                            fetch_border_crossings=MagicMock(return_value=[]),
+                            fetch_vessel_locations=MagicMock(return_value=[]),
+                            fetch_road_weather=MagicMock(return_value=[]),
+                            fetch_highway_alerts=MagicMock(return_value=[]),
+                            fetch_highway_cameras=MagicMock(return_value=[]),
+                            fetch_bridge_clearances=MagicMock(return_value=[]),
+                            fetch_terminal_sailing_space=MagicMock(return_value=[])), \
              patch("wsdot.wsdot.time.sleep", side_effect=KeyboardInterrupt):
             feed(args)
 
@@ -1046,23 +1498,34 @@ class TestReferenceRefreshInterval:
         with patch("wsdot.wsdot._parse_connection_string",
                    return_value=({"bootstrap.servers": "localhost:9092"}, "test-topic")), \
              patch("wsdot.wsdot.Producer", return_value=fake_kafka), \
-             patch("wsdot.wsdot.UsWaWsdotTrafficEventProducer", FakeTrafficEP), \
-             patch("wsdot.wsdot.UsWaWsdotTraveltimesEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotMountainpassEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotWeatherEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotTollsEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotCvrestrictionsEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotBorderEventProducer", _NoOpEP), \
-             patch("wsdot.wsdot.UsWaWsdotFerriesEventProducer", _NoOpEP), \
-             patch.object(WSDOTApi, "fetch_traffic_flows", return_value=[SAMPLE_FLOW_DATA]), \
-             patch.object(WSDOTApi, "fetch_travel_times", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_mountain_pass_conditions", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_weather_stations", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_weather_information", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_toll_rates", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_cv_restrictions", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_border_crossings", return_value=[]), \
-             patch.object(WSDOTApi, "fetch_vessel_locations", return_value=[]), \
+             patch.multiple("wsdot.wsdot",
+                            UsWaWsdotTrafficEventProducer=FakeTrafficEP,
+                            UsWaWsdotTraveltimesEventProducer=_NoOpEP,
+                            UsWaWsdotMountainpassEventProducer=_NoOpEP,
+                            UsWaWsdotWeatherEventProducer=_NoOpEP,
+                            UsWaWsdotTollsEventProducer=_NoOpEP,
+                            UsWaWsdotCvrestrictionsEventProducer=_NoOpEP,
+                            UsWaWsdotBorderEventProducer=_NoOpEP,
+                            UsWaWsdotFerriesEventProducer=_NoOpEP,
+                            UsWaWsdotRoadweatherEventProducer=_NoOpEP,
+                            UsWaWsdotAlertsEventProducer=_NoOpEP,
+                            UsWaWsdotCamerasEventProducer=_NoOpEP,
+                            UsWaWsdotBridgeclearancesEventProducer=_NoOpEP,
+                            UsWaWsdotFerryterminalsEventProducer=_NoOpEP), \
+             patch.multiple(WSDOTApi,
+                            fetch_traffic_flows=MagicMock(return_value=[SAMPLE_FLOW_DATA]),
+                            fetch_travel_times=MagicMock(return_value=[]),
+                            fetch_mountain_pass_conditions=MagicMock(return_value=[]),
+                            fetch_weather_information=MagicMock(return_value=[]),
+                            fetch_toll_rates=MagicMock(return_value=[]),
+                            fetch_cv_restrictions=MagicMock(return_value=[]),
+                            fetch_border_crossings=MagicMock(return_value=[]),
+                            fetch_vessel_locations=MagicMock(return_value=[]),
+                            fetch_road_weather=MagicMock(return_value=[]),
+                            fetch_highway_alerts=MagicMock(return_value=[]),
+                            fetch_highway_cameras=MagicMock(return_value=[]),
+                            fetch_bridge_clearances=MagicMock(return_value=[]),
+                            fetch_terminal_sailing_space=MagicMock(return_value=[])), \
              patch("wsdot.wsdot.time.sleep", side_effect=_fake_sleep):
             feed(args)
 

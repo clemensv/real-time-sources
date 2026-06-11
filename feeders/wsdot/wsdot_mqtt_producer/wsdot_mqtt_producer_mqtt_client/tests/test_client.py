@@ -36,6 +36,18 @@ from wsdot_mqtt_producer_data import BorderCrossing
 from test_bordercrossing import Test_BorderCrossing
 from wsdot_mqtt_producer_data import VesselLocation
 from test_vessellocation import Test_VesselLocation
+from wsdot_mqtt_producer_data import RoadWeatherStation
+from test_roadweatherstation import Test_RoadWeatherStation
+from wsdot_mqtt_producer_data import RoadWeatherReading
+from test_roadweatherreading import Test_RoadWeatherReading
+from wsdot_mqtt_producer_data import HighwayAlert
+from test_highwayalert import Test_HighwayAlert
+from wsdot_mqtt_producer_data import HighwayCamera
+from test_highwaycamera import Test_HighwayCamera
+from wsdot_mqtt_producer_data import BridgeClearance
+from test_bridgeclearance import Test_BridgeClearance
+from wsdot_mqtt_producer_data import TerminalSailingSpace
+from test_terminalsailingspace import Test_TerminalSailingSpace
 from wsdot_mqtt_producer_mqtt_client import UsWaWsdotTrafficMqttMqttClient
 from wsdot_mqtt_producer_mqtt_client import UsWaWsdotTraveltimesMqttMqttClient
 from wsdot_mqtt_producer_mqtt_client import UsWaWsdotMountainpassMqttMqttClient
@@ -44,6 +56,11 @@ from wsdot_mqtt_producer_mqtt_client import UsWaWsdotTollsMqttMqttClient
 from wsdot_mqtt_producer_mqtt_client import UsWaWsdotCvrestrictionsMqttMqttClient
 from wsdot_mqtt_producer_mqtt_client import UsWaWsdotBorderMqttMqttClient
 from wsdot_mqtt_producer_mqtt_client import UsWaWsdotFerriesMqttMqttClient
+from wsdot_mqtt_producer_mqtt_client import UsWaWsdotRoadweatherMqttMqttClient
+from wsdot_mqtt_producer_mqtt_client import UsWaWsdotAlertsMqttMqttClient
+from wsdot_mqtt_producer_mqtt_client import UsWaWsdotCamerasMqttMqttClient
+from wsdot_mqtt_producer_mqtt_client import UsWaWsdotBridgeclearancesMqttMqttClient
+from wsdot_mqtt_producer_mqtt_client import UsWaWsdotFerryterminalsMqttMqttClient
 
 @pytest_asyncio.fixture
 async def mosquitto_broker():
@@ -741,6 +758,423 @@ async def test_us_wa_wsdot_ferries_mqtt_us_wa_wsdot_ferries_vessel_location_mqtt
             topic=test_topic,
             feedurl=f"test_feedurl_{i}",
             vessel_id=f"test_vessel_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+
+
+
+
+
+@pytest.mark.asyncio
+async def test_us_wa_wsdot_roadweather_mqtt_us_wa_wsdot_roadweather_road_weather_station_mqtt_py(mosquitto_broker):
+    """Test publishing and receiving us.wa.wsdot.roadweather.RoadWeatherStation.mqtt message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_RoadWeatherStation.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = UsWaWsdotRoadweatherMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = UsWaWsdotRoadweatherMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_us_wa_wsdot_roadweather_road_weather_station_mqtt(mqtt_msg, cloud_event, data: wsdot_mqtt_producer_data.RoadWeatherStation, topic_params: dict):
+        """Handler for us.wa.wsdot.roadweather.RoadWeatherStation.mqtt messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "us.wa.wsdot.roadweather.RoadWeatherStation"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.us_wa_wsdot_roadweather_road_weather_station_mqtt_async = on_us_wa_wsdot_roadweather_road_weather_station_mqtt
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/us_wa_wsdot_roadweather_mqtt/us_wa_wsdot_roadweather_road_weather_station_mqtt"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_us_wa_wsdot_roadweather_road_weather_station_mqtt(
+            topic=test_topic,
+            feedurl=f"test_feedurl_{i}",
+            station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+
+
+@pytest.mark.asyncio
+async def test_us_wa_wsdot_roadweather_mqtt_us_wa_wsdot_roadweather_road_weather_reading_mqtt_py(mosquitto_broker):
+    """Test publishing and receiving us.wa.wsdot.roadweather.RoadWeatherReading.mqtt message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_RoadWeatherReading.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = UsWaWsdotRoadweatherMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = UsWaWsdotRoadweatherMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_us_wa_wsdot_roadweather_road_weather_reading_mqtt(mqtt_msg, cloud_event, data: wsdot_mqtt_producer_data.RoadWeatherReading, topic_params: dict):
+        """Handler for us.wa.wsdot.roadweather.RoadWeatherReading.mqtt messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "us.wa.wsdot.roadweather.RoadWeatherReading"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.us_wa_wsdot_roadweather_road_weather_reading_mqtt_async = on_us_wa_wsdot_roadweather_road_weather_reading_mqtt
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/us_wa_wsdot_roadweather_mqtt/us_wa_wsdot_roadweather_road_weather_reading_mqtt"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_us_wa_wsdot_roadweather_road_weather_reading_mqtt(
+            topic=test_topic,
+            feedurl=f"test_feedurl_{i}",
+            station_id=f"test_station_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+
+
+
+
+
+@pytest.mark.asyncio
+async def test_us_wa_wsdot_alerts_mqtt_us_wa_wsdot_alerts_highway_alert_mqtt_py(mosquitto_broker):
+    """Test publishing and receiving us.wa.wsdot.alerts.HighwayAlert.mqtt message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_HighwayAlert.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = UsWaWsdotAlertsMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = UsWaWsdotAlertsMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_us_wa_wsdot_alerts_highway_alert_mqtt(mqtt_msg, cloud_event, data: wsdot_mqtt_producer_data.HighwayAlert, topic_params: dict):
+        """Handler for us.wa.wsdot.alerts.HighwayAlert.mqtt messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "us.wa.wsdot.alerts.HighwayAlert"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.us_wa_wsdot_alerts_highway_alert_mqtt_async = on_us_wa_wsdot_alerts_highway_alert_mqtt
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/us_wa_wsdot_alerts_mqtt/us_wa_wsdot_alerts_highway_alert_mqtt"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_us_wa_wsdot_alerts_highway_alert_mqtt(
+            topic=test_topic,
+            feedurl=f"test_feedurl_{i}",
+            alert_id=f"test_alert_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+
+
+
+
+
+@pytest.mark.asyncio
+async def test_us_wa_wsdot_cameras_mqtt_us_wa_wsdot_cameras_highway_camera_mqtt_py(mosquitto_broker):
+    """Test publishing and receiving us.wa.wsdot.cameras.HighwayCamera.mqtt message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_HighwayCamera.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = UsWaWsdotCamerasMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = UsWaWsdotCamerasMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_us_wa_wsdot_cameras_highway_camera_mqtt(mqtt_msg, cloud_event, data: wsdot_mqtt_producer_data.HighwayCamera, topic_params: dict):
+        """Handler for us.wa.wsdot.cameras.HighwayCamera.mqtt messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "us.wa.wsdot.cameras.HighwayCamera"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.us_wa_wsdot_cameras_highway_camera_mqtt_async = on_us_wa_wsdot_cameras_highway_camera_mqtt
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/us_wa_wsdot_cameras_mqtt/us_wa_wsdot_cameras_highway_camera_mqtt"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_us_wa_wsdot_cameras_highway_camera_mqtt(
+            topic=test_topic,
+            feedurl=f"test_feedurl_{i}",
+            camera_id=f"test_camera_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+
+
+
+
+
+@pytest.mark.asyncio
+async def test_us_wa_wsdot_bridgeclearances_mqtt_us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_py(mosquitto_broker):
+    """Test publishing and receiving us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_BridgeClearance.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = UsWaWsdotBridgeclearancesMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = UsWaWsdotBridgeclearancesMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt(mqtt_msg, cloud_event, data: wsdot_mqtt_producer_data.BridgeClearance, topic_params: dict):
+        """Handler for us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "us.wa.wsdot.bridgeclearances.BridgeClearance"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_async = on_us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/us_wa_wsdot_bridgeclearances_mqtt/us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt(
+            topic=test_topic,
+            feedurl=f"test_feedurl_{i}",
+            crossing_location_id=f"test_crossing_location_id_{i}",
+            _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
+            data=test_data,
+            content_type="application/json"
+        )
+    
+    # Wait for all 5 messages to be received (with timeout)
+    try:
+        await asyncio.wait_for(received_event.wait(), timeout=10.0)
+    except asyncio.TimeoutError:
+        pytest.fail(f"Did not receive all 5 messages within timeout, got {len(received_data)}")
+    
+    # Verify all 5 messages received
+    assert len(received_data) == 5, f"Expected 5 messages, got {len(received_data)}"
+    
+    # Cleanup
+    await subscriber_client.disconnect()
+    await publisher_client.disconnect()
+
+
+
+
+
+
+@pytest.mark.asyncio
+async def test_us_wa_wsdot_ferryterminals_mqtt_us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_py(mosquitto_broker):
+    """Test publishing and receiving us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt message via MQTT."""
+    broker_host, broker_port = mosquitto_broker
+    # Create valid test data using the test helper
+    test_data = Test_TerminalSailingSpace.create_instance()
+    
+    # Create subscriber client
+    subscriber_mqtt = mqtt.Client(client_id="test_subscriber")
+    loop = asyncio.get_running_loop()
+    subscriber_client = UsWaWsdotFerryterminalsMqttMqttClient(subscriber_mqtt, content_mode='structured', loop=loop)
+    
+    # Create publisher client
+    publisher_mqtt = mqtt.Client(client_id="test_publisher")
+    publisher_client = UsWaWsdotFerryterminalsMqttMqttClient(publisher_mqtt, content_mode='structured', loop=loop)
+    
+    # Track received messages (expecting 5)
+    received_data = []
+    received_event = asyncio.Event()
+    
+    async def on_us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt(mqtt_msg, cloud_event, data: wsdot_mqtt_producer_data.TerminalSailingSpace, topic_params: dict):
+        """Handler for us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt messages."""
+        received_data.append(data)
+        assert cloud_event['type'] == "us.wa.wsdot.ferryterminals.TerminalSailingSpace"
+        if len(received_data) >= 5:
+            received_event.set()
+    
+    # Register handler
+    subscriber_client.us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_async = on_us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt
+    
+    # Connect both clients
+    await subscriber_client.connect(broker_host, broker_port)
+    await publisher_client.connect(broker_host, broker_port)
+    
+    # Subscribe to topic
+    test_topic = "test/us_wa_wsdot_ferryterminals_mqtt/us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt"
+    await subscriber_client.subscribe([test_topic])
+    
+    # Wait for subscription to be active
+    await asyncio.sleep(1)
+    
+    # Publish 5 messages to test message settlement and ordering
+    for i in range(5):
+        await publisher_client.publish_us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt(
+            topic=test_topic,
+            feedurl=f"test_feedurl_{i}",
+            terminal_id=f"test_terminal_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
             content_type="application/json"

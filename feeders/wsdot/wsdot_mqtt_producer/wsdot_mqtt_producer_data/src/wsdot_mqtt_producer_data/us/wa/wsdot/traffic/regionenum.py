@@ -3,7 +3,7 @@ from enum import Enum
 
 class RegionEnum(Enum):
     """
-    WSDOT region.
+    WSDOT geographic coverage region.
     """
     Eastern = 'Eastern'
     Northwest = 'Northwest'

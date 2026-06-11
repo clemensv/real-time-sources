@@ -176,6 +176,116 @@
       ],
       "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{vessel_id}`."
     },
+    "us.wa.wsdot.roadweather.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/us.wa.wsdot.roadweather"
+      ],
+      "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{station_id}`."
+    },
+    "us.wa.wsdot.alerts.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{alert_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/us.wa.wsdot.alerts"
+      ],
+      "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{alert_id}`."
+    },
+    "us.wa.wsdot.cameras.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{camera_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/us.wa.wsdot.cameras"
+      ],
+      "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{camera_id}`."
+    },
+    "us.wa.wsdot.bridgeclearances.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{crossing_location_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/us.wa.wsdot.bridgeclearances"
+      ],
+      "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{crossing_location_id}`."
+    },
+    "us.wa.wsdot.ferryterminals.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "wsdot",
+          "key": "{terminal_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/us.wa.wsdot.ferryterminals"
+      ],
+      "description": "Kafka producer endpoint for WSDOT CloudEvents on the `wsdot` topic keyed by `{terminal_id}`."
+    },
     "us.wa.wsdot.Mqtt": {
       "usage": [
         "producer"
@@ -201,7 +311,12 @@
         "#/messagegroups/us.wa.wsdot.tolls.mqtt",
         "#/messagegroups/us.wa.wsdot.cvrestrictions.mqtt",
         "#/messagegroups/us.wa.wsdot.border.mqtt",
-        "#/messagegroups/us.wa.wsdot.ferries.mqtt"
+        "#/messagegroups/us.wa.wsdot.ferries.mqtt",
+        "#/messagegroups/us.wa.wsdot.roadweather.mqtt",
+        "#/messagegroups/us.wa.wsdot.alerts.mqtt",
+        "#/messagegroups/us.wa.wsdot.cameras.mqtt",
+        "#/messagegroups/us.wa.wsdot.bridgeclearances.mqtt",
+        "#/messagegroups/us.wa.wsdot.ferryterminals.mqtt"
       ],
       "description": "MQTT/5.0 companion producer endpoint."
     },
@@ -229,7 +344,12 @@
         "#/messagegroups/us.wa.wsdot.tolls.amqp",
         "#/messagegroups/us.wa.wsdot.cvrestrictions.amqp",
         "#/messagegroups/us.wa.wsdot.border.amqp",
-        "#/messagegroups/us.wa.wsdot.ferries.amqp"
+        "#/messagegroups/us.wa.wsdot.ferries.amqp",
+        "#/messagegroups/us.wa.wsdot.roadweather.amqp",
+        "#/messagegroups/us.wa.wsdot.alerts.amqp",
+        "#/messagegroups/us.wa.wsdot.cameras.amqp",
+        "#/messagegroups/us.wa.wsdot.bridgeclearances.amqp",
+        "#/messagegroups/us.wa.wsdot.ferryterminals.amqp"
       ],
       "description": "AMQP/1.0 companion producer endpoint."
     }
@@ -864,6 +984,387 @@
           }
         }
       }
+    },
+    "us.wa.wsdot.roadweather": {
+      "messages": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation": {
+          "name": "RoadWeatherStation",
+          "envelope": "CloudEvents/1.0",
+          "description": "Metadata for a WSDOT Scanweb road weather information system (RWIS) station, including position and elevation. WSDOT operates roughly 105 Scanweb stations reporting pavement and atmospheric conditions across Washington State highways.",
+          "envelopemetadata": {
+            "type": {
+              "value": "us.wa.wsdot.roadweather.RoadWeatherStation"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.jstruct/schemas/us.wa.wsdot.roadweather.RoadWeatherStation"
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading": {
+          "name": "RoadWeatherReading",
+          "envelope": "CloudEvents/1.0",
+          "description": "A current Scanweb road weather reading including air temperature, humidity, wind, visibility, precipitation totals, and per-sensor road surface and sub-surface measurements.",
+          "envelopemetadata": {
+            "type": {
+              "value": "us.wa.wsdot.roadweather.RoadWeatherReading"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.roadweather.jstruct/schemas/us.wa.wsdot.roadweather.RoadWeatherReading"
+        }
+      },
+      "description": "Events from WSDOT covering Washington road, bridge, pass, ferry, and border resources. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "us.wa.wsdot.alerts": {
+      "messages": {
+        "us.wa.wsdot.alerts.HighwayAlert": {
+          "name": "HighwayAlert",
+          "envelope": "CloudEvents/1.0",
+          "description": "An active WSDOT highway alert describing an incident, construction, closure, special event, or weather impact, with start and end roadway locations on the Washington State highway network.",
+          "envelopemetadata": {
+            "type": {
+              "value": "us.wa.wsdot.alerts.HighwayAlert"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{alert_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.alerts.jstruct/schemas/us.wa.wsdot.alerts.HighwayAlert"
+        }
+      },
+      "description": "Events from WSDOT covering Washington road, bridge, pass, ferry, and border resources. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "us.wa.wsdot.cameras": {
+      "messages": {
+        "us.wa.wsdot.cameras.HighwayCamera": {
+          "name": "HighwayCamera",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference catalog entry for a WSDOT highway traffic camera, including its location and a claim-check image URL. The image bytes are not transported; consumers fetch the most recent frame from ImageURL on demand.",
+          "envelopemetadata": {
+            "type": {
+              "value": "us.wa.wsdot.cameras.HighwayCamera"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{camera_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.cameras.jstruct/schemas/us.wa.wsdot.cameras.HighwayCamera"
+        }
+      },
+      "description": "Events from WSDOT covering Washington road, bridge, pass, ferry, and border resources. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "us.wa.wsdot.bridgeclearances": {
+      "messages": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance": {
+          "name": "BridgeClearance",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference catalog record of the surveyed vertical clearance of a structure crossing a Washington State highway, used for commercial vehicle routing. Largely static; refreshed periodically.",
+          "envelopemetadata": {
+            "type": {
+              "value": "us.wa.wsdot.bridgeclearances.BridgeClearance"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{crossing_location_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.bridgeclearances.jstruct/schemas/us.wa.wsdot.bridgeclearances.BridgeClearance"
+        }
+      },
+      "description": "Events from WSDOT covering Washington road, bridge, pass, ferry, and border resources. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "us.wa.wsdot.ferryterminals": {
+      "messages": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace": {
+          "name": "TerminalSailingSpace",
+          "envelope": "CloudEvents/1.0",
+          "description": "Real-time drive-up and reservable vehicle space availability for upcoming Washington State Ferries departures from a terminal, broken down by sailing and arrival terminal.",
+          "envelopemetadata": {
+            "type": {
+              "value": "us.wa.wsdot.ferryterminals.TerminalSailingSpace"
+            },
+            "source": {
+              "value": "{feedurl}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{terminal_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/us.wa.wsdot.ferryterminals.jstruct/schemas/us.wa.wsdot.ferryterminals.TerminalSailingSpace"
+        }
+      },
+      "description": "Events from WSDOT covering Washington road, bridge, pass, ferry, and border resources. Reference records identify transport resources; realtime records carry the current source status, measurement, or movement update."
+    },
+    "us.wa.wsdot.roadweather.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation.mqtt": {
+          "name": "RoadWeatherStation",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.roadweather/messages/us.wa.wsdot.roadweather.RoadWeatherStation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/road-weather-stations/{station_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading.mqtt": {
+          "name": "RoadWeatherReading",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.roadweather/messages/us.wa.wsdot.roadweather.RoadWeatherReading",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/road-weather-stations/{station_id}/reading",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.alerts.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.alerts.HighwayAlert.mqtt": {
+          "name": "HighwayAlert",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.alerts/messages/us.wa.wsdot.alerts.HighwayAlert",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/alerts/{alert_id}/info",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cameras.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.cameras.HighwayCamera.mqtt": {
+          "name": "HighwayCamera",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.cameras/messages/us.wa.wsdot.cameras.HighwayCamera",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/cameras/{camera_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.bridgeclearances.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt": {
+          "name": "BridgeClearance",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.bridgeclearances/messages/us.wa.wsdot.bridgeclearances.BridgeClearance",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/bridge-clearances/{crossing_location_id}/info",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferryterminals.mqtt": {
+      "description": "MQTT 5 UNS topic bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt": {
+          "name": "TerminalSailingSpace",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.ferryterminals/messages/us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/us/wsdot/wsdot/ferry-terminals/{terminal_id}/sailing-space",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.roadweather.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation.amqp": {
+          "name": "RoadWeatherStation",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.roadweather/messages/us.wa.wsdot.roadweather.RoadWeatherStation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading.amqp": {
+          "name": "RoadWeatherReading",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.roadweather/messages/us.wa.wsdot.roadweather.RoadWeatherReading",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{station_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.alerts.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.alerts.HighwayAlert.amqp": {
+          "name": "HighwayAlert",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.alerts/messages/us.wa.wsdot.alerts.HighwayAlert",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{alert_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cameras.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.cameras.HighwayCamera.amqp": {
+          "name": "HighwayCamera",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.cameras/messages/us.wa.wsdot.cameras.HighwayCamera",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{camera_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{camera_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.bridgeclearances.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance.amqp": {
+          "name": "BridgeClearance",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.bridgeclearances/messages/us.wa.wsdot.bridgeclearances.BridgeClearance",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{crossing_location_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{crossing_location_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferryterminals.amqp": {
+      "description": "AMQP 1.0 bindings for wsdot.",
+      "messages": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace.amqp": {
+          "name": "TerminalSailingSpace",
+          "basemessageuri": "/messagegroups/us.wa.wsdot.ferryterminals/messages/us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{terminal_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{terminal_id}",
+                "description": "Partition key mirrors the CloudEvents subject."
+              }
+            }
+          }
+        }
+      }
     }
   },
   "schemagroups": {
@@ -1474,9 +1975,9 @@
                             "properties": {
                               "station_id": {
                                 "type": "string",
-                                "description": "Station identifier from upstream StationCode.",
+                                "description": "Station identifier from upstream StationID. The WeatherStation reference event is synthesized from the current-readings payload (the legacy WeatherStations endpoint was decommissioned), so this is the same numeric station identifier carried by WeatherReading.",
                                 "altnames": {
-                                  "json": "StationCode"
+                                  "json": "StationID"
                                 }
                               },
                               "station_name": {
@@ -3478,6 +3979,2814 @@
                   }
                 ],
                 "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.roadweather.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation": {
+          "name": "RoadWeatherStation",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/roadweather/RoadWeatherStation",
+                "name": "RoadWeatherStation",
+                "$root": "#/definitions/us/wa/wsdot/roadweather/RoadWeatherStation",
+                "definitions": {
+                  "us": {
+                    "wa": {
+                      "wsdot": {
+                        "roadweather": {
+                          "RoadWeatherStation": {
+                            "name": "RoadWeatherStation",
+                            "type": "object",
+                            "description": "Metadata for a WSDOT Scanweb road weather information system (RWIS) station, including position and elevation. WSDOT operates roughly 105 Scanweb stations reporting pavement and atmospheric conditions across Washington State highways.",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "Stable station identifier. From upstream StationId; when StationId is blank (a few Scanweb stations report a blank id) the bridge copies the unique StationName into this field so every station has a stable, non-empty key.",
+                                "altnames": {
+                                  "json": "StationId"
+                                }
+                              },
+                              "station_name": {
+                                "type": "string",
+                                "description": "Station name (unique across the Scanweb network).",
+                                "altnames": {
+                                  "json": "StationName"
+                                }
+                              },
+                              "latitude": {
+                                "type": "double",
+                                "description": "Latitude in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Latitude"
+                                }
+                              },
+                              "longitude": {
+                                "type": "double",
+                                "description": "Longitude in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Longitude"
+                                }
+                              },
+                              "elevation": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Station elevation above sea level.",
+                                "unit": "m",
+                                "symbol": "m",
+                                "altnames": {
+                                  "json": "Elevation"
+                                }
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "station_name",
+                              "latitude",
+                              "longitude",
+                              "elevation"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading": {
+          "name": "RoadWeatherReading",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/roadweather/RoadWeatherReading",
+                "name": "RoadWeatherReading",
+                "$root": "#/definitions/us/wa/wsdot/roadweather/RoadWeatherReading",
+                "definitions": {
+                  "us": {
+                    "wa": {
+                      "wsdot": {
+                        "roadweather": {
+                          "RoadWeatherReading": {
+                            "name": "RoadWeatherReading",
+                            "type": "object",
+                            "description": "A current Scanweb road weather reading including air temperature, humidity, wind, visibility, precipitation totals, and per-sensor road surface and sub-surface measurements.",
+                            "properties": {
+                              "station_id": {
+                                "type": "string",
+                                "description": "Stable station identifier, matching the RoadWeatherStation key (StationId, or StationName when StationId is blank).",
+                                "altnames": {
+                                  "json": "StationId"
+                                }
+                              },
+                              "station_name": {
+                                "type": "string",
+                                "description": "Station name.",
+                                "altnames": {
+                                  "json": "StationName"
+                                }
+                              },
+                              "latitude": {
+                                "type": "double",
+                                "description": "Latitude in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Latitude"
+                                }
+                              },
+                              "longitude": {
+                                "type": "double",
+                                "description": "Longitude in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Longitude"
+                                }
+                              },
+                              "elevation": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Station elevation above sea level.",
+                                "unit": "m",
+                                "symbol": "m",
+                                "altnames": {
+                                  "json": "Elevation"
+                                }
+                              },
+                              "reading_time": {
+                                "type": "string",
+                                "description": "Observation time as reported by Scanweb (ISO 8601, without timezone offset; interpreted as the station's local reporting clock).",
+                                "altnames": {
+                                  "json": "ReadingTime"
+                                }
+                              },
+                              "air_temperature": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Air temperature.",
+                                "unit": "Cel",
+                                "symbol": "°C",
+                                "altnames": {
+                                  "json": "AirTemperature"
+                                }
+                              },
+                              "relative_humidity": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Relative humidity percentage. Upstream key is misspelled 'RelativeHumidty'.",
+                                "unit": "%",
+                                "symbol": "%",
+                                "altnames": {
+                                  "json": "RelativeHumidty"
+                                }
+                              },
+                              "average_wind_speed": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Average wind speed.",
+                                "unit": "m/s",
+                                "symbol": "m/s",
+                                "altnames": {
+                                  "json": "AverageWindSpeed"
+                                }
+                              },
+                              "average_wind_direction": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Average wind direction in degrees from true north.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "AverageWindDirection"
+                                }
+                              },
+                              "wind_gust": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Peak wind gust speed.",
+                                "unit": "m/s",
+                                "symbol": "m/s",
+                                "altnames": {
+                                  "json": "WindGust"
+                                }
+                              },
+                              "visibility": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Visibility distance.",
+                                "unit": "m",
+                                "symbol": "m",
+                                "altnames": {
+                                  "json": "Visibility"
+                                }
+                              },
+                              "precipitation_intensity": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Coded precipitation intensity as an opaque integer reported by the upstream Scanweb feed; WSDOT does not publish the code dictionary, so the value is passed through unmodified. Null when not reported.",
+                                "altnames": {
+                                  "json": "PrecipitationIntensity"
+                                }
+                              },
+                              "precipitation_type": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Coded precipitation type as an opaque integer reported by the upstream Scanweb feed (commonly none, rain, or snow); WSDOT does not publish the full code dictionary, so the value is passed through unmodified. Null when not reported.",
+                                "altnames": {
+                                  "json": "PrecipitationType"
+                                }
+                              },
+                              "precipitation_past_1_hour": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Liquid-equivalent precipitation accumulated in the past 1 hour.",
+                                "unit": "mm",
+                                "symbol": "mm",
+                                "altnames": {
+                                  "json": "PrecipitationPast1Hour"
+                                }
+                              },
+                              "precipitation_past_3_hours": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Liquid-equivalent precipitation accumulated in the past 3 hours.",
+                                "unit": "mm",
+                                "symbol": "mm",
+                                "altnames": {
+                                  "json": "PrecipitationPast3Hours"
+                                }
+                              },
+                              "precipitation_past_6_hours": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Liquid-equivalent precipitation accumulated in the past 6 hours.",
+                                "unit": "mm",
+                                "symbol": "mm",
+                                "altnames": {
+                                  "json": "PrecipitationPast6Hours"
+                                }
+                              },
+                              "precipitation_past_12_hours": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Liquid-equivalent precipitation accumulated in the past 12 hours.",
+                                "unit": "mm",
+                                "symbol": "mm",
+                                "altnames": {
+                                  "json": "PrecipitationPast12Hours"
+                                }
+                              },
+                              "precipitation_past_24_hours": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Liquid-equivalent precipitation accumulated in the past 24 hours.",
+                                "unit": "mm",
+                                "symbol": "mm",
+                                "altnames": {
+                                  "json": "PrecipitationPast24Hours"
+                                }
+                              },
+                              "precipitation_accumulation": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Cumulative precipitation accumulation reported by the gauge, or null.",
+                                "unit": "mm",
+                                "symbol": "mm",
+                                "altnames": {
+                                  "json": "PrecipitationAccumulation"
+                                }
+                              },
+                              "barometric_pressure": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Barometric pressure, or null when the station has no pressure sensor.",
+                                "unit": "hPa",
+                                "symbol": "hPa",
+                                "altnames": {
+                                  "json": "BarometricPressure"
+                                }
+                              },
+                              "snow_depth": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Measured snow depth, or null when the station has no snow sensor.",
+                                "unit": "cm",
+                                "symbol": "cm",
+                                "altnames": {
+                                  "json": "SnowDepth"
+                                }
+                              },
+                              "surface_measurements": {
+                                "type": "array",
+                                "items": {
+                                  "name": "SurfaceMeasurement",
+                                  "type": "object",
+                                  "description": "A single road surface sensor measurement at a Scanweb station.",
+                                  "properties": {
+                                    "sensor_id": {
+                                      "type": "int32",
+                                      "description": "Surface sensor identifier within the station.",
+                                      "altnames": {
+                                        "json": "SensorId"
+                                      }
+                                    },
+                                    "surface_temperature": {
+                                      "type": [
+                                        "double",
+                                        "null"
+                                      ],
+                                      "description": "Road surface temperature.",
+                                      "unit": "Cel",
+                                      "symbol": "°C",
+                                      "altnames": {
+                                        "json": "SurfaceTemperature"
+                                      }
+                                    },
+                                    "road_freezing_temperature": {
+                                      "type": [
+                                        "double",
+                                        "null"
+                                      ],
+                                      "description": "Temperature at which the road surface is expected to freeze, accounting for residual de-icer.",
+                                      "unit": "Cel",
+                                      "symbol": "°C",
+                                      "altnames": {
+                                        "json": "RoadFreezingTemperature"
+                                      }
+                                    },
+                                    "road_surface_condition": {
+                                      "type": [
+                                        "int32",
+                                        "null"
+                                      ],
+                                      "description": "Coded road surface condition as an opaque integer from the upstream Scanweb RoadSurfaceCondition enumeration (commonly dry, wet, snow, or ice); WSDOT does not publish the full code dictionary, so the value is passed through unmodified.",
+                                      "altnames": {
+                                        "json": "RoadSurfaceCondition"
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "sensor_id",
+                                    "surface_temperature",
+                                    "road_freezing_temperature",
+                                    "road_surface_condition"
+                                  ]
+                                },
+                                "description": "Per-sensor road surface measurements (temperature, freezing point, surface condition).",
+                                "altnames": {
+                                  "json": "SurfaceMeasurements"
+                                }
+                              },
+                              "sub_surface_measurements": {
+                                "type": "array",
+                                "items": {
+                                  "name": "SubSurfaceMeasurement",
+                                  "type": "object",
+                                  "description": "A single sub-surface (in-pavement) sensor measurement at a Scanweb station.",
+                                  "properties": {
+                                    "sensor_id": {
+                                      "type": "int32",
+                                      "description": "Sub-surface sensor identifier within the station.",
+                                      "altnames": {
+                                        "json": "SensorId"
+                                      }
+                                    },
+                                    "sub_surface_temperature": {
+                                      "type": [
+                                        "double",
+                                        "null"
+                                      ],
+                                      "description": "Sub-surface (below pavement) temperature.",
+                                      "unit": "Cel",
+                                      "symbol": "°C",
+                                      "altnames": {
+                                        "json": "SubSurfaceTemperature"
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "sensor_id",
+                                    "sub_surface_temperature"
+                                  ]
+                                },
+                                "description": "Per-sensor sub-surface (in-pavement) temperature measurements.",
+                                "altnames": {
+                                  "json": "SubSurfaceMeasurements"
+                                }
+                              }
+                            },
+                            "required": [
+                              "station_id",
+                              "station_name",
+                              "latitude",
+                              "longitude",
+                              "elevation",
+                              "reading_time",
+                              "air_temperature",
+                              "relative_humidity",
+                              "average_wind_speed",
+                              "average_wind_direction",
+                              "wind_gust",
+                              "visibility",
+                              "precipitation_intensity",
+                              "precipitation_type",
+                              "precipitation_past_1_hour",
+                              "precipitation_past_3_hours",
+                              "precipitation_past_6_hours",
+                              "precipitation_past_12_hours",
+                              "precipitation_past_24_hours",
+                              "precipitation_accumulation",
+                              "barometric_pressure",
+                              "snow_depth",
+                              "surface_measurements",
+                              "sub_surface_measurements"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.alerts.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.alerts.HighwayAlert": {
+          "name": "HighwayAlert",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/alerts/HighwayAlert",
+                "name": "HighwayAlert",
+                "$root": "#/definitions/us/wa/wsdot/alerts/HighwayAlert",
+                "definitions": {
+                  "us": {
+                    "wa": {
+                      "wsdot": {
+                        "alerts": {
+                          "HighwayAlert": {
+                            "name": "HighwayAlert",
+                            "type": "object",
+                            "description": "An active WSDOT highway alert describing an incident, construction, closure, special event, or weather impact, with start and end roadway locations on the Washington State highway network.",
+                            "properties": {
+                              "alert_id": {
+                                "type": "string",
+                                "description": "WSDOT alert identifier (stable for the life of the alert).",
+                                "altnames": {
+                                  "json": "AlertID"
+                                }
+                              },
+                              "county": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "County in which the alert is located.",
+                                "altnames": {
+                                  "json": "County"
+                                }
+                              },
+                              "region": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "WSDOT region responsible for the alert.",
+                                "altnames": {
+                                  "json": "Region"
+                                }
+                              },
+                              "priority": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Alert priority (Highest, High, Medium, Low, Lowest).",
+                                "altnames": {
+                                  "json": "Priority"
+                                },
+                                "enum": [
+                                  "Highest",
+                                  "High",
+                                  "Medium",
+                                  "Low",
+                                  "Lowest"
+                                ]
+                              },
+                              "event_category": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Category of the event (e.g. Collision, Construction, Special Event, Weather).",
+                                "altnames": {
+                                  "json": "EventCategory"
+                                }
+                              },
+                              "event_status": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Current status of the event (Open or Closed).",
+                                "altnames": {
+                                  "json": "EventStatus"
+                                },
+                                "enum": [
+                                  "Open",
+                                  "Closed"
+                                ]
+                              },
+                              "headline_description": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Short human-readable headline for the alert.",
+                                "altnames": {
+                                  "json": "HeadlineDescription"
+                                }
+                              },
+                              "extended_description": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Longer human-readable description with full details.",
+                                "altnames": {
+                                  "json": "ExtendedDescription"
+                                }
+                              },
+                              "start_time": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Alert start time as an ISO 8601 UTC timestamp.",
+                                "altnames": {
+                                  "json": "StartTime"
+                                }
+                              },
+                              "end_time": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Alert end time as an ISO 8601 UTC timestamp, or null if open-ended.",
+                                "altnames": {
+                                  "json": "EndTime"
+                                }
+                              },
+                              "last_updated_time": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Time the alert was last updated, as an ISO 8601 UTC timestamp.",
+                                "altnames": {
+                                  "json": "LastUpdatedTime"
+                                }
+                              },
+                              "start_description": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Description of the start roadway location.",
+                                "altnames": {
+                                  "json": "Description"
+                                }
+                              },
+                              "start_direction": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Travel direction at the start location (e.g. B, N, S, E, W).",
+                                "altnames": {
+                                  "json": "Direction"
+                                }
+                              },
+                              "start_road_name": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Road name/route designation at the start location.",
+                                "altnames": {
+                                  "json": "RoadName"
+                                }
+                              },
+                              "start_milepost": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Milepost of the start location.",
+                                "unit": "mi",
+                                "symbol": "mi",
+                                "altnames": {
+                                  "json": "MilePost"
+                                }
+                              },
+                              "start_latitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Latitude of the start location in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Latitude"
+                                }
+                              },
+                              "start_longitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Longitude of the start location in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Longitude"
+                                }
+                              },
+                              "end_description": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Description of the end roadway location.",
+                                "altnames": {
+                                  "json": "Description"
+                                }
+                              },
+                              "end_direction": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Travel direction at the end location.",
+                                "altnames": {
+                                  "json": "Direction"
+                                }
+                              },
+                              "end_road_name": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Road name/route designation at the end location.",
+                                "altnames": {
+                                  "json": "RoadName"
+                                }
+                              },
+                              "end_milepost": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Milepost of the end location.",
+                                "unit": "mi",
+                                "symbol": "mi",
+                                "altnames": {
+                                  "json": "MilePost"
+                                }
+                              },
+                              "end_latitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Latitude of the end location in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Latitude"
+                                }
+                              },
+                              "end_longitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Longitude of the end location in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Longitude"
+                                }
+                              }
+                            },
+                            "required": [
+                              "alert_id",
+                              "county",
+                              "region",
+                              "priority",
+                              "event_category",
+                              "event_status",
+                              "headline_description",
+                              "extended_description",
+                              "start_time",
+                              "end_time",
+                              "last_updated_time",
+                              "start_description",
+                              "start_direction",
+                              "start_road_name",
+                              "start_milepost",
+                              "start_latitude",
+                              "start_longitude",
+                              "end_description",
+                              "end_direction",
+                              "end_road_name",
+                              "end_milepost",
+                              "end_latitude",
+                              "end_longitude"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cameras.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.cameras.HighwayCamera": {
+          "name": "HighwayCamera",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/cameras/HighwayCamera",
+                "name": "HighwayCamera",
+                "$root": "#/definitions/us/wa/wsdot/cameras/HighwayCamera",
+                "definitions": {
+                  "us": {
+                    "wa": {
+                      "wsdot": {
+                        "cameras": {
+                          "HighwayCamera": {
+                            "name": "HighwayCamera",
+                            "type": "object",
+                            "description": "Reference catalog entry for a WSDOT highway traffic camera, including its location and a claim-check image URL. The image bytes are not transported; consumers fetch the most recent frame from ImageURL on demand.",
+                            "properties": {
+                              "camera_id": {
+                                "type": "string",
+                                "description": "WSDOT camera identifier (stable).",
+                                "altnames": {
+                                  "json": "CameraID"
+                                }
+                              },
+                              "title": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Human-readable camera title.",
+                                "altnames": {
+                                  "json": "Title"
+                                }
+                              },
+                              "description": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Optional camera description.",
+                                "altnames": {
+                                  "json": "Description"
+                                }
+                              },
+                              "camera_owner": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Organization that owns/operates the camera.",
+                                "altnames": {
+                                  "json": "CameraOwner"
+                                }
+                              },
+                              "owner_url": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "URL with more information from the camera owner.",
+                                "altnames": {
+                                  "json": "OwnerURL"
+                                }
+                              },
+                              "image_url": {
+                                "type": "string",
+                                "description": "Claim-check URL of the current camera image. The image bytes are not transported in the event; consumers fetch the latest frame from this URL on demand.",
+                                "altnames": {
+                                  "json": "ImageURL"
+                                }
+                              },
+                              "image_width": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Width of the camera image.",
+                                "unit": "px",
+                                "symbol": "px",
+                                "altnames": {
+                                  "json": "ImageWidth"
+                                }
+                              },
+                              "image_height": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Height of the camera image.",
+                                "unit": "px",
+                                "symbol": "px",
+                                "altnames": {
+                                  "json": "ImageHeight"
+                                }
+                              },
+                              "is_active": {
+                                "type": "boolean",
+                                "description": "Whether the camera is currently active.",
+                                "altnames": {
+                                  "json": "IsActive"
+                                }
+                              },
+                              "region": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "WSDOT region (or area code) for the camera.",
+                                "altnames": {
+                                  "json": "Region"
+                                }
+                              },
+                              "sort_order": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "WSDOT display sort order.",
+                                "altnames": {
+                                  "json": "SortOrder"
+                                }
+                              },
+                              "display_latitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Latitude used for map display, in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "DisplayLatitude"
+                                }
+                              },
+                              "display_longitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Longitude used for map display, in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "DisplayLongitude"
+                                }
+                              },
+                              "location_description": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Description of the camera roadway location.",
+                                "altnames": {
+                                  "json": "Description"
+                                }
+                              },
+                              "location_direction": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Travel direction the camera faces.",
+                                "altnames": {
+                                  "json": "Direction"
+                                }
+                              },
+                              "location_road_name": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Road name/route designation at the camera location.",
+                                "altnames": {
+                                  "json": "RoadName"
+                                }
+                              },
+                              "location_milepost": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Milepost of the camera location.",
+                                "unit": "mi",
+                                "symbol": "mi",
+                                "altnames": {
+                                  "json": "MilePost"
+                                }
+                              },
+                              "location_latitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Latitude of the camera location in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Latitude"
+                                }
+                              },
+                              "location_longitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Longitude of the camera location in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Longitude"
+                                }
+                              }
+                            },
+                            "required": [
+                              "camera_id",
+                              "title",
+                              "description",
+                              "camera_owner",
+                              "owner_url",
+                              "image_url",
+                              "image_width",
+                              "image_height",
+                              "is_active",
+                              "region",
+                              "sort_order",
+                              "display_latitude",
+                              "display_longitude",
+                              "location_description",
+                              "location_direction",
+                              "location_road_name",
+                              "location_milepost",
+                              "location_latitude",
+                              "location_longitude"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.bridgeclearances.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance": {
+          "name": "BridgeClearance",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/bridgeclearances/BridgeClearance",
+                "name": "BridgeClearance",
+                "$root": "#/definitions/us/wa/wsdot/bridgeclearances/BridgeClearance",
+                "definitions": {
+                  "us": {
+                    "wa": {
+                      "wsdot": {
+                        "bridgeclearances": {
+                          "BridgeClearance": {
+                            "name": "BridgeClearance",
+                            "type": "object",
+                            "description": "Reference catalog record of the surveyed vertical clearance of a structure crossing a Washington State highway, used for commercial vehicle routing. Largely static; refreshed periodically.",
+                            "properties": {
+                              "crossing_location_id": {
+                                "type": "string",
+                                "description": "Stable crossing location identifier (CrossingLocationId).",
+                                "altnames": {
+                                  "json": "CrossingLocationId"
+                                }
+                              },
+                              "bridge_number": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "WSDOT bridge number of the structure.",
+                                "altnames": {
+                                  "json": "BridgeNumber"
+                                }
+                              },
+                              "state_route_id": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "State route identifier the structure crosses, or null.",
+                                "altnames": {
+                                  "json": "StateRouteID"
+                                }
+                              },
+                              "state_structure_id": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Statewide structure identifier.",
+                                "altnames": {
+                                  "json": "StateStructureId"
+                                }
+                              },
+                              "crossing_description": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Human-readable description of the crossing.",
+                                "altnames": {
+                                  "json": "CrossingDescription"
+                                }
+                              },
+                              "inventory_direction": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Inventory direction of the structure, or null.",
+                                "altnames": {
+                                  "json": "InventoryDirection"
+                                }
+                              },
+                              "srmp": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "State route milepost of the crossing.",
+                                "unit": "mi",
+                                "symbol": "mi",
+                                "altnames": {
+                                  "json": "SRMP"
+                                }
+                              },
+                              "srmp_ahead_back_indicator": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Ahead/Back indicator disambiguating the milepost, or null.",
+                                "altnames": {
+                                  "json": "SRMPAheadBackIndicator"
+                                }
+                              },
+                              "latitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Latitude in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Latitude"
+                                }
+                              },
+                              "longitude": {
+                                "type": [
+                                  "double",
+                                  "null"
+                                ],
+                                "description": "Longitude in WGS84.",
+                                "unit": "deg",
+                                "symbol": "°",
+                                "altnames": {
+                                  "json": "Longitude"
+                                }
+                              },
+                              "vertical_clearance_maximum_inches": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Maximum vertical clearance, in inches.",
+                                "unit": "in",
+                                "symbol": "in",
+                                "altnames": {
+                                  "json": "VerticalClearanceMaximumInches"
+                                }
+                              },
+                              "vertical_clearance_maximum_feet_inch": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Maximum vertical clearance as a feet-and-inches display string (e.g. '14 ft 3 in').",
+                                "altnames": {
+                                  "json": "VerticalClearanceMaximumFeetInch"
+                                }
+                              },
+                              "vertical_clearance_minimum_inches": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "Minimum vertical clearance, in inches.",
+                                "unit": "in",
+                                "symbol": "in",
+                                "altnames": {
+                                  "json": "VerticalClearanceMinimumInches"
+                                }
+                              },
+                              "vertical_clearance_minimum_feet_inch": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Minimum vertical clearance as a feet-and-inches display string.",
+                                "altnames": {
+                                  "json": "VerticalClearanceMinimumFeetInch"
+                                }
+                              },
+                              "control_entity_guid": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "GUID of the controlling entity record.",
+                                "altnames": {
+                                  "json": "ControlEntityGuid"
+                                }
+                              },
+                              "crossing_record_guid": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "GUID of the crossing record.",
+                                "altnames": {
+                                  "json": "CrossingRecordGuid"
+                                }
+                              },
+                              "location_guid": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "GUID of the location record.",
+                                "altnames": {
+                                  "json": "LocationGuid"
+                                }
+                              },
+                              "route_date": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Effective route date as an ISO 8601 UTC timestamp.",
+                                "altnames": {
+                                  "json": "RouteDate"
+                                }
+                              },
+                              "api_last_update": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Time the clearance record was last updated upstream, as an ISO 8601 UTC timestamp.",
+                                "altnames": {
+                                  "json": "APILastUpdate"
+                                }
+                              }
+                            },
+                            "required": [
+                              "crossing_location_id",
+                              "bridge_number",
+                              "state_route_id",
+                              "state_structure_id",
+                              "crossing_description",
+                              "inventory_direction",
+                              "srmp",
+                              "srmp_ahead_back_indicator",
+                              "latitude",
+                              "longitude",
+                              "vertical_clearance_maximum_inches",
+                              "vertical_clearance_maximum_feet_inch",
+                              "vertical_clearance_minimum_inches",
+                              "vertical_clearance_minimum_feet_inch",
+                              "control_entity_guid",
+                              "crossing_record_guid",
+                              "location_guid",
+                              "route_date",
+                              "api_last_update"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferryterminals.jstruct": {
+      "schemas": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace": {
+          "name": "TerminalSailingSpace",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/core/v0/#",
+                "$id": "https://real-time-sources.2030.io/schemas/us/wa/wsdot/ferryterminals/TerminalSailingSpace",
+                "name": "TerminalSailingSpace",
+                "$root": "#/definitions/us/wa/wsdot/ferryterminals/TerminalSailingSpace",
+                "definitions": {
+                  "us": {
+                    "wa": {
+                      "wsdot": {
+                        "ferryterminals": {
+                          "TerminalSailingSpace": {
+                            "name": "TerminalSailingSpace",
+                            "type": "object",
+                            "description": "Real-time drive-up and reservable vehicle space availability for upcoming Washington State Ferries departures from a terminal, broken down by sailing and arrival terminal.",
+                            "properties": {
+                              "terminal_id": {
+                                "type": "string",
+                                "description": "Washington State Ferries terminal identifier (stable).",
+                                "altnames": {
+                                  "json": "TerminalID"
+                                }
+                              },
+                              "terminal_subject_id": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "WSF terminal subject identifier.",
+                                "altnames": {
+                                  "json": "TerminalSubjectID"
+                                }
+                              },
+                              "region_id": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "WSF region identifier.",
+                                "altnames": {
+                                  "json": "RegionID"
+                                }
+                              },
+                              "terminal_name": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Terminal name.",
+                                "altnames": {
+                                  "json": "TerminalName"
+                                }
+                              },
+                              "terminal_abbrev": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Terminal abbreviation code.",
+                                "altnames": {
+                                  "json": "TerminalAbbrev"
+                                }
+                              },
+                              "sort_seq": {
+                                "type": [
+                                  "int32",
+                                  "null"
+                                ],
+                                "description": "WSF display sort sequence.",
+                                "altnames": {
+                                  "json": "SortSeq"
+                                }
+                              },
+                              "departing_spaces": {
+                                "type": "array",
+                                "items": {
+                                  "name": "DepartingSpace",
+                                  "type": "object",
+                                  "description": "Space availability for one upcoming departure from the terminal.",
+                                  "properties": {
+                                    "departure": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ],
+                                      "description": "Scheduled departure time as an ISO 8601 UTC timestamp.",
+                                      "altnames": {
+                                        "json": "Departure"
+                                      }
+                                    },
+                                    "is_cancelled": {
+                                      "type": "boolean",
+                                      "description": "Whether this departure has been cancelled.",
+                                      "altnames": {
+                                        "json": "IsCancelled"
+                                      }
+                                    },
+                                    "vessel_id": {
+                                      "type": [
+                                        "int32",
+                                        "null"
+                                      ],
+                                      "description": "Vessel identifier assigned to the departure.",
+                                      "altnames": {
+                                        "json": "VesselID"
+                                      }
+                                    },
+                                    "vessel_name": {
+                                      "type": [
+                                        "string",
+                                        "null"
+                                      ],
+                                      "description": "Vessel name assigned to the departure.",
+                                      "altnames": {
+                                        "json": "VesselName"
+                                      }
+                                    },
+                                    "max_space_count": {
+                                      "type": [
+                                        "int32",
+                                        "null"
+                                      ],
+                                      "description": "Maximum vehicle space capacity of the vessel for this departure.",
+                                      "altnames": {
+                                        "json": "MaxSpaceCount"
+                                      }
+                                    },
+                                    "space_for_arrival_terminals": {
+                                      "type": "array",
+                                      "items": {
+                                        "name": "SpaceForArrivalTerminal",
+                                        "type": "object",
+                                        "description": "Vehicle space availability for one arrival terminal served by a sailing.",
+                                        "properties": {
+                                          "terminal_id": {
+                                            "type": [
+                                              "int32",
+                                              "null"
+                                            ],
+                                            "description": "Departing terminal identifier for this space breakdown.",
+                                            "altnames": {
+                                              "json": "TerminalID"
+                                            }
+                                          },
+                                          "terminal_name": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ],
+                                            "description": "Human-readable sailing path (departing -> arrival terminals).",
+                                            "altnames": {
+                                              "json": "TerminalName"
+                                            }
+                                          },
+                                          "vessel_id": {
+                                            "type": [
+                                              "int32",
+                                              "null"
+                                            ],
+                                            "description": "Vessel identifier assigned to the sailing.",
+                                            "altnames": {
+                                              "json": "VesselID"
+                                            }
+                                          },
+                                          "vessel_name": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ],
+                                            "description": "Vessel name assigned to the sailing.",
+                                            "altnames": {
+                                              "json": "VesselName"
+                                            }
+                                          },
+                                          "display_reservable_space": {
+                                            "type": "boolean",
+                                            "description": "Whether reservable space should be displayed for this arrival terminal.",
+                                            "altnames": {
+                                              "json": "DisplayReservableSpace"
+                                            }
+                                          },
+                                          "reservable_space_count": {
+                                            "type": [
+                                              "int32",
+                                              "null"
+                                            ],
+                                            "description": "Number of reservable vehicle spaces remaining, or null when not displayed/available.",
+                                            "altnames": {
+                                              "json": "ReservableSpaceCount"
+                                            }
+                                          },
+                                          "reservable_space_hex_color": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ],
+                                            "description": "Hex color code WSF uses to render reservable space availability.",
+                                            "altnames": {
+                                              "json": "ReservableSpaceHexColor"
+                                            }
+                                          },
+                                          "display_drive_up_space": {
+                                            "type": "boolean",
+                                            "description": "Whether drive-up space should be displayed for this arrival terminal.",
+                                            "altnames": {
+                                              "json": "DisplayDriveUpSpace"
+                                            }
+                                          },
+                                          "drive_up_space_count": {
+                                            "type": [
+                                              "int32",
+                                              "null"
+                                            ],
+                                            "description": "Number of drive-up vehicle spaces remaining, or null when not displayed/available.",
+                                            "altnames": {
+                                              "json": "DriveUpSpaceCount"
+                                            }
+                                          },
+                                          "drive_up_space_hex_color": {
+                                            "type": [
+                                              "string",
+                                              "null"
+                                            ],
+                                            "description": "Hex color code WSF uses to render drive-up space availability.",
+                                            "altnames": {
+                                              "json": "DriveUpSpaceHexColor"
+                                            }
+                                          },
+                                          "max_space_count": {
+                                            "type": [
+                                              "int32",
+                                              "null"
+                                            ],
+                                            "description": "Maximum vehicle space capacity of the vessel for this sailing.",
+                                            "altnames": {
+                                              "json": "MaxSpaceCount"
+                                            }
+                                          },
+                                          "arrival_terminal_ids": {
+                                            "type": "array",
+                                            "items": {
+                                              "type": "int32"
+                                            },
+                                            "description": "Arrival terminal identifiers reachable on this sailing.",
+                                            "altnames": {
+                                              "json": "ArrivalTerminalIDs"
+                                            }
+                                          }
+                                        },
+                                        "required": [
+                                          "terminal_id",
+                                          "terminal_name",
+                                          "vessel_id",
+                                          "vessel_name",
+                                          "display_reservable_space",
+                                          "reservable_space_count",
+                                          "reservable_space_hex_color",
+                                          "display_drive_up_space",
+                                          "drive_up_space_count",
+                                          "drive_up_space_hex_color",
+                                          "max_space_count",
+                                          "arrival_terminal_ids"
+                                        ]
+                                      },
+                                      "description": "Per-arrival-terminal space breakdown for this departure.",
+                                      "altnames": {
+                                        "json": "SpaceForArrivalTerminals"
+                                      }
+                                    }
+                                  },
+                                  "required": [
+                                    "departure",
+                                    "is_cancelled",
+                                    "vessel_id",
+                                    "vessel_name",
+                                    "max_space_count",
+                                    "space_for_arrival_terminals"
+                                  ]
+                                },
+                                "description": "Upcoming departures from this terminal with per-sailing vehicle space availability.",
+                                "altnames": {
+                                  "json": "DepartingSpaces"
+                                }
+                              },
+                              "is_no_fare_collected": {
+                                "type": [
+                                  "boolean",
+                                  "null"
+                                ],
+                                "description": "Whether no fare is collected at this terminal for the relevant sailings, or null when not applicable.",
+                                "altnames": {
+                                  "json": "IsNoFareCollected"
+                                }
+                              },
+                              "no_fare_collected_msg": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ],
+                                "description": "Message explaining the no-fare-collected status, or null.",
+                                "altnames": {
+                                  "json": "NoFareCollectedMsg"
+                                }
+                              }
+                            },
+                            "required": [
+                              "terminal_id",
+                              "terminal_subject_id",
+                              "region_id",
+                              "terminal_name",
+                              "terminal_abbrev",
+                              "sort_seq",
+                              "departing_spaces",
+                              "is_no_fare_collected",
+                              "no_fare_collected_msg"
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.roadweather.avro": {
+      "schemas": {
+        "us.wa.wsdot.roadweather.RoadWeatherStation": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "RoadWeatherStation",
+                "namespace": "us.wa.wsdot.roadweather",
+                "doc": "Metadata for a WSDOT Scanweb road weather information system (RWIS) station, including position and elevation. WSDOT operates roughly 105 Scanweb stations reporting pavement and atmospheric conditions across Washington State highways.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station identifier. From upstream StationId; when StationId is blank (a few Scanweb stations report a blank id) the bridge copies the unique StationName into this field so every station has a stable, non-empty key."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name (unique across the Scanweb network)."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84."
+                  },
+                  {
+                    "name": "elevation",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Station elevation above sea level."
+                  }
+                ],
+                "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
+              }
+            }
+          }
+        },
+        "us.wa.wsdot.roadweather.RoadWeatherReading": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "RoadWeatherReading",
+                "namespace": "us.wa.wsdot.roadweather",
+                "doc": "A current Scanweb road weather reading including air temperature, humidity, wind, visibility, precipitation totals, and per-sensor road surface and sub-surface measurements.",
+                "fields": [
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station identifier, matching the RoadWeatherStation key (StationId, or StationName when StationId is blank)."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": "string",
+                    "doc": "Station name."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": "double",
+                    "doc": "Latitude in WGS84."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": "double",
+                    "doc": "Longitude in WGS84."
+                  },
+                  {
+                    "name": "elevation",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Station elevation above sea level."
+                  },
+                  {
+                    "name": "reading_time",
+                    "type": "string",
+                    "doc": "Observation time as reported by Scanweb (ISO 8601, without timezone offset; interpreted as the station's local reporting clock)."
+                  },
+                  {
+                    "name": "air_temperature",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Air temperature."
+                  },
+                  {
+                    "name": "relative_humidity",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Relative humidity percentage. Upstream key is misspelled 'RelativeHumidty'."
+                  },
+                  {
+                    "name": "average_wind_speed",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Average wind speed."
+                  },
+                  {
+                    "name": "average_wind_direction",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Average wind direction in degrees from true north."
+                  },
+                  {
+                    "name": "wind_gust",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Peak wind gust speed."
+                  },
+                  {
+                    "name": "visibility",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Visibility distance."
+                  },
+                  {
+                    "name": "precipitation_intensity",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Coded precipitation intensity as an opaque integer reported by the upstream Scanweb feed; WSDOT does not publish the code dictionary, so the value is passed through unmodified. Null when not reported."
+                  },
+                  {
+                    "name": "precipitation_type",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Coded precipitation type as an opaque integer reported by the upstream Scanweb feed (commonly none, rain, or snow); WSDOT does not publish the full code dictionary, so the value is passed through unmodified. Null when not reported."
+                  },
+                  {
+                    "name": "precipitation_past_1_hour",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Liquid-equivalent precipitation accumulated in the past 1 hour."
+                  },
+                  {
+                    "name": "precipitation_past_3_hours",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Liquid-equivalent precipitation accumulated in the past 3 hours."
+                  },
+                  {
+                    "name": "precipitation_past_6_hours",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Liquid-equivalent precipitation accumulated in the past 6 hours."
+                  },
+                  {
+                    "name": "precipitation_past_12_hours",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Liquid-equivalent precipitation accumulated in the past 12 hours."
+                  },
+                  {
+                    "name": "precipitation_past_24_hours",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Liquid-equivalent precipitation accumulated in the past 24 hours."
+                  },
+                  {
+                    "name": "precipitation_accumulation",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Cumulative precipitation accumulation reported by the gauge, or null."
+                  },
+                  {
+                    "name": "barometric_pressure",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Barometric pressure, or null when the station has no pressure sensor."
+                  },
+                  {
+                    "name": "snow_depth",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Measured snow depth, or null when the station has no snow sensor."
+                  },
+                  {
+                    "name": "surface_measurements",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "SurfaceMeasurement",
+                        "doc": "A single road surface sensor measurement at a Scanweb station.",
+                        "fields": [
+                          {
+                            "name": "sensor_id",
+                            "type": "int",
+                            "doc": "Surface sensor identifier within the station."
+                          },
+                          {
+                            "name": "surface_temperature",
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "default": null,
+                            "doc": "Road surface temperature."
+                          },
+                          {
+                            "name": "road_freezing_temperature",
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "default": null,
+                            "doc": "Temperature at which the road surface is expected to freeze, accounting for residual de-icer."
+                          },
+                          {
+                            "name": "road_surface_condition",
+                            "type": [
+                              "null",
+                              "int"
+                            ],
+                            "default": null,
+                            "doc": "Coded road surface condition as an opaque integer from the upstream Scanweb RoadSurfaceCondition enumeration (commonly dry, wet, snow, or ice); WSDOT does not publish the full code dictionary, so the value is passed through unmodified."
+                          }
+                        ]
+                      }
+                    },
+                    "doc": "Per-sensor road surface measurements (temperature, freezing point, surface condition)."
+                  },
+                  {
+                    "name": "sub_surface_measurements",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "SubSurfaceMeasurement",
+                        "doc": "A single sub-surface (in-pavement) sensor measurement at a Scanweb station.",
+                        "fields": [
+                          {
+                            "name": "sensor_id",
+                            "type": "int",
+                            "doc": "Sub-surface sensor identifier within the station."
+                          },
+                          {
+                            "name": "sub_surface_temperature",
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "default": null,
+                            "doc": "Sub-surface (below pavement) temperature."
+                          }
+                        ]
+                      }
+                    },
+                    "doc": "Per-sensor sub-surface (in-pavement) temperature measurements."
+                  }
+                ],
+                "description": "A current transport measurement or status update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.alerts.avro": {
+      "schemas": {
+        "us.wa.wsdot.alerts.HighwayAlert": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "HighwayAlert",
+                "namespace": "us.wa.wsdot.alerts",
+                "doc": "An active WSDOT highway alert describing an incident, construction, closure, special event, or weather impact, with start and end roadway locations on the Washington State highway network.",
+                "fields": [
+                  {
+                    "name": "alert_id",
+                    "type": "string",
+                    "doc": "WSDOT alert identifier (stable for the life of the alert)."
+                  },
+                  {
+                    "name": "county",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "County in which the alert is located."
+                  },
+                  {
+                    "name": "region",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "WSDOT region responsible for the alert."
+                  },
+                  {
+                    "name": "priority",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Alert priority (Highest, High, Medium, Low, Lowest)."
+                  },
+                  {
+                    "name": "event_category",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Category of the event (e.g. Collision, Construction, Special Event, Weather)."
+                  },
+                  {
+                    "name": "event_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Current status of the event (Open or Closed)."
+                  },
+                  {
+                    "name": "headline_description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Short human-readable headline for the alert."
+                  },
+                  {
+                    "name": "extended_description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Longer human-readable description with full details."
+                  },
+                  {
+                    "name": "start_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Alert start time as an ISO 8601 UTC timestamp."
+                  },
+                  {
+                    "name": "end_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Alert end time as an ISO 8601 UTC timestamp, or null if open-ended."
+                  },
+                  {
+                    "name": "last_updated_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Time the alert was last updated, as an ISO 8601 UTC timestamp."
+                  },
+                  {
+                    "name": "start_description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Description of the start roadway location."
+                  },
+                  {
+                    "name": "start_direction",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Travel direction at the start location (e.g. B, N, S, E, W)."
+                  },
+                  {
+                    "name": "start_road_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Road name/route designation at the start location."
+                  },
+                  {
+                    "name": "start_milepost",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Milepost of the start location."
+                  },
+                  {
+                    "name": "start_latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Latitude of the start location in WGS84."
+                  },
+                  {
+                    "name": "start_longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Longitude of the start location in WGS84."
+                  },
+                  {
+                    "name": "end_description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Description of the end roadway location."
+                  },
+                  {
+                    "name": "end_direction",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Travel direction at the end location."
+                  },
+                  {
+                    "name": "end_road_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Road name/route designation at the end location."
+                  },
+                  {
+                    "name": "end_milepost",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Milepost of the end location."
+                  },
+                  {
+                    "name": "end_latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Latitude of the end location in WGS84."
+                  },
+                  {
+                    "name": "end_longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Longitude of the end location in WGS84."
+                  }
+                ],
+                "description": "A current transport measurement or status update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates when the upstream feed reports a new or refreshed value."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.cameras.avro": {
+      "schemas": {
+        "us.wa.wsdot.cameras.HighwayCamera": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "HighwayCamera",
+                "namespace": "us.wa.wsdot.cameras",
+                "doc": "Reference catalog entry for a WSDOT highway traffic camera, including its location and a claim-check image URL. The image bytes are not transported; consumers fetch the most recent frame from ImageURL on demand.",
+                "fields": [
+                  {
+                    "name": "camera_id",
+                    "type": "string",
+                    "doc": "WSDOT camera identifier (stable)."
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Human-readable camera title."
+                  },
+                  {
+                    "name": "description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Optional camera description."
+                  },
+                  {
+                    "name": "camera_owner",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Organization that owns/operates the camera."
+                  },
+                  {
+                    "name": "owner_url",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "URL with more information from the camera owner."
+                  },
+                  {
+                    "name": "image_url",
+                    "type": "string",
+                    "doc": "Claim-check URL of the current camera image. The image bytes are not transported in the event; consumers fetch the latest frame from this URL on demand."
+                  },
+                  {
+                    "name": "image_width",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Width of the camera image."
+                  },
+                  {
+                    "name": "image_height",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Height of the camera image."
+                  },
+                  {
+                    "name": "is_active",
+                    "type": "boolean",
+                    "doc": "Whether the camera is currently active."
+                  },
+                  {
+                    "name": "region",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "WSDOT region (or area code) for the camera."
+                  },
+                  {
+                    "name": "sort_order",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "WSDOT display sort order."
+                  },
+                  {
+                    "name": "display_latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Latitude used for map display, in WGS84."
+                  },
+                  {
+                    "name": "display_longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Longitude used for map display, in WGS84."
+                  },
+                  {
+                    "name": "location_description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Description of the camera roadway location."
+                  },
+                  {
+                    "name": "location_direction",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Travel direction the camera faces."
+                  },
+                  {
+                    "name": "location_road_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Road name/route designation at the camera location."
+                  },
+                  {
+                    "name": "location_milepost",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Milepost of the camera location."
+                  },
+                  {
+                    "name": "location_latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Latitude of the camera location in WGS84."
+                  },
+                  {
+                    "name": "location_longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Longitude of the camera location in WGS84."
+                  }
+                ],
+                "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.bridgeclearances.avro": {
+      "schemas": {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "BridgeClearance",
+                "namespace": "us.wa.wsdot.bridgeclearances",
+                "doc": "Reference catalog record of the surveyed vertical clearance of a structure crossing a Washington State highway, used for commercial vehicle routing. Largely static; refreshed periodically.",
+                "fields": [
+                  {
+                    "name": "crossing_location_id",
+                    "type": "string",
+                    "doc": "Stable crossing location identifier (CrossingLocationId)."
+                  },
+                  {
+                    "name": "bridge_number",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "WSDOT bridge number of the structure."
+                  },
+                  {
+                    "name": "state_route_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "State route identifier the structure crosses, or null."
+                  },
+                  {
+                    "name": "state_structure_id",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Statewide structure identifier."
+                  },
+                  {
+                    "name": "crossing_description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Human-readable description of the crossing."
+                  },
+                  {
+                    "name": "inventory_direction",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Inventory direction of the structure, or null."
+                  },
+                  {
+                    "name": "srmp",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "State route milepost of the crossing."
+                  },
+                  {
+                    "name": "srmp_ahead_back_indicator",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Ahead/Back indicator disambiguating the milepost, or null."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Latitude in WGS84."
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "default": null,
+                    "doc": "Longitude in WGS84."
+                  },
+                  {
+                    "name": "vertical_clearance_maximum_inches",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Maximum vertical clearance, in inches."
+                  },
+                  {
+                    "name": "vertical_clearance_maximum_feet_inch",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Maximum vertical clearance as a feet-and-inches display string (e.g. '14 ft 3 in')."
+                  },
+                  {
+                    "name": "vertical_clearance_minimum_inches",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "Minimum vertical clearance, in inches."
+                  },
+                  {
+                    "name": "vertical_clearance_minimum_feet_inch",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Minimum vertical clearance as a feet-and-inches display string."
+                  },
+                  {
+                    "name": "control_entity_guid",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "GUID of the controlling entity record."
+                  },
+                  {
+                    "name": "crossing_record_guid",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "GUID of the crossing record."
+                  },
+                  {
+                    "name": "location_guid",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "GUID of the location record."
+                  },
+                  {
+                    "name": "route_date",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Effective route date as an ISO 8601 UTC timestamp."
+                  },
+                  {
+                    "name": "api_last_update",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Time the clearance record was last updated upstream, as an ISO 8601 UTC timestamp."
+                  }
+                ],
+                "description": "A reference record from Washington State Department of Transportation for a station, stop, route, site, or other transport resource. It gives consumers stable identifiers and labels needed to interpret realtime updates."
+              }
+            }
+          }
+        }
+      }
+    },
+    "us.wa.wsdot.ferryterminals.avro": {
+      "schemas": {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "TerminalSailingSpace",
+                "namespace": "us.wa.wsdot.ferryterminals",
+                "doc": "Real-time drive-up and reservable vehicle space availability for upcoming Washington State Ferries departures from a terminal, broken down by sailing and arrival terminal.",
+                "fields": [
+                  {
+                    "name": "terminal_id",
+                    "type": "string",
+                    "doc": "Washington State Ferries terminal identifier (stable)."
+                  },
+                  {
+                    "name": "terminal_subject_id",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "WSF terminal subject identifier."
+                  },
+                  {
+                    "name": "region_id",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "WSF region identifier."
+                  },
+                  {
+                    "name": "terminal_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Terminal name."
+                  },
+                  {
+                    "name": "terminal_abbrev",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Terminal abbreviation code."
+                  },
+                  {
+                    "name": "sort_seq",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "default": null,
+                    "doc": "WSF display sort sequence."
+                  },
+                  {
+                    "name": "departing_spaces",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "DepartingSpace",
+                        "doc": "Space availability for one upcoming departure from the terminal.",
+                        "fields": [
+                          {
+                            "name": "departure",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "Scheduled departure time as an ISO 8601 UTC timestamp."
+                          },
+                          {
+                            "name": "is_cancelled",
+                            "type": "boolean",
+                            "doc": "Whether this departure has been cancelled."
+                          },
+                          {
+                            "name": "vessel_id",
+                            "type": [
+                              "null",
+                              "int"
+                            ],
+                            "default": null,
+                            "doc": "Vessel identifier assigned to the departure."
+                          },
+                          {
+                            "name": "vessel_name",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "default": null,
+                            "doc": "Vessel name assigned to the departure."
+                          },
+                          {
+                            "name": "max_space_count",
+                            "type": [
+                              "null",
+                              "int"
+                            ],
+                            "default": null,
+                            "doc": "Maximum vehicle space capacity of the vessel for this departure."
+                          },
+                          {
+                            "name": "space_for_arrival_terminals",
+                            "type": {
+                              "type": "array",
+                              "items": {
+                                "type": "record",
+                                "name": "SpaceForArrivalTerminal",
+                                "doc": "Vehicle space availability for one arrival terminal served by a sailing.",
+                                "fields": [
+                                  {
+                                    "name": "terminal_id",
+                                    "type": [
+                                      "null",
+                                      "int"
+                                    ],
+                                    "default": null,
+                                    "doc": "Departing terminal identifier for this space breakdown."
+                                  },
+                                  {
+                                    "name": "terminal_name",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null,
+                                    "doc": "Human-readable sailing path (departing -> arrival terminals)."
+                                  },
+                                  {
+                                    "name": "vessel_id",
+                                    "type": [
+                                      "null",
+                                      "int"
+                                    ],
+                                    "default": null,
+                                    "doc": "Vessel identifier assigned to the sailing."
+                                  },
+                                  {
+                                    "name": "vessel_name",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null,
+                                    "doc": "Vessel name assigned to the sailing."
+                                  },
+                                  {
+                                    "name": "display_reservable_space",
+                                    "type": "boolean",
+                                    "doc": "Whether reservable space should be displayed for this arrival terminal."
+                                  },
+                                  {
+                                    "name": "reservable_space_count",
+                                    "type": [
+                                      "null",
+                                      "int"
+                                    ],
+                                    "default": null,
+                                    "doc": "Number of reservable vehicle spaces remaining, or null when not displayed/available."
+                                  },
+                                  {
+                                    "name": "reservable_space_hex_color",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null,
+                                    "doc": "Hex color code WSF uses to render reservable space availability."
+                                  },
+                                  {
+                                    "name": "display_drive_up_space",
+                                    "type": "boolean",
+                                    "doc": "Whether drive-up space should be displayed for this arrival terminal."
+                                  },
+                                  {
+                                    "name": "drive_up_space_count",
+                                    "type": [
+                                      "null",
+                                      "int"
+                                    ],
+                                    "default": null,
+                                    "doc": "Number of drive-up vehicle spaces remaining, or null when not displayed/available."
+                                  },
+                                  {
+                                    "name": "drive_up_space_hex_color",
+                                    "type": [
+                                      "null",
+                                      "string"
+                                    ],
+                                    "default": null,
+                                    "doc": "Hex color code WSF uses to render drive-up space availability."
+                                  },
+                                  {
+                                    "name": "max_space_count",
+                                    "type": [
+                                      "null",
+                                      "int"
+                                    ],
+                                    "default": null,
+                                    "doc": "Maximum vehicle space capacity of the vessel for this sailing."
+                                  },
+                                  {
+                                    "name": "arrival_terminal_ids",
+                                    "type": {
+                                      "type": "array",
+                                      "items": "int"
+                                    },
+                                    "doc": "Arrival terminal identifiers reachable on this sailing."
+                                  }
+                                ]
+                              }
+                            },
+                            "doc": "Per-arrival-terminal space breakdown for this departure."
+                          }
+                        ]
+                      }
+                    },
+                    "doc": "Upcoming departures from this terminal with per-sailing vehicle space availability."
+                  },
+                  {
+                    "name": "is_no_fare_collected",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "default": null,
+                    "doc": "Whether no fare is collected at this terminal for the relevant sailings, or null when not applicable."
+                  },
+                  {
+                    "name": "no_fare_collected_msg",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "default": null,
+                    "doc": "Message explaining the no-fare-collected status, or null."
+                  }
+                ],
+                "description": "A current transport measurement or status update from Washington State Department of Transportation. It carries traffic, travel, bridge, toll, pass, ferry, and border-wait updates when the upstream feed reports a new or refreshed value."
               }
             }
           }

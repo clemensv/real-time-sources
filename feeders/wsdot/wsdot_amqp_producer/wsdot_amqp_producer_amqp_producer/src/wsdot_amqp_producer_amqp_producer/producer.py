@@ -452,6 +452,12 @@ from wsdot_amqp_producer_data import TollRate
 from wsdot_amqp_producer_data import CommercialVehicleRestriction
 from wsdot_amqp_producer_data import BorderCrossing
 from wsdot_amqp_producer_data import VesselLocation
+from wsdot_amqp_producer_data import RoadWeatherStation
+from wsdot_amqp_producer_data import RoadWeatherReading
+from wsdot_amqp_producer_data import HighwayAlert
+from wsdot_amqp_producer_data import HighwayCamera
+from wsdot_amqp_producer_data import BridgeClearance
+from wsdot_amqp_producer_data import TerminalSailingSpace
 
 class UsWaWsdotTrafficAmqpProducer:
     """
@@ -3673,6 +3679,2009 @@ class UsWaWsdotFerriesAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _vessel_id=_vessel_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def close(self) -> None:
+        """
+        Close the producer and clean up resources
+        """
+        if getattr(self, "_handler", None) is not None:
+            try:
+                self._handler.request_close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            self._close_event.wait(timeout=10)
+            self._handler = None
+            return
+        if hasattr(self, '_sender') and self._sender:
+            try:
+                self._sender.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._sender = None
+        if hasattr(self, '_connection') and self._connection:
+            try:
+                self._connection.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._connection = None
+
+
+
+class UsWaWsdotRoadweatherAmqpProducer:
+    """
+    Producer class to send messages in the `us.wa.wsdot.roadweather.amqp` message group via AMQP 1.0 protocol.
+    """
+    
+    def __init__(self, 
+                 host: str,
+                 address: str,
+                 port: int = 5672,
+                 username: typing.Optional[str] = None,
+                 password: typing.Optional[str] = None,
+                 content_mode: typing.Literal['structured', 'binary'] = 'structured',
+                 format_type: str = 'application/json',
+                 credential: typing.Optional["TokenCredential"] = None,
+                 entra_audience: str = "https://servicebus.azure.net/.default",
+                 sas_key_name: typing.Optional[str] = None,
+                 sas_key: typing.Optional[str] = None,
+                 sas_token_ttl_seconds: int = 3600,
+                 use_tls: bool = True,
+                 ):
+        """
+        Initialize the AMQP producer
+        
+        Args:
+            host (str): The AMQP broker hostname
+            address (str): The AMQP address (queue or topic)
+            port (int): The AMQP broker port (default: 5672)
+            username (typing.Optional[str]): Optional username for SASL PLAIN authentication
+            password (typing.Optional[str]): Optional password for SASL PLAIN authentication
+            content_mode (typing.Literal['structured', 'binary']): CloudEvents content mode (default: 'structured')
+            format_type (str): Content type format for structured mode (default: 'application/json')
+            credential (typing.Optional[TokenCredential]): An azure-identity TokenCredential
+                (e.g. DefaultAzureCredential). When provided, SASL ANONYMOUS is used and an
+                Entra ID JWT is presented via AMQP CBS put-token (``type=jwt``). Mutually
+                exclusive with username/password and with sas_key_name/sas_key.
+            entra_audience (str): AAD scope used to acquire the JWT
+                (default: 'https://servicebus.azure.net/.default' -- targets Azure servicebus).
+                Override only when targeting a non-standard cloud or cross-targeting (e.g.
+                an Event Hubs client talking to a Service Bus entity, or vice-versa).
+            sas_key_name (typing.Optional[str]): SAS policy/key name (e.g.
+                ``RootManageSharedAccessKey``). When set with ``sas_key``, SASL ANONYMOUS
+                is used and a SAS token is presented via AMQP CBS put-token
+                (``type=servicebus.windows.net:sastoken``). Required for the Service Bus
+                emulator and for namespaces configured for SAS authentication.
+                Mutually exclusive with credential and with username/password.
+            sas_key (typing.Optional[str]): SAS key value (base64) used to sign the token.
+            sas_token_ttl_seconds (int): Lifetime of each minted SAS token (default: 3600).
+            use_tls (bool): If True (default), connect via amqps:// on port 5671 unless port
+                is explicitly set. Required for Azure servicebus; set to False
+                for the local Service Bus emulator (plain AMQP on 5672).
+        """
+        self.host = host
+        self.port = port
+        self.address = address
+        self.username = username
+        self.password = password
+        self.content_mode = content_mode
+        self.format_type = format_type
+        self._credential = credential
+        self._entra_audience = entra_audience
+        self._sas_key_name = sas_key_name
+        self._sas_key = sas_key
+        self._sas_token_ttl = int(sas_token_ttl_seconds)
+        self._use_tls = use_tls
+
+        _sas_configured = bool(sas_key_name or sas_key)
+        if _sas_configured and not (sas_key_name and sas_key):
+            raise ValueError(
+                "sas_key_name and sas_key must both be provided for SAS CBS auth."
+            )
+        if self._credential is not None and _sas_configured:
+            raise ValueError(
+                "credential is mutually exclusive with sas_key_name/sas_key. "
+                "Choose Entra ID OR SAS for CBS authentication."
+            )
+        if (self._credential is not None or _sas_configured) and (self.username or self.password):
+            raise ValueError(
+                "CBS auth (credential or SAS) is mutually exclusive with "
+                "username/password SASL PLAIN."
+            )
+        self._cbs_enabled = self._credential is not None or _sas_configured
+        if self._credential is not None and port == 5672:
+            # Default to AMQPS for Entra path; caller can override explicitly.
+            self.port = 5671
+        if self._cbs_enabled:
+            self._init_reactor()
+        else:
+            self._init_blocking_sender()
+
+    def _init_reactor(self):
+        """Start the proton reactor thread and block until CBS handshake completes.
+
+        On failure, the exception is propagated out of ``__init__`` so callers
+        get a clean error rather than discovering the problem on first send.
+        """
+        if self._credential is not None:
+            token_provider: _CbsTokenProvider = _JwtTokenProvider(
+                self._credential, self._entra_audience
+            )
+        else:
+            resource_uri = f"sb://{self.host}/{self.address}"
+            token_provider = _SasTokenProvider(
+                self._sas_key_name, self._sas_key, resource_uri,
+                ttl_seconds=self._sas_token_ttl,
+            )
+
+        self._send_queue: "queue.Queue" = queue.Queue()
+        self._init_future: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._close_event = threading.Event()
+        self._handler = _CbsAzureHandler(
+            host=self.host,
+            port=self.port,
+            address=self.address,
+            token_provider=token_provider,
+            use_tls=self._use_tls,
+            init_future=self._init_future,
+            send_queue=self._send_queue,
+            close_event=self._close_event,
+        )
+
+        def _run():
+            import traceback as _tb
+            try:
+                Container(self._handler).run()
+            except Exception as exc:
+                _cbs_logger.debug(f"[cbs] reactor crashed: {exc!r}\n{_tb.format_exc()}")
+                if not self._init_future.done():
+                    self._init_future.set_exception(exc)
+            finally:
+                self._close_event.set()
+
+        self._reactor_thread = threading.Thread(
+            target=_run, name="amqp-cbs-reactor", daemon=True
+        )
+        self._reactor_thread.start()
+
+        try:
+            self._init_future.result(timeout=60)
+        except Exception:
+            try:
+                self._handler.request_close()
+            except Exception:
+                pass
+            self._close_event.wait(timeout=10)
+            raise
+
+    def _send_via_reactor(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        fut: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._send_queue.put((amqp_msg, fut))
+        fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
+    
+    def _build_connection_url(self) -> str:
+        if self.username and self.password:
+            user = quote_plus(self.username)
+            pwd = quote_plus(self.password)
+            return f"amqp://{user}:{pwd}@{self.host}:{self.port}"
+        return f"amqp://{self.host}:{self.port}"
+
+    def _serialize_payload(self, data: typing.Any, content_type: str) -> bytes:
+        if data is None:
+            return b''
+        if hasattr(data, 'to_byte_array'):
+            payload = data.to_byte_array(content_type)
+        elif hasattr(data, 'to_dict'):
+            payload = json.dumps(data.to_dict())
+        elif isinstance(data, (bytes, bytearray)):
+            payload = bytes(data)
+        else:
+            payload = json.dumps(data)
+        # to_byte_array may return str for text content types (e.g. JSON);
+        # we always emit bytes so the AMQP body is a binary section rather
+        # than an AMQP string section containing escaped JSON.
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
+        CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
+        (``cloudEvents:foo``). ``content-type`` is carried separately on the
+        AMQP properties section and is therefore dropped here.
+        """
+        out: typing.Dict[str, typing.Any] = {}
+        for k, v in (headers or {}).items():
+            if v is None:
+                continue
+            lk = str(k)
+            low = lk.lower()
+            if low.startswith('ce-'):
+                out['cloudEvents:' + lk[3:]] = v
+            elif low == 'content-type':
+                continue
+            else:
+                out[lk] = v
+        return out
+
+    
+    
+    def send_amqp(self,
+        data: RoadWeatherStation,
+        _feedurl: str,
+        _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `us.wa.wsdot.roadweather.RoadWeatherStation.amqp` message
+        Metadata for a WSDOT Scanweb road weather information system (RWIS) station, including position and elevation. WSDOT operates roughly 105 Scanweb stations reporting pavement and atmospheric conditions across Washington State highways.
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (RoadWeatherStation): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "us.wa.wsdot.roadweather.RoadWeatherStation",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{station_id}".format(station_id=_station_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{station_id}".format(station_id=_station_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{station_id}".format(station_id=_station_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[RoadWeatherStation],
+        _feedurl: str,
+        _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `us.wa.wsdot.roadweather.RoadWeatherStation.amqp` messages
+        
+        Args:
+            data_array (typing.List[RoadWeatherStation]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _station_id=_station_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def send_amqp(self,
+        data: RoadWeatherReading,
+        _feedurl: str,
+        _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `us.wa.wsdot.roadweather.RoadWeatherReading.amqp` message
+        A current Scanweb road weather reading including air temperature, humidity, wind, visibility, precipitation totals, and per-sensor road surface and sub-surface measurements.
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (RoadWeatherReading): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "us.wa.wsdot.roadweather.RoadWeatherReading",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{station_id}".format(station_id=_station_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{station_id}".format(station_id=_station_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{station_id}".format(station_id=_station_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[RoadWeatherReading],
+        _feedurl: str,
+        _station_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `us.wa.wsdot.roadweather.RoadWeatherReading.amqp` messages
+        
+        Args:
+            data_array (typing.List[RoadWeatherReading]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _station_id (str): Value for placeholder station_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _station_id=_station_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def close(self) -> None:
+        """
+        Close the producer and clean up resources
+        """
+        if getattr(self, "_handler", None) is not None:
+            try:
+                self._handler.request_close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            self._close_event.wait(timeout=10)
+            self._handler = None
+            return
+        if hasattr(self, '_sender') and self._sender:
+            try:
+                self._sender.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._sender = None
+        if hasattr(self, '_connection') and self._connection:
+            try:
+                self._connection.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._connection = None
+
+
+
+class UsWaWsdotAlertsAmqpProducer:
+    """
+    Producer class to send messages in the `us.wa.wsdot.alerts.amqp` message group via AMQP 1.0 protocol.
+    """
+    
+    def __init__(self, 
+                 host: str,
+                 address: str,
+                 port: int = 5672,
+                 username: typing.Optional[str] = None,
+                 password: typing.Optional[str] = None,
+                 content_mode: typing.Literal['structured', 'binary'] = 'structured',
+                 format_type: str = 'application/json',
+                 credential: typing.Optional["TokenCredential"] = None,
+                 entra_audience: str = "https://servicebus.azure.net/.default",
+                 sas_key_name: typing.Optional[str] = None,
+                 sas_key: typing.Optional[str] = None,
+                 sas_token_ttl_seconds: int = 3600,
+                 use_tls: bool = True,
+                 ):
+        """
+        Initialize the AMQP producer
+        
+        Args:
+            host (str): The AMQP broker hostname
+            address (str): The AMQP address (queue or topic)
+            port (int): The AMQP broker port (default: 5672)
+            username (typing.Optional[str]): Optional username for SASL PLAIN authentication
+            password (typing.Optional[str]): Optional password for SASL PLAIN authentication
+            content_mode (typing.Literal['structured', 'binary']): CloudEvents content mode (default: 'structured')
+            format_type (str): Content type format for structured mode (default: 'application/json')
+            credential (typing.Optional[TokenCredential]): An azure-identity TokenCredential
+                (e.g. DefaultAzureCredential). When provided, SASL ANONYMOUS is used and an
+                Entra ID JWT is presented via AMQP CBS put-token (``type=jwt``). Mutually
+                exclusive with username/password and with sas_key_name/sas_key.
+            entra_audience (str): AAD scope used to acquire the JWT
+                (default: 'https://servicebus.azure.net/.default' -- targets Azure servicebus).
+                Override only when targeting a non-standard cloud or cross-targeting (e.g.
+                an Event Hubs client talking to a Service Bus entity, or vice-versa).
+            sas_key_name (typing.Optional[str]): SAS policy/key name (e.g.
+                ``RootManageSharedAccessKey``). When set with ``sas_key``, SASL ANONYMOUS
+                is used and a SAS token is presented via AMQP CBS put-token
+                (``type=servicebus.windows.net:sastoken``). Required for the Service Bus
+                emulator and for namespaces configured for SAS authentication.
+                Mutually exclusive with credential and with username/password.
+            sas_key (typing.Optional[str]): SAS key value (base64) used to sign the token.
+            sas_token_ttl_seconds (int): Lifetime of each minted SAS token (default: 3600).
+            use_tls (bool): If True (default), connect via amqps:// on port 5671 unless port
+                is explicitly set. Required for Azure servicebus; set to False
+                for the local Service Bus emulator (plain AMQP on 5672).
+        """
+        self.host = host
+        self.port = port
+        self.address = address
+        self.username = username
+        self.password = password
+        self.content_mode = content_mode
+        self.format_type = format_type
+        self._credential = credential
+        self._entra_audience = entra_audience
+        self._sas_key_name = sas_key_name
+        self._sas_key = sas_key
+        self._sas_token_ttl = int(sas_token_ttl_seconds)
+        self._use_tls = use_tls
+
+        _sas_configured = bool(sas_key_name or sas_key)
+        if _sas_configured and not (sas_key_name and sas_key):
+            raise ValueError(
+                "sas_key_name and sas_key must both be provided for SAS CBS auth."
+            )
+        if self._credential is not None and _sas_configured:
+            raise ValueError(
+                "credential is mutually exclusive with sas_key_name/sas_key. "
+                "Choose Entra ID OR SAS for CBS authentication."
+            )
+        if (self._credential is not None or _sas_configured) and (self.username or self.password):
+            raise ValueError(
+                "CBS auth (credential or SAS) is mutually exclusive with "
+                "username/password SASL PLAIN."
+            )
+        self._cbs_enabled = self._credential is not None or _sas_configured
+        if self._credential is not None and port == 5672:
+            # Default to AMQPS for Entra path; caller can override explicitly.
+            self.port = 5671
+        if self._cbs_enabled:
+            self._init_reactor()
+        else:
+            self._init_blocking_sender()
+
+    def _init_reactor(self):
+        """Start the proton reactor thread and block until CBS handshake completes.
+
+        On failure, the exception is propagated out of ``__init__`` so callers
+        get a clean error rather than discovering the problem on first send.
+        """
+        if self._credential is not None:
+            token_provider: _CbsTokenProvider = _JwtTokenProvider(
+                self._credential, self._entra_audience
+            )
+        else:
+            resource_uri = f"sb://{self.host}/{self.address}"
+            token_provider = _SasTokenProvider(
+                self._sas_key_name, self._sas_key, resource_uri,
+                ttl_seconds=self._sas_token_ttl,
+            )
+
+        self._send_queue: "queue.Queue" = queue.Queue()
+        self._init_future: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._close_event = threading.Event()
+        self._handler = _CbsAzureHandler(
+            host=self.host,
+            port=self.port,
+            address=self.address,
+            token_provider=token_provider,
+            use_tls=self._use_tls,
+            init_future=self._init_future,
+            send_queue=self._send_queue,
+            close_event=self._close_event,
+        )
+
+        def _run():
+            import traceback as _tb
+            try:
+                Container(self._handler).run()
+            except Exception as exc:
+                _cbs_logger.debug(f"[cbs] reactor crashed: {exc!r}\n{_tb.format_exc()}")
+                if not self._init_future.done():
+                    self._init_future.set_exception(exc)
+            finally:
+                self._close_event.set()
+
+        self._reactor_thread = threading.Thread(
+            target=_run, name="amqp-cbs-reactor", daemon=True
+        )
+        self._reactor_thread.start()
+
+        try:
+            self._init_future.result(timeout=60)
+        except Exception:
+            try:
+                self._handler.request_close()
+            except Exception:
+                pass
+            self._close_event.wait(timeout=10)
+            raise
+
+    def _send_via_reactor(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        fut: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._send_queue.put((amqp_msg, fut))
+        fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
+    
+    def _build_connection_url(self) -> str:
+        if self.username and self.password:
+            user = quote_plus(self.username)
+            pwd = quote_plus(self.password)
+            return f"amqp://{user}:{pwd}@{self.host}:{self.port}"
+        return f"amqp://{self.host}:{self.port}"
+
+    def _serialize_payload(self, data: typing.Any, content_type: str) -> bytes:
+        if data is None:
+            return b''
+        if hasattr(data, 'to_byte_array'):
+            payload = data.to_byte_array(content_type)
+        elif hasattr(data, 'to_dict'):
+            payload = json.dumps(data.to_dict())
+        elif isinstance(data, (bytes, bytearray)):
+            payload = bytes(data)
+        else:
+            payload = json.dumps(data)
+        # to_byte_array may return str for text content types (e.g. JSON);
+        # we always emit bytes so the AMQP body is a binary section rather
+        # than an AMQP string section containing escaped JSON.
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
+        CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
+        (``cloudEvents:foo``). ``content-type`` is carried separately on the
+        AMQP properties section and is therefore dropped here.
+        """
+        out: typing.Dict[str, typing.Any] = {}
+        for k, v in (headers or {}).items():
+            if v is None:
+                continue
+            lk = str(k)
+            low = lk.lower()
+            if low.startswith('ce-'):
+                out['cloudEvents:' + lk[3:]] = v
+            elif low == 'content-type':
+                continue
+            else:
+                out[lk] = v
+        return out
+
+    
+    
+    def send_amqp(self,
+        data: HighwayAlert,
+        _feedurl: str,
+        _alert_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `us.wa.wsdot.alerts.HighwayAlert.amqp` message
+        An active WSDOT highway alert describing an incident, construction, closure, special event, or weather impact, with start and end roadway locations on the Washington State highway network.
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _alert_id (str): Value for placeholder alert_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (HighwayAlert): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "us.wa.wsdot.alerts.HighwayAlert",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{alert_id}".format(alert_id=_alert_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{alert_id}".format(alert_id=_alert_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{alert_id}".format(alert_id=_alert_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[HighwayAlert],
+        _feedurl: str,
+        _alert_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `us.wa.wsdot.alerts.HighwayAlert.amqp` messages
+        
+        Args:
+            data_array (typing.List[HighwayAlert]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _alert_id (str): Value for placeholder alert_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _alert_id=_alert_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def close(self) -> None:
+        """
+        Close the producer and clean up resources
+        """
+        if getattr(self, "_handler", None) is not None:
+            try:
+                self._handler.request_close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            self._close_event.wait(timeout=10)
+            self._handler = None
+            return
+        if hasattr(self, '_sender') and self._sender:
+            try:
+                self._sender.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._sender = None
+        if hasattr(self, '_connection') and self._connection:
+            try:
+                self._connection.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._connection = None
+
+
+
+class UsWaWsdotCamerasAmqpProducer:
+    """
+    Producer class to send messages in the `us.wa.wsdot.cameras.amqp` message group via AMQP 1.0 protocol.
+    """
+    
+    def __init__(self, 
+                 host: str,
+                 address: str,
+                 port: int = 5672,
+                 username: typing.Optional[str] = None,
+                 password: typing.Optional[str] = None,
+                 content_mode: typing.Literal['structured', 'binary'] = 'structured',
+                 format_type: str = 'application/json',
+                 credential: typing.Optional["TokenCredential"] = None,
+                 entra_audience: str = "https://servicebus.azure.net/.default",
+                 sas_key_name: typing.Optional[str] = None,
+                 sas_key: typing.Optional[str] = None,
+                 sas_token_ttl_seconds: int = 3600,
+                 use_tls: bool = True,
+                 ):
+        """
+        Initialize the AMQP producer
+        
+        Args:
+            host (str): The AMQP broker hostname
+            address (str): The AMQP address (queue or topic)
+            port (int): The AMQP broker port (default: 5672)
+            username (typing.Optional[str]): Optional username for SASL PLAIN authentication
+            password (typing.Optional[str]): Optional password for SASL PLAIN authentication
+            content_mode (typing.Literal['structured', 'binary']): CloudEvents content mode (default: 'structured')
+            format_type (str): Content type format for structured mode (default: 'application/json')
+            credential (typing.Optional[TokenCredential]): An azure-identity TokenCredential
+                (e.g. DefaultAzureCredential). When provided, SASL ANONYMOUS is used and an
+                Entra ID JWT is presented via AMQP CBS put-token (``type=jwt``). Mutually
+                exclusive with username/password and with sas_key_name/sas_key.
+            entra_audience (str): AAD scope used to acquire the JWT
+                (default: 'https://servicebus.azure.net/.default' -- targets Azure servicebus).
+                Override only when targeting a non-standard cloud or cross-targeting (e.g.
+                an Event Hubs client talking to a Service Bus entity, or vice-versa).
+            sas_key_name (typing.Optional[str]): SAS policy/key name (e.g.
+                ``RootManageSharedAccessKey``). When set with ``sas_key``, SASL ANONYMOUS
+                is used and a SAS token is presented via AMQP CBS put-token
+                (``type=servicebus.windows.net:sastoken``). Required for the Service Bus
+                emulator and for namespaces configured for SAS authentication.
+                Mutually exclusive with credential and with username/password.
+            sas_key (typing.Optional[str]): SAS key value (base64) used to sign the token.
+            sas_token_ttl_seconds (int): Lifetime of each minted SAS token (default: 3600).
+            use_tls (bool): If True (default), connect via amqps:// on port 5671 unless port
+                is explicitly set. Required for Azure servicebus; set to False
+                for the local Service Bus emulator (plain AMQP on 5672).
+        """
+        self.host = host
+        self.port = port
+        self.address = address
+        self.username = username
+        self.password = password
+        self.content_mode = content_mode
+        self.format_type = format_type
+        self._credential = credential
+        self._entra_audience = entra_audience
+        self._sas_key_name = sas_key_name
+        self._sas_key = sas_key
+        self._sas_token_ttl = int(sas_token_ttl_seconds)
+        self._use_tls = use_tls
+
+        _sas_configured = bool(sas_key_name or sas_key)
+        if _sas_configured and not (sas_key_name and sas_key):
+            raise ValueError(
+                "sas_key_name and sas_key must both be provided for SAS CBS auth."
+            )
+        if self._credential is not None and _sas_configured:
+            raise ValueError(
+                "credential is mutually exclusive with sas_key_name/sas_key. "
+                "Choose Entra ID OR SAS for CBS authentication."
+            )
+        if (self._credential is not None or _sas_configured) and (self.username or self.password):
+            raise ValueError(
+                "CBS auth (credential or SAS) is mutually exclusive with "
+                "username/password SASL PLAIN."
+            )
+        self._cbs_enabled = self._credential is not None or _sas_configured
+        if self._credential is not None and port == 5672:
+            # Default to AMQPS for Entra path; caller can override explicitly.
+            self.port = 5671
+        if self._cbs_enabled:
+            self._init_reactor()
+        else:
+            self._init_blocking_sender()
+
+    def _init_reactor(self):
+        """Start the proton reactor thread and block until CBS handshake completes.
+
+        On failure, the exception is propagated out of ``__init__`` so callers
+        get a clean error rather than discovering the problem on first send.
+        """
+        if self._credential is not None:
+            token_provider: _CbsTokenProvider = _JwtTokenProvider(
+                self._credential, self._entra_audience
+            )
+        else:
+            resource_uri = f"sb://{self.host}/{self.address}"
+            token_provider = _SasTokenProvider(
+                self._sas_key_name, self._sas_key, resource_uri,
+                ttl_seconds=self._sas_token_ttl,
+            )
+
+        self._send_queue: "queue.Queue" = queue.Queue()
+        self._init_future: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._close_event = threading.Event()
+        self._handler = _CbsAzureHandler(
+            host=self.host,
+            port=self.port,
+            address=self.address,
+            token_provider=token_provider,
+            use_tls=self._use_tls,
+            init_future=self._init_future,
+            send_queue=self._send_queue,
+            close_event=self._close_event,
+        )
+
+        def _run():
+            import traceback as _tb
+            try:
+                Container(self._handler).run()
+            except Exception as exc:
+                _cbs_logger.debug(f"[cbs] reactor crashed: {exc!r}\n{_tb.format_exc()}")
+                if not self._init_future.done():
+                    self._init_future.set_exception(exc)
+            finally:
+                self._close_event.set()
+
+        self._reactor_thread = threading.Thread(
+            target=_run, name="amqp-cbs-reactor", daemon=True
+        )
+        self._reactor_thread.start()
+
+        try:
+            self._init_future.result(timeout=60)
+        except Exception:
+            try:
+                self._handler.request_close()
+            except Exception:
+                pass
+            self._close_event.wait(timeout=10)
+            raise
+
+    def _send_via_reactor(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        fut: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._send_queue.put((amqp_msg, fut))
+        fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
+    
+    def _build_connection_url(self) -> str:
+        if self.username and self.password:
+            user = quote_plus(self.username)
+            pwd = quote_plus(self.password)
+            return f"amqp://{user}:{pwd}@{self.host}:{self.port}"
+        return f"amqp://{self.host}:{self.port}"
+
+    def _serialize_payload(self, data: typing.Any, content_type: str) -> bytes:
+        if data is None:
+            return b''
+        if hasattr(data, 'to_byte_array'):
+            payload = data.to_byte_array(content_type)
+        elif hasattr(data, 'to_dict'):
+            payload = json.dumps(data.to_dict())
+        elif isinstance(data, (bytes, bytearray)):
+            payload = bytes(data)
+        else:
+            payload = json.dumps(data)
+        # to_byte_array may return str for text content types (e.g. JSON);
+        # we always emit bytes so the AMQP body is a binary section rather
+        # than an AMQP string section containing escaped JSON.
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
+        CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
+        (``cloudEvents:foo``). ``content-type`` is carried separately on the
+        AMQP properties section and is therefore dropped here.
+        """
+        out: typing.Dict[str, typing.Any] = {}
+        for k, v in (headers or {}).items():
+            if v is None:
+                continue
+            lk = str(k)
+            low = lk.lower()
+            if low.startswith('ce-'):
+                out['cloudEvents:' + lk[3:]] = v
+            elif low == 'content-type':
+                continue
+            else:
+                out[lk] = v
+        return out
+
+    
+    
+    def send_amqp(self,
+        data: HighwayCamera,
+        _feedurl: str,
+        _camera_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `us.wa.wsdot.cameras.HighwayCamera.amqp` message
+        Reference catalog entry for a WSDOT highway traffic camera, including its location and a claim-check image URL. The image bytes are not transported; consumers fetch the most recent frame from ImageURL on demand.
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _camera_id (str): Value for placeholder camera_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (HighwayCamera): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "us.wa.wsdot.cameras.HighwayCamera",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{camera_id}".format(camera_id=_camera_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{camera_id}".format(camera_id=_camera_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{camera_id}".format(camera_id=_camera_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[HighwayCamera],
+        _feedurl: str,
+        _camera_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `us.wa.wsdot.cameras.HighwayCamera.amqp` messages
+        
+        Args:
+            data_array (typing.List[HighwayCamera]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _camera_id (str): Value for placeholder camera_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _camera_id=_camera_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def close(self) -> None:
+        """
+        Close the producer and clean up resources
+        """
+        if getattr(self, "_handler", None) is not None:
+            try:
+                self._handler.request_close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            self._close_event.wait(timeout=10)
+            self._handler = None
+            return
+        if hasattr(self, '_sender') and self._sender:
+            try:
+                self._sender.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._sender = None
+        if hasattr(self, '_connection') and self._connection:
+            try:
+                self._connection.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._connection = None
+
+
+
+class UsWaWsdotBridgeclearancesAmqpProducer:
+    """
+    Producer class to send messages in the `us.wa.wsdot.bridgeclearances.amqp` message group via AMQP 1.0 protocol.
+    """
+    
+    def __init__(self, 
+                 host: str,
+                 address: str,
+                 port: int = 5672,
+                 username: typing.Optional[str] = None,
+                 password: typing.Optional[str] = None,
+                 content_mode: typing.Literal['structured', 'binary'] = 'structured',
+                 format_type: str = 'application/json',
+                 credential: typing.Optional["TokenCredential"] = None,
+                 entra_audience: str = "https://servicebus.azure.net/.default",
+                 sas_key_name: typing.Optional[str] = None,
+                 sas_key: typing.Optional[str] = None,
+                 sas_token_ttl_seconds: int = 3600,
+                 use_tls: bool = True,
+                 ):
+        """
+        Initialize the AMQP producer
+        
+        Args:
+            host (str): The AMQP broker hostname
+            address (str): The AMQP address (queue or topic)
+            port (int): The AMQP broker port (default: 5672)
+            username (typing.Optional[str]): Optional username for SASL PLAIN authentication
+            password (typing.Optional[str]): Optional password for SASL PLAIN authentication
+            content_mode (typing.Literal['structured', 'binary']): CloudEvents content mode (default: 'structured')
+            format_type (str): Content type format for structured mode (default: 'application/json')
+            credential (typing.Optional[TokenCredential]): An azure-identity TokenCredential
+                (e.g. DefaultAzureCredential). When provided, SASL ANONYMOUS is used and an
+                Entra ID JWT is presented via AMQP CBS put-token (``type=jwt``). Mutually
+                exclusive with username/password and with sas_key_name/sas_key.
+            entra_audience (str): AAD scope used to acquire the JWT
+                (default: 'https://servicebus.azure.net/.default' -- targets Azure servicebus).
+                Override only when targeting a non-standard cloud or cross-targeting (e.g.
+                an Event Hubs client talking to a Service Bus entity, or vice-versa).
+            sas_key_name (typing.Optional[str]): SAS policy/key name (e.g.
+                ``RootManageSharedAccessKey``). When set with ``sas_key``, SASL ANONYMOUS
+                is used and a SAS token is presented via AMQP CBS put-token
+                (``type=servicebus.windows.net:sastoken``). Required for the Service Bus
+                emulator and for namespaces configured for SAS authentication.
+                Mutually exclusive with credential and with username/password.
+            sas_key (typing.Optional[str]): SAS key value (base64) used to sign the token.
+            sas_token_ttl_seconds (int): Lifetime of each minted SAS token (default: 3600).
+            use_tls (bool): If True (default), connect via amqps:// on port 5671 unless port
+                is explicitly set. Required for Azure servicebus; set to False
+                for the local Service Bus emulator (plain AMQP on 5672).
+        """
+        self.host = host
+        self.port = port
+        self.address = address
+        self.username = username
+        self.password = password
+        self.content_mode = content_mode
+        self.format_type = format_type
+        self._credential = credential
+        self._entra_audience = entra_audience
+        self._sas_key_name = sas_key_name
+        self._sas_key = sas_key
+        self._sas_token_ttl = int(sas_token_ttl_seconds)
+        self._use_tls = use_tls
+
+        _sas_configured = bool(sas_key_name or sas_key)
+        if _sas_configured and not (sas_key_name and sas_key):
+            raise ValueError(
+                "sas_key_name and sas_key must both be provided for SAS CBS auth."
+            )
+        if self._credential is not None and _sas_configured:
+            raise ValueError(
+                "credential is mutually exclusive with sas_key_name/sas_key. "
+                "Choose Entra ID OR SAS for CBS authentication."
+            )
+        if (self._credential is not None or _sas_configured) and (self.username or self.password):
+            raise ValueError(
+                "CBS auth (credential or SAS) is mutually exclusive with "
+                "username/password SASL PLAIN."
+            )
+        self._cbs_enabled = self._credential is not None or _sas_configured
+        if self._credential is not None and port == 5672:
+            # Default to AMQPS for Entra path; caller can override explicitly.
+            self.port = 5671
+        if self._cbs_enabled:
+            self._init_reactor()
+        else:
+            self._init_blocking_sender()
+
+    def _init_reactor(self):
+        """Start the proton reactor thread and block until CBS handshake completes.
+
+        On failure, the exception is propagated out of ``__init__`` so callers
+        get a clean error rather than discovering the problem on first send.
+        """
+        if self._credential is not None:
+            token_provider: _CbsTokenProvider = _JwtTokenProvider(
+                self._credential, self._entra_audience
+            )
+        else:
+            resource_uri = f"sb://{self.host}/{self.address}"
+            token_provider = _SasTokenProvider(
+                self._sas_key_name, self._sas_key, resource_uri,
+                ttl_seconds=self._sas_token_ttl,
+            )
+
+        self._send_queue: "queue.Queue" = queue.Queue()
+        self._init_future: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._close_event = threading.Event()
+        self._handler = _CbsAzureHandler(
+            host=self.host,
+            port=self.port,
+            address=self.address,
+            token_provider=token_provider,
+            use_tls=self._use_tls,
+            init_future=self._init_future,
+            send_queue=self._send_queue,
+            close_event=self._close_event,
+        )
+
+        def _run():
+            import traceback as _tb
+            try:
+                Container(self._handler).run()
+            except Exception as exc:
+                _cbs_logger.debug(f"[cbs] reactor crashed: {exc!r}\n{_tb.format_exc()}")
+                if not self._init_future.done():
+                    self._init_future.set_exception(exc)
+            finally:
+                self._close_event.set()
+
+        self._reactor_thread = threading.Thread(
+            target=_run, name="amqp-cbs-reactor", daemon=True
+        )
+        self._reactor_thread.start()
+
+        try:
+            self._init_future.result(timeout=60)
+        except Exception:
+            try:
+                self._handler.request_close()
+            except Exception:
+                pass
+            self._close_event.wait(timeout=10)
+            raise
+
+    def _send_via_reactor(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        fut: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._send_queue.put((amqp_msg, fut))
+        fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
+    
+    def _build_connection_url(self) -> str:
+        if self.username and self.password:
+            user = quote_plus(self.username)
+            pwd = quote_plus(self.password)
+            return f"amqp://{user}:{pwd}@{self.host}:{self.port}"
+        return f"amqp://{self.host}:{self.port}"
+
+    def _serialize_payload(self, data: typing.Any, content_type: str) -> bytes:
+        if data is None:
+            return b''
+        if hasattr(data, 'to_byte_array'):
+            payload = data.to_byte_array(content_type)
+        elif hasattr(data, 'to_dict'):
+            payload = json.dumps(data.to_dict())
+        elif isinstance(data, (bytes, bytearray)):
+            payload = bytes(data)
+        else:
+            payload = json.dumps(data)
+        # to_byte_array may return str for text content types (e.g. JSON);
+        # we always emit bytes so the AMQP body is a binary section rather
+        # than an AMQP string section containing escaped JSON.
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
+        CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
+        (``cloudEvents:foo``). ``content-type`` is carried separately on the
+        AMQP properties section and is therefore dropped here.
+        """
+        out: typing.Dict[str, typing.Any] = {}
+        for k, v in (headers or {}).items():
+            if v is None:
+                continue
+            lk = str(k)
+            low = lk.lower()
+            if low.startswith('ce-'):
+                out['cloudEvents:' + lk[3:]] = v
+            elif low == 'content-type':
+                continue
+            else:
+                out[lk] = v
+        return out
+
+    
+    
+    def send_amqp(self,
+        data: BridgeClearance,
+        _feedurl: str,
+        _crossing_location_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `us.wa.wsdot.bridgeclearances.BridgeClearance.amqp` message
+        Reference catalog record of the surveyed vertical clearance of a structure crossing a Washington State highway, used for commercial vehicle routing. Largely static; refreshed periodically.
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _crossing_location_id (str): Value for placeholder crossing_location_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (BridgeClearance): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "us.wa.wsdot.bridgeclearances.BridgeClearance",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{crossing_location_id}".format(crossing_location_id=_crossing_location_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{crossing_location_id}".format(crossing_location_id=_crossing_location_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{crossing_location_id}".format(crossing_location_id=_crossing_location_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[BridgeClearance],
+        _feedurl: str,
+        _crossing_location_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `us.wa.wsdot.bridgeclearances.BridgeClearance.amqp` messages
+        
+        Args:
+            data_array (typing.List[BridgeClearance]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _crossing_location_id (str): Value for placeholder crossing_location_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _crossing_location_id=_crossing_location_id,
+                _time=_time,
+                content_type=content_type)
+    
+    
+    def close(self) -> None:
+        """
+        Close the producer and clean up resources
+        """
+        if getattr(self, "_handler", None) is not None:
+            try:
+                self._handler.request_close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            self._close_event.wait(timeout=10)
+            self._handler = None
+            return
+        if hasattr(self, '_sender') and self._sender:
+            try:
+                self._sender.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._sender = None
+        if hasattr(self, '_connection') and self._connection:
+            try:
+                self._connection.close()
+            except Exception:  # pragma: no cover - best-effort cleanup
+                pass
+            finally:
+                self._connection = None
+
+
+
+class UsWaWsdotFerryterminalsAmqpProducer:
+    """
+    Producer class to send messages in the `us.wa.wsdot.ferryterminals.amqp` message group via AMQP 1.0 protocol.
+    """
+    
+    def __init__(self, 
+                 host: str,
+                 address: str,
+                 port: int = 5672,
+                 username: typing.Optional[str] = None,
+                 password: typing.Optional[str] = None,
+                 content_mode: typing.Literal['structured', 'binary'] = 'structured',
+                 format_type: str = 'application/json',
+                 credential: typing.Optional["TokenCredential"] = None,
+                 entra_audience: str = "https://servicebus.azure.net/.default",
+                 sas_key_name: typing.Optional[str] = None,
+                 sas_key: typing.Optional[str] = None,
+                 sas_token_ttl_seconds: int = 3600,
+                 use_tls: bool = True,
+                 ):
+        """
+        Initialize the AMQP producer
+        
+        Args:
+            host (str): The AMQP broker hostname
+            address (str): The AMQP address (queue or topic)
+            port (int): The AMQP broker port (default: 5672)
+            username (typing.Optional[str]): Optional username for SASL PLAIN authentication
+            password (typing.Optional[str]): Optional password for SASL PLAIN authentication
+            content_mode (typing.Literal['structured', 'binary']): CloudEvents content mode (default: 'structured')
+            format_type (str): Content type format for structured mode (default: 'application/json')
+            credential (typing.Optional[TokenCredential]): An azure-identity TokenCredential
+                (e.g. DefaultAzureCredential). When provided, SASL ANONYMOUS is used and an
+                Entra ID JWT is presented via AMQP CBS put-token (``type=jwt``). Mutually
+                exclusive with username/password and with sas_key_name/sas_key.
+            entra_audience (str): AAD scope used to acquire the JWT
+                (default: 'https://servicebus.azure.net/.default' -- targets Azure servicebus).
+                Override only when targeting a non-standard cloud or cross-targeting (e.g.
+                an Event Hubs client talking to a Service Bus entity, or vice-versa).
+            sas_key_name (typing.Optional[str]): SAS policy/key name (e.g.
+                ``RootManageSharedAccessKey``). When set with ``sas_key``, SASL ANONYMOUS
+                is used and a SAS token is presented via AMQP CBS put-token
+                (``type=servicebus.windows.net:sastoken``). Required for the Service Bus
+                emulator and for namespaces configured for SAS authentication.
+                Mutually exclusive with credential and with username/password.
+            sas_key (typing.Optional[str]): SAS key value (base64) used to sign the token.
+            sas_token_ttl_seconds (int): Lifetime of each minted SAS token (default: 3600).
+            use_tls (bool): If True (default), connect via amqps:// on port 5671 unless port
+                is explicitly set. Required for Azure servicebus; set to False
+                for the local Service Bus emulator (plain AMQP on 5672).
+        """
+        self.host = host
+        self.port = port
+        self.address = address
+        self.username = username
+        self.password = password
+        self.content_mode = content_mode
+        self.format_type = format_type
+        self._credential = credential
+        self._entra_audience = entra_audience
+        self._sas_key_name = sas_key_name
+        self._sas_key = sas_key
+        self._sas_token_ttl = int(sas_token_ttl_seconds)
+        self._use_tls = use_tls
+
+        _sas_configured = bool(sas_key_name or sas_key)
+        if _sas_configured and not (sas_key_name and sas_key):
+            raise ValueError(
+                "sas_key_name and sas_key must both be provided for SAS CBS auth."
+            )
+        if self._credential is not None and _sas_configured:
+            raise ValueError(
+                "credential is mutually exclusive with sas_key_name/sas_key. "
+                "Choose Entra ID OR SAS for CBS authentication."
+            )
+        if (self._credential is not None or _sas_configured) and (self.username or self.password):
+            raise ValueError(
+                "CBS auth (credential or SAS) is mutually exclusive with "
+                "username/password SASL PLAIN."
+            )
+        self._cbs_enabled = self._credential is not None or _sas_configured
+        if self._credential is not None and port == 5672:
+            # Default to AMQPS for Entra path; caller can override explicitly.
+            self.port = 5671
+        if self._cbs_enabled:
+            self._init_reactor()
+        else:
+            self._init_blocking_sender()
+
+    def _init_reactor(self):
+        """Start the proton reactor thread and block until CBS handshake completes.
+
+        On failure, the exception is propagated out of ``__init__`` so callers
+        get a clean error rather than discovering the problem on first send.
+        """
+        if self._credential is not None:
+            token_provider: _CbsTokenProvider = _JwtTokenProvider(
+                self._credential, self._entra_audience
+            )
+        else:
+            resource_uri = f"sb://{self.host}/{self.address}"
+            token_provider = _SasTokenProvider(
+                self._sas_key_name, self._sas_key, resource_uri,
+                ttl_seconds=self._sas_token_ttl,
+            )
+
+        self._send_queue: "queue.Queue" = queue.Queue()
+        self._init_future: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._close_event = threading.Event()
+        self._handler = _CbsAzureHandler(
+            host=self.host,
+            port=self.port,
+            address=self.address,
+            token_provider=token_provider,
+            use_tls=self._use_tls,
+            init_future=self._init_future,
+            send_queue=self._send_queue,
+            close_event=self._close_event,
+        )
+
+        def _run():
+            import traceback as _tb
+            try:
+                Container(self._handler).run()
+            except Exception as exc:
+                _cbs_logger.debug(f"[cbs] reactor crashed: {exc!r}\n{_tb.format_exc()}")
+                if not self._init_future.done():
+                    self._init_future.set_exception(exc)
+            finally:
+                self._close_event.set()
+
+        self._reactor_thread = threading.Thread(
+            target=_run, name="amqp-cbs-reactor", daemon=True
+        )
+        self._reactor_thread.start()
+
+        try:
+            self._init_future.result(timeout=60)
+        except Exception:
+            try:
+                self._handler.request_close()
+            except Exception:
+                pass
+            self._close_event.wait(timeout=10)
+            raise
+
+    def _send_via_reactor(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        fut: "concurrent.futures.Future" = concurrent.futures.Future()
+        self._send_queue.put((amqp_msg, fut))
+        fut.result(timeout=timeout)
+
+    def _init_blocking_sender(self) -> None:
+        connection_url = self._build_connection_url()
+        connection_timeout = 120 if self.username and self.password else 30
+        # Artemis-class brokers can stall unsettled BlockingSender sends on
+        # SASL PLAIN links; a pre-settled sender avoids the timeout loop.
+        sender_options = AtMostOnce() if self.username and self.password else None
+        self._blocking_sender_is_presettled = sender_options is not None
+        self._connection = BlockingConnection(connection_url, timeout=connection_timeout)
+        self._sender = self._connection.create_sender(self.address, options=sender_options)
+
+    def _send_via_blocking_sender(self, amqp_msg: Message, timeout: float = 30.0) -> None:
+        self._sender.send(amqp_msg, timeout=timeout)
+        if self._blocking_sender_is_presettled:
+            # BlockingSender.send() returns immediately for pre-settled
+            # deliveries, so wait until Proton has drained the link queue
+            # and flushed all pending bytes.
+            self._connection.wait(
+                lambda: (
+                    self._sender.link.queued == 0 and
+                    self._connection.conn.transport is not None and
+                    self._connection.conn.transport.pending() == 0
+                ),
+                msg=f"Flushing sender {self._sender.link.name} transport",
+                timeout=timeout,
+            )
+    
+    def _build_connection_url(self) -> str:
+        if self.username and self.password:
+            user = quote_plus(self.username)
+            pwd = quote_plus(self.password)
+            return f"amqp://{user}:{pwd}@{self.host}:{self.port}"
+        return f"amqp://{self.host}:{self.port}"
+
+    def _serialize_payload(self, data: typing.Any, content_type: str) -> bytes:
+        if data is None:
+            return b''
+        if hasattr(data, 'to_byte_array'):
+            payload = data.to_byte_array(content_type)
+        elif hasattr(data, 'to_dict'):
+            payload = json.dumps(data.to_dict())
+        elif isinstance(data, (bytes, bytearray)):
+            payload = bytes(data)
+        else:
+            payload = json.dumps(data)
+        # to_byte_array may return str for text content types (e.g. JSON);
+        # we always emit bytes so the AMQP body is a binary section rather
+        # than an AMQP string section containing escaped JSON.
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
+    @staticmethod
+    def _coerce_amqp_timestamp(value: typing.Any) -> typing.Optional[int]:
+        if value is None:
+            return None
+        if isinstance(value, datetime):
+            if value.tzinfo is None:
+                value = value.replace(tzinfo=timezone.utc)
+            return int(value.timestamp() * 1000)
+        if isinstance(value, (int, float)):
+            return int(value)
+        text = str(value)
+        normalized = text[:-1] + '+00:00' if text.endswith('Z') else text
+        try:
+            return int(datetime.fromisoformat(normalized).timestamp() * 1000)
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _ce_headers_to_amqp_properties(headers: typing.Mapping[str, typing.Any]) -> typing.Dict[str, typing.Any]:
+        """Translate cloudevents-sdk HTTP-style headers (``ce-foo``) into the
+        CloudEvents AMQP 1.0 Protocol Binding (v1.0.2 §3.1) form
+        (``cloudEvents:foo``). ``content-type`` is carried separately on the
+        AMQP properties section and is therefore dropped here.
+        """
+        out: typing.Dict[str, typing.Any] = {}
+        for k, v in (headers or {}).items():
+            if v is None:
+                continue
+            lk = str(k)
+            low = lk.lower()
+            if low.startswith('ce-'):
+                out['cloudEvents:' + lk[3:]] = v
+            elif low == 'content-type':
+                continue
+            else:
+                out[lk] = v
+        return out
+
+    
+    
+    def send_amqp(self,
+        data: TerminalSailingSpace,
+        _feedurl: str,
+        _terminal_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send the `us.wa.wsdot.ferryterminals.TerminalSailingSpace.amqp` message
+        Real-time drive-up and reservable vehicle space availability for upcoming Washington State Ferries departures from a terminal, broken down by sailing and arrival terminal.
+        
+        Args:
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _terminal_id (str): Value for placeholder terminal_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            data (TerminalSailingSpace): The message data object
+            content_type (str): The content type of the message data (default: 'application/json')
+        """
+        # Build CloudEvent attributes
+        attributes = {
+            "type":
+            "us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+            "source":
+            "{feedurl}".format(feedurl=_feedurl),
+            "subject":
+            "{terminal_id}".format(terminal_id=_terminal_id),
+        }
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        
+        # Remove None values
+        attributes = {k: v for k, v in attributes.items() if v is not None}
+        
+        # Serialize data
+        byte_data = self._serialize_payload(data, content_type)
+        
+        # Create CloudEvent
+        cloud_event = CloudEvent(attributes, byte_data)
+        
+        # Convert to AMQP message based on content mode
+        if self.content_mode == 'structured':
+            headers, body = to_structured(cloud_event)
+            if isinstance(body, dict):
+                msg_body = json.dumps(body).encode('utf-8')
+            elif isinstance(body, bytes):
+                msg_body = body
+            else:
+                msg_body = str(body).encode('utf-8')
+            amqp_msg = Message(body=msg_body, inferred=True)
+            amqp_msg.content_type = self.format_type or headers.get('content-type')
+        else:  # binary mode
+            headers, body = to_binary(cloud_event)
+            if isinstance(body, str):
+                body = body.encode('utf-8')
+            amqp_msg = Message(body=body, inferred=True)
+            amqp_msg.content_type = content_type
+            if headers:
+                amqp_msg.properties = self._ce_headers_to_amqp_properties(headers)
+        amqp_creation_time = self._coerce_amqp_timestamp(attributes.get('time'))
+        if amqp_creation_time is not None:
+            amqp_msg.creation_time = amqp_creation_time
+        # Apply AMQP message properties declared in protocoloptions.properties.
+        amqp_msg.subject = "{terminal_id}".format(terminal_id=_terminal_id)
+
+        app_properties = {}
+        if app_properties:
+            if amqp_msg.properties is None:
+                amqp_msg.properties = {}
+            amqp_msg.properties.update(app_properties)
+
+        annotations = {}
+        annotation_value = "{terminal_id}".format(terminal_id=_terminal_id)
+        annotation_value = str(annotation_value)[:128]
+        annotations[symbol("x-opt-partition-key")] = annotation_value
+        if annotations:
+            if amqp_msg.annotations is None:
+                amqp_msg.annotations = {}
+            amqp_msg.annotations.update(annotations)
+        
+        # Send message
+        if getattr(self, "_handler", None) is not None:
+            self._send_via_reactor(amqp_msg)
+        else:
+            self._send_via_blocking_sender(amqp_msg)
+    
+    def send_amqp_batch(self,
+        data_array: typing.List[TerminalSailingSpace],
+        _feedurl: str,
+        _terminal_id: str,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = 'application/json') -> None:
+        """
+        Send multiple `us.wa.wsdot.ferryterminals.TerminalSailingSpace.amqp` messages
+        
+        Args:
+            data_array (typing.List[TerminalSailingSpace]): Array of message data objects
+            _feedurl (str): Value for placeholder feedurl in attribute source
+            _terminal_id (str): Value for placeholder terminal_id in attribute subject
+            _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type (str): The content type of the message data
+        """
+        for data in data_array:
+            self.send_amqp(
+                data=data,
+                _feedurl=_feedurl,
+                _terminal_id=_terminal_id,
                 _time=_time,
                 content_type=content_type)
     

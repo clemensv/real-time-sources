@@ -1,40 +1,41 @@
 """ TollRate dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class TollRate:
     """
-    Toll rate.
+    Current toll rate for a WSDOT tolled route segment. WSDOT operates dynamic tolling on SR 99, I-405, and SR 167.
+    
     Attributes:
-        trip_name (str): 
-        state_route (str): 
-        travel_direction (str): 
-        current_toll (int): 
-        current_message (typing.Optional[str]): 
-        time_updated (str): 
-        start_location_name (str): 
-        start_latitude (float): 
-        start_longitude (float): 
-        start_milepost (float): 
-        end_location_name (str): 
-        end_latitude (float): 
-        end_longitude (float): 
-        end_milepost (float): """
+        trip_name (str)
+        state_route (str)
+        travel_direction (str)
+        current_toll (int)
+        current_message (typing.Optional[str])
+        time_updated (str)
+        start_location_name (str)
+        start_latitude (float)
+        start_longitude (float)
+        start_milepost (float)
+        end_location_name (str)
+        end_latitude (float)
+        end_longitude (float)
+        end_milepost (float)
+    """
+    
     
     trip_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="trip_name"))
     state_route: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state_route"))
@@ -50,27 +51,6 @@ class TollRate:
     end_latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end_latitude"))
     end_longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end_longitude"))
     end_milepost: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="end_milepost"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"TollRate\", \"namespace\": \"us.wa.wsdot.tolls\", \"doc\": \"Toll rate.\", \"fields\": [{\"name\": \"trip_name\", \"type\": \"string\"}, {\"name\": \"state_route\", \"type\": \"string\"}, {\"name\": \"travel_direction\", \"type\": \"string\"}, {\"name\": \"current_toll\", \"type\": \"int\"}, {\"name\": \"current_message\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"time_updated\", \"type\": \"string\"}, {\"name\": \"start_location_name\", \"type\": \"string\"}, {\"name\": \"start_latitude\", \"type\": \"double\"}, {\"name\": \"start_longitude\", \"type\": \"double\"}, {\"name\": \"start_milepost\", \"type\": \"double\"}, {\"name\": \"end_location_name\", \"type\": \"string\"}, {\"name\": \"end_latitude\", \"type\": \"double\"}, {\"name\": \"end_longitude\", \"type\": \"double\"}, {\"name\": \"end_milepost\", \"type\": \"double\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.trip_name=str(self.trip_name)
-        self.state_route=str(self.state_route)
-        self.travel_direction=str(self.travel_direction)
-        self.current_toll=int(self.current_toll)
-        self.current_message=str(self.current_message) if self.current_message else None
-        self.time_updated=str(self.time_updated)
-        self.start_location_name=str(self.start_location_name)
-        self.start_latitude=float(self.start_latitude)
-        self.start_longitude=float(self.start_longitude)
-        self.start_milepost=float(self.start_milepost)
-        self.end_location_name=str(self.end_location_name)
-        self.end_latitude=float(self.end_latitude)
-        self.end_longitude=float(self.end_longitude)
-        self.end_milepost=float(self.end_milepost)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'TollRate':
@@ -81,7 +61,7 @@ class TollRate:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -100,7 +80,7 @@ class TollRate:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -114,8 +94,6 @@ class TollRate:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -128,20 +106,10 @@ class TollRate:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
-            if isinstance(result, str):
-                result = result.encode('utf-8')
-            if isinstance(result, str):
-                result = result.encode('utf-8')
             if isinstance(result, str):
                 result = result.encode('utf-8')
 
@@ -168,10 +136,6 @@ class TollRate:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -197,18 +161,6 @@ class TollRate:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return TollRate.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -216,5 +168,29 @@ class TollRate:
                 return TollRate.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'TollRate':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            trip_name='azgwtdmjnntyxciokksd',
+            state_route='udsaqgebrihylztdmruh',
+            travel_direction='gcrapshcewhuqzpeqcae',
+            current_toll=int(25),
+            current_message='tipewtxvlqmjszztvyzj',
+            time_updated='rghghhrrppzrgazvcemo',
+            start_location_name='uhyfjbtznafluggvvzbc',
+            start_latitude=float(17.464822282148862),
+            start_longitude=float(72.20736838963073),
+            start_milepost=float(68.85233196380992),
+            end_location_name='qcthsydcpxdtdgtfsiuk',
+            end_latitude=float(15.528408085711787),
+            end_longitude=float(44.63344771093809),
+            end_milepost=float(0.0420712226404274)
+        )

@@ -1,33 +1,34 @@
 """ BorderCrossing dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class BorderCrossing:
     """
-    Border crossing wait time.
+    Current wait time at a US-Canada border crossing lane in Washington State. Wait times are in minutes, updated approximately every 5 minutes.
+    
     Attributes:
-        crossing_name (str): 
-        wait_time (typing.Optional[int]): 
-        time (str): 
-        description (typing.Optional[str]): 
-        road_name (typing.Optional[str]): 
-        latitude (float): 
-        longitude (float): """
+        crossing_name (str)
+        wait_time (typing.Optional[int])
+        time (str)
+        description (typing.Optional[str])
+        road_name (typing.Optional[str])
+        latitude (float)
+        longitude (float)
+    """
+    
     
     crossing_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="crossing_name"))
     wait_time: typing.Optional[int]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wait_time"))
@@ -36,20 +37,6 @@ class BorderCrossing:
     road_name: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="road_name"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"BorderCrossing\", \"namespace\": \"us.wa.wsdot.border\", \"doc\": \"Border crossing wait time.\", \"fields\": [{\"name\": \"crossing_name\", \"type\": \"string\"}, {\"name\": \"wait_time\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"time\", \"type\": \"string\"}, {\"name\": \"description\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"road_name\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.crossing_name=str(self.crossing_name)
-        self.wait_time=int(self.wait_time) if self.wait_time else None
-        self.time=str(self.time)
-        self.description=str(self.description) if self.description else None
-        self.road_name=str(self.road_name) if self.road_name else None
-        self.latitude=float(self.latitude)
-        self.longitude=float(self.longitude)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'BorderCrossing':
@@ -60,7 +47,7 @@ class BorderCrossing:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -79,7 +66,7 @@ class BorderCrossing:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -93,8 +80,6 @@ class BorderCrossing:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -107,20 +92,10 @@ class BorderCrossing:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
-            if isinstance(result, str):
-                result = result.encode('utf-8')
-            if isinstance(result, str):
-                result = result.encode('utf-8')
             if isinstance(result, str):
                 result = result.encode('utf-8')
 
@@ -147,10 +122,6 @@ class BorderCrossing:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -176,18 +147,6 @@ class BorderCrossing:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return BorderCrossing.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -195,5 +154,22 @@ class BorderCrossing:
                 return BorderCrossing.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'BorderCrossing':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            crossing_name='ltjxprgkkmubcjhatbeb',
+            wait_time=int(52),
+            time='zjgyimmhpznnyrpgjxnv',
+            description='nflkzlwkhxnjrajaalwn',
+            road_name='qiwjqrmioaxwclkrsstx',
+            latitude=float(63.68134028083534),
+            longitude=float(95.28263558782113)
+        )

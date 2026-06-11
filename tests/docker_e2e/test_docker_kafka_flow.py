@@ -1366,9 +1366,16 @@ class TestWSDOTDockerFlow:
     def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, wsdot_image):
         _run_kafka_flow_test(
             kafka, wsdot_image, self.TOPIC,
-            reference_types=['TrafficFlowStation', 'WeatherStation'],
+            reference_types=['TrafficFlowStation', 'WeatherStation', 'RoadWeatherStation',
+                             'HighwayCamera', 'BridgeClearance'],
             telemetry_types=['TrafficFlowReading', 'TravelTimeRoute', 'MountainPassCondition',
-                             'WeatherReading', 'TollRate', 'BorderCrossing', 'VesselLocation'],
+                             'WeatherReading', 'TollRate', 'BorderCrossing', 'VesselLocation',
+                             'RoadWeatherReading', 'HighwayAlert', 'TerminalSailingSpace'],
+            # All five new families plus highway alerts must each appear. The helper
+            # skips gracefully (rather than failing) if a healthy container happens to
+            # see an upstream gap, so requiring them carries no flaky-failure risk.
+            required_types=['RoadWeatherStation', 'RoadWeatherReading', 'HighwayAlert',
+                            'HighwayCamera', 'BridgeClearance', 'TerminalSailingSpace'],
             extra_env={
                 'WSDOT_ACCESS_CODE': os.environ['WSDOT_ACCESS_CODE'],
                 'REGION_FILTER': 'Eastern',

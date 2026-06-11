@@ -1,41 +1,42 @@
 """ WeatherReading dataclass. """
 
 # pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
 import io
 import gzip
-import json
 import enum
 import typing
 import dataclasses
 from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
-import avro.schema
-import avro.name
-import avro.io
+import json
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
 @dataclass
 class WeatherReading:
     """
-    Weather reading.
+    A current weather reading from a WSDOT road weather station including temperature, wind, precipitation, pressure, humidity, visibility, and sky coverage.
+    
     Attributes:
-        station_id (str): 
-        station_name (str): 
-        reading_time (str): 
-        temperature_in_fahrenheit (typing.Optional[float]): 
-        precipitation_in_inches (typing.Optional[float]): 
-        wind_speed_in_mph (typing.Optional[float]): 
-        wind_gust_speed_in_mph (typing.Optional[float]): 
-        wind_direction (typing.Optional[int]): 
-        wind_direction_cardinal (typing.Optional[str]): 
-        barometric_pressure (typing.Optional[float]): 
-        relative_humidity (typing.Optional[int]): 
-        visibility (typing.Optional[float]): 
-        sky_coverage (typing.Optional[str]): 
-        latitude (float): 
-        longitude (float): """
+        station_id (str)
+        station_name (str)
+        reading_time (str)
+        temperature_in_fahrenheit (typing.Optional[float])
+        precipitation_in_inches (typing.Optional[float])
+        wind_speed_in_mph (typing.Optional[float])
+        wind_gust_speed_in_mph (typing.Optional[float])
+        wind_direction (typing.Optional[int])
+        wind_direction_cardinal (typing.Optional[str])
+        barometric_pressure (typing.Optional[float])
+        relative_humidity (typing.Optional[int])
+        visibility (typing.Optional[float])
+        sky_coverage (typing.Optional[str])
+        latitude (float)
+        longitude (float)
+    """
+    
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     station_name: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_name"))
@@ -52,28 +53,6 @@ class WeatherReading:
     sky_coverage: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sky_coverage"))
     latitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="latitude"))
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
-    
-    AvroType: typing.ClassVar[avro.schema.Schema] = avro.schema.make_avsc_object(
-        json.loads("{\"type\": \"record\", \"name\": \"WeatherReading\", \"namespace\": \"us.wa.wsdot.weather\", \"doc\": \"Weather reading.\", \"fields\": [{\"name\": \"station_id\", \"type\": \"string\"}, {\"name\": \"station_name\", \"type\": \"string\"}, {\"name\": \"reading_time\", \"type\": \"string\"}, {\"name\": \"temperature_in_fahrenheit\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"precipitation_in_inches\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"wind_speed_in_mph\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"wind_gust_speed_in_mph\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"wind_direction\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"wind_direction_cardinal\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"barometric_pressure\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"relative_humidity\", \"type\": [\"null\", \"int\"], \"default\": null}, {\"name\": \"visibility\", \"type\": [\"null\", \"double\"], \"default\": null}, {\"name\": \"sky_coverage\", \"type\": [\"null\", \"string\"], \"default\": null}, {\"name\": \"latitude\", \"type\": \"double\"}, {\"name\": \"longitude\", \"type\": \"double\"}]}"), avro.name.Names()
-    )
-
-    def __post_init__(self):
-        """ Initializes the dataclass with the provided keyword arguments."""
-        self.station_id=str(self.station_id)
-        self.station_name=str(self.station_name)
-        self.reading_time=str(self.reading_time)
-        self.temperature_in_fahrenheit=float(self.temperature_in_fahrenheit) if self.temperature_in_fahrenheit else None
-        self.precipitation_in_inches=float(self.precipitation_in_inches) if self.precipitation_in_inches else None
-        self.wind_speed_in_mph=float(self.wind_speed_in_mph) if self.wind_speed_in_mph else None
-        self.wind_gust_speed_in_mph=float(self.wind_gust_speed_in_mph) if self.wind_gust_speed_in_mph else None
-        self.wind_direction=int(self.wind_direction) if self.wind_direction else None
-        self.wind_direction_cardinal=str(self.wind_direction_cardinal) if self.wind_direction_cardinal else None
-        self.barometric_pressure=float(self.barometric_pressure) if self.barometric_pressure else None
-        self.relative_humidity=int(self.relative_humidity) if self.relative_humidity else None
-        self.visibility=float(self.visibility) if self.visibility else None
-        self.sky_coverage=str(self.sky_coverage) if self.sky_coverage else None
-        self.latitude=float(self.latitude)
-        self.longitude=float(self.longitude)
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherReading':
@@ -84,7 +63,7 @@ class WeatherReading:
             data: The dictionary to convert to a dataclass.
         
         Returns:
-            The dataclass representation of the dictionary.
+            The dataclass representation of the dataclass.
         """
         return cls(**data)
 
@@ -103,7 +82,7 @@ class WeatherReading:
         Helps resolving the Enum values to their actual values and fixes the key names.
         """ 
         def _resolve_enum(v):
-            if isinstance(v,enum.Enum):
+            if isinstance(v, enum.Enum):
                 return v.value
             return v
         def _fix_key(k):
@@ -117,8 +96,6 @@ class WeatherReading:
         Args:
             content_type_string: The content type string to convert the dataclass to.
                 Supported content types:
-                    'avro/binary': Encodes the data to Avro binary format.
-                    'application/vnd.apache.avro+avro': Encodes the data to Avro binary format.
                     'application/json': Encodes the data to JSON format.
                 Supported content type extensions:
                     '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
@@ -131,20 +108,10 @@ class WeatherReading:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-            stream = io.BytesIO()
-            writer = avro.io.DatumWriter(self.AvroType)
-            encoder = avro.io.BinaryEncoder(stream)
-            writer.write(self.to_serializer_dict(), encoder)
-            result = stream.getvalue()
         if base_content_type == 'application/json':
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
-            if isinstance(result, str):
-                result = result.encode('utf-8')
-            if isinstance(result, str):
-                result = result.encode('utf-8')
             if isinstance(result, str):
                 result = result.encode('utf-8')
 
@@ -171,10 +138,6 @@ class WeatherReading:
             data: The data to convert to a dataclass.
             content_type_string: The content type string to convert the data to. 
                 Supported content types:
-                    'avro/binary': Attempts to decode the data from Avro binary encoded format.
-                    'application/vnd.apache.avro+avro': Attempts to decode the data from Avro binary encoded format.
-                    'avro/json': Attempts to decode the data from Avro JSON encoded format.
-                    'application/vnd.apache.avro+json': Attempts to decode the data from Avro JSON encoded format.
                     'application/json': Attempts to decode the data from JSON encoded format.
                 Supported content type extensions:
                     '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
@@ -200,18 +163,6 @@ class WeatherReading:
         
         # Strip compression suffix for base type matching
         base_content_type = content_type.replace('+gzip', '')
-        if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro', 'avro/json', 'application/vnd.apache.avro+json']:
-            if isinstance(data, (bytes, io.BytesIO)):
-                stream = io.BytesIO(data) if isinstance(data, bytes) else data
-            else:
-                raise NotImplementedError('Data is not of a supported type for conversion to Stream')
-            reader = avro.io.DatumReader(cls.AvroType)
-            if base_content_type in ['avro/binary', 'application/vnd.apache.avro+avro']:
-                decoder = avro.io.BinaryDecoder(stream)
-            else:
-                raise NotImplementedError(f'Unsupported Avro media type {content_type}')
-            _record = reader.read(decoder)            
-            return WeatherReading.from_serializer_dict(_record)
         if base_content_type == 'application/json':
             if isinstance(data, (bytes, str)):
                 data_str = data.decode('utf-8') if isinstance(data, bytes) else data
@@ -219,5 +170,30 @@ class WeatherReading:
                 return WeatherReading.from_serializer_dict(_record)
             else:
                 raise NotImplementedError('Data is not of a supported type for JSON deserialization')
-
         raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'WeatherReading':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            station_id='fgdfbiiiyyaspkcbgowy',
+            station_name='czsodwmilwjhvsdsskdc',
+            reading_time='vuqbgxwhwesyqleerlmx',
+            temperature_in_fahrenheit=float(58.74549230334394),
+            precipitation_in_inches=float(45.50497682821456),
+            wind_speed_in_mph=float(88.59519658820035),
+            wind_gust_speed_in_mph=float(86.64791213542901),
+            wind_direction=int(50),
+            wind_direction_cardinal='ttnxrmecjqubjiwryxyq',
+            barometric_pressure=float(2.490840884611545),
+            relative_humidity=int(96),
+            visibility=float(31.714972846556535),
+            sky_coverage='lfyeqejsyzkbrgtfkvlg',
+            latitude=float(17.12042874257458),
+            longitude=float(19.8197811491617)
+        )
