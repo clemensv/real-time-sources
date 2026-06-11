@@ -382,6 +382,17 @@ function Wait-EventStreamTopologyReady {
             $destinationStates = @($topo.destinations | ForEach-Object { "$($_.name):$($_.status)" })
             $lastStatus = (@($sourceStates) + @($destinationStates)) -join "; "
 
+            # Detect permanently failed sources early — no point waiting the full timeout
+            $failedSources = @($topo.sources | Where-Object { $_.status -eq "Failed" })
+            if ($failedSources.Count -gt 0) {
+                $destinations = @($topo.destinations | Where-Object { $_.type -eq "Eventhouse" })
+                $destinationsReady = $destinations.Count -gt 0 -and @($destinations | Where-Object { $_.status -ne "Running" }).Count -eq 0
+                if ($destinationsReady) {
+                    # Source failed but destination is running — the custom endpoint provisioning failed
+                    throw "Event Stream source node(s) permanently Failed: $($failedSources | ForEach-Object { $_.name } | Join-String -Separator ', '). Destination is Running. Recreate the Event Stream or check the custom endpoint configuration."
+                }
+            }
+
             $sourcesReady = @($topo.sources | Where-Object { $_.type -eq "CustomEndpoint" -and $_.status -eq "Running" }).Count -gt 0
             $destinations = @($topo.destinations | Where-Object { $_.type -eq "Eventhouse" })
             $destinationsReady = $destinations.Count -gt 0 -and @($destinations | Where-Object { $_.status -ne "Running" }).Count -eq 0
@@ -391,6 +402,7 @@ function Wait-EventStreamTopologyReady {
             }
             Write-Info "Waiting for Event Stream topology... $lastStatus"
         } catch {
+            if ($_.Exception.Message -match "permanently Failed") { throw }
             $lastStatus = $_.Exception.Message
             Write-Info "Waiting for Event Stream topology... $lastStatus"
         }

@@ -135,10 +135,22 @@ $token = az account get-access-token --resource "https://eventgrid.azure.net/" `
 $scriptPath = Join-Path $SessionDir "$Source-mqtt-consumer.py"
 $consumerScript | Set-Content $scriptPath -Encoding utf8
 
-$pyResult = python $scriptPath $Hostname $TopicPattern $TimeoutSeconds $MinMessages $token 2>&1 | Out-String
+if (-not (Test-Path $scriptPath)) {
+    throw "Failed to write consumer script to '$scriptPath'. Ensure SessionDir exists: $SessionDir"
+}
+
+$stderrFile = [System.IO.Path]::GetTempFileName()
+$pyResult = & python $scriptPath $Hostname $TopicPattern $TimeoutSeconds $MinMessages $token 2>$stderrFile | Out-String
+$stderrContent = ((Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue) ?? "").Trim()
+Remove-Item $stderrFile -ErrorAction SilentlyContinue
 Remove-Item $scriptPath -ErrorAction SilentlyContinue
 
-$parsed = $pyResult.Trim() | ConvertFrom-Json
+# Extract the JSON line (last line starting with '{') in case there are non-JSON warnings on stdout
+$jsonLine = ($pyResult -split "`n" | Where-Object { $_ -ne $null -and $_.Trim().StartsWith('{') } | Select-Object -Last 1)
+if (-not $jsonLine) {
+    throw "No JSON output from MQTT consumer. Stderr: $stderrContent. Stdout: $pyResult"
+}
+$parsed = $jsonLine.Trim() | ConvertFrom-Json
 if ($parsed.error) {
     Write-Warning "MQTT consumer blocked: $($parsed.error)"
     Write-Warning "This is a known limitation for EG MQTT from external clients. See issue #840."

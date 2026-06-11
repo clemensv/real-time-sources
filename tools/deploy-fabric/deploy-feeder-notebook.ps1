@@ -1067,10 +1067,19 @@ if ($existing) {
     if ($createResp -and $createResp.id) {
         $notebookId = $createResp.id
     } else {
-        $nbList2 = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/notebooks"
-        $created = $nbList2.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
-        if (-not $created) { throw "Notebook '$NotebookName' was not found after create." }
-        $notebookId = $created.id
+        # Fabric REST API has eventual consistency — retry with backoff
+        $notebookId = $null
+        for ($attempt = 1; $attempt -le 6; $attempt++) {
+            Start-Sleep -Seconds (5 * $attempt)
+            $nbList2 = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/notebooks"
+            $created = $nbList2.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
+            if ($created) {
+                $notebookId = $created.id
+                break
+            }
+            Write-Info "Notebook '$NotebookName' not yet visible (attempt $attempt/6)..."
+        }
+        if (-not $notebookId) { throw "Notebook '$NotebookName' was not found after create (retried 6 times over 105s)." }
     }
     Write-OK "Created notebook '$NotebookName' ($notebookId)"
 }
