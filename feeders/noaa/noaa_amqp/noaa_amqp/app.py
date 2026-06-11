@@ -9,10 +9,13 @@ package.
 """
 
 import argparse
+import dataclasses
+import inspect
 import logging
 import os
 import sys
 import time
+import typing
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlparse
 
@@ -25,6 +28,88 @@ from noaa_amqp_producer_amqp_producer.producer import *  # noqa: F401,F403  (Amq
 def _slug(value):
     """Render a routing-safe region value (NOAA region is often absent)."""
     return str(value or "unknown").replace("/", "-").replace(" ", "-").lower()
+
+
+# ---------------------------------------------------------------------------
+# Deterministic mock harness (MOCK_MODE).
+#
+# The Docker E2E AMQP flow runs the container with MOCK_MODE=true + ONCE_MODE
+# and asserts that one instance of *every* event type reaches the broker. Real
+# upstream polling can never satisfy that in a single pass (a tide station has
+# no salinity/conductivity/currents), so MOCK_MODE synthesises one sample of
+# each generated send_* type. Normal operation polls the live NOAA API.
+# ---------------------------------------------------------------------------
+def _sample_value(name, annotation):
+    lname = name.lower().rstrip("_")
+    if lname in ("station_id", "station_number", "code_station", "station_ref", "station_reference", "site_number"):
+        return "mock-station"
+    if lname in ("sensor_num",):
+        return 1
+    if lname in ("parameter_code",):
+        return "00010"
+    if lname in ("state",):
+        return "CA"
+    if lname in ("region",):
+        return "PACIFIC"
+    if lname in ("basin", "river", "water_body", "water_body_name", "river_name", "libelle_cours_eau", "water_area_name"):
+        return "mock-basin"
+    if "time" in lname or "date" in lname:
+        return datetime.now(timezone.utc).isoformat()
+    if "lat" in lname:
+        return 45.0
+    if lname in ("longitude", "long", "lng") or "lon" in lname:
+        return -75.0
+    if any(x in lname for x in ("level", "value", "temperature", "speed", "pressure", "height", "depth", "salinity", "conductivity", "humidity", "visibility", "discharge", "flow", "elevation", "latitude")):
+        return 1.0
+    if any(x in lname for x in ("count", "code", "num", "bin", "direction", "timezonecorr")):
+        return 1
+    if lname.startswith("is_") or lname in ("tidal", "greatlakes", "observedst", "stormsurge", "forecast", "outlook", "nonnavigational", "en_service", "outside_sigma_band", "flat_tolerance_limit", "rate_of_change_limit", "max_min_expected_height", "max_pressure_exceeded", "min_pressure_exceeded", "rate_of_change_exceeded", "max_temp_exceeded", "min_temp_exceeded", "max_humidity_exceeded", "min_humidity_exceeded", "max_conductivity_exceeded", "min_conductivity_exceeded"):
+        return False
+    return "mock"
+
+
+def _make_instance(cls):
+    kwargs = {}
+    for fld in dataclasses.fields(cls):
+        if not fld.init:
+            continue
+        ann = fld.type
+        origin = typing.get_origin(ann)
+        args = typing.get_args(ann)
+        if origin in (typing.Union, getattr(typing, "Optional", object)) and args:
+            ann = next((a for a in args if a is not type(None)), args[0])
+        try:
+            if dataclasses.is_dataclass(ann):
+                kwargs[fld.name] = _make_instance(ann)
+                continue
+        except Exception:  # noqa: BLE001
+            pass
+        kwargs[fld.name] = _sample_value(fld.name, ann)
+    return cls(**kwargs)
+
+
+def _required_call_kwargs(method):
+    out = {}
+    for name, param in inspect.signature(method).parameters.items():
+        if name in ("self", "topic", "qos", "retain", "content_type", "flush_producer"):
+            continue
+        if name == "data":
+            ann = param.annotation
+            if isinstance(ann, str):
+                ann = None
+            if ann is inspect.Parameter.empty or ann is None:
+                raise RuntimeError(f"No data annotation for {method}")
+            out[name] = _make_instance(ann)
+        else:
+            key = name[1:] if name.startswith("_") else name
+            out[name] = _sample_value(key, str(param.annotation))
+    return out
+
+
+def _emit_mock(producer):
+    """Publish one synthetic instance of every generated send_* type."""
+    for method in [getattr(producer, n) for n in dir(producer) if n.startswith("send_") and not n.endswith("_batch")]:
+        method(**_required_call_kwargs(method))
 
 
 # Map a NOAA product key onto the AMQP producer send-method suffix. Note the
@@ -119,9 +204,18 @@ def feed(
     state_file=None,
     polling_interval=300,
     once=False,
+    mock=False,
 ):
     cls = next(obj for obj in globals().values() if isinstance(obj, type) and obj.__name__.endswith("AmqpProducer"))
     producer = _build_producer(cls, host, port, address, tls, content_mode, auth_mode, username, password, entra_audience, entra_client_id, sas_key_name, sas_key)
+    if mock:
+        try:
+            _emit_mock(producer)
+        finally:
+            close = getattr(producer, "close", None)
+            if close:
+                close()
+        return
     api = NOAAClient()
     try:
         raw_stations = api.fetch_stations_raw()
@@ -206,6 +300,7 @@ def main(argv=None):
     f.add_argument("--state-file", default=noaa_core.default_last_polled_file(), help="File storing last-polled timestamps per station/product.")
     f.add_argument("-i", "--polling-interval", type=int, default=int(os.getenv("NOAA_POLLING_INTERVAL", "300")), help="Seconds between poll cycles.")
     f.add_argument("--once", action="store_true", default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"))
+    f.add_argument("--mock", action="store_true", default=os.getenv("MOCK_MODE", "").lower() in ("1", "true", "yes"), help="Emit one synthetic instance of every event type instead of polling NOAA (used by Docker E2E).")
     args = p.parse_args(argv)
     if args.command != "feed":
         p.print_help()
@@ -241,4 +336,5 @@ def main(argv=None):
         state_file=args.state_file,
         polling_interval=args.polling_interval,
         once=args.once,
+        mock=args.mock,
     )

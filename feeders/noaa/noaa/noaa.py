@@ -114,13 +114,15 @@ class NOAADataPoller:
                 # dataclasses_json therefore requires those keys on every nested
                 # object, but the NOAA station list returns bare `{"self": ...}`
                 # link stubs that omit them. Backfill the optional keys so the
-                # decode succeeds. (Upstream codegen bug: optional fields must
-                # default to None.)
+                # decode succeeds. The JsonStructure schema types both keys as
+                # `string`, so backfill an empty string (not None) to keep the
+                # emitted CloudEvent schema-valid. (Upstream codegen bug:
+                # optional string fields must default to "".)
                 for value in s.values():
                     for item in (value if isinstance(value, list) else [value]):
                         if isinstance(item, dict):
-                            item.setdefault('region', None)
-                            item.setdefault('station_id', None)
+                            item.setdefault('region', '')
+                            item.setdefault('station_id', '')
 # pylint: disable=no-member
             stations = Station.schema().load(raw_stations, many=True)
 # pylint: enable=no-member

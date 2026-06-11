@@ -35,10 +35,12 @@ def test_fetch_stations_raw_sanitizes_payload(requests_mock):
     assert "id" not in s
     assert s["portscode"] == ""
     # Nested link objects get region/station_id backfilled so the generated
-    # Station schema (optional fields without None defaults) decodes cleanly.
-    assert s["self"]["region"] is None
-    assert s["self"]["station_id"] is None
-    assert s["details"][0]["region"] is None
+    # Station schema (optional string fields without defaults) decodes cleanly.
+    # The schema types both keys as `string`, so the backfill uses an empty
+    # string (not None) to keep the emitted CloudEvent schema-valid.
+    assert s["self"]["region"] == ""
+    assert s["self"]["station_id"] == ""
+    assert s["details"][0]["region"] == ""
 
 
 def test_datum_for_tide_type():
