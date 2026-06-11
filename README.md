@@ -2356,10 +2356,10 @@ US borders â€” ~81 ports of entry
 </td></tr>
 <tr><td>
 
-<details><summary><picture><img align="middle" alt="Washington State â€” ~1" title="Washington State â€” ~1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>WSDOT</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Washington State â€” ~1,000 traffic flow sensors (requires free key)</sub></summary>
+<details><summary><picture><img align="middle" alt="Washington State â€” traffic" title="Washington State â€” traffic" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>WSDOT</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;Washington State â€” traffic, travel times, weather, road weather, alerts, cameras, bridge clearances, tolls, border waits & ferries (requires free key)</sub></summary>
 
 <table align="right">
-<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Washington State â€” ~1" title="Washington State â€” ~1" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Washington State â€” ~1</td></tr>
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Washington State â€” traffic" title="Washington State â€” traffic" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Washington State â€” traffic</td></tr>
 <tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
 <tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{flow_data_id}</code></td></tr>
 <tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
@@ -2367,7 +2367,7 @@ US borders â€” ~81 ports of entry
 <tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
 </table>
 
-Washington State â€” ~1,000 traffic flow sensors (requires free key)
+Washington State â€” traffic, travel times, weather, road weather, alerts, cameras, bridge clearances, tolls, border waits & ferries (requires free key)
 
 <sub><b>📍 keyed by</b> <code>{flow_data_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>TrafficFlowStation</code>, <code>TrafficFlowReading</code></sub>
 
