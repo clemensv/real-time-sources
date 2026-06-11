@@ -115,6 +115,53 @@ async def handle_us_wa_wsdot_ferries_vessel_location_mqtt(mqtt_msg,cloud_event, 
     if cloud_event:
         print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
     print(f"  Data: {us_wa_wsdot_ferries_vessel_location_mqtt_data}")
+from wsdot_mqtt_producer_mqtt_client.client import UsWaWsdotRoadweatherMqttProducer, UsWaWsdotRoadweatherMqttDispatcher
+
+async def handle_us_wa_wsdot_roadweather_road_weather_station_mqtt(mqtt_msg,cloud_event, us_wa_wsdot_roadweather_road_weather_station_mqtt_data):
+    """ Handles the us.wa.wsdot.roadweather.RoadWeatherStation.mqtt message """
+    print(f"Received us.wa.wsdot.roadweather.RoadWeatherStation.mqtt on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {us_wa_wsdot_roadweather_road_weather_station_mqtt_data}")
+
+async def handle_us_wa_wsdot_roadweather_road_weather_reading_mqtt(mqtt_msg,cloud_event, us_wa_wsdot_roadweather_road_weather_reading_mqtt_data):
+    """ Handles the us.wa.wsdot.roadweather.RoadWeatherReading.mqtt message """
+    print(f"Received us.wa.wsdot.roadweather.RoadWeatherReading.mqtt on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {us_wa_wsdot_roadweather_road_weather_reading_mqtt_data}")
+from wsdot_mqtt_producer_mqtt_client.client import UsWaWsdotAlertsMqttProducer, UsWaWsdotAlertsMqttDispatcher
+
+async def handle_us_wa_wsdot_alerts_highway_alert_mqtt(mqtt_msg,cloud_event, us_wa_wsdot_alerts_highway_alert_mqtt_data):
+    """ Handles the us.wa.wsdot.alerts.HighwayAlert.mqtt message """
+    print(f"Received us.wa.wsdot.alerts.HighwayAlert.mqtt on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {us_wa_wsdot_alerts_highway_alert_mqtt_data}")
+from wsdot_mqtt_producer_mqtt_client.client import UsWaWsdotCamerasMqttProducer, UsWaWsdotCamerasMqttDispatcher
+
+async def handle_us_wa_wsdot_cameras_highway_camera_mqtt(mqtt_msg,cloud_event, us_wa_wsdot_cameras_highway_camera_mqtt_data):
+    """ Handles the us.wa.wsdot.cameras.HighwayCamera.mqtt message """
+    print(f"Received us.wa.wsdot.cameras.HighwayCamera.mqtt on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {us_wa_wsdot_cameras_highway_camera_mqtt_data}")
+from wsdot_mqtt_producer_mqtt_client.client import UsWaWsdotBridgeclearancesMqttProducer, UsWaWsdotBridgeclearancesMqttDispatcher
+
+async def handle_us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt(mqtt_msg,cloud_event, us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_data):
+    """ Handles the us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt message """
+    print(f"Received us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_data}")
+from wsdot_mqtt_producer_mqtt_client.client import UsWaWsdotFerryterminalsMqttProducer, UsWaWsdotFerryterminalsMqttDispatcher
+
+async def handle_us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt(mqtt_msg,cloud_event, us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_data):
+    """ Handles the us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt message """
+    print(f"Received us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt on topic {mqtt_msg.topic}")
+    if cloud_event:
+        print(f"  CloudEvent ID: {cloud_event.id}, Source: {cloud_event.source}")
+    print(f"  Data: {us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_data}")
 
 async def main(broker_host, broker_port, topic, username=None, password=None):
     """ Main function for MQTT client """

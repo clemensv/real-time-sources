@@ -28,6 +28,12 @@ from wsdot_mqtt_producer_data import TollRate
 from wsdot_mqtt_producer_data import CommercialVehicleRestriction
 from wsdot_mqtt_producer_data import BorderCrossing
 from wsdot_mqtt_producer_data import VesselLocation
+from wsdot_mqtt_producer_data import RoadWeatherStation
+from wsdot_mqtt_producer_data import RoadWeatherReading
+from wsdot_mqtt_producer_data import HighwayAlert
+from wsdot_mqtt_producer_data import HighwayCamera
+from wsdot_mqtt_producer_data import BridgeClearance
+from wsdot_mqtt_producer_data import TerminalSailingSpace
 
 
 # URI template regex pattern
@@ -3081,6 +3087,1770 @@ class UsWaWsdotFerriesMqttMqttClient(_ClientBase):
              "type":"us.wa.wsdot.ferries.VesselLocation",
              "source":"{feedurl}".format(feedurl = feedurl),
              "subject":"{vessel_id}".format(vessel_id = vessel_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = False if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+
+
+def get_default_topic_mappings_us_wa_wsdot_roadweather_mqtt() -> Dict[str, str]:
+    """
+    Get the default topic mappings for the us.wa.wsdot.roadweather.mqtt message group.
+    
+    Returns:
+        Dictionary mapping message identifiers to their default topic patterns.
+    """
+    return {
+        "us.wa.wsdot.roadweather.RoadWeatherStation.mqtt": "traffic/us/wsdot/wsdot/road-weather-stations/{station_id}/info",
+        "us.wa.wsdot.roadweather.RoadWeatherReading.mqtt": "traffic/us/wsdot/wsdot/road-weather-stations/{station_id}/reading",
+    }
+
+
+def get_subscription_topics_us_wa_wsdot_roadweather_mqtt(topic_mappings: Optional[Dict[str, str]] = None) -> List[str]:
+    """
+    Get subscription topics with URI template placeholders replaced by MQTT wildcards (+).
+    
+    Args:
+        topic_mappings: Optional topic mappings. If None, uses default mappings.
+        
+    Returns:
+        List of topic patterns suitable for MQTT subscription.
+    """
+    mappings = topic_mappings or get_default_topic_mappings_us_wa_wsdot_roadweather_mqtt()
+    topics = []
+    for topic in mappings.values():
+        wildcard_topic = _topic_to_mqtt_wildcard(topic)
+        if wildcard_topic not in topics:
+            topics.append(wildcard_topic)
+    return topics
+
+
+class UsWaWsdotRoadweatherMqttMqttClient(_ClientBase):
+    """MQTT Client for producing and consuming messages in the us.wa.wsdot.roadweather.mqtt message group."""
+    
+    def __init__(
+        self, 
+        client: mqtt.Client, 
+        topic_mappings: Optional[Dict[str, str]] = None,
+        content_mode: typing.Literal['structured', 'binary'] = 'structured', 
+        loop: Optional[asyncio.AbstractEventLoop] = None
+    ):
+        """
+        Initialize the MQTT client.
+
+        Args:
+            client: Paho MQTT client instance
+            topic_mappings: Optional dictionary mapping message identifiers to topic patterns.
+                Topic patterns may be URI templates with placeholders like {placeholder}.
+                For consumers, placeholders are converted to MQTT wildcards (+) for subscription.
+                If not provided, uses default 1:1 mapping.
+            content_mode: The content mode for CloudEvents ('structured' or 'binary')
+            loop: Optional event loop to use for async operations. If None, will try to get the running loop.
+        """
+        self.client = client
+        self.content_mode = content_mode
+        self.loop = loop
+        self._topic_mappings = topic_mappings or get_default_topic_mappings_us_wa_wsdot_roadweather_mqtt()
+        self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
+        self._connect_waiter: Optional[asyncio.Future[None]] = None
+        self._connected = False
+        
+        # Message handler callbacks (Dispatcher pattern)
+        
+        self.us_wa_wsdot_roadweather_road_weather_station_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, wsdot_mqtt_producer_data.RoadWeatherStation, Dict[str, str]], Awaitable[None]]] = None
+        
+        self.us_wa_wsdot_roadweather_road_weather_reading_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, wsdot_mqtt_producer_data.RoadWeatherReading, Dict[str, str]], Awaitable[None]]] = None
+        
+        
+        # Attach message callback
+        self.client.on_message = self._on_message
+        self.client.on_connect = self._on_connect
+        self.client.on_disconnect = self._on_disconnect
+
+    @staticmethod
+    def _mqtt_reason_code_value(reason_code) -> Optional[int]:
+        """Best-effort numeric MQTT reason-code extraction across paho callback APIs."""
+        if reason_code is None:
+            return 0
+        value = getattr(reason_code, "value", reason_code)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _mqtt_reason_code_text(reason_code) -> str:
+        """Best-effort textual MQTT reason-code rendering across paho callback APIs."""
+        if reason_code is None:
+            return "unknown"
+        text = str(reason_code).strip()
+        if text:
+            return text
+        code = _ClientBase._mqtt_reason_code_value(reason_code)
+        return str(code) if code is not None else "unknown"
+
+    def _resolve_connect_waiter(self, exc: Optional[BaseException] = None):
+        waiter = self._connect_waiter
+        self._connect_waiter = None
+        if waiter is None or waiter.done():
+            return
+        if exc is None:
+            self._connected = True
+            waiter.set_result(None)
+            return
+        self._connected = False
+        waiter.set_exception(exc)
+
+    def _notify_connect_waiter(self, exc: Optional[BaseException] = None):
+        if self.loop is None:
+            return
+        self.loop.call_soon_threadsafe(self._resolve_connect_waiter, exc)
+
+    def _on_connect(self, client, userdata, flags, reason_code=0, properties=None):
+        """Resolve a pending async connect once the broker replies."""
+        if self._mqtt_reason_code_value(reason_code) == 0:
+            self._notify_connect_waiter()
+            return
+        detail = self._mqtt_reason_code_text(reason_code)
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    def _on_disconnect(self, client, userdata, *args):
+        """Fail a pending async connect when the broker disconnects before success."""
+        self._connected = False
+        if self._connect_waiter is None:
+            return
+        reason_code = None
+        if len(args) == 1:
+            reason_code = args[0]
+        elif len(args) == 2:
+            reason_code = args[0]
+        elif len(args) >= 3:
+            reason_code = args[1]
+        detail = self._mqtt_reason_code_text(reason_code)
+        if self._mqtt_reason_code_value(reason_code) in (None, 0):
+            detail = "connection closed before authentication completed"
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    @property
+    def topic_mappings(self) -> Dict[str, str]:
+        """Get the current topic mappings."""
+        return self._topic_mappings.copy()
+    
+    def _on_message(self, client, userdata, message: mqtt.MQTTMessage):
+        """Internal MQTT message callback that dispatches to async handlers."""
+        loop = self.loop
+        if loop is None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(self._process_message(message), loop)
+    
+    async def _process_message(self, message: mqtt.MQTTMessage):
+        """Process incoming MQTT message and dispatch to appropriate handler."""
+        try:
+            if self._is_cloud_event(message):
+                cloud_event = self._cloud_event_from_message(message)
+                if cloud_event:
+                    await self._dispatch_cloud_event(message, cloud_event)
+            else:
+                # Handle plain MQTT messages (if needed)
+                pass
+        except Exception as e:
+            print(f"Error processing message: {e}")
+    
+    def _extract_topic_params(self, topic: str, message_id: str) -> Dict[str, str]:
+        """Extract URI template placeholder values from a topic."""
+        if message_id in self._topic_patterns:
+            return _extract_topic_parameters(topic, self._topic_patterns[message_id])
+        return {}
+    
+    async def _dispatch_cloud_event(self, mqtt_message: mqtt.MQTTMessage, cloud_event: CloudEvent):
+        """Dispatch CloudEvent to the appropriate handler based on type."""
+        event_type = cloud_event['type']
+        
+        
+        if event_type == "us.wa.wsdot.roadweather.RoadWeatherStation":
+            if self.us_wa_wsdot_roadweather_road_weather_station_mqtt_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = wsdot_mqtt_producer_data.RoadWeatherStation.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "us.wa.wsdot.roadweather.RoadWeatherStation.mqtt")
+                    await self.us_wa_wsdot_roadweather_road_weather_station_mqtt_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in us_wa_wsdot_roadweather_road_weather_station_mqtt handler: {e}")
+            return
+        
+        if event_type == "us.wa.wsdot.roadweather.RoadWeatherReading":
+            if self.us_wa_wsdot_roadweather_road_weather_reading_mqtt_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = wsdot_mqtt_producer_data.RoadWeatherReading.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "us.wa.wsdot.roadweather.RoadWeatherReading.mqtt")
+                    await self.us_wa_wsdot_roadweather_road_weather_reading_mqtt_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in us_wa_wsdot_roadweather_road_weather_reading_mqtt handler: {e}")
+            return
+        
+    
+    async def subscribe(self, topics: Optional[typing.List[str]] = None, qos: int = 0):
+        """
+        Subscribe to MQTT topics.
+
+        Args:
+            topics: List of topic patterns to subscribe to. If None, subscribes to all 
+                default topics with URI template placeholders replaced by MQTT wildcards.
+            qos: Quality of Service level (0, 1, or 2)
+        """
+        if topics is None:
+            topics = get_subscription_topics_us_wa_wsdot_roadweather_mqtt(self._topic_mappings)
+        for topic in topics:
+            self.client.subscribe(topic, qos)
+    
+    async def unsubscribe(self, topics: typing.List[str]):
+        """
+        Unsubscribe from MQTT topics.
+
+        Args:
+            topics: List of topics to unsubscribe from
+        """
+        for topic in topics:
+            self.client.unsubscribe(topic)
+    
+    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60):
+        """
+        Connect to MQTT broker and wait for authentication to complete.
+
+        Args:
+            broker: Broker hostname or IP
+            port: Broker port
+            keepalive: Keepalive interval in seconds
+
+        Raises:
+            ConnectionError: If the broker rejects the connection or disconnects before success
+            TimeoutError: If the broker does not acknowledge the connection in time
+        """
+        if self._connect_waiter is not None and not self._connect_waiter.done():
+            raise RuntimeError("MQTT connect already in progress")
+        self.loop = asyncio.get_running_loop()
+        waiter = self.loop.create_future()
+        self._connect_waiter = waiter
+        self._connected = False
+        loop_started = False
+        try:
+            self.client.connect(broker, port, keepalive)
+            self.client.loop_start()
+            loop_started = True
+            timeout = float(keepalive) if keepalive and keepalive > 0 else 60.0
+            await asyncio.wait_for(waiter, timeout=timeout)
+        except Exception:
+            if self._connect_waiter is waiter:
+                self._connect_waiter = None
+            self._connected = False
+            if loop_started:
+                await asyncio.to_thread(self.client.loop_stop)
+            raise
+    
+    async def disconnect(self):
+        """Disconnect from MQTT broker."""
+        self._connected = False
+        self.client.loop_stop()
+        self.client.disconnect()
+
+    # Producer methods
+    
+    async def publish_us_wa_wsdot_roadweather_road_weather_station_mqtt(self,
+        feedurl: str,
+        station_id: str,
+        data: wsdot_mqtt_producer_data.RoadWeatherStation,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'us.wa.wsdot.roadweather.RoadWeatherStation.mqtt' event to an MQTT topic.
+
+        Args:
+        
+            feedurl: URI template variable for 'feedurl'
+            station_id: URI template variable for 'station_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'traffic/us/wsdot/wsdot/road-weather-stations/{station_id}/info'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/road-weather-stations/{station_id}/info"
+        _topic_template_values: Dict[str, str] = {
+            "feedurl": str(feedurl),
+            "station_id": str(station_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"us.wa.wsdot.roadweather.RoadWeatherStation",
+             "source":"{feedurl}".format(feedurl = feedurl),
+             "subject":"{station_id}".format(station_id = station_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+    async def publish_us_wa_wsdot_roadweather_road_weather_reading_mqtt(self,
+        feedurl: str,
+        station_id: str,
+        data: wsdot_mqtt_producer_data.RoadWeatherReading,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'us.wa.wsdot.roadweather.RoadWeatherReading.mqtt' event to an MQTT topic.
+
+        Args:
+        
+            feedurl: URI template variable for 'feedurl'
+            station_id: URI template variable for 'station_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'traffic/us/wsdot/wsdot/road-weather-stations/{station_id}/reading'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/road-weather-stations/{station_id}/reading"
+        _topic_template_values: Dict[str, str] = {
+            "feedurl": str(feedurl),
+            "station_id": str(station_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"us.wa.wsdot.roadweather.RoadWeatherReading",
+             "source":"{feedurl}".format(feedurl = feedurl),
+             "subject":"{station_id}".format(station_id = station_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = False if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+
+
+def get_default_topic_mappings_us_wa_wsdot_alerts_mqtt() -> Dict[str, str]:
+    """
+    Get the default topic mappings for the us.wa.wsdot.alerts.mqtt message group.
+    
+    Returns:
+        Dictionary mapping message identifiers to their default topic patterns.
+    """
+    return {
+        "us.wa.wsdot.alerts.HighwayAlert.mqtt": "traffic/us/wsdot/wsdot/alerts/{alert_id}/info",
+    }
+
+
+def get_subscription_topics_us_wa_wsdot_alerts_mqtt(topic_mappings: Optional[Dict[str, str]] = None) -> List[str]:
+    """
+    Get subscription topics with URI template placeholders replaced by MQTT wildcards (+).
+    
+    Args:
+        topic_mappings: Optional topic mappings. If None, uses default mappings.
+        
+    Returns:
+        List of topic patterns suitable for MQTT subscription.
+    """
+    mappings = topic_mappings or get_default_topic_mappings_us_wa_wsdot_alerts_mqtt()
+    topics = []
+    for topic in mappings.values():
+        wildcard_topic = _topic_to_mqtt_wildcard(topic)
+        if wildcard_topic not in topics:
+            topics.append(wildcard_topic)
+    return topics
+
+
+class UsWaWsdotAlertsMqttMqttClient(_ClientBase):
+    """MQTT Client for producing and consuming messages in the us.wa.wsdot.alerts.mqtt message group."""
+    
+    def __init__(
+        self, 
+        client: mqtt.Client, 
+        topic_mappings: Optional[Dict[str, str]] = None,
+        content_mode: typing.Literal['structured', 'binary'] = 'structured', 
+        loop: Optional[asyncio.AbstractEventLoop] = None
+    ):
+        """
+        Initialize the MQTT client.
+
+        Args:
+            client: Paho MQTT client instance
+            topic_mappings: Optional dictionary mapping message identifiers to topic patterns.
+                Topic patterns may be URI templates with placeholders like {placeholder}.
+                For consumers, placeholders are converted to MQTT wildcards (+) for subscription.
+                If not provided, uses default 1:1 mapping.
+            content_mode: The content mode for CloudEvents ('structured' or 'binary')
+            loop: Optional event loop to use for async operations. If None, will try to get the running loop.
+        """
+        self.client = client
+        self.content_mode = content_mode
+        self.loop = loop
+        self._topic_mappings = topic_mappings or get_default_topic_mappings_us_wa_wsdot_alerts_mqtt()
+        self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
+        self._connect_waiter: Optional[asyncio.Future[None]] = None
+        self._connected = False
+        
+        # Message handler callbacks (Dispatcher pattern)
+        
+        self.us_wa_wsdot_alerts_highway_alert_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, wsdot_mqtt_producer_data.HighwayAlert, Dict[str, str]], Awaitable[None]]] = None
+        
+        
+        # Attach message callback
+        self.client.on_message = self._on_message
+        self.client.on_connect = self._on_connect
+        self.client.on_disconnect = self._on_disconnect
+
+    @staticmethod
+    def _mqtt_reason_code_value(reason_code) -> Optional[int]:
+        """Best-effort numeric MQTT reason-code extraction across paho callback APIs."""
+        if reason_code is None:
+            return 0
+        value = getattr(reason_code, "value", reason_code)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _mqtt_reason_code_text(reason_code) -> str:
+        """Best-effort textual MQTT reason-code rendering across paho callback APIs."""
+        if reason_code is None:
+            return "unknown"
+        text = str(reason_code).strip()
+        if text:
+            return text
+        code = _ClientBase._mqtt_reason_code_value(reason_code)
+        return str(code) if code is not None else "unknown"
+
+    def _resolve_connect_waiter(self, exc: Optional[BaseException] = None):
+        waiter = self._connect_waiter
+        self._connect_waiter = None
+        if waiter is None or waiter.done():
+            return
+        if exc is None:
+            self._connected = True
+            waiter.set_result(None)
+            return
+        self._connected = False
+        waiter.set_exception(exc)
+
+    def _notify_connect_waiter(self, exc: Optional[BaseException] = None):
+        if self.loop is None:
+            return
+        self.loop.call_soon_threadsafe(self._resolve_connect_waiter, exc)
+
+    def _on_connect(self, client, userdata, flags, reason_code=0, properties=None):
+        """Resolve a pending async connect once the broker replies."""
+        if self._mqtt_reason_code_value(reason_code) == 0:
+            self._notify_connect_waiter()
+            return
+        detail = self._mqtt_reason_code_text(reason_code)
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    def _on_disconnect(self, client, userdata, *args):
+        """Fail a pending async connect when the broker disconnects before success."""
+        self._connected = False
+        if self._connect_waiter is None:
+            return
+        reason_code = None
+        if len(args) == 1:
+            reason_code = args[0]
+        elif len(args) == 2:
+            reason_code = args[0]
+        elif len(args) >= 3:
+            reason_code = args[1]
+        detail = self._mqtt_reason_code_text(reason_code)
+        if self._mqtt_reason_code_value(reason_code) in (None, 0):
+            detail = "connection closed before authentication completed"
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    @property
+    def topic_mappings(self) -> Dict[str, str]:
+        """Get the current topic mappings."""
+        return self._topic_mappings.copy()
+    
+    def _on_message(self, client, userdata, message: mqtt.MQTTMessage):
+        """Internal MQTT message callback that dispatches to async handlers."""
+        loop = self.loop
+        if loop is None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(self._process_message(message), loop)
+    
+    async def _process_message(self, message: mqtt.MQTTMessage):
+        """Process incoming MQTT message and dispatch to appropriate handler."""
+        try:
+            if self._is_cloud_event(message):
+                cloud_event = self._cloud_event_from_message(message)
+                if cloud_event:
+                    await self._dispatch_cloud_event(message, cloud_event)
+            else:
+                # Handle plain MQTT messages (if needed)
+                pass
+        except Exception as e:
+            print(f"Error processing message: {e}")
+    
+    def _extract_topic_params(self, topic: str, message_id: str) -> Dict[str, str]:
+        """Extract URI template placeholder values from a topic."""
+        if message_id in self._topic_patterns:
+            return _extract_topic_parameters(topic, self._topic_patterns[message_id])
+        return {}
+    
+    async def _dispatch_cloud_event(self, mqtt_message: mqtt.MQTTMessage, cloud_event: CloudEvent):
+        """Dispatch CloudEvent to the appropriate handler based on type."""
+        event_type = cloud_event['type']
+        
+        
+        if event_type == "us.wa.wsdot.alerts.HighwayAlert":
+            if self.us_wa_wsdot_alerts_highway_alert_mqtt_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = wsdot_mqtt_producer_data.HighwayAlert.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "us.wa.wsdot.alerts.HighwayAlert.mqtt")
+                    await self.us_wa_wsdot_alerts_highway_alert_mqtt_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in us_wa_wsdot_alerts_highway_alert_mqtt handler: {e}")
+            return
+        
+    
+    async def subscribe(self, topics: Optional[typing.List[str]] = None, qos: int = 0):
+        """
+        Subscribe to MQTT topics.
+
+        Args:
+            topics: List of topic patterns to subscribe to. If None, subscribes to all 
+                default topics with URI template placeholders replaced by MQTT wildcards.
+            qos: Quality of Service level (0, 1, or 2)
+        """
+        if topics is None:
+            topics = get_subscription_topics_us_wa_wsdot_alerts_mqtt(self._topic_mappings)
+        for topic in topics:
+            self.client.subscribe(topic, qos)
+    
+    async def unsubscribe(self, topics: typing.List[str]):
+        """
+        Unsubscribe from MQTT topics.
+
+        Args:
+            topics: List of topics to unsubscribe from
+        """
+        for topic in topics:
+            self.client.unsubscribe(topic)
+    
+    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60):
+        """
+        Connect to MQTT broker and wait for authentication to complete.
+
+        Args:
+            broker: Broker hostname or IP
+            port: Broker port
+            keepalive: Keepalive interval in seconds
+
+        Raises:
+            ConnectionError: If the broker rejects the connection or disconnects before success
+            TimeoutError: If the broker does not acknowledge the connection in time
+        """
+        if self._connect_waiter is not None and not self._connect_waiter.done():
+            raise RuntimeError("MQTT connect already in progress")
+        self.loop = asyncio.get_running_loop()
+        waiter = self.loop.create_future()
+        self._connect_waiter = waiter
+        self._connected = False
+        loop_started = False
+        try:
+            self.client.connect(broker, port, keepalive)
+            self.client.loop_start()
+            loop_started = True
+            timeout = float(keepalive) if keepalive and keepalive > 0 else 60.0
+            await asyncio.wait_for(waiter, timeout=timeout)
+        except Exception:
+            if self._connect_waiter is waiter:
+                self._connect_waiter = None
+            self._connected = False
+            if loop_started:
+                await asyncio.to_thread(self.client.loop_stop)
+            raise
+    
+    async def disconnect(self):
+        """Disconnect from MQTT broker."""
+        self._connected = False
+        self.client.loop_stop()
+        self.client.disconnect()
+
+    # Producer methods
+    
+    async def publish_us_wa_wsdot_alerts_highway_alert_mqtt(self,
+        feedurl: str,
+        alert_id: str,
+        data: wsdot_mqtt_producer_data.HighwayAlert,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'us.wa.wsdot.alerts.HighwayAlert.mqtt' event to an MQTT topic.
+
+        Args:
+        
+            feedurl: URI template variable for 'feedurl'
+            alert_id: URI template variable for 'alert_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'traffic/us/wsdot/wsdot/alerts/{alert_id}/info'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/alerts/{alert_id}/info"
+        _topic_template_values: Dict[str, str] = {
+            "feedurl": str(feedurl),
+            "alert_id": str(alert_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"us.wa.wsdot.alerts.HighwayAlert",
+             "source":"{feedurl}".format(feedurl = feedurl),
+             "subject":"{alert_id}".format(alert_id = alert_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = False if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+
+
+def get_default_topic_mappings_us_wa_wsdot_cameras_mqtt() -> Dict[str, str]:
+    """
+    Get the default topic mappings for the us.wa.wsdot.cameras.mqtt message group.
+    
+    Returns:
+        Dictionary mapping message identifiers to their default topic patterns.
+    """
+    return {
+        "us.wa.wsdot.cameras.HighwayCamera.mqtt": "traffic/us/wsdot/wsdot/cameras/{camera_id}/info",
+    }
+
+
+def get_subscription_topics_us_wa_wsdot_cameras_mqtt(topic_mappings: Optional[Dict[str, str]] = None) -> List[str]:
+    """
+    Get subscription topics with URI template placeholders replaced by MQTT wildcards (+).
+    
+    Args:
+        topic_mappings: Optional topic mappings. If None, uses default mappings.
+        
+    Returns:
+        List of topic patterns suitable for MQTT subscription.
+    """
+    mappings = topic_mappings or get_default_topic_mappings_us_wa_wsdot_cameras_mqtt()
+    topics = []
+    for topic in mappings.values():
+        wildcard_topic = _topic_to_mqtt_wildcard(topic)
+        if wildcard_topic not in topics:
+            topics.append(wildcard_topic)
+    return topics
+
+
+class UsWaWsdotCamerasMqttMqttClient(_ClientBase):
+    """MQTT Client for producing and consuming messages in the us.wa.wsdot.cameras.mqtt message group."""
+    
+    def __init__(
+        self, 
+        client: mqtt.Client, 
+        topic_mappings: Optional[Dict[str, str]] = None,
+        content_mode: typing.Literal['structured', 'binary'] = 'structured', 
+        loop: Optional[asyncio.AbstractEventLoop] = None
+    ):
+        """
+        Initialize the MQTT client.
+
+        Args:
+            client: Paho MQTT client instance
+            topic_mappings: Optional dictionary mapping message identifiers to topic patterns.
+                Topic patterns may be URI templates with placeholders like {placeholder}.
+                For consumers, placeholders are converted to MQTT wildcards (+) for subscription.
+                If not provided, uses default 1:1 mapping.
+            content_mode: The content mode for CloudEvents ('structured' or 'binary')
+            loop: Optional event loop to use for async operations. If None, will try to get the running loop.
+        """
+        self.client = client
+        self.content_mode = content_mode
+        self.loop = loop
+        self._topic_mappings = topic_mappings or get_default_topic_mappings_us_wa_wsdot_cameras_mqtt()
+        self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
+        self._connect_waiter: Optional[asyncio.Future[None]] = None
+        self._connected = False
+        
+        # Message handler callbacks (Dispatcher pattern)
+        
+        self.us_wa_wsdot_cameras_highway_camera_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, wsdot_mqtt_producer_data.HighwayCamera, Dict[str, str]], Awaitable[None]]] = None
+        
+        
+        # Attach message callback
+        self.client.on_message = self._on_message
+        self.client.on_connect = self._on_connect
+        self.client.on_disconnect = self._on_disconnect
+
+    @staticmethod
+    def _mqtt_reason_code_value(reason_code) -> Optional[int]:
+        """Best-effort numeric MQTT reason-code extraction across paho callback APIs."""
+        if reason_code is None:
+            return 0
+        value = getattr(reason_code, "value", reason_code)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _mqtt_reason_code_text(reason_code) -> str:
+        """Best-effort textual MQTT reason-code rendering across paho callback APIs."""
+        if reason_code is None:
+            return "unknown"
+        text = str(reason_code).strip()
+        if text:
+            return text
+        code = _ClientBase._mqtt_reason_code_value(reason_code)
+        return str(code) if code is not None else "unknown"
+
+    def _resolve_connect_waiter(self, exc: Optional[BaseException] = None):
+        waiter = self._connect_waiter
+        self._connect_waiter = None
+        if waiter is None or waiter.done():
+            return
+        if exc is None:
+            self._connected = True
+            waiter.set_result(None)
+            return
+        self._connected = False
+        waiter.set_exception(exc)
+
+    def _notify_connect_waiter(self, exc: Optional[BaseException] = None):
+        if self.loop is None:
+            return
+        self.loop.call_soon_threadsafe(self._resolve_connect_waiter, exc)
+
+    def _on_connect(self, client, userdata, flags, reason_code=0, properties=None):
+        """Resolve a pending async connect once the broker replies."""
+        if self._mqtt_reason_code_value(reason_code) == 0:
+            self._notify_connect_waiter()
+            return
+        detail = self._mqtt_reason_code_text(reason_code)
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    def _on_disconnect(self, client, userdata, *args):
+        """Fail a pending async connect when the broker disconnects before success."""
+        self._connected = False
+        if self._connect_waiter is None:
+            return
+        reason_code = None
+        if len(args) == 1:
+            reason_code = args[0]
+        elif len(args) == 2:
+            reason_code = args[0]
+        elif len(args) >= 3:
+            reason_code = args[1]
+        detail = self._mqtt_reason_code_text(reason_code)
+        if self._mqtt_reason_code_value(reason_code) in (None, 0):
+            detail = "connection closed before authentication completed"
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    @property
+    def topic_mappings(self) -> Dict[str, str]:
+        """Get the current topic mappings."""
+        return self._topic_mappings.copy()
+    
+    def _on_message(self, client, userdata, message: mqtt.MQTTMessage):
+        """Internal MQTT message callback that dispatches to async handlers."""
+        loop = self.loop
+        if loop is None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(self._process_message(message), loop)
+    
+    async def _process_message(self, message: mqtt.MQTTMessage):
+        """Process incoming MQTT message and dispatch to appropriate handler."""
+        try:
+            if self._is_cloud_event(message):
+                cloud_event = self._cloud_event_from_message(message)
+                if cloud_event:
+                    await self._dispatch_cloud_event(message, cloud_event)
+            else:
+                # Handle plain MQTT messages (if needed)
+                pass
+        except Exception as e:
+            print(f"Error processing message: {e}")
+    
+    def _extract_topic_params(self, topic: str, message_id: str) -> Dict[str, str]:
+        """Extract URI template placeholder values from a topic."""
+        if message_id in self._topic_patterns:
+            return _extract_topic_parameters(topic, self._topic_patterns[message_id])
+        return {}
+    
+    async def _dispatch_cloud_event(self, mqtt_message: mqtt.MQTTMessage, cloud_event: CloudEvent):
+        """Dispatch CloudEvent to the appropriate handler based on type."""
+        event_type = cloud_event['type']
+        
+        
+        if event_type == "us.wa.wsdot.cameras.HighwayCamera":
+            if self.us_wa_wsdot_cameras_highway_camera_mqtt_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = wsdot_mqtt_producer_data.HighwayCamera.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "us.wa.wsdot.cameras.HighwayCamera.mqtt")
+                    await self.us_wa_wsdot_cameras_highway_camera_mqtt_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in us_wa_wsdot_cameras_highway_camera_mqtt handler: {e}")
+            return
+        
+    
+    async def subscribe(self, topics: Optional[typing.List[str]] = None, qos: int = 0):
+        """
+        Subscribe to MQTT topics.
+
+        Args:
+            topics: List of topic patterns to subscribe to. If None, subscribes to all 
+                default topics with URI template placeholders replaced by MQTT wildcards.
+            qos: Quality of Service level (0, 1, or 2)
+        """
+        if topics is None:
+            topics = get_subscription_topics_us_wa_wsdot_cameras_mqtt(self._topic_mappings)
+        for topic in topics:
+            self.client.subscribe(topic, qos)
+    
+    async def unsubscribe(self, topics: typing.List[str]):
+        """
+        Unsubscribe from MQTT topics.
+
+        Args:
+            topics: List of topics to unsubscribe from
+        """
+        for topic in topics:
+            self.client.unsubscribe(topic)
+    
+    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60):
+        """
+        Connect to MQTT broker and wait for authentication to complete.
+
+        Args:
+            broker: Broker hostname or IP
+            port: Broker port
+            keepalive: Keepalive interval in seconds
+
+        Raises:
+            ConnectionError: If the broker rejects the connection or disconnects before success
+            TimeoutError: If the broker does not acknowledge the connection in time
+        """
+        if self._connect_waiter is not None and not self._connect_waiter.done():
+            raise RuntimeError("MQTT connect already in progress")
+        self.loop = asyncio.get_running_loop()
+        waiter = self.loop.create_future()
+        self._connect_waiter = waiter
+        self._connected = False
+        loop_started = False
+        try:
+            self.client.connect(broker, port, keepalive)
+            self.client.loop_start()
+            loop_started = True
+            timeout = float(keepalive) if keepalive and keepalive > 0 else 60.0
+            await asyncio.wait_for(waiter, timeout=timeout)
+        except Exception:
+            if self._connect_waiter is waiter:
+                self._connect_waiter = None
+            self._connected = False
+            if loop_started:
+                await asyncio.to_thread(self.client.loop_stop)
+            raise
+    
+    async def disconnect(self):
+        """Disconnect from MQTT broker."""
+        self._connected = False
+        self.client.loop_stop()
+        self.client.disconnect()
+
+    # Producer methods
+    
+    async def publish_us_wa_wsdot_cameras_highway_camera_mqtt(self,
+        feedurl: str,
+        camera_id: str,
+        data: wsdot_mqtt_producer_data.HighwayCamera,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'us.wa.wsdot.cameras.HighwayCamera.mqtt' event to an MQTT topic.
+
+        Args:
+        
+            feedurl: URI template variable for 'feedurl'
+            camera_id: URI template variable for 'camera_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'traffic/us/wsdot/wsdot/cameras/{camera_id}/info'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/cameras/{camera_id}/info"
+        _topic_template_values: Dict[str, str] = {
+            "feedurl": str(feedurl),
+            "camera_id": str(camera_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"us.wa.wsdot.cameras.HighwayCamera",
+             "source":"{feedurl}".format(feedurl = feedurl),
+             "subject":"{camera_id}".format(camera_id = camera_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+
+
+def get_default_topic_mappings_us_wa_wsdot_bridgeclearances_mqtt() -> Dict[str, str]:
+    """
+    Get the default topic mappings for the us.wa.wsdot.bridgeclearances.mqtt message group.
+    
+    Returns:
+        Dictionary mapping message identifiers to their default topic patterns.
+    """
+    return {
+        "us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt": "traffic/us/wsdot/wsdot/bridge-clearances/{crossing_location_id}/info",
+    }
+
+
+def get_subscription_topics_us_wa_wsdot_bridgeclearances_mqtt(topic_mappings: Optional[Dict[str, str]] = None) -> List[str]:
+    """
+    Get subscription topics with URI template placeholders replaced by MQTT wildcards (+).
+    
+    Args:
+        topic_mappings: Optional topic mappings. If None, uses default mappings.
+        
+    Returns:
+        List of topic patterns suitable for MQTT subscription.
+    """
+    mappings = topic_mappings or get_default_topic_mappings_us_wa_wsdot_bridgeclearances_mqtt()
+    topics = []
+    for topic in mappings.values():
+        wildcard_topic = _topic_to_mqtt_wildcard(topic)
+        if wildcard_topic not in topics:
+            topics.append(wildcard_topic)
+    return topics
+
+
+class UsWaWsdotBridgeclearancesMqttMqttClient(_ClientBase):
+    """MQTT Client for producing and consuming messages in the us.wa.wsdot.bridgeclearances.mqtt message group."""
+    
+    def __init__(
+        self, 
+        client: mqtt.Client, 
+        topic_mappings: Optional[Dict[str, str]] = None,
+        content_mode: typing.Literal['structured', 'binary'] = 'structured', 
+        loop: Optional[asyncio.AbstractEventLoop] = None
+    ):
+        """
+        Initialize the MQTT client.
+
+        Args:
+            client: Paho MQTT client instance
+            topic_mappings: Optional dictionary mapping message identifiers to topic patterns.
+                Topic patterns may be URI templates with placeholders like {placeholder}.
+                For consumers, placeholders are converted to MQTT wildcards (+) for subscription.
+                If not provided, uses default 1:1 mapping.
+            content_mode: The content mode for CloudEvents ('structured' or 'binary')
+            loop: Optional event loop to use for async operations. If None, will try to get the running loop.
+        """
+        self.client = client
+        self.content_mode = content_mode
+        self.loop = loop
+        self._topic_mappings = topic_mappings or get_default_topic_mappings_us_wa_wsdot_bridgeclearances_mqtt()
+        self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
+        self._connect_waiter: Optional[asyncio.Future[None]] = None
+        self._connected = False
+        
+        # Message handler callbacks (Dispatcher pattern)
+        
+        self.us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, wsdot_mqtt_producer_data.BridgeClearance, Dict[str, str]], Awaitable[None]]] = None
+        
+        
+        # Attach message callback
+        self.client.on_message = self._on_message
+        self.client.on_connect = self._on_connect
+        self.client.on_disconnect = self._on_disconnect
+
+    @staticmethod
+    def _mqtt_reason_code_value(reason_code) -> Optional[int]:
+        """Best-effort numeric MQTT reason-code extraction across paho callback APIs."""
+        if reason_code is None:
+            return 0
+        value = getattr(reason_code, "value", reason_code)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _mqtt_reason_code_text(reason_code) -> str:
+        """Best-effort textual MQTT reason-code rendering across paho callback APIs."""
+        if reason_code is None:
+            return "unknown"
+        text = str(reason_code).strip()
+        if text:
+            return text
+        code = _ClientBase._mqtt_reason_code_value(reason_code)
+        return str(code) if code is not None else "unknown"
+
+    def _resolve_connect_waiter(self, exc: Optional[BaseException] = None):
+        waiter = self._connect_waiter
+        self._connect_waiter = None
+        if waiter is None or waiter.done():
+            return
+        if exc is None:
+            self._connected = True
+            waiter.set_result(None)
+            return
+        self._connected = False
+        waiter.set_exception(exc)
+
+    def _notify_connect_waiter(self, exc: Optional[BaseException] = None):
+        if self.loop is None:
+            return
+        self.loop.call_soon_threadsafe(self._resolve_connect_waiter, exc)
+
+    def _on_connect(self, client, userdata, flags, reason_code=0, properties=None):
+        """Resolve a pending async connect once the broker replies."""
+        if self._mqtt_reason_code_value(reason_code) == 0:
+            self._notify_connect_waiter()
+            return
+        detail = self._mqtt_reason_code_text(reason_code)
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    def _on_disconnect(self, client, userdata, *args):
+        """Fail a pending async connect when the broker disconnects before success."""
+        self._connected = False
+        if self._connect_waiter is None:
+            return
+        reason_code = None
+        if len(args) == 1:
+            reason_code = args[0]
+        elif len(args) == 2:
+            reason_code = args[0]
+        elif len(args) >= 3:
+            reason_code = args[1]
+        detail = self._mqtt_reason_code_text(reason_code)
+        if self._mqtt_reason_code_value(reason_code) in (None, 0):
+            detail = "connection closed before authentication completed"
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    @property
+    def topic_mappings(self) -> Dict[str, str]:
+        """Get the current topic mappings."""
+        return self._topic_mappings.copy()
+    
+    def _on_message(self, client, userdata, message: mqtt.MQTTMessage):
+        """Internal MQTT message callback that dispatches to async handlers."""
+        loop = self.loop
+        if loop is None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(self._process_message(message), loop)
+    
+    async def _process_message(self, message: mqtt.MQTTMessage):
+        """Process incoming MQTT message and dispatch to appropriate handler."""
+        try:
+            if self._is_cloud_event(message):
+                cloud_event = self._cloud_event_from_message(message)
+                if cloud_event:
+                    await self._dispatch_cloud_event(message, cloud_event)
+            else:
+                # Handle plain MQTT messages (if needed)
+                pass
+        except Exception as e:
+            print(f"Error processing message: {e}")
+    
+    def _extract_topic_params(self, topic: str, message_id: str) -> Dict[str, str]:
+        """Extract URI template placeholder values from a topic."""
+        if message_id in self._topic_patterns:
+            return _extract_topic_parameters(topic, self._topic_patterns[message_id])
+        return {}
+    
+    async def _dispatch_cloud_event(self, mqtt_message: mqtt.MQTTMessage, cloud_event: CloudEvent):
+        """Dispatch CloudEvent to the appropriate handler based on type."""
+        event_type = cloud_event['type']
+        
+        
+        if event_type == "us.wa.wsdot.bridgeclearances.BridgeClearance":
+            if self.us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = wsdot_mqtt_producer_data.BridgeClearance.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt")
+                    await self.us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt handler: {e}")
+            return
+        
+    
+    async def subscribe(self, topics: Optional[typing.List[str]] = None, qos: int = 0):
+        """
+        Subscribe to MQTT topics.
+
+        Args:
+            topics: List of topic patterns to subscribe to. If None, subscribes to all 
+                default topics with URI template placeholders replaced by MQTT wildcards.
+            qos: Quality of Service level (0, 1, or 2)
+        """
+        if topics is None:
+            topics = get_subscription_topics_us_wa_wsdot_bridgeclearances_mqtt(self._topic_mappings)
+        for topic in topics:
+            self.client.subscribe(topic, qos)
+    
+    async def unsubscribe(self, topics: typing.List[str]):
+        """
+        Unsubscribe from MQTT topics.
+
+        Args:
+            topics: List of topics to unsubscribe from
+        """
+        for topic in topics:
+            self.client.unsubscribe(topic)
+    
+    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60):
+        """
+        Connect to MQTT broker and wait for authentication to complete.
+
+        Args:
+            broker: Broker hostname or IP
+            port: Broker port
+            keepalive: Keepalive interval in seconds
+
+        Raises:
+            ConnectionError: If the broker rejects the connection or disconnects before success
+            TimeoutError: If the broker does not acknowledge the connection in time
+        """
+        if self._connect_waiter is not None and not self._connect_waiter.done():
+            raise RuntimeError("MQTT connect already in progress")
+        self.loop = asyncio.get_running_loop()
+        waiter = self.loop.create_future()
+        self._connect_waiter = waiter
+        self._connected = False
+        loop_started = False
+        try:
+            self.client.connect(broker, port, keepalive)
+            self.client.loop_start()
+            loop_started = True
+            timeout = float(keepalive) if keepalive and keepalive > 0 else 60.0
+            await asyncio.wait_for(waiter, timeout=timeout)
+        except Exception:
+            if self._connect_waiter is waiter:
+                self._connect_waiter = None
+            self._connected = False
+            if loop_started:
+                await asyncio.to_thread(self.client.loop_stop)
+            raise
+    
+    async def disconnect(self):
+        """Disconnect from MQTT broker."""
+        self._connected = False
+        self.client.loop_stop()
+        self.client.disconnect()
+
+    # Producer methods
+    
+    async def publish_us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt(self,
+        feedurl: str,
+        crossing_location_id: str,
+        data: wsdot_mqtt_producer_data.BridgeClearance,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt' event to an MQTT topic.
+
+        Args:
+        
+            feedurl: URI template variable for 'feedurl'
+            crossing_location_id: URI template variable for 'crossing_location_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'traffic/us/wsdot/wsdot/bridge-clearances/{crossing_location_id}/info'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (True).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/bridge-clearances/{crossing_location_id}/info"
+        _topic_template_values: Dict[str, str] = {
+            "feedurl": str(feedurl),
+            "crossing_location_id": str(crossing_location_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"us.wa.wsdot.bridgeclearances.BridgeClearance",
+             "source":"{feedurl}".format(feedurl = feedurl),
+             "subject":"{crossing_location_id}".format(crossing_location_id = crossing_location_id)
+        }
+        attributes["datacontenttype"] = content_type
+        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
+        byte_data = data.to_byte_array(content_type) if data is not None else b''
+        # to_byte_array returns str for text content types (e.g. JSON);
+        # paho-mqtt will UTF-8 encode str payloads, but cloudevents-sdk's
+        # to_binary/to_structured embed the str directly which then becomes
+        # a JSON string literal containing the JSON document. Coerce to
+        # bytes up-front so receivers can json.loads(payload) once.
+        if isinstance(byte_data, str):
+            byte_data = byte_data.encode('utf-8')
+        event = CloudEvent(attributes, byte_data)
+
+        _effective_qos = 1 if qos is None else qos
+        _effective_retain = True if retain is None else retain
+
+        publish_kwargs: Dict[str, typing.Any] = {
+            "qos": _effective_qos,
+            "retain": _effective_retain,
+        }
+
+        if self.content_mode == "structured":
+            _headers, body = to_structured(event)
+            payload = body
+        else:
+            headers, body = to_binary(event)
+            payload = body
+            mqtt5_props = _ce_headers_to_mqtt5_properties(dict(headers or {}))
+            if mqtt5_props is not None:
+                publish_kwargs["properties"] = mqtt5_props
+
+        # Ensure the MQTT PUBLISH payload is bytes so it is sent as the
+        # exact serialized representation; paho-mqtt would UTF-8 encode a
+        # str, but a dict (from structured mode) would crash, and any
+        # double-encoding upstream would land on the wire untouched.
+        if isinstance(payload, dict):
+            payload = json.dumps(payload).encode('utf-8')
+        elif isinstance(payload, str):
+            payload = payload.encode('utf-8')
+
+        self.client.publish(target_topic, payload, **publish_kwargs)
+
+    
+
+
+def get_default_topic_mappings_us_wa_wsdot_ferryterminals_mqtt() -> Dict[str, str]:
+    """
+    Get the default topic mappings for the us.wa.wsdot.ferryterminals.mqtt message group.
+    
+    Returns:
+        Dictionary mapping message identifiers to their default topic patterns.
+    """
+    return {
+        "us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt": "traffic/us/wsdot/wsdot/ferry-terminals/{terminal_id}/sailing-space",
+    }
+
+
+def get_subscription_topics_us_wa_wsdot_ferryterminals_mqtt(topic_mappings: Optional[Dict[str, str]] = None) -> List[str]:
+    """
+    Get subscription topics with URI template placeholders replaced by MQTT wildcards (+).
+    
+    Args:
+        topic_mappings: Optional topic mappings. If None, uses default mappings.
+        
+    Returns:
+        List of topic patterns suitable for MQTT subscription.
+    """
+    mappings = topic_mappings or get_default_topic_mappings_us_wa_wsdot_ferryterminals_mqtt()
+    topics = []
+    for topic in mappings.values():
+        wildcard_topic = _topic_to_mqtt_wildcard(topic)
+        if wildcard_topic not in topics:
+            topics.append(wildcard_topic)
+    return topics
+
+
+class UsWaWsdotFerryterminalsMqttMqttClient(_ClientBase):
+    """MQTT Client for producing and consuming messages in the us.wa.wsdot.ferryterminals.mqtt message group."""
+    
+    def __init__(
+        self, 
+        client: mqtt.Client, 
+        topic_mappings: Optional[Dict[str, str]] = None,
+        content_mode: typing.Literal['structured', 'binary'] = 'structured', 
+        loop: Optional[asyncio.AbstractEventLoop] = None
+    ):
+        """
+        Initialize the MQTT client.
+
+        Args:
+            client: Paho MQTT client instance
+            topic_mappings: Optional dictionary mapping message identifiers to topic patterns.
+                Topic patterns may be URI templates with placeholders like {placeholder}.
+                For consumers, placeholders are converted to MQTT wildcards (+) for subscription.
+                If not provided, uses default 1:1 mapping.
+            content_mode: The content mode for CloudEvents ('structured' or 'binary')
+            loop: Optional event loop to use for async operations. If None, will try to get the running loop.
+        """
+        self.client = client
+        self.content_mode = content_mode
+        self.loop = loop
+        self._topic_mappings = topic_mappings or get_default_topic_mappings_us_wa_wsdot_ferryterminals_mqtt()
+        self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
+        self._connect_waiter: Optional[asyncio.Future[None]] = None
+        self._connected = False
+        
+        # Message handler callbacks (Dispatcher pattern)
+        
+        self.us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_async: Optional[Callable[[mqtt.MQTTMessage, CloudEvent, wsdot_mqtt_producer_data.TerminalSailingSpace, Dict[str, str]], Awaitable[None]]] = None
+        
+        
+        # Attach message callback
+        self.client.on_message = self._on_message
+        self.client.on_connect = self._on_connect
+        self.client.on_disconnect = self._on_disconnect
+
+    @staticmethod
+    def _mqtt_reason_code_value(reason_code) -> Optional[int]:
+        """Best-effort numeric MQTT reason-code extraction across paho callback APIs."""
+        if reason_code is None:
+            return 0
+        value = getattr(reason_code, "value", reason_code)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _mqtt_reason_code_text(reason_code) -> str:
+        """Best-effort textual MQTT reason-code rendering across paho callback APIs."""
+        if reason_code is None:
+            return "unknown"
+        text = str(reason_code).strip()
+        if text:
+            return text
+        code = _ClientBase._mqtt_reason_code_value(reason_code)
+        return str(code) if code is not None else "unknown"
+
+    def _resolve_connect_waiter(self, exc: Optional[BaseException] = None):
+        waiter = self._connect_waiter
+        self._connect_waiter = None
+        if waiter is None or waiter.done():
+            return
+        if exc is None:
+            self._connected = True
+            waiter.set_result(None)
+            return
+        self._connected = False
+        waiter.set_exception(exc)
+
+    def _notify_connect_waiter(self, exc: Optional[BaseException] = None):
+        if self.loop is None:
+            return
+        self.loop.call_soon_threadsafe(self._resolve_connect_waiter, exc)
+
+    def _on_connect(self, client, userdata, flags, reason_code=0, properties=None):
+        """Resolve a pending async connect once the broker replies."""
+        if self._mqtt_reason_code_value(reason_code) == 0:
+            self._notify_connect_waiter()
+            return
+        detail = self._mqtt_reason_code_text(reason_code)
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    def _on_disconnect(self, client, userdata, *args):
+        """Fail a pending async connect when the broker disconnects before success."""
+        self._connected = False
+        if self._connect_waiter is None:
+            return
+        reason_code = None
+        if len(args) == 1:
+            reason_code = args[0]
+        elif len(args) == 2:
+            reason_code = args[0]
+        elif len(args) >= 3:
+            reason_code = args[1]
+        detail = self._mqtt_reason_code_text(reason_code)
+        if self._mqtt_reason_code_value(reason_code) in (None, 0):
+            detail = "connection closed before authentication completed"
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    @property
+    def topic_mappings(self) -> Dict[str, str]:
+        """Get the current topic mappings."""
+        return self._topic_mappings.copy()
+    
+    def _on_message(self, client, userdata, message: mqtt.MQTTMessage):
+        """Internal MQTT message callback that dispatches to async handlers."""
+        loop = self.loop
+        if loop is None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = asyncio.get_event_loop()
+        asyncio.run_coroutine_threadsafe(self._process_message(message), loop)
+    
+    async def _process_message(self, message: mqtt.MQTTMessage):
+        """Process incoming MQTT message and dispatch to appropriate handler."""
+        try:
+            if self._is_cloud_event(message):
+                cloud_event = self._cloud_event_from_message(message)
+                if cloud_event:
+                    await self._dispatch_cloud_event(message, cloud_event)
+            else:
+                # Handle plain MQTT messages (if needed)
+                pass
+        except Exception as e:
+            print(f"Error processing message: {e}")
+    
+    def _extract_topic_params(self, topic: str, message_id: str) -> Dict[str, str]:
+        """Extract URI template placeholder values from a topic."""
+        if message_id in self._topic_patterns:
+            return _extract_topic_parameters(topic, self._topic_patterns[message_id])
+        return {}
+    
+    async def _dispatch_cloud_event(self, mqtt_message: mqtt.MQTTMessage, cloud_event: CloudEvent):
+        """Dispatch CloudEvent to the appropriate handler based on type."""
+        event_type = cloud_event['type']
+        
+        
+        if event_type == "us.wa.wsdot.ferryterminals.TerminalSailingSpace":
+            if self.us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_async:
+                try:
+                    content_type = cloud_event.get_attributes().get('datacontenttype', 'application/json')
+                    # CloudEvent.data is now a dict or string, not bytes
+                    data = wsdot_mqtt_producer_data.TerminalSailingSpace.from_data(cloud_event.data, content_type)
+                    topic_params = self._extract_topic_params(mqtt_message.topic, "us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt")
+                    await self.us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_async(mqtt_message, cloud_event, data, topic_params)
+                except Exception as e:
+                    print(f"Error in us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt handler: {e}")
+            return
+        
+    
+    async def subscribe(self, topics: Optional[typing.List[str]] = None, qos: int = 0):
+        """
+        Subscribe to MQTT topics.
+
+        Args:
+            topics: List of topic patterns to subscribe to. If None, subscribes to all 
+                default topics with URI template placeholders replaced by MQTT wildcards.
+            qos: Quality of Service level (0, 1, or 2)
+        """
+        if topics is None:
+            topics = get_subscription_topics_us_wa_wsdot_ferryterminals_mqtt(self._topic_mappings)
+        for topic in topics:
+            self.client.subscribe(topic, qos)
+    
+    async def unsubscribe(self, topics: typing.List[str]):
+        """
+        Unsubscribe from MQTT topics.
+
+        Args:
+            topics: List of topics to unsubscribe from
+        """
+        for topic in topics:
+            self.client.unsubscribe(topic)
+    
+    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60):
+        """
+        Connect to MQTT broker and wait for authentication to complete.
+
+        Args:
+            broker: Broker hostname or IP
+            port: Broker port
+            keepalive: Keepalive interval in seconds
+
+        Raises:
+            ConnectionError: If the broker rejects the connection or disconnects before success
+            TimeoutError: If the broker does not acknowledge the connection in time
+        """
+        if self._connect_waiter is not None and not self._connect_waiter.done():
+            raise RuntimeError("MQTT connect already in progress")
+        self.loop = asyncio.get_running_loop()
+        waiter = self.loop.create_future()
+        self._connect_waiter = waiter
+        self._connected = False
+        loop_started = False
+        try:
+            self.client.connect(broker, port, keepalive)
+            self.client.loop_start()
+            loop_started = True
+            timeout = float(keepalive) if keepalive and keepalive > 0 else 60.0
+            await asyncio.wait_for(waiter, timeout=timeout)
+        except Exception:
+            if self._connect_waiter is waiter:
+                self._connect_waiter = None
+            self._connected = False
+            if loop_started:
+                await asyncio.to_thread(self.client.loop_stop)
+            raise
+    
+    async def disconnect(self):
+        """Disconnect from MQTT broker."""
+        self._connected = False
+        self.client.loop_stop()
+        self.client.disconnect()
+
+    # Producer methods
+    
+    async def publish_us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt(self,
+        feedurl: str,
+        terminal_id: str,
+        data: wsdot_mqtt_producer_data.TerminalSailingSpace,
+        topic: Optional[str] = None,
+        qos: Optional[int] = None,
+        retain: Optional[bool] = None,
+        _time: typing.Optional[typing.Union[str, datetime]] = None,
+        content_type: str = "application/json") -> None:
+        """
+        Publish the 'us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt' event to an MQTT topic.
+
+        Args:
+        
+            feedurl: URI template variable for 'feedurl'
+            terminal_id: URI template variable for 'terminal_id'
+            data: The event data to be published.
+            topic: Optional topic override. If not provided, uses default topic 'traffic/us/wsdot/wsdot/ferry-terminals/{terminal_id}/sailing-space'
+                with URI template placeholders substituted from the keyword arguments.
+            qos: Optional MQTT QoS override. If not provided, uses the message default (1).
+            retain: Optional MQTT retain flag override. If not provided, uses the message default (False).
+            _time: Optional CloudEvents time override. Defaults to current UTC when no catalog time is used.
+            content_type: The content type for the event data.
+        """
+        target_topic = topic if topic is not None else "traffic/us/wsdot/wsdot/ferry-terminals/{terminal_id}/sailing-space"
+        _topic_template_values: Dict[str, str] = {
+            "feedurl": str(feedurl),
+            "terminal_id": str(terminal_id),
+        }
+        if _topic_template_values:
+            target_topic = _apply_topic_template(target_topic, _topic_template_values)
+
+        attributes = {
+             "type":"us.wa.wsdot.ferryterminals.TerminalSailingSpace",
+             "source":"{feedurl}".format(feedurl = feedurl),
+             "subject":"{terminal_id}".format(terminal_id = terminal_id)
         }
         attributes["datacontenttype"] = content_type
         attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))

@@ -5662,7 +5662,11 @@ def mosquitto_wsdot():
 
 class TestWSDOTMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_wsdot, wsdot_mqtt_image):
-        _run_mqtt_contract_flow('wsdot', wsdot_mqtt_image, mosquitto_wsdot, timeout=240)
+        code = os.environ.get('WSDOT_ACCESS_CODE', '')
+        if not code:
+            pytest.skip('WSDOT_ACCESS_CODE not set')
+        _run_mqtt_contract_flow('wsdot', wsdot_mqtt_image, mosquitto_wsdot, timeout=240,
+                                extra_env={'WSDOT_ACCESS_CODE': code})
 
 
 

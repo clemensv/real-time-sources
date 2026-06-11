@@ -28,20 +28,20 @@ class Test_MountainPassCondition(unittest.TestCase):
         Create instance of MountainPassCondition for testing
         """
         instance = MountainPassCondition(
-            mountain_pass_id='uyctfchbpilitcynurvp',
-            mountain_pass_name='ghtmsanktrhrviazpbqy',
-            elevation_in_feet=int(61),
-            latitude=float(78.76459883768871),
-            longitude=float(57.9873127853998),
-            temperature_in_fahrenheit=int(74),
-            weather_condition='iuvglbpuyilbcrqznmpb',
-            road_condition='fmjfdbjvexiflkbhmqod',
-            travel_advisory_active=True,
-            restriction_one_direction='ohkhkynqsmqtqisxogvz',
-            restriction_one_text='qrczfggmcbnxbansxysk',
-            restriction_two_direction='uxlqeqrxokvvtebtdvki',
-            restriction_two_text='hmetfmtqyebbtlywkjsf',
-            date_updated='jysebssxuqcuavypclkw'
+            mountain_pass_id='pmwlsmihqyedgejddrjr',
+            mountain_pass_name='uiccuazdqqncdfueiikb',
+            elevation_in_feet=int(42),
+            latitude=float(79.72432771608375),
+            longitude=float(24.763467692471274),
+            temperature_in_fahrenheit=int(99),
+            weather_condition='agosmgcfemxwcwidqopc',
+            road_condition='swgrggidbhohtfmbbmap',
+            travel_advisory_active=False,
+            restriction_one_direction='szhsroepcfrjpuglfvyd',
+            restriction_one_text='onqwbdljphaybduqpifd',
+            restriction_two_direction='jzxcveqrfiarcwwgshka',
+            restriction_two_text='vfregnqlgjamanmxvtrz',
+            date_updated='vbfzhdtfuczdyrrwnjol'
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test mountain_pass_id property
         """
-        test_value = 'uyctfchbpilitcynurvp'
+        test_value = 'pmwlsmihqyedgejddrjr'
         self.instance.mountain_pass_id = test_value
         self.assertEqual(self.instance.mountain_pass_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test mountain_pass_name property
         """
-        test_value = 'ghtmsanktrhrviazpbqy'
+        test_value = 'uiccuazdqqncdfueiikb'
         self.instance.mountain_pass_name = test_value
         self.assertEqual(self.instance.mountain_pass_name, test_value)
     
@@ -66,7 +66,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test elevation_in_feet property
         """
-        test_value = int(61)
+        test_value = int(42)
         self.instance.elevation_in_feet = test_value
         self.assertEqual(self.instance.elevation_in_feet, test_value)
     
@@ -74,7 +74,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(78.76459883768871)
+        test_value = float(79.72432771608375)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -82,7 +82,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(57.9873127853998)
+        test_value = float(24.763467692471274)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -90,7 +90,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test temperature_in_fahrenheit property
         """
-        test_value = int(74)
+        test_value = int(99)
         self.instance.temperature_in_fahrenheit = test_value
         self.assertEqual(self.instance.temperature_in_fahrenheit, test_value)
     
@@ -98,7 +98,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test weather_condition property
         """
-        test_value = 'iuvglbpuyilbcrqznmpb'
+        test_value = 'agosmgcfemxwcwidqopc'
         self.instance.weather_condition = test_value
         self.assertEqual(self.instance.weather_condition, test_value)
     
@@ -106,7 +106,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test road_condition property
         """
-        test_value = 'fmjfdbjvexiflkbhmqod'
+        test_value = 'swgrggidbhohtfmbbmap'
         self.instance.road_condition = test_value
         self.assertEqual(self.instance.road_condition, test_value)
     
@@ -114,7 +114,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test travel_advisory_active property
         """
-        test_value = True
+        test_value = False
         self.instance.travel_advisory_active = test_value
         self.assertEqual(self.instance.travel_advisory_active, test_value)
     
@@ -122,7 +122,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test restriction_one_direction property
         """
-        test_value = 'ohkhkynqsmqtqisxogvz'
+        test_value = 'szhsroepcfrjpuglfvyd'
         self.instance.restriction_one_direction = test_value
         self.assertEqual(self.instance.restriction_one_direction, test_value)
     
@@ -130,7 +130,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test restriction_one_text property
         """
-        test_value = 'qrczfggmcbnxbansxysk'
+        test_value = 'onqwbdljphaybduqpifd'
         self.instance.restriction_one_text = test_value
         self.assertEqual(self.instance.restriction_one_text, test_value)
     
@@ -138,7 +138,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test restriction_two_direction property
         """
-        test_value = 'uxlqeqrxokvvtebtdvki'
+        test_value = 'jzxcveqrfiarcwwgshka'
         self.instance.restriction_two_direction = test_value
         self.assertEqual(self.instance.restriction_two_direction, test_value)
     
@@ -146,7 +146,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test restriction_two_text property
         """
-        test_value = 'hmetfmtqyebbtlywkjsf'
+        test_value = 'vfregnqlgjamanmxvtrz'
         self.instance.restriction_two_text = test_value
         self.assertEqual(self.instance.restriction_two_text, test_value)
     
@@ -154,7 +154,7 @@ class Test_MountainPassCondition(unittest.TestCase):
         """
         Test date_updated property
         """
-        test_value = 'jysebssxuqcuavypclkw'
+        test_value = 'vbfzhdtfuczdyrrwnjol'
         self.instance.date_updated = test_value
         self.assertEqual(self.instance.date_updated, test_value)
     

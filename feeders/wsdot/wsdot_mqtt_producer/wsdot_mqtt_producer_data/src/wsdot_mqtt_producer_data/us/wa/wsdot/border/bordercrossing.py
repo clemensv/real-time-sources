@@ -165,11 +165,11 @@ class BorderCrossing:
             An instance of the dataclass.
         """
         return cls(
-            crossing_name='tgtqgqxmongnwfxfqfwn',
-            wait_time=int(33),
-            time='vqdngxhovajrqcqfmfhs',
-            description='xbtljwjbpjxjgietsstn',
-            road_name='isoucxpdzojdpehrkerx',
-            latitude=float(79.9388122084259),
-            longitude=float(31.751143789971326)
+            crossing_name='ndrxzuobtdpnvznxzinh',
+            wait_time=int(16),
+            time='dkwtyeuqqfehhbkxtpgk',
+            description='xwydtetwmkjnjipfmbtd',
+            road_name='lsctojwrumyygyzddjqw',
+            latitude=float(88.9346912555835),
+            longitude=float(26.948151857298697)
         )

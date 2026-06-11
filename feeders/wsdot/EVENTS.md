@@ -1,13 +1,13 @@
-# WSDOT Traveler Information feeder Events
+# WSDOT event reference
 
-WSDOT publishes traffic, travel, bridge, toll, pass, ferry, and border-wait updates from Washington State Department of Transportation for Washington road, bridge, pass, ferry, and border resources. These events help consumers monitor mobility operations, passenger information, and traffic conditions without polling the upstream source directly.
+This document defines the CloudEvents contract emitted by the WSDOT Traveler Information feeder. For the project overview see [README.md](README.md); for the published container images and their environment-variable matrix see [CONTAINER.md](CONTAINER.md).
 
 ## At a glance
 
-- **Event types:** 10 documented event types (30 transport bindings in the manifest).
+- **Event types:** 16 documented event types (48 transport bindings in the manifest).
 - **Transports:** KAFKA, MQTT/5.0, AMQP/1.0
-- **Reference vs telemetry:** 2 reference/catalog event types and 8 telemetry event types.
-- **Identity:** `{flow_data_id}`, `{travel_time_id}`, `{mountain_pass_id}`, `{station_id}`, `{trip_name}`, `{state_route_id}/{bridge_number}`, `{crossing_name}`, `{vessel_id}` identifies the resource each event is about.
+- **Reference vs telemetry:** 5 reference/catalog event types and 11 telemetry event types.
+- **Identity:** `{flow_data_id}`, `{travel_time_id}`, `{mountain_pass_id}`, `{station_id}`, `{trip_name}`, `{state_route_id}/{bridge_number}`, `{crossing_name}`, `{vessel_id}`, `{alert_id}`, `{camera_id}`, `{crossing_location_id}`, `{terminal_id}` identifies the resource each event is about.
 - **Operations:** The bridge keeps dedupe state so repeated upstream records are not intentionally republished as new events.
 - **Read next:** [Quick start](#quick-start--how-to-consume), [Event catalog](#event-catalog), [Conventions](#conventions), [Operational notes](#operational-notes), [References](#references).
 
@@ -17,7 +17,7 @@ These examples show the smallest useful consumer for each transport declared by 
 
 ### Kafka
 
-Subscribe to `wsdot`. The record key is `{flow_data_id}`, `{travel_time_id}`, `{mountain_pass_id}`, `{station_id}`, `{trip_name}`, `{state_route_id}/{bridge_number}`, `{crossing_name}`, `{vessel_id}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
+Subscribe to `wsdot`. The record key is `{flow_data_id}`, `{travel_time_id}`, `{mountain_pass_id}`, `{station_id}`, `{trip_name}`, `{state_route_id}/{bridge_number}`, `{crossing_name}`, `{vessel_id}`, `{alert_id}`, `{camera_id}`, `{crossing_location_id}`, `{terminal_id}`. Each key template is explained in the event catalog below. Kafka uses the key for partition routing: events with the same key go to the same partition and keep per-key order, but consumers still receive an interleaved stream.
 
 ```python
 from confluent_kafka import Consumer
@@ -31,7 +31,7 @@ while True:
 Use different `group.id` values when every consumer should see every event; use the same group id to share partitions. Disable auto-commit and commit after processing for at-least-once application handling.
 ### MQTT 5
 
-Connect to `mqtt://localhost:1883` and subscribe to `traffic/us/wsdot/wsdot/+/flow/+/info`, `traffic/us/wsdot/wsdot/+/flow/+/reading`, `traffic/us/wsdot/wsdot/+/travel-times/+/info`, `traffic/us/wsdot/wsdot/+/mountain-passes/+/info`, `traffic/us/wsdot/wsdot/+/flow-stations/+/info`, `traffic/us/wsdot/wsdot/+/flow-stations/+/reading`, `traffic/us/wsdot/wsdot/+/tolls/+/rate`, `traffic/us/wsdot/wsdot/+/bridges/+/+/info`, `traffic/us/wsdot/wsdot/+/border-crossings/+/info`, `traffic/us/wsdot/wsdot/+/vessels/+/location`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
+Connect to `mqtt://localhost:1883` and subscribe to `traffic/us/wsdot/wsdot/+/flow/+/info`, `traffic/us/wsdot/wsdot/+/flow/+/reading`, `traffic/us/wsdot/wsdot/+/travel-times/+/info`, `traffic/us/wsdot/wsdot/+/mountain-passes/+/info`, `traffic/us/wsdot/wsdot/+/flow-stations/+/info`, `traffic/us/wsdot/wsdot/+/flow-stations/+/reading`, `traffic/us/wsdot/wsdot/+/tolls/+/rate`, `traffic/us/wsdot/wsdot/+/bridges/+/+/info`, `traffic/us/wsdot/wsdot/+/border-crossings/+/info`, `traffic/us/wsdot/wsdot/+/vessels/+/location`, `traffic/us/wsdot/wsdot/road-weather-stations/+/info`, `traffic/us/wsdot/wsdot/road-weather-stations/+/reading`, `traffic/us/wsdot/wsdot/alerts/+/info`, `traffic/us/wsdot/wsdot/cameras/+/info`, `traffic/us/wsdot/wsdot/bridge-clearances/+/info`, `traffic/us/wsdot/wsdot/ferry-terminals/+/sailing-space`. In MQTT filters, `+` matches exactly one topic level and `#` matches the remaining levels only when it is the final segment. Messages published with the RETAIN flag are delivered once per matching topic at subscribe time as Last Known Value; non-retained messages are live stream updates only.
 
 ```python
 import paho.mqtt.client as mqtt
@@ -332,7 +332,7 @@ Metadata for a WSDOT road weather information system (RWIS) station. WSDOT opera
 
 #### Identity
 
-Each event identifies the real-world resource with `{station_id}`. `{station_id}` is station identifier from upstream StationCode. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is station identifier from upstream StationID. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
 
 #### Where to find it
 
@@ -346,7 +346,7 @@ Each event identifies the real-world resource with `{station_id}`. `{station_id}
 
 `Weather Station` payloads are JSON object. Required fields: `station_id`, `station_name`, `latitude`, `longitude`.
 
-- **`station_id`** (string, required): Station identifier from upstream StationCode.
+- **`station_id`** (string, required): Station identifier from upstream StationID. The WeatherStation reference event is synthesized from the current-readings payload (the legacy WeatherStations endpoint was decommissioned), so this is the same numeric station identifier carried by WeatherReading.
 - **`station_name`** (string, required): Station name with highway and milepost.
 - **`latitude`** (double, required, deg (°)): Latitude in WGS84.
 - **`longitude`** (double, required, deg (°)): Longitude in WGS84.
@@ -705,6 +705,437 @@ Synthetic example values are generated deterministically from the schema: consta
   "eta_basis": "string",
   "route_abbreviation": "string",
   "timestamp": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change rather than a complete catalog.
+
+### Road Weather Station
+
+CloudEvents type: `us.wa.wsdot.roadweather.RoadWeatherStation`
+
+#### What it tells you
+
+Metadata for a WSDOT Scanweb road weather information system (RWIS) station, including position and elevation. WSDOT operates roughly 105 Scanweb stations reporting pavement and atmospheric conditions across Washington State highways.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable station identifier. That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `wsdot`, key `{station_id}` |
+| `MQTT/5.0` | topic `traffic/us/wsdot/wsdot/road-weather-stations/{station_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{station_id}` |
+
+#### Payload
+
+`Road Weather Station` payloads are JSON object. Required fields: `station_id`, `station_name`, `latitude`, `longitude`, `elevation`.
+
+- **`station_id`** (string, required): Stable station identifier. From upstream StationId; when StationId is blank (a few Scanweb stations report a blank id) the bridge copies the unique StationName into this field so every station has a stable, non-empty key.
+- **`station_name`** (string, required): Station name (unique across the Scanweb network).
+- **`latitude`** (double, required, deg (°)): Latitude in WGS84.
+- **`longitude`** (double, required, deg (°)): Longitude in WGS84.
+- **`elevation`** (int32 or null, required, m): Station elevation above sea level.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "station_name": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "elevation": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
+
+### Road Weather Reading
+
+CloudEvents type: `us.wa.wsdot.roadweather.RoadWeatherReading`
+
+#### What it tells you
+
+A current Scanweb road weather reading including air temperature, humidity, wind, visibility, precipitation totals, and per-sensor road surface and sub-surface measurements.
+
+#### Identity
+
+Each event identifies the real-world resource with `{station_id}`. `{station_id}` is stable station identifier, matching the RoadWeatherStation key (StationId, or StationName when StationId is blank). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `wsdot`, key `{station_id}` |
+| `MQTT/5.0` | topic `traffic/us/wsdot/wsdot/road-weather-stations/{station_id}/reading`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{station_id}` |
+
+#### Payload
+
+`Road Weather Reading` payloads are JSON object. Required fields: `station_id`, `station_name`, `latitude`, `longitude`, `elevation`, `reading_time`, `air_temperature`, `relative_humidity`, `average_wind_speed`, `average_wind_direction`, `wind_gust`, `visibility`, `precipitation_intensity`, `precipitation_type`, `precipitation_past_1_hour`, `precipitation_past_3_hours`, `precipitation_past_6_hours`, `precipitation_past_12_hours`, `precipitation_past_24_hours`, `precipitation_accumulation`, `barometric_pressure`, `snow_depth`, `surface_measurements`, `sub_surface_measurements`.
+
+- **`station_id`** (string, required): Stable station identifier, matching the RoadWeatherStation key (StationId, or StationName when StationId is blank).
+- **`station_name`** (string, required): Station name.
+- **`latitude`** (double, required, deg (°)): Latitude in WGS84.
+- **`longitude`** (double, required, deg (°)): Longitude in WGS84.
+- **`elevation`** (int32 or null, required, m): Station elevation above sea level.
+- **`reading_time`** (string, required): Observation time as reported by Scanweb (ISO 8601, without timezone offset; interpreted as the station's local reporting clock).
+- **`air_temperature`** (double or null, required, Cel (°C)): Air temperature.
+- **`relative_humidity`** (int32 or null, required, %): Relative humidity percentage. Upstream key is misspelled 'RelativeHumidty'.
+- **`average_wind_speed`** (double or null, required, m/s): Average wind speed.
+- **`average_wind_direction`** (int32 or null, required, deg (°)): Average wind direction in degrees from true north.
+- **`wind_gust`** (double or null, required, m/s): Peak wind gust speed.
+- **`visibility`** (int32 or null, required, m): Visibility distance.
+- **`precipitation_intensity`** (int32 or null, required): Coded precipitation intensity as an opaque integer reported by the upstream Scanweb feed; WSDOT does not publish the code dictionary, so the value is passed through unmodified. Null when not reported.
+- **`precipitation_type`** (int32 or null, required): Coded precipitation type as an opaque integer reported by the upstream Scanweb feed (commonly none, rain, or snow); WSDOT does not publish the full code dictionary, so the value is passed through unmodified. Null when not reported.
+- **`precipitation_past_1_hour`** (double or null, required, mm): Liquid-equivalent precipitation accumulated in the past 1 hour.
+- **`precipitation_past_3_hours`** (double or null, required, mm): Liquid-equivalent precipitation accumulated in the past 3 hours.
+- **`precipitation_past_6_hours`** (double or null, required, mm): Liquid-equivalent precipitation accumulated in the past 6 hours.
+- **`precipitation_past_12_hours`** (double or null, required, mm): Liquid-equivalent precipitation accumulated in the past 12 hours.
+- **`precipitation_past_24_hours`** (double or null, required, mm): Liquid-equivalent precipitation accumulated in the past 24 hours.
+- **`precipitation_accumulation`** (double or null, required, mm): Cumulative precipitation accumulation reported by the gauge, or null.
+- **`barometric_pressure`** (double or null, required, hPa): Barometric pressure, or null when the station has no pressure sensor.
+- **`snow_depth`** (double or null, required, cm): Measured snow depth, or null when the station has no snow sensor.
+- **`surface_measurements`** (array of object, required): Per-sensor road surface measurements (temperature, freezing point, surface condition).
+- **`sub_surface_measurements`** (array of object, required): Per-sensor sub-surface (in-pavement) temperature measurements.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "station_id": "string",
+  "station_name": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "elevation": 0,
+  "reading_time": "string",
+  "air_temperature": 0,
+  "relative_humidity": 0,
+  "average_wind_speed": 0,
+  "average_wind_direction": 0,
+  "wind_gust": 0,
+  "visibility": 0,
+  "precipitation_intensity": 0,
+  "precipitation_type": 0,
+  "precipitation_past_1_hour": 0,
+  "precipitation_past_3_hours": 0,
+  "precipitation_past_6_hours": 0,
+  "precipitation_past_12_hours": 0,
+  "precipitation_past_24_hours": 0,
+  "precipitation_accumulation": 0,
+  "barometric_pressure": 0,
+  "snow_depth": 0,
+  "surface_measurements": null,
+  "sub_surface_measurements": null
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Highway Alert
+
+CloudEvents type: `us.wa.wsdot.alerts.HighwayAlert`
+
+#### What it tells you
+
+An active WSDOT highway alert describing an incident, construction, closure, special event, or weather impact, with start and end roadway locations on the Washington State highway network.
+
+#### Identity
+
+Each event identifies the real-world resource with `{alert_id}`. `{alert_id}` is WSDOT alert identifier (stable for the life of the alert). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `wsdot`, key `{alert_id}` |
+| `MQTT/5.0` | topic `traffic/us/wsdot/wsdot/alerts/{alert_id}/info`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{alert_id}` |
+
+#### Payload
+
+`Highway Alert` payloads are JSON object. Required fields: `alert_id`, `county`, `region`, `priority`, `event_category`, `event_status`, `headline_description`, `extended_description`, `start_time`, `end_time`, `last_updated_time`, `start_description`, `start_direction`, `start_road_name`, `start_milepost`, `start_latitude`, `start_longitude`, `end_description`, `end_direction`, `end_road_name`, `end_milepost`, `end_latitude`, `end_longitude`.
+
+- **`alert_id`** (string, required): WSDOT alert identifier (stable for the life of the alert).
+- **`county`** (string or null, required): County in which the alert is located.
+- **`region`** (string or null, required): WSDOT region responsible for the alert.
+- **`priority`** (string or null, required): Alert priority (Highest, High, Medium, Low, Lowest).
+- **`event_category`** (string or null, required): Category of the event (e.g. Collision, Construction, Special Event, Weather).
+- **`event_status`** (string or null, required): Current status of the event (Open or Closed).
+- **`headline_description`** (string or null, required): Short human-readable headline for the alert.
+- **`extended_description`** (string or null, required): Longer human-readable description with full details.
+- **`start_time`** (string or null, required): Alert start time as an ISO 8601 UTC timestamp.
+- **`end_time`** (string or null, required): Alert end time as an ISO 8601 UTC timestamp, or null if open-ended.
+- **`last_updated_time`** (string or null, required): Time the alert was last updated, as an ISO 8601 UTC timestamp.
+- **`start_description`** (string or null, required): Description of the start roadway location.
+- **`start_direction`** (string or null, required): Travel direction at the start location (e.g. B, N, S, E, W).
+- **`start_road_name`** (string or null, required): Road name/route designation at the start location.
+- **`start_milepost`** (double or null, required, mi): Milepost of the start location.
+- **`start_latitude`** (double or null, required, deg (°)): Latitude of the start location in WGS84.
+- **`start_longitude`** (double or null, required, deg (°)): Longitude of the start location in WGS84.
+- **`end_description`** (string or null, required): Description of the end roadway location.
+- **`end_direction`** (string or null, required): Travel direction at the end location.
+- **`end_road_name`** (string or null, required): Road name/route designation at the end location.
+- **`end_milepost`** (double or null, required, mi): Milepost of the end location.
+- **`end_latitude`** (double or null, required, deg (°)): Latitude of the end location in WGS84.
+- **`end_longitude`** (double or null, required, deg (°)): Longitude of the end location in WGS84.
+##### `priority` values
+
+- `Highest`
+- `High`
+- `Medium`
+- `Low`
+- `Lowest`
+##### `event_status` values
+
+- `Open`
+- `Closed`
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "alert_id": "string",
+  "county": "string",
+  "region": "string",
+  "priority": "Highest",
+  "event_category": "string",
+  "event_status": "Open",
+  "headline_description": "string",
+  "extended_description": "string",
+  "start_time": "string",
+  "end_time": "string",
+  "last_updated_time": "string",
+  "start_description": "string",
+  "start_direction": "string",
+  "start_road_name": "string",
+  "start_milepost": 0,
+  "start_latitude": 0,
+  "start_longitude": 0,
+  "end_description": "string",
+  "end_direction": "string",
+  "end_road_name": "string",
+  "end_milepost": 0,
+  "end_latitude": 0,
+  "end_longitude": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is telemetry/event data. Treat each event as a current observation or state change. If an MQTT binding is retained, the retained copy is only the latest value for that exact topic, not a history.
+
+### Highway Camera
+
+CloudEvents type: `us.wa.wsdot.cameras.HighwayCamera`
+
+#### What it tells you
+
+Reference catalog entry for a WSDOT highway traffic camera, including its location and a claim-check image URL. The image bytes are not transported; consumers fetch the most recent frame from ImageURL on demand.
+
+#### Identity
+
+Each event identifies the real-world resource with `{camera_id}`. `{camera_id}` is WSDOT camera identifier (stable). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `wsdot`, key `{camera_id}` |
+| `MQTT/5.0` | topic `traffic/us/wsdot/wsdot/cameras/{camera_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{camera_id}` |
+
+#### Payload
+
+`Highway Camera` payloads are JSON object. Required fields: `camera_id`, `title`, `description`, `camera_owner`, `owner_url`, `image_url`, `image_width`, `image_height`, `is_active`, `region`, `sort_order`, `display_latitude`, `display_longitude`, `location_description`, `location_direction`, `location_road_name`, `location_milepost`, `location_latitude`, `location_longitude`.
+
+- **`camera_id`** (string, required): WSDOT camera identifier (stable).
+- **`title`** (string or null, required): Human-readable camera title.
+- **`description`** (string or null, required): Optional camera description.
+- **`camera_owner`** (string or null, required): Organization that owns/operates the camera.
+- **`owner_url`** (string or null, required): URL with more information from the camera owner.
+- **`image_url`** (string, required): Claim-check URL of the current camera image. The image bytes are not transported in the event; consumers fetch the latest frame from this URL on demand.
+- **`image_width`** (int32 or null, required, px): Width of the camera image.
+- **`image_height`** (int32 or null, required, px): Height of the camera image.
+- **`is_active`** (boolean, required): Whether the camera is currently active.
+- **`region`** (string or null, required): WSDOT region (or area code) for the camera.
+- **`sort_order`** (int32 or null, required): WSDOT display sort order.
+- **`display_latitude`** (double or null, required, deg (°)): Latitude used for map display, in WGS84.
+- **`display_longitude`** (double or null, required, deg (°)): Longitude used for map display, in WGS84.
+- **`location_description`** (string or null, required): Description of the camera roadway location.
+- **`location_direction`** (string or null, required): Travel direction the camera faces.
+- **`location_road_name`** (string or null, required): Road name/route designation at the camera location.
+- **`location_milepost`** (double or null, required, mi): Milepost of the camera location.
+- **`location_latitude`** (double or null, required, deg (°)): Latitude of the camera location in WGS84.
+- **`location_longitude`** (double or null, required, deg (°)): Longitude of the camera location in WGS84.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "camera_id": "string",
+  "title": "string",
+  "description": "string",
+  "camera_owner": "string",
+  "owner_url": "string",
+  "image_url": "string",
+  "image_width": 0,
+  "image_height": 0,
+  "is_active": false,
+  "region": "string",
+  "sort_order": 0,
+  "display_latitude": 0,
+  "display_longitude": 0,
+  "location_description": "string",
+  "location_direction": "string",
+  "location_road_name": "string",
+  "location_milepost": 0,
+  "location_latitude": 0,
+  "location_longitude": 0
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
+
+### Bridge Clearance
+
+CloudEvents type: `us.wa.wsdot.bridgeclearances.BridgeClearance`
+
+#### What it tells you
+
+Reference catalog record of the surveyed vertical clearance of a structure crossing a Washington State highway, used for commercial vehicle routing. Largely static; refreshed periodically.
+
+#### Identity
+
+Each event identifies the real-world resource with `{crossing_location_id}`. `{crossing_location_id}` is stable crossing location identifier (CrossingLocationId). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `wsdot`, key `{crossing_location_id}` |
+| `MQTT/5.0` | topic `traffic/us/wsdot/wsdot/bridge-clearances/{crossing_location_id}/info`, retain `true`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{crossing_location_id}` |
+
+#### Payload
+
+`Bridge Clearance` payloads are JSON object. Required fields: `crossing_location_id`, `bridge_number`, `state_route_id`, `state_structure_id`, `crossing_description`, `inventory_direction`, `srmp`, `srmp_ahead_back_indicator`, `latitude`, `longitude`, `vertical_clearance_maximum_inches`, `vertical_clearance_maximum_feet_inch`, `vertical_clearance_minimum_inches`, `vertical_clearance_minimum_feet_inch`, `control_entity_guid`, `crossing_record_guid`, `location_guid`, `route_date`, `api_last_update`.
+
+- **`crossing_location_id`** (string, required): Stable crossing location identifier (CrossingLocationId).
+- **`bridge_number`** (string or null, required): WSDOT bridge number of the structure.
+- **`state_route_id`** (string or null, required): State route identifier the structure crosses, or null.
+- **`state_structure_id`** (string or null, required): Statewide structure identifier.
+- **`crossing_description`** (string or null, required): Human-readable description of the crossing.
+- **`inventory_direction`** (string or null, required): Inventory direction of the structure, or null.
+- **`srmp`** (double or null, required, mi): State route milepost of the crossing.
+- **`srmp_ahead_back_indicator`** (string or null, required): Ahead/Back indicator disambiguating the milepost, or null.
+- **`latitude`** (double or null, required, deg (°)): Latitude in WGS84.
+- **`longitude`** (double or null, required, deg (°)): Longitude in WGS84.
+- **`vertical_clearance_maximum_inches`** (int32 or null, required, in): Maximum vertical clearance, in inches.
+- **`vertical_clearance_maximum_feet_inch`** (string or null, required): Maximum vertical clearance as a feet-and-inches display string (e.g. '14 ft 3 in').
+- **`vertical_clearance_minimum_inches`** (int32 or null, required, in): Minimum vertical clearance, in inches.
+- **`vertical_clearance_minimum_feet_inch`** (string or null, required): Minimum vertical clearance as a feet-and-inches display string.
+- **`control_entity_guid`** (string or null, required): GUID of the controlling entity record.
+- **`crossing_record_guid`** (string or null, required): GUID of the crossing record.
+- **`location_guid`** (string or null, required): GUID of the location record.
+- **`route_date`** (string or null, required): Effective route date as an ISO 8601 UTC timestamp.
+- **`api_last_update`** (string or null, required): Time the clearance record was last updated upstream, as an ISO 8601 UTC timestamp.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "crossing_location_id": "string",
+  "bridge_number": "string",
+  "state_route_id": "string",
+  "state_structure_id": "string",
+  "crossing_description": "string",
+  "inventory_direction": "string",
+  "srmp": 0,
+  "srmp_ahead_back_indicator": "string",
+  "latitude": 0,
+  "longitude": 0,
+  "vertical_clearance_maximum_inches": 0,
+  "vertical_clearance_maximum_feet_inch": "string",
+  "vertical_clearance_minimum_inches": 0,
+  "vertical_clearance_minimum_feet_inch": "string",
+  "control_entity_guid": "string",
+  "crossing_record_guid": "string",
+  "location_guid": "string",
+  "route_date": "string",
+  "api_last_update": "string"
+}
+```
+
+#### Reference vs telemetry
+
+This is reference/catalog data. Consumers should cache it and use it to interpret telemetry events that share the same identity. MQTT may retain the latest copy so late subscribers can build local context immediately.
+
+### Terminal Sailing Space
+
+CloudEvents type: `us.wa.wsdot.ferryterminals.TerminalSailingSpace`
+
+#### What it tells you
+
+Real-time drive-up and reservable vehicle space availability for upcoming Washington State Ferries departures from a terminal, broken down by sailing and arrival terminal.
+
+#### Identity
+
+Each event identifies the real-world resource with `{terminal_id}`. `{terminal_id}` is washington State Ferries terminal identifier (stable). That value is the CloudEvents `subject` and is mirrored into transport routing fields where the protocol has them.
+
+#### Where to find it
+
+| Transport | Location |
+| --- | --- |
+| `KAFKA` | topic `wsdot`, key `{terminal_id}` |
+| `MQTT/5.0` | topic `traffic/us/wsdot/wsdot/ferry-terminals/{terminal_id}/sailing-space`, retain `false`, QoS `1` |
+| `AMQP/1.0` | source address `broker-configured node`, message subject `{terminal_id}` |
+
+#### Payload
+
+`Terminal Sailing Space` payloads are JSON object. Required fields: `terminal_id`, `terminal_subject_id`, `region_id`, `terminal_name`, `terminal_abbrev`, `sort_seq`, `departing_spaces`, `is_no_fare_collected`, `no_fare_collected_msg`.
+
+- **`terminal_id`** (string, required): Washington State Ferries terminal identifier (stable).
+- **`terminal_subject_id`** (int32 or null, required): WSF terminal subject identifier.
+- **`region_id`** (int32 or null, required): WSF region identifier.
+- **`terminal_name`** (string or null, required): Terminal name.
+- **`terminal_abbrev`** (string or null, required): Terminal abbreviation code.
+- **`sort_seq`** (int32 or null, required): WSF display sort sequence.
+- **`departing_spaces`** (array of object, required): Upcoming departures from this terminal with per-sailing vehicle space availability.
+- **`is_no_fare_collected`** (boolean or null, required): Whether no fare is collected at this terminal for the relevant sailings, or null when not applicable.
+- **`no_fare_collected_msg`** (string or null, required): Message explaining the no-fare-collected status, or null.
+#### Example payload
+
+Synthetic example values are generated deterministically from the schema: constants, defaults, or examples win; otherwise strings use `"string"`, numbers use `0`, booleans use `false`, enums use their first value, arrays contain one item, nullable fields use a non-null example when possible, and timestamps use `2024-01-01T00:00:00Z`.
+
+```json
+{
+  "terminal_id": "string",
+  "terminal_subject_id": 0,
+  "region_id": 0,
+  "terminal_name": "string",
+  "terminal_abbrev": "string",
+  "sort_seq": 0,
+  "departing_spaces": null,
+  "is_no_fare_collected": false,
+  "no_fare_collected_msg": "string"
 }
 ```
 

@@ -31,7 +31,17 @@ install.bat  # Windows2. [Generated Event Dispatchers](#generated-event-dispatch
 
     UsWaWsdotBorderMqttEventDispatcher,
 
-    UsWaWsdotFerriesMqttEventDispatcher
+    UsWaWsdotFerriesMqttEventDispatcher,
+
+    UsWaWsdotRoadweatherMqttEventDispatcher,
+
+    UsWaWsdotAlertsMqttEventDispatcher,
+
+    UsWaWsdotCamerasMqttEventDispatcher,
+
+    UsWaWsdotBridgeclearancesMqttEventDispatcher,
+
+    UsWaWsdotFerryterminalsMqttEventDispatcher
 
 
 
@@ -133,7 +143,27 @@ Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fu
 qualified namespace of the Event Hub.
 
 client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
-Hub.- `blob_account_url`: The URL of the Azure Storage account.
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
 
 - `blob_container_name`: The name of the blob container to store checkpoints.
 
@@ -353,7 +383,27 @@ Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fu
 qualified namespace of the Event Hub.
 
 client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
-Hub.- `blob_account_url`: The URL of the Azure Storage account.
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
 
 - `blob_container_name`: The name of the blob container to store checkpoints.
 
@@ -528,7 +578,27 @@ Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fu
 qualified namespace of the Event Hub.
 
 client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
-Hub.- `blob_account_url`: The URL of the Azure Storage account.
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
 
 - `blob_container_name`: The name of the blob container to store checkpoints.
 
@@ -702,7 +772,27 @@ Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fu
 qualified namespace of the Event Hub.
 
 client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
-Hub.- `blob_account_url`: The URL of the Azure Storage account.
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
 
 - `blob_container_name`: The name of the blob container to store checkpoints.
 
@@ -920,7 +1010,27 @@ Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fu
 qualified namespace of the Event Hub.
 
 client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
-Hub.- `blob_account_url`: The URL of the Azure Storage account.
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
 
 - `blob_container_name`: The name of the blob container to store checkpoints.
 
@@ -1092,7 +1202,27 @@ Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fu
 qualified namespace of the Event Hub.
 
 client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
-Hub.- `blob_account_url`: The URL of the Azure Storage account.
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
 
 - `blob_container_name`: The name of the blob container to store checkpoints.
 
@@ -1266,7 +1396,27 @@ Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fu
 qualified namespace of the Event Hub.
 
 client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
-Hub.- `blob_account_url`: The URL of the Azure Storage account.
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
 
 - `blob_container_name`: The name of the blob container to store checkpoints.
 
@@ -1439,7 +1589,27 @@ Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fu
 qualified namespace of the Event Hub.
 
 client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
-Hub.- `blob_account_url`: The URL of the Azure Storage account.
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
 
 - `blob_container_name`: The name of the blob container to store checkpoints.
 
@@ -1529,6 +1699,1025 @@ responsible for calling the appropriate handler function when a message is recei
 ```python
 us_wa_wsdot_ferries_mqtt_dispatcher.us_wa_wsdot_ferries_vessel_location_mqtt_async =
 us_wa_wsdot_ferries_vessel_location_mqtt_event
+```
+
+
+## Generated Event Dispatchers
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')
+
+# Connect to broker
+
+await client.connect("mqtt.example.com", 1883)### UsWaWsdotRoadweatherMqttEventDispatcher
+
+
+
+# Publish message`UsWaWsdotRoadweatherMqttEventDispatcher` handles events for the us.wa.wsdot.roadweather.mqtt message
+group.
+
+await client.publish_message(
+
+    topic="my/topic",#### Methods:
+
+    # ... CloudEvents attributes
+
+    data=data_object##### `__init__`:
+
+)
+
+```python
+
+await client.disconnect()__init__(self)-> None
+
+``````
+
+
+
+### Subscribing to MessagesInitializes the dispatcher.
+
+
+
+```python##### `create_processor`:
+
+import paho.mqtt.client as mqtt
+
+import asyncio```python
+
+from wsdot_mqtt_producer_mqtt_client import *create_processor(self, consumer_group_name: str,
+eventhubs_fully_qualified_namespace: str, eventhub_name: str, blob_account_url: str, blob_container_name: str,
+credential) -> EventProcessorRunner`
+
+```
+
+# Create MQTT client and wrapper
+
+mqtt_client = mqtt.Client(client_id="subscriber")Creates an `EventProcessorRunner`.Args:- `consumer_group_name`: The
+name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotTrafficMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotTraveltimesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotMountainpassMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotWeatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotTollsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCvrestrictionsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotBorderMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
+
+- `blob_container_name`: The name of the blob container to store checkpoints.
+
+# Define message handler- `credential`: The credential to use for authentication.
+
+async def on_message(mqtt_msg, cloud_event, data):
+
+    print(f"Received: {data}")##### `create_processor_from_connection_strings`
+
+
+
+# Register handler```python
+
+client.message_handler_async = on_message`create_processor_from_connection_strings(self, consumer_group_name: str,
+connection_str: str, eventhub_name: str, blob_conn_str: str, checkpoint_container: str) -> EventProcessorRunner`
+
+```
+
+# Connect and subscribe
+
+await client.connect("mqtt.example.com", 1883)Creates an `EventProcessorRunner` from connection strings.
+
+await client.subscribe(["my/topic/#"])
+
+Args:
+
+# Keep running- `consumer_group_name`: The name of the consumer group.
+
+try:- `connection_str`: The connection string for the Event Hub.
+
+    while True:- `eventhub_name`: The name of the Event Hub.
+
+        await asyncio.sleep(1)- `blob_conn_str`: The connection string for the Azure Storage account.
+
+finally:- `checkpoint_container`: The name of the blob container to store checkpoints.
+
+    await client.disconnect()
+
+```#### Event Handlers
+
+
+
+## BuildThe UsWaWsdotRoadweatherMqttEventDispatcher defines the following event handler hooks.
+
+
+
+```bash
+
+make build
+
+```##### `us_wa_wsdot_roadweather_road_weather_station_mqtt_async`
+
+
+
+## Test```python
+
+us_wa_wsdot_roadweather_road_weather_station_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent,
+RoadWeatherStation], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `us.wa.wsdot.roadweather.RoadWeatherStation.mqtt`: Metadata for a WSDOT Scanweb road
+weather information system (RWIS) station, including position and elevation. WSDOT operates roughly 105 Scanweb stations
+reporting pavement and atmospheric conditions across Washington State highways.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `wsdot_mqtt_producer_data.RoadWeatherStation`.
+
+Example:
+
+```python
+async def us_wa_wsdot_roadweather_road_weather_station_mqtt_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: RoadWeatherStation) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+us_wa_wsdot_roadweather_mqtt_dispatcher.us_wa_wsdot_roadweather_road_weather_station_mqtt_async =
+us_wa_wsdot_roadweather_road_weather_station_mqtt_event
+```
+
+
+
+make build
+
+```##### `us_wa_wsdot_roadweather_road_weather_reading_mqtt_async`
+
+
+
+## Test```python
+
+us_wa_wsdot_roadweather_road_weather_reading_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent,
+RoadWeatherReading], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `us.wa.wsdot.roadweather.RoadWeatherReading.mqtt`: A current Scanweb road weather
+reading including air temperature, humidity, wind, visibility, precipitation totals, and per-sensor road surface and
+sub-surface measurements.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `wsdot_mqtt_producer_data.RoadWeatherReading`.
+
+Example:
+
+```python
+async def us_wa_wsdot_roadweather_road_weather_reading_mqtt_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: RoadWeatherReading) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+us_wa_wsdot_roadweather_mqtt_dispatcher.us_wa_wsdot_roadweather_road_weather_reading_mqtt_async =
+us_wa_wsdot_roadweather_road_weather_reading_mqtt_event
+```
+
+
+## Generated Event Dispatchers
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')
+
+# Connect to broker
+
+await client.connect("mqtt.example.com", 1883)### UsWaWsdotAlertsMqttEventDispatcher
+
+
+
+# Publish message`UsWaWsdotAlertsMqttEventDispatcher` handles events for the us.wa.wsdot.alerts.mqtt message group.
+
+await client.publish_message(
+
+    topic="my/topic",#### Methods:
+
+    # ... CloudEvents attributes
+
+    data=data_object##### `__init__`:
+
+)
+
+```python
+
+await client.disconnect()__init__(self)-> None
+
+``````
+
+
+
+### Subscribing to MessagesInitializes the dispatcher.
+
+
+
+```python##### `create_processor`:
+
+import paho.mqtt.client as mqtt
+
+import asyncio```python
+
+from wsdot_mqtt_producer_mqtt_client import *create_processor(self, consumer_group_name: str,
+eventhubs_fully_qualified_namespace: str, eventhub_name: str, blob_account_url: str, blob_container_name: str,
+credential) -> EventProcessorRunner`
+
+```
+
+# Create MQTT client and wrapper
+
+mqtt_client = mqtt.Client(client_id="subscriber")Creates an `EventProcessorRunner`.Args:- `consumer_group_name`: The
+name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotTrafficMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotTraveltimesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotMountainpassMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotWeatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotTollsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCvrestrictionsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotBorderMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
+
+- `blob_container_name`: The name of the blob container to store checkpoints.
+
+# Define message handler- `credential`: The credential to use for authentication.
+
+async def on_message(mqtt_msg, cloud_event, data):
+
+    print(f"Received: {data}")##### `create_processor_from_connection_strings`
+
+
+
+# Register handler```python
+
+client.message_handler_async = on_message`create_processor_from_connection_strings(self, consumer_group_name: str,
+connection_str: str, eventhub_name: str, blob_conn_str: str, checkpoint_container: str) -> EventProcessorRunner`
+
+```
+
+# Connect and subscribe
+
+await client.connect("mqtt.example.com", 1883)Creates an `EventProcessorRunner` from connection strings.
+
+await client.subscribe(["my/topic/#"])
+
+Args:
+
+# Keep running- `consumer_group_name`: The name of the consumer group.
+
+try:- `connection_str`: The connection string for the Event Hub.
+
+    while True:- `eventhub_name`: The name of the Event Hub.
+
+        await asyncio.sleep(1)- `blob_conn_str`: The connection string for the Azure Storage account.
+
+finally:- `checkpoint_container`: The name of the blob container to store checkpoints.
+
+    await client.disconnect()
+
+```#### Event Handlers
+
+
+
+## BuildThe UsWaWsdotAlertsMqttEventDispatcher defines the following event handler hooks.
+
+
+
+```bash
+
+make build
+
+```##### `us_wa_wsdot_alerts_highway_alert_mqtt_async`
+
+
+
+## Test```python
+
+us_wa_wsdot_alerts_highway_alert_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent, HighwayAlert],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `us.wa.wsdot.alerts.HighwayAlert.mqtt`: An active WSDOT highway alert describing an
+incident, construction, closure, special event, or weather impact, with start and end roadway locations on the
+Washington State highway network.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `wsdot_mqtt_producer_data.HighwayAlert`.
+
+Example:
+
+```python
+async def us_wa_wsdot_alerts_highway_alert_mqtt_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: HighwayAlert) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+us_wa_wsdot_alerts_mqtt_dispatcher.us_wa_wsdot_alerts_highway_alert_mqtt_async =
+us_wa_wsdot_alerts_highway_alert_mqtt_event
+```
+
+
+## Generated Event Dispatchers
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')
+
+# Connect to broker
+
+await client.connect("mqtt.example.com", 1883)### UsWaWsdotCamerasMqttEventDispatcher
+
+
+
+# Publish message`UsWaWsdotCamerasMqttEventDispatcher` handles events for the us.wa.wsdot.cameras.mqtt message group.
+
+await client.publish_message(
+
+    topic="my/topic",#### Methods:
+
+    # ... CloudEvents attributes
+
+    data=data_object##### `__init__`:
+
+)
+
+```python
+
+await client.disconnect()__init__(self)-> None
+
+``````
+
+
+
+### Subscribing to MessagesInitializes the dispatcher.
+
+
+
+```python##### `create_processor`:
+
+import paho.mqtt.client as mqtt
+
+import asyncio```python
+
+from wsdot_mqtt_producer_mqtt_client import *create_processor(self, consumer_group_name: str,
+eventhubs_fully_qualified_namespace: str, eventhub_name: str, blob_account_url: str, blob_container_name: str,
+credential) -> EventProcessorRunner`
+
+```
+
+# Create MQTT client and wrapper
+
+mqtt_client = mqtt.Client(client_id="subscriber")Creates an `EventProcessorRunner`.Args:- `consumer_group_name`: The
+name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotTrafficMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotTraveltimesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotMountainpassMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotWeatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotTollsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCvrestrictionsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotBorderMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
+
+- `blob_container_name`: The name of the blob container to store checkpoints.
+
+# Define message handler- `credential`: The credential to use for authentication.
+
+async def on_message(mqtt_msg, cloud_event, data):
+
+    print(f"Received: {data}")##### `create_processor_from_connection_strings`
+
+
+
+# Register handler```python
+
+client.message_handler_async = on_message`create_processor_from_connection_strings(self, consumer_group_name: str,
+connection_str: str, eventhub_name: str, blob_conn_str: str, checkpoint_container: str) -> EventProcessorRunner`
+
+```
+
+# Connect and subscribe
+
+await client.connect("mqtt.example.com", 1883)Creates an `EventProcessorRunner` from connection strings.
+
+await client.subscribe(["my/topic/#"])
+
+Args:
+
+# Keep running- `consumer_group_name`: The name of the consumer group.
+
+try:- `connection_str`: The connection string for the Event Hub.
+
+    while True:- `eventhub_name`: The name of the Event Hub.
+
+        await asyncio.sleep(1)- `blob_conn_str`: The connection string for the Azure Storage account.
+
+finally:- `checkpoint_container`: The name of the blob container to store checkpoints.
+
+    await client.disconnect()
+
+```#### Event Handlers
+
+
+
+## BuildThe UsWaWsdotCamerasMqttEventDispatcher defines the following event handler hooks.
+
+
+
+```bash
+
+make build
+
+```##### `us_wa_wsdot_cameras_highway_camera_mqtt_async`
+
+
+
+## Test```python
+
+us_wa_wsdot_cameras_highway_camera_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent, HighwayCamera],
+Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `us.wa.wsdot.cameras.HighwayCamera.mqtt`: Reference catalog entry for a WSDOT highway
+traffic camera, including its location and a claim-check image URL. The image bytes are not transported; consumers fetch
+the most recent frame from ImageURL on demand.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `wsdot_mqtt_producer_data.HighwayCamera`.
+
+Example:
+
+```python
+async def us_wa_wsdot_cameras_highway_camera_mqtt_event(partition_context: PartitionContext, event: EventData,
+cloud_event: CloudEvent, data: HighwayCamera) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+us_wa_wsdot_cameras_mqtt_dispatcher.us_wa_wsdot_cameras_highway_camera_mqtt_async =
+us_wa_wsdot_cameras_highway_camera_mqtt_event
+```
+
+
+## Generated Event Dispatchers
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')
+
+# Connect to broker
+
+await client.connect("mqtt.example.com", 1883)### UsWaWsdotBridgeclearancesMqttEventDispatcher
+
+
+
+# Publish message`UsWaWsdotBridgeclearancesMqttEventDispatcher` handles events for the us.wa.wsdot.bridgeclearances.mqtt
+message group.
+
+await client.publish_message(
+
+    topic="my/topic",#### Methods:
+
+    # ... CloudEvents attributes
+
+    data=data_object##### `__init__`:
+
+)
+
+```python
+
+await client.disconnect()__init__(self)-> None
+
+``````
+
+
+
+### Subscribing to MessagesInitializes the dispatcher.
+
+
+
+```python##### `create_processor`:
+
+import paho.mqtt.client as mqtt
+
+import asyncio```python
+
+from wsdot_mqtt_producer_mqtt_client import *create_processor(self, consumer_group_name: str,
+eventhubs_fully_qualified_namespace: str, eventhub_name: str, blob_account_url: str, blob_container_name: str,
+credential) -> EventProcessorRunner`
+
+```
+
+# Create MQTT client and wrapper
+
+mqtt_client = mqtt.Client(client_id="subscriber")Creates an `EventProcessorRunner`.Args:- `consumer_group_name`: The
+name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotTrafficMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotTraveltimesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotMountainpassMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotWeatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotTollsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCvrestrictionsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotBorderMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
+
+- `blob_container_name`: The name of the blob container to store checkpoints.
+
+# Define message handler- `credential`: The credential to use for authentication.
+
+async def on_message(mqtt_msg, cloud_event, data):
+
+    print(f"Received: {data}")##### `create_processor_from_connection_strings`
+
+
+
+# Register handler```python
+
+client.message_handler_async = on_message`create_processor_from_connection_strings(self, consumer_group_name: str,
+connection_str: str, eventhub_name: str, blob_conn_str: str, checkpoint_container: str) -> EventProcessorRunner`
+
+```
+
+# Connect and subscribe
+
+await client.connect("mqtt.example.com", 1883)Creates an `EventProcessorRunner` from connection strings.
+
+await client.subscribe(["my/topic/#"])
+
+Args:
+
+# Keep running- `consumer_group_name`: The name of the consumer group.
+
+try:- `connection_str`: The connection string for the Event Hub.
+
+    while True:- `eventhub_name`: The name of the Event Hub.
+
+        await asyncio.sleep(1)- `blob_conn_str`: The connection string for the Azure Storage account.
+
+finally:- `checkpoint_container`: The name of the blob container to store checkpoints.
+
+    await client.disconnect()
+
+```#### Event Handlers
+
+
+
+## BuildThe UsWaWsdotBridgeclearancesMqttEventDispatcher defines the following event handler hooks.
+
+
+
+```bash
+
+make build
+
+```##### `us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_async`
+
+
+
+## Test```python
+
+us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent,
+BridgeClearance], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt`: Reference catalog record of the
+surveyed vertical clearance of a structure crossing a Washington State highway, used for commercial vehicle routing.
+Largely static; refreshed periodically.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `wsdot_mqtt_producer_data.BridgeClearance`.
+
+Example:
+
+```python
+async def us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_event(partition_context: PartitionContext, event:
+EventData, cloud_event: CloudEvent, data: BridgeClearance) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+us_wa_wsdot_bridgeclearances_mqtt_dispatcher.us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_async =
+us_wa_wsdot_bridgeclearances_bridge_clearance_mqtt_event
+```
+
+
+## Generated Event Dispatchers
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')
+
+# Connect to broker
+
+await client.connect("mqtt.example.com", 1883)### UsWaWsdotFerryterminalsMqttEventDispatcher
+
+
+
+# Publish message`UsWaWsdotFerryterminalsMqttEventDispatcher` handles events for the us.wa.wsdot.ferryterminals.mqtt
+message group.
+
+await client.publish_message(
+
+    topic="my/topic",#### Methods:
+
+    # ... CloudEvents attributes
+
+    data=data_object##### `__init__`:
+
+)
+
+```python
+
+await client.disconnect()__init__(self)-> None
+
+``````
+
+
+
+### Subscribing to MessagesInitializes the dispatcher.
+
+
+
+```python##### `create_processor`:
+
+import paho.mqtt.client as mqtt
+
+import asyncio```python
+
+from wsdot_mqtt_producer_mqtt_client import *create_processor(self, consumer_group_name: str,
+eventhubs_fully_qualified_namespace: str, eventhub_name: str, blob_account_url: str, blob_container_name: str,
+credential) -> EventProcessorRunner`
+
+```
+
+# Create MQTT client and wrapper
+
+mqtt_client = mqtt.Client(client_id="subscriber")Creates an `EventProcessorRunner`.Args:- `consumer_group_name`: The
+name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotTrafficMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotTraveltimesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotMountainpassMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotWeatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotTollsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCvrestrictionsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotBorderMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerriesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotRoadweatherMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotAlertsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotCamerasMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the Event
+Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The fully
+qualified namespace of the Event Hub.
+
+client = UsWaWsdotBridgeclearancesMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of
+the Event Hub.Args:- `consumer_group_name`: The name of the consumer group.- `eventhubs_fully_qualified_namespace`: The
+fully qualified namespace of the Event Hub.
+
+client = UsWaWsdotFerryterminalsMqttMqttClient(mqtt_client, content_mode='structured')- `eventhub_name`: The name of the
+Event Hub.- `blob_account_url`: The URL of the Azure Storage account.
+
+- `blob_container_name`: The name of the blob container to store checkpoints.
+
+# Define message handler- `credential`: The credential to use for authentication.
+
+async def on_message(mqtt_msg, cloud_event, data):
+
+    print(f"Received: {data}")##### `create_processor_from_connection_strings`
+
+
+
+# Register handler```python
+
+client.message_handler_async = on_message`create_processor_from_connection_strings(self, consumer_group_name: str,
+connection_str: str, eventhub_name: str, blob_conn_str: str, checkpoint_container: str) -> EventProcessorRunner`
+
+```
+
+# Connect and subscribe
+
+await client.connect("mqtt.example.com", 1883)Creates an `EventProcessorRunner` from connection strings.
+
+await client.subscribe(["my/topic/#"])
+
+Args:
+
+# Keep running- `consumer_group_name`: The name of the consumer group.
+
+try:- `connection_str`: The connection string for the Event Hub.
+
+    while True:- `eventhub_name`: The name of the Event Hub.
+
+        await asyncio.sleep(1)- `blob_conn_str`: The connection string for the Azure Storage account.
+
+finally:- `checkpoint_container`: The name of the blob container to store checkpoints.
+
+    await client.disconnect()
+
+```#### Event Handlers
+
+
+
+## BuildThe UsWaWsdotFerryterminalsMqttEventDispatcher defines the following event handler hooks.
+
+
+
+```bash
+
+make build
+
+```##### `us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_async`
+
+
+
+## Test```python
+
+us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_async:  Callable[[PartitionContext, EventData, CloudEvent,
+TerminalSailingSpace], Awaitable[None]]
+
+```bash```
+
+make test
+
+```Asynchronous handler hook for `us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt`: Real-time drive-up and
+reservable vehicle space availability for upcoming Washington State Ferries departures from a terminal, broken down by
+sailing and arrival terminal.
+
+
+The assigned handler must be a coroutine (`async def`) that accepts the following parameters:
+
+- `partition_context`: The partition context.
+- `event`: The event data.
+- `cloud_event`: The CloudEvent.
+- `data`: The event data of type `wsdot_mqtt_producer_data.TerminalSailingSpace`.
+
+Example:
+
+```python
+async def us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_event(partition_context: PartitionContext, event:
+EventData, cloud_event: CloudEvent, data: TerminalSailingSpace) -> None:
+    # Process the event data
+    await partition_context.update_checkpoint(event)
+```
+
+The handler functions is then assigned to the event dispatcher for the message group. The event dispatcher is
+responsible for calling the appropriate handler function when a message is received. Example:
+
+```python
+us_wa_wsdot_ferryterminals_mqtt_dispatcher.us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_async =
+us_wa_wsdot_ferryterminals_terminal_sailing_space_mqtt_event
 ```
 
 

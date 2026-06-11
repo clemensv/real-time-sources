@@ -13,4 +13,9 @@ __all__ = [
     "UsWaWsdotCvrestrictionsAmqpProducer",
     "UsWaWsdotBorderAmqpProducer",
     "UsWaWsdotFerriesAmqpProducer",
+    "UsWaWsdotRoadweatherAmqpProducer",
+    "UsWaWsdotAlertsAmqpProducer",
+    "UsWaWsdotCamerasAmqpProducer",
+    "UsWaWsdotBridgeclearancesAmqpProducer",
+    "UsWaWsdotFerryterminalsAmqpProducer",
 ]

@@ -7,6 +7,11 @@ from .client import UsWaWsdotTollsMqttMqttClient
 from .client import UsWaWsdotCvrestrictionsMqttMqttClient
 from .client import UsWaWsdotBorderMqttMqttClient
 from .client import UsWaWsdotFerriesMqttMqttClient
+from .client import UsWaWsdotRoadweatherMqttMqttClient
+from .client import UsWaWsdotAlertsMqttMqttClient
+from .client import UsWaWsdotCamerasMqttMqttClient
+from .client import UsWaWsdotBridgeclearancesMqttMqttClient
+from .client import UsWaWsdotFerryterminalsMqttMqttClient
 
 __all__ = [
     "UsWaWsdotTrafficMqttMqttClient",
@@ -17,4 +22,9 @@ __all__ = [
     "UsWaWsdotCvrestrictionsMqttMqttClient",
     "UsWaWsdotBorderMqttMqttClient",
     "UsWaWsdotFerriesMqttMqttClient",
+    "UsWaWsdotRoadweatherMqttMqttClient",
+    "UsWaWsdotAlertsMqttMqttClient",
+    "UsWaWsdotCamerasMqttMqttClient",
+    "UsWaWsdotBridgeclearancesMqttMqttClient",
+    "UsWaWsdotFerryterminalsMqttMqttClient",
 ]
