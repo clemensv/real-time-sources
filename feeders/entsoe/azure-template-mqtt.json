@@ -149,7 +149,7 @@
       ],
       "properties": {
         "osType": "Linux",
-        "restartPolicy": "Always",
+        "restartPolicy": "OnFailure",
         "diagnostics": {
           "logAnalytics": {
             "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
