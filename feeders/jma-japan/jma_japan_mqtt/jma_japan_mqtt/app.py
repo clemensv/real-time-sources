@@ -33,7 +33,7 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
     auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
 
     if auth_mode != "entra":
-        return resolved_client_id, str(username or ""), str(password or "")
+        return resolved_client_id, str(username or ""), str(password or ""), None
 
     audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
     managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
@@ -42,7 +42,13 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
         raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
 
     resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    return resolved_client_id, resolved_username, resolved_password
+    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+    from paho.mqtt.properties import Properties as _MqttConnProps
+    from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
+    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
+    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
+    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
+    return resolved_client_id, resolved_username, resolved_password, _connect_props
 
 _TEMPLATE = re.compile(r"\{([^}]+)\}")
 
@@ -158,7 +164,7 @@ def publish_mqtt(args: argparse.Namespace) -> None:
     from paho.mqtt.packettypes import PacketTypes
     from urllib.parse import urlparse
     parsed = urlparse(args.broker_url if "://" in args.broker_url else "mqtt://" + args.broker_url)
-    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+    resolved_client_id, resolved_username, resolved_password, _entra_props = _resolve_mqtt_connection_settings(
         username=parsed.username,
         password=parsed.password or "",
         client_id=None,
@@ -166,7 +172,7 @@ def publish_mqtt(args: argparse.Namespace) -> None:
     )
 
     client = mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
-    if resolved_username or resolved_password:
+    if _entra_props is None and (resolved_username or resolved_password):
         client.username_pw_set(resolved_username, resolved_password)
     if parsed.scheme in ("mqtts", "ssl", "tls") or args.tls: client.tls_set()
     client.connect(parsed.hostname or "localhost", parsed.port or (8883 if parsed.scheme == "mqtts" else 1883), 30)

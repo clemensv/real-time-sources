@@ -85,12 +85,12 @@ def _resolve_mqtt_auth(
     password: Optional[str],
     client_id: Optional[str],
     auth_mode: Optional[str] = None,
-) -> tuple[str, str]:
+) -> tuple:
     """Resolve MQTT credentials for password or Entra JWT authentication modes."""
     auth_mode = (auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
 
     if auth_mode != "entra":
-        return username or "", password or ""
+        return username or "", password or "", None
 
     audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
     managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
@@ -99,7 +99,13 @@ def _resolve_mqtt_auth(
         raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
 
     resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    return resolved_username, resolved_password
+    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+    from paho.mqtt.properties import Properties as _MqttConnProps
+    from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
+    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
+    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
+    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
+    return resolved_username, resolved_password, _connect_props
 
 
 async def feed(
@@ -114,7 +120,7 @@ async def feed(
     content_mode: str = "binary",
     polling_interval: int = 300,
 ) -> None:
-    resolved_username, resolved_password = _resolve_mqtt_auth(
+    resolved_username, resolved_password, _entra_props = _resolve_mqtt_auth(
         username=username,
         password=password,
         client_id=client_id,
@@ -126,9 +132,9 @@ async def feed(
         client_id=client_id or "",
         protocol=MQTTv5,
     )
-    if resolved_username or resolved_password:
+    if _entra_props is None and (resolved_username or resolved_password):
         paho_client.username_pw_set(resolved_username, resolved_password)
-    if tls:
+    if tls or _entra_props is not None:
         paho_client.tls_set()
 
     mqtt_client = AUGovEmergencyWildfiresMqttMqttClient(
@@ -138,8 +144,13 @@ async def feed(
     )
     api = AustraliaWildfiresAPI(polling_interval=polling_interval)
 
-    logger.info("Connecting to MQTT broker %s:%s (tls=%s)", broker_host, broker_port, tls)
-    await mqtt_client.connect(broker_host, broker_port)
+    logger.info("Connecting to MQTT broker %s:%s (tls=%s, auth=%s)", broker_host, broker_port, tls or _entra_props is not None, "entra" if _entra_props else "password")
+    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+    if _entra_props is not None:
+        paho_client.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_entra_props)
+        paho_client.loop_start()
+    else:
+        await mqtt_client.connect(broker_host, broker_port)
     try:
         while True:
             if os.getenv("AUSTRALIA_WILDFIRES_SAMPLE_MODE", "").lower() in ("1", "true", "yes"):

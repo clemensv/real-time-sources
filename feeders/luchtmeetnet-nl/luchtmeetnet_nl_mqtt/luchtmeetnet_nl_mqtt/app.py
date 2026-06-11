@@ -33,7 +33,7 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
     auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
 
     if auth_mode != "entra":
-        return resolved_client_id, str(username or ""), str(password or "")
+        return resolved_client_id, str(username or ""), str(password or ""), None
 
     audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
     managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
@@ -42,7 +42,13 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
         raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
 
     resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    return resolved_client_id, resolved_username, resolved_password
+    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+    from paho.mqtt.properties import Properties as _MqttConnProps
+    from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
+    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
+    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
+    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
+    return resolved_client_id, resolved_username, resolved_password, _connect_props
 
 LOG=logging.getLogger(__name__)
 EVENT_SPECS = [{'class': 'Station', 'vars': {'region': 'central', 'station_number': 'NL001', 'formula': 'NO2'}, 'sample': {'region': 'central', 'station_number': 'NL001', 'formula': 'NO2', 'province': 'ON', 'community_name': 'ottawa', 'station_id': 'station-1', 'pollutant': 'pm25', 'fmisid': '1001', 'voivodeship': 'mazowieckie', 'borough': 'camden', 'site_code': 'BL0', 'species_code': 'NO2', 'country': 'nl', 'geohash5': 'u173z', 'sensor_id': '291', 'bundesland': 'wien', 'component_id': '1', 'timeseries_id': 'ts-1', 'sensor_code': 'PM10', 'sensor_type_name': 'SDS011', 'component_code': 'NO2', 'parameter_formula': 'PM10', 'phenomenon_id': 'NO2', 'municipality': 'uusimaa', 'station_name': 'Sample Station', 'site_name': 'Sample Site', 'station_label': 'Sample Station', 'label': 'Sample'}}, {'class': 'Measurement', 'vars': {'region': 'central', 'station_number': 'NL001', 'formula': 'NO2'}, 'sample': {'region': 'central', 'station_number': 'NL001', 'formula': 'NO2', 'province': 'ON', 'community_name': 'ottawa', 'station_id': 'station-1', 'pollutant': 'pm25', 'fmisid': '1001', 'voivodeship': 'mazowieckie', 'borough': 'camden', 'site_code': 'BL0', 'species_code': 'NO2', 'country': 'nl', 'geohash5': 'u173z', 'sensor_id': '291', 'bundesland': 'wien', 'component_id': '1', 'timeseries_id': 'ts-1', 'sensor_code': 'PM10', 'sensor_type_name': 'SDS011', 'component_code': 'NO2', 'parameter_formula': 'PM10', 'phenomenon_id': 'NO2', 'municipality': 'uusimaa', 'station_name': 'Sample Station', 'site_name': 'Sample Site', 'station_label': 'Sample Station', 'label': 'Sample'}}, {'class': 'LKI', 'vars': {'region': 'central', 'station_number': 'NL001', 'formula': 'NO2'}, 'sample': {'region': 'central', 'station_number': 'NL001', 'formula': 'NO2', 'province': 'ON', 'community_name': 'ottawa', 'station_id': 'station-1', 'pollutant': 'pm25', 'fmisid': '1001', 'voivodeship': 'mazowieckie', 'borough': 'camden', 'site_code': 'BL0', 'species_code': 'NO2', 'country': 'nl', 'geohash5': 'u173z', 'sensor_id': '291', 'bundesland': 'wien', 'component_id': '1', 'timeseries_id': 'ts-1', 'sensor_code': 'PM10', 'sensor_type_name': 'SDS011', 'component_code': 'NO2', 'parameter_formula': 'PM10', 'phenomenon_id': 'NO2', 'municipality': 'uusimaa', 'station_name': 'Sample Station', 'site_name': 'Sample Site', 'station_label': 'Sample Station', 'label': 'Sample'}}, {'class': 'Component', 'vars': {'region': 'central', 'station_number': 'NL001', 'formula': 'NO2'}, 'sample': {'region': 'central', 'station_number': 'NL001', 'formula': 'NO2', 'province': 'ON', 'community_name': 'ottawa', 'station_id': 'station-1', 'pollutant': 'pm25', 'fmisid': '1001', 'voivodeship': 'mazowieckie', 'borough': 'camden', 'site_code': 'BL0', 'species_code': 'NO2', 'country': 'nl', 'geohash5': 'u173z', 'sensor_id': '291', 'bundesland': 'wien', 'component_id': '1', 'timeseries_id': 'ts-1', 'sensor_code': 'PM10', 'sensor_type_name': 'SDS011', 'component_code': 'NO2', 'parameter_formula': 'PM10', 'phenomenon_id': 'NO2', 'municipality': 'uusimaa', 'station_name': 'Sample Station', 'site_name': 'Sample Site', 'station_label': 'Sample Station', 'label': 'Sample'}}]
@@ -154,7 +160,7 @@ def _client_classes():
 async def main_async(args):
     host, port, tls, user, pwd = _parse_mqtt_url(args.broker_url or args.broker_host)
     user=args.username or user; pwd=args.password or pwd
-    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+    resolved_client_id, resolved_username, resolved_password, _entra_props = _resolve_mqtt_connection_settings(
         username=user,
         password=pwd or '',
         client_id=args.client_id or '',
@@ -162,7 +168,7 @@ async def main_async(args):
     )
 
     paho=mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
-    if resolved_username or resolved_password:
+    if _entra_props is None and (resolved_username or resolved_password):
         paho.username_pw_set(resolved_username, resolved_password)
     if tls or args.tls: paho.tls_set()
     clients=[cls(client=paho, content_mode=args.content_mode, loop=asyncio.get_running_loop()) for cls in _client_classes()]

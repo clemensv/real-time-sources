@@ -31,12 +31,38 @@ failures and never silently pass a broken source.
    exhausts workspace capacity. If per-source cleanup was skipped (e.g. agents
    ran in parallel), run the bulk cleanup script (see Step 6) at the end of
    the session before declaring the session complete.
-3. **File issues for everything** — every failure gets a GitHub issue.
-   Amend existing issues rather than creating duplicates.
+3. **File issues for failures; record warnings for no-data** — every FAIL gets
+   a GitHub issue. A WARN (no-data) is recorded in the checklist but does NOT
+   get a GitHub issue. Amend existing issues rather than creating duplicates.
 4. **Structured output** — fill in the session checklist as you go, write
    machine-readable `summary.json`.
 5. **Fail forward** — if one source fails, log it and continue to the next.
    Never abort the entire session for a single source failure.
+
+### Outcome Categories
+
+| Symbol | Status | Meaning | GitHub issue? |
+|--------|--------|---------|---------------|
+| ✅ | **PASS** | Data received end-to-end; all checks pass | No |
+| ⚠️ | **WARN** | Full stack deployed and running, but no upstream data arrived within the timeout. The infrastructure is healthy; the upstream may not have data right now (differential poller with no changes, seasonal source, quiet feed). | No — record in checklist only |
+| ❌ | **FAIL** | Stack could not be deployed, container/notebook crashed, auth broken, schema mismatch, or any error that indicates a code/config defect | Yes — file immediately |
+| 🔒 | **BLOCKED** | Stack is running but validation cannot be completed due to a known environmental limitation (e.g. MQTT external subscribe requires client cert registration). Not a source failure. | No |
+| — | **SKIP** | No template/notebook for this variant; not applicable | No |
+
+**WARN vs FAIL decision rule for no-data outcomes:**
+
+A no-data result is **WARN** if ALL of the following are true:
+- The container/notebook reached a fully `Running`/`Completed` state (no crash, no non-zero exit)
+- The infrastructure deployed successfully (Event Hubs/Service Bus/Event Grid namespace created)
+- The feeder connected to its broker (for AMQP/MQTT: check `Mqtt.Connections > 0` or SB receive attempted; for Kafka: consumer connected)
+- There is a plausible upstream reason for no data (differential source with no changes, seasonal/event-driven source, source returns empty response legitimately)
+
+A no-data result is **FAIL** if ANY of the following are true:
+- Container/notebook did not reach Running (deploy-failed)
+- Container exited with non-zero code or crashed
+- For MQTT: `Mqtt.Connections` = 0 (feeder never connected to broker)
+- For AMQP: `amqp:unauthorized-access` or similar auth error in logs
+- The feeder's own log shows an unhandled exception or repeated error loop
 
 ## Inputs
 
@@ -56,8 +82,8 @@ failures and never silently pass a broken source.
 3. For each source (sequential):
    a. Run Azure test (if applicable)
    b. Run Fabric test (if applicable)
-   c. Update checklist with results
-   d. Update the session results file and running tally after each PASS or FAIL
+   c. Update checklist with results (✅ PASS / ⚠️ WARN / ❌ FAIL / 🔒 BLOCKED / — SKIP)
+   d. Update the session results file and running tally after each result
    e. File a GitHub issue immediately for any FAIL result with root-cause details
    f. Teardown resources
 4. Write summary.json
@@ -66,7 +92,7 @@ failures and never silently pass a broken source.
 
 ### Per-Source Checklist Discipline
 
-- [ ] After each run (PASS or FAIL), update the session results file and record the result in the running tally. File a GitHub issue immediately for any FAIL result with root-cause details.
+- [ ] After each run (PASS / WARN / FAIL / BLOCKED), update the session results file and record the result in the running tally. File a GitHub issue immediately for any **FAIL** result with root-cause details. WARN results are recorded in the checklist only — do not file an issue.
 
 ## Azure ACI Validation Procedure
 
@@ -606,14 +632,26 @@ Similarly, map validation is a shared module that:
 [E2E] <source> - <target>: <failure-category>
 ```
 
-### Failure Categories
-- `no-data` — container/notebook ran but no events arrived
+### Outcome Classification
+
+| Result | When | Action |
+|--------|------|--------|
+| **PASS** | ≥1 message received, checks pass | Record ✅ in checklist |
+| **WARN** | Stack running, broker connected, but 0 messages (upstream has no data) | Record ⚠️ in checklist; no GitHub issue |
+| **FAIL** | Any deploy failure, crash, auth error, schema mismatch | Record ❌ in checklist; file GitHub issue immediately |
+| **BLOCKED** | Known env limitation (e.g. MQTT subscribe blocked) | Record 🔒 in checklist; no new issue unless root cause is new |
+
+### Failure Categories (for FAIL issues only)
+- `no-data` — container/notebook ran but no events arrived AND infrastructure/auth is broken (not just quiet upstream)
 - `dispatch-only` — events in dispatch but not in typed tables (update policy broken)
 - `schema-mismatch` — payload doesn't match xreg schema
-- `deploy-failed` — container/notebook failed to start
-- `timeout` — exceeded wait time
+- `deploy-failed` — container/notebook failed to start or reach Running state
+- `timeout` — exceeded wait time due to a defect (not quiet upstream)
 - `map-empty` — map exists but layers return zero rows
 - `stale-data` — data exists but is older than expected cadence
+
+### Warning Categories (for WARN checklist entries only, no issue filed)
+- `no-data-upstream` — stack healthy, broker connected, upstream returned no data (differential poller, seasonal source, no current events)
 
 ### Deduplication
 
@@ -627,10 +665,10 @@ If not found: create a new issue.
 ## Outputs
 
 Per session:
-- `sessions/<ts>/CHECKLIST.md` — filled-in per-source checklist
-- `sessions/<ts>/summary.json` — machine-readable pass/fail/skip counts
+- `sessions/<ts>/CHECKLIST.md` — filled-in per-source checklist (✅/⚠️/❌/🔒/—)
+- `sessions/<ts>/summary.json` — machine-readable pass/warn/fail/skip counts
 - `sessions/<ts>/log.txt` — full execution log
-- `sessions/<ts>/<source>-azure-result.json` — per-source Azure result
+- `sessions/<ts>/<source>-azure-result.json` — per-source Azure result (status: pass|warn|fail|blocked|skip)
 - `sessions/<ts>/<source>-fabric-result.json` — per-source Fabric result
 
 ## References

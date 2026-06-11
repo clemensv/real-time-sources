@@ -70,7 +70,7 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
     auth_mode = str(auth_mode or os.getenv("MQTT_AUTH_MODE", "password")).strip().lower() or "password"
 
     if auth_mode != "entra":
-        return resolved_client_id, str(username or ""), str(password or "")
+        return resolved_client_id, str(username or ""), str(password or ""), None
 
     audience = os.getenv("MQTT_ENTRA_AUDIENCE", "https://eventgrid.azure.net/")
     managed_identity_client_id = os.getenv("MQTT_ENTRA_CLIENT_ID") or None
@@ -79,7 +79,13 @@ def _resolve_mqtt_connection_settings(*, username=None, password=None, client_id
         raise ValueError("MQTT_CLIENT_ID (or --client-id) is required for MQTT_AUTH_MODE=entra")
 
     resolved_password = _fetch_entra_mqtt_token(audience, managed_identity_client_id)
-    return resolved_client_id, resolved_username, resolved_password
+    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+    from paho.mqtt.properties import Properties as _MqttConnProps
+    from paho.mqtt.packettypes import PacketTypes as _MqttPktTypes
+    _connect_props = _MqttConnProps(_MqttPktTypes.CONNECT)
+    _connect_props.AuthenticationMethod = "OAUTH2-JWT"
+    _connect_props.AuthenticationData = resolved_password.encode("utf-8")
+    return resolved_client_id, resolved_username, resolved_password, _connect_props
 
 logger = logging.getLogger("mode_s_mqtt")
 
@@ -347,7 +353,7 @@ async def _run(args: argparse.Namespace) -> None:
     broker_host, broker_port, tls = _parse_broker(args.mqtt_broker_url)
     tls = tls or args.mqtt_enable_tls
 
-    resolved_client_id, resolved_username, resolved_password = _resolve_mqtt_connection_settings(
+    resolved_client_id, resolved_username, resolved_password, _entra_props = _resolve_mqtt_connection_settings(
         username=args.mqtt_username,
         password=args.mqtt_password or "",
         client_id=args.mqtt_client_id or "",
@@ -358,9 +364,9 @@ async def _run(args: argparse.Namespace) -> None:
         callback_api_version=CallbackAPIVersion.VERSION2,
         protocol=MQTTv5,
     )
-    if resolved_username or resolved_password:
+    if _entra_props is None and (resolved_username or resolved_password):
         paho_client.username_pw_set(resolved_username, resolved_password)
-    if tls:
+    if tls or _entra_props is not None:
         paho_client.tls_set()
 
     loop = asyncio.get_running_loop()
@@ -370,7 +376,12 @@ async def _run(args: argparse.Namespace) -> None:
         loop=loop,
     )
     logger.info("Connecting to MQTT broker %s:%s (tls=%s)", broker_host, broker_port, tls)
-    await client.connect(broker_host, broker_port)
+    # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
+    if _entra_props is not None:
+        paho_client.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_entra_props)
+        paho_client.loop_start()
+    else:
+        await client.connect(broker_host, broker_port)
 
     feedurl = args.feedurl or (
         f"dump1090://{args.host}:{args.port}" if args.host and args.port
