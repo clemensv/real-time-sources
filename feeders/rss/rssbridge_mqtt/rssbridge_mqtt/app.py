@@ -188,7 +188,11 @@ async def run() -> None:
         paho_client.username_pw_set(resolved_username, resolved_password)
     if tls or _entra_props is not None:
         paho_client.tls_set()
-    paho_client.connect(host, port)
+    # WORKAROUND(xregistry/codegen#432): pass Entra JWT CONNECT properties directly to paho
+    if _entra_props is not None:
+        paho_client.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props)
+    else:
+        paho_client.connect(host, port)
     paho_client.loop_start()
     try:
         feed_urls = load_feedstore()

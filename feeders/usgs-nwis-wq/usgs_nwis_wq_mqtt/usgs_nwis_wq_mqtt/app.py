@@ -132,7 +132,12 @@ async def feed(host, port, username=None, password=None, tls=False, client_id=No
     if not client_classes:
         raise RuntimeError('No generated MQTT clients found')
     clients=[cls(client=paho_client, content_mode=content_mode, loop=asyncio.get_running_loop()) for cls in client_classes]
-    await clients[0].connect(host, port)
+    # WORKAROUND(xregistry/codegen#432): pass Entra JWT CONNECT properties directly to paho
+    if _entra_props is not None:
+        paho.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props)
+        paho.loop_start()
+    else:
+        await clients[0].connect(host, port)
     try:
         for client in clients:
             await _publish_mock(client)

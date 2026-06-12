@@ -172,7 +172,12 @@ async def main_async(args):
         paho.username_pw_set(resolved_username, resolved_password)
     if tls or args.tls: paho.tls_set()
     clients=[cls(client=paho, content_mode=args.content_mode, loop=asyncio.get_running_loop()) for cls in _client_classes()]
-    await clients[0].connect(host, args.broker_port or port)
+    # WORKAROUND(xregistry/codegen#432): pass Entra JWT CONNECT properties directly to paho
+    if _entra_props is not None:
+        paho.connect(host, args.broker_port or port, keepalive=60, clean_start=True, properties=_entra_props)
+        paho.loop_start()
+    else:
+        await clients[0].connect(host, args.broker_port or port)
     try: await _publish_all(clients)
     finally: await clients[0].disconnect()
 

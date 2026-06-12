@@ -77,8 +77,14 @@ async def feed(api,h,p,tls=False,username=None,password=None,content_mode='binar
     pc=mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2,protocol=MQTTv5);
     if _entra_props is None and (resolved_username or resolved_password):
         pc.username_pw_set(resolved_username, resolved_password)
-    if tls: pc.tls_set()
-    c=JPJMAVolcanoMqttMqttClient(client=pc,content_mode=content_mode,loop=asyncio.get_running_loop()); await c.connect(h,p)
+    if tls or _entra_props is not None: pc.tls_set()
+    c=JPJMAVolcanoMqttMqttClient(client=pc,content_mode=content_mode,loop=asyncio.get_running_loop())
+    # WORKAROUND(xregistry/codegen#432): pass Entra JWT CONNECT properties directly to paho
+    if _entra_props is not None:
+        pc.connect(h, p, keepalive=60, clean_start=True, properties=_entra_props)
+        pc.loop_start()
+    else:
+        await c.connect(h,p)
     try: await run(api,c)
     finally: await c.disconnect()
 def main():

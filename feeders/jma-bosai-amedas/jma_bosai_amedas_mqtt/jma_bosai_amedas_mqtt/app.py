@@ -83,8 +83,14 @@ async def feed(api,host,port,*,state_file,polling_interval,metadata_refresh_hour
     pc=mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
     if _entra_props is None and (resolved_username or resolved_password):
         pc.username_pw_set(resolved_username, resolved_password)
-    if tls: pc.tls_set()
-    client=JPJMAAmedasMqttMqttClient(client=pc,content_mode=content_mode,loop=asyncio.get_running_loop()); await client.connect(host,port)
+    if tls or _entra_props is not None: pc.tls_set()
+    client=JPJMAAmedasMqttMqttClient(client=pc,content_mode=content_mode,loop=asyncio.get_running_loop())
+    # WORKAROUND(xregistry/codegen#432): pass Entra JWT CONNECT properties directly to paho
+    if _entra_props is not None:
+        pc.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props)
+        pc.loop_start()
+    else:
+        await client.connect(host,port)
     state=_load_state(state_file)
     try:
         while True:
