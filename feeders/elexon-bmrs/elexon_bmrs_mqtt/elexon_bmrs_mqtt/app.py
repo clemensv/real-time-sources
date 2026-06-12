@@ -147,8 +147,16 @@ async def run(args):
     clients=[cls(client=paho, content_mode='binary', loop=loop) for cls in classes]
     # WORKAROUND(xregistry/codegen#432): pass Entra JWT CONNECT properties directly to paho
     if _entra_props is not None:
+        import threading as _threading
+        _connected = _threading.Event()
+        def _on_connack(client, userdata, flags, reason_code, props=None):
+            if reason_code == 0:
+                _connected.set()
+        paho.on_connect = _on_connack
         paho.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props)
         paho.loop_start()
+        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+            raise RuntimeError('MQTT CONNACK timeout after 30s')
     else:
         await clients[0].connect(host,port)
     try:

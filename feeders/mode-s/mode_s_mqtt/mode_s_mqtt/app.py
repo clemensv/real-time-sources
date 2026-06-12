@@ -378,8 +378,16 @@ async def _run(args: argparse.Namespace) -> None:
     logger.info("Connecting to MQTT broker %s:%s (tls=%s)", broker_host, broker_port, tls)
     # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
     if _entra_props is not None:
+        import threading as _threading
+        _connected = _threading.Event()
+        def _on_connack(client, userdata, flags, reason_code, props=None):
+            if reason_code == 0:
+                _connected.set()
+        paho_client.on_connect = _on_connack
         paho_client.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=_entra_props)
         paho_client.loop_start()
+        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+            raise RuntimeError('MQTT CONNACK timeout after 30s')
     else:
         await client.connect(broker_host, broker_port)
 
