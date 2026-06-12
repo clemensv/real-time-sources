@@ -140,11 +140,19 @@ def _build_clients(args: argparse.Namespace):
         )
     if _entra_props is None and (resolved_username or resolved_password):
         paho_client.username_pw_set(resolved_username, resolved_password)
-    if tls:
+    if tls or _entra_props is not None:
         paho_client.tls_set(ca_certs=args.ca_file or None)
 
+    import threading as _threading
+    _connected = _threading.Event()
+    def _on_connack(client, userdata, flags, reason_code, props=None):
+        if (reason_code if isinstance(reason_code, int) else reason_code.value) == 0:
+            _connected.set()
+    paho_client.on_connect = _on_connack
     paho_client.connect(host, port, keepalive=60, properties=_entra_props)
     paho_client.loop_start()
+    if not _connected.wait(30):
+        raise RuntimeError('MQTT CONNACK timeout after 30s')
 
     ais_client = FiDigitrafficMarineAisMqttMqttClient(paho_client, content_mode=args.content_mode)
     port_call_client = FiDigitrafficMarinePortcallMqttMqttClient(paho_client, content_mode=args.content_mode)
