@@ -186,14 +186,22 @@ async def _connect_client(args: argparse.Namespace) -> NWSAlertsMqttMqttClient:
         from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
         from paho.mqtt.packettypes import PacketTypes
         from paho.mqtt.properties import Properties
+        import threading as _threading
 
         credential = ManagedIdentityCredential(client_id=args.mqtt_entra_client_id) if args.mqtt_entra_client_id else DefaultAzureCredential()
         token = credential.get_token(args.mqtt_entra_audience)
         props = Properties(PacketTypes.CONNECT)
         props.AuthenticationMethod = "OAUTH2-JWT"
         props.AuthenticationData = token.token.encode("utf-8")
+        _connected = _threading.Event()
+        def _on_connack(c, userdata, flags, reason_code, p=None):
+            if reason_code == 0:
+                _connected.set()
+        paho_client.on_connect = _on_connack
         paho_client.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=props)
         paho_client.loop_start()
+        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+            raise RuntimeError('MQTT CONNACK timeout after 30s')
     else:
         await client.connect(broker_host, broker_port)
     return client

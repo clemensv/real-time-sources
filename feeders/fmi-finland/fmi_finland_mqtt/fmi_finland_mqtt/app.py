@@ -174,8 +174,16 @@ async def main_async(args):
     clients=[cls(client=paho, content_mode=args.content_mode, loop=asyncio.get_running_loop()) for cls in _client_classes()]
     # WORKAROUND(xregistry/codegen#432): pass Entra JWT CONNECT properties directly to paho
     if _entra_props is not None:
+        import threading as _threading
+        _connected = _threading.Event()
+        def _on_connack(client, userdata, flags, reason_code, props=None):
+            if reason_code == 0:
+                _connected.set()
+        paho.on_connect = _on_connack
         paho.connect(host, args.broker_port or port, keepalive=60, clean_start=True, properties=_entra_props)
         paho.loop_start()
+        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+            raise RuntimeError('MQTT CONNACK timeout after 30s')
     else:
         await clients[0].connect(host, args.broker_port or port)
     try: await _publish_all(clients)
@@ -199,4 +207,3 @@ def main():
     if args.command!='feed': ap.error("only 'feed' is supported")
     asyncio.run(main_async(args))
 if __name__=='__main__': main()
-

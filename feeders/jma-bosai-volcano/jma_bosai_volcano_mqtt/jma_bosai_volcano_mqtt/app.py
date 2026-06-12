@@ -81,8 +81,16 @@ async def feed(api,h,p,tls=False,username=None,password=None,content_mode='binar
     c=JPJMAVolcanoMqttMqttClient(client=pc,content_mode=content_mode,loop=asyncio.get_running_loop())
     # WORKAROUND(xregistry/codegen#432): pass Entra JWT CONNECT properties directly to paho
     if _entra_props is not None:
+        import threading as _threading
+        _connected = _threading.Event()
+        def _on_connack(client, userdata, flags, reason_code, props=None):
+            if reason_code == 0:
+                _connected.set()
+        paho.on_connect = _on_connack
         pc.connect(h, p, keepalive=60, clean_start=True, properties=_entra_props)
         pc.loop_start()
+        if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+            raise RuntimeError('MQTT CONNACK timeout after 30s')
     else:
         await c.connect(h,p)
     try: await run(api,c)

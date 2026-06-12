@@ -71,10 +71,20 @@ def main(argv=None):
         )
         host,port=_parse(args.mqtt_broker_url); p=mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
         if _entra_props is None and (resolved_username or resolved_password): p.username_pw_set(resolved_username, resolved_password)
+        if _entra_props is not None or args.mqtt_broker_url.startswith(('mqtts://', 'ssl://')): p.tls_set()
         c=MicrosoftOpenDataUSNOAANWSForecastsMqttMqttClient(client=p, content_mode='binary', loop=asyncio.get_running_loop())
         # WORKAROUND(xregistry/codegen#432): EG MQTT requires OAUTH2-JWT extended auth, not username/password
         if _entra_props is not None:
-            p.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props); p.loop_start()
+            import threading as _threading
+            _connected = _threading.Event()
+            def _on_connack(client, userdata, flags, reason_code, props=None):
+                if reason_code == 0:
+                    _connected.set()
+            p.on_connect = _on_connack
+            p.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props)
+            p.loop_start()
+            if not await asyncio.get_running_loop().run_in_executor(None, lambda: _connected.wait(30)):
+                raise RuntimeError('MQTT CONNACK timeout after 30s')
         else:
             await c.connect(host,port)
         await _mock(c); await asyncio.sleep(1); await c.disconnect()
