@@ -141,11 +141,16 @@ async def run(args):
     paho=mqtt.Client(client_id=resolved_client_id or "", callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
     if _entra_props is None and (resolved_username or resolved_password):
         paho.username_pw_set(resolved_username, resolved_password)
-    if tls: paho.tls_set()
+    if tls or _entra_props is not None: paho.tls_set()
     loop=asyncio.get_running_loop()
     classes=[v for v in vars(client_mod).values() if isinstance(v,type) and v.__name__.endswith('MqttClient')]
     clients=[cls(client=paho, content_mode='binary', loop=loop) for cls in classes]
-    await clients[0].connect(host,port)
+    # WORKAROUND(xregistry/codegen#432): pass Entra JWT CONNECT properties directly to paho
+    if _entra_props is not None:
+        paho.connect(host, port, keepalive=60, clean_start=True, properties=_entra_props)
+        paho.loop_start()
+    else:
+        await clients[0].connect(host,port)
     try:
         for sh,payload,_ in _iter_events(): await _publish_one(clients,sh,payload)
     finally:
