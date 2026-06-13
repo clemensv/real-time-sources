@@ -584,6 +584,16 @@ Write-Step "1/6" "Setting up KQL database '$DatabaseName'..."
 $databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
 $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
 
+# If DB not yet visible, wait up to 30s — Eventhouse auto-creates it within seconds but the list may lag
+if (-not $existingDb) {
+    for ($i = 0; $i -lt 6; $i++) {
+        Start-Sleep -Seconds 5
+        $databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
+        $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
+        if ($existingDb) { break }
+    }
+}
+
 $kqlContent = $null
 $filteredKql = $null
 if ($kqlUrl) {
@@ -665,7 +675,10 @@ if (-not $existingDb -or $dbStaleness) {
             $op = Invoke-RestMethod -Uri ([uri]$opLoc) -Headers @{ Authorization = "Bearer $accessToken" } -SkipHttpErrorCheck
             if ($op.status -eq 'Succeeded') { Write-OK "Database provisioned"; break }
             if ($op.status -eq 'Failed') {
-                throw "Database creation failed: $($op.error.errorCode) - $($op.error.message)"
+                # UnknownError usually means the DB was already being created (auto-created with Eventhouse)
+                # Treat as 409 — fall through to the poll loop below
+                Write-Host "  KQL DB creation LRO failed ($($op.error.errorCode)); assuming auto-created DB pending..." -ForegroundColor Yellow
+                break
             }
             Write-Host "  LRO: $($op.status) ($([int](($i+1)*10))s)" -ForegroundColor DarkGray
         }
