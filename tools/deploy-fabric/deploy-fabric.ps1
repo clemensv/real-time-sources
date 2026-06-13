@@ -841,20 +841,21 @@ $esBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($es
 $updateReq = @{ definition = @{ parts = @(@{ path = "eventstream.json"; payload = $esBase64; payloadType = "InlineBase64" }) } }
 $updateFile = Join-Path $TempDir "es_update_$(Get-Random).json"
 [System.IO.File]::WriteAllText($updateFile, ($updateReq | ConvertTo-Json -Depth 20 -Compress), [System.Text.UTF8Encoding]::new($false))
-# Retry updateDefinition on OperationNotSupportedForItem — Event Stream may not be fully ready
+# Retry updateDefinition on OperationNotSupportedForItem|EntityNotFound — Event Stream workload backend
+# may take 5-10 minutes to register a newly-created ES under load. Use 40 retries × 15s = 600s window.
 $esDefOk = $false
-for ($retry = 0; $retry -lt 20; $retry++) {
+for ($retry = 0; $retry -lt 40; $retry++) {
     if ($retry -gt 0) { Start-Sleep -Seconds 15 }
     $esDefResult = az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" --resource "https://api.fabric.microsoft.com" --body "@$updateFile" --headers "Content-Type=application/json" 2>&1
     if ($LASTEXITCODE -eq 0) { $esDefOk = $true; break }
     $errStr = $esDefResult -join ' '
     if ($errStr -match 'OperationNotSupportedForItem|EntityNotFound') {
-        Write-Host "  updateDefinition not yet ready ($($errStr -replace '.*errorCode.:.(.+?).,.*','$1')) — retry $($retry+1)/6 in 15s..." -ForegroundColor Yellow
+        Write-Host "  updateDefinition not yet ready ($($errStr -replace '.*errorCode.:.(.+?).,.*','$1')) — retry $($retry+1)/40 in 15s..." -ForegroundColor Yellow
     } else {
         throw "Failed to update Event Stream definition: $errStr"
     }
 }
-if (-not $esDefOk) { throw "Failed to update Event Stream definition after retries (300s): $($esDefResult -join ' ')" }
+if (-not $esDefOk) { throw "Failed to update Event Stream definition after retries (600s): $($esDefResult -join ' ')" }
 Write-OK "Event Stream topology configured"
 Wait-EventStreamTopologyReady -WsId $WorkspaceId -EventStreamId $eventstreamId
 
