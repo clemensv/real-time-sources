@@ -771,50 +771,54 @@ if ($existingEs) {
     }
 }
 if (-not $existingEs) {
-    # Use Invoke-WebRequest to capture the LRO Location header from the 202 response
-    $accessToken = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv
-    $esResp = Invoke-WebRequest -Uri "$FabricApi/workspaces/$WorkspaceId/eventstreams" -Method POST `
-        -Headers @{ Authorization = "Bearer $accessToken"; "Content-Type" = "application/json" } `
-        -Body (@{ displayName = $EventStreamName } | ConvertTo-Json) -SkipHttpErrorCheck
-    if ($esResp.StatusCode -ge 400) { throw "Event Stream creation returned $($esResp.StatusCode): $($esResp.Content)" }
-    $esBody = $esResp.Content | ConvertFrom-Json -ErrorAction SilentlyContinue
-    if ($esBody -and $esBody.id) {
-        $eventstreamId = $esBody.id
-    } else {
-        # 202 async — poll the LRO Location until Succeeded, then query workspace list
-        $lroUrl = $esResp.Headers['Location'] | Select-Object -First 1
-        if ($lroUrl) {
-            Write-Host "  Event Stream creation is async (LRO: $lroUrl)..." -ForegroundColor Gray
-            for ($i = 0; $i -lt 60; $i++) {
-                Start-Sleep -Seconds 10
-                $op = Invoke-RestMethod $lroUrl -Headers @{ Authorization = "Bearer $accessToken" } -SkipHttpErrorCheck -ErrorAction SilentlyContinue
-                if ($op.status -eq 'Succeeded') {
-                    Write-Host "  LRO Succeeded ($([int](($i+1)*10))s)"
-                    # Try to get the ID directly from LRO result (createdItemId or ResourceLocation)
-                    if ($op.createdItemId) { $eventstreamId = $op.createdItemId }
-                    elseif ($op.ResourceLocation) {
-                        # e.g. .../workspaces/{wsId}/eventstreams/{id}
-                        if ($op.ResourceLocation -match '/eventstreams/([^/?]+)') { $eventstreamId = $Matches[1] }
+    # Fabric Event Stream creation is async and the item may not appear in the list immediately
+    # after LRO Succeeded. Retry the entire POST up to 5 times with 60s waits between attempts.
+    $maxEsAttempts = 5
+    for ($esAttempt = 0; $esAttempt -lt $maxEsAttempts -and -not $eventstreamId; $esAttempt++) {
+        if ($esAttempt -gt 0) {
+            Write-Host "  Event Stream not found — retrying POST (attempt $($esAttempt+1)/$maxEsAttempts)..." -ForegroundColor Yellow
+            Start-Sleep -Seconds 30
+        }
+        $accessToken = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv
+        $esResp = Invoke-WebRequest -Uri "$FabricApi/workspaces/$WorkspaceId/eventstreams" -Method POST `
+            -Headers @{ Authorization = "Bearer $accessToken"; "Content-Type" = "application/json" } `
+            -Body (@{ displayName = $EventStreamName } | ConvertTo-Json) -SkipHttpErrorCheck
+        if ($esResp.StatusCode -eq 409) {
+            Write-Host "  Event Stream already exists (from prior attempt), searching list..." -ForegroundColor Yellow
+        } elseif ($esResp.StatusCode -ge 400) {
+            throw "Event Stream creation returned $($esResp.StatusCode): $($esResp.Content)"
+        } else {
+            $esBody = $esResp.Content | ConvertFrom-Json -ErrorAction SilentlyContinue
+            if ($esBody -and $esBody.id) {
+                $eventstreamId = $esBody.id
+            } else {
+                # 202 async — poll the LRO Location until Succeeded
+                $lroUrl = $esResp.Headers['Location'] | Select-Object -First 1
+                if ($lroUrl) {
+                    Write-Host "  Event Stream creation async (LRO attempt $($esAttempt+1))..." -ForegroundColor Gray
+                    for ($i = 0; $i -lt 30; $i++) {
+                        Start-Sleep -Seconds 10
+                        $op = Invoke-RestMethod $lroUrl -Headers @{ Authorization = "Bearer $accessToken" } -SkipHttpErrorCheck -ErrorAction SilentlyContinue
+                        if ($op.status -eq 'Succeeded') { Write-Host "  LRO Succeeded ($([int](($i+1)*10))s)"; break }
+                        if ($op.status -in @('Failed','Cancelled')) { Write-Host "  LRO $($op.status) — will retry POST"; break }
+                        Write-Host "  LRO: $($op.status) ($([int](($i+1)*10))s)" -ForegroundColor Gray
                     }
-                    break
                 }
-                if ($op.status -in @('Failed','Cancelled')) { throw "Event Stream LRO $($op.status): $($op.error | ConvertTo-Json)" }
-                Write-Host "  LRO: $($op.status) ($([int](($i+1)*10))s)" -ForegroundColor Gray
             }
         }
-        # Find the created Event Stream by name — extend poll to 180s (LRO may lag behind list)
+        # Poll up to 90s for the Event Stream to appear in the list
         if (-not $eventstreamId) {
-            for ($i = 0; $i -lt 36; $i++) {
+            for ($i = 0; $i -lt 18; $i++) {
                 Start-Sleep -Seconds 5
                 $eventstreams = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
                 $existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
                 if ($existingEs -and $existingEs.id) { $eventstreamId = $existingEs.id; break }
-                Write-Host "  Waiting for Event Stream to appear in list... ($([int](($i+1)*5))s)" -ForegroundColor Gray
+                Write-Host "  Waiting for Event Stream in list... ($([int](($i+1)*5))s, attempt $($esAttempt+1))" -ForegroundColor Gray
             }
         }
     }
     Write-OK "Event Stream created (ID: $eventstreamId)"
-    if (-not $eventstreamId) { throw "Event Stream created but ID could not be resolved for '$EventStreamName'" }
+    if (-not $eventstreamId) { throw "Event Stream '$EventStreamName' not found after $maxEsAttempts creation attempts" }
     $script:createdEvenstreamId = $eventstreamId  # track for cleanup-on-failure
 }
 
