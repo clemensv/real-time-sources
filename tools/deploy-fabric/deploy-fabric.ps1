@@ -637,14 +637,21 @@ if (-not $existingDb -or $dbStaleness) {
         }
     }
     $databaseId = $null
-    for ($i = 0; $i -lt 18; $i++) {
+    for ($i = 0; $i -lt 60; $i++) {
         Start-Sleep -Seconds 10
+        # Try workspace-level list first
         $databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
         $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
         if ($existingDb -and $existingDb.id) { $databaseId = $existingDb.id; break }
+        # Fallback: try eventhouse-specific endpoint (auto-created DB may appear here first)
+        try {
+            $ehDbs = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId/kqlDatabases"
+            $existingDb = $ehDbs.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
+            if ($existingDb -and $existingDb.id) { $databaseId = $existingDb.id; break }
+        } catch {}
         Write-Host "  Provisioning... ($([int](($i+1)*10))s)" -ForegroundColor Gray
     }
-    if (-not $databaseId) { throw "Database '$DatabaseName' was not found after 180 seconds." }
+    if (-not $databaseId) { throw "Database '$DatabaseName' was not found after 600 seconds." }
     Write-OK "Database created (ID: $databaseId)"
 
     if ($kqlContent) {
@@ -696,6 +703,7 @@ if (-not $existingEs) {
         $eventstreamId = $existingEs.id
     }
     Write-OK "Event Stream created (ID: $eventstreamId)"
+    if (-not $eventstreamId) { throw "Event Stream created but ID could not be resolved for '$EventStreamName'" }
 }
 
 #  Step 4: Configure Event Stream topology ─
@@ -715,8 +723,8 @@ $esBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($es
 $updateReq = @{ definition = @{ parts = @(@{ path = "eventstream.json"; payload = $esBase64; payloadType = "InlineBase64" }) } }
 $updateFile = Join-Path $TempDir "es_update_$(Get-Random).json"
 [System.IO.File]::WriteAllText($updateFile, ($updateReq | ConvertTo-Json -Depth 20 -Compress), [System.Text.UTF8Encoding]::new($false))
-az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" --resource "https://api.fabric.microsoft.com" --body "@$updateFile" --headers "Content-Type=application/json" 2>&1 | Out-Null
-if ($LASTEXITCODE -ne 0) { throw "Failed to update Event Stream definition" }
+$esDefResult = az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" --resource "https://api.fabric.microsoft.com" --body "@$updateFile" --headers "Content-Type=application/json" 2>&1
+if ($LASTEXITCODE -ne 0) { throw "Failed to update Event Stream definition: $($esDefResult -join ' ')" }
 Write-OK "Event Stream topology configured"
 Wait-EventStreamTopologyReady -WsId $WorkspaceId -EventStreamId $eventstreamId
 
