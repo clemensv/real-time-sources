@@ -839,7 +839,7 @@ $updateFile = Join-Path $TempDir "es_update_$(Get-Random).json"
 [System.IO.File]::WriteAllText($updateFile, ($updateReq | ConvertTo-Json -Depth 20 -Compress), [System.Text.UTF8Encoding]::new($false))
 # Retry updateDefinition on OperationNotSupportedForItem — Event Stream may not be fully ready
 $esDefOk = $false
-for ($retry = 0; $retry -lt 6; $retry++) {
+for ($retry = 0; $retry -lt 20; $retry++) {
     if ($retry -gt 0) { Start-Sleep -Seconds 15 }
     $esDefResult = az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" --resource "https://api.fabric.microsoft.com" --body "@$updateFile" --headers "Content-Type=application/json" 2>&1
     if ($LASTEXITCODE -eq 0) { $esDefOk = $true; break }
@@ -850,7 +850,7 @@ for ($retry = 0; $retry -lt 6; $retry++) {
         throw "Failed to update Event Stream definition: $errStr"
     }
 }
-if (-not $esDefOk) { throw "Failed to update Event Stream definition after retries: $($esDefResult -join ' ')" }
+if (-not $esDefOk) { throw "Failed to update Event Stream definition after retries (300s): $($esDefResult -join ' ')" }
 Write-OK "Event Stream topology configured"
 Wait-EventStreamTopologyReady -WsId $WorkspaceId -EventStreamId $eventstreamId
 
