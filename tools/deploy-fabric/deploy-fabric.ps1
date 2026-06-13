@@ -788,18 +788,29 @@ if (-not $existingEs) {
             for ($i = 0; $i -lt 60; $i++) {
                 Start-Sleep -Seconds 10
                 $op = Invoke-RestMethod $lroUrl -Headers @{ Authorization = "Bearer $accessToken" } -SkipHttpErrorCheck -ErrorAction SilentlyContinue
-                if ($op.status -eq 'Succeeded') { Write-Host "  LRO Succeeded ($([int](($i+1)*10))s)"; break }
+                if ($op.status -eq 'Succeeded') {
+                    Write-Host "  LRO Succeeded ($([int](($i+1)*10))s)"
+                    # Try to get the ID directly from LRO result (createdItemId or ResourceLocation)
+                    if ($op.createdItemId) { $eventstreamId = $op.createdItemId }
+                    elseif ($op.ResourceLocation) {
+                        # e.g. .../workspaces/{wsId}/eventstreams/{id}
+                        if ($op.ResourceLocation -match '/eventstreams/([^/?]+)') { $eventstreamId = $Matches[1] }
+                    }
+                    break
+                }
                 if ($op.status -in @('Failed','Cancelled')) { throw "Event Stream LRO $($op.status): $($op.error | ConvertTo-Json)" }
                 Write-Host "  LRO: $($op.status) ($([int](($i+1)*10))s)" -ForegroundColor Gray
             }
         }
-        # Find the created Event Stream by name
-        for ($i = 0; $i -lt 12; $i++) {
-            Start-Sleep -Seconds 5
-            $eventstreams = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
-            $existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
-            if ($existingEs -and $existingEs.id) { $eventstreamId = $existingEs.id; break }
-            Write-Host "  Waiting for Event Stream to appear in list... ($([int](($i+1)*5))s)" -ForegroundColor Gray
+        # Find the created Event Stream by name — extend poll to 180s (LRO may lag behind list)
+        if (-not $eventstreamId) {
+            for ($i = 0; $i -lt 36; $i++) {
+                Start-Sleep -Seconds 5
+                $eventstreams = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
+                $existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
+                if ($existingEs -and $existingEs.id) { $eventstreamId = $existingEs.id; break }
+                Write-Host "  Waiting for Event Stream to appear in list... ($([int](($i+1)*5))s)" -ForegroundColor Gray
+            }
         }
     }
     Write-OK "Event Stream created (ID: $eventstreamId)"
