@@ -844,8 +844,8 @@ for ($retry = 0; $retry -lt 6; $retry++) {
     $esDefResult = az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" --resource "https://api.fabric.microsoft.com" --body "@$updateFile" --headers "Content-Type=application/json" 2>&1
     if ($LASTEXITCODE -eq 0) { $esDefOk = $true; break }
     $errStr = $esDefResult -join ' '
-    if ($errStr -match 'OperationNotSupportedForItem') {
-        Write-Host "  updateDefinition not yet supported (retry $($retry+1)/6 in 15s)..." -ForegroundColor Yellow
+    if ($errStr -match 'OperationNotSupportedForItem|EntityNotFound') {
+        Write-Host "  updateDefinition not yet ready ($($errStr -replace '.*errorCode.:.(.+?).,.*','$1')) — retry $($retry+1)/6 in 15s..." -ForegroundColor Yellow
     } else {
         throw "Failed to update Event Stream definition: $errStr"
     }
