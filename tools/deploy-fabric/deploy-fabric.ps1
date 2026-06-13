@@ -810,6 +810,7 @@ if (-not $existingEs) {
 #  Step 4: Configure Event Stream topology ─
 
 Write-Step "4/6" "Configuring Event Stream topology..."
+Start-Sleep -Seconds 15  # Allow Event Stream to fully initialize before updateDefinition
 $sourceNodeName = "$Source-input"
 $esDef = @{ compatibilityLevel = "1.1"
     sources = @(@{ name = $sourceNodeName; type = "CustomEndpoint"; properties = @{} })
@@ -825,8 +826,20 @@ $esBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($es
 $updateReq = @{ definition = @{ parts = @(@{ path = "eventstream.json"; payload = $esBase64; payloadType = "InlineBase64" }) } }
 $updateFile = Join-Path $TempDir "es_update_$(Get-Random).json"
 [System.IO.File]::WriteAllText($updateFile, ($updateReq | ConvertTo-Json -Depth 20 -Compress), [System.Text.UTF8Encoding]::new($false))
-$esDefResult = az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" --resource "https://api.fabric.microsoft.com" --body "@$updateFile" --headers "Content-Type=application/json" 2>&1
-if ($LASTEXITCODE -ne 0) { throw "Failed to update Event Stream definition: $($esDefResult -join ' ')" }
+# Retry updateDefinition on OperationNotSupportedForItem — Event Stream may not be fully ready
+$esDefOk = $false
+for ($retry = 0; $retry -lt 6; $retry++) {
+    if ($retry -gt 0) { Start-Sleep -Seconds 15 }
+    $esDefResult = az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" --resource "https://api.fabric.microsoft.com" --body "@$updateFile" --headers "Content-Type=application/json" 2>&1
+    if ($LASTEXITCODE -eq 0) { $esDefOk = $true; break }
+    $errStr = $esDefResult -join ' '
+    if ($errStr -match 'OperationNotSupportedForItem') {
+        Write-Host "  updateDefinition not yet supported (retry $($retry+1)/6 in 15s)..." -ForegroundColor Yellow
+    } else {
+        throw "Failed to update Event Stream definition: $errStr"
+    }
+}
+if (-not $esDefOk) { throw "Failed to update Event Stream definition after retries: $($esDefResult -join ' ')" }
 Write-OK "Event Stream topology configured"
 Wait-EventStreamTopologyReady -WsId $WorkspaceId -EventStreamId $eventstreamId
 
