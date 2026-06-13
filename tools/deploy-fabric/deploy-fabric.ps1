@@ -751,28 +751,45 @@ if (-not $existingDb -or $dbStaleness) {
     }
 }
 
-#  Step 3: Create Fabric Event Stream 
+#  Steps 3+4: Create Fabric Event Stream with inline topology definition
+# Creating with the full definition in the initial POST avoids the separate updateDefinition
+# call, which was unreliable (EntityNotFound for 5-10+ min under workspace load).
 
-Write-Step "3/6" "Creating Event Stream '$EventStreamName'..."
+Write-Step "3/6" "Creating Event Stream '$EventStreamName' with topology..."
+$sourceNodeName = "$Source-input"
+$esDef = @{ compatibilityLevel = "1.1"
+    sources = @(@{ name = $sourceNodeName; type = "CustomEndpoint"; properties = @{} })
+    streams = @(@{ name = $StreamName; type = "DefaultStream"; properties = @{}; inputNodes = @(@{ name = $sourceNodeName }) })
+    operators = @()
+    destinations = @(@{ name = "dispatch-kql"; type = "Eventhouse"; properties = @{
+        dataIngestionMode = "ProcessedIngestion"; workspaceId = $WorkspaceId; itemId = $databaseId
+        databaseName = $DatabaseName; tableName = "_cloudevents_dispatch"
+        inputSerialization = @{ type = "Json"; properties = @{ encoding = "UTF8" } }
+    }; inputNodes = @(@{ name = $StreamName }) })
+}
+$esBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($esDef | ConvertTo-Json -Depth 20)))
+$esCreateBody = @{ displayName = $EventStreamName; definition = @{ parts = @(@{ path = "eventstream.json"; payload = $esBase64; payloadType = "InlineBase64" }) } }
+$esCreateFile = Join-Path $TempDir "es_create_$(Get-Random).json"
+[System.IO.File]::WriteAllText($esCreateFile, ($esCreateBody | ConvertTo-Json -Depth 20 -Compress), [System.Text.UTF8Encoding]::new($false))
+
 $eventstreams = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
 $existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
 if ($existingEs) {
     $eventstreamId = $existingEs.id
     Write-Info "Event Stream already exists (ID: $eventstreamId)"
-    # Verify the Event Stream is still accessible — it may be in async-deletion from a prior cleanup
+    # Verify accessible — may be a stale entry from a prior cleanup
     try {
         Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId" | Out-Null
     } catch {
-        Write-Host "  Event Stream ID $eventstreamId not accessible ($_). Deleting stale entry and recreating..." -ForegroundColor Yellow
+        Write-Host "  Event Stream not accessible; deleting stale entry and recreating..." -ForegroundColor Yellow
         try { Invoke-FabricApi -Method DELETE -Url "$FabricApi/workspaces/$WorkspaceId/items/$eventstreamId" | Out-Null } catch {}
-        Start-Sleep -Seconds 15  # allow Fabric to complete async deletion before recreating with same name
-        $existingEs = $null
-        $eventstreamId = $null
+        Start-Sleep -Seconds 15
+        $existingEs = $null; $eventstreamId = $null
     }
 }
 if (-not $existingEs) {
-    # Fabric Event Stream creation is async and the item may not appear in the list immediately
-    # after LRO Succeeded. Retry the entire POST up to 5 times with 60s waits between attempts.
+    # Create with full topology inline — avoids unreliable two-step create+updateDefinition.
+    # Retry up to 5 times with 30s gaps; on 409 the ES already exists from a prior attempt.
     $maxEsAttempts = 5
     for ($esAttempt = 0; $esAttempt -lt $maxEsAttempts -and -not $eventstreamId; $esAttempt++) {
         if ($esAttempt -gt 0) {
@@ -782,7 +799,7 @@ if (-not $existingEs) {
         $accessToken = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv
         $esResp = Invoke-WebRequest -Uri "$FabricApi/workspaces/$WorkspaceId/eventstreams" -Method POST `
             -Headers @{ Authorization = "Bearer $accessToken"; "Content-Type" = "application/json" } `
-            -Body (@{ displayName = $EventStreamName } | ConvertTo-Json) -SkipHttpErrorCheck
+            -Body ([System.IO.File]::ReadAllText($esCreateFile)) -SkipHttpErrorCheck
         if ($esResp.StatusCode -eq 409) {
             Write-Host "  Event Stream already exists (from prior attempt), searching list..." -ForegroundColor Yellow
         } elseif ($esResp.StatusCode -ge 400) {
@@ -792,7 +809,6 @@ if (-not $existingEs) {
             if ($esBody -and $esBody.id) {
                 $eventstreamId = $esBody.id
             } else {
-                # 202 async — poll the LRO Location until Succeeded
                 $lroUrl = $esResp.Headers['Location'] | Select-Object -First 1
                 if ($lroUrl) {
                     Write-Host "  Event Stream creation async (LRO attempt $($esAttempt+1))..." -ForegroundColor Gray
@@ -817,46 +833,12 @@ if (-not $existingEs) {
             }
         }
     }
-    Write-OK "Event Stream created (ID: $eventstreamId)"
     if (-not $eventstreamId) { throw "Event Stream '$EventStreamName' not found after $maxEsAttempts creation attempts" }
-    $script:createdEvenstreamId = $eventstreamId  # track for cleanup-on-failure
+    Write-OK "Event Stream created with topology (ID: $eventstreamId)"
+    $script:createdEvenstreamId = $eventstreamId
 }
 
-#  Step 4: Configure Event Stream topology ─
-
-Write-Step "4/6" "Configuring Event Stream topology..."
-Start-Sleep -Seconds 15  # Allow Event Stream to fully initialize before updateDefinition
-$sourceNodeName = "$Source-input"
-$esDef = @{ compatibilityLevel = "1.1"
-    sources = @(@{ name = $sourceNodeName; type = "CustomEndpoint"; properties = @{} })
-    streams = @(@{ name = $StreamName; type = "DefaultStream"; properties = @{}; inputNodes = @(@{ name = $sourceNodeName }) })
-    operators = @()
-    destinations = @(@{ name = "dispatch-kql"; type = "Eventhouse"; properties = @{
-        dataIngestionMode = "ProcessedIngestion"; workspaceId = $WorkspaceId; itemId = $databaseId
-        databaseName = $DatabaseName; tableName = "_cloudevents_dispatch"
-        inputSerialization = @{ type = "Json"; properties = @{ encoding = "UTF8" } }
-    }; inputNodes = @(@{ name = $StreamName }) })
-}
-$esBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($esDef | ConvertTo-Json -Depth 20)))
-$updateReq = @{ definition = @{ parts = @(@{ path = "eventstream.json"; payload = $esBase64; payloadType = "InlineBase64" }) } }
-$updateFile = Join-Path $TempDir "es_update_$(Get-Random).json"
-[System.IO.File]::WriteAllText($updateFile, ($updateReq | ConvertTo-Json -Depth 20 -Compress), [System.Text.UTF8Encoding]::new($false))
-# Retry updateDefinition on OperationNotSupportedForItem|EntityNotFound — Event Stream workload backend
-# may take 5-10 minutes to register a newly-created ES under load. Use 40 retries × 15s = 600s window.
-$esDefOk = $false
-for ($retry = 0; $retry -lt 40; $retry++) {
-    if ($retry -gt 0) { Start-Sleep -Seconds 15 }
-    $esDefResult = az rest --method POST --url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId/updateDefinition" --resource "https://api.fabric.microsoft.com" --body "@$updateFile" --headers "Content-Type=application/json" 2>&1
-    if ($LASTEXITCODE -eq 0) { $esDefOk = $true; break }
-    $errStr = $esDefResult -join ' '
-    if ($errStr -match 'OperationNotSupportedForItem|EntityNotFound') {
-        Write-Host "  updateDefinition not yet ready ($($errStr -replace '.*errorCode.:.(.+?).,.*','$1')) — retry $($retry+1)/40 in 15s..." -ForegroundColor Yellow
-    } else {
-        throw "Failed to update Event Stream definition: $errStr"
-    }
-}
-if (-not $esDefOk) { throw "Failed to update Event Stream definition after retries (600s): $($esDefResult -join ' ')" }
-Write-OK "Event Stream topology configured"
+Write-Step "4/6" "Event Stream topology configured inline (no separate updateDefinition needed)"
 Wait-EventStreamTopologyReady -WsId $WorkspaceId -EventStreamId $eventstreamId
 
 #  Step 5: Retrieve Custom Endpoint connection string 
