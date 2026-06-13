@@ -697,10 +697,14 @@ if (-not $existingEs) {
     $esResult = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams" -Body @{ displayName = $EventStreamName }
     if ($esResult -and $esResult.id) { $eventstreamId = $esResult.id }
     else {
-        Start-Sleep -Seconds 5
-        $eventstreams = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
-        $existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
-        $eventstreamId = $existingEs.id
+        # Fabric eventstreams POST may return empty body (async creation); poll until it appears
+        for ($i = 0; $i -lt 30; $i++) {
+            Start-Sleep -Seconds 10
+            $eventstreams = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
+            $existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
+            if ($existingEs -and $existingEs.id) { $eventstreamId = $existingEs.id; break }
+            Write-Host "  Waiting for Event Stream to appear... ($([int](($i+1)*10))s)" -ForegroundColor Gray
+        }
     }
     Write-OK "Event Stream created (ID: $eventstreamId)"
     if (-not $eventstreamId) { throw "Event Stream created but ID could not be resolved for '$EventStreamName'" }
