@@ -562,6 +562,7 @@ if ($Eventhouse -match $guidRx) {
         }
         if (-not $EventhouseId) { throw "Failed to create Eventhouse '$Eventhouse'." }
         $script:createdEventhouseId = $EventhouseId  # track for cleanup-on-failure
+    }
 }
 if (-not $EventhouseId) { throw "Could not resolve Eventhouse ID for '$Eventhouse'." }
 # Fetch full details for queryServiceUri (retry once if first call returns null)
