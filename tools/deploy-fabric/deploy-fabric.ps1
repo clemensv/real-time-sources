@@ -473,6 +473,13 @@ function Invoke-SourcePostDeployHook {
 Write-Host "=== Real-Time Sources — Fabric Deployment ===" -ForegroundColor Cyan
 Write-Host "  Source: $Source" -ForegroundColor White
 
+# Cleanup-on-failure trap: delete any items we created if the script fails
+trap {
+    Write-Warning "Deploy failed — running cleanup to avoid workspace degradation..."
+    Invoke-FailureCleanup
+    break
+}
+
 # Check that the source's KQL schema script exists in the repo
 $kqlUrl = "$RawBase/feeders/$Source/kql/$($Source -replace '-', '_').kql"
 
@@ -507,7 +514,33 @@ $CapacityId = $wsInfo.capacityId
 if (-not $CapacityId) { throw "Could not determine capacity ID for workspace '$($wsInfo.displayName)'" }
 Write-OK "Workspace: $($wsInfo.displayName) ($WorkspaceId)"
 
-# Resolve eventhouse: accept name, GUID, or blank (auto-create)
+# Track items created in this run so we can clean up on failure
+$script:createdEventhouseId  = $null
+$script:createdEvenstreamId  = $null
+$script:createdDatabaseId    = $null
+$script:createdNotebookId    = $null
+
+function Invoke-FailureCleanup {
+    $tok = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv 2>$null
+    if (-not $tok) { return }
+    $ch = @{ Authorization = "Bearer $tok" }
+    foreach ($pair in @(
+        @($script:createdNotebookId,  "Notebook"),
+        @($script:createdEvenstreamId, "Eventstream"),
+        @($script:createdDatabaseId,  "KQLDatabase"),
+        @($script:createdEventhouseId, "Eventhouse")
+    )) {
+        $itemId = $pair[0]; $label = $pair[1]
+        if ($itemId) {
+            try {
+                Invoke-RestMethod "https://api.fabric.microsoft.com/v1/workspaces/$WorkspaceId/items/$itemId" `
+                    -Method Delete -Headers $ch | Out-Null
+                Write-Host "  [cleanup] Deleted $label $itemId" -ForegroundColor DarkGray
+            } catch {}
+        }
+    }
+}
+
 $eventhouses = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
 $ehDetails = $null
 $EventhouseId = $null
@@ -528,7 +561,7 @@ if ($Eventhouse -match $guidRx) {
             Write-Host "  Waiting for Eventhouse... ($([int](($i+1)*5))s)" -ForegroundColor Gray
         }
         if (-not $EventhouseId) { throw "Failed to create Eventhouse '$Eventhouse'." }
-    }
+        $script:createdEventhouseId = $EventhouseId  # track for cleanup-on-failure
 }
 if (-not $EventhouseId) { throw "Could not resolve Eventhouse ID for '$Eventhouse'." }
 # Fetch full details for queryServiceUri (retry once if first call returns null)
@@ -653,6 +686,7 @@ if (-not $existingDb -or $dbStaleness) {
     }
     if (-not $databaseId) { throw "Database '$DatabaseName' was not found after 600 seconds." }
     Write-OK "Database created (ID: $databaseId)"
+    $script:createdDatabaseId = $databaseId  # track for cleanup-on-failure
 
     if ($kqlContent) {
         Write-Step "2/6" "Applying KQL schema via dataplane..."
@@ -708,6 +742,7 @@ if (-not $existingEs) {
     }
     Write-OK "Event Stream created (ID: $eventstreamId)"
     if (-not $eventstreamId) { throw "Event Stream created but ID could not be resolved for '$EventStreamName'" }
+    $script:createdEvenstreamId = $eventstreamId  # track for cleanup-on-failure
 }
 
 #  Step 4: Configure Event Stream topology ─
