@@ -686,24 +686,12 @@ if (-not $existingDb -or $dbStaleness) {
         }
     }
     $databaseId = $null
-    $createRetried = $false
-    for ($i = 0; $i -lt 60; $i++) {
-        Start-Sleep -Seconds 10
-        # Try workspace-level list first
-        $databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
-        $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
-        if ($existingDb -and $existingDb.id) { $databaseId = $existingDb.id; break }
-        # Fallback: try eventhouse-specific endpoint (auto-created DB may appear here first)
-        try {
-            $ehDbs = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId/kqlDatabases"
-            $existingDb = $ehDbs.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
-            if ($existingDb -and $existingDb.id) { $databaseId = $existingDb.id; break }
-        } catch {}
-        # After 60s of polling with no DB, retry the POST — the LRO may have failed because
-        # the Eventhouse's KQL infrastructure (ParentEventhouseItemWasNotFound) wasn't ready yet.
-        if (-not $createRetried -and $i -eq 5) {
-            $createRetried = $true
-            Write-Host "  Retrying KQL DB create (Eventhouse may now be fully provisioned)..." -ForegroundColor Yellow
+    # Retry POST every 60s — Eventhouse KQL infra may not be ready immediately.
+    # Each retry checks the DB list first; if it appears (auto-created), we're done.
+    $maxRetries = 8   # up to 8 POST attempts × ~60s each = ~8 min total
+    for ($attempt = 0; $attempt -lt $maxRetries -and -not $databaseId; $attempt++) {
+        if ($attempt -gt 0) {
+            Write-Host "  Retrying KQL DB create (attempt $($attempt+1)/$maxRetries)..." -ForegroundColor Yellow
             $accessToken = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv
             $retryResp = Invoke-WebRequest -Uri "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" -Method POST `
                 -Headers @{ Authorization="Bearer $accessToken"; "Content-Type"="application/json" } `
@@ -713,21 +701,33 @@ if (-not $existingDb -or $dbStaleness) {
             } elseif ($retryResp.StatusCode -eq 202) {
                 $retryOpLoc = $retryResp.Headers['Location'] | Select-Object -First 1
                 if ($retryOpLoc) {
-                    for ($j = 0; $j -lt 12; $j++) {
+                    for ($j = 0; $j -lt 6; $j++) {
                         Start-Sleep -Seconds 10
                         $retryOp = Invoke-RestMethod -Uri ([uri]$retryOpLoc) -Headers @{ Authorization = "Bearer $accessToken" } -SkipHttpErrorCheck
-                        if ($retryOp.status -eq 'Succeeded') { Write-OK "Database provisioned (retry)"; break }
+                        if ($retryOp.status -eq 'Succeeded') { Write-OK "Database provisioned (attempt $($attempt+1))"; break }
                         if ($retryOp.status -eq 'Failed') {
-                            Write-Host "  Retry LRO failed ($($retryOp.error.errorCode)), continuing poll..." -ForegroundColor Yellow; break
+                            Write-Host "  Retry LRO failed ($($retryOp.error.errorCode)), will re-check list..." -ForegroundColor Yellow; break
                         }
                         Write-Host "  Retry LRO: $($retryOp.status)" -ForegroundColor DarkGray
                     }
                 }
             }
         }
-        Write-Host "  Provisioning... ($([int](($i+1)*10))s)" -ForegroundColor Gray
+        # Poll for up to 60s for the DB to appear (auto-created or from this POST)
+        for ($i = 0; $i -lt 6; $i++) {
+            Start-Sleep -Seconds 10
+            $databases = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases"
+            $existingDb = $databases.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
+            if ($existingDb -and $existingDb.id) { $databaseId = $existingDb.id; break }
+            try {
+                $ehDbs = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses/$EventhouseId/kqlDatabases"
+                $existingDb = $ehDbs.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
+                if ($existingDb -and $existingDb.id) { $databaseId = $existingDb.id; break }
+            } catch {}
+            Write-Host "  Provisioning... ($([int]($attempt*60 + ($i+1)*10))s)" -ForegroundColor Gray
+        }
     }
-    if (-not $databaseId) { throw "Database '$DatabaseName' was not found after 600 seconds." }
+    if (-not $databaseId) { throw "Database '$DatabaseName' was not found after $($maxRetries) retries (~$($maxRetries * 60)s)." }
     Write-OK "Database created (ID: $databaseId)"
     $script:createdDatabaseId = $databaseId  # track for cleanup-on-failure
 
