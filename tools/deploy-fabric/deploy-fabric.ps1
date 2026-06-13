@@ -368,7 +368,7 @@ function Wait-EventStreamTopologyReady {
     param(
         [string]$WsId,
         [string]$EventStreamId,
-        [int]$TimeoutSeconds = 180,
+        [int]$TimeoutSeconds = 600,
         [int]$PollSeconds = 15
     )
 
@@ -560,6 +560,8 @@ if ($kqlUrl) {
 if ($existingDb) {
     $databaseId = $existingDb.id
     Write-Info "Database already exists (ID: $databaseId)"
+    # Verify the existing database is still usable by checking if the Eventhouse parent matches
+    $dbStaleness = $false
     if ($kqlContent) {
         Write-Step "2/6" "Updating KQL schema..."
         try {
@@ -569,17 +571,34 @@ if ($existingDb) {
             $schemaBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($filteredKql))
             $dbProps = @{ databaseType = "ReadWrite"; parentEventhouseItemId = $EventhouseId; oneLakeCachingPeriod = "P36500D"; oneLakeStandardStoragePeriod = "P36500D" }
             $dbPropsBase64 = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes(($dbProps | ConvertTo-Json -Compress)))
-            Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$databaseId/updateDefinition" -Body @{ definition = @{ parts = @(
-                @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
-                @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
-            )}}
-            Start-Sleep -Seconds 30
-            Write-OK "Schema update submitted"
+            try {
+                Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/kqlDatabases/$databaseId/updateDefinition" -Body @{ definition = @{ parts = @(
+                    @{ path = "DatabaseProperties.json"; payload = $dbPropsBase64; payloadType = "InlineBase64" },
+                    @{ path = "DatabaseSchema.kql"; payload = $schemaBase64; payloadType = "InlineBase64" }
+                )}}
+                Start-Sleep -Seconds 30
+                Write-OK "Schema update submitted"
+            } catch {
+                # updateDefinition failed (e.g. ItemNotFound / stale orphan from a prior deploy).
+                # Delete the stale database entry and fall through to the create path.
+                Write-Host "  updateDefinition failed ($_). Deleting stale DB and recreating..." -ForegroundColor Yellow
+                try {
+                    Invoke-FabricApi -Method DELETE -Url "$FabricApi/workspaces/$WorkspaceId/items/$databaseId" | Out-Null
+                    Start-Sleep -Seconds 5
+                } catch {
+                    Write-Host "  Could not delete stale DB (ignoring): $_" -ForegroundColor Yellow
+                }
+                $dbStaleness = $true
+            }
         }
     } else {
         Write-Step "2/6" "No KQL schema available — skipping"
     }
-} else {
+    if (-not $dbStaleness) {
+        # existingDb path done — skip the create block below
+    }
+}
+if (-not $existingDb -or $dbStaleness) {
     # Always create DB without schema, then apply schema via dataplane.
     # The definition API path silently fails to apply schemas in many cases
     # (LRO succeeds but tables don't materialize), so we use .execute database
@@ -656,7 +675,18 @@ $existingEs = $eventstreams.value | Where-Object { $_.displayName -eq $EventStre
 if ($existingEs) {
     $eventstreamId = $existingEs.id
     Write-Info "Event Stream already exists (ID: $eventstreamId)"
-} else {
+    # Verify the Event Stream is still accessible — it may be in async-deletion from a prior cleanup
+    try {
+        Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams/$eventstreamId" | Out-Null
+    } catch {
+        Write-Host "  Event Stream ID $eventstreamId not accessible ($_). Deleting stale entry and recreating..." -ForegroundColor Yellow
+        try { Invoke-FabricApi -Method DELETE -Url "$FabricApi/workspaces/$WorkspaceId/items/$eventstreamId" | Out-Null } catch {}
+        Start-Sleep -Seconds 15  # allow Fabric to complete async deletion before recreating with same name
+        $existingEs = $null
+        $eventstreamId = $null
+    }
+}
+if (-not $existingEs) {
     $esResult = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams" -Body @{ displayName = $EventStreamName }
     if ($esResult -and $esResult.id) { $eventstreamId = $esResult.id }
     else {
