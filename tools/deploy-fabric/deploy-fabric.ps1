@@ -519,6 +519,7 @@ $script:createdEventhouseId  = $null
 $script:createdEvenstreamId  = $null
 $script:createdDatabaseId    = $null
 $script:createdNotebookId    = $null
+$script:kqlDbLroFailed       = $false
 
 function Invoke-FailureCleanup {
     $tok = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv 2>$null
@@ -675,15 +676,17 @@ if (-not $existingDb -or $dbStaleness) {
             $op = Invoke-RestMethod -Uri ([uri]$opLoc) -Headers @{ Authorization = "Bearer $accessToken" } -SkipHttpErrorCheck
             if ($op.status -eq 'Succeeded') { Write-OK "Database provisioned"; break }
             if ($op.status -eq 'Failed') {
-                # UnknownError usually means the DB was already being created (auto-created with Eventhouse)
-                # Treat as 409 — fall through to the poll loop below
-                Write-Host "  KQL DB creation LRO failed ($($op.error.errorCode)); assuming auto-created DB pending..." -ForegroundColor Yellow
+                # UnknownError/ParentEventhouseItemWasNotFound: Eventhouse not yet ready.
+                # Fall through to the poll loop; if DB doesn't appear, we retry the POST.
+                Write-Host "  KQL DB creation LRO failed ($($op.error.errorCode)); will retry in poll loop..." -ForegroundColor Yellow
+                $script:kqlDbLroFailed = $true
                 break
             }
             Write-Host "  LRO: $($op.status) ($([int](($i+1)*10))s)" -ForegroundColor DarkGray
         }
     }
     $databaseId = $null
+    $createRetried = $false
     for ($i = 0; $i -lt 60; $i++) {
         Start-Sleep -Seconds 10
         # Try workspace-level list first
@@ -696,6 +699,32 @@ if (-not $existingDb -or $dbStaleness) {
             $existingDb = $ehDbs.value | Where-Object { $_.displayName -eq $DatabaseName } | Select-Object -First 1
             if ($existingDb -and $existingDb.id) { $databaseId = $existingDb.id; break }
         } catch {}
+        # After 60s of polling with no DB, retry the POST — the LRO may have failed because
+        # the Eventhouse's KQL infrastructure (ParentEventhouseItemWasNotFound) wasn't ready yet.
+        if (-not $createRetried -and $i -eq 5) {
+            $createRetried = $true
+            Write-Host "  Retrying KQL DB create (Eventhouse may now be fully provisioned)..." -ForegroundColor Yellow
+            $accessToken = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv
+            $retryResp = Invoke-WebRequest -Uri "$FabricApi/workspaces/$WorkspaceId/kqlDatabases" -Method POST `
+                -Headers @{ Authorization="Bearer $accessToken"; "Content-Type"="application/json" } `
+                -Body ($createBody | ConvertTo-Json -Depth 10 -Compress) -SkipHttpErrorCheck
+            if ($retryResp.StatusCode -eq 409) {
+                Write-Host "  DB now exists (auto-created), continuing poll..." -ForegroundColor Yellow
+            } elseif ($retryResp.StatusCode -eq 202) {
+                $retryOpLoc = $retryResp.Headers['Location'] | Select-Object -First 1
+                if ($retryOpLoc) {
+                    for ($j = 0; $j -lt 12; $j++) {
+                        Start-Sleep -Seconds 10
+                        $retryOp = Invoke-RestMethod -Uri ([uri]$retryOpLoc) -Headers @{ Authorization = "Bearer $accessToken" } -SkipHttpErrorCheck
+                        if ($retryOp.status -eq 'Succeeded') { Write-OK "Database provisioned (retry)"; break }
+                        if ($retryOp.status -eq 'Failed') {
+                            Write-Host "  Retry LRO failed ($($retryOp.error.errorCode)), continuing poll..." -ForegroundColor Yellow; break
+                        }
+                        Write-Host "  Retry LRO: $($retryOp.status)" -ForegroundColor DarkGray
+                    }
+                }
+            }
+        }
         Write-Host "  Provisioning... ($([int](($i+1)*10))s)" -ForegroundColor Gray
     }
     if (-not $databaseId) { throw "Database '$DatabaseName' was not found after 600 seconds." }
