@@ -717,6 +717,7 @@ $sourceNodeName = "$Source-input"
 $esDef = @{ compatibilityLevel = "1.1"
     sources = @(@{ name = $sourceNodeName; type = "CustomEndpoint"; properties = @{} })
     streams = @(@{ name = $StreamName; type = "DefaultStream"; properties = @{}; inputNodes = @(@{ name = $sourceNodeName }) })
+    operators = @()
     destinations = @(@{ name = "dispatch-kql"; type = "Eventhouse"; properties = @{
         dataIngestionMode = "ProcessedIngestion"; workspaceId = $WorkspaceId; itemId = $databaseId
         databaseName = $DatabaseName; tableName = "_cloudevents_dispatch"
