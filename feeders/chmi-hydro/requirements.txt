@@ -1,5 +1,5 @@
 avro>=1.12.1
 confluent_kafka
-cloudevents>=1.12.1,<2.0.0
+cloudevents>=1.12.1,<3.0.0
 requests
 dataclasses-json
