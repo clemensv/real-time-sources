@@ -28,7 +28,7 @@ autobahn = "autobahn:main"
 
 [project.optional-dependencies]
 dev = [
-    "pytest>=9.0.3",
+    "pytest>=9.1.0",
     "testcontainers>=4.14.2",
 ]
 
