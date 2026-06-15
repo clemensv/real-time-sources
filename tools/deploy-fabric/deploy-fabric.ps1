@@ -690,7 +690,7 @@ if (-not $existingDb -or $dbStaleness) {
     $databaseId = $null
     # Retry POST every 60s — Eventhouse KQL infra may not be ready immediately.
     # Each retry checks the DB list first; if it appears (auto-created), we're done.
-    $maxRetries = 8   # up to 8 POST attempts × ~60s each = ~8 min total
+    $maxRetries = 20  # up to 20 POST attempts × ~60s each = ~20 min total
     for ($attempt = 0; $attempt -lt $maxRetries -and -not $databaseId; $attempt++) {
         if ($attempt -gt 0) {
             Write-Host "  Retrying KQL DB create (attempt $($attempt+1)/$maxRetries)..." -ForegroundColor Yellow
