@@ -333,7 +333,7 @@ function Get-EventStreamConnectionString {
         [string]$WsId,
         [string]$EventStreamId
     )
-    $maxRetries = 5
+    $maxRetries = 20   # topology endpoint may take 5+ min to register
     $lastErr = $null
     for ($retry = 0; $retry -lt $maxRetries; $retry++) {
         try {
@@ -358,7 +358,7 @@ function Get-EventStreamConnectionString {
             $lastErr = $_.Exception.Message
             if ($_.ErrorDetails -and $_.ErrorDetails.Message) { $lastErr += " | $($_.ErrorDetails.Message)" }
         }
-        if ($retry -lt ($maxRetries - 1)) { Start-Sleep -Seconds ([Math]::Min(15, 3 * ($retry + 1))) }
+        if ($retry -lt ($maxRetries - 1)) { Start-Sleep -Seconds 30 }
     }
     Write-Warning "Get-EventStreamConnectionString failed after $maxRetries tries: $lastErr"
     return $null
@@ -388,7 +388,8 @@ function Wait-EventStreamTopologyReady {
                 $destinations = @($topo.destinations | Where-Object { $_.type -eq "Eventhouse" })
                 $destinationsReady = $destinations.Count -gt 0 -and @($destinations | Where-Object { $_.status -ne "Running" }).Count -eq 0
                 if ($destinationsReady) {
-                    # Source failed but destination is running — the custom endpoint provisioning failed
+                    # Source failed but destination is running — custom endpoint provisioning failed.
+                    # Signal to caller to delete and recreate the Event Stream.
                     throw "Event Stream source node(s) permanently Failed: $($failedSources | ForEach-Object { $_.name } | Join-String -Separator ', '). Destination is Running. Recreate the Event Stream or check the custom endpoint configuration."
                 }
             }
@@ -848,7 +849,50 @@ if (-not $existingEs) {
 }
 
 Write-Step "4/6" "Event Stream topology configured inline (no separate updateDefinition needed)"
-Wait-EventStreamTopologyReady -WsId $WorkspaceId -EventStreamId $eventstreamId
+$topoAttempts = 3
+for ($topoTry = 0; $topoTry -lt $topoAttempts; $topoTry++) {
+    try {
+        Wait-EventStreamTopologyReady -WsId $WorkspaceId -EventStreamId $eventstreamId
+        break  # topology is ready (or non-fatally timed out)
+    } catch {
+        if ($_.Exception.Message -match "permanently Failed" -and $topoTry -lt ($topoAttempts - 1)) {
+            Write-Host "  Source node permanently Failed — deleting and recreating Event Stream (attempt $($topoTry+2)/$topoAttempts)..." -ForegroundColor Yellow
+            try { Invoke-FabricApi -Method DELETE -Url "$FabricApi/workspaces/$WorkspaceId/items/$eventstreamId" | Out-Null } catch {}
+            Start-Sleep -Seconds 30
+            # Recreate
+            $accessToken = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv
+            $esResp2 = Invoke-WebRequest -Uri "$FabricApi/workspaces/$WorkspaceId/eventstreams" -Method POST `
+                -Headers @{ Authorization = "Bearer $accessToken"; "Content-Type" = "application/json" } `
+                -Body ([System.IO.File]::ReadAllText($esCreateFile)) -SkipHttpErrorCheck
+            if ($esResp2.StatusCode -ge 400) { throw "ES recreate failed: $($esResp2.Content)" }
+            $esBody2 = $esResp2.Content | ConvertFrom-Json -EA SilentlyContinue
+            if ($esBody2 -and $esBody2.id) { $eventstreamId = $esBody2.id }
+            else {
+                $lroUrl2 = $esResp2.Headers['Location'] | Select-Object -First 1
+                if ($lroUrl2) {
+                    for ($i = 0; $i -lt 30; $i++) {
+                        Start-Sleep -Seconds 10
+                        $op2 = Invoke-RestMethod $lroUrl2 -Headers @{ Authorization = "Bearer $accessToken" } -SkipHttpErrorCheck -EA SilentlyContinue
+                        if ($op2.status -eq 'Succeeded') { break }
+                        if ($op2.status -in @('Failed','Cancelled')) { throw "ES recreate LRO $($op2.status)" }
+                    }
+                }
+                # Poll for the new ES
+                for ($i = 0; $i -lt 18; $i++) {
+                    Start-Sleep -Seconds 5
+                    $eventstreams2 = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
+                    $newEs = $eventstreams2.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
+                    if ($newEs -and $newEs.id) { $eventstreamId = $newEs.id; break }
+                }
+            }
+            if (-not $eventstreamId) { throw "Event Stream not found after recreate" }
+            Write-OK "Event Stream recreated (ID: $eventstreamId)"
+            $script:createdEvenstreamId = $eventstreamId
+        } else {
+            throw  # re-throw on last attempt or non-retryable error
+        }
+    }
+}
 
 #  Step 5: Retrieve Custom Endpoint connection string 
 
