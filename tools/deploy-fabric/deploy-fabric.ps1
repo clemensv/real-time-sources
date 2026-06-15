@@ -805,7 +805,14 @@ if (-not $existingEs) {
         if ($esResp.StatusCode -eq 409) {
             Write-Host "  Event Stream already exists (from prior attempt), searching list..." -ForegroundColor Yellow
         } elseif ($esResp.StatusCode -ge 400) {
-            throw "Event Stream creation returned $($esResp.StatusCode): $($esResp.Content)"
+            $errContent = $esResp.Content
+            if ($errContent -match 'EventStreamBadWebRequest|dependent items do not exist') {
+                # KQL DB indexed by runner but not yet visible to Event Stream service — retry after delay
+                Write-Host "  ES creation: KQL DB not yet visible to Event Stream service (retry $($esAttempt+1)/$maxEsAttempts in 30s)..." -ForegroundColor Yellow
+                Start-Sleep -Seconds 30
+                continue
+            }
+            throw "Event Stream creation returned $($esResp.StatusCode): $errContent"
         } else {
             $esBody = $esResp.Content | ConvertFrom-Json -ErrorAction SilentlyContinue
             if ($esBody -and $esBody.id) {
