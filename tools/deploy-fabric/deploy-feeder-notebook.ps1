@@ -1056,37 +1056,35 @@ $nbList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/
 $existing = $nbList.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
 
 if ($existing) {
-    Invoke-FabricApi -Method POST `
-        -Url "$FabricApi/workspaces/$WorkspaceId/notebooks/$($existing.id)/updateDefinition" `
-        -Body @{ definition = $definition } | Out-Null
-    Write-OK "Updated existing notebook '$NotebookName' ($($existing.id))"
-    $notebookId = $existing.id
-    # Give Fabric time to propagate the new definition before triggering a run
-    # (eventual consistency: without this delay, the job scheduler may use the old cached version)
-    Write-Info "Waiting 30s for Fabric to propagate updated notebook definition..."
-    Start-Sleep -Seconds 30
-} else {
-    $createBody = @{ displayName = $NotebookName; definition = $definition }
-    $createResp = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/notebooks" -Body $createBody
-    if ($createResp -and $createResp.id) {
-        $notebookId = $createResp.id
-    } else {
-        # Fabric REST API has eventual consistency — retry with backoff
-        $notebookId = $null
-        for ($attempt = 1; $attempt -le 6; $attempt++) {
-            Start-Sleep -Seconds (5 * $attempt)
-            $nbList2 = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/notebooks"
-            $created = $nbList2.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
-            if ($created) {
-                $notebookId = $created.id
-                break
-            }
-            Write-Info "Notebook '$NotebookName' not yet visible (attempt $attempt/6)..."
-        }
-        if (-not $notebookId) { throw "Notebook '$NotebookName' was not found after create (retried 6 times over 105s)." }
-    }
-    Write-OK "Created notebook '$NotebookName' ($notebookId)"
+    # Delete and recreate rather than updateDefinition — Fabric caches notebook definitions
+    # and may run the old version for several minutes after updateDefinition succeeds.
+    # A fresh CREATE guarantees the new definition is used immediately.
+    Write-Info "Deleting existing notebook '$NotebookName' ($($existing.id)) to force fresh creation..."
+    Invoke-FabricApi -Method DELETE -Url "$FabricApi/workspaces/$WorkspaceId/items/$($existing.id)" | Out-Null
+    Start-Sleep -Seconds 5
+    $existing = $null
 }
+
+$createBody = @{ displayName = $NotebookName; definition = $definition }
+$createResp = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/notebooks" -Body $createBody
+if ($createResp -and $createResp.id) {
+    $notebookId = $createResp.id
+} else {
+    # Fabric REST API has eventual consistency — retry with backoff
+    $notebookId = $null
+    for ($attempt = 1; $attempt -le 6; $attempt++) {
+        Start-Sleep -Seconds (5 * $attempt)
+        $nbList2 = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/notebooks"
+        $created = $nbList2.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
+        if ($created) {
+            $notebookId = $created.id
+            break
+        }
+        Write-Info "Notebook '$NotebookName' not yet visible (attempt $attempt/6)..."
+    }
+    if (-not $notebookId) { throw "Notebook '$NotebookName' was not found after create (retried 6 times over 105s)." }
+}
+Write-OK "Created notebook '$NotebookName' ($notebookId)"
 
 Remove-Item $tmpNb -ErrorAction SilentlyContinue
 

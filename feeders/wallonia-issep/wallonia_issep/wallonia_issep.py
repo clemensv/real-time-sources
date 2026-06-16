@@ -353,6 +353,7 @@ class WalloniaISsePAPI:
         kafka_topic: str,
         polling_interval: int,
         state_file: str,
+        once: bool = False,
     ) -> None:
         """Run the long-lived reference-data and observation polling loop."""
         kafka_producer = Producer(kafka_config)
@@ -390,6 +391,9 @@ class WalloniaISsePAPI:
                     elapsed,
                     sleep_seconds,
                 )
+                if once:
+                    LOGGER.info("--once mode: exiting after first polling cycle")
+                    break
                 if sleep_seconds:
                     time.sleep(sleep_seconds)
         except KeyboardInterrupt:
@@ -416,6 +420,12 @@ def main() -> None:
         default=os.getenv("STATE_FILE", os.path.expanduser("~/.wallonia_issep_state.json")),
     )
     feed_parser.add_argument("--kafka-enable-tls", type=str, default=os.getenv("KAFKA_ENABLE_TLS", "true"))
+    feed_parser.add_argument(
+        "--once",
+        action="store_true",
+        default=os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes"),
+        help="Exit after one polling cycle (also via ONCE_MODE env var).",
+    )
 
     args = parser.parse_args()
     if args.command != "feed":
@@ -429,6 +439,7 @@ def main() -> None:
         kafka_topic=kafka_topic,
         polling_interval=args.polling_interval,
         state_file=args.state_file,
+        once=args.once,
     )
 
 

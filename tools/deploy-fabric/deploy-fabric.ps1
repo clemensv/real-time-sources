@@ -463,6 +463,7 @@ function Invoke-SourcePostDeployHook {
             Write-Warning "Post-deploy hook exited with code $LASTEXITCODE (non-fatal: core deployment succeeded)"
             Write-Warning "Re-run the hook manually if needed:"
             Write-Warning "  pwsh $hookPath -Context <hashtable>"
+            $global:LASTEXITCODE = 0  # reset so deploy-feeder-notebook.ps1 does not abort
         } else {
             Write-OK "Post-deploy hook completed"
         }
