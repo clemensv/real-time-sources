@@ -1088,6 +1088,12 @@ Write-OK "Created notebook '$NotebookName' ($notebookId)"
 
 Remove-Item $tmpNb -ErrorAction SilentlyContinue
 
+# Wait briefly to let the Fabric Eventstream's CustomEndpoint connection string become available
+# via the Topology API. Without this, the notebook's CS-lookup cell may exhaust its retries
+# on a freshly-created Eventstream and crash before the run cell logs the failure.
+Write-Info "Waiting 45s for Eventstream CS endpoint to be ready..."
+Start-Sleep -Seconds 45
+
 # ── Stage B/5: Trigger a first run + create a recurring schedule ─────────
 if (-not $NoTriggerNow) {
     Write-Step "B/5a" "Triggering immediate notebook run..."
