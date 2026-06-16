@@ -460,14 +460,16 @@ function Invoke-SourcePostDeployHook {
     try {
         & $hookPath -Context $Context
         if ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE) {
-            throw "Post-deploy hook exited with code $LASTEXITCODE"
+            Write-Warning "Post-deploy hook exited with code $LASTEXITCODE (non-fatal: core deployment succeeded)"
+            Write-Warning "Re-run the hook manually if needed:"
+            Write-Warning "  pwsh $hookPath -Context <hashtable>"
+        } else {
+            Write-OK "Post-deploy hook completed"
         }
-        Write-OK "Post-deploy hook completed"
     } catch {
         Write-Warning "Post-deploy hook failed: $($_.Exception.Message)"
         Write-Warning "Core deployment was successful; re-run the hook manually:"
         Write-Warning "  pwsh $hookPath -Context <hashtable>"
-        throw
     }
 }
 

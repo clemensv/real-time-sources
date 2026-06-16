@@ -1061,6 +1061,10 @@ if ($existing) {
         -Body @{ definition = $definition } | Out-Null
     Write-OK "Updated existing notebook '$NotebookName' ($($existing.id))"
     $notebookId = $existing.id
+    # Give Fabric time to propagate the new definition before triggering a run
+    # (eventual consistency: without this delay, the job scheduler may use the old cached version)
+    Write-Info "Waiting 30s for Fabric to propagate updated notebook definition..."
+    Start-Sleep -Seconds 30
 } else {
     $createBody = @{ displayName = $NotebookName; definition = $definition }
     $createResp = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/notebooks" -Body $createBody
