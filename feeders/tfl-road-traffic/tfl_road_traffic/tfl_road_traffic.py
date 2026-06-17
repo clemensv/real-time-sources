@@ -377,7 +377,12 @@ class TflRoadTrafficPoller:
         try:
             response = self.session.get(url, timeout=30)
             response.raise_for_status()
-            return response.json()
+            try:
+                return response.json()
+            except ValueError:
+                # TfL intermittently prefixes the body with a UTF-8 BOM that
+                # requests' json() rejects; retry with BOM-aware decoding.
+                return json.loads(response.content.decode("utf-8-sig"))
         except Exception as exc:
             logger.warning("Failed to fetch %s: %s", url, exc)
             return None
