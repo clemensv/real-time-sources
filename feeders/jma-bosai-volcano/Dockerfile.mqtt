@@ -13,6 +13,7 @@ WORKDIR /app
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
 RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./jma_bosai_volcano_producer/jma_bosai_volcano_producer_data \
  && pip install --no-cache-dir ./jma_bosai_volcano_producer/jma_bosai_volcano_producer_kafka_producer \
  && pip install --no-cache-dir ./jma_bosai_volcano_mqtt_producer/jma_bosai_volcano_mqtt_producer_data
 
