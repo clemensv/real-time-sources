@@ -123,7 +123,7 @@ class NextbusKafkaProducerClient:
 
     @classmethod
     def from_connection_string(cls, connection_string: str, topic: str | None = None):
-        from nextbus_producer_kafka_producer import NextbusKafkaEventProducer
+        from nextbus_producer_kafka_producer.producer import NextbusKafkaEventProducer
 
         return cls(NextbusKafkaEventProducer.from_connection_string(connection_string, topic=topic))
 
