@@ -27,7 +27,15 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from tfl_road_traffic_producer_data import RoadCorridor, RoadStatus, RoadDisruption
-from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadCorridorsEventProducer
+try:
+    from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadCorridorsEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka image.
+    # The MQTT/AMQP images reuse this module solely for the shared build_*/fetch
+    # helpers and the RoadCorridor/RoadStatus/RoadDisruption data classes, so the
+    # Kafka producer is an optional dependency there. Only TflRoadTrafficPoller
+    # (the Kafka bridge) references it, and that class never runs in those images.
+    UkGovTflRoadCorridorsEventProducer = None
 
 
 class UkGovTflRoadDisruptionsEventProducer:
