@@ -88,6 +88,14 @@ class EurdepAPI:
                 "sortBy": "id",
             }
             resp = self.session.get(WFS_BASE, params=params, timeout=120)
+            if resp.status_code == 400:
+                # EURDEP WFS returns HTTP 400 when startIndex exceeds the total
+                # number of available features (API pagination limit reached).
+                logging.info(
+                    "EURDEP WFS returned 400 at startIndex=%d; all pages fetched (%d features total)",
+                    start_index, len(all_features),
+                )
+                break
             resp.raise_for_status()
             try:
                 data = resp.json()
