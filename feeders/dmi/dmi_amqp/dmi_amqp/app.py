@@ -22,6 +22,9 @@ from dmi_core import (
     DmiLightningAPI,
     DmiMetObsAPI,
     DmiOceanObsAPI,
+    LIGHTNING_FEED_ROOT,
+    METOBS_FEED_ROOT,
+    OCEANOBS_FEED_ROOT,
     load_state,
     save_state,
 )
@@ -241,6 +244,7 @@ def _emit_reference(
             if not station_id:
                 continue
             met_producer.send_station(
+                _feedurl=f"{METOBS_FEED_ROOT}/collections/station/items/{station_id}",
                 _station_id=station_id,
                 data=_build_met_station(station),
             )
@@ -251,6 +255,7 @@ def _emit_reference(
             if not station_id:
                 continue
             ocean_producer.send_station(
+                _feedurl=f"{OCEANOBS_FEED_ROOT}/collections/station/items/{station_id}",
                 _station_id=station_id,
                 data=_build_ocean_station(station),
             )
@@ -260,6 +265,7 @@ def _emit_reference(
             if not station_id:
                 continue
             ocean_producer.send_tidewater_station(
+                _feedurl=f"{OCEANOBS_FEED_ROOT}/collections/tidewaterstation/items/{station_id}",
                 _station_id=station_id,
                 data=_build_tidewater_station(station),
             )
@@ -270,6 +276,7 @@ def _emit_reference(
             if not sensor_id:
                 continue
             lightning_producer.send_sensor(
+                _feedurl=f"{LIGHTNING_FEED_ROOT}/collections/sensor/items/{sensor_id}",
                 _sensor_id=sensor_id,
                 data=_build_lightning_sensor(sensor),
             )
@@ -348,6 +355,7 @@ def feed(
                             continue
                         seen_met[key] = observed
                         met_producer.send_observation(
+                            _feedurl=f"{METOBS_FEED_ROOT}/collections/observation/items?stationId={sid}&parameterId={pid}",
                             _station_id=sid,
                             _parameter_id=pid,
                             data=_build_met_observation(obs),
@@ -365,6 +373,7 @@ def feed(
                             continue
                         seen_ocean[key] = observed
                         ocean_producer.send_observation(
+                            _feedurl=f"{OCEANOBS_FEED_ROOT}/collections/observation/items?stationId={sid}&parameterId={pid}",
                             _station_id=sid,
                             _parameter_id=pid,
                             data=_build_ocean_observation(obs),
@@ -379,6 +388,7 @@ def feed(
                             continue
                         seen_tide[sid] = when
                         ocean_producer.send_tidewater_prediction(
+                            _feedurl=f"{OCEANOBS_FEED_ROOT}/collections/tidewater/items?stationId={sid}",
                             _station_id=sid,
                             data=_build_tidewater_prediction(pred),
                         )
@@ -396,6 +406,7 @@ def feed(
                         if observed > new_max:
                             new_max = observed
                         lightning_producer.send_strike(
+                            _feedurl=f"{LIGHTNING_FEED_ROOT}/collections/observation/items/{strike_id}",
                             _strike_id=strike_id,
                             data=_build_lightning_strike(strike),
                         )
