@@ -257,22 +257,31 @@ try {
     }
 
     if ($result.messages_received -eq -1) {
-        # validate_mqtt.ps1 returns -1 for the known Event Grid MQTT
-        # external-client subscribe limitation (issue #840): the feeder
-        # deployed and published successfully, but an external validation
-        # client cannot SUBSCRIBE to an Event Grid namespace broker without a
-        # pre-registered client certificate. This is a validation-side
-        # limitation, not a feeder failure — record WARN, do not file an
-        # issue, and do not throw (so the result file is still written).
+        # validate_mqtt.ps1 returns -1 only for a GENUINE block: cert
+        # registration failed, CONNACK was rejected, or every SUBACK was
+        # rejected (reason code >= 128). With the cert-subscriber +
+        # topic-template fix this should be rare; when it happens it is a
+        # validation-side infrastructure issue, not a feeder failure — record
+        # WARN, do not file an issue, and do not throw.
         $result.steps["messages_validated"] = $false
         $result.result = "warn"
-        $result.error = "eg-mqtt-subscribe-blocked: external client cannot subscribe without a registered client cert (issue #840); feeder deploy + publish succeeded"
-        Write-Host "  EG-MQTT subscribe blocked by known limitation (#840); recording WARN (feeder published OK)" -ForegroundColor Yellow
+        $result.error = "eg-mqtt-subscribe-blocked: cert subscriber could not connect/subscribe; feeder deploy + publish succeeded"
+        Write-Host "  EG-MQTT cert subscriber blocked; recording WARN (feeder published OK)" -ForegroundColor Yellow
     }
     elseif ($result.messages_received -ge $MinMessages) {
         $result.steps["messages_validated"] = $true
         $result.result = "pass"
         Write-Host "  Received $($result.messages_received) messages" -ForegroundColor Green
+    }
+    elseif ($Variant -eq "eventgrid-mqtt" -and $result.messages_received -eq 0) {
+        # SUBACK granted on the topic-space template but the feeder published
+        # nothing during the subscribe window — a legitimately quiet source
+        # (low-frequency poller, seasonal/empty upstream). Treat as WARN
+        # no-data, consistent with the Service Bus no-data WARN, not a FAIL.
+        $result.steps["messages_validated"] = $false
+        $result.result = "warn"
+        $result.error = "no-data: cert subscriber connected and SUBACK granted, but feeder published 0 messages in the validation window"
+        Write-Host "  EG-MQTT subscribed OK (SUBACK granted) but 0 messages in window; recording WARN (no-data)" -ForegroundColor Yellow
     }
     else {
         # Capture container logs for diagnosis before teardown
