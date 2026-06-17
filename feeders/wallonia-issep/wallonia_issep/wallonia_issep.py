@@ -179,6 +179,13 @@ class WalloniaISsePAPI:
             offset += self.page_limit
         return items
 
+    @staticmethod
+    def _flush_or_raise(producer: Producer, *, context: str, timeout: int = 120) -> None:
+        """Flush Kafka and fail the cycle if queued messages remain undelivered."""
+        remaining = producer.flush(timeout=timeout)
+        if remaining:
+            raise RuntimeError(f"Kafka flush failed while emitting {context}: {remaining} message(s) not delivered")
+
     def normalize_observation(self, record: Dict[str, Any]) -> Observation:
         """Normalize one upstream Opendatasoft record into an Observation."""
         config_id = str(record.get("id_configuration", ""))
@@ -274,12 +281,18 @@ class WalloniaISsePAPI:
 
         return new_records
 
+    @staticmethod
+    def select_new_records(records: List[Dict[str, Any]], state: Dict[str, str]) -> List[Dict[str, Any]]:
+        """Return records newer than state without mutating state before Kafka delivery succeeds."""
+        state_copy = dict(state)
+        return WalloniaISsePAPI.filter_new_records(records, state_copy)
+
     @classmethod
     def build_kafka_config(cls, args: argparse.Namespace) -> Tuple[Dict[str, str], str]:
         """Build Kafka configuration from CLI arguments and environment variables."""
         parsed_config, parsed_topic = cls.parse_connection_string(args.connection_string) if args.connection_string else ({}, None)
 
-        kafka_topic = args.kafka_topic or parsed_topic or cls.DEFAULT_TOPIC
+        kafka_topic = parsed_topic or args.kafka_topic or cls.DEFAULT_TOPIC
         kafka_enable_tls = _parse_bool(args.kafka_enable_tls)
         kafka_config = dict(parsed_config)
 
@@ -312,7 +325,10 @@ class WalloniaISsePAPI:
                 data=config,
                 flush_producer=False,
             )
-        producer.producer.flush()
+        self._flush_or_raise(
+            producer.producer,
+            context=f"{len(configs)} sensor configuration reference events",
+        )
         LOGGER.info("Sent %d sensor configuration reference events", len(configs))
         return configs
 
@@ -321,11 +337,15 @@ class WalloniaISsePAPI:
         *,
         producer: BeIssepAirqualitySensorsEventProducer,
         state: Dict[str, str],
+        records: Optional[List[Dict[str, Any]]] = None,
     ) -> Tuple[int, List[Dict[str, Any]]]:
         """Poll records and emit only new observations. Returns count and all records."""
-        all_records = self.fetch_all_records()
-        new_records = self.filter_new_records(all_records, state)
+        all_records = records if records is not None else self.fetch_all_records()
+        new_records = self.select_new_records(all_records, state)
         observation_count = 0
+        pending_state: Dict[str, str] = {}
+
+        LOGGER.info("Fetched %d records; %d are new observations", len(all_records), len(new_records))
 
         for record in new_records:
             try:
@@ -336,6 +356,7 @@ class WalloniaISsePAPI:
                     flush_producer=False,
                 )
                 observation_count += 1
+                pending_state[obs.configuration_id] = obs.moment
             except Exception as exc:  # pylint: disable=broad-except
                 LOGGER.warning(
                     "Could not normalize or emit observation for config %s: %s",
@@ -343,7 +364,11 @@ class WalloniaISsePAPI:
                     exc,
                 )
 
-        producer.producer.flush()
+        self._flush_or_raise(
+            producer.producer,
+            context=f"{observation_count} observation events",
+        )
+        state.update(pending_state)
         return observation_count, all_records
 
     def run_feed(
@@ -372,14 +397,17 @@ class WalloniaISsePAPI:
                 cycle_started = time.monotonic()
                 now = time.time()
 
-                observation_count, all_records = self.poll_observations(
-                    producer=producer,
-                    state=state,
-                )
+                all_records = self.fetch_all_records()
 
                 if not last_reference_refresh or now - last_reference_refresh >= self.reference_refresh_interval:
                     self.emit_reference_data(producer, all_records)
                     last_reference_refresh = now
+
+                observation_count, _ = self.poll_observations(
+                    producer=producer,
+                    state=state,
+                    records=all_records,
+                )
 
                 _save_state(state_file, state)
 
