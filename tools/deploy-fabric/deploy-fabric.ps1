@@ -479,6 +479,39 @@ function Invoke-SourcePostDeployHook {
 Write-Host "=== Real-Time Sources — Fabric Deployment ===" -ForegroundColor Cyan
 Write-Host "  Source: $Source" -ForegroundColor White
 
+# Track items created in this run so we can clean up on failure.
+# NOTE: these and Invoke-FailureCleanup MUST be defined before the trap below,
+# because PowerShell does not hoist functions — a terminating error during
+# workspace/capacity resolution fires the trap before any later-in-file
+# definition has executed, which previously crashed the handler itself
+# ("Invoke-FailureCleanup is not recognized") and masked the real error.
+$script:createdEventhouseId  = $null
+$script:createdEvenstreamId  = $null
+$script:createdDatabaseId    = $null
+$script:createdNotebookId    = $null
+$script:kqlDbLroFailed       = $false
+
+function Invoke-FailureCleanup {
+    $tok = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv 2>$null
+    if (-not $tok) { return }
+    $ch = @{ Authorization = "Bearer $tok" }
+    foreach ($pair in @(
+        @($script:createdNotebookId,  "Notebook"),
+        @($script:createdEvenstreamId, "Eventstream"),
+        @($script:createdDatabaseId,  "KQLDatabase"),
+        @($script:createdEventhouseId, "Eventhouse")
+    )) {
+        $itemId = $pair[0]; $label = $pair[1]
+        if ($itemId) {
+            try {
+                Invoke-RestMethod "https://api.fabric.microsoft.com/v1/workspaces/$WorkspaceId/items/$itemId" `
+                    -Method Delete -Headers $ch | Out-Null
+                Write-Host "  [cleanup] Deleted $label $itemId" -ForegroundColor DarkGray
+            } catch {}
+        }
+    }
+}
+
 # Cleanup-on-failure trap: delete any items we created if the script fails
 trap {
     Write-Warning "Deploy failed — running cleanup to avoid workspace degradation..."
@@ -519,34 +552,6 @@ $wsInfo = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId"
 $CapacityId = $wsInfo.capacityId
 if (-not $CapacityId) { throw "Could not determine capacity ID for workspace '$($wsInfo.displayName)'" }
 Write-OK "Workspace: $($wsInfo.displayName) ($WorkspaceId)"
-
-# Track items created in this run so we can clean up on failure
-$script:createdEventhouseId  = $null
-$script:createdEvenstreamId  = $null
-$script:createdDatabaseId    = $null
-$script:createdNotebookId    = $null
-$script:kqlDbLroFailed       = $false
-
-function Invoke-FailureCleanup {
-    $tok = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv 2>$null
-    if (-not $tok) { return }
-    $ch = @{ Authorization = "Bearer $tok" }
-    foreach ($pair in @(
-        @($script:createdNotebookId,  "Notebook"),
-        @($script:createdEvenstreamId, "Eventstream"),
-        @($script:createdDatabaseId,  "KQLDatabase"),
-        @($script:createdEventhouseId, "Eventhouse")
-    )) {
-        $itemId = $pair[0]; $label = $pair[1]
-        if ($itemId) {
-            try {
-                Invoke-RestMethod "https://api.fabric.microsoft.com/v1/workspaces/$WorkspaceId/items/$itemId" `
-                    -Method Delete -Headers $ch | Out-Null
-                Write-Host "  [cleanup] Deleted $label $itemId" -ForegroundColor DarkGray
-            } catch {}
-        }
-    }
-}
 
 $eventhouses = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
 $ehDetails = $null
