@@ -359,11 +359,25 @@ def poll_and_submit_vehicle_locations(producer_client: NextbusKafkaProducerClien
 
     # Parse the XML response and submit each vehicle location to the Event Hub
     root = ET.fromstring(response.content)
+
+    # A vehicleLocations response always carries a <lastTime> element. When it is
+    # absent the upstream returned an <Error> document instead (e.g. a retired or
+    # invalid agency tag, a rate-limit, or scheduled maintenance). Do not crash
+    # the feed loop on that - log the upstream message and keep the prior
+    # watermark so the next cycle retries.
+    last_time_el = root.find("lastTime")
+    if last_time_el is None:
+        err_el = root.find("Error")
+        detail = (err_el.text or "").strip() if err_el is not None else response.text[:200].strip()
+        print(f"NextBus vehicleLocations returned no data for agency '{agency_tag}': {detail}")
+        return last_time
+    feed_last_time = float(last_time_el.get("time"))
+
     event_data_batch = producer_client.create_batch(partition_key=agency_tag)
     vehicles = root.findall("vehicle")
     for vehicle in vehicles:
         vehicle_id = f"{agency_tag}/{vehicle.get('id')}"
-        last_report_time = float(root.find("lastTime").get("time"))/1000 - float(vehicle.get("secsSinceReport"))
+        last_report_time = feed_last_time/1000 - float(vehicle.get("secsSinceReport"))
         if vehicle_id in vehicle_last_report_times and last_report_time <= vehicle_last_report_times[vehicle_id]:
             continue
         event_detail = {
@@ -400,8 +414,8 @@ def poll_and_submit_vehicle_locations(producer_client: NextbusKafkaProducerClien
         
     
     producer_client.send_batch(event_data_batch)
-    print(f"Sent {len(event_data_batch)} vehicle positions")    
-    return float(root.find("lastTime").get("time"))
+    print(f"Sent {len(event_data_batch)} vehicle positions")
+    return feed_last_time
 
 def create_event_data(event : CloudEvent) -> KafkaEventData:
     return KafkaEventData(event)
