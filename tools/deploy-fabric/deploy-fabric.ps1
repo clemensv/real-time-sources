@@ -270,9 +270,22 @@ function Invoke-FabricApi {
         [System.IO.File]::WriteAllText($bodyFile, $json, [System.Text.UTF8Encoding]::new($false))
         $azArgs += @("--body", "@$bodyFile", "--headers", "Content-Type=application/json")
     }
-    $result = & az @azArgs 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        throw "Fabric API error ($Method $Url): $($result | Out-String)"
+    # Retry transient control-plane failures (throttling / 5xx / network blips).
+    # Fabric's API intermittently fails simple GETs with a non-zero az exit and
+    # an empty body; a single failure previously aborted the entire deploy.
+    # Only idempotent reads are retried automatically to avoid duplicate writes.
+    $maxAttempts = if ($Method -in @('GET','HEAD')) { 5 } else { 1 }
+    $result = $null
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        $result = & az @azArgs 2>&1
+        if ($LASTEXITCODE -eq 0) { break }
+        if ($attempt -lt $maxAttempts) {
+            $delay = [int][Math]::Min(30, 3 * [Math]::Pow(2, $attempt - 1))
+            Write-Host "  [retry] Fabric API $Method $Url failed (attempt $attempt/$maxAttempts); retrying in ${delay}s..." -ForegroundColor DarkYellow
+            Start-Sleep -Seconds $delay
+        } else {
+            throw "Fabric API error ($Method $Url) after $maxAttempts attempt(s): $($result | Out-String)"
+        }
     }
     if ($result) { return ConvertFrom-AzCliJson -InputObject $result -Context "Fabric API response ($Method $Url)" }
     return $null
