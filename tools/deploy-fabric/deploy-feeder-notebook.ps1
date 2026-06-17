@@ -792,6 +792,35 @@ Write-Step "B/3" "Patching notebook parameters + KQL/Environment binding..."
 $nbJson = Get-Content -LiteralPath $notebookPath -Raw -Encoding UTF8
 $nb = $nbJson | ConvertFrom-Json
 
+# ── Heal literal-"\n" source-array corruption ─────────────────────────────
+# Some notebooks have been committed with source-array elements whose line
+# terminator was stored as the two-character text sequence backslash+n
+# instead of a real newline. When the .ipynb -> Fabric notebook-content.py
+# converter joins such elements (($cell.source -join '')) and re-splits on a
+# real newline, the corrupted lines merge: e.g. the "# === PARAMETERS ==="
+# comment header glues onto the EVENTSTREAM_NAME assignment, commenting it out
+# and yielding "NameError: name 'EVENTSTREAM_NAME' is not defined" at runtime.
+# A well-formed source-array element NEVER ends with a literal backslash+n
+# (string literals such as "abc\n" end with a REAL newline after the closing
+# quote, and the last element of a cell ends with no newline at all), so
+# converting a trailing literal "\n" to a real newline is a safe, lossless
+# repair that auto-heals this recurring corruption at deploy time.
+$healedLines = 0
+foreach ($cell in $nb.cells) {
+    if (-not $cell.source) { continue }
+    $srcArr = @($cell.source)
+    $fixed = foreach ($l in $srcArr) {
+        if ($l -is [string] -and $l.EndsWith('\n')) {
+            $healedLines++
+            $l.Substring(0, $l.Length - 2) + "`n"
+        } else { $l }
+    }
+    $cell.source = @($fixed)
+}
+if ($healedLines -gt 0) {
+    Write-Info "Healed $healedLines source line(s) with literal-'\n' terminators (notebook source-array corruption)."
+}
+
 # ── Read checked-in POLLING_INTERVAL and ONCE_MODE from the notebook when
 #    the user didn't explicitly pass them on the command line. This ensures
 #    the deploy script respects the source-specific cadence committed in the
