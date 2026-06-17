@@ -8,7 +8,7 @@
 
 # DMI
 
-<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · AMQP · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendatadocs.dmi.govcloud.dk/">API docs</a></sub>
+<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · AMQP · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendataapi.dmi.dk/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -35,7 +35,7 @@ and xRegistry contract:
 ## Upstream
 
 - Home page: <https://www.dmi.dk/>
-- API / data documentation: <https://opendatadocs.dmi.govcloud.dk/>
+- API / data documentation: <https://opendataapi.dmi.dk/>
 
 <!-- upstream-links:end -->
 
@@ -45,7 +45,7 @@ and xRegistry contract:
 | `ghcr.io/clemensv/real-time-sources-dmi-mqtt` | MQTT 5.0 broker (Mosquitto, EMQX, HiveMQ, Azure Event Grid MQTT, Microsoft Fabric MQTT) | Unified-Namespace topic tree under `weather/dk/dmi/…` and `ocean/dk/dmi/…`, retained QoS 1, CloudEvent attributes as MQTT 5 user properties |
 | `ghcr.io/clemensv/real-time-sources-dmi-amqp` | AMQP 1.0 broker (Azure Service Bus, Azure Event Hubs, ActiveMQ Artemis, RabbitMQ AMQP 1.0) | Binary-mode AMQP 1.0 messages to one address `dmi`; subject = stable upstream identifier |
 
-All three images consume the [DMI Open Data REST API](https://opendatadocs.dmi.govcloud.dk/)
+All three images consume the [DMI Open Data REST API](https://opendataapi.dmi.dk/)
 operated by the Danish Meteorological Institute and emit the
 **observation triad**: `metObs` (land weather), `oceanObs` (sea-state and
 tidewater), and `lightningData` (per-strike events published on Kafka and AMQP).

@@ -8,7 +8,7 @@
 
 # DMI
 
-<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · AMQP · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendatadocs.dmi.govcloud.dk/">API docs</a></sub>
+<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · AMQP · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendataapi.dmi.dk/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,12 +34,12 @@
 ## Upstream
 
 - Home page: <https://www.dmi.dk/>
-- API / data documentation: <https://opendatadocs.dmi.govcloud.dk/>
+- API / data documentation: <https://opendataapi.dmi.dk/>
 
 <!-- upstream-links:end -->
 
 **DMI** is a bridge that polls the [Danish Meteorological Institute Open Data
-API](https://opendatadocs.dmi.govcloud.dk/) and re-emits the **observation
+API](https://opendataapi.dmi.dk/) and re-emits the **observation
 triad** (`metObs` + `oceanObs` + `lightningData`) as CloudEvents. A single
 upstream poller feeds three transport variants:
 
@@ -258,8 +258,8 @@ Pull and run any of the 3 container images directly — laptop, Kubernetes, Azur
 <!-- source-deploy:end -->
 ## Upstream
 
-* DMI Open Data Portal: <https://opendatadocs.dmi.govcloud.dk/>
-* MetObs Bulk: <https://opendatadocs.dmi.govcloud.dk/APIs/MetObsAPI>
-* OceanObs Bulk: <https://opendatadocs.dmi.govcloud.dk/APIs/OceanObsAPI>
-* Lightning: <https://opendatadocs.dmi.govcloud.dk/APIs/LightningDataAPI>
-* Data licence: [Creative Commons Attribution (CC BY 4.0)](https://www.dmi.dk/vejrarkiv/about-dmi/about-dmis-data/).
+* DMI Open Data Portal: <https://opendataapi.dmi.dk/>
+* MetObs Bulk: <https://opendataapi.dmi.dk/v2/metObs/swagger-ui/index.html>
+* OceanObs Bulk: <https://opendataapi.dmi.dk/v2/oceanObs/swagger-ui/index.html>
+* Lightning: <https://opendataapi.dmi.dk/v2/lightningdata/swagger-ui/index.html>
+* Data licence: [Creative Commons Attribution (CC BY 4.0)](https://www.dmi.dk/friedata/dokumentation/basics).

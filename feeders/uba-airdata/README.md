@@ -8,7 +8,7 @@
 
 # UBA AirData
 
-<sub>stations, pollutant components, hourly measures · Kafka · MQTT · AMQP · <a href="https://www.umweltbundesamt.de/">upstream</a> · <a href="https://www.umweltbundesamt.de/daten/luft/luftdaten/doc">API docs</a></sub>
+<sub>stations, pollutant components, hourly measures · Kafka · MQTT · AMQP · <a href="https://www.umweltbundesamt.de/">upstream</a> · <a href="https://luftdaten.umweltbundesamt.de/api/air-data/v2/doc">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This feeder turns the upstream UBA AirData air-quality feed into a real-time Clo
 ## Upstream
 
 - Home page: <https://www.umweltbundesamt.de/>
-- API / data documentation: <https://www.umweltbundesamt.de/daten/luft/luftdaten/doc>
+- API / data documentation: <https://luftdaten.umweltbundesamt.de/api/air-data/v2/doc>
 
 <!-- upstream-links:end -->
 
