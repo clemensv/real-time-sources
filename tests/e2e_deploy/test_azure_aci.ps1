@@ -256,7 +256,20 @@ try {
         }
     }
 
-    if ($result.messages_received -ge $MinMessages) {
+    if ($result.messages_received -eq -1) {
+        # validate_mqtt.ps1 returns -1 for the known Event Grid MQTT
+        # external-client subscribe limitation (issue #840): the feeder
+        # deployed and published successfully, but an external validation
+        # client cannot SUBSCRIBE to an Event Grid namespace broker without a
+        # pre-registered client certificate. This is a validation-side
+        # limitation, not a feeder failure — record WARN, do not file an
+        # issue, and do not throw (so the result file is still written).
+        $result.steps["messages_validated"] = $false
+        $result.result = "warn"
+        $result.error = "eg-mqtt-subscribe-blocked: external client cannot subscribe without a registered client cert (issue #840); feeder deploy + publish succeeded"
+        Write-Host "  EG-MQTT subscribe blocked by known limitation (#840); recording WARN (feeder published OK)" -ForegroundColor Yellow
+    }
+    elseif ($result.messages_received -ge $MinMessages) {
         $result.steps["messages_validated"] = $true
         $result.result = "pass"
         Write-Host "  Received $($result.messages_received) messages" -ForegroundColor Green
@@ -280,7 +293,7 @@ catch {
     # File issue
     & (Join-Path $scriptDir "issue_tracker.ps1") `
         -Source $Source `
-        -Target "azure-$Variant" `
+        -Target "azure" `
         -ErrorMessage $_.Exception.Message `
         -SessionId $sessionId `
         -Repo "clemensv/real-time-sources"
