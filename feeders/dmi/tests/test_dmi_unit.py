@@ -286,14 +286,31 @@ def test_build_lightning_strike_sensors_none():
 
 
 # ---------------------------------------------------------------------------
-# API clients require key
+# API clients no longer require a key (opendataapi.dmi.dk is auth-free)
 # ---------------------------------------------------------------------------
 
 
-def test_clients_require_api_key():
+def test_clients_accept_missing_api_key():
+    # opendataapi.dmi.dk needs no auth; an empty key must not raise and must
+    # not send an X-Gravitee-Api-Key header.
     for cls in (DmiMetObsAPI, DmiOceanObsAPI, DmiLightningAPI):
-        with pytest.raises(ValueError):
-            cls(api_key="")
+        api = cls(api_key="")
+        captured = {}
+
+        class _Resp:
+            status_code = 200
+
+            @staticmethod
+            def json():
+                return {"features": []}
+
+        def _fake_get(url, headers=None, params=None, timeout=None):
+            captured["headers"] = headers
+            return _Resp()
+
+        with mock.patch.object(api._session, "get", side_effect=_fake_get):
+            api._get("/collections/observation/items")
+        assert "X-Gravitee-Api-Key" not in captured["headers"]
 
 
 def test_pagination_stops_on_short_page():

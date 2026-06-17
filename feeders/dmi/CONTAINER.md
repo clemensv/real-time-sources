@@ -197,10 +197,13 @@ $ docker run --rm \
 
 | Variable | Description |
 |---|---|
-| `DMI_API_KEY` | Fallback DMI Gravitee key used for any API without a dedicated key. |
-| `DMI_METOBS_API_KEY` | Per-API key for the MetObs API. |
-| `DMI_OCEANOBS_API_KEY` | Per-API key for the OceanObs API. |
-| `DMI_LIGHTNING_API_KEY` | Per-API key for the Lightning API (Kafka and AMQP images). |
+| `DMI_API_KEY` | *Optional.* Fallback DMI Gravitee key, only used against the legacy authenticated host. |
+| `DMI_METOBS_API_KEY` | *Optional.* Per-API key for the MetObs API (legacy host only). |
+| `DMI_OCEANOBS_API_KEY` | *Optional.* Per-API key for the OceanObs API (legacy host only). |
+| `DMI_LIGHTNING_API_KEY` | *Optional.* Per-API key for the Lightning API (Kafka and AMQP images; legacy host only). |
+| `DMI_METOBS_FEED_ROOT` | *Optional.* Override the MetObs base URL (default `https://opendataapi.dmi.dk/v2/metObs`, auth-free). |
+| `DMI_OCEANOBS_FEED_ROOT` | *Optional.* Override the OceanObs base URL (default `https://opendataapi.dmi.dk/v2/oceanObs`, auth-free). |
+| `DMI_LIGHTNING_FEED_ROOT` | *Optional.* Override the Lightning base URL (default `https://opendataapi.dmi.dk/v2/lightningdata`, auth-free). |
 | `DMI_OBSERVATION_PERIOD` | DMI period filter (default `latest-hour`). |
 | `DMI_REFERENCE_REFRESH_HOURS` | Hours between re-emit of reference data (default `6`). |
 | `POLLING_INTERVAL` | Seconds between polling cycles (default `300`). |

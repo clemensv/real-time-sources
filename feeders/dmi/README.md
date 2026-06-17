@@ -92,17 +92,24 @@ dmi/
 
 ## API keys
 
-Every DMI API requires a per-API key from
-[https://dmiapi.govcloud.dk/](https://dmiapi.govcloud.dk/) sent in the
-`X-Gravitee-Api-Key` header. Provide one of:
+DMI Open Data is served auth-free from `https://opendataapi.dmi.dk` — **no
+API key is required** for any of the three products. The feeders poll all
+configured products out of the box with no credentials.
+
+Keys remain optional and are only used if you point a feed back at the
+legacy authenticated host (`https://dmigw.govcloud.dk`) via the
+`DMI_METOBS_FEED_ROOT` / `DMI_OCEANOBS_FEED_ROOT` / `DMI_LIGHTNING_FEED_ROOT`
+env vars. In that case supply the matching key:
 
 * `DMI_METOBS_API_KEY` / `DMI_OCEANOBS_API_KEY` / `DMI_LIGHTNING_API_KEY` —
-  per-API keys.
+  per-API keys, sent in the `X-Gravitee-Api-Key` header when present.
 * `DMI_API_KEY` — fallback used for any API without a dedicated key.
 
-The MQTT image ignores `DMI_LIGHTNING_API_KEY`; Kafka and AMQP publish lightning events when it is configured.
+The MQTT image only publishes MetObs and OceanObs events; Kafka and AMQP
+additionally publish lightning events.
 
-Rate limits: **500 req / 5 s** per key (DMI public quota).
+Rate limits: **500 req / 5 s** per key apply to the legacy authenticated
+host (DMI public quota).
 
 ## Quick start with Docker
 
