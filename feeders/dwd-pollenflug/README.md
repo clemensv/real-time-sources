@@ -8,7 +8,7 @@
 
 # DWD Pollenflug
 
-<sub>daily pollen forecasts, 27 regions · Kafka · MQTT · AMQP · <a href="https://www.dwd.de/EN/specialusers/medical/pollenflug/pollenflug_node.html">upstream</a> · <a href="https://opendata.dwd.de/climate_environment/health/alerts/">API docs</a></sub>
+<sub>daily pollen forecasts, 27 regions · Kafka · MQTT · AMQP · <a href="https://dwd.de/DE/klimaumwelt/ku_beratung/gesundheit/pollen/pollen_node.html">upstream</a> · <a href="https://opendata.dwd.de/climate_environment/health/alerts/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -23,7 +23,7 @@
 [🐳 **docker pull**](CONTAINER.md) &nbsp;·&nbsp;
 [📑 **Event schemas**](EVENTS.md) &nbsp;·&nbsp;
 [🗄️ **KQL schema**](kql/dwd_pollenflug.kql) &nbsp;·&nbsp;
-[↗ **Upstream**](https://www.dwd.de/EN/specialusers/medical/pollenflug/pollenflug_node.html)
+[↗ **Upstream**](https://dwd.de/DE/klimaumwelt/ku_beratung/gesundheit/pollen/pollen_node.html)
 
 </td></tr></table>
 <!-- source-hero:end -->
@@ -33,7 +33,7 @@ This feeder turns the upstream DWD Pollenflug weather data into a real-time Clou
 <!-- upstream-links:begin -->
 ## Upstream
 
-- Home page: <https://www.dwd.de/EN/specialusers/medical/pollenflug/pollenflug_node.html>
+- Home page: <https://dwd.de/DE/klimaumwelt/ku_beratung/gesundheit/pollen/pollen_node.html>
 - API / data documentation: <https://opendata.dwd.de/climate_environment/health/alerts/>
 
 <!-- upstream-links:end -->

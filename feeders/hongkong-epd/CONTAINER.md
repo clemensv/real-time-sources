@@ -8,7 +8,7 @@
 
 # Hong Kong EPD AQHI
 
-<sub>18 AQHI stations, hourly health index · Kafka · MQTT · AMQP · <a href="https://www.aqhi.gov.hk/">upstream</a> · <a href="https://www.aqhi.gov.hk/en/aqhi/statistics-of-aqhi.html">API docs</a></sub>
+<sub>18 AQHI stations, hourly health index · Kafka · MQTT · AMQP · <a href="https://www.aqhi.gov.hk/">upstream</a> · <a href="https://www.aqhi.gov.hk/en/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This document describes the published OCI images for the Hong Kong EPD AQHI feed
 ## Upstream
 
 - Home page: <https://www.aqhi.gov.hk/>
-- API / data documentation: <https://www.aqhi.gov.hk/en/aqhi/statistics-of-aqhi.html>
+- API / data documentation: <https://www.aqhi.gov.hk/en/>
 
 <!-- upstream-links:end -->
 
