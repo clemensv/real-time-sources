@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=64",
+    "setuptools>=82.0.1",
     "setuptools-scm>=8",
 ]
 build-backend = "setuptools.build_meta"
@@ -29,7 +29,7 @@ blitzortung = "blitzortung.blitzortung:main"
 [project.optional-dependencies]
 dev = [
     "pytest-cov>=7.1.0",
-    "pytest>=9.0.3",
+    "pytest>=9.1.0",
 ]
 
 [tool.setuptools_scm]

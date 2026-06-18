@@ -169,6 +169,19 @@ def _build_kafka_config(connection_string: str, enable_tls: bool = True) -> Tupl
     return config, topic
 
 
+class _DryRunProducer:
+    """Minimal producer used for local upstream fetch/parse validation."""
+
+    def __init__(self) -> None:
+        self.message_count = 0
+
+    def produce(self, *args: Any, **kwargs: Any) -> None:
+        self.message_count += 1
+
+    def flush(self, timeout: Optional[float] = None) -> int:
+        return 0
+
+
 # ---------------------------------------------------------------------------
 # XML helpers
 # ---------------------------------------------------------------------------
@@ -1506,23 +1519,38 @@ class NdwPoller:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="NDW Netherlands Road Traffic bridge")
+    parser.add_argument("feed_command", nargs="?", default="feed", help=argparse.SUPPRESS)
     parser.add_argument("--topic", default=None, help="Kafka topic for all messages")
     parser.add_argument("--poll-interval", type=int, default=None, help="Telemetry poll interval in seconds")
     parser.add_argument("--state-file", default=None, help="Path to state file")
+    parser.add_argument("--base-url", default=os.environ.get("NDW_BASE_URL", BASE_URL), help="NDW open-data base URL")
+    parser.add_argument("--once", action="store_true", help="Run one poll cycle and exit")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=os.environ.get("DRY_RUN", "").lower() in ("1", "true", "yes"),
+        help="Fetch and parse upstream data without connecting to Kafka",
+    )
     args = parser.parse_args()
+    if args.feed_command != "feed":
+        parser.error("only the optional 'feed' command is supported")
 
     connection_string = os.environ.get("CONNECTION_STRING", "")
-    if not connection_string:
+    if not connection_string and not args.dry_run:
         logger.error("CONNECTION_STRING environment variable is required")
         sys.exit(1)
 
-    enable_tls = os.environ.get("KAFKA_ENABLE_TLS", "true").lower() not in ("false", "0", "no")
-    kafka_config, conn_topic = _build_kafka_config(connection_string, enable_tls)
+    conn_topic: Optional[str] = None
+    if connection_string:
+        enable_tls = os.environ.get("KAFKA_ENABLE_TLS", "true").lower() not in ("false", "0", "no")
+        kafka_config, conn_topic = _build_kafka_config(connection_string, enable_tls)
+    else:
+        kafka_config = {"bootstrap.servers": "dry-run"}
 
     topic = (
-        args.topic
+        conn_topic
+        or args.topic
         or os.environ.get("KAFKA_TOPIC", "")
-        or conn_topic
         or DEFAULT_TOPIC
     )
 
@@ -1532,7 +1560,7 @@ def main() -> None:
     state_file = args.state_file or os.environ.get("STATE_FILE", DEFAULT_STATE_FILE)
     max_records_per_family = os.environ.get("MAX_RECORDS_PER_FAMILY")
 
-    producer = Producer(kafka_config)
+    producer = _DryRunProducer() if args.dry_run else Producer(kafka_config)
 
     avg_prod = NLNDWAVGEventProducer(producer, topic)
     drip_prod = NLNDWDRIPEventProducer(producer, topic)
@@ -1547,9 +1575,16 @@ def main() -> None:
         situations_prod,
         state,
         poll_interval,
+        base_url=args.base_url.rstrip("/"),
         max_records_per_family=int(max_records_per_family) if max_records_per_family else None,
     )
-    poller.run_forever()
+    if args.once:
+        logger.info("Running one NDW Road Traffic poll cycle%s", " (dry run)" if args.dry_run else "")
+        poller.poll_cycle()
+        if args.dry_run and isinstance(producer, _DryRunProducer):
+            logger.info("Dry run queued %d CloudEvent(s)", producer.message_count)
+    else:
+        poller.run_forever()
 
 
 if __name__ == "__main__":

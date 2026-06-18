@@ -71,6 +71,7 @@
     },
     "ticketmasterApiKey": {
       "type": "securestring",
+      "defaultValue": "",
       "metadata": {
         "description": "Ticketmaster Discovery API key used to authenticate upstream event and reference-data requests; obtain it from the Ticketmaster developer portal before deployment."
       }

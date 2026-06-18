@@ -42,4 +42,5 @@ local_scheme = "no-local-version"
 [tool.setuptools]
 packages = [
     "german_waters",
+    "german_waters.providers",
 ]
