@@ -14,7 +14,15 @@ import requests
 from confluent_kafka import Producer
 
 from hongkong_epd_producer_data import AQHIReading, Station
-from hongkong_epd_producer_kafka_producer.producer import HKGovEPDAQHIEventProducer
+try:
+    from hongkong_epd_producer_kafka_producer.producer import HKGovEPDAQHIEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    HKGovEPDAQHIEventProducer = None
 
 logger = logging.getLogger(__name__)
 

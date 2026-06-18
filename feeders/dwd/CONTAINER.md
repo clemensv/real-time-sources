@@ -129,7 +129,7 @@ docker run --rm \
 
 The MQTT image (`…-dwd-mqtt`) publishes MQTT 5.0 CloudEvents into a Unified-Namespace tree at QoS 1. Retain behavior is family-specific: station, observation, and catalog topics are retained because they represent the latest known state; alert and file-notification topics are live-only because they represent change events.
 
-It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/fabric/real-time-hub/add-source-event-grid).
+It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-source-azure-event-grid).
 
 ### Topic templates
 
