@@ -8,7 +8,7 @@
 
 # German Waters
 
-<sub>12 state portals, ~2,724 stations · Kafka · MQTT · AMQP · <a href="https://hvz.lubw.baden-wuerttemberg.de/">upstream</a> · <a href="https://www.hvz.baden-wuerttemberg.de/php/datenfuerentwickler.php">API docs</a></sub>
+<sub>12 state portals, ~2,724 stations · Kafka · MQTT · AMQP · <a href="https://hvz.lubw.baden-wuerttemberg.de/">upstream</a> · <a href="https://hvz.lubw.baden-wuerttemberg.de/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This document covers the published OCI container images for the German Waters hy
 ## Upstream
 
 - Home page: <https://hvz.lubw.baden-wuerttemberg.de/>
-- API / data documentation: <https://www.hvz.baden-wuerttemberg.de/php/datenfuerentwickler.php>
+- API / data documentation: <https://hvz.lubw.baden-wuerttemberg.de/>
 
 <!-- upstream-links:end -->
 
@@ -132,7 +132,7 @@ docker run --rm \
 
 ## Using the MQTT image
 
-The MQTT image (`…-german-waters-mqtt`) publishes MQTT 5.0 CloudEvents into a Unified-Namespace topic tree with `retain=true` and QoS 1 on every leaf so subscribers always receive the latest known station metadata and measurement per topic. It works against any MQTT 5 broker and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/fabric/real-time-hub/add-source-event-grid).
+The MQTT image (`…-german-waters-mqtt`) publishes MQTT 5.0 CloudEvents into a Unified-Namespace topic tree with `retain=true` and QoS 1 on every leaf so subscribers always receive the latest known station metadata and measurement per topic. It works against any MQTT 5 broker and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-source-azure-event-grid).
 
 ### Topic template
 
