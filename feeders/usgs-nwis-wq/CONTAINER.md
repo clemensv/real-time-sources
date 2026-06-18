@@ -8,7 +8,7 @@
 
 # USGS NWIS Water Quality
 
-<sub>~3,000 continuous WQ sites · Kafka · MQTT · AMQP · <a href="https://waterdata.usgs.gov/">upstream</a> · <a href="https://waterservices.usgs.gov/docs/water-quality-samples/water-quality-samples-details/">API docs</a></sub>
+<sub>~3,000 continuous WQ sites · Kafka · MQTT · AMQP · <a href="https://waterdata.usgs.gov/">upstream</a> · <a href="https://api.waterdata.usgs.gov/docs#samples">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This document covers the published OCI container images for the USGS NWIS Water 
 ## Upstream
 
 - Home page: <https://waterdata.usgs.gov/>
-- API / data documentation: <https://waterservices.usgs.gov/docs/water-quality-samples/water-quality-samples-details/>
+- API / data documentation: <https://api.waterdata.usgs.gov/docs#samples>
 
 <!-- upstream-links:end -->
 
