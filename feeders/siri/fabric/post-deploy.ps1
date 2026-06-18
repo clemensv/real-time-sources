@@ -194,6 +194,10 @@ try {
     if ($LASTEXITCODE -ne 0) {
         throw "wire_siri_map.py failed with exit code $LASTEXITCODE"
     }
+} catch {
+    Write-Warning "Map wiring failed (non-fatal): $($_.Exception.Message)"
+    Write-Warning "Core SIRI notebook/Event Stream/KQL deployment remains successful; rerun feeders/siri/fabric/post-deploy.ps1 to retry the Fabric Map wiring."
+    $global:LASTEXITCODE = 0
 } finally {
     Remove-Item Env:FABRIC_TOKEN -ErrorAction SilentlyContinue
     Remove-Item Env:KUSTO_TOKEN -ErrorAction SilentlyContinue
