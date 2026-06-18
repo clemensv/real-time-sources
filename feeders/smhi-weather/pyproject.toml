@@ -31,7 +31,7 @@ smhi-weather = "smhi_weather:main"
 [project.optional-dependencies]
 dev = [
     "pytest-cov>=7.1.0",
-    "pytest>=9.0.3",
+    "pytest>=9.1.0",
     "requests-mock>=1.12.1",
     "testcontainers>=4.14.2",
 ]
