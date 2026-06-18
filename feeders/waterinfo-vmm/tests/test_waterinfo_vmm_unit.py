@@ -102,6 +102,7 @@ class TestDataClasses:
             stationparameter_name="H",
             ts_id="99999042",
             ts_unitname="meter",
+            water_body="Groot Schijn",
         )
         assert station.station_no == "L04_007"
         assert station.station_name == "Wijnegem/Groot Schijn"
@@ -118,6 +119,7 @@ class TestDataClasses:
             stationparameter_name="H",
             ts_id="306367042",
             ts_unitname="meter",
+            water_body="Ede",
         )
         json_str = station.to_json()
         data = json.loads(json_str)
@@ -134,6 +136,7 @@ class TestDataClasses:
             value=6.118,
             unit_name="meter",
             parameter_name="H",
+            water_body="Ede",
         )
         assert reading.ts_id == "306367042"
         assert reading.value == 6.118
@@ -148,6 +151,7 @@ class TestDataClasses:
             value=0.991,
             unit_name="meter",
             parameter_name="H",
+            water_body="Noordzuidverbinding",
         )
         json_str = reading.to_json()
         restored = WaterLevelReading.from_data(json_str, "application/json")
@@ -166,6 +170,7 @@ class TestDataClasses:
             stationparameter_name="H",
             ts_id="1",
             ts_unitname="meter",
+            water_body="Test River",
         )
         data = station.to_byte_array("application/json")
         assert isinstance(data, (bytes, str))
@@ -173,7 +178,7 @@ class TestDataClasses:
         assert parsed["station_no"] == "TEST"
 
     def test_reading_from_data(self):
-        json_str = '{"ts_id": "1", "station_no": "A", "station_name": "B", "timestamp": "2026-01-01T00:00:00Z", "value": 1.5, "unit_name": "meter", "parameter_name": "H"}'
+        json_str = '{"ts_id": "1", "station_no": "A", "station_name": "B", "timestamp": "2026-01-01T00:00:00Z", "value": 1.5, "unit_name": "meter", "parameter_name": "H", "water_body": "Basin"}'
         reading = WaterLevelReading.from_data(json_str, "application/json")
         assert reading.ts_id == "1"
         assert reading.value == 1.5
@@ -220,8 +225,8 @@ class TestFeedStationsResilience:
             assert call.kwargs.get('flush_producer') is False
         assert mock_raw_producer.flush.call_count >= 1
 
-    def test_reading_send_failure_preserves_dedup_state(self):
-        """When reading send raises, previous_readings is still updated; same reading not retried next cycle."""
+    def test_reading_send_failure_does_not_advance_dedup_state(self):
+        """When reading send raises, the reading remains eligible for retry."""
         api = WaterinfoVMMAPI()
         mock_ep = MagicMock()
         mock_ep.send_be_vlaanderen_waterinfo_vmm_water_level_reading.side_effect = RuntimeError("broker down")
@@ -239,8 +244,7 @@ class TestFeedStationsResilience:
             except KeyboardInterrupt:
                 pass
 
-        # Send attempted once only; dedup state preserved across the failed send
-        assert mock_ep.send_be_vlaanderen_waterinfo_vmm_water_level_reading.call_count == 1
+        assert mock_ep.send_be_vlaanderen_waterinfo_vmm_water_level_reading.call_count == 2
 
     def test_get_latest_readings_failure_caught_in_loop(self):
         """A transient failure in get_latest_water_levels is caught; no reading sends attempted."""

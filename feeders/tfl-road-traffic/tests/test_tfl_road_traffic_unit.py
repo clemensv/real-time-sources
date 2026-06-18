@@ -657,3 +657,38 @@ class TestMultiGroupWiring:
         # Corridors producer must not have been touched
         mock_corr.send_uk_gov_tfl_road_road_corridor.assert_not_called()
         mock_corr.send_uk_gov_tfl_road_road_status.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# Regression: UTF-8 BOM tolerance
+# TfL endpoints intermittently prefix the JSON body with a UTF-8 BOM, which
+# requests' response.json() rejects with a JSONDecodeError (a ValueError
+# subclass). The fetch helpers must fall back to BOM-aware decoding instead of
+# crashing the polling cycle.
+# ---------------------------------------------------------------------------
+
+@pytest.mark.unit
+class TestFetchJsonBomTolerance:
+    def test_fetch_json_parses_bom_prefixed_body(self):
+        poller, *_ = _make_mock_poller()
+        mock_response = MagicMock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.side_effect = ValueError("Unexpected UTF-8 BOM")
+        mock_response.content = b"\xef\xbb\xbf[{\"id\": \"a2\"}]"
+        poller.session.get.return_value = mock_response
+
+        result = poller._fetch_json("https://example.invalid/tfl")
+
+        assert result == [{"id": "a2"}]
+
+    def test_fetch_json_returns_clean_body_without_bom(self):
+        poller, *_ = _make_mock_poller()
+        mock_response = MagicMock()
+        mock_response.raise_for_status.return_value = None
+        mock_response.json.return_value = [{"id": "a2"}]
+        poller.session.get.return_value = mock_response
+
+        result = poller._fetch_json("https://example.invalid/tfl")
+
+        assert result == [{"id": "a2"}]
+
