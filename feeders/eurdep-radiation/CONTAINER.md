@@ -8,7 +8,7 @@
 
 # EURDEP Radiation
 
-<sub>~5,500 stations, 39 countries, gamma dose · Kafka · MQTT · AMQP · <a href="https://remon.jrc.ec.europa.eu/">upstream</a> · <a href="https://eurdep.jrc.ec.europa.eu/Basic/Pages/Public/Data/Default.aspx">API docs</a></sub>
+<sub>~5,500 stations, 39 countries, gamma dose · Kafka · MQTT · AMQP · <a href="https://remon.jrc.ec.europa.eu/">upstream</a> · <a href="https://remap.jrc.ec.europa.eu/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This document covers the published OCI images for the EURDEP Radiation source, i
 ## Upstream
 
 - Home page: <https://remon.jrc.ec.europa.eu/>
-- API / data documentation: <https://eurdep.jrc.ec.europa.eu/Basic/Pages/Public/Data/Default.aspx>
+- API / data documentation: <https://remap.jrc.ec.europa.eu/>
 
 <!-- upstream-links:end -->
 

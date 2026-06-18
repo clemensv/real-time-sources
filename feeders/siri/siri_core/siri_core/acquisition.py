@@ -124,14 +124,21 @@ class SiriClient:
 
     def _build_request_specs(self) -> list[RequestSpec]:
         if self._provider == "bods":
-            if not self._api_key:
-                raise RuntimeError("SIRI_API_KEY is required for provider=bods unless SIRI_SAMPLE_MODE=true.")
+            bods_url = self._siri_url or DEFAULT_BODS_URL
+            # The public BODS bulk archive (the default endpoint) is downloadable
+            # without credentials; only the filtered datafeed API requires a key.
+            is_bulk_archive = bods_url.rstrip("/").endswith("/bulk_archive")
+            if not is_bulk_archive and not self._api_key:
+                raise RuntimeError(
+                    "SIRI_API_KEY is required for the BODS datafeed API unless "
+                    "SIRI_SAMPLE_MODE=true or the public bulk_archive endpoint is used."
+                )
             return [
                 RequestSpec(
-                    request_url=self._siri_url or DEFAULT_BODS_URL,
-                    source_url=self._siri_url or DEFAULT_BODS_URL,
+                    request_url=bods_url,
+                    source_url=bods_url,
                     headers={},
-                    params={"api_key": self._api_key},
+                    params={"api_key": self._api_key} if self._api_key else {},
                     is_zip=True,
                 )
             ]
