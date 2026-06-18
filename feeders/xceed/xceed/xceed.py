@@ -468,6 +468,9 @@ def feed(args: argparse.Namespace) -> None:
 
             elapsed = (datetime.now(tz=timezone.utc) - cycle_start).total_seconds()
             wait = max(0.0, polling_interval - elapsed)
+            if os.environ.get("ONCE_MODE", "false").lower() in ("true", "1", "yes"):
+                logger.info("ONCE_MODE: exiting after first polling cycle")
+                break
             if wait > 0:
                 time.sleep(wait)
 
