@@ -138,8 +138,8 @@
 .create-or-alter function with (docstring="Recent FIRMS detections aggregated onto a coarse lat/lon grid (default 1 deg) for an intensity/cluster summary: detection count and total FRP per cell.", folder="nasa-firms/map") FireHotspots(lookback:timespan = 24h, cell:real = 1.0) {
     ['NASA.FIRMS.FireDetection']
     | where ___time > ago(lookback)
-    | extend glat = floor(latitude / cell, 1) * cell + cell / 2.0
-    | extend glon = floor(longitude / cell, 1) * cell + cell / 2.0
+    | extend glat = floor(latitude / cell) * cell + cell / 2.0
+    | extend glon = floor(longitude / cell) * cell + cell / 2.0
     | summarize detections = count(), total_frp = sum(coalesce(frp, 0.0)),
                 max_frp = max(frp), high_conf = countif(confidence_level == "high")
               by glat, glon
