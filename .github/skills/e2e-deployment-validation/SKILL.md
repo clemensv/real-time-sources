@@ -280,29 +280,60 @@ Select-String -Path "feeders/<source>/*_mqtt/*_mqtt/app.py" -Pattern "MQTT_AUTH_
 ```
 If this returns nothing, regenerate the producer. Do **not** hand-edit the file.
 
-#### Step 3: Validate Messages (Known Limitation)
+#### Step 3: Validate Messages — cert-subscriber (PASS *is* achievable; this is the working path)
 
-**External MQTT subscription to Event Grid MQTT namespaces is blocked** from
-non-Azure machines without explicit client certificate registration. RBAC roles
-(`EventGrid TopicSpaces Subscriber`) alone are insufficient — the namespace also
-requires the subscriber to authenticate with a registered certificate or an Entra
-JWT whose subject matches a registered `Microsoft.EventGrid/namespaces/clients`
-entry. The ARM template does not create a `clients` resource.
+> **This section supersedes the old "external subscribe is BLOCKED, record
+> BLOCKED not PASS" guidance.** That guidance was wrong: it stemmed from a
+> validator bug (subscribing to a bare `#`), not a platform limit. The
+> cert-subscriber below reaches **PASS** for live sources.
 
-The topic subscription pattern must be derived from the xreg manifest's topic
-space template — not hardcoded. The generated client strips the `ce-` prefix from
-CloudEvents attribute names before setting MQTT v5 user properties (bare names:
-`type`, `source`, `subject` — not `ce-type`, `ce-source`, `ce-subject`).
+Event Grid MQTT namespaces reject an external subscriber that merely holds the
+`EventGrid TopicSpaces Subscriber` RBAC role — RBAC is not the MQTT transport
+for the JWT. You must register a client **certificate** (ThumbprintMatch) with
+a Subscriber permission binding, then subscribe to the topic space's **actual
+`topicTemplates`**. Use the committed tooling — do not reinvent it:
 
-**Result determination:**
-- **FAIL** — `Mqtt.Connections` is 0 (feeder not publishing). File a new issue
-  titled `[E2E] <source> - azure-mqtt: no-data` with root cause (missing
-  `MQTT_AUTH_MODE` or other). Do **not** reference the closed issue #840.
-- **BLOCKED** — `Mqtt.Connections` > 0 but external subscription cannot be
-  verified (expected for all sources until client certificate registration is
-  automated). This is not a failure of the source itself.
-- **PASS** — Not achievable by this validator until external subscription
-  tooling is implemented. Record BLOCKED, not PASS.
+```powershell
+# 1. Register a short-lived cert client bound to the topic space's client group
+#    with a Subscriber permission binding (writes cert files to -OutputDirectory):
+pwsh tools/Register-EventGridMqttTestClient.ps1 `
+    -ResourceGroup $rg -NamespaceName <ns> -SubscriptionId <sub> `
+    -OutputDirectory $certDir
+
+# 2. Subscribe with that cert and count CloudEvents over the poll window.
+#    validate_mqtt.ps1 resolves the live namespace + first topic space itself
+#    and derives the subscribe filter from the live topicTemplates:
+$count = & pwsh tests/e2e_deploy/validate_mqtt.ps1 -ResourceGroup $rg -CertDir $certDir
+```
+
+**The load-bearing rule — root cause of the long-standing "issue #840" 105×
+WARNs:** subscribe to the topic space's live `topicTemplates` (they already end
+in `/#`), **never a bare `#`**. A bare `#` is *broader* than the topic-space
+template, so the broker returns **SUBACK reason code 135 (Not authorized)** and
+silently delivers nothing; the template itself is **granted (reason code 1)**
+and receives every published message regardless of topic depth. The old
+validator subscribed to `#`, never inspected the `on_subscribe` SUBACK, and
+reported 0 — producing 105 false WARNs across the fleet. **Always inspect the
+SUBACK reason code**, and derive the filter from the **live topic space**
+(`az eventgrid namespace topic-space ...`), not from the xreg manifest.
+
+The generated client strips the `ce-` prefix from CloudEvents attribute names,
+so MQTT v5 user properties carry **bare names** (`type`, `source`, `subject` —
+not `ce-type`/`ce-source`/`ce-subject`).
+
+**`validate_mqtt.ps1` return contract → outcome:**
+
+| Return | Meaning | Outcome |
+|--------|---------|---------|
+| `>= 1` | messages received and CloudEvents properties validated | ✅ **PASS** |
+| `0` | connected, SUBACK granted (reason 1), but feeder published nothing in the window (legitimately quiet source) | ⚠️ **WARN (no-data)** |
+| `-1` | genuine block: no EG namespace/topic space found, cert registration failed, CONNACK rejected, or SUBACK rejected (reason >= 128) | ⚠️ **WARN (blocked)** — investigate |
+
+Cross-check Step 2 first: if `Mqtt.Connections` = 0 the feeder never connected →
+that is a ❌ **FAIL** (feeder bug), not a subscriber-side block. A `-1` with
+`Mqtt.Connections > 0` is a validator/cert-side block, not a source defect.
+
+Always delete `$certDir` afterwards — it holds a private key (see Cleanup).
 
 #### Step 4: Teardown
 
@@ -1214,3 +1245,101 @@ Required canonical structure:
 
 **Validator**: Run `pwsh tools/validate-fabric-deployment.ps1 -FeederSlug <source>` — it enforces the structural rules mechanically. A notebook that passes the validator with 0 blockers is structurally sound. A notebook that bypasses the validator may look fine but break in Fabric.
 
+
+---
+
+## Fleet Matrix Operations & Result Reconciliation
+
+Running the **full** source × target matrix (≈105 sources × {fabric, azure-eh,
+azure-sb, azure-eg}) is a multi-hour operation. These rules keep a long run
+correct, resumable, and honestly reported. They were all learned the hard way
+on real fleet runs — treat them as load-bearing, not advisory.
+
+### Result-file reconciliation (stale files mask fresh truth)
+
+The matrix is reconstructed from per-cell result JSON on disk, and **two naming
+schemes coexist**:
+
+- **Full-name** (current harness): `<src>-azure-eventgrid-mqtt-result.json`,
+  `<src>-azure-eventhub-result.json`, `<src>-azure-servicebus-result.json`,
+  `<src>-fabric-result.json`.
+- **Legacy short-name**: `<src>-azure-eg-result.json`, `<src>-azure-eh-...`,
+  `<src>-azure-sb-...`.
+
+When you render or tally the matrix you **must**:
+
+1. **Normalize** both schemes to one canonical `(source, target)` key
+   (`azure-eg`/`azure-eh`/`azure-sb`/`fabric`). A full-name file with
+   `target: "azure"` + a `variant` field maps to the same cell as its
+   short-name twin.
+2. **Dedup by latest mtime** per `(source, target)`. A stale short-name file
+   left over from a prior run will otherwise **mask a fresh full-name PASS** and
+   re-introduce a phantom WARN/FAIL. Always pick the newest file per cell.
+3. **Reconcile after every targeted re-run.** When you re-run one cell to fix a
+   FAIL, the runner may write the full-name file while an old short-name file
+   still sits next to it. Delete or overwrite the stale twin, or the rendered
+   matrix will show the old result. Most "the fix didn't take" confusion on long
+   runs is actually a stale result file, not a real regression.
+
+### Runner-queue saturation (don't fire the whole fleet at once)
+
+Firing 40–105 deployments (or CI runs) simultaneously **saturates the shared
+runner/control-plane queue**: jobs sit in `queued` rather than failing, and a
+naive tally reads them as hangs. Throttle to a small concurrency (the session's
+`rerun_eg_fleet.ps1` used a bounded driver) and let waves drain. Note that
+**merging a PR cancels that branch's queued CI runs** — a useful lever when you
+have intentionally over-queued and want to reclaim the queue.
+
+### Env-key gating — SKIP keyless sources *before* deploy (never mid-deploy)
+
+`tests/e2e_deploy/check_env_keys.ps1` is the authoritative map of which sources
+need which API-key env vars (e.g. `aisstream`→`AISSTREAM_API_KEY`,
+`entsoe`→`ENTSOE_SECURITY_TOKEN`, `billetto`, `nasa-firms`, `uk-bods-siri`). It
+returns `$null` when nothing is missing. **Gate on it and mark the cell SKIP /
+🔒 BLOCKED *before* provisioning** when the key is absent. A keyless deploy of a
+secret-requiring source does not fail cleanly — the ARM `securestring` parameter
+(see next item) prompts on stdin and **hangs the whole non-interactive run
+forever**. Secrets for a run come from the out-of-repo creds file
+(`c:\rts-creds\test-creds.json`), never from the repo.
+
+### ARM `securestring` params with `minLength:1` and no `defaultValue` → stdin-hang
+
+This single template defect produced dozens of false "deploy-failed (exit -1)"
+cells. A `securestring`/`string` ARM parameter with `minLength: 1` and **no**
+`defaultValue` makes `az deployment group create` **prompt on stdin** when the
+corresponding env var is absent (auth-free sources like `dmi`, or any keyless
+run). In a non-interactive E2E that prompt blocks until timeout. **Fix the
+template, not the harness:** add `"defaultValue": ""` to every such parameter
+across the source's `eventhub` / `servicebus` / `eventgrid-mqtt` templates
+(repo precedents: `dmi`, `gbfs-bikeshare`, `siri`, `ticketmaster`). Same class
+as the `gbfsFeeds` param stdin-hang (give it a working default, e.g. Citi Bike
+NYC). This is a *real bug* under "Real Bugs Are Blockers", not a test nuisance.
+
+### Notebook parameter `\n`-gluing corruption → `NameError` on a param
+
+**Symptom:** a Fabric notebook run dies with `NameError: name
+'EVENTSTREAM_NAME' is not defined` (or `RUN_DURATION`, etc.) at the
+connection-string cell, even though the params cell visibly assigns it.
+
+**Root cause:** elements of the `.ipynb` `cell.source` array end with the
+**two-character literal sequence** `\` + `n` instead of a real newline. The
+deploy converter does `($cell.source -join '')` then `-split "<real newline>"`,
+so a literal-`\n` line never splits — the `# === PARAMETERS ===` comment header
+glues onto the `EVENTSTREAM_NAME = ...` line and **comments it out**. The
+variable is then undefined downstream.
+
+**Fix:** heal any source element ending in literal `\n` → real newline right
+after load (lossless — a well-formed element never ends with a literal `\n`),
+and repair the checked-in notebook. Scan the whole fleet for the pattern when
+you find one; it tends to come from a bad programmatic notebook edit, not from
+Jupyter. Related: Pitfall #17 (any SyntaxError fails the whole session before
+cell 0) and Pitfall #21 (non-canonical notebook structure).
+
+### Rendering the matrix
+
+After reconciliation, tally per target: `<n> pass / <n> warn / <n> FAIL`, plus a
+fleet total over all cells. A healthy full-fleet end state is **green/yellow**:
+0 FAIL, with WARNs explained (no-data slow pollers, EG cert-propagation timing,
+upstream seasonally idle). Never report a run "green" while any cell is FAIL or
+while result files are unreconciled — a FAIL is a deploy/crash/auth/schema
+defect that must be fixed or explicitly escalated to the user with its reason.

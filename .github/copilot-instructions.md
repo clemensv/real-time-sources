@@ -365,6 +365,24 @@ Examples of real bugs that must be raised, not worked around silently:
 - avrotize fails to generate dataclasses for schemas that use `$root`.
 - xrcg filter / template bugs that produce empty or malformed output.
 - Any spec-noncompliant header, key, subject, or content-type emission.
+- **"Shipped but never ran" AMQP/MQTT companion bugs** — a whole class of
+  defects where a non-Kafka variant crashes on import or first send and has
+  *never emitted a single event*, yet looked deployed. Observed instances:
+  (a) `Dockerfile.amqp` installed only the `_producer_data` package but not
+  the `_producer_mqtt_client` package the companion app imports →
+  `ModuleNotFoundError` on first poll (12 feeders); (b) a hand-written AMQP
+  `app.py` omitted a required `_feedurl` positional on the generated `send_*`
+  methods → `TypeError` on first send (`dmi-amqp`); (c) a subject placeholder
+  named `{time}` collided with the CloudEvents envelope `_time` param the
+  codegen injects → `SyntaxError: duplicate argument '_time'` in the generated
+  producer (`tepco-denkiyoho-amqp`). These crash-loop in ~7 s with logs that
+  masquerade as auth/RBAC failures. **Mandate:** in CI and before declaring any
+  source done, `py_compile` every generated producer module and **smoke-import
+  the companion `app` module** of every non-Kafka variant (`<src>_amqp.app`,
+  `<src>_mqtt.app`). An import that raises is a blocker, not a flake. Upstream
+  codegen should also reject envelope-vs-placeholder name collisions
+  (file an xregistry/codegen issue) and sanitize numeric-leading enum symbols
+  (file a clemensv/avrotize issue).
 
 The required workflow when you hit one:
 
@@ -383,3 +401,70 @@ The required workflow when you hit one:
 A passing test that hides a generator or spec-compliance bug is worse
 than a failing test, because every future consumer of the generated
 code will hit the same bug in production.
+
+## CI, Dependencies & PR Management
+
+These cross-cutting facts about this repo's CI and PR machinery were learned
+resolving a 116-PR dependabot pile-up and many fleet-validation runs. They are
+durable and apply to any future maintenance work, not one task.
+
+### mypy is repo-wide and stops at the first syntax error
+
+CI runs `mypy feeders` across the **entire** `feeders/` tree. A single
+in-scope file with a `SyntaxError` (e.g. a botched-indentation `WORKAROUND`
+block) makes mypy abort at that file and **fails the mypy check on every open
+PR**, regardless of what the PR touched. When many unrelated PRs fail mypy
+identically, suspect one broken file on `main`, not the PRs. Emulate locally
+with `python -m mypy feeders --config-file mypy.ini --exclude /build/` (the
+`/build/` exclude avoids spurious "Duplicate module" errors from `build/lib`
+artifacts; `mypy.ini` already excludes `tests/` and `*_producer/`).
+
+### Branch protection is OFF → the dependabot auto-merge workflow can't work
+
+`gh api repos/:owner/:repo/branches/main/protection` returns **404** — there is
+no branch protection or merge queue on `main`. `.github/workflows/
+dependabot-auto-merge.yml` runs `gh pr merge --auto`, which **requires** branch
+protection to have something to wait on; without it the command errors on every
+dependabot PR and nothing ever merges. Fixing this is a user decision: either
+(a) add required-status-check branch protection, or (b) change the workflow to
+a direct `gh pr merge --squash` gated on the substantive checks. Do not change
+it unilaterally.
+
+### Stale dependabot branches — use the update-branch API, not bulk rebase
+
+When dependabot branches are many commits behind `main`, their CI fails on the
+**stale tree**, not on the dependency bump. Dependabot **ignores bulk
+`@dependabot rebase` comments** at scale. Instead, merge current `main` into
+each branch non-destructively via the REST API:
+`gh api --method PUT repos/:owner/:repo/pulls/<n>/update-branch`. Then
+**squash-merge** — a squash applies only the dependency diff onto current
+`main`, so the merged result is correct regardless of how stale the branch was.
+A genuine file conflict (e.g. a `requirements.txt` that collides with a
+generated-producer rewrite already on `main`) must be applied directly to
+`main` and the PR closed as superseded.
+
+### gh / az / PowerShell gotchas that silently corrupt automation
+
+- `gh pr list --json statusCheckRollup` **504s** on large PR sets. Use per-PR
+  `gh pr checks <n> --json name,bucket` instead (buckets: `pass`/`fail`/
+  `pending`/`skipping`/`cancel`).
+- **`2>&1` merges gh/az stderr into stdout** and breaks a downstream
+  `ConvertFrom-Json`. Keep stderr separate when you intend to parse stdout.
+- Firing many CI runs at once **saturates the Actions runner queue** (jobs sit
+  `queued`, they are not failing). Merging a PR **cancels** that branch's queued
+  runs — a useful lever to reclaim the queue.
+- Each `powershell` call is a **fresh process** — env vars, working directory,
+  and `az`/virtualenv state do not persist between calls.
+- `&&` only chains **native** commands in PowerShell; use `;` before any
+  language keyword (`if`, `foreach`, `$x =`).
+- A `foreach {}` block can't be piped straight into `Sort-Object` — collect into
+  a variable first.
+- Prefer `git commit -F <file>` over `-m` for multi-line or backslash-bearing
+  commit messages.
+
+### Test secrets live outside the repo
+
+API keys and tokens for E2E/validation runs are stored in
+`c:\rts-creds\test-creds.json` (outside the repo, git-ignored by virtue of
+location). Never commit secrets, never echo them into logs, and read them from
+that file (or the session-local gitignored runner) rather than hardcoding.
