@@ -44,4 +44,7 @@ local_scheme = "no-local-version"
 [tool.setuptools]
 packages = [
     "dwd",
+    "dwd.modules",
+    "dwd.parsers",
+    "dwd.util",
 ]

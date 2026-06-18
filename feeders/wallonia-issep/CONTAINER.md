@@ -140,7 +140,7 @@ All three images share the same operational contract:
 | `real-time-sources-wallonia-issep-mqtt:latest` | MQTT 5 / UNS | `Dockerfile.mqtt` | yes (`STATE_FILE`) |
 | `real-time-sources-wallonia-issep-amqp:latest` | AMQP 1.0 | `Dockerfile.amqp` | yes (`STATE_FILE`) |
 
-Pull and inspect available tags at <https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-wallonia-issep-kafka>.
+Pull and inspect available tags at <https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-wallonia-issep>.
 
 ## Deploying into Azure Container Instances
 
