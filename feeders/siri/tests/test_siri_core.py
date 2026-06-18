@@ -2,6 +2,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import pytest
+
 from siri_core.acquisition import DEFAULT_BODS_URL, DEFAULT_TRAFIKLAB_URL, SiriClient, iter_vehicle_positions
 
 
@@ -68,3 +70,36 @@ def test_custom_request_specs_attach_query_and_headers():
     assert specs[0].request_url == "https://example.test/siri"
     assert specs[0].params == {"api_key": "secret", "key": "secret"}
     assert specs[0].headers == {"X-Api-Key": "secret", "Authorization": "Bearer secret"}
+
+
+def test_bods_bulk_archive_requires_no_api_key():
+    # The default BODS endpoint is the public bulk archive, which is downloadable
+    # without credentials. A missing key must NOT raise for this endpoint.
+    client = SiriClient(provider="bods", api_key="")
+
+    specs = client._build_request_specs()
+
+    assert len(specs) == 1
+    assert specs[0].request_url == DEFAULT_BODS_URL
+    assert specs[0].is_zip is True
+    assert specs[0].params == {}
+
+
+def test_bods_bulk_archive_passes_api_key_when_present():
+    client = SiriClient(provider="bods", api_key="secret")
+
+    specs = client._build_request_specs()
+
+    assert specs[0].params == {"api_key": "secret"}
+
+
+def test_bods_datafeed_requires_api_key():
+    # A non-bulk (filtered) datafeed URL still requires a key.
+    client = SiriClient(
+        provider="bods",
+        siri_url="https://data.bus-data.dft.gov.uk/avl/datafeed",
+        api_key="",
+    )
+
+    with pytest.raises(RuntimeError):
+        client._build_request_specs()

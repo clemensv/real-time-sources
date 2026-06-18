@@ -266,3 +266,24 @@ class TestPollAndSubmitVehicleLocations:
 
         assert result is None
         producer.send_batch.assert_not_called()
+
+    def test_error_document_does_not_crash_and_keeps_watermark(self, requests_mock):
+        """An <Error> document (HTTP 200, no <lastTime>) — e.g. a retired or
+        invalid agency tag — must not crash the feed loop; the prior watermark
+        is returned and nothing is published."""
+        error_xml = (
+            b'<?xml version="1.0" encoding="utf-8" ?>\n'
+            b'<body copyright="All data copyright agencies and Umo IQ 2026.">\n'
+            b'<Error shouldRetry="false">\n'
+            b'  Agency parameter "a=sf-muni" is not valid.\n'
+            b'</Error>\n'
+            b'</body>'
+        )
+        requests_mock.get(BASE_URL, content=error_xml)
+        producer, _ = self._make_producer()
+
+        result = nb.poll_and_submit_vehicle_locations(producer, "sf-muni", "*", 1699999999000.0)
+
+        assert result == 1699999999000.0
+        producer.create_batch.assert_not_called()
+        producer.send_batch.assert_not_called()

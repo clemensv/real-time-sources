@@ -3,11 +3,10 @@ import os
 import time
 import requests
 import xml.etree.ElementTree as ET
-from azure.eventhub import EventHubProducerClient, EventData
 import argparse
 import json
+from dataclasses import dataclass
 from cloudevents.http import CloudEvent
-from cloudevents.conversion import to_json
 
 NEXTBUS_BASE_URL = "https://retro.umoiq.com/service/publicXMLFeed"   
 # Outbound HTTP identity. Operators can override the entire string with the
@@ -90,8 +89,115 @@ def element_to_dict(element):
     data.update(element.attrib)
     return data
 
+@dataclass
+class KafkaEventData:
+    event: CloudEvent
+
+    @property
+    def properties(self):
+        return {
+            "cloudEvents:specversion": self.event["specversion"],
+            "cloudEvents:type": self.event["type"],
+            "cloudEvents:source": self.event["source"],
+            "cloudEvents:id": self.event["id"],
+            "cloudEvents:time": self.event["time"],
+            "cloudEvents:subject": self.event["subject"],
+        }
+
+
+class KafkaEventBatch:
+    def __init__(self, partition_key: str | None = None):
+        self.partition_key = partition_key
+        self.events: list[KafkaEventData] = []
+
+    def add(self, event_data: KafkaEventData):
+        self.events.append(event_data)
+
+    def __len__(self):
+        return len(self.events)
+
+
+class NextbusKafkaProducerClient:
+    def __init__(self, producer):
+        self.producer = producer
+
+    @classmethod
+    def from_connection_string(cls, connection_string: str, topic: str | None = None):
+        from nextbus_producer_kafka_producer.producer import NextbusKafkaEventProducer
+
+        return cls(NextbusKafkaEventProducer.from_connection_string(connection_string, topic=topic))
+
+    def create_batch(self, partition_key: str | None = None):
+        return KafkaEventBatch(partition_key)
+
+    def send_event(self, event_data: KafkaEventData, partition_key: str | None = None):
+        self._send_event(event_data.event)
+
+    def send_batch(self, event_data_batch: KafkaEventBatch):
+        for event_data in event_data_batch.events:
+            self._send_event(event_data.event)
+
+    def close(self):
+        self.producer.producer.flush()
+
+    def _send_event(self, event: CloudEvent):
+        from nextbus_producer_data import Message, RouteConfig, Schedule, VehiclePosition
+
+        data = event.data
+        event_type = event["type"]
+        if event_type == "nextbus.VehiclePosition":
+            payload = VehiclePosition(
+                agency_id=data["agency"],
+                route_tag=data.get("routeTag") or "",
+                vehicle_id=data["id"],
+                stop_or_vehicle_id=data["id"],
+                event_type="vehicle",
+                lat=data.get("lat"),
+                lon=data.get("lon"),
+                timestamp=data.get("timestamp"),
+            )
+            self.producer.send_nextbus_kafka_vehicle_position(
+                payload.agency_id, payload.route_tag, payload.vehicle_id, payload, _time=event["time"]
+            )
+        elif event_type == "nextbus.RouteConfig":
+            payload = RouteConfig(
+                agency_id=data["agency"],
+                route_tag=data["routeTag"],
+                stop_or_vehicle_id=data["routeTag"],
+                event_type="route-config",
+                route_config=data["routeConfig"],
+            )
+            self.producer.send_nextbus_kafka_route_config(
+                payload.agency_id, payload.route_tag, payload.stop_or_vehicle_id, payload, _time=event["time"]
+            )
+        elif event_type == "nextbus.Schedule":
+            payload = Schedule(
+                agency_id=data["agency"],
+                route_tag=data["routeTag"],
+                stop_or_vehicle_id=data["routeTag"],
+                event_type="schedule",
+                schedule=data["schedule"],
+            )
+            self.producer.send_nextbus_kafka_schedule(
+                payload.agency_id, payload.route_tag, payload.stop_or_vehicle_id, payload, _time=event["time"]
+            )
+        elif event_type == "nextbus.Message":
+            payload = Message(
+                agency_id=data["agency"],
+                route_tag=data["routeTag"],
+                stop_or_vehicle_id=data["routeTag"],
+                event_type="message",
+                message=data["messages"],
+            )
+            self.producer.send_nextbus_kafka_message(
+                payload.agency_id, payload.route_tag, payload.stop_or_vehicle_id, payload, _time=event["time"]
+            )
+        else:
+            raise ValueError(f"Unsupported Nextbus event type: {event_type}")
+
+
 route_checksums = {}
-def poll_and_submit_route_config(producer_client: EventHubProducerClient, agency_tag: str):
+def poll_and_submit_route_config(producer_client: NextbusKafkaProducerClient, agency_tag: str):
     # Make a request to the NextBus API to get the list of routes for the specified agency
     response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
@@ -129,9 +235,9 @@ def poll_and_submit_route_config(producer_client: EventHubProducerClient, agency
         # Create a CloudEvent of type nextbus.routeConfig
         event = CloudEvent({
             "specversion": "1.0",
-            "type": "nextbus.routeConfig",
+            "type": "nextbus.RouteConfig",
             "source": "https://retro.umoiq.com/service/publicXMLFeed",
-            "subject": f"{agency_tag}/{route_tag}",
+            "subject": f"{agency_tag}/{route_tag}/route-config/{route_tag}",
             "datacontenttype": "application/json",
             "time": datetime.now(timezone.utc).isoformat()
         })  
@@ -143,7 +249,7 @@ def poll_and_submit_route_config(producer_client: EventHubProducerClient, agency
 
 schedule_checksums = {}
 
-def poll_and_submit_schedule(producer_client: EventHubProducerClient, agency_tag: str):
+def poll_and_submit_schedule(producer_client: NextbusKafkaProducerClient, agency_tag: str):
     # Make a request to the NextBus API to get the list of routes for the specified agency
     response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
@@ -176,9 +282,9 @@ def poll_and_submit_schedule(producer_client: EventHubProducerClient, agency_tag
         # Create a CloudEvent of type nextbus.schedule
         event = CloudEvent({
             "specversion": "1.0",
-            "type": "nextbus.schedule",
+            "type": "nextbus.Schedule",
             "source": "https://retro.umoiq.com/service/publicXMLFeed",
-            "subject": f"{agency_tag}/{route_tag}",
+            "subject": f"{agency_tag}/{route_tag}/schedule/{route_tag}",
             "datacontenttype": "application/json",
             "time": datetime.now(timezone.utc).isoformat()
         })  
@@ -188,7 +294,7 @@ def poll_and_submit_schedule(producer_client: EventHubProducerClient, agency_tag
         print(f"Sent schedule for {agency_tag}/{route_tag}")
 
 messages_checksums = {}
-def poll_and_submit_messages(producer_client : EventHubProducerClient, agency_tag : str):
+def poll_and_submit_messages(producer_client : NextbusKafkaProducerClient, agency_tag : str):
     # Make a request to the NextBus API to get the list of routes for the specified agency
     response = requests.get(NEXTBUS_BASE_URL, params={"command": "routeList", "a": agency_tag}, headers={"User-Agent": USER_AGENT})
     if response.status_code == 404:
@@ -221,9 +327,9 @@ def poll_and_submit_messages(producer_client : EventHubProducerClient, agency_ta
         # Create a CloudEvent of type nextbus.messages
         event = CloudEvent({
             "specversion": "1.0",
-            "type": "nextbus.messages",
+            "type": "nextbus.Message",
             "source": "https://retro.umoiq.com/service/publicXMLFeed",
-            "subject": f"{agency_tag}/{route_tag}",
+            "subject": f"{agency_tag}/{route_tag}/message/{route_tag}",
             "datacontenttype": "application/json",
             "time": datetime.now(timezone.utc).isoformat()
         })  
@@ -236,7 +342,7 @@ def poll_and_submit_messages(producer_client : EventHubProducerClient, agency_ta
 
 vehicle_last_report_times = {}
 
-def poll_and_submit_vehicle_locations(producer_client: EventHubProducerClient, agency_tag: str, route: str | None, last_time : float | None):
+def poll_and_submit_vehicle_locations(producer_client: NextbusKafkaProducerClient, agency_tag: str, route: str | None, last_time : float | None):
     # Make a request to the NextBus API to get the vehicle locations for the specified route
     params = {"command": "vehicleLocations", "a": agency_tag}
     if route != "*":
@@ -253,11 +359,25 @@ def poll_and_submit_vehicle_locations(producer_client: EventHubProducerClient, a
 
     # Parse the XML response and submit each vehicle location to the Event Hub
     root = ET.fromstring(response.content)
+
+    # A vehicleLocations response always carries a <lastTime> element. When it is
+    # absent the upstream returned an <Error> document instead (e.g. a retired or
+    # invalid agency tag, a rate-limit, or scheduled maintenance). Do not crash
+    # the feed loop on that - log the upstream message and keep the prior
+    # watermark so the next cycle retries.
+    last_time_el = root.find("lastTime")
+    if last_time_el is None:
+        err_el = root.find("Error")
+        detail = (err_el.text or "").strip() if err_el is not None else response.text[:200].strip()
+        print(f"NextBus vehicleLocations returned no data for agency '{agency_tag}': {detail}")
+        return last_time
+    feed_last_time = float(last_time_el.get("time"))
+
     event_data_batch = producer_client.create_batch(partition_key=agency_tag)
     vehicles = root.findall("vehicle")
     for vehicle in vehicles:
         vehicle_id = f"{agency_tag}/{vehicle.get('id')}"
-        last_report_time = float(root.find("lastTime").get("time"))/1000 - float(vehicle.get("secsSinceReport"))
+        last_report_time = feed_last_time/1000 - float(vehicle.get("secsSinceReport"))
         if vehicle_id in vehicle_last_report_times and last_report_time <= vehicle_last_report_times[vehicle_id]:
             continue
         event_detail = {
@@ -276,9 +396,9 @@ def poll_and_submit_vehicle_locations(producer_client: EventHubProducerClient, a
             
         event = CloudEvent({
             "specversion": "1.0",
-            "type": "nextbus.vehiclePosition",
+            "type": "nextbus.VehiclePosition",
             "source": "https://retro.umoiq.com/service/publicXMLFeed",
-            "subject": f"{agency_tag}/{vehicle.get('id')}",
+            "subject": f"{agency_tag}/{vehicle.get('routeTag')}/vehicle/{vehicle.get('id')}",
             "datacontenttype": "application/json",
             "time": last_report_time_iso
         })
@@ -294,31 +414,19 @@ def poll_and_submit_vehicle_locations(producer_client: EventHubProducerClient, a
         
     
     producer_client.send_batch(event_data_batch)
-    print(f"Sent {len(event_data_batch)} vehicle positions")    
-    return float(root.find("lastTime").get("time"))
+    print(f"Sent {len(event_data_batch)} vehicle positions")
+    return feed_last_time
 
-def create_event_data(event : CloudEvent) -> EventData:
-    event_json = to_json(event)                
-    event_data = EventData(event_json)
-    event_data.content_type = "application/cloudevents+json; charset=utf-8"
-    event_data.properties = {
-            "cloudEvents:specversion": event['specversion'],
-            "cloudEvents:type": event['type'],
-            "cloudEvents:source": event['source'],
-            "cloudEvents:id": event['id'],
-            "cloudEvents:time": event['time'],
-            "cloudEvents:subject": event['subject'],
-        }
-    
-    return event_data
+def create_event_data(event : CloudEvent) -> KafkaEventData:
+    return KafkaEventData(event)
 
 
-def feed(feed_connection_string: str, feed_event_hub_name: str, reference_connection_string: str | None, reference_event_hub_name: str | None, agency_tag: str, route: str | None, once: bool = False):
-    """Poll vehicle locations and submit to an Event Hub."""
-    feed_producer_client = EventHubProducerClient.from_connection_string(feed_connection_string, eventhub_name=feed_event_hub_name)
-    reference_producer_client = None
+def feed(feed_connection_string: str, feed_topic: str | None, reference_connection_string: str | None, reference_topic: str | None, agency_tag: str, route: str | None, once: bool = False):
+    """Poll vehicle locations and submit CloudEvents through the Kafka endpoint."""
+    feed_producer_client = NextbusKafkaProducerClient.from_connection_string(feed_connection_string, topic=feed_topic)
+    reference_producer_client = feed_producer_client
     if reference_connection_string is not None:
-        reference_producer_client = EventHubProducerClient.from_connection_string(reference_connection_string, eventhub_name=reference_event_hub_name)
+        reference_producer_client = NextbusKafkaProducerClient.from_connection_string(reference_connection_string, topic=reference_topic)
 
     last_vehicle_location_time = time.time()
     last_route_config_time = last_schedule_time = last_messages_time = None
@@ -345,7 +453,8 @@ def feed(feed_connection_string: str, feed_event_hub_name: str, reference_connec
     finally:
         feed_producer_client.close()
         if reference_producer_client is not None:
-            reference_producer_client.close()
+            if reference_producer_client is not feed_producer_client:
+                reference_producer_client.close()
 
 
 def print_vehicle_locations(agency, route):
@@ -385,16 +494,16 @@ def main():
     route_parser.set_defaults(func=lambda args: print_routes(args.agency))
 
     # Define the "feed" command
-    _feed_cs = os.environ.get("FEED_CONNECTION_STRING")
-    _feed_hub = os.environ.get("FEED_EVENT_HUB_NAME")
+    _feed_cs = os.environ.get("CONNECTION_STRING") or os.environ.get("FEED_CONNECTION_STRING")
+    _feed_topic = os.environ.get("KAFKA_TOPIC") or os.environ.get("FEED_EVENT_HUB_NAME")
     _ref_cs = os.environ.get("REFERENCE_CONNECTION_STRING")
-    _ref_hub = os.environ.get("REFERENCE_EVENT_HUB_NAME")
+    _ref_topic = os.environ.get("REFERENCE_KAFKA_TOPIC") or os.environ.get("REFERENCE_EVENT_HUB_NAME")
     _agency = os.environ.get("AGENCY")
-    feed_parser = subparsers.add_parser("feed", help="poll vehicle locations and submit to an Event Hub")
-    feed_parser.add_argument("--feed-connection-string", help="the connection string for the Event Hub namespace", default=_feed_cs, required=_feed_cs is None)
-    feed_parser.add_argument("--feed-event-hub-name", help="the name of the Event Hub to submit to", default=_feed_hub, required=_feed_hub is None)
-    feed_parser.add_argument("--reference-connection-string", help="the connection string for the Event Hub namespace for reference data", default=_ref_cs, required=False)
-    feed_parser.add_argument("--reference-event-hub-name", help="the name of the Event Hub to submit reference data to", default=_ref_hub, required=False)
+    feed_parser = subparsers.add_parser("feed", help="poll vehicle locations and submit to a Kafka-compatible endpoint")
+    feed_parser.add_argument("--feed-connection-string", "--connection-string", help="the Kafka/Event Streams connection string", default=_feed_cs, required=_feed_cs is None)
+    feed_parser.add_argument("--feed-event-hub-name", "--topic", dest="feed_topic", help="optional Kafka topic override; defaults to EntityPath in the connection string", default=_feed_topic, required=False)
+    feed_parser.add_argument("--reference-connection-string", help="optional separate connection string for reference data", default=_ref_cs, required=False)
+    feed_parser.add_argument("--reference-event-hub-name", "--reference-topic", dest="reference_topic", help="optional separate topic for reference data", default=_ref_topic, required=False)
     feed_parser.add_argument("--agency", help="the tag of the agency to poll vehicle locations for", default=_agency, required=_agency is None)
     feed_parser.add_argument("--route", help="the route to poll vehicle locations for, omit or '*' to poll all routes", required=False, default=os.environ.get("ROUTE", "*"))
     feed_parser.add_argument("--poll-interval", help="the number of seconds to wait between polling vehicle locations", required=False, type=float, default=float(os.environ.get("POLLING_INTERVAL") or os.environ.get("POLL_INTERVAL", "10")))
@@ -433,9 +542,8 @@ def launch_feed(args):
     global backoff_time, poll_interval
     backoff_time = args.backoff_interval
     poll_interval = args.poll_interval
-    feed(args.feed_connection_string, args.feed_event_hub_name, args.reference_connection_string, args.reference_event_hub_name, args.agency, args.route, once=args.once)
+    feed(args.feed_connection_string, args.feed_topic, args.reference_connection_string, args.reference_topic, args.agency, args.route, once=args.once)
 
 if __name__ == "__main__":
     main()
-
 
