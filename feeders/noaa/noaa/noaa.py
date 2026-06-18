@@ -442,6 +442,9 @@ class NOAADataPoller:
                         last_polled_times[product][station_id] = max_timestamp
                         self.save_last_polled_times(last_polled_times)
 
+            if os.getenv('ONCE_MODE', 'false').lower() in ('true', '1', 'yes'):
+                break
+
 
 def parse_connection_string(connection_string: str) -> Dict[str, str]:
     """

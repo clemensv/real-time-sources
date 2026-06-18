@@ -206,6 +206,7 @@ def send_stations(api: SYKEHydroAPI, producer: FISYKEHydrologyEventProducer) -> 
             municipality=station.get('KuntaNimi', ''),
             latitude=lat,
             longitude=lon,
+            basin=None,
         )
         producer.send_fi_syke_hydrology_station(_station_id=str(pid), data=station_data, flush_producer=False)
         sent_count += 1

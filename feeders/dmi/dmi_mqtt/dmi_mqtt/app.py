@@ -282,12 +282,8 @@ async def feed(
     seen_ocean: Dict[str, str] = state.setdefault("oceanObs_latest", {})
     seen_tide: Dict[str, str] = state.setdefault("tidewater_latest", {})
 
-    met_api = DmiMetObsAPI(api_keys.met_obs) if api_keys.met_obs else None
-    ocean_api = DmiOceanObsAPI(api_keys.ocean_obs) if api_keys.ocean_obs else None
-    if met_api is None and ocean_api is None:
-        raise RuntimeError(
-            "At least one of DMI_METOBS_API_KEY / DMI_OCEANOBS_API_KEY must be configured for MQTT."
-        )
+    met_api = DmiMetObsAPI(api_keys.met_obs)
+    ocean_api = DmiOceanObsAPI(api_keys.ocean_obs)
 
     paho_client = mqtt.Client(
         callback_api_version=CallbackAPIVersion.VERSION2,
