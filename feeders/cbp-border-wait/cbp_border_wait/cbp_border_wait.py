@@ -17,7 +17,15 @@ import requests
 from confluent_kafka import Producer
 from cbp_border_wait_producer_data.gov.cbp.borderwait.port import Port
 from cbp_border_wait_producer_data.gov.cbp.borderwait.waittime import WaitTime
-from cbp_border_wait_producer_kafka_producer.producer import GovCbpBorderwaitEventProducer
+try:
+    from cbp_border_wait_producer_kafka_producer.producer import GovCbpBorderwaitEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    GovCbpBorderwaitEventProducer = None
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)

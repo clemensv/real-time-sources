@@ -129,7 +129,7 @@ docker run --rm \
 
 ## Using the MQTT image
 
-The MQTT image (`…-noaa-mqtt`) publishes MQTT 5.0 CloudEvents into a Unified-Namespace topic tree at QoS 1 with `retain=true` on every leaf so new subscribers can obtain the latest value per station/product immediately. It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/fabric/real-time-hub/add-source-event-grid).
+The MQTT image (`…-noaa-mqtt`) publishes MQTT 5.0 CloudEvents into a Unified-Namespace topic tree at QoS 1 with `retain=true` on every leaf so new subscribers can obtain the latest value per station/product immediately. It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-source-azure-event-grid).
 
 ### Topic template
 

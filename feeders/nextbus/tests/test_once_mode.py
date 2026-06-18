@@ -11,7 +11,7 @@ def test_feed_once_exits_after_one_cycle(monkeypatch):
     reference_client = MagicMock()
 
     fake_from_connection_string = MagicMock(side_effect=[feed_client, reference_client])
-    monkeypatch.setattr(bridge.EventHubProducerClient, "from_connection_string", fake_from_connection_string)
+    monkeypatch.setattr(bridge.NextbusKafkaProducerClient, "from_connection_string", fake_from_connection_string)
     monkeypatch.setattr(bridge, "poll_and_submit_route_config", lambda *args, **kwargs: None)
     monkeypatch.setattr(bridge, "poll_and_submit_schedule", lambda *args, **kwargs: None)
     monkeypatch.setattr(bridge, "poll_and_submit_messages", lambda *args, **kwargs: None)
@@ -28,7 +28,7 @@ def test_main_respects_once_mode_env_var(monkeypatch):
     captured = {}
 
     monkeypatch.setenv("FEED_CONNECTION_STRING", "Endpoint=sb://example.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=abc==;EntityPath=feed-hub")
-    monkeypatch.setenv("FEED_EVENT_HUB_NAME", "feed-hub")
+    monkeypatch.setenv("KAFKA_TOPIC", "feed-hub")
     monkeypatch.setenv("AGENCY", "sf-muni")
     monkeypatch.setenv("ONCE_MODE", "true")
     monkeypatch.setattr(sys, "argv", ["nextbus", "feed"])
