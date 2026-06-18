@@ -8,7 +8,7 @@
 
 # JMA Bosai Quake
 
-<sub>JMA earthquake bulletins (hypocenter, magnitude, JMA intensity) · Kafka · MQTT · AMQP · <a href="https://www.jma.go.jp/bosai/map.html?contents=earthquake_map">upstream</a> · <a href="https://www.jma.go.jp/bosai/quake/">API docs</a></sub>
+<sub>JMA earthquake bulletins (hypocenter, magnitude, JMA intensity) · Kafka · MQTT · AMQP · <a href="https://www.jma.go.jp/bosai/map.html?contents=earthquake_map">upstream</a> · <a href="https://www.jma.go.jp/en/quake/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This document covers the published OCI images for the JMA Bosai Quake source, in
 ## Upstream
 
 - Home page: <https://www.jma.go.jp/bosai/map.html?contents=earthquake_map>
-- API / data documentation: <https://www.jma.go.jp/bosai/quake/>
+- API / data documentation: <https://www.jma.go.jp/en/quake/>
 
 <!-- upstream-links:end -->
 

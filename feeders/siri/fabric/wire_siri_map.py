@@ -28,6 +28,17 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
     "(+https://github.com/clemensv/real-time-sources; "
     + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
 )
+MAP_DEFINITION_RETRY_BACKOFF_SECONDS = (5, 10)
+
+
+class FabricTransientLroError(RuntimeError):
+    """Fabric LRO reported a generic failure that is safe to retry."""
+
+
+def _is_unknown_lro_failure(status: dict[str, Any]) -> bool:
+    code = str(status.get("errorCode") or "").strip().lower()
+    message = str(status.get("message") or "").strip().lower()
+    return code == "unknown" or "unknown error" in message or (code == "" and message == "")
 
 
 def _get_token(env_name: str, scope: str | list[str]) -> str:
@@ -73,7 +84,10 @@ def _poll_lro(session: requests.Session, response: requests.Response) -> Any:
             result = session.get(op_url + "/result")
             return result.json() if result.content else None
         if status.get("status") == "Failed":
-            raise RuntimeError(f"Fabric LRO failed: {json.dumps(status)[:800]}")
+            payload = json.dumps(status)[:800]
+            if _is_unknown_lro_failure(status):
+                raise FabricTransientLroError(f"Fabric LRO failed with a transient unknown error: {payload}")
+            raise RuntimeError(f"Fabric LRO failed: {payload}")
         time.sleep(2)
 
 
@@ -522,12 +536,22 @@ def _put_definition(
         "payload": _b64(json.dumps(mp, indent=2)),
         "payloadType": "InlineBase64",
     }
-    response = fabric.post(
-        f"{api_base}/workspaces/{workspace_id}/items/{map_id}/updateDefinition",
-        json={"definition": {"parts": list(parts.values())}},
-    )
-    print(f"updateDefinition HTTP {response.status_code}")
-    _poll_lro(fabric, response)
+    attempts = len(MAP_DEFINITION_RETRY_BACKOFF_SECONDS) + 1
+    for attempt in range(1, attempts + 1):
+        response = fabric.post(
+            f"{api_base}/workspaces/{workspace_id}/items/{map_id}/updateDefinition",
+            json={"definition": {"parts": list(parts.values())}},
+        )
+        print(f"updateDefinition HTTP {response.status_code} (attempt {attempt}/{attempts})")
+        try:
+            _poll_lro(fabric, response)
+            return
+        except FabricTransientLroError as exc:
+            if attempt == attempts:
+                raise
+            delay = MAP_DEFINITION_RETRY_BACKOFF_SECONDS[attempt - 1]
+            print(f"  updateDefinition LRO returned unknown error; retrying in {delay}s: {exc}")
+            time.sleep(delay)
 
 
 def _set_basemap(mp: dict[str, Any]) -> None:

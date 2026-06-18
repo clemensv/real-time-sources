@@ -347,7 +347,7 @@ def test_observation_json_roundtrip():
 @pytest.mark.unit
 def test_sensor_configuration_serialization():
     from wallonia_issep_producer_data import SensorConfiguration
-    config = SensorConfiguration(configuration_id="10412")
+    config = SensorConfiguration(configuration_id="10412", province="unknown")
     serialized = config.to_serializer_dict()
     assert serialized == {"configuration_id": "10412", "province": "unknown"}
     restored = SensorConfiguration.from_serializer_dict(serialized)
@@ -358,7 +358,7 @@ def test_sensor_configuration_serialization():
 @pytest.mark.unit
 def test_sensor_configuration_json_roundtrip():
     from wallonia_issep_producer_data import SensorConfiguration
-    config = SensorConfiguration(configuration_id="10296")
+    config = SensorConfiguration(configuration_id="10296", province="unknown")
     json_str = config.to_json()  # type: ignore[attr-defined]
     restored = SensorConfiguration.from_json(json_str)  # type: ignore[attr-defined]
     assert restored.configuration_id == "10296"
@@ -578,6 +578,41 @@ def test_pagination_empty_results():
     assert records == []
 
 
+@pytest.mark.unit
+def test_fetch_all_records_accepts_opendatasoft_v21_flat_results():
+    """Regression: Explore v2.1 returns flat records under results, not v1 fields wrappers."""
+    session = MagicMock()
+    session.get.return_value = FakeResponse({
+        "total_count": 2,
+        "results": [
+            {
+                "id_configuration": 10175,
+                "moment": "2026-06-17T13:07:43+02:00",
+                "ppbno": 2.117,
+                "pm10": 4.33,
+                "vbat_statut": 100,
+            },
+            {
+                "id_configuration": 10373,
+                "moment": "2026-06-17T13:05:23+02:00",
+                "ppbno": 1.0,
+                "pm10": 3.0,
+                "vbat_statut": 100,
+            },
+        ],
+    })
+    api = WalloniaISsePAPI(session=session)
+
+    records = api.fetch_all_records()
+    configs = api.extract_configurations(records)
+    observations = [api.normalize_observation(record) for record in records]
+
+    assert len(records) == 2
+    assert records[0]["id_configuration"] == 10175
+    assert {c.configuration_id for c in configs} == {"10175", "10373"}
+    assert [o.configuration_id for o in observations] == ["10175", "10373"]
+
+
 # ---------------------------------------------------------------------------
 # Kafka config building
 # ---------------------------------------------------------------------------
@@ -612,6 +647,20 @@ def test_build_kafka_config_connection_string():
     config, topic = WalloniaISsePAPI.build_kafka_config(args)
     assert config["bootstrap.servers"] == "broker:9092"
     assert topic == "my-topic"
+
+
+@pytest.mark.unit
+def test_build_kafka_config_connection_string_entity_path_wins_over_kafka_topic():
+    args = Namespace(
+        connection_string="BootstrapServer=broker:9092;EntityPath=eventstream-entity",
+        kafka_bootstrap_servers=None,
+        kafka_topic="wrong-default-topic",
+        sasl_username=None,
+        sasl_password=None,
+        kafka_enable_tls="false",
+    )
+    _, topic = WalloniaISsePAPI.build_kafka_config(args)
+    assert topic == "eventstream-entity"
 
 
 @pytest.mark.unit
@@ -755,6 +804,7 @@ def test_emit_reference_data_calls_producer():
     api = WalloniaISsePAPI()
     mock_producer = MagicMock()
     mock_producer.producer = MagicMock()
+    mock_producer.producer.flush.return_value = 0
     records = [
         {"id_configuration": 10412, "moment": "2026-04-08T20:21:04+02:00"},
         {"id_configuration": 10296, "moment": "2026-04-08T20:16:42+02:00"},
@@ -770,6 +820,7 @@ def test_emit_reference_data_passes_correct_args():
     api = WalloniaISsePAPI()
     mock_producer = MagicMock()
     mock_producer.producer = MagicMock()
+    mock_producer.producer.flush.return_value = 0
     records = [{"id_configuration": 10412, "moment": "2026-04-08T20:21:04+02:00"}]
     api.emit_reference_data(mock_producer, records)
     call_kwargs = mock_producer.send_be_issep_airquality_sensor_configuration.call_args.kwargs
@@ -792,6 +843,7 @@ def test_poll_observations_emits_new():
     api = WalloniaISsePAPI(session=session)
     mock_producer = MagicMock()
     mock_producer.producer = MagicMock()
+    mock_producer.producer.flush.return_value = 0
     state: Dict = {}
 
     count, all_records = api.poll_observations(producer=mock_producer, state=state)
@@ -813,11 +865,31 @@ def test_poll_observations_dedup():
     api = WalloniaISsePAPI(session=session)
     mock_producer = MagicMock()
     mock_producer.producer = MagicMock()
+    mock_producer.producer.flush.return_value = 0
     state = {"10412": "2026-04-08T20:21:04+02:00"}
 
     count, _ = api.poll_observations(producer=mock_producer, state=state)
     assert count == 0
     mock_producer.send_be_issep_airquality_observation.assert_not_called()
+
+
+@pytest.mark.unit
+def test_poll_observations_does_not_advance_state_on_flush_failure():
+    session = MagicMock()
+    session.get.return_value = FakeResponse({
+        "total_count": 1,
+        "results": [SAMPLE_RECORD],
+    })
+    api = WalloniaISsePAPI(session=session)
+    mock_producer = MagicMock()
+    mock_producer.producer = MagicMock()
+    mock_producer.producer.flush.return_value = 1
+    state: Dict = {}
+
+    with pytest.raises(RuntimeError, match="Kafka flush failed"):
+        api.poll_observations(producer=mock_producer, state=state)
+
+    assert state == {}
 
 
 # Type alias for Dict used in tests
