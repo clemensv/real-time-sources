@@ -22,7 +22,15 @@ from confluent_kafka import Producer
 from jma_bosai_volcano_producer_data import Volcano, VolcanicWarning, VolcanicEruption
 from jma_bosai_volcano_producer_data.conditionenum import ConditionEnum
 from jma_bosai_volcano_producer_data.eruptiontypeenum import EruptionTypeenum
-from jma_bosai_volcano_producer_kafka_producer.producer import JPJMAVolcanoEventProducer
+try:
+    from jma_bosai_volcano_producer_kafka_producer.producer import JPJMAVolcanoEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    JPJMAVolcanoEventProducer = None
 
 WARNING_URL = "https://www.jma.go.jp/bosai/volcano/data/warning.json"
 ERUPTION_URL = "https://www.jma.go.jp/bosai/volcano/data/eruption.json"
