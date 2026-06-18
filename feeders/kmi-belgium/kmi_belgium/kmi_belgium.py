@@ -97,6 +97,7 @@ class KMIBelgiumAPI:
             station_code=str(properties["code"]),
             latitude=latitude,
             longitude=longitude,
+            region=None,
         )
 
     @staticmethod
@@ -109,6 +110,7 @@ class KMIBelgiumAPI:
         }
         for field_name in OBSERVATION_FIELDS:
             observation[field_name] = _to_float(properties.get(field_name))
+        observation["region"] = None
         return WeatherObservation(**observation)
 
     @staticmethod

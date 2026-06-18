@@ -185,4 +185,5 @@ $script = Join-Path $PSScriptRoot "wire_gtfs_map.py"
     --kql-db-id    $KqlDatabaseId `
     --kusto-uri    $KustoUri `
     --kusto-db     $KustoDatabase
-if ($LASTEXITCODE -ne 0) { throw "wire_gtfs_map.py exited with $LASTEXITCODE" }
+if ($LASTEXITCODE -ne 0) { Write-Warning "wire_gtfs_map.py exited with $LASTEXITCODE (map wiring failed but core deployment succeeded)" }
+
