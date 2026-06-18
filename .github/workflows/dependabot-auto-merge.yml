@@ -2,16 +2,72 @@ name: Dependabot auto-merge
 on: pull_request
 
 permissions:
-  pull-requests: write
   contents: write
+  pull-requests: write
+  checks: read
+  statuses: read
 
 jobs:
   auto-merge:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     steps:
-      - name: Enable auto-merge for Dependabot PRs
-        run: gh pr merge --auto --squash "$PR_URL"
+      - name: Wait for substantive checks, then squash-merge
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Name of THIS workflow, excluded from the gate so it never waits on itself.
+          SELF_WORKFLOW: Dependabot auto-merge
+        run: |
+          set -euo pipefail
+
+          # gh pr merge --auto is a no-op without branch protection / a merge queue,
+          # which this repo does not use. Instead we poll the PR's check rollup
+          # (excluding this workflow's own run) and perform a direct squash-merge
+          # once every other check has concluded successfully.
+
+          INITIAL_DELAY=60      # let sibling pull_request checks register
+          INTERVAL=30           # seconds between polls
+          MAX_POLLS=90          # ~45 min ceiling after the initial delay
+
+          echo "Waiting ${INITIAL_DELAY}s for sibling checks to register..."
+          sleep "$INITIAL_DELAY"
+
+          stable_green=0
+          for i in $(seq 1 "$MAX_POLLS"); do
+            checks=$(gh pr checks "$PR_URL" --json name,workflow,bucket 2>/dev/null || echo '[]')
+
+            # Exclude this workflow's own check run from the gate.
+            others=$(echo "$checks" | jq --arg self "$SELF_WORKFLOW" \
+              '[.[] | select((.workflow // "") != $self)]')
+
+            total=$(echo "$others"   | jq 'length')
+            failed=$(echo "$others"  | jq '[.[] | select(.bucket == "fail" or .bucket == "cancel")] | length')
+            pending=$(echo "$others" | jq '[.[] | select(.bucket == "pending")] | length')
+
+            echo "poll $i/$MAX_POLLS: total=$total pending=$pending failed=$failed"
+
+            if [ "$failed" -gt 0 ]; then
+              echo "::error::Substantive checks failed for $PR_URL; not merging."
+              echo "$others" | jq -r '.[] | select(.bucket == "fail" or .bucket == "cancel") | "  FAILED: \(.workflow) / \(.name)"'
+              exit 1
+            fi
+
+            if [ "$total" -gt 0 ] && [ "$pending" -eq 0 ]; then
+              # Require two consecutive all-green polls so a late-registering
+              # check cannot slip in during a momentary empty window.
+              stable_green=$((stable_green + 1))
+              if [ "$stable_green" -ge 2 ]; then
+                echo "All substantive checks passed; squash-merging."
+                gh pr merge --squash --delete-branch "$PR_URL"
+                exit 0
+              fi
+            else
+              stable_green=0
+            fi
+
+            sleep "$INTERVAL"
+          done
+
+          echo "::error::Checks did not all conclude within the poll window for $PR_URL."
+          exit 1
