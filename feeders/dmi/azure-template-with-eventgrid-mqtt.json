@@ -56,14 +56,14 @@
     },
     "dmiMetObsApiKey": {
       "type": "securestring",
-      "minLength": 1,
+      "defaultValue": "",
       "metadata": {
         "description": "Per-API key for the MetObs API."
       }
     },
     "dmiOceanObsApiKey": {
       "type": "securestring",
-      "minLength": 1,
+      "defaultValue": "",
       "metadata": {
         "description": "Per-API key for the OceanObs API."
       }

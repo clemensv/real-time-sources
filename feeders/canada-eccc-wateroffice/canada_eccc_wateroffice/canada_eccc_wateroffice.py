@@ -115,6 +115,7 @@ class ECCCWaterOfficeAPI:
             real_time=bool(real_time_raw) if real_time_raw is not None else None,
             latitude=latitude,
             longitude=longitude,
+            basin=props.get("BASIN") or props.get("DRAINAGE_BASIN"),
         )
 
     @staticmethod
@@ -149,6 +150,7 @@ class ECCCWaterOfficeAPI:
             discharge=float(discharge_raw) if discharge_raw is not None else None,
             latitude=latitude,
             longitude=longitude,
+            basin=props.get("BASIN") or props.get("DRAINAGE_BASIN"),
         )
 
 

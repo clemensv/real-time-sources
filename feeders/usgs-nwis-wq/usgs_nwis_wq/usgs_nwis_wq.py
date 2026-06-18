@@ -476,7 +476,7 @@ def main():
     sasl_username = getattr(args, 'sasl_username', None) or os.environ.get("SASL_USERNAME", "")
     sasl_password = getattr(args, 'sasl_password', None) or os.environ.get("SASL_PASSWORD", "")
 
-    last_polled_file = os.environ.get("USGS_WQ_LAST_POLLED_FILE", "/mnt/state/usgs_wq_last_polled.json")
+    last_polled_file = os.environ.get("USGS_WQ_LAST_POLLED_FILE") or os.environ.get("STATE_FILE") or "/lakehouse/default/Files/feeder-state/usgs-nwis-wq/state.json"
     states_arg = getattr(args, 'states', None) or os.environ.get("USGS_WQ_STATES", "")
     sites_arg = getattr(args, 'sites', None) or os.environ.get("USGS_WQ_SITES", "")
     param_codes = getattr(args, 'parameter_codes', None) or os.environ.get("USGS_WQ_PARAMETER_CODES", "")
