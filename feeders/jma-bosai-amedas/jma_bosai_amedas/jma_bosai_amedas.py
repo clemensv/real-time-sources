@@ -19,7 +19,15 @@ from confluent_kafka import Producer
 
 from jma_bosai_amedas_producer_data.jp.jma.amedas.observation import Observation
 from jma_bosai_amedas_producer_data.jp.jma.amedas.station import Station
-from jma_bosai_amedas_producer_kafka_producer.producer import JPJMAAmedasEventProducer
+try:
+    from jma_bosai_amedas_producer_kafka_producer.producer import JPJMAAmedasEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    JPJMAAmedasEventProducer = None
 
 BASE_URL = "https://www.jma.go.jp/bosai/amedas"
 LATEST_TIME_URL = f"{BASE_URL}/data/latest_time.txt"

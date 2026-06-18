@@ -110,6 +110,8 @@ jobs:
           fi
           if [ -d "$src/${id}_kafka_producer" ]; then
             echo "producer_dir=./$src/${id}_kafka_producer" >> "$GITHUB_OUTPUT"
+          elif [ -d "$src/${id}_rt_producer" ]; then
+            echo "producer_dir=./$src/${id}_rt_producer" >> "$GITHUB_OUTPUT"
           elif [ -d "$src/${id}_producer" ]; then
             echo "producer_dir=./$src/${id}_producer" >> "$GITHUB_OUTPUT"
           else
