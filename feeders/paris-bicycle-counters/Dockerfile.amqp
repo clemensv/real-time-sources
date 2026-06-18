@@ -24,6 +24,7 @@ COPY . /app
 RUN pip install --no-cache-dir ./paris_bicycle_counters_amqp_producer/paris_bicycle_counters_amqp_producer_data \
  && pip install --no-cache-dir ./paris_bicycle_counters_amqp_producer/paris_bicycle_counters_amqp_producer_amqp_producer \
  && pip install --no-cache-dir ./paris_bicycle_counters_mqtt_producer/paris_bicycle_counters_mqtt_producer_data \
+ && pip install --no-cache-dir ./paris_bicycle_counters_mqtt_producer/paris_bicycle_counters_mqtt_producer_mqtt_client \
  && pip install --no-cache-dir ./paris_bicycle_counters_producer/paris_bicycle_counters_producer_data \
  && pip install --no-cache-dir . \
  && pip install --no-cache-dir ./paris_bicycle_counters_mqtt \

@@ -46,7 +46,16 @@ from usgs_iv_producer_data.usgs.instantaneousvalues.gateopening import GateOpeni
 from usgs_iv_producer_data.usgs.instantaneousvalues.otherparameter import OtherParameter
 from usgs_iv_producer_data.usgs.sites.site import Site
 from usgs_iv_producer_data.usgs.sites.sitetimeseries import SiteTimeseries
-from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer, USGSInstantaneousValuesEventProducer
+try:
+    from usgs_iv_producer_kafka_producer.producer import USGSSitesEventProducer, USGSInstantaneousValuesEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    USGSSitesEventProducer = None
+    USGSInstantaneousValuesEventProducer = None
 # pylint: enable=import-error, line-too-long
 
 
