@@ -27,7 +27,15 @@ from jma_bosai_quake_producer_data import (
     InfoTypeenum,
     MaxIntensityenum,
 )
-from jma_bosai_quake_producer_kafka_producer.producer import JPJMAQuakeEventProducer
+try:
+    from jma_bosai_quake_producer_kafka_producer.producer import JPJMAQuakeEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    JPJMAQuakeEventProducer = None
 
 LIST_URL = "https://www.jma.go.jp/bosai/quake/data/list.json"
 DETAIL_BASE_URL = "https://www.jma.go.jp/bosai/quake/data/"
