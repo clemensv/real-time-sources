@@ -1,19 +1,41 @@
 <#
 .SYNOPSIS
-    Subscribes to an Event Grid MQTT namespace and validates CloudEvents MQTT user properties.
-    Returns the message count.
+    Subscribes to an Event Grid MQTT namespace with a freshly-registered client
+    certificate and validates CloudEvents MQTT user properties. Returns the
+    message count.
 
 .DESCRIPTION
-    NOTE: Event Grid MQTT namespace RBAC roles (EventGrid TopicSpaces Subscriber) alone do NOT
-    allow external connections from non-Azure clients. A registered client certificate or
-    Entra JWT client registration is required. This script will fail with rc=135 (Not authorized)
-    from external (non-Azure) machines without an explicit client registration.
+    Event Grid MQTT namespaces do NOT accept an external subscriber that merely
+    holds an Entra "EventGrid TopicSpaces Subscriber" RBAC role on the topic
+    space — the user token's `sub` claim does not match the `oid` the broker
+    authorizes, and username/password is the wrong transport for the JWT anyway.
+    The working approach (verified live) is:
 
-    This is a known limitation tracked in GitHub Issue #840.
-    Currently documents the expected behavior and returns 0 as a BLOCKED result.
+      1. Register a self-signed client certificate as a namespace Client
+         (ThumbprintMatch) with a Subscriber permission binding on the topic
+         space — via tools/Register-EventGridMqttTestClient.ps1.
+      2. Subscribe to the topic space's actual `topicTemplates` (which end in
+         `/#`), NOT a bare `#`. A bare `#` is broader than the topic-space
+         template and the broker returns SUBACK reason code 135 (Not
+         authorized); the template itself is granted (reason code 1) and
+         receives every published message regardless of topic depth.
 
-    The Source parameter is used to derive the MQTT topic subscription pattern from the
-    xreg manifest's topic space template (not a hardcoded pattern).
+    This was the root cause of the long-standing "issue #840" WARNs: the
+    validator subscribed to bare `#`, was silently rejected (no on_subscribe
+    SUBACK check), and reported 0 messages. Subscribing to the topic-space
+    template fixes it.
+
+    Return contract:
+      >= 1  : that many CloudEvents messages were received and validated.
+       0    : connected + SUBACK granted, but the feeder published nothing in
+              the window (legitimately quiet source — caller treats as WARN
+              no-data, NOT a failure).
+      -1    : genuine block — cert registration failed, CONNACK rejected, or
+              SUBACK rejected (reason code >= 128). Caller treats as WARN
+              blocked.
+
+    The Source parameter locates the feeder folder for logging only; the
+    subscribe filters come from the live topic space, not from xreg.
 #>
 param(
     [Parameter(Mandatory)][string]$Hostname,
@@ -21,143 +43,187 @@ param(
     [Parameter(Mandatory)][string]$Subscription,
     [Parameter(Mandatory)][string]$SessionDir,
     [Parameter(Mandatory)][string]$Source,
-    [string]$TopicPattern = "",  # derived from xreg if empty
+    [string]$TopicPattern = "",   # optional explicit override; otherwise live topic templates are used
     [int]$TimeoutSeconds = 600,
     [int]$MinMessages = 1
 )
 
+$ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path "$PSScriptRoot/../..").Path
-$sourceDir = Join-Path $repoRoot "feeders" $Source
 
-# Derive topic pattern from xreg if not provided
-if (-not $TopicPattern) {
-    $xregFiles = Get-ChildItem "$sourceDir/xreg" -Filter "*.xreg.json" -ErrorAction SilentlyContinue
-    if ($xregFiles) {
-        $xreg = Get-Content $xregFiles[0].FullName -Raw | ConvertFrom-Json
-        # Find topicSpaces entries for MQTT binding
-        $topicTemplates = $xreg.endpoints.PSObject.Properties.Value |
-            Where-Object { $_.config.protocol -eq "mqtt" } |
-            Select-Object -ExpandProperty config -ErrorAction SilentlyContinue |
-            Select-Object -ExpandProperty topicTemplates -ErrorAction SilentlyContinue
-        if ($topicTemplates) {
-            # Convert URI template to MQTT wildcard
-            $rawPattern = $topicTemplates | Select-Object -First 1
-            $TopicPattern = ($rawPattern -replace "\{[^}]+\}", "+")
-        }
-    }
+# 1. Resolve the Event Grid namespace and its first topic space.
+$egNs = az eventgrid namespace list --resource-group $ResourceGroup --subscription $Subscription `
+    --query "[0]" -o json 2>$null | ConvertFrom-Json
+if (-not $egNs) {
+    Write-Warning "No Event Grid namespace found in resource group '$ResourceGroup'."
+    return -1
 }
+$nsName  = $egNs.name
+$mqttHost = if ($Hostname) { $Hostname } else { $egNs.topicSpacesConfiguration.hostname }
 
-if (-not $TopicPattern) {
-    Write-Warning "Could not derive MQTT topic pattern from xreg for '$Source'. Using '#'."
-    $TopicPattern = "#"
+$topicSpaces = az eventgrid namespace topic-space list --resource-group $ResourceGroup `
+    --namespace-name $nsName --subscription $Subscription -o json 2>$null | ConvertFrom-Json
+if (-not $topicSpaces -or @($topicSpaces).Count -eq 0) {
+    Write-Warning "No topic space found on namespace '$nsName'."
+    return -1
 }
-Write-Host "  MQTT topic pattern: $TopicPattern"
+$ts      = @($topicSpaces)[0]
+$tsName  = $ts.name
+$templates = @($ts.topicTemplates)
+if ($TopicPattern) { $templates = @($TopicPattern) }
+if (-not $templates -or $templates.Count -eq 0) { $templates = @('#') }
+Write-Host "  Topic space: $tsName  templates: $($templates -join ', ')"
 
-$consumerScript = @"
-import sys, json, time, ssl, threading
+# 2. Register a cert-based subscriber client + Subscriber permission binding.
+$certDir = Join-Path $SessionDir "mqtt-certs-$Source"
+if (Test-Path $certDir) { Remove-Item $certDir -Recurse -Force }
+New-Item -ItemType Directory -Force -Path $certDir | Out-Null
+$clientName = ("e2e-reader-$Source" -replace '[^-a-zA-Z0-9]', '-')
+if ($clientName.Length -gt 60) { $clientName = $clientName.Substring(0, 60) }
+$registerLog = Join-Path $certDir 'register.log'
+Write-Host "  Registering cert subscriber client '$clientName' on topic space '$tsName'..."
+& "$repoRoot\tools\Register-EventGridMqttTestClient.ps1" `
+    -ResourceGroup $ResourceGroup `
+    -NamespaceName $nsName `
+    -SubscriptionId $Subscription `
+    -ClientName $clientName `
+    -ClientGroupName "e2e-readers" `
+    -TopicSpaceName $tsName `
+    -OutputDirectory $certDir `
+    -CertValidityDays 1 *> $registerLog
+$certFile = Join-Path $certDir "$clientName.crt"
+$keyFile  = Join-Path $certDir "$clientName.key"
+$caFile   = Join-Path $certDir "$clientName-ca.crt"
+if (-not (Test-Path $certFile) -or -not (Test-Path $keyFile)) {
+    Write-Warning "Cert registration failed; see $registerLog (tail):"
+    Get-Content $registerLog -Tail 20 -ErrorAction SilentlyContinue | ForEach-Object { Write-Warning "    $_" }
+    return -1
+}
+# Cert + permission binding propagation.
+Start-Sleep -Seconds 30
+
+# 3. Subscribe with the cert, SUBACK-checked, against the topic-space templates.
+$consumerScript = @'
+import sys, json, time, threading, os
 import paho.mqtt.client as mqtt
+from paho.mqtt.enums import CallbackAPIVersion
 
-hostname = sys.argv[1]
-topic_pattern = sys.argv[2]
-timeout = int(sys.argv[3])
-min_msgs = int(sys.argv[4])
-token = sys.argv[5] if len(sys.argv) > 5 else ""
+hostname, certfile, keyfile, cafile, client_id, templates_arg, timeout, minmsgs = (
+    sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4], sys.argv[5],
+    sys.argv[6], int(sys.argv[7]), int(sys.argv[8])
+)
+templates = [t for t in templates_arg.split(';') if t]
 
 messages = []
-errors = []
 connected = threading.Event()
+suback = {}
+mid_to_topic = {}
+auth_rejected = []
+connack = {"rc": None}
 
-def on_connect(client, userdata, flags, rc, properties=None):
-    if rc == 0:
-        client.subscribe(topic_pattern, qos=1)
+
+def on_connect(c, u, f, rc, props=None):
+    rc2 = rc if isinstance(rc, int) else rc.value
+    connack["rc"] = rc2
+    if rc2 == 0:
+        for t in templates:
+            res, mid = c.subscribe(t, qos=1)
+            mid_to_topic[mid] = t
         connected.set()
     else:
-        errors.append(f"Connect failed with rc={rc} (Not authorized={rc==5})")
+        auth_rejected.append("CONNACK rc=%d" % rc2)
         connected.set()
 
-def on_message(client, userdata, msg):
-    user_props = {}
-    if hasattr(msg, 'properties') and msg.properties and msg.properties.UserProperty:
-        user_props = {k: v for k, v in msg.properties.UserProperty}
-    messages.append({
-        "topic": msg.topic,
-        "user_properties": user_props,
-        "payload_size": len(msg.payload),
-        "payload_preview": msg.payload[:200].decode(errors='replace')
-    })
 
-client = mqtt.Client(protocol=mqtt.MQTTv5, client_id=f"e2e-test-{topic_pattern[:20].replace('/','').replace('+','')}")
-client.on_connect = on_connect
-client.on_message = on_message
+def on_subscribe(c, u, mid, reason_codes, props=None):
+    vals = [(rc if isinstance(rc, int) else rc.value) for rc in reason_codes]
+    suback[mid_to_topic.get(mid, "?")] = vals
+    for v in vals:
+        if v >= 128:
+            auth_rejected.append("SUBACK %s rc=%d" % (mid_to_topic.get(mid, "?"), v))
 
-if token:
-    client.username_pw_set(username="e2e-test-client", password=token)
-client.tls_set(tls_version=ssl.PROTOCOL_TLS_CLIENT)
 
-try:
-    client.connect(hostname, 8883, keepalive=60)
-    client.loop_start()
+def on_message(c, u, msg):
+    up = {}
+    p2 = getattr(msg, "properties", None)
+    if p2 and getattr(p2, "UserProperty", None):
+        up = {str(k): str(v) for k, v in p2.UserProperty}
+    messages.append({"topic": msg.topic, "user_properties": up, "payload_size": len(msg.payload)})
 
-    if not connected.wait(timeout=30):
-        raise Exception("Connection timeout")
 
-    if errors and "Not authorized" in errors[0]:
-        raise Exception(f"Auth rejected: {errors[0]}. External MQTT subscription requires registered client cert. See issue #840.")
+c = mqtt.Client(client_id=client_id, callback_api_version=CallbackAPIVersion.VERSION2, protocol=mqtt.MQTTv5)
+if cafile and os.path.exists(cafile):
+    c.tls_set(ca_certs=cafile, certfile=certfile, keyfile=keyfile)
+else:
+    c.tls_set(certfile=certfile, keyfile=keyfile)
+c.username_pw_set(client_id)
+c.on_connect = on_connect
+c.on_subscribe = on_subscribe
+c.on_message = on_message
+c.connect(hostname, 8883, keepalive=60)
+c.loop_start()
 
-    start = time.time()
-    while len(messages) < min_msgs and (time.time() - start) < timeout:
-        time.sleep(1)
-
-    client.loop_stop()
-    client.disconnect()
-
-    # Validate CloudEvents MQTT binary binding:
-    # Per CloudEvents MQTT spec, attribute names are bare (no ce- prefix).
-    # The generated client strips ce- prefix before setting user properties.
-    for i, msg in enumerate(messages):
-        up = msg["user_properties"]
-        # Accept both bare names and ce- prefixed (both observed in practice)
-        for attr_bare, attr_prefixed in [("type","ce-type"), ("source","ce-source"), ("subject","ce-subject")]:
-            if attr_bare not in up and attr_prefixed not in up:
-                errors.append(f"Message {i}: missing MQTT user property '{attr_bare}' (or '{attr_prefixed}')")
-
-except Exception as e:
-    print(json.dumps({"error": str(e), "messages": messages, "validation_errors": errors}))
+if not connected.wait(30):
+    print(json.dumps({"error": "connect-timeout", "messages": [], "count": 0}))
+    sys.exit(1)
+if connack["rc"] not in (0, None):
+    print(json.dumps({"error": "connack:" + ";".join(auth_rejected), "messages": [], "count": 0}))
     sys.exit(1)
 
-print(json.dumps({"messages": messages, "count": len(messages), "validation_errors": errors}))
-"@
+# Give SUBACKs a moment, then bail early if every subscription was rejected.
+time.sleep(3)
+if auth_rejected and len(messages) == 0:
+    print(json.dumps({"error": "suback-rejected:" + ";".join(auth_rejected),
+                      "suback": suback, "messages": [], "count": 0}))
+    sys.exit(1)
 
-# Get an Entra token for the Event Grid namespace (may not work for auth but try)
-$token = az account get-access-token --resource "https://eventgrid.azure.net/" `
-    --subscription $Subscription --query accessToken --output tsv 2>$null
+deadline = time.time() + timeout
+while time.time() < deadline and len(messages) < minmsgs:
+    time.sleep(1)
+c.loop_stop()
+c.disconnect()
 
-$scriptPath = Join-Path $SessionDir "$Source-mqtt-consumer.py"
+# CloudEvents MQTT user-property validation (bare names per CE MQTT binding;
+# accept ce- prefixed too, both observed in practice).
+verr = []
+for i, m in enumerate(messages[:50]):
+    up = m["user_properties"]
+    for bare, pref in [("type", "ce-type"), ("source", "ce-source"), ("subject", "ce-subject")]:
+        if bare not in up and pref not in up:
+            verr.append("msg%d missing %s" % (i, bare))
+
+print(json.dumps({"messages": messages[:10], "count": len(messages),
+                  "suback": suback, "auth_rejected": auth_rejected,
+                  "validation_errors": verr}))
+'@
+
+$scriptPath = Join-Path $certDir "subscriber.py"
 $consumerScript | Set-Content $scriptPath -Encoding utf8
-
-if (-not (Test-Path $scriptPath)) {
-    throw "Failed to write consumer script to '$scriptPath'. Ensure SessionDir exists: $SessionDir"
-}
-
-$stderrFile = [System.IO.Path]::GetTempFileName()
-$pyResult = & python $scriptPath $Hostname $TopicPattern $TimeoutSeconds $MinMessages $token 2>$stderrFile | Out-String
+$templatesArg = ($templates -join ';')
+$stderrFile = Join-Path $certDir 'sub-err.log'
+$pyResult = & python $scriptPath $mqttHost $certFile $keyFile $caFile $clientName $templatesArg $TimeoutSeconds $MinMessages 2>$stderrFile | Out-String
+$pyExit = $LASTEXITCODE
 $stderrContent = ((Get-Content $stderrFile -Raw -ErrorAction SilentlyContinue) ?? "").Trim()
-Remove-Item $stderrFile -ErrorAction SilentlyContinue
-Remove-Item $scriptPath -ErrorAction SilentlyContinue
 
-# Extract the JSON line (last line starting with '{') in case there are non-JSON warnings on stdout
 $jsonLine = ($pyResult -split "`n" | Where-Object { $_ -ne $null -and $_.Trim().StartsWith('{') } | Select-Object -Last 1)
+
+# Clean up cert material (contains a private key).
+Remove-Item $certDir -Recurse -Force -ErrorAction SilentlyContinue
+
 if (-not $jsonLine) {
-    throw "No JSON output from MQTT consumer. Stderr: $stderrContent. Stdout: $pyResult"
+    Write-Warning "No JSON output from MQTT subscriber. Stderr: $stderrContent"
+    return -1
 }
 $parsed = $jsonLine.Trim() | ConvertFrom-Json
+
 if ($parsed.error) {
-    Write-Warning "MQTT consumer blocked: $($parsed.error)"
-    Write-Warning "This is a known limitation for EG MQTT from external clients. See issue #840."
-    return -1  # Signal blocked (not a test error, but not success either)
+    Write-Warning "MQTT subscribe blocked: $($parsed.error)"
+    if ($parsed.suback) { Write-Warning "  SUBACK reason codes: $($parsed.suback | ConvertTo-Json -Compress)" }
+    return -1
 }
 if ($parsed.validation_errors -and $parsed.validation_errors.Count -gt 0) {
     Write-Warning "MQTT CloudEvents validation errors: $($parsed.validation_errors -join '; ')"
 }
-
-return $parsed.count
+Write-Host "  SUBACK reason codes: $($parsed.suback | ConvertTo-Json -Compress)"
+Write-Host "  Received $($parsed.count) MQTT message(s) via cert subscriber"
+return [int]$parsed.count

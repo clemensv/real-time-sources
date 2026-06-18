@@ -47,7 +47,7 @@ Companion docs:
 
 ## Why this bridge
 
-Digitraffic Road exposes Finland's national road traffic network as a live MQTT-over-WebSocket feed at `wss://tie.digitraffic.fi/mqtt` plus reference-data REST endpoints under `https://tie.digitraffic.fi/api/`. The source covers automatic traffic measurement stations, road weather stations, traffic announcements, road works, weight restrictions, exempted transports, and maintenance vehicle tracking.
+Digitraffic Road exposes Finland's national road traffic network as a live MQTT-over-WebSocket feed at `wss://tie.digitraffic.fi/mqtt` plus reference-data REST endpoints under `https://tie.digitraffic.fi/swagger/`. The source covers automatic traffic measurement stations, road weather stations, traffic announcements, road works, weight restrictions, exempted transports, and maintenance vehicle tracking.
 
 This bridge turns that upstream stream into a production-friendly event source so consumers can subscribe on their messaging fabric of choice instead of writing and operating their own long-lived MQTT client, REST bootstrap, gzip/base64 decoding, CloudEvents wrapping, and transport-specific publishing.
 
