@@ -792,6 +792,35 @@ Write-Step "B/3" "Patching notebook parameters + KQL/Environment binding..."
 $nbJson = Get-Content -LiteralPath $notebookPath -Raw -Encoding UTF8
 $nb = $nbJson | ConvertFrom-Json
 
+# ── Heal literal-"\n" source-array corruption ─────────────────────────────
+# Some notebooks have been committed with source-array elements whose line
+# terminator was stored as the two-character text sequence backslash+n
+# instead of a real newline. When the .ipynb -> Fabric notebook-content.py
+# converter joins such elements (($cell.source -join '')) and re-splits on a
+# real newline, the corrupted lines merge: e.g. the "# === PARAMETERS ==="
+# comment header glues onto the EVENTSTREAM_NAME assignment, commenting it out
+# and yielding "NameError: name 'EVENTSTREAM_NAME' is not defined" at runtime.
+# A well-formed source-array element NEVER ends with a literal backslash+n
+# (string literals such as "abc\n" end with a REAL newline after the closing
+# quote, and the last element of a cell ends with no newline at all), so
+# converting a trailing literal "\n" to a real newline is a safe, lossless
+# repair that auto-heals this recurring corruption at deploy time.
+$healedLines = 0
+foreach ($cell in $nb.cells) {
+    if (-not $cell.source) { continue }
+    $srcArr = @($cell.source)
+    $fixed = foreach ($l in $srcArr) {
+        if ($l -is [string] -and $l.EndsWith('\n')) {
+            $healedLines++
+            $l.Substring(0, $l.Length - 2) + "`n"
+        } else { $l }
+    }
+    $cell.source = @($fixed)
+}
+if ($healedLines -gt 0) {
+    Write-Info "Healed $healedLines source line(s) with literal-'\n' terminators (notebook source-array corruption)."
+}
+
 # ── Read checked-in POLLING_INTERVAL and ONCE_MODE from the notebook when
 #    the user didn't explicitly pass them on the command line. This ensures
 #    the deploy script respects the source-specific cadence committed in the
@@ -1056,35 +1085,43 @@ $nbList = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/
 $existing = $nbList.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
 
 if ($existing) {
-    Invoke-FabricApi -Method POST `
-        -Url "$FabricApi/workspaces/$WorkspaceId/notebooks/$($existing.id)/updateDefinition" `
-        -Body @{ definition = $definition } | Out-Null
-    Write-OK "Updated existing notebook '$NotebookName' ($($existing.id))"
-    $notebookId = $existing.id
-} else {
-    $createBody = @{ displayName = $NotebookName; definition = $definition }
-    $createResp = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/notebooks" -Body $createBody
-    if ($createResp -and $createResp.id) {
-        $notebookId = $createResp.id
-    } else {
-        # Fabric REST API has eventual consistency — retry with backoff
-        $notebookId = $null
-        for ($attempt = 1; $attempt -le 6; $attempt++) {
-            Start-Sleep -Seconds (5 * $attempt)
-            $nbList2 = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/notebooks"
-            $created = $nbList2.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
-            if ($created) {
-                $notebookId = $created.id
-                break
-            }
-            Write-Info "Notebook '$NotebookName' not yet visible (attempt $attempt/6)..."
-        }
-        if (-not $notebookId) { throw "Notebook '$NotebookName' was not found after create (retried 6 times over 105s)." }
-    }
-    Write-OK "Created notebook '$NotebookName' ($notebookId)"
+    # Delete and recreate rather than updateDefinition — Fabric caches notebook definitions
+    # and may run the old version for several minutes after updateDefinition succeeds.
+    # A fresh CREATE guarantees the new definition is used immediately.
+    Write-Info "Deleting existing notebook '$NotebookName' ($($existing.id)) to force fresh creation..."
+    Invoke-FabricApi -Method DELETE -Url "$FabricApi/workspaces/$WorkspaceId/items/$($existing.id)" | Out-Null
+    Start-Sleep -Seconds 5
+    $existing = $null
 }
 
+$createBody = @{ displayName = $NotebookName; definition = $definition }
+$createResp = Invoke-FabricApi -Method POST -Url "$FabricApi/workspaces/$WorkspaceId/notebooks" -Body $createBody
+if ($createResp -and $createResp.id) {
+    $notebookId = $createResp.id
+} else {
+    # Fabric REST API has eventual consistency — retry with backoff
+    $notebookId = $null
+    for ($attempt = 1; $attempt -le 6; $attempt++) {
+        Start-Sleep -Seconds (5 * $attempt)
+        $nbList2 = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/notebooks"
+        $created = $nbList2.value | Where-Object { $_.displayName -eq $NotebookName } | Select-Object -First 1
+        if ($created) {
+            $notebookId = $created.id
+            break
+        }
+        Write-Info "Notebook '$NotebookName' not yet visible (attempt $attempt/6)..."
+    }
+    if (-not $notebookId) { throw "Notebook '$NotebookName' was not found after create (retried 6 times over 105s)." }
+}
+Write-OK "Created notebook '$NotebookName' ($notebookId)"
+
 Remove-Item $tmpNb -ErrorAction SilentlyContinue
+
+# Wait briefly to let the Fabric Eventstream's CustomEndpoint connection string become available
+# via the Topology API. Without this, the notebook's CS-lookup cell may exhaust its retries
+# on a freshly-created Eventstream and crash before the run cell logs the failure.
+Write-Info "Waiting 45s for Eventstream CS endpoint to be ready..."
+Start-Sleep -Seconds 45
 
 # ── Stage B/5: Trigger a first run + create a recurring schedule ─────────
 if (-not $NoTriggerNow) {

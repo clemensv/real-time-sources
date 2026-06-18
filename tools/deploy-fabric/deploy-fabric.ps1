@@ -270,9 +270,22 @@ function Invoke-FabricApi {
         [System.IO.File]::WriteAllText($bodyFile, $json, [System.Text.UTF8Encoding]::new($false))
         $azArgs += @("--body", "@$bodyFile", "--headers", "Content-Type=application/json")
     }
-    $result = & az @azArgs 2>&1
-    if ($LASTEXITCODE -ne 0) {
-        throw "Fabric API error ($Method $Url): $($result | Out-String)"
+    # Retry transient control-plane failures (throttling / 5xx / network blips).
+    # Fabric's API intermittently fails simple GETs with a non-zero az exit and
+    # an empty body; a single failure previously aborted the entire deploy.
+    # Only idempotent reads are retried automatically to avoid duplicate writes.
+    $maxAttempts = if ($Method -in @('GET','HEAD')) { 5 } else { 1 }
+    $result = $null
+    for ($attempt = 1; $attempt -le $maxAttempts; $attempt++) {
+        $result = & az @azArgs 2>&1
+        if ($LASTEXITCODE -eq 0) { break }
+        if ($attempt -lt $maxAttempts) {
+            $delay = [int][Math]::Min(30, 3 * [Math]::Pow(2, $attempt - 1))
+            Write-Host "  [retry] Fabric API $Method $Url failed (attempt $attempt/$maxAttempts); retrying in ${delay}s..." -ForegroundColor DarkYellow
+            Start-Sleep -Seconds $delay
+        } else {
+            throw "Fabric API error ($Method $Url) after $maxAttempts attempt(s): $($result | Out-String)"
+        }
     }
     if ($result) { return ConvertFrom-AzCliJson -InputObject $result -Context "Fabric API response ($Method $Url)" }
     return $null
@@ -333,7 +346,7 @@ function Get-EventStreamConnectionString {
         [string]$WsId,
         [string]$EventStreamId
     )
-    $maxRetries = 5
+    $maxRetries = 20   # topology endpoint may take 5+ min to register
     $lastErr = $null
     for ($retry = 0; $retry -lt $maxRetries; $retry++) {
         try {
@@ -358,7 +371,7 @@ function Get-EventStreamConnectionString {
             $lastErr = $_.Exception.Message
             if ($_.ErrorDetails -and $_.ErrorDetails.Message) { $lastErr += " | $($_.ErrorDetails.Message)" }
         }
-        if ($retry -lt ($maxRetries - 1)) { Start-Sleep -Seconds ([Math]::Min(15, 3 * ($retry + 1))) }
+        if ($retry -lt ($maxRetries - 1)) { Start-Sleep -Seconds 30 }
     }
     Write-Warning "Get-EventStreamConnectionString failed after $maxRetries tries: $lastErr"
     return $null
@@ -388,7 +401,8 @@ function Wait-EventStreamTopologyReady {
                 $destinations = @($topo.destinations | Where-Object { $_.type -eq "Eventhouse" })
                 $destinationsReady = $destinations.Count -gt 0 -and @($destinations | Where-Object { $_.status -ne "Running" }).Count -eq 0
                 if ($destinationsReady) {
-                    # Source failed but destination is running — the custom endpoint provisioning failed
+                    # Source failed but destination is running — custom endpoint provisioning failed.
+                    # Signal to caller to delete and recreate the Event Stream.
                     throw "Event Stream source node(s) permanently Failed: $($failedSources | ForEach-Object { $_.name } | Join-String -Separator ', '). Destination is Running. Recreate the Event Stream or check the custom endpoint configuration."
                 }
             }
@@ -459,14 +473,17 @@ function Invoke-SourcePostDeployHook {
     try {
         & $hookPath -Context $Context
         if ($LASTEXITCODE -ne 0 -and $null -ne $LASTEXITCODE) {
-            throw "Post-deploy hook exited with code $LASTEXITCODE"
+            Write-Warning "Post-deploy hook exited with code $LASTEXITCODE (non-fatal: core deployment succeeded)"
+            Write-Warning "Re-run the hook manually if needed:"
+            Write-Warning "  pwsh $hookPath -Context <hashtable>"
+            $global:LASTEXITCODE = 0  # reset so deploy-feeder-notebook.ps1 does not abort
+        } else {
+            Write-OK "Post-deploy hook completed"
         }
-        Write-OK "Post-deploy hook completed"
     } catch {
         Write-Warning "Post-deploy hook failed: $($_.Exception.Message)"
         Write-Warning "Core deployment was successful; re-run the hook manually:"
         Write-Warning "  pwsh $hookPath -Context <hashtable>"
-        throw
     }
 }
 
@@ -474,6 +491,39 @@ function Invoke-SourcePostDeployHook {
 
 Write-Host "=== Real-Time Sources — Fabric Deployment ===" -ForegroundColor Cyan
 Write-Host "  Source: $Source" -ForegroundColor White
+
+# Track items created in this run so we can clean up on failure.
+# NOTE: these and Invoke-FailureCleanup MUST be defined before the trap below,
+# because PowerShell does not hoist functions — a terminating error during
+# workspace/capacity resolution fires the trap before any later-in-file
+# definition has executed, which previously crashed the handler itself
+# ("Invoke-FailureCleanup is not recognized") and masked the real error.
+$script:createdEventhouseId  = $null
+$script:createdEvenstreamId  = $null
+$script:createdDatabaseId    = $null
+$script:createdNotebookId    = $null
+$script:kqlDbLroFailed       = $false
+
+function Invoke-FailureCleanup {
+    $tok = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv 2>$null
+    if (-not $tok) { return }
+    $ch = @{ Authorization = "Bearer $tok" }
+    foreach ($pair in @(
+        @($script:createdNotebookId,  "Notebook"),
+        @($script:createdEvenstreamId, "Eventstream"),
+        @($script:createdDatabaseId,  "KQLDatabase"),
+        @($script:createdEventhouseId, "Eventhouse")
+    )) {
+        $itemId = $pair[0]; $label = $pair[1]
+        if ($itemId) {
+            try {
+                Invoke-RestMethod "https://api.fabric.microsoft.com/v1/workspaces/$WorkspaceId/items/$itemId" `
+                    -Method Delete -Headers $ch | Out-Null
+                Write-Host "  [cleanup] Deleted $label $itemId" -ForegroundColor DarkGray
+            } catch {}
+        }
+    }
+}
 
 # Cleanup-on-failure trap: delete any items we created if the script fails
 trap {
@@ -515,34 +565,6 @@ $wsInfo = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId"
 $CapacityId = $wsInfo.capacityId
 if (-not $CapacityId) { throw "Could not determine capacity ID for workspace '$($wsInfo.displayName)'" }
 Write-OK "Workspace: $($wsInfo.displayName) ($WorkspaceId)"
-
-# Track items created in this run so we can clean up on failure
-$script:createdEventhouseId  = $null
-$script:createdEvenstreamId  = $null
-$script:createdDatabaseId    = $null
-$script:createdNotebookId    = $null
-$script:kqlDbLroFailed       = $false
-
-function Invoke-FailureCleanup {
-    $tok = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv 2>$null
-    if (-not $tok) { return }
-    $ch = @{ Authorization = "Bearer $tok" }
-    foreach ($pair in @(
-        @($script:createdNotebookId,  "Notebook"),
-        @($script:createdEvenstreamId, "Eventstream"),
-        @($script:createdDatabaseId,  "KQLDatabase"),
-        @($script:createdEventhouseId, "Eventhouse")
-    )) {
-        $itemId = $pair[0]; $label = $pair[1]
-        if ($itemId) {
-            try {
-                Invoke-RestMethod "https://api.fabric.microsoft.com/v1/workspaces/$WorkspaceId/items/$itemId" `
-                    -Method Delete -Headers $ch | Out-Null
-                Write-Host "  [cleanup] Deleted $label $itemId" -ForegroundColor DarkGray
-            } catch {}
-        }
-    }
-}
 
 $eventhouses = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventhouses"
 $ehDetails = $null
@@ -690,7 +712,7 @@ if (-not $existingDb -or $dbStaleness) {
     $databaseId = $null
     # Retry POST every 60s — Eventhouse KQL infra may not be ready immediately.
     # Each retry checks the DB list first; if it appears (auto-created), we're done.
-    $maxRetries = 8   # up to 8 POST attempts × ~60s each = ~8 min total
+    $maxRetries = 20  # up to 20 POST attempts × ~60s each = ~20 min total
     for ($attempt = 0; $attempt -lt $maxRetries -and -not $databaseId; $attempt++) {
         if ($attempt -gt 0) {
             Write-Host "  Retrying KQL DB create (attempt $($attempt+1)/$maxRetries)..." -ForegroundColor Yellow
@@ -805,7 +827,14 @@ if (-not $existingEs) {
         if ($esResp.StatusCode -eq 409) {
             Write-Host "  Event Stream already exists (from prior attempt), searching list..." -ForegroundColor Yellow
         } elseif ($esResp.StatusCode -ge 400) {
-            throw "Event Stream creation returned $($esResp.StatusCode): $($esResp.Content)"
+            $errContent = $esResp.Content
+            if ($errContent -match 'EventStreamBadWebRequest|dependent items do not exist') {
+                # KQL DB indexed by runner but not yet visible to Event Stream service — retry after delay
+                Write-Host "  ES creation: KQL DB not yet visible to Event Stream service (retry $($esAttempt+1)/$maxEsAttempts in 30s)..." -ForegroundColor Yellow
+                Start-Sleep -Seconds 30
+                continue
+            }
+            throw "Event Stream creation returned $($esResp.StatusCode): $errContent"
         } else {
             $esBody = $esResp.Content | ConvertFrom-Json -ErrorAction SilentlyContinue
             if ($esBody -and $esBody.id) {
@@ -841,7 +870,50 @@ if (-not $existingEs) {
 }
 
 Write-Step "4/6" "Event Stream topology configured inline (no separate updateDefinition needed)"
-Wait-EventStreamTopologyReady -WsId $WorkspaceId -EventStreamId $eventstreamId
+$topoAttempts = 3
+for ($topoTry = 0; $topoTry -lt $topoAttempts; $topoTry++) {
+    try {
+        Wait-EventStreamTopologyReady -WsId $WorkspaceId -EventStreamId $eventstreamId
+        break  # topology is ready (or non-fatally timed out)
+    } catch {
+        if ($_.Exception.Message -match "permanently Failed" -and $topoTry -lt ($topoAttempts - 1)) {
+            Write-Host "  Source node permanently Failed — deleting and recreating Event Stream (attempt $($topoTry+2)/$topoAttempts)..." -ForegroundColor Yellow
+            try { Invoke-FabricApi -Method DELETE -Url "$FabricApi/workspaces/$WorkspaceId/items/$eventstreamId" | Out-Null } catch {}
+            Start-Sleep -Seconds 30
+            # Recreate
+            $accessToken = az account get-access-token --resource "https://api.fabric.microsoft.com" --query accessToken -o tsv
+            $esResp2 = Invoke-WebRequest -Uri "$FabricApi/workspaces/$WorkspaceId/eventstreams" -Method POST `
+                -Headers @{ Authorization = "Bearer $accessToken"; "Content-Type" = "application/json" } `
+                -Body ([System.IO.File]::ReadAllText($esCreateFile)) -SkipHttpErrorCheck
+            if ($esResp2.StatusCode -ge 400) { throw "ES recreate failed: $($esResp2.Content)" }
+            $esBody2 = $esResp2.Content | ConvertFrom-Json -EA SilentlyContinue
+            if ($esBody2 -and $esBody2.id) { $eventstreamId = $esBody2.id }
+            else {
+                $lroUrl2 = $esResp2.Headers['Location'] | Select-Object -First 1
+                if ($lroUrl2) {
+                    for ($i = 0; $i -lt 30; $i++) {
+                        Start-Sleep -Seconds 10
+                        $op2 = Invoke-RestMethod $lroUrl2 -Headers @{ Authorization = "Bearer $accessToken" } -SkipHttpErrorCheck -EA SilentlyContinue
+                        if ($op2.status -eq 'Succeeded') { break }
+                        if ($op2.status -in @('Failed','Cancelled')) { throw "ES recreate LRO $($op2.status)" }
+                    }
+                }
+                # Poll for the new ES
+                for ($i = 0; $i -lt 18; $i++) {
+                    Start-Sleep -Seconds 5
+                    $eventstreams2 = Invoke-FabricApi -Method GET -Url "$FabricApi/workspaces/$WorkspaceId/eventstreams"
+                    $newEs = $eventstreams2.value | Where-Object { $_.displayName -eq $EventStreamName } | Select-Object -First 1
+                    if ($newEs -and $newEs.id) { $eventstreamId = $newEs.id; break }
+                }
+            }
+            if (-not $eventstreamId) { throw "Event Stream not found after recreate" }
+            Write-OK "Event Stream recreated (ID: $eventstreamId)"
+            $script:createdEvenstreamId = $eventstreamId
+        } else {
+            throw  # re-throw on last attempt or non-retryable error
+        }
+    }
+}
 
 #  Step 5: Retrieve Custom Endpoint connection string 
 

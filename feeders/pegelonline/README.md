@@ -102,7 +102,7 @@ schemas — switching transport never changes the data model.
 {
   "specversion": "1.0",
   "type": "de.wsv.pegelonline.CurrentMeasurement",
-  "source": "https://www.pegelonline.wsv.de/webservices/rest-api/v2",
+  "source": "https://www.pegelonline.wsv.de/webservice/dokuRestapi",
   "id": "01985f6c-2f55-7c4f-9d2a-3a8e64c4e2a1",
   "time": "2026-05-27T07:30:00Z",
   "subject": "stations/MAXAU/water-level",

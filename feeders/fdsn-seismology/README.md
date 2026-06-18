@@ -72,7 +72,7 @@ All three variants share:
 
 | Node ID | Institution | Base URL | Coverage |
 |---|---|---|---|
-| `emsc` | EMSC | `https://seismicportal.eu/fdsnws/event/1/` | Global aggregator |
+| `emsc` | EMSC | `https://www.seismicportal.eu/fdsnws/event/1/application.wadl` | Global aggregator |
 | `gfz` | GFZ GEOFON | `https://geofon.gfz-potsdam.de/fdsnws/event/1/` | Global M4+ |
 | `ingv` | INGV | `https://webservices.ingv.it/fdsnws/event/1/` | Italy + Mediterranean |
 | `ethz` | ETHZ/SED | `https://eida.ethz.ch/fdsnws/event/1/` | Switzerland + Alpine |

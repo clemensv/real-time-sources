@@ -8,7 +8,7 @@
 
 # DMI
 
-<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · AMQP · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendatadocs.dmi.govcloud.dk/">API docs</a></sub>
+<sub>meteorological observations, sea level, lightning strikes · Kafka · MQTT · AMQP · <a href="https://www.dmi.dk/">upstream</a> · <a href="https://opendataapi.dmi.dk/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,12 +34,12 @@
 ## Upstream
 
 - Home page: <https://www.dmi.dk/>
-- API / data documentation: <https://opendatadocs.dmi.govcloud.dk/>
+- API / data documentation: <https://opendataapi.dmi.dk/>
 
 <!-- upstream-links:end -->
 
 **DMI** is a bridge that polls the [Danish Meteorological Institute Open Data
-API](https://opendatadocs.dmi.govcloud.dk/) and re-emits the **observation
+API](https://opendataapi.dmi.dk/) and re-emits the **observation
 triad** (`metObs` + `oceanObs` + `lightningData`) as CloudEvents. A single
 upstream poller feeds three transport variants:
 
@@ -92,17 +92,24 @@ dmi/
 
 ## API keys
 
-Every DMI API requires a per-API key from
-[https://dmiapi.govcloud.dk/](https://dmiapi.govcloud.dk/) sent in the
-`X-Gravitee-Api-Key` header. Provide one of:
+DMI Open Data is served auth-free from `https://opendataapi.dmi.dk` — **no
+API key is required** for any of the three products. The feeders poll all
+configured products out of the box with no credentials.
+
+Keys remain optional and are only used if you point a feed back at the
+legacy authenticated host (`https://dmigw.govcloud.dk`) via the
+`DMI_METOBS_FEED_ROOT` / `DMI_OCEANOBS_FEED_ROOT` / `DMI_LIGHTNING_FEED_ROOT`
+env vars. In that case supply the matching key:
 
 * `DMI_METOBS_API_KEY` / `DMI_OCEANOBS_API_KEY` / `DMI_LIGHTNING_API_KEY` —
-  per-API keys.
+  per-API keys, sent in the `X-Gravitee-Api-Key` header when present.
 * `DMI_API_KEY` — fallback used for any API without a dedicated key.
 
-The MQTT image ignores `DMI_LIGHTNING_API_KEY`; Kafka and AMQP publish lightning events when it is configured.
+The MQTT image only publishes MetObs and OceanObs events; Kafka and AMQP
+additionally publish lightning events.
 
-Rate limits: **500 req / 5 s** per key (DMI public quota).
+Rate limits: **500 req / 5 s** per key apply to the legacy authenticated
+host (DMI public quota).
 
 ## Quick start with Docker
 
@@ -251,8 +258,8 @@ Pull and run any of the 3 container images directly — laptop, Kubernetes, Azur
 <!-- source-deploy:end -->
 ## Upstream
 
-* DMI Open Data Portal: <https://opendatadocs.dmi.govcloud.dk/>
-* MetObs Bulk: <https://opendatadocs.dmi.govcloud.dk/APIs/MetObsAPI>
-* OceanObs Bulk: <https://opendatadocs.dmi.govcloud.dk/APIs/OceanObsAPI>
-* Lightning: <https://opendatadocs.dmi.govcloud.dk/APIs/LightningDataAPI>
-* Data licence: [Creative Commons Attribution (CC BY 4.0)](https://www.dmi.dk/vejrarkiv/about-dmi/about-dmis-data/).
+* DMI Open Data Portal: <https://opendataapi.dmi.dk/>
+* MetObs Bulk: <https://opendataapi.dmi.dk/v2/metObs/swagger-ui/index.html>
+* OceanObs Bulk: <https://opendataapi.dmi.dk/v2/oceanObs/swagger-ui/index.html>
+* Lightning: <https://opendataapi.dmi.dk/v2/lightningdata/swagger-ui/index.html>
+* Data licence: [Creative Commons Attribution (CC BY 4.0)](https://www.dmi.dk/friedata/dokumentation/basics).
