@@ -404,6 +404,7 @@ class TestAPIRequests:
             "0-203-1-042000": SAMPLE_STATION_DATA_WITH_TEMP,
         }
         api = CHMIHydroAPI()
+        api.get_available_station_ids = MagicMock(return_value=None)
         mock_producer = MagicMock(spec=CZGovCHMIHydroEventProducer)
         mock_producer.producer = MagicMock()
         count = feed_stations(api, mock_producer)
@@ -418,6 +419,7 @@ class TestAPIRequests:
         mock_get_metadata.return_value = [SAMPLE_META_RECORD]
         mock_get_all_data.return_value = {}
         api = CHMIHydroAPI()
+        api.get_available_station_ids = MagicMock(return_value=None)
         mock_producer = MagicMock(spec=CZGovCHMIHydroEventProducer)
         mock_producer.producer = MagicMock()
         count = feed_stations(api, mock_producer)
@@ -432,10 +434,30 @@ class TestAPIRequests:
         mock_get_metadata.return_value = []
         mock_get_all_data.return_value = {}
         api = CHMIHydroAPI()
+        api.get_available_station_ids = MagicMock(return_value=None)
         mock_producer = MagicMock(spec=CZGovCHMIHydroEventProducer)
         mock_producer.producer = MagicMock()
         count = feed_stations(api, mock_producer)
         assert count == 0
+
+    @patch('chmi_hydro.chmi_hydro.CHMIHydroAPI.get_all_station_data')
+    @patch('chmi_hydro.chmi_hydro.CHMIHydroAPI.get_metadata')
+    def test_feed_stations_skips_metadata_stations_without_data_files(self, mock_get_metadata, mock_get_all_data):
+        mock_get_metadata.return_value = [SAMPLE_META_RECORD, SAMPLE_META_RECORD_FORECAST]
+        mock_get_all_data.return_value = {
+            "0-203-1-001000": SAMPLE_STATION_DATA,
+        }
+        api = CHMIHydroAPI()
+        api.get_available_station_ids = MagicMock(return_value={"0-203-1-001000"})
+        mock_producer = MagicMock(spec=CZGovCHMIHydroEventProducer)
+        mock_producer.producer = MagicMock()
+
+        count = feed_stations(api, mock_producer)
+
+        assert count == 3
+        assert mock_producer.send_cz_gov_chmi_hydro_station.call_count == 2
+        mock_get_all_data.assert_called_once_with(["0-203-1-001000"])
+        assert mock_producer.send_cz_gov_chmi_hydro_water_level_observation.call_count == 1
 
     @patch('chmi_hydro.chmi_hydro.CHMIHydroAPI.get_metadata')
     def test_feed_stations_error(self, mock_get_metadata):

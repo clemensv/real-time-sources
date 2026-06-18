@@ -17,9 +17,17 @@ from urllib3.util.retry import Retry
 from confluent_kafka import Producer
 
 from seattle_street_closures_producer_data import StreetClosure
-from seattle_street_closures_producer_kafka_producer.producer import (
-    USWASeattleStreetClosuresEventProducer,
-)
+try:
+    from seattle_street_closures_producer_kafka_producer.producer import (
+        USWASeattleStreetClosuresEventProducer,
+    )
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    USWASeattleStreetClosuresEventProducer = None
 
 LOGGER = logging.getLogger(__name__)
 
