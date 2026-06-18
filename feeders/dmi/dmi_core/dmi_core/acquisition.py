@@ -1,11 +1,14 @@
 """HTTP clients for DMI's three Open Data observation APIs.
 
 All three APIs share the same OGC Features-style pagination contract under
-``https://dmigw.govcloud.dk`` and require their own ``X-Gravitee-Api-Key``
-header. Each client is transport-agnostic: it speaks only HTTP+JSON and
-returns upstream feature dictionaries as-is so that the Kafka and MQTT
-feeders can map them onto their generated data classes without repeating
-HTTP error handling or pagination logic.
+``https://opendataapi.dmi.dk``. As of 2025 this host no longer requires
+authentication, so ``X-Gravitee-Api-Key`` is now optional. The legacy host
+(``https://dmigw.govcloud.dk``) still requires a key; point the
+``DMI_*_FEED_ROOT`` env vars back at it and supply a key if you must use it.
+Each client is transport-agnostic: it speaks only HTTP+JSON and returns
+upstream feature dictionaries as-is so that the Kafka and MQTT feeders can
+map them onto their generated data classes without repeating HTTP error
+handling or pagination logic.
 
 Reference:
   * metObs:    https://opendatadocs.dmi.govcloud.dk/APIs/Meteorological_Observation_Data
@@ -22,9 +25,17 @@ from typing import Any, Dict, Iterable, Iterator, List, Optional
 import requests
 
 
-METOBS_FEED_ROOT = "https://dmigw.govcloud.dk/v2/metObs"
-OCEANOBS_FEED_ROOT = "https://dmigw.govcloud.dk/v2/oceanObs"
-LIGHTNING_FEED_ROOT = "https://dmigw.govcloud.dk/v2/lightningdata"
+# DMI Open Data is served auth-free from opendataapi.dmi.dk. Operators can
+# point any feed back at the legacy authenticated host via these env vars.
+METOBS_FEED_ROOT = os.environ.get(
+    "DMI_METOBS_FEED_ROOT", "https://opendataapi.dmi.dk/v2/metObs"
+)
+OCEANOBS_FEED_ROOT = os.environ.get(
+    "DMI_OCEANOBS_FEED_ROOT", "https://opendataapi.dmi.dk/v2/oceanObs"
+)
+LIGHTNING_FEED_ROOT = os.environ.get(
+    "DMI_LIGHTNING_FEED_ROOT", "https://opendataapi.dmi.dk/v2/lightningdata"
+)
 
 # Rate-limit is 500 requests / 5 seconds per key; per-page limit is 300_000 but
 # we cap at 10_000 to keep individual responses small enough to stream in memory.
@@ -48,22 +59,22 @@ class _DmiBaseAPI:
 
     def __init__(
         self,
-        api_key: str,
+        api_key: Optional[str] = None,
         session: Optional[requests.Session] = None,
         request_timeout: float = 30.0,
     ) -> None:
-        if not api_key:
-            raise ValueError(
-                f"{self.__class__.__name__} requires an API key (X-Gravitee-Api-Key)."
-            )
-        self._api_key = api_key
+        # opendataapi.dmi.dk needs no auth; the key is only sent when supplied
+        # (e.g. when pointed back at the legacy dmigw.govcloud.dk host).
+        self._api_key = api_key or ""
         self._session = session or requests.Session()
         self._session.headers["User-Agent"] = USER_AGENT
         self._request_timeout = request_timeout
 
     def _get(self, path: str, params: Optional[Dict[str, Any]] = None) -> Optional[Dict[str, Any]]:
         url = f"{self.feed_root}{path}"
-        headers = {"X-Gravitee-Api-Key": self._api_key, "Accept": "application/json"}
+        headers = {"Accept": "application/json"}
+        if self._api_key:
+            headers["X-Gravitee-Api-Key"] = self._api_key
         try:
             response = self._session.get(
                 url, headers=headers, params=params, timeout=self._request_timeout

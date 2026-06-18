@@ -115,9 +115,13 @@ foreach ($c in $cmds) {
                 Write-Host "      applied: $label"
                 break
             } catch {
-                if ($attempt -eq $maxAttempts) { throw }
-                Write-Host "      retry ($attempt/$($maxAttempts-1)) after transient error: $label" -ForegroundColor DarkYellow
-                Start-Sleep -Seconds ($attempt * 5)
+                if ($attempt -eq $maxAttempts) {
+                    Write-Warning "      SKIPPED (persistent 400): $label"
+                    Write-Warning "      Error: $($_.Exception.Message)"
+                } else {
+                    Write-Host "      retry ($attempt/$($maxAttempts-1)) after transient error: $label" -ForegroundColor DarkYellow
+                    Start-Sleep -Seconds ($attempt * 5)
+                }
             }
         }
     } finally { Remove-Item $bodyFile -Force }

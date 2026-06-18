@@ -15,7 +15,15 @@ from datetime import datetime, timezone, timedelta
 import argparse
 import requests
 from usgs_geomag_producer_data import Observatory, MagneticFieldReading
-from usgs_geomag_producer_kafka_producer.producer import GovUsgsGeomagEventProducer
+try:
+    from usgs_geomag_producer_kafka_producer.producer import GovUsgsGeomagEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    GovUsgsGeomagEventProducer = None
 
 # Observatories to poll (USGS-operated, non-test stations)
 DEFAULT_OBSERVATORIES = [

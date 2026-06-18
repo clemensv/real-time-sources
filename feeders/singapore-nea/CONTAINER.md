@@ -8,7 +8,7 @@
 
 # Singapore NEA
 
-<sub>62 weather stations + 5 air-quality regions · Kafka · MQTT · AMQP · <a href="https://www.nea.gov.sg/">upstream</a> · <a href="https://www.nea.gov.sg/corporate-functions/weather/weather-data-services">API docs</a></sub>
+<sub>62 weather stations + 5 air-quality regions · Kafka · MQTT · AMQP · <a href="https://www.nea.gov.sg/">upstream</a> · <a href="https://guide.data.gov.sg/developer-guide/real-time-apis">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -35,7 +35,7 @@ This document covers the published OCI container images for the Singapore NEA fe
 ## Upstream
 
 - Home page: <https://www.nea.gov.sg/>
-- API / data documentation: <https://www.nea.gov.sg/corporate-functions/weather/weather-data-services>
+- API / data documentation: <https://guide.data.gov.sg/developer-guide/real-time-apis>
 
 <!-- upstream-links:end -->
 
