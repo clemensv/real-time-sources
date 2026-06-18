@@ -274,14 +274,9 @@ async def feed(
     seen_tide: Dict[str, str] = state.setdefault("tidewater_latest", {})
     last_strike_observed: Dict[str, str] = state.setdefault("lightning_latest", {})
 
-    met_api = DmiMetObsAPI(api_keys.met_obs) if api_keys.met_obs else None
-    ocean_api = DmiOceanObsAPI(api_keys.ocean_obs) if api_keys.ocean_obs else None
-    lightning_api = DmiLightningAPI(api_keys.lightning) if api_keys.lightning else None
-    if met_api is None and ocean_api is None and lightning_api is None:
-        raise RuntimeError(
-            "At least one of DMI_METOBS_API_KEY / DMI_OCEANOBS_API_KEY / "
-            "DMI_LIGHTNING_API_KEY must be configured."
-        )
+    met_api = DmiMetObsAPI(api_keys.met_obs)
+    ocean_api = DmiOceanObsAPI(api_keys.ocean_obs)
+    lightning_api = DmiLightningAPI(api_keys.lightning)
 
     kafka_producer = Producer(kafka_config)
     met_producer = DkDmiMetObsKafkaEventProducer(kafka_producer, kafka_topic)

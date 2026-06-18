@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import json
 import logging
 import os
 import sys
@@ -52,7 +53,12 @@ def _parse_broker_url(url: str) -> tuple[str, int, bool, Optional[str], Optional
 def _fetch_list(session: Any, url: str) -> list[dict[str, Any]]:
     response = session.get(url, timeout=30)
     response.raise_for_status()
-    data = response.json()
+    try:
+        data = response.json()
+    except ValueError:
+        # TfL endpoints intermittently prefix the JSON body with a UTF-8 BOM,
+        # which requests' json() cannot parse; retry with BOM-aware decoding.
+        data = json.loads(response.content.decode("utf-8-sig"))
     if not isinstance(data, list):
         logger.warning("Unexpected TfL response type from %s: %s", url, type(data))
         return []
