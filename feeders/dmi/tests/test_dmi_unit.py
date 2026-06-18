@@ -286,14 +286,31 @@ def test_build_lightning_strike_sensors_none():
 
 
 # ---------------------------------------------------------------------------
-# API clients require key
+# API clients no longer require a key (opendataapi.dmi.dk is auth-free)
 # ---------------------------------------------------------------------------
 
 
-def test_clients_require_api_key():
+def test_clients_accept_missing_api_key():
+    # opendataapi.dmi.dk needs no auth; an empty key must not raise and must
+    # not send an X-Gravitee-Api-Key header.
     for cls in (DmiMetObsAPI, DmiOceanObsAPI, DmiLightningAPI):
-        with pytest.raises(ValueError):
-            cls(api_key="")
+        api = cls(api_key="")
+        captured = {}
+
+        class _Resp:
+            status_code = 200
+
+            @staticmethod
+            def json():
+                return {"features": []}
+
+        def _fake_get(url, headers=None, params=None, timeout=None):
+            captured["headers"] = headers
+            return _Resp()
+
+        with mock.patch.object(api._session, "get", side_effect=_fake_get):
+            api._get("/collections/observation/items")
+        assert "X-Gravitee-Api-Key" not in captured["headers"]
 
 
 def test_pagination_stops_on_short_page():
@@ -313,3 +330,139 @@ def test_pagination_stops_on_empty_page():
     api = DmiMetObsAPI(api_key="k")
     with mock.patch.object(api, "_get", return_value={"features": []}):
         assert list(api._iter_collection("station")) == []
+
+
+
+# ---------------------------------------------------------------------------
+# dmi_amqp feed() — _feedurl CloudEvents-source regression guard
+#
+# Regression for the bug where the AMQP app omitted the required `_feedurl`
+# placeholder on every generated send_* call, raising TypeError on the first
+# emit (the container crash-looped having never published a single event).
+# Drives one --once cycle with fake APIs + recording producers and asserts
+# all eight send paths pass a correct `_feedurl`.
+# ---------------------------------------------------------------------------
+
+
+class _RecordingProducer:
+    """Records (method, kwargs) for every send_* call."""
+
+    def __init__(self):
+        self.calls = []
+
+    def __getattr__(self, name):
+        if name.startswith("send_"):
+            def _recorder(**kwargs):
+                self.calls.append((name, kwargs))
+            return _recorder
+        raise AttributeError(name)
+
+    def close(self):
+        pass
+
+
+class _FakeMetApi:
+    def __init__(self, *_a, **_k):
+        pass
+
+    def list_stations(self):
+        return [{"stationId": "06180", "name": "Roskilde", "country": "DNK",
+                 "latitude": 55.6, "longitude": 12.3}]
+
+    def iter_observations(self, period="latest-hour"):
+        return [{"stationId": "06180", "parameterId": "temp_dry",
+                 "observed": "2026-06-18T10:00:00Z", "value": 12.5}]
+
+
+class _FakeOceanApi:
+    def __init__(self, *_a, **_k):
+        pass
+
+    def list_stations(self):
+        return [{"stationId": "30017", "name": "Koebenhavn", "country": "DNK",
+                 "latitude": 55.7, "longitude": 12.6}]
+
+    def list_tidewater_stations(self):
+        return [{"stationId": "30017", "name": "Koebenhavn", "country": "DNK",
+                 "latitude": 55.7, "longitude": 12.6}]
+
+    def iter_observations(self, period="latest-hour"):
+        return [{"stationId": "30017", "parameterId": "sealev_dvr",
+                 "observed": "2026-06-18T10:00:00Z", "value": 0.42}]
+
+    def iter_tidewater(self, period="latest-hour"):
+        return [{"stationId": "30017", "predictionTime": "2026-06-18T11:00:00Z",
+                 "value": 0.55}]
+
+
+class _FakeLightningApi:
+    def __init__(self, *_a, **_k):
+        pass
+
+    def list_sensors(self):
+        return [{"sensorId": "DK-1", "name": "Sensor DK-1", "country": "DNK",
+                 "latitude": 55.0, "longitude": 11.0}]
+
+    def iter_strikes(self, period="latest-hour"):
+        return [{"id": "strike-9001", "observed": "2026-06-18T10:30:00Z",
+                 "type": 0, "amp": -12.3, "strokes": 1,
+                 "latitude": 55.1, "longitude": 11.2}]
+
+
+def test_amqp_feed_passes_feedurl_on_every_send():
+    import dmi_amqp.app as amqp_app
+    from dmi_core import (
+        LIGHTNING_FEED_ROOT,
+        METOBS_FEED_ROOT,
+        OCEANOBS_FEED_ROOT,
+    )
+
+    met = _RecordingProducer()
+    ocean = _RecordingProducer()
+    lightning = _RecordingProducer()
+
+    with mock.patch.object(amqp_app, "DmiMetObsAPI", _FakeMetApi), \
+         mock.patch.object(amqp_app, "DmiOceanObsAPI", _FakeOceanApi), \
+         mock.patch.object(amqp_app, "DmiLightningAPI", _FakeLightningApi), \
+         mock.patch.object(amqp_app, "load_state", return_value={}), \
+         mock.patch.object(amqp_app, "save_state", return_value=None):
+        amqp_app.feed(
+            DmiApiKeys(met_obs="", ocean_obs="", lightning=""),
+            met,
+            ocean,
+            lightning,
+            polling_interval=0,
+            state_file="",
+            once=True,
+        )
+
+    all_calls = met.calls + ocean.calls + lightning.calls
+    sent_methods = sorted({name for name, _ in all_calls})
+    assert sent_methods == [
+        "send_observation",
+        "send_sensor",
+        "send_station",
+        "send_strike",
+        "send_tidewater_prediction",
+        "send_tidewater_station",
+    ]
+
+    # Every single send_* call MUST carry a non-empty _feedurl (the bug omitted it).
+    for name, kwargs in all_calls:
+        assert "_feedurl" in kwargs, f"{name} missing _feedurl"
+        assert kwargs["_feedurl"], f"{name} has empty _feedurl"
+
+    by_method = {}
+    for name, kwargs in all_calls:
+        by_method.setdefault(name, []).append(kwargs)
+
+    # Spot-check the feed-root prefix for one event per family.
+    assert by_method["send_station"][0]["_feedurl"].startswith(
+        f"{METOBS_FEED_ROOT}/collections/station/items/")
+    assert by_method["send_observation"][0]["_feedurl"].startswith(METOBS_FEED_ROOT)
+    assert by_method["send_tidewater_prediction"][0]["_feedurl"].startswith(
+        f"{OCEANOBS_FEED_ROOT}/collections/tidewater/items?")
+    assert by_method["send_sensor"][0]["_feedurl"].startswith(
+        f"{LIGHTNING_FEED_ROOT}/collections/sensor/items/")
+    assert by_method["send_strike"][0]["_feedurl"].startswith(
+        f"{LIGHTNING_FEED_ROOT}/collections/observation/items/")

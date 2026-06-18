@@ -32,6 +32,33 @@ USER_AGENT = os.environ.get("USER_AGENT") or (
     + os.environ.get("USER_AGENT_CONTACT", "clemensv@microsoft.com") + ")"
 )
 
+FLUSH_TIMEOUT_SECONDS = 120.0
+FLUSH_CHUNK_SIZE = 100
+
+
+def _parse_kiwis_datetime(value: str) -> datetime:
+    """Parse the KIWIS ISO timestamp into a timezone-aware datetime."""
+    return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def _flush_producer(producer: Any, context: str, timeout: float = FLUSH_TIMEOUT_SECONDS) -> None:
+    """Flush Kafka with a bounded timeout and fail if messages remain queued."""
+    remaining = producer.flush(timeout=timeout)
+    if isinstance(remaining, int) and remaining > 0:
+        raise RuntimeError(
+            f"Kafka flush timed out after {timeout:.0f}s while emitting {context}; "
+            f"{remaining} message(s) remain undelivered"
+        )
+
+
+def _water_body(value: Any) -> str:
+    """Normalize optional water-body/routing values."""
+    if value is None:
+        return "unknown"
+    text = str(value).strip()
+    return text or "unknown"
+
+
 def _load_state(state_file: str) -> dict:
     """Load persisted dedup state from a JSON file."""
     try:
@@ -139,11 +166,15 @@ class WaterinfoVMMAPI:
         station_data = self.list_stations()
         headers = station_data[0] if station_data else []
         stations = station_data[1:] if len(station_data) > 1 else []
+        station_water_bodies: Dict[str, str] = {}
         station_count = 0
         for row in stations:
             station_dict = dict(zip(headers, row))
+            water_body = _water_body(station_dict.get("water_body") or station_dict.get("river_name"))
+            station_no = station_dict.get("station_no", "")
+            station_water_bodies[station_no] = water_body
             station = Station(
-                station_no=station_dict.get("station_no", ""),
+                station_no=station_no,
                 station_name=station_dict.get("station_name", ""),
                 station_id=str(station_dict.get("station_id", "")),
                 station_latitude=float(station_dict.get("station_latitude", 0) or 0),
@@ -152,12 +183,15 @@ class WaterinfoVMMAPI:
                 stationparameter_name=station_dict.get("stationparameter_name") or None,
                 ts_id=str(station_dict.get("ts_id", "")) or None,
                 ts_unitname=station_dict.get("ts_unitname") or None,
-                water_body=station_dict.get("water_body") or None,
+                water_body=water_body,
             )
             waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_station(
                 station.station_no, station, flush_producer=False)
             station_count += 1
-        producer.flush()
+            if station_count % FLUSH_CHUNK_SIZE == 0:
+                producer.poll(0)
+                _flush_producer(producer, f"{station_count} station reference records")
+        _flush_producer(producer, f"{station_count} station reference records")
         logging.info("Sent %d stations as reference data", station_count)
 
         # Main polling loop
@@ -167,6 +201,7 @@ class WaterinfoVMMAPI:
                 start_time = time.time()
                 readings = self.get_latest_water_levels()
 
+                pending_readings: Dict[str, str] = {}
                 for entry in readings:
                     ts_id = str(entry.get("ts_id", ""))
                     ts_timestamp = entry.get("timestamp")
@@ -183,10 +218,14 @@ class WaterinfoVMMAPI:
                         ts_id=ts_id,
                         station_no=entry.get("station_no", ""),
                         station_name=entry.get("station_name", ""),
-                        timestamp=ts_timestamp,
+                        timestamp=_parse_kiwis_datetime(str(ts_timestamp)),
                         value=float(ts_value),
                         unit_name=entry.get("ts_unitname", "meter"),
                         parameter_name=entry.get("stationparameter_name", "H"),
+                        water_body=station_water_bodies.get(
+                            entry.get("station_no", ""),
+                            _water_body(entry.get("water_body") or entry.get("river_name")),
+                        ),
                     )
 
                     try:
@@ -197,10 +236,15 @@ class WaterinfoVMMAPI:
                     except Exception as e:
                         logging.error("Error sending reading to kafka: %s", e)
                     # pylint: enable=broad-except
+                        continue
 
-                    previous_readings[reading_key] = ts_timestamp
+                    pending_readings[reading_key] = ts_timestamp
+                    if count % FLUSH_CHUNK_SIZE == 0:
+                        producer.poll(0)
+                        _flush_producer(producer, f"{count} water level readings")
 
-                producer.flush()
+                _flush_producer(producer, f"{count} water level readings")
+                previous_readings.update(pending_readings)
                 end_time = time.time()
                 effective_interval = max(0, polling_interval - (end_time - start_time))
                 logging.info("Sent %d readings in %.1f seconds. Waiting %.0f seconds.",
@@ -216,12 +260,14 @@ class WaterinfoVMMAPI:
                 logging.info("Exiting...")
                 break
             # pylint: disable=broad-except
-            except Exception as e:
-                logging.error("Error occurred: %s", e)
+            except Exception:
+                logging.exception("Error occurred")
+                if once:
+                    raise
                 logging.info("Retrying in %d seconds...", polling_interval)
                 time.sleep(polling_interval)
             # pylint: enable=broad-except
-        producer.flush()
+        _flush_producer(producer, "final shutdown")
 
 
 def main() -> None:

@@ -8,7 +8,7 @@
 
 # BfS ODL
 
-<sub>~1,700 stations, hourly gamma dose rate · Kafka · MQTT · AMQP · <a href="https://odlinfo.bfs.de/">upstream</a> · <a href="https://odlinfo.bfs.de/ODL/EN/service/datenschnittstelle/datenschnittstelle_node.html">API docs</a></sub>
+<sub>~1,700 stations, hourly gamma dose rate · Kafka · MQTT · AMQP · <a href="https://odlinfo.bfs.de/">upstream</a> · <a href="https://odlinfo.bfs.de/ODL/EN/service/data-interface/data-interface_node.html">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This document covers the published OCI images for the BfS ODL source, including 
 ## Upstream
 
 - Home page: <https://odlinfo.bfs.de/>
-- API / data documentation: <https://odlinfo.bfs.de/ODL/EN/service/datenschnittstelle/datenschnittstelle_node.html>
+- API / data documentation: <https://odlinfo.bfs.de/ODL/EN/service/data-interface/data-interface_node.html>
 
 <!-- upstream-links:end -->
 
