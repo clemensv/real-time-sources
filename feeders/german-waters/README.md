@@ -8,7 +8,7 @@
 
 # German Waters
 
-<sub>12 state portals, ~2,724 stations · Kafka · MQTT · AMQP · <a href="https://hvz.lubw.baden-wuerttemberg.de/">upstream</a> · <a href="https://www.hvz.baden-wuerttemberg.de/php/datenfuerentwickler.php">API docs</a></sub>
+<sub>12 state portals, ~2,724 stations · Kafka · MQTT · AMQP · <a href="https://hvz.lubw.baden-wuerttemberg.de/">upstream</a> · <a href="https://hvz.lubw.baden-wuerttemberg.de/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This feeder turns hydrometric data from 12 German federal-state water authoritie
 ## Upstream
 
 - Home page: <https://hvz.lubw.baden-wuerttemberg.de/>
-- API / data documentation: <https://www.hvz.baden-wuerttemberg.de/php/datenfuerentwickler.php>
+- API / data documentation: <https://hvz.lubw.baden-wuerttemberg.de/>
 
 <!-- upstream-links:end -->
 

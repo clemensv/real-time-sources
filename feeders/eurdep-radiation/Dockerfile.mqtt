@@ -11,6 +11,7 @@ WORKDIR /app
 ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
 COPY . /app
 RUN pip install --no-cache-dir confluent-kafka \
+ && pip install --no-cache-dir ./eurdep_radiation_producer/eurdep_radiation_producer_data \
  && pip install --no-cache-dir ./eurdep_radiation_producer/eurdep_radiation_producer_kafka_producer \
  && pip install --no-cache-dir ./eurdep_radiation_mqtt_producer/eurdep_radiation_mqtt_producer_data
 ENV MQTT_BROKER_URL=""

@@ -38,7 +38,15 @@ from nasa_firms_producer_data import (
     ConfidenceLevelenum,
     DaynightEnum,
 )
-from nasa_firms_producer_kafka_producer.producer import NASAFIRMSEventProducer
+try:
+    from nasa_firms_producer_kafka_producer.producer import NASAFIRMSEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    NASAFIRMSEventProducer = None
 # pylint: enable=import-error, line-too-long
 
 

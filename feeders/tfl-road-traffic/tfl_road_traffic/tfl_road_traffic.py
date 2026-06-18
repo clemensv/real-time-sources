@@ -27,7 +27,15 @@ from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 
 from tfl_road_traffic_producer_data import RoadCorridor, RoadStatus, RoadDisruption
-from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadCorridorsEventProducer
+try:
+    from tfl_road_traffic_producer_kafka_producer.producer import UkGovTflRoadCorridorsEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka image.
+    # The MQTT/AMQP images reuse this module solely for the shared build_*/fetch
+    # helpers and the RoadCorridor/RoadStatus/RoadDisruption data classes, so the
+    # Kafka producer is an optional dependency there. Only TflRoadTrafficPoller
+    # (the Kafka bridge) references it, and that class never runs in those images.
+    UkGovTflRoadCorridorsEventProducer = None
 
 
 class UkGovTflRoadDisruptionsEventProducer:
@@ -369,7 +377,12 @@ class TflRoadTrafficPoller:
         try:
             response = self.session.get(url, timeout=30)
             response.raise_for_status()
-            return response.json()
+            try:
+                return response.json()
+            except ValueError:
+                # TfL intermittently prefixes the body with a UTF-8 BOM that
+                # requests' json() rejects; retry with BOM-aware decoding.
+                return json.loads(response.content.decode("utf-8-sig"))
         except Exception as exc:
             logger.warning("Failed to fetch %s: %s", url, exc)
             return None
