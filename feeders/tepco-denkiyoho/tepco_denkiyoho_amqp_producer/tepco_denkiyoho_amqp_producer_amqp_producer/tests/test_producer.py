@@ -307,8 +307,6 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _area_code="value",
-                    _date="value",
-                    _time="value",
                     _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
@@ -338,8 +336,8 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
-                assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
-                assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
+                assert received.subject == "{area_code}".format(area_code="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
         finally:
             producer.close()
 
@@ -361,8 +359,6 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 data=payload,
                 _feedurl="value",
                 _area_code="value",
-                _date="value",
-                _time="value",
                 _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 content_type="application/json"
             )
@@ -374,8 +370,8 @@ class TestJPTEPCODenkiyohoAmqpProducer:
         annotations = received.annotations or {}
         assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.amqp.SupplyCapacity'
         assert received.body is not None
-        assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
-        assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
+        assert received.subject == "{area_code}".format(area_code="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
     
     def test_send_peak_demand_forecast(self, artemis_container):
         """Send and receive a PeakDemandForecast message via ActiveMQ Artemis."""
@@ -403,8 +399,6 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _area_code="value",
-                    _date="value",
-                    _time="value",
                     _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
@@ -434,8 +428,8 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
-                assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
-                assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
+                assert received.subject == "{area_code}".format(area_code="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
         finally:
             producer.close()
 
@@ -457,8 +451,6 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 data=payload,
                 _feedurl="value",
                 _area_code="value",
-                _date="value",
-                _time="value",
                 _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 content_type="application/json"
             )
@@ -470,8 +462,8 @@ class TestJPTEPCODenkiyohoAmqpProducer:
         annotations = received.annotations or {}
         assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast'
         assert received.body is not None
-        assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
-        assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
+        assert received.subject == "{area_code}".format(area_code="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
     
     def test_send_demand_actual(self, artemis_container):
         """Send and receive a DemandActual message via ActiveMQ Artemis."""
@@ -499,8 +491,6 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _area_code="value",
-                    _date="value",
-                    _time="value",
                     _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
@@ -530,8 +520,8 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
-                assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
-                assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
+                assert received.subject == "{area_code}".format(area_code="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
         finally:
             producer.close()
 
@@ -553,8 +543,6 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 data=payload,
                 _feedurl="value",
                 _area_code="value",
-                _date="value",
-                _time="value",
                 _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 content_type="application/json"
             )
@@ -566,8 +554,8 @@ class TestJPTEPCODenkiyohoAmqpProducer:
         annotations = received.annotations or {}
         assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.amqp.DemandActual'
         assert received.body is not None
-        assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
-        assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
+        assert received.subject == "{area_code}".format(area_code="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
     
     def test_send_demand_forecast(self, artemis_container):
         """Send and receive a DemandForecast message via ActiveMQ Artemis."""
@@ -595,8 +583,6 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     data=payload,
                     _feedurl="value",
                     _area_code="value",
-                    _date="value",
-                    _time="value",
                     _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                     content_type="application/json"
                 )
@@ -626,8 +612,8 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 else:
                     # Verify message body is not empty
                     assert received.body is not None
-                assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
-                assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
+                assert received.subject == "{area_code}".format(area_code="value")
+                assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
         finally:
             producer.close()
 
@@ -649,8 +635,6 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                 data=payload,
                 _feedurl="value",
                 _area_code="value",
-                _date="value",
-                _time="value",
                 _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 content_type="application/json"
             )
@@ -662,8 +646,8 @@ class TestJPTEPCODenkiyohoAmqpProducer:
         annotations = received.annotations or {}
         assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.amqp.DemandForecast'
         assert received.body is not None
-        assert received.subject == "jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value")
-        assert annotations.get(symbol('x-opt-partition-key')) == str("jp.tepco.denkiyoho/{date}/{time}".format(date="value", time="value"))[:128]
+        assert received.subject == "{area_code}".format(area_code="value")
+        assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
     
     def test_send_info(self, artemis_container):
         """Send and receive a Info message via ActiveMQ Artemis."""

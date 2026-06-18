@@ -694,8 +694,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         data: SupplyCapacity,
         _feedurl: str,
         _area_code: str,
-        _date: str,
-        _time: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
@@ -705,8 +703,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _area_code (str): Value for placeholder area_code in attribute subject
-            _date (str): Value for AMQP protocol option placeholder date
-            _time (str): Value for AMQP protocol option placeholder time
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (SupplyCapacity): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
@@ -754,7 +750,7 @@ class JPTEPCODenkiyohoAmqpProducer:
         if amqp_creation_time is not None:
             amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
-        amqp_msg.subject = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        amqp_msg.subject = "{area_code}".format(area_code=_area_code)
 
         app_properties = {}
         if app_properties:
@@ -763,7 +759,7 @@ class JPTEPCODenkiyohoAmqpProducer:
             amqp_msg.properties.update(app_properties)
 
         annotations = {}
-        annotation_value = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        annotation_value = "{area_code}".format(area_code=_area_code)
         annotation_value = str(annotation_value)[:128]
         annotations[symbol("x-opt-partition-key")] = annotation_value
         if annotations:
@@ -781,8 +777,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         data_array: typing.List[SupplyCapacity],
         _feedurl: str,
         _area_code: str,
-        _date: str,
-        _time: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
@@ -793,8 +787,6 @@ class JPTEPCODenkiyohoAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _area_code (str): Value for placeholder area_code in attribute subject
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            _date (str): Value for AMQP protocol option placeholder date
-            _time (str): Value for AMQP protocol option placeholder time
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -803,8 +795,6 @@ class JPTEPCODenkiyohoAmqpProducer:
                 _feedurl=_feedurl,
                 _area_code=_area_code,
                 _time=_time,
-                _date=_date,
-                _time=_time,
                 content_type=content_type)
     
     
@@ -812,8 +802,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         data: PeakDemandForecast,
         _feedurl: str,
         _area_code: str,
-        _date: str,
-        _time: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
@@ -823,8 +811,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _area_code (str): Value for placeholder area_code in attribute subject
-            _date (str): Value for AMQP protocol option placeholder date
-            _time (str): Value for AMQP protocol option placeholder time
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (PeakDemandForecast): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
@@ -872,7 +858,7 @@ class JPTEPCODenkiyohoAmqpProducer:
         if amqp_creation_time is not None:
             amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
-        amqp_msg.subject = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        amqp_msg.subject = "{area_code}".format(area_code=_area_code)
 
         app_properties = {}
         if app_properties:
@@ -881,7 +867,7 @@ class JPTEPCODenkiyohoAmqpProducer:
             amqp_msg.properties.update(app_properties)
 
         annotations = {}
-        annotation_value = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        annotation_value = "{area_code}".format(area_code=_area_code)
         annotation_value = str(annotation_value)[:128]
         annotations[symbol("x-opt-partition-key")] = annotation_value
         if annotations:
@@ -899,8 +885,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         data_array: typing.List[PeakDemandForecast],
         _feedurl: str,
         _area_code: str,
-        _date: str,
-        _time: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
@@ -911,8 +895,6 @@ class JPTEPCODenkiyohoAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _area_code (str): Value for placeholder area_code in attribute subject
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            _date (str): Value for AMQP protocol option placeholder date
-            _time (str): Value for AMQP protocol option placeholder time
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -921,8 +903,6 @@ class JPTEPCODenkiyohoAmqpProducer:
                 _feedurl=_feedurl,
                 _area_code=_area_code,
                 _time=_time,
-                _date=_date,
-                _time=_time,
                 content_type=content_type)
     
     
@@ -930,8 +910,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         data: DemandActual,
         _feedurl: str,
         _area_code: str,
-        _date: str,
-        _time: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
@@ -941,8 +919,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _area_code (str): Value for placeholder area_code in attribute subject
-            _date (str): Value for AMQP protocol option placeholder date
-            _time (str): Value for AMQP protocol option placeholder time
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (DemandActual): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
@@ -990,7 +966,7 @@ class JPTEPCODenkiyohoAmqpProducer:
         if amqp_creation_time is not None:
             amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
-        amqp_msg.subject = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        amqp_msg.subject = "{area_code}".format(area_code=_area_code)
 
         app_properties = {}
         if app_properties:
@@ -999,7 +975,7 @@ class JPTEPCODenkiyohoAmqpProducer:
             amqp_msg.properties.update(app_properties)
 
         annotations = {}
-        annotation_value = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        annotation_value = "{area_code}".format(area_code=_area_code)
         annotation_value = str(annotation_value)[:128]
         annotations[symbol("x-opt-partition-key")] = annotation_value
         if annotations:
@@ -1017,8 +993,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         data_array: typing.List[DemandActual],
         _feedurl: str,
         _area_code: str,
-        _date: str,
-        _time: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
@@ -1029,8 +1003,6 @@ class JPTEPCODenkiyohoAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _area_code (str): Value for placeholder area_code in attribute subject
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            _date (str): Value for AMQP protocol option placeholder date
-            _time (str): Value for AMQP protocol option placeholder time
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1039,8 +1011,6 @@ class JPTEPCODenkiyohoAmqpProducer:
                 _feedurl=_feedurl,
                 _area_code=_area_code,
                 _time=_time,
-                _date=_date,
-                _time=_time,
                 content_type=content_type)
     
     
@@ -1048,8 +1018,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         data: DemandForecast,
         _feedurl: str,
         _area_code: str,
-        _date: str,
-        _time: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
@@ -1059,8 +1027,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         Args:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _area_code (str): Value for placeholder area_code in attribute subject
-            _date (str): Value for AMQP protocol option placeholder date
-            _time (str): Value for AMQP protocol option placeholder time
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
             data (DemandForecast): The message data object
             content_type (str): The content type of the message data (default: 'application/json')
@@ -1108,7 +1074,7 @@ class JPTEPCODenkiyohoAmqpProducer:
         if amqp_creation_time is not None:
             amqp_msg.creation_time = amqp_creation_time
         # Apply AMQP message properties declared in protocoloptions.properties.
-        amqp_msg.subject = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        amqp_msg.subject = "{area_code}".format(area_code=_area_code)
 
         app_properties = {}
         if app_properties:
@@ -1117,7 +1083,7 @@ class JPTEPCODenkiyohoAmqpProducer:
             amqp_msg.properties.update(app_properties)
 
         annotations = {}
-        annotation_value = "jp.tepco.denkiyoho/{date}/{time}".format(date=_date, time=_time)
+        annotation_value = "{area_code}".format(area_code=_area_code)
         annotation_value = str(annotation_value)[:128]
         annotations[symbol("x-opt-partition-key")] = annotation_value
         if annotations:
@@ -1135,8 +1101,6 @@ class JPTEPCODenkiyohoAmqpProducer:
         data_array: typing.List[DemandForecast],
         _feedurl: str,
         _area_code: str,
-        _date: str,
-        _time: str,
         _time: typing.Optional[typing.Union[str, datetime]] = None,
         content_type: str = 'application/json') -> None:
         """
@@ -1147,8 +1111,6 @@ class JPTEPCODenkiyohoAmqpProducer:
             _feedurl (str): Value for placeholder feedurl in attribute source
             _area_code (str): Value for placeholder area_code in attribute subject
             _time (typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            _date (str): Value for AMQP protocol option placeholder date
-            _time (str): Value for AMQP protocol option placeholder time
             content_type (str): The content type of the message data
         """
         for data in data_array:
@@ -1156,8 +1118,6 @@ class JPTEPCODenkiyohoAmqpProducer:
                 data=data,
                 _feedurl=_feedurl,
                 _area_code=_area_code,
-                _time=_time,
-                _date=_date,
                 _time=_time,
                 content_type=content_type)
     
