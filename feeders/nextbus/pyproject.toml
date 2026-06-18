@@ -16,7 +16,7 @@ authors = [
 ]
 requires-python = ">=3.10,<4.0"
 dependencies = [
-    "cloudevents>=1.12.1,<2.0.0",
+    "cloudevents>=2.2.0,<3.0.0",
     "requests>=2.34.2,<3.0.0",
 ]
 
