@@ -8,7 +8,7 @@
 
 # Seattle Street Closures
 
-<sub>permit-driven street closure windows · Kafka · MQTT · AMQP · <a href="https://data.seattle.gov/">upstream</a> · <a href="https://data.seattle.gov/Transportation/Right-of-Way-Closure-Data/qhcj-3xgi">API docs</a></sub>
+<sub>permit-driven street closure windows · Kafka · MQTT · AMQP · <a href="https://data.seattle.gov/">upstream</a> · <a href="https://data.seattle.gov/Built-Environment/Street-Closures/ium9-iqtc">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This feeder turns Seattle street closure open-data feed into a real-time CloudEv
 ## Upstream
 
 - Home page: <https://data.seattle.gov/>
-- API / data documentation: <https://data.seattle.gov/Transportation/Right-of-Way-Closure-Data/qhcj-3xgi>
+- API / data documentation: <https://data.seattle.gov/Built-Environment/Street-Closures/ium9-iqtc>
 
 <!-- upstream-links:end -->
 
