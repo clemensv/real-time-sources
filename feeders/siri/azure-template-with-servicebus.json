@@ -43,7 +43,7 @@
     },
     "siriApiKey": {
       "type": "securestring",
-      "minLength": 1,
+      "defaultValue": "",
       "metadata": {
         "description": "API key used for the configured SIRI provider profile."
       }

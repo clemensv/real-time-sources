@@ -43,9 +43,9 @@
     },
     "gbfsFeeds": {
       "type": "string",
-      "minLength": 1,
+      "defaultValue": "https://gbfs.citibikenyc.com/gbfs/gbfs.json",
       "metadata": {
-        "description": "Comma-separated GBFS autodiscovery URLs or a file reference passed to GBFS_FEEDS."
+        "description": "Comma-separated GBFS autodiscovery URLs or a file reference passed to GBFS_FEEDS. Defaults to the Citi Bike NYC system for out-of-the-box deployment."
       }
     },
     "gbfsSystemIds": {

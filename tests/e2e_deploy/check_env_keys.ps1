@@ -27,7 +27,10 @@ param(
 $requiredKeys = @{
     "aisstream"     = @("AISSTREAM_API_KEY")
     "bluesky"       = @()  # no key needed (public firehose)
-    "entsoe"        = @("ENTSOE_API_KEY")
+    "entsoe"        = @("ENTSOE_SECURITY_TOKEN")
+    "billetto"      = @("BILLETTO_API_KEYPAIR")
+    "nasa-firms"    = @("FIRMS_MAP_KEY")
+    "uk-bods-siri"  = @("BODS_API_KEY")
 }
 
 $keys = $requiredKeys[$Source]
