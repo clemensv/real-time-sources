@@ -122,7 +122,7 @@ docker run --rm \
 
 ## Using the MQTT image
 
-The MQTT image (`…-blitzortung-mqtt`) publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree at QoS 0 with `retain=false` on each leaf — a firehose has no Last-Known-Value slot. It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/fabric/real-time-hub/add-source-event-grid).
+The MQTT image (`…-blitzortung-mqtt`) publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree at QoS 0 with `retain=false` on each leaf — a firehose has no Last-Known-Value slot. It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-source-azure-event-grid).
 
 ### Topic template
 
