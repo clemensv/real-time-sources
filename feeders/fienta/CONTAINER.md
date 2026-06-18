@@ -8,7 +8,7 @@
 
 # Fienta
 
-<sub>ticketed public events with sale-status signals · Kafka · MQTT · AMQP · <a href="https://fienta.com/">upstream</a> · <a href="https://fienta.com/api-public-events">API docs</a></sub>
+<sub>ticketed public events with sale-status signals · Kafka · MQTT · AMQP · <a href="https://fienta.com/">upstream</a> · <a href="https://fienta.com/api/v1/public/events">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -33,7 +33,7 @@ Related docs:
 ## Upstream
 
 - Home page: <https://fienta.com/>
-- API / data documentation: <https://fienta.com/api-public-events>
+- API / data documentation: <https://fienta.com/api/v1/public/events>
 
 <!-- upstream-links:end -->
 

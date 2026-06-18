@@ -4,6 +4,7 @@ import argparse
 import json
 import sys
 import os
+import re
 import time
 import typing
 import logging
@@ -65,6 +66,21 @@ class CHMIHydroAPI:
         except requests.RequestException as e:
             logger.debug("Failed to fetch data for station %s: %s", station_id, e)
             return None
+
+    def get_available_station_ids(self) -> typing.Optional[typing.Set[str]]:
+        """Return station IDs that currently have a per-station data file."""
+        try:
+            response = self.session.get(f"{self.data_url}/", timeout=30)
+            response.raise_for_status()
+        except requests.RequestException as e:
+            logger.warning("Could not fetch ČHMÚ data index; polling all metadata stations: %s", e)
+            return None
+
+        ids = set(re.findall(r'href="([^"]+)\.json"', response.text))
+        if not ids:
+            logger.warning("ČHMÚ data index contained no JSON links; polling all metadata stations")
+            return None
+        return ids
 
     def get_all_station_data(self, station_ids: typing.List[str]) -> typing.Dict[str, dict]:
         """Fetch data for all stations concurrently."""
@@ -216,13 +232,18 @@ def _save_state(state_file: str, data: dict) -> None:
 def send_stations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer) -> typing.Tuple[typing.List[str], typing.Dict[str, Station]]:
     """Fetch all stations and send station reference data to Kafka. Returns (station_ids, stations_by_id)."""
     metadata = api.get_metadata()
+    available_station_ids = api.get_available_station_ids()
     sent_count = 0
 
     station_ids = []
     stations_by_id = {}
+    missing_data_ids = []
     for record in metadata:
         station = api.parse_station(record)
-        station_ids.append(station.station_id)
+        if available_station_ids is None or station.station_id in available_station_ids:
+            station_ids.append(station.station_id)
+        else:
+            missing_data_ids.append(station.station_id)
         stations_by_id[station.station_id] = station
         producer.send_cz_gov_chmi_hydro_station(
             station.station_id,
@@ -232,6 +253,12 @@ def send_stations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer) -> t
         sent_count += 1
 
     producer.producer.flush()
+    if missing_data_ids:
+        logger.info(
+            "Skipped observation polling for %d ČHMÚ metadata stations without data files: %s",
+            len(missing_data_ids),
+            ", ".join(missing_data_ids[:10]),
+        )
     logger.info("Sent %d station events", sent_count)
     return station_ids, stations_by_id
 
@@ -268,7 +295,7 @@ def feed_stations(api: CHMIHydroAPI, producer: CZGovCHMIHydroEventProducer) -> i
     """Fetch all stations and observations and send to Kafka. Returns total events sent."""
     station_ids, stations_by_id = send_stations(api, producer)
     obs_count = feed_observations(api, producer, station_ids, stations_by_id, {})
-    return len(station_ids) + obs_count
+    return len(stations_by_id) + obs_count
 
 
 def main():

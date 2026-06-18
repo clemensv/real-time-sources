@@ -64,6 +64,7 @@ class TestWaterinfoContainerIntegration:
                 value=6.118,
                 unit_name="meter",
                 parameter_name="H",
+                water_body="Ede",
             )
             waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_water_level_reading(reading.station_no, reading)
 
@@ -78,6 +79,7 @@ class TestWaterinfoContainerIntegration:
                 stationparameter_name="H",
                 ts_id="306367042",
                 ts_unitname="meter",
+                water_body="Ede",
             )
             waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_station(station.station_no, station)
 
@@ -135,6 +137,7 @@ class TestWaterinfoLiveContainerIntegration:
                     stationparameter_name="",
                     ts_id="",
                     ts_unitname="",
+                    water_body=d.get("river_name", "") or None,
                 )
                 waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_station(station.station_no, station, flush_producer=False)
             producer.flush()
@@ -176,6 +179,7 @@ class TestWaterinfoLiveContainerIntegration:
                     value=float(ts_value),
                     unit_name=entry.get("ts_unitname", "meter"),
                     parameter_name=entry.get("stationparameter_name", "H"),
+                    water_body=entry.get("water_body") or entry.get("river_name") or None,
                 )
                 waterinfo_producer.send_be_vlaanderen_waterinfo_vmm_water_level_reading(reading.station_no, reading, flush_producer=False)
                 sent_count += 1

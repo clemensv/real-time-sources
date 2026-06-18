@@ -8,7 +8,7 @@
 
 # King County Marine
 
-<sub>buoy and mooring telemetry · Kafka · MQTT · AMQP · <a href="https://green2.kingcounty.gov/marine/">upstream</a> · <a href="https://data.kingcounty.gov/Environment-Waste-Management/Marine-Buoy-Data/9j7t-rs5d">API docs</a></sub>
+<sub>buoy and mooring telemetry · Kafka · MQTT · AMQP · <a href="https://green2.kingcounty.gov/marine/">upstream</a> · <a href="https://data.kingcounty.gov/Environment-Waste-Management/Puget-Sound-Marine-Monitoring/t5pc-wkwc">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This feeder turns the upstream King County Marine hydrology feed into a real-tim
 ## Upstream
 
 - Home page: <https://green2.kingcounty.gov/marine/>
-- API / data documentation: <https://data.kingcounty.gov/Environment-Waste-Management/Marine-Buoy-Data/9j7t-rs5d>
+- API / data documentation: <https://data.kingcounty.gov/Environment-Waste-Management/Puget-Sound-Marine-Monitoring/t5pc-wkwc>
 
 <!-- upstream-links:end -->
 

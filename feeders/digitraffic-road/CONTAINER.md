@@ -42,7 +42,7 @@ This document covers the published OCI container images for the Digitraffic Road
 
 ## Why this container
 
-Digitraffic Road exposes Finland's national road traffic data through a live MQTT-over-WebSocket broker at `wss://tie.digitraffic.fi/mqtt` and reference-data REST endpoints at `https://tie.digitraffic.fi/api/`. The source is open, requires no API key, and covers traffic measurement stations, road weather stations, incident and road-work messages, weight restrictions, exempted transports, and road-maintenance tracking.
+Digitraffic Road exposes Finland's national road traffic data through a live MQTT-over-WebSocket broker at `wss://tie.digitraffic.fi/mqtt` and reference-data REST endpoints at `https://tie.digitraffic.fi/swagger/`. The source is open, requires no API key, and covers traffic measurement stations, road weather stations, incident and road-work messages, weight restrictions, exempted transports, and road-maintenance tracking.
 
 These images consume that upstream feed and re-emit it as CloudEvents on Kafka, MQTT 5.0, or AMQP 1.0 so downstream systems can subscribe on standard infrastructure instead of implementing their own long-lived Digitraffic client, startup reference-data fetch, payload normalization, and transport publishing.
 
