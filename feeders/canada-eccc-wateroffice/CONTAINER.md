@@ -120,7 +120,7 @@ docker run --rm \
 
 ## Using the MQTT image
 
-The MQTT image (`…-canada-eccc-wateroffice-mqtt`) publishes MQTT 5.0 CloudEvents into a Unified-Namespace topic tree with `retain=true` and QoS 1 on every leaf so subscribers always receive the latest known station metadata and observation per topic. It works against any MQTT 5 broker and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/fabric/real-time-hub/add-source-event-grid).
+The MQTT image (`…-canada-eccc-wateroffice-mqtt`) publishes MQTT 5.0 CloudEvents into a Unified-Namespace topic tree with `retain=true` and QoS 1 on every leaf so subscribers always receive the latest known station metadata and observation per topic. It works against any MQTT 5 broker and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-source-azure-event-grid).
 
 ### Topic template
 
