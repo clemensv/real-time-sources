@@ -145,7 +145,7 @@ docker run --rm \
 
 ## Using the MQTT image
 
-The MQTT image (`…-pegelonline-mqtt`) publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (`hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/{info|water-level}`) at QoS 1 with `retain=true` on each leaf. It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/fabric/real-time-hub/add-source-event-grid).
+The MQTT image (`…-pegelonline-mqtt`) publishes MQTT 5.0 binary-mode CloudEvents into a Unified-Namespace topic tree (`hydro/de/wsv/pegelonline/{water_shortname}/{station_id}/{info|water-level}`) at QoS 1 with `retain=true` on each leaf. It works against any MQTT 5 broker (Mosquitto, EMQX, HiveMQ, …) and against the [Azure Event Grid namespace MQTT broker](https://learn.microsoft.com/azure/event-grid/mqtt-overview), including the integrated [Microsoft Fabric Real-Time Hub MQTT source](https://learn.microsoft.com/en-us/fabric/real-time-intelligence/event-streams/add-source-azure-event-grid).
 
 ### With a generic MQTT 5 broker (username/password)
 

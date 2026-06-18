@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "setuptools>=64",
+    "setuptools>=82.0.1",
     "setuptools-scm>=8",
 ]
 build-backend = "setuptools.build_meta"
@@ -17,7 +17,7 @@ authors = [
 requires-python = ">=3.10,<4.0"
 dependencies = [
     "avro>=1.12.1",
-    "cloudevents>=1.12.1,<2.0.0",
+    "cloudevents>=2.2.0,<3.0.0",
     "confluent-kafka>=2.14.2",
     "dataclasses_json>=0.6.7",
     "requests>=2.34.2",
@@ -29,7 +29,7 @@ vatsim = "vatsim:main"
 [project.optional-dependencies]
 dev = [
     "pytest-cov>=7.1.0",
-    "pytest>=9.0.3",
+    "pytest>=9.1.0",
     "requests-mock>=1.12.1",
 ]
 

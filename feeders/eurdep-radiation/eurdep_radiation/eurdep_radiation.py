@@ -18,7 +18,15 @@ import requests
 from confluent_kafka import Producer
 from eurdep_radiation_producer_data.eu.jrc.eurdep.station import Station
 from eurdep_radiation_producer_data.eu.jrc.eurdep.doseratereading import DoseRateReading
-from eurdep_radiation_producer_kafka_producer.producer import EuJrcEurdepEventProducer
+try:
+    from eurdep_radiation_producer_kafka_producer.producer import EuJrcEurdepEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    EuJrcEurdepEventProducer = None
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG)
@@ -88,6 +96,14 @@ class EurdepAPI:
                 "sortBy": "id",
             }
             resp = self.session.get(WFS_BASE, params=params, timeout=120)
+            if resp.status_code == 400:
+                # EURDEP WFS returns HTTP 400 when startIndex exceeds the total
+                # number of available features (API pagination limit reached).
+                logging.info(
+                    "EURDEP WFS returned 400 at startIndex=%d; all pages fetched (%d features total)",
+                    start_index, len(all_features),
+                )
+                break
             resp.raise_for_status()
             try:
                 data = resp.json()
