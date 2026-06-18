@@ -8,7 +8,7 @@
 
 # SMHI Hydro
 
-<sub>SMHI · Kafka · MQTT · AMQP · <a href="https://www.smhi.se/">upstream</a> · <a href="https://opendata.smhi.se/apidocs/hydroobs/">API docs</a></sub>
+<sub>SMHI · Kafka · MQTT · AMQP · <a href="https://www.smhi.se/">upstream</a> · <a href="https://opendata-download-hydroobs.smhi.se/api/">API docs</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -34,7 +34,7 @@ This document covers the published OCI container images for the SMHI Hydro feede
 ## Upstream
 
 - Home page: <https://www.smhi.se/>
-- API / data documentation: <https://opendata.smhi.se/apidocs/hydroobs/>
+- API / data documentation: <https://opendata-download-hydroobs.smhi.se/api/>
 
 <!-- upstream-links:end -->
 
