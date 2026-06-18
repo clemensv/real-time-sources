@@ -104,8 +104,8 @@ class TestECCCWaterOfficeAPI:
         assert station.drainage_area_gross == 790.0
         assert station.drainage_area_effect == 790.0
         assert station.real_time is True
-        # RHBN=0 becomes None via generated __post_init__ (falsy int → None)
-        assert station.rhbn is None
+        assert station.basin is None
+        assert station.rhbn is False
         assert abs(station.longitude - (-114.56986)) < 1e-5
         assert abs(station.latitude - 50.94851) < 1e-5
 
@@ -131,6 +131,7 @@ class TestECCCWaterOfficeAPI:
         assert obs.discharge is None
         assert obs.latitude is not None
         assert obs.longitude is not None
+        assert obs.basin is None
 
     def test_parse_observation_with_discharge(self):
         obs = ECCCWaterOfficeAPI.parse_observation(SAMPLE_OBSERVATION_FEATURE_WITH_DISCHARGE)

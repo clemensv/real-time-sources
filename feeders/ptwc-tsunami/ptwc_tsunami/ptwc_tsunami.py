@@ -323,6 +323,12 @@ def main():
     parser.add_argument("--poll-interval", type=int, default=DEFAULT_POLL_INTERVAL, help="Poll interval in seconds")
     parser.add_argument("--feeds", type=str, help="Comma-separated list of feeds (PAAQ, PHEB)")
     parser.add_argument("--once", action="store_true", help="Poll once and exit")
+    parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=os.getenv("DRY_RUN", "").lower() in ("1", "true", "yes"),
+        help="Fetch and parse upstream feeds without connecting to Kafka",
+    )
     parser.add_argument("--log-level", type=str, default="INFO", help="Logging level")
     _argv = sys.argv[1:]
     if _argv and _argv[0] == 'feed':
@@ -362,23 +368,27 @@ def main():
         sasl_username = args.sasl_username
         sasl_password = args.sasl_password
 
-    if not bootstrap_servers:
+    if not bootstrap_servers and not args.dry_run:
         print("Error: Kafka bootstrap servers required via --bootstrap-servers, --connection-string, or KAFKA_BOOTSTRAP_SERVERS.")
         sys.exit(1)
     if not kafka_topic:
         kafka_topic = DEFAULT_TOPIC
 
     tls_enabled = os.getenv("KAFKA_ENABLE_TLS", "true").lower() not in ("false", "0", "no")
-    kafka_config: Dict[str, str] = {"bootstrap.servers": bootstrap_servers}
-    if sasl_username and sasl_password:
-        kafka_config.update({
-            "sasl.mechanisms": "PLAIN",
-            "security.protocol": "SASL_SSL" if tls_enabled else "SASL_PLAINTEXT",
-            "sasl.username": sasl_username,
-            "sasl.password": sasl_password,
-        })
-    elif tls_enabled:
-        kafka_config["security.protocol"] = "SSL"
+    kafka_config: Optional[Dict[str, str]]
+    if args.dry_run:
+        kafka_config = None
+    else:
+        kafka_config = {"bootstrap.servers": bootstrap_servers}
+        if sasl_username and sasl_password:
+            kafka_config.update({
+                "sasl.mechanisms": "PLAIN",
+                "security.protocol": "SASL_SSL" if tls_enabled else "SASL_PLAINTEXT",
+                "sasl.username": sasl_username,
+                "sasl.password": sasl_password,
+            })
+        elif tls_enabled:
+            kafka_config["security.protocol"] = "SSL"
 
     poller = PTWCTsunamiPoller(
         kafka_config=kafka_config,

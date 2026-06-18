@@ -14,7 +14,15 @@ import aiohttp
 from confluent_kafka import Producer
 
 from meteoalarm_producer_data.weatherwarning import WeatherWarning  # pylint: disable=import-error
-from meteoalarm_producer_kafka_producer.producer import MeteoalarmWarningsEventProducer  # pylint: disable=import-error
+try:
+    from meteoalarm_producer_kafka_producer.producer import MeteoalarmWarningsEventProducer  # pylint: disable=import-error
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    MeteoalarmWarningsEventProducer = None
 
 if sys.gettrace() is not None:
     logging.basicConfig(level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s")
