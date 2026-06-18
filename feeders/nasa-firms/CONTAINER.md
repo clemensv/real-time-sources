@@ -82,7 +82,7 @@ All three images share the same operational contract:
 | Persistent state | `FIRMS_LAST_POLLED_FILE` (default `/state/nasa-firms.json`). **Mount a volume** to keep dedupe state across restarts. |
 | Image tags | `:latest` tracks the default branch; immutable tags `:v<MAJOR>.<MINOR>.<PATCH>` and `:sha-<git-sha>` are published per release. |
 
-Pull and inspect available tags at <https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-nasa-firms-kafka>.
+Pull and inspect available tags at <https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-nasa-firms>.
 
 ## Installing the container images
 

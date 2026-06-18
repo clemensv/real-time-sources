@@ -16,7 +16,15 @@ from confluent_kafka import Producer
 
 # pylint: disable=import-error, line-too-long
 from gracedb_producer_data.org.ligo.gracedb.superevent import Superevent
-from gracedb_producer_kafka_producer.producer import OrgLigoGracedbEventProducer
+try:
+    from gracedb_producer_kafka_producer.producer import OrgLigoGracedbEventProducer
+except ModuleNotFoundError:
+    # The generated Kafka producer package is only installed in the Kafka
+    # image. The MQTT/AMQP images reuse this module for the shared
+    # build_*/fetch helpers and the generated data classes, so the Kafka
+    # producer is an optional dependency there. Only the Kafka bridge
+    # references it, and that class never runs in those images.
+    OrgLigoGracedbEventProducer = None
 # pylint: enable=import-error, line-too-long
 
 
