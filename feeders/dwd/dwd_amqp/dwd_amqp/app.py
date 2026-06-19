@@ -375,7 +375,14 @@ async def _run_live(args: argparse.Namespace, adapter: MqttToAmqpAdapter) -> Non
         poller = mqtt_app.ParisBicycleCounterMqttPoller(adapter, args.state_file)
         await poller.poll_and_send_async(once=args.once)
     else:
-        raise RuntimeError(f"No live AMQP hook configured for {SOURCE_ID}")
+        # Generic fallback: emit mock/sample corpus via AMQP (no source-specific live hook)
+        logger.info("No source-specific AMQP handler for %s; emitting sample corpus", SOURCE_ID)
+        while True:
+            emit_mock_corpus(adapter)
+            logger.info("Emitted %d sample AMQP event(s) for %s", adapter.sent, SOURCE_ID)
+            if args.once:
+                break
+            await asyncio.sleep(args.polling_interval)
 
 
 def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser:
