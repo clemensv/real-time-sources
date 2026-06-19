@@ -418,7 +418,19 @@ def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
 
 
 async def _async_main(args: argparse.Namespace) -> None:
-    producer = _build_amqp_producer(args)
+    # Retry producer connection with backoff (RBAC propagation can take minutes)
+    producer = None
+    for _attempt in range(6):
+        try:
+            producer = _build_amqp_producer(args)
+            break
+        except Exception as _conn_err:
+            logger.warning("AMQP connection attempt %d failed: %s", _attempt + 1, _conn_err)
+            if _attempt < 5:
+                await asyncio.sleep(15 * (_attempt + 1))
+    if producer is None:
+        logger.error("Failed to connect to AMQP broker after 6 attempts")
+        return
     adapter = MqttToAmqpAdapter(producer)
     try:
         if args.mock_mode:
