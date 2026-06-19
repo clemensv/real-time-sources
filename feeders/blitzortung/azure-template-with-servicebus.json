@@ -286,6 +286,10 @@
                   "value": "true"
                 },
                 {
+                  "name": "AMQP_BROKER_URL",
+                  "value": "[concat('amqps://', variables('namespaceName'), '.servicebus.windows.net:5671')]"
+                },
+                {
                   "name": "AMQP_ADDRESS",
                   "value": "[parameters('queueName')]"
                 },
