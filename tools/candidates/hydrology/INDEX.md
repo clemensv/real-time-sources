@@ -22,7 +22,7 @@
 
 | Source | Country | Reason |
 |--------|---------|--------|
-| Austria eHYD | Austria | SPA-only portal; no public REST API. GeoSphere Austria has excellent met data API but no hydrology. See [austria-geosphere.md](austria-geosphere.md) |
+| Austria eHYD | Austria | SPA-only portal; no public REST API. GeoSphere Austria has excellent met data API but no hydrology (GeoSphere is implemented as the `geosphere-austria` feeder). |
 | Spain SAIH (various confederaciones) | Spain | Re-investigated: 9 basin portals probed. Tajo has modern SPA, Duero shows reservoir data, but no public API on any. See [spain-saih.md](spain-saih.md) |
 | Portugal SNIRH | Portugal | Returns 403 Forbidden; no public API access |
 | India CWC / India-WRIS | India | CWC returns 401; India-WRIS times out. 5000+ stations locked behind auth. See [india-cwc-wris.md](india-cwc-wris.md) |
@@ -48,9 +48,7 @@
 
 | Source | Country | Score | Status | File |
 |--------|---------|-------|--------|------|
-| ECCC Water Survey / MSC GeoMet | Canada | 18/18 | Research complete | [canada-eccc-wateroffice.md](canada-eccc-wateroffice.md) |
 | BOM Water Data Online | Australia | 16/18 | Research complete | [australia-bom-waterdata.md](australia-bom-waterdata.md) |
-| OPW waterlevel.ie | Ireland | 18/18 | Research complete | [ireland-opw-waterlevel.md](ireland-opw-waterlevel.md) |
 | ARSO Hidro | Slovenia | 17/18 | Research complete | [slovenia-arso-hidro.md](slovenia-arso-hidro.md) |
 | SEPA Water Levels | Scotland | 16/18 | Research complete | [scotland-sepa-waterlevels.md](scotland-sepa-waterlevels.md) |
 | Hilltop (Regional Councils) | New Zealand | 15/18 | Research complete | [newzealand-hilltop.md](newzealand-hilltop.md) |
@@ -68,7 +66,6 @@
 | DMI Met Obs API | Denmark | 14/18 | Research complete | [denmark-dmi-metobs.md](denmark-dmi-metobs.md) |
 | SAIH Confederaciones | Spain | 10/18 | Research complete | [spain-saih.md](spain-saih.md) |
 | ARPA / ISPRA Hydro | Italy | 8/18 | Research complete | [italy-arpa-hydro.md](italy-arpa-hydro.md) |
-| GeoSphere Austria | Austria | 15/18 | Research complete | [austria-geosphere.md](austria-geosphere.md) |
 | SHMÚ Hydrology | Slovakia | 8/18 | Research complete | [slovakia-shmu.md](slovakia-shmu.md) |
 | INHGA | Romania | 6/18 | Research complete | [romania-inhga.md](romania-inhga.md) |
 
@@ -192,8 +189,6 @@ Sources investigated in depth but lacking public API: Italy (8), Slovakia (8), M
 
 | Source | Country | Score | Status | File |
 |--------|---------|-------|--------|------|
-| Nepal BIPAD Hydrology | Nepal | 16/18 | ✅ CONFIRMED WORKING | [nepal-bipad-hydrology.md](nepal-bipad-hydrology.md) |
-| Nepal DHM / BIPAD | Nepal | 16/18 | Research complete | [nepal-dhm-hydrology.md](nepal-dhm-hydrology.md) |
 | MRC Mekong (re-probe) | Mekong Basin | 11/18 | SPA still blocks API | [mekong-river-commission-update.md](mekong-river-commission-update.md) |
 | ICIMOD HKH Mountains | Hindu Kush-Himalaya | 10/18 | Research data, no real-time API | [icimod-hkh-mountains.md](icimod-hkh-mountains.md) |
 | Turkey DSI Transboundary | Turkey | 9/18 | Euphrates-Tigris context | [turkey-dsi-transboundary.md](turkey-dsi-transboundary.md) |

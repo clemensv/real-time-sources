@@ -9,7 +9,6 @@ Real-time bikeshare and micromobility data sources. GBFS (General Bikeshare Feed
 | [MobilityData GBFS Catalog](mobilitydata-gbfs-catalog.md) | **Global** | **18/18** | GBFS | Master catalog of 1,315 systems; single bridge unlocks everything |
 | [Taipei YouBike](taipei-youbike.md) | **Taiwan** | **17/18** | REST (proprietary) | 9,070 stations — NOT in GBFS catalog; needs dedicated bridge |
 | [Seoul Ddareungi](seoul-ddareungi.md) | **South Korea** | 16/18 | REST (proprietary) | 3,223 stations — NOT in GBFS catalog; needs API key |
-| [Tokyo Docomo Bikeshare](tokyo-docomo-bikeshare.md) | Japan — Tokyo | **18/18** | GBFS 2.3 | 1,794 stations via ODPT; largest Asian GBFS system |
 | [Citi Bike NYC](citibike-nyc.md) | US — NYC | 17/18 | GBFS 1.1 | Largest US bikeshare; Lyft-operated |
 | [Santander Cycles London](santander-cycles-london.md) | UK — London | 17/18 | REST/XML (TfL) | Not in GBFS catalog — needs dedicated bridge |
 | [Vélib' Paris](velib-paris.md) | France — Paris | 17/18 | GBFS + Opendatasoft | Largest European system; dual API endpoints |

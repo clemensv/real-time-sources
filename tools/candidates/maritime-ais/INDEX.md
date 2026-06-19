@@ -34,7 +34,6 @@ real-time AIS APIs. All other investigated governments restrict AIS data to oper
 
 | # | Source | Score | File | Key Advantage |
 |---|---|---|---|---|
-| 1 | [Finland Digitraffic Maritime REST](digitraffic-maritime-rest.md) | 17/18 | `digitraffic-maritime-rest.md` | No auth, GeoJSON, exceptionally rich port call data |
 | 2 | [BarentsWatch AIS Live](barentswatch-ais.md) | 16/18 | `barentswatch-ais.md` | Structured JSON streaming over same Kystverket data |
 
 ### Tier 2: Good (12-15 / 18)
@@ -160,10 +159,7 @@ Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/
 
 | Candidate | File | Score | Verdict |
 |---|---|---|---|
-| AISstream - UAE Maritime Traffic | [ae-aisstream-uae-maritime.md](ae-aisstream-uae-maritime.md) | 12/18 | — |
-| Bahrain Waters AIS Vessel Tracking - AISstream Coverage | [bh-bahrain-ais-aisstream.md](bh-bahrain-ais-aisstream.md) | 11/18 | — |
 | Iraq Ports (Umm Qasr, Khor Al-Zubair) - AIS Vessel Tracking | [iq-ports-umm-qasr-ais.md](iq-ports-umm-qasr-ais.md) | 0/18 | ❌ |
 | AISHub Kuwait / Persian Gulf AIS Vessel Tracking | [kw-aishub-kuwait-ais.md](kw-aishub-kuwait-ais.md) | 11/18 | ⚠️ |
-| AISstream Global Maritime (Qatar Persian Gulf) | [qa-aisstream-persian-gulf.md](qa-aisstream-persian-gulf.md) | 15/18 | — |
 | Saudi Ports Authority (Mawani) - Vessel Tracking | [sa-mawani-vessel-tracking.md](sa-mawani-vessel-tracking.md) | 6/18 | ❌ |
 

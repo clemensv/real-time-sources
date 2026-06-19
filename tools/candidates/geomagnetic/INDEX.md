@@ -6,10 +6,8 @@ Real-time and archival geomagnetic field data and activity indices.
 
 | Source | Protocol | Auth | Freshness | Total Score | Status |
 |--------|----------|------|-----------|-------------|--------|
-| [USGS Geomagnetism](usgs-geomagnetism.md) | REST (JSON) | None | 1-minute | **17/18** | ✅ **Build** |
 | [INTERMAGNET](intermagnet.md) | HAPI (REST) | None | Minutes-Hours | 16/18 | ✅ Build |
 | [GFZ Kp Index](gfz-kp-index.md) | REST | None | 3-hourly | 16/18 | ✅ Build |
-| [NOAA SWPC Geomagnetic](noaa-swpc-geomag.md) | REST | None | 1-minute | 16/18 | ✅ Build |
 | [NOAA OVATION Aurora](noaa-ovation-aurora.md) | REST (JSON) | None | 30-minute | **16/18** | ✅ **Build** |
 | [SuperMAG](supermag.md) | REST | Free reg. | 1-minute | **15/18** | ⚠️ Maybe |
 | [FMI Finland Geomag](fmi-finland-geomag.md) | WFS (XML) | Free API key | 10-second | **14/18** | ⚠️ Maybe |

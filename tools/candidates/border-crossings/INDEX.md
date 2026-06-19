@@ -2,7 +2,6 @@
 
 | Slug | Source | Region | Protocol | Auth | Score |
 |------|--------|--------|----------|------|-------|
-| [cbp-border-wait-times](cbp-border-wait-times.md) | US CBP Border Wait Times | US borders | REST/JSON | None | 17/18 |
 | [cbsa-wait-times](cbsa-wait-times.md) | Canada CBSA Wait Times | Canada borders | HTML | None | 13/18 |
 | [eurotunnel](eurotunnel.md) | Eurotunnel / Channel Tunnel | UK–France | Web SPA | None | 12/18 |
 

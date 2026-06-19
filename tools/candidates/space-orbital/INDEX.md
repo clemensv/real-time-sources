@@ -4,13 +4,11 @@ Real-time and near-real-time data sources for space situational awareness, orbit
 
 | Source | Protocol | Auth | Freshness | Total Score |
 |--------|----------|------|-----------|-------------|
-| [GraceDB Gravitational Waves](gracedb-gravitational-waves.md) | REST | None | Seconds | 18/18 |
 | [NASA DONKI](nasa-donki.md) | REST | API Key (free) | Hours | 17/18 |
 | [NASA NEO](nasa-neo.md) | REST | API Key (free) | Daily | 17/18 |
 | [CelesTrak](celestrak.md) | REST | None | Hours | 16/18 |
 | [ZTF Alerts](ztf-alerts.md) | Kafka | None | Nightly | 16/18 |
 | [JPL Horizons](jpl-horizons.md) | REST | None | On-demand | 16/18 |
-| [DSCOVR Solar Wind](dscovr-solar-wind.md) | REST | None | ~1 minute | 16/18 |
 | [Helioviewer Solar Imagery](helioviewer-solar-imagery.md) | REST | None | 15-30 min | 16/18 |
 | [JPL SBDB Close Approach](jpl-sbdb-close-approach.md) | REST | None | Continuous | 16/18 |
 | [AAVSO Variable Stars](aavso-variable-stars.md) | REST | None/Key | Hours | 16/18 |

@@ -17,7 +17,6 @@ These sources use the SIRI protocol natively. They can't be covered by the exist
 
 | # | Candidate | Country | Protocol | Score | File |
 |---|-----------|---------|----------|-------|------|
-| 1 | [UK BODS (SIRI-VM)](uk-bods-siri.md) | 🇬🇧 UK | SIRI-VM 2.0 | **17/18** | `uk-bods-siri.md` |
 | 2 | [Trafiklab SIRI Regional](trafiklab-siri.md) | 🇸🇪 Sweden | SIRI 2.0 (ET/VM/SX) | **18/18** | `trafiklab-siri.md` |
 | 3 | [SNCF / France PAN](sncf-france.md) | 🇫🇷 France | SIRI-Lite + GTFS-RT | **16/18** | `sncf-france.md` |
 
@@ -43,7 +42,6 @@ These are high-value sources with proprietary REST APIs that provide data not av
 | 6 | [TfL Unified API](tfl-unified-api.md) | 🇬🇧 UK (London) | REST/JSON | **17/18** | `tfl-unified-api.md` |
 | 7 | [DB Timetables (IRIS)](db-timetables.md) | 🇩🇪 Germany | REST/XML | **15/18** | `db-timetables.md` |
 | 8 | [NS Dutch Railways](ns-dutch-rail.md) | 🇳🇱 Netherlands | REST/JSON | **14/18** | `ns-dutch-rail.md` |
-| 9 | [iRail Belgium Rail API](irail-belgium.md) | 🇧🇪 Belgium | REST/JSON | **16/18** | `irail-belgium.md` |
 | 10 | [STIB-MIVB Brussels Open Data](stib-mivb-brussels.md) | 🇧🇪 Belgium | REST/JSON + GTFS-RT | **14/18** | `stib-mivb-brussels.md` |
 | 11 | [MTA NYC](mta-nyc.md) | 🇺🇸 USA (NYC) | GTFS-RT + SIRI | **14/18** | `mta-nyc.md` |
 
@@ -55,7 +53,6 @@ Deep-dive round 1 added coverage across Scandinavia, Central Europe, and the Alp
 
 | # | Candidate | Country | Protocol | Score | File |
 |---|-----------|---------|----------|-------|------|
-| 12 | [Entur Norway](entur-norway.md) | 🇳🇴 Norway | SIRI 2.0 + GTFS-RT + GraphQL | **18/18** | `entur-norway.md` |
 | 13 | [Digitransit Finland](digitransit-finland.md) | 🇫🇮 Finland | OTP2 GraphQL + GTFS-RT | **16/18** | `digitransit-finland.md` |
 | 14 | [SBB / Open Transport CH](sbb-opentransport.md) | 🇨🇭 Switzerland | REST/JSON + SIRI-SX + OJP | **15/18** | `sbb-opentransport.md` |
 | 15 | [BKK Budapest](bkk-budapest.md) | 🇭🇺 Hungary | GTFS-RT + REST/JSON (Futár) | **14/18** | `bkk-budapest.md` |

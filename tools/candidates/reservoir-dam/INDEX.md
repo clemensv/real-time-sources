@@ -8,7 +8,6 @@ Research candidates for real-time reservoir and dam storage monitoring APIs.
 
 | Slug | Source | Country/Region | Score | Key Strength |
 |------|--------|---------------|-------|-------------|
-| [cdec-california](cdec-california.md) | California CDEC | USA — California | **18/18** | Perfect score: clean JSON API, real-time hourly, no auth |
 | [usbr-hydrodata](usbr-hydrodata.md) | US Bureau of Reclamation HydroData | USA — Western states | **15/18** | Powell, Mead, and major federal reservoirs; JSON/CSV |
 | [spain-saih](spain-saih.md) | Spanish SAIH | Spain (~1,200 dams) | **14/18** | Highest dam density in Europe; real-time at basin level |
 | [japan-mlit-dams](japan-mlit-dams.md) | Japan MLIT River Bureau | Japan (~550 major dams) | **13/18** | 10-min real-time telemetry; flood ops; no public REST API |

@@ -4,8 +4,6 @@ Real-time data sources from Wikimedia projects and OpenStreetMap.
 
 | Source | Protocol | Auth | Freshness | Total Score |
 |--------|----------|------|-----------|-------------|
-| [Wikimedia EventStreams](wikimedia-eventstreams.md) | SSE | None | Sub-second | 17/18 |
-| [OSM Minutely Diffs](osm-minutely-diffs.md) | HTTP file | None | 60 seconds | 17/18 |
 | [Wikidata Recent Changes](wikidata-recent-changes.md) | REST + SSE | None | Real-time | 17/18 |
 | [OSM Notes API](osm-notes-api.md) | REST | None | Real-time | 17/18 |
 | [Wikipedia Pageviews API](wikipedia-pageviews-api.md) | REST | None | Daily | 16/18 |

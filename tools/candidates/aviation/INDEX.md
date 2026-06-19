@@ -4,9 +4,7 @@ Research date: 2026-04-06 (updated)
 
 | Slug | Source | Region | Protocol | Auth | Score |
 |------|--------|--------|----------|------|-------|
-| [aviationweather-gov](aviationweather-gov.md) | AviationWeather.gov | Global | REST/JSON/GeoJSON | None | 17/18 |
 | [opensky-network](opensky-network.md) | OpenSky Network | Global | REST/JSON | OAuth2 (free) | 17/18 |
-| [vatsim](vatsim.md) | VATSIM Live Data | Global (sim) | REST/JSON | None | 16/18 |
 | [faa-notam-api](faa-notam-api.md) | FAA NOTAM API | US/Global | REST/JSON | API Key (free) | 16/18 |
 | [adsb-exchange](adsb-exchange.md) | ADS-B Exchange | Global | REST/JSON | API Key (paid) | 15/18 |
 | [faa-swim](faa-swim.md) | FAA SWIM | US | JMS/SOLACE | Cert + registration | 15/18 |

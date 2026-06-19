@@ -9,10 +9,8 @@ Research candidates for real-time tidal and sea level monitoring APIs.
 | Slug | Source | Country/Region | Score | Key Strength |
 |------|--------|---------------|-------|-------------|
 | [ioc-slsmf](ioc-slsmf.md) | IOC Sea Level Station Monitoring Facility | Global (~1,000 stations) | **17/18** | Comprehensive global real-time aggregator; V2 API with QC |
-| [pegelonline-germany](pegelonline-germany.md) | PegelOnline WSV | Germany (North Sea + Baltic + rivers) | **17/18** | Flawless REST/JSON API; UUID-based; no auth; North Sea + Baltic tidal |
 | [puertos-del-estado](puertos-del-estado.md) | Puertos del Estado REDMAR | Spain (40+ stations) | **16/18** | Open THREDDS/OPeNDAP; Canary Islands + Gibraltar coverage |
 | [kartverket-norway](kartverket-norway.md) | Kartverket Hydrographic Service | Norway (entire coastline) | **16/18** | REST API; CC BY 4.0; fjord coverage; 5-day forecasts |
-| [dmi-denmark](dmi-denmark.md) | DMI Ocean Observations | Denmark + Greenland | **16/18** | OGC API Features; GeoJSON; Danish straits shipping bottleneck |
 | [smhi-sweden](smhi-sweden.md) | SMHI Oceanographic Observations | Sweden (entire coastline) | **16/18** | Clean REST/JSON; no auth; minute-resolution; Baltic coverage |
 | [emodnet-physics](emodnet-physics.md) | EMODnet Physics ERDDAP | Europe (pan-European) | **15/18** | Single ERDDAP access point for all European marine data |
 | [uhslc](uhslc.md) | University of Hawaii Sea Level Center | Global (~500 stations) | **14/18** | Pacific/tropical focus; superior QC; OPeNDAP access |

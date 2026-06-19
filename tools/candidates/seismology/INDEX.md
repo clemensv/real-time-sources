@@ -19,7 +19,6 @@ Scouted: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — deep dive)
 | 5 | **ETHZ Switzerland** | [ethz-switzerland.md](ethz-switzerland.md) | **16/18** | Switzerland / Alps | ✅ **Build** — FDSN; zero-cost addition via generic adapter |
 | 6 | **RESIF France** | [resif-france.md](resif-france.md) | **16/18** | France / Global M5+ | ✅ **Build** — FDSN; includes global teleseismic catalog |
 | 7 | **BMKG Indonesia** | [bmkg-indonesia.md](bmkg-indonesia.md) | **16/18** | Indonesia | ✅ **Build** — JSON API; most seismically active country; tsunami potential data |
-| 8 | **JMA Japan** | [jma-japan.md](jma-japan.md) | **15/18** | Japan | ✅ **Build** — Uniquely detailed intensity data; custom JSON parsing needed |
 | 9 | **FDSN Network Survey** | [fdsn-network-survey.md](fdsn-network-survey.md) | **15/18** | Multi-node | ✅ **Build** — Survey of 14 nodes; ETHZ+RESIF+NIEP+IPGP confirmed working |
 | 10 | **EMSC Felt Reports** | [emsc-felt-reports.md](emsc-felt-reports.md) | **15/18** | Global | ⚠️ **Maybe** — Crowdsourced felt data; USGS DYFI already in existing feed |
 | 11 | **IGP Peru** | [igp-peru.md](igp-peru.md) | **14/18** | Peru / S. America | ⚠️ **Maybe** — JSON API works but quirky format; major subduction zone |
@@ -34,7 +33,6 @@ Scouted: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — deep dive)
 | # | Candidate | File | Score | Coverage | Verdict |
 |---|-----------|------|-------|----------|---------|
 | 17 | **East Africa Rift (EMSC)** | [east-africa-rift-seismicity.md](east-africa-rift-seismicity.md) | **16/18** | East Africa / S. Africa | ✅ **Build** — FDSN standard, EMSC+SASN data, verified M3.6–4.5 events |
-| 18 | **USGS Africa Bounding Box** | [usgs-africa-earthquakes.md](usgs-africa-earthquakes.md) | **17/18** | Pan-African | ✅ **Build** — Same as existing USGS bridge with Africa bounding box |
 
 ## Candidates Not Reachable / Dismissed
 
@@ -135,13 +133,11 @@ Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/
 
 | Candidate | File | Score | Verdict |
 |---|---|---|---|
-| USGS Earthquake Data - UAE Region | [ae-usgs-earthquakes-uae-region.md](ae-usgs-earthquakes-uae-region.md) | 11/18 | — |
 | Gulf Region Seismology - USGS Coverage for Bahrain | [bh-bahrain-usgs-seismology.md](bh-bahrain-usgs-seismology.md) | 8/18 | — |
 | EMSC FDSN - Iraq/Zagros Seismic Region | [iq-emsc-fdsn-zagros.md](iq-emsc-fdsn-zagros.md) | 17/18 | ✅ |
 | Iraqi Meteorological Organization & Seismology (IMOS) - Seismological Network | [iq-imos-seismological-network.md](iq-imos-seismological-network.md) | 0/18 | ❌ |
 | USGS Earthquake Hazards Program - Iraq Coverage | [iq-usgs-earthquake-coverage.md](iq-usgs-earthquake-coverage.md) | 17/18 | ✅ |
 | Kuwait Seismic Network (KISR / KNSN) | [kw-kisr-kuwait-seismic-network.md](kw-kisr-kuwait-seismic-network.md) | ?/18 | ❌ |
-| USGS Earthquakes — Kuwait Region | [kw-usgs-earthquakes-kuwait.md](kw-usgs-earthquakes-kuwait.md) | 5/18 | ⏭️ |
 | EMSC Real-Time Earthquakes (Oman/Arabian Peninsula Region) | [om-emsc-realtime.md](om-emsc-realtime.md) | 16/18 | ✅ Build |
 | Oman National Seismic Network (FDSN OM) | [om-squ-eqmc-fdsn.md](om-squ-eqmc-fdsn.md) | 14/18 | ⚠️ Maybe |
 | Qatar-Saudi Arabia Border Seismic Sequence (EMSC) | [qa-border-earthquake-emsc.md](qa-border-earthquake-emsc.md) | 16/18 | — |

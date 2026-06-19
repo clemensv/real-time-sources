@@ -11,7 +11,6 @@ Scouted: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — deep dive)
 | [VAAC Ash Advisories](vaac-ash-advisories.md) | Global (Americas) | HTTP (XML/KML) | None | Every 6h during events | **15/18** | ✅ Recommended |
 | [MAGMA Indonesia (PVMBG)](magma-indonesia-pvmbg.md) | Indonesia | HTML + API (auth) | API: Yes | Real-time VONAs | **14/18** | ⚠️ API requires auth |
 | [Vedur.is Iceland](vedur-iceland.md) | Iceland | HTML (no API) | None | Real-time on web | **13/18** | ⚠️ No API; high value |
-| [JMA Volcanic Warnings](jma-volcanic-japan.md) | Japan | HTTP (HTML) | None | Event-driven | **13/18** | ⚠️ HTML-only |
 | [INGV Italy](ingv-italy.md) | Italy | Web + FDSN | None | Weekly bulletins | **13/18** | ⚠️ Fragmented access |
 | [Toulouse VAAC + Survey](toulouse-vaac-survey.md) | Global (9 VAACs) | HTML | None | During events | **12/18** | ⏭️ Only Washington VAAC has feeds |
 | [KVERT Kamchatka](kvert-kamchatka.md) | Russia (Kamchatka) | HTML | None | Weekly + VONAs | **12/18** | ⏭️ No API; fragile infrastructure |

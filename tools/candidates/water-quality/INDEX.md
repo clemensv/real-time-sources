@@ -8,7 +8,6 @@ Research candidates for real-time and continuous water quality monitoring APIs.
 
 | Slug | Source | Country/Region | Score | Key Strength |
 |------|--------|---------------|-------|-------------|
-| [usgs-nwis-wq](usgs-nwis-wq.md) | USGS NWIS Water Quality (IV) | USA (3,000+ sites) | **18/18** | Same proven API as usgs-iv; just different parameter codes |
 | [hubeau-france](hubeau-france.md) | Hub'Eau France Water Quality | France (25K+ stations) | **17/18** | Superb REST API; 265M analyses; drinking water included; no auth |
 | [nanoos-puget-sound-erddap](nanoos-puget-sound-erddap.md) | NANOOS / ORCA Puget Sound ERDDAP | USA (Puget Sound) | **16/18** | Near-real-time marine water quality; ERDDAP; unique Puget Sound moorings |
 | [copernicus-marine-wq](copernicus-marine-wq.md) | Copernicus Marine Service WQ Products | Global (satellite/model) | **16/18** | Satellite ocean color; HAB detection; global coverage; Python client |

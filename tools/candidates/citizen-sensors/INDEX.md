@@ -6,7 +6,6 @@ Real-time data from citizen-operated environmental sensor networks.
 |--------|----------|------|-----------|-------------|
 | [iNaturalist](inaturalist.md) | REST | None | Seconds | 18/18 |
 | [eBird](ebird.md) | REST | API Key (free) | Minutes | 17/18 |
-| [Sensor.Community](sensor-community.md) | REST | None | ~5 min | 16/18 |
 | [PurpleAir](purpleair.md) | REST | API Key | ~2 min | 15/18 |
 | [Smart Citizen](smart-citizen.md) | REST | None | 1-5 min | 15/18 |
 | [openSenseMap](opensensemap.md) | REST | None | 1-10 min | 14/18 |
@@ -36,7 +35,6 @@ Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/
 
 | Candidate | File | Score | Verdict |
 |---|---|---|---|
-| Sensor.Community (Luftdaten.info) - UAE Citizen Air Quality Sensors | [ae-sensor-community-uae.md](ae-sensor-community-uae.md) | ?/18 | — |
 | Royal Commission for AlUla - Heritage Site Sensors | [sa-alula-heritage-sensors.md](sa-alula-heritage-sensors.md) | 7/18 | ❌ |
 | NEOM Smart City - Sensor Networks | [sa-neom-smart-city.md](sa-neom-smart-city.md) | 9/18 | ⏭️ |
 

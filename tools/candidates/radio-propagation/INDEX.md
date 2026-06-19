@@ -8,7 +8,6 @@ Real-time HF radio propagation monitoring from amateur radio networks, ionospher
 | [WSPRnet](wsprnet.md) | HTTP/JSON | None | 2 minutes | 15/18 |
 | [Reverse Beacon Network](reverse-beacon-network.md) | Telnet | Callsign | Real-time | 15/18 |
 | [GIRO Ionosonde](giro-ionosonde.md) | REST | None | 5-15 min | 15/18 |
-| [NOAA SWPC Alerts](noaa-swpc-alerts.md) | REST | None | Real-time | 15/18 |
 | [DX Cluster](dx-cluster.md) | Telnet/REST | Callsign | Real-time | 14/18 |
 | [HamQSL Solar Indices](hamqsl-solar-indices.md) | REST (XML) | None | 15-30 min | 13/18 |
 | [DXHeat](dxheat.md) | Web/AJAX | None | Real-time | 12/18 |

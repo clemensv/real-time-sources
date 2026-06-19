@@ -11,10 +11,6 @@ This index covers real-time electricity generation, load, pricing, and grid data
 | # | Slug | Source | Region | Freshness | Open? | Score | Priority |
 |---|------|--------|--------|-----------|-------|-------|----------|
 | 1 | [eia-grid-monitor](eia-grid-monitor.md) | US EIA Hourly Electric Grid Monitor | US (all BAs) | Hourly | API key (free) | **18/18** | ★★★ |
-| 2 | [elexon-bmrs](elexon-bmrs.md) | Elexon BMRS | Great Britain | 30 min | No auth | **18/18** | ★★★ |
-| 3 | [energy-charts-info](energy-charts-info.md) | Energy-Charts API (Fraunhofer ISE) | Pan-European (40+ countries) | 15 min | No auth | **18/18** | ★★★ |
-| 4 | [carbon-intensity-uk](carbon-intensity-uk.md) | Carbon Intensity API (NGESO) | Great Britain | 30 min | No auth | **17/18** | ★★★ |
-| 5 | [energidataservice-dk](energidataservice-dk.md) | Energi Data Service (Energinet) | Denmark + Nordics | 1 min | No auth | **17/18** | ★★★ |
 | 6 | [rte-eco2mix](rte-eco2mix.md) | RTE éCO2mix | France | 15 min | Quota | **16/18** | ★★☆ |
 | 7 | [ons-brazil](ons-brazil.md) | ONS Brazil | Brazil (4 subsystems) | ~1 min | No auth | **16/18** | ★★☆ |
 | 8 | [aemo-nemweb](aemo-nemweb.md) | AEMO NEMWeb | Australia (NEM) | 5 min | Public files | **16/18** | ★★☆ |

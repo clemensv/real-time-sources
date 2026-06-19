@@ -19,17 +19,10 @@ Research conducted: April 2026 (Deep Dive Round 2: April 2026)
 |---|--------|------|---------|-------|----------|------|------------|
 | 1 | [UK Met Office DataHub](uk-met-office.md) | `uk-met-office.md` | UK | 16/18 | REST (GeoJSON/GRIB2) | API Key (free) | UK 2km model, hourly spot data |
 | 2 | [Météo-France](meteo-france.md) | `meteo-france.md` | France | 16/18 | REST API | API Key (free) | AROME 1.3km model, radar |
-| 3 | [SMHI Weather](smhi-weather.md) | `smhi-weather.md` | Sweden | 17/18 | REST (JSON) | **None** | ~700 stations, no-auth, clean JSON |
 | 4 | [KNMI Data Platform](knmi.md) | `knmi.md` | Netherlands | 15/18 | REST (file-based) | API Key (anon avail) | 10-min obs, NetCDF files, notifications |
-| 5 | [JMA](jma.md) | `jma.md` | Japan | 17/18 | Atom+XML PULL | **None** | 1,300 AMeDAS stations, minute-level feed |
-| 6 | [BOM Australia](bom-australia.md) | `bom-australia.md` | Australia | 17/18 | HTTP JSON polling | **None** | 30-min obs JSON, 5-min radar, 10-min satellite |
 | 7 | [ECMWF Open Data](ecmwf-open-data.md) | `ecmwf-open-data.md` | International | 16/18 | HTTPS + Python client | **None** | World's best global NWP model (IFS), multi-cloud |
-| 8 | [Environment Canada](environment-canada.md) | `environment-canada.md` | Canada | 18/18 | HTTP + AMQP push + OGC | **None** | AMQP push, HRDPS 2.5km, CAP warnings |
 | 9 | [IPMA Portugal](ipma-portugal.md) | `ipma-portugal.md` | Portugal | 14/18 | Static JSON files | **None** | Dead-simple JSON, Azores/Madeira |
 | 10 | [AEMET Spain](aemet-spain.md) | `aemet-spain.md` | Spain | 16/18 | REST (OpenAPI 3.0) | API Key (free) | Lightning, fire risk, CAP warnings |
-| 11 | [DMI Denmark](dmi-denmark.md) | `dmi-denmark.md` | Denmark | 17/18 | OGC API — Features | API Key (free) | Greenland coverage, GeoJSON, standards |
-| 12 | [GeoSphere Austria](geosphere-austria.md) | `geosphere-austria.md` | Austria | 17/18 | REST API + HTTP | **None** | INCA nowcasting, AROME 2.5km, 96 datasets |
-| 13 | [FMI Finland](fmi-finland.md) | `fmi-finland.md` | Finland | 17/18 | OGC WFS 2.0 | **None** | Pioneer in met open data, multi-source |
 | 14 | [Open-Meteo](open-meteo.md) | `open-meteo.md` | Global | 15/18 | REST JSON | **None** | Aggregator, multi-model, simplest API |
 | 15 | [MeteoSwiss](meteoswiss.md) | `meteoswiss.md` | Switzerland | 14/18 | HTTP file download | **None** | New OGD mandate (2024), Alpine coverage |
 
@@ -47,8 +40,6 @@ Research conducted: April 2026 (Deep Dive Round 2: April 2026)
 
 | # | Source | File | Country | Score | Protocol | Auth | Highlights |
 |---|--------|------|---------|-------|----------|------|------------|
-| 21 | [HKO Hong Kong](hko-hong-kong.md) | `hko-hong-kong.md` | Hong Kong | 17/18 | REST (JSON) | **None** | Best Asian API, typhoon tracking, 10-min regional data |
-| 22 | [Singapore NEA](singapore-nea.md) | `singapore-nea.md` | Singapore | 17/18 | REST (JSON) | **None** | 1-minute temperature updates, 50+ rain gauges, no auth |
 | 23 | [CWA Taiwan](cwa-taiwan.md) | `cwa-taiwan.md` | Taiwan | 17/18 | REST (Swagger) | API Key (free) | 700+ stations, typhoon, earthquake, OpenAPI docs |
 | 24 | [BMKG Indonesia](bmkg-indonesia.md) | `bmkg-indonesia.md` | Indonesia | 16/18 | REST (JSON) | **None** | Village-level forecasts, 17,000 islands, bilingual |
 | 25 | [Argentina SMN](smn-argentina.md) | `smn-argentina.md` | Argentina | 15/18 | REST (JSON) | **None** | Antarctic bases, Patagonia, 53° latitude span |

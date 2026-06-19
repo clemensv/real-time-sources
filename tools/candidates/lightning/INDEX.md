@@ -9,11 +9,9 @@ Research completed: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — satellite-base
 | [NOAA GLM (GOES)](noaa-glm-goes.md) | Western Hemisphere | AWS S3 + SNS | None | 20-second files | **17/18** | ✅ Recommended |
 | [EUMETSAT MTG-LI](eumetsat-mtg-li.md) | Europe/Africa/Atlantic | REST/OpenSearch | Free registration | ~10 min | **16/18** | ✅ Recommended |
 | [Vaisala GLD360/NLDN](vaisala-gld360-nldn.md) | Global/USA | Commercial | Commercial license | Real-time | **15/18** | ❌ Dismissed (commercial) |
-| [Blitzortung.org](blitzortung.md) | Global | WebSocket | None | Real-time (<1s) | **14/18** | ✅ Recommended |
 | [CLDN Canada](cldn-canada.md) | Canada | OGC WMS | None | 10-min density | **14/18** | ✅ Viable |
 | [Earth Networks ENTLN](earth-networks-entln.md) | Global | REST (Azure APIM) | Commercial | Real-time | **13/18** | ❌ Dismissed (commercial) |
 | [DWD Lightning](dwd-lightning.md) | Germany/Europe | File download | None | ~10 min files | **13/18** | ✅ Viable |
-| [Blitzortung Africa](blitzortung-africa.md) | Pan-African | WebSocket | Community | Real-time | **11/18** | ⚠️ Limited coverage |
 | [WWLLN](wwlln.md) | Global | Academic | Agreement required | Delayed | **8/18** | ❌ Dismissed (restricted) |
 
 ### Investigated But Not Catalogued (No Public Data)

@@ -2,8 +2,6 @@
 
 | Slug | Source | Region | Protocol | Auth | Score |
 |------|--------|--------|----------|------|-------|
-| [snotel](snotel.md) | SNOTEL | US West | REST/CSV | None | 17/18 |
-| [eaws-albina](eaws-albina.md) | EAWS/ALBINA Avalanche Bulletins | European Alps | HTTP/CAAMLv6 JSON | None | 17/18 |
 | [nve-avalanche](nve-avalanche.md) | NVE Avalanche (Varsom) | Norway | REST/JSON | None | 16/18 |
 | [slf-avalanche](slf-avalanche.md) | SLF Avalanche Bulletins | Switzerland | REST/CAAML | None | 15/18 |
 | [avalanche-org](avalanche-org.md) | Avalanche.org | US | REST/JSON | None | 12/18 |

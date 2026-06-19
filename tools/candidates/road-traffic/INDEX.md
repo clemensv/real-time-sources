@@ -6,20 +6,12 @@ Real-time road traffic data sources covering speed, flow, incidents, roadworks, 
 
 | Candidate | Region | Score | Protocol | Key Value |
 |-----------|--------|-------|----------|-----------|
-| [Digitraffic Road Finland](digitraffic-road-finland.md) | Finland | **18/18** | REST + MQTT | TMS data, incidents, road weather; MQTT for push updates; same platform as Maritime |
 | [Trafikverket Sweden](trafikverket-sweden.md) | Sweden | **18/18** | REST (custom query) + DATEX II | Comprehensive traffic data; CC0 license; delta change tracking |
-| [NDW Netherlands](ndw-netherlands.md) | Netherlands | **18/18** | DATEX II v3 files | Per-minute traffic speeds; DATEX II reference implementation |
-| [TfL Road Disruptions London](tfl-road-disruptions-london.md) | UK — London | **18/18** | REST | Incidents, roadworks, closures with GeoJSON geometry; no auth |
-| [French Road Traffic](french-road-traffic.md) | **France (national)** | **18/18** | DATEX II | Real-time circulation + events on national roads; DATEX II reuse |
 | [Luxembourg CITA DATEX](luxembourg-cita-datex.md) | Luxembourg | **17/18** | DATEX II | Live motorway traffic status feeds; compact DATEX validation target |
-| [Madrid Real-Time Traffic](madrid-traffic.md) | Spain — Madrid | 17/18 | REST (XML) | Raw sensor data: intensity, occupancy, service levels; 5-min updates |
 | [Singapore LTA Traffic](singapore-lta-traffic.md) | **Singapore** | 17/18 | REST (OData) | Speed bands, incidents, images, travel times; comprehensive platform |
-| [Paris Bicycle Counters](paris-bicycle-counters.md) | France — Paris | 17/18 | REST (Opendatasoft) | 141 Eco-Compteur stations; hourly bicycle flow data |
-| [Autobahn Germany](autobahn-germany.md) | Germany | 17/18 | REST | **Already implemented** in `autobahn/` directory |
 | [Statens vegvesen Norway](vegvesen-norway.md) | Norway | 16/18 | GraphQL + REST | Traffic volumes via GraphQL; NVDB road database |
 | [National Highways England](national-highways-england.md) | UK — England | 16/18 | REST | WebTRIS traffic counts and speeds; strategic road network |
 | [511 SF Bay Area](511-sf-bay-area.md) | US — Bay Area | 16/18 | REST | Traffic events, work zones (WZDx), tolls; representative US 511 system |
-| [WSDOT Traveler API](wsdot-washington.md) | US — Washington State | 17/18 | REST + SOAP | Ferries, mountain passes, alerts, weather, border waits in one official platform |
 | [TomTom Traffic](tomtom-traffic.md) | **Global** | 16/18 | REST | Flow + incidents; free tier 2,500 req/day; OpenLR references |
 | [HERE Traffic](here-traffic.md) | **Global** | 15/18 | REST | Flow + incidents; free tier 1,000 req/month; jam factor metric |
 

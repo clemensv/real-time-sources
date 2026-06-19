@@ -10,23 +10,11 @@ Scouted: 2026-04-06
 |---|--------|--------|------|------|-----------|-------------|----------|
 | 1 | [OpenAQ](openaq.md) | Global | ✅ REST v3 | API Key (free) | Hourly–RT | 18/18 | 🟢 HIGH |
 | 2 | [US EPA AirNow](us-epa-airnow.md) | US/CA/MX | ✅ REST | API Key (free) | Hourly | 15/18 | 🟢 HIGH |
-| 3 | [Defra AURN](defra-aurn.md) | UK | ✅ SOS/REST | None | Hourly | 16/18 | 🟢 HIGH |
-| 4 | [UBA Germany](uba-germany.md) | Germany | ✅ REST v3 | None | Hourly | 16/18 | 🟢 HIGH |
-| 5 | [Luchtmeetnet (NL)](luchtmeetnet-nl.md) | Netherlands | ✅ REST | None | Hourly | 17/18 | 🟢 HIGH |
-| 6 | [IRCELINE (Belgium)](irceline-belgium.md) | Belgium | ✅ SOS/REST | None | Hourly | 16/18 | 🟢 HIGH |
-| 7 | [LAQN London](laqn-london.md) | UK (London) | ✅ REST | None | Hourly | 17/18 | 🟢 HIGH |
-| 8 | [Singapore NEA](singapore-nea.md) | Singapore | ✅ REST | None | Hourly | 16/18 | 🟢 HIGH |
 | 9 | [Taiwan MOENV](taiwan-moenv.md) | Taiwan | ✅ REST | API Key (free) | Hourly | 16/18 | 🟢 HIGH |
-| 10 | [Wallonia ISSeP](wallonia-issep.md) | Belgium (Wallonia) | ✅ REST | None | Near-RT | 15/18 | 🟡 MEDIUM |
-| 11 | [Sensor.Community](sensor-community.md) | Global | ✅ REST | None | ~2.5 min | 15/18 | 🟡 MEDIUM |
 | 12 | [NILU Norway](nilu-norway.md) | Norway | ✅ REST | API Key (req'd) | Hourly | 15/18 | 🟡 MEDIUM |
-| 13 | [Canada AQHI](canada-aqhi.md) | Canada | ⚠️ Files/WMS | None | Hourly | 15/18 | 🟡 MEDIUM |
-| 14 | [GIOŚ Poland](gios-poland.md) | Poland | ✅ REST | None (rate-limited) | Hourly | 14/18 | 🟡 MEDIUM |
 | 15 | [PurpleAir](purpleair.md) | Global (US-heavy) | ✅ REST v1 | API Key (free) | ~2 min | 14/18 | 🟡 MEDIUM |
-| 16 | [FMI Finland](fmi-finland.md) | Finland | ✅ WFS 2.0 | None | Hourly | 14/18 | 🟡 MEDIUM |
 | 17 | [AQICN / WAQI](aqicn-waqi.md) | Global | ✅ REST | API Key (free) | Hourly | 13/18 | 🟡 MEDIUM |
 | 18 | [EEA Air Quality](eea-air-quality.md) | Europe | ⚠️ Bulk DL | None | Hourly | 13/18 | 🟡 MEDIUM |
-| 19 | [Hong Kong EPD](hongkong-epd.md) | Hong Kong | ⚠️ XML feed | None | Hourly | 13/18 | 🟡 MEDIUM |
 | 20 | [Atmo France](atmo-france.md) | France | ⚠️ ArcGIS | Varies | Hourly | 13/18 | 🟡 MEDIUM |
 | 21 | [Swiss NABEL](swiss-nabel.md) | Switzerland | ⚠️ WMS/CSV | None | Hourly | 13/18 | 🟡 MEDIUM |
 | 22 | [South Korea AirKorea](south-korea-airkorea.md) | South Korea | ✅ REST | API Key (free) | Hourly | 13/18 | 🟡 MEDIUM |
@@ -64,7 +52,6 @@ Scouted: 2026-04-06
 
 | # | Source | Region | API? | Auth | Freshness | Total Score | Priority |
 |---|--------|--------|------|------|-----------|-------------|----------|
-| 30 | [DWD Pollenflug](dwd-pollenflug.md) | Germany/Europe | ✅ JSON file | None | Daily | 16/18 | 🟢 HIGH |
 
 ## Recommended Implementation Order
 
