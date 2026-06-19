@@ -92,10 +92,8 @@ async def test_nws_alerts_mqtt_nws_weather_alert_minor_mqtt_py(mosquitto_broker)
             alert_id=f"test_alert_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-            event_type="test_event_type",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -160,10 +158,8 @@ async def test_nws_alerts_mqtt_nws_weather_alert_moderate_mqtt_py(mosquitto_brok
             alert_id=f"test_alert_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-            event_type="test_event_type",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -228,10 +224,8 @@ async def test_nws_alerts_mqtt_nws_weather_alert_severe_mqtt_py(mosquitto_broker
             alert_id=f"test_alert_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-            event_type="test_event_type",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -296,10 +290,8 @@ async def test_nws_alerts_mqtt_nws_weather_alert_extreme_mqtt_py(mosquitto_broke
             alert_id=f"test_alert_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-            event_type="test_event_type",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -364,10 +356,8 @@ async def test_nws_alerts_mqtt_nws_weather_alert_unknown_mqtt_py(mosquitto_broke
             alert_id=f"test_alert_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            state="test_state",
-            event_type="test_event_type",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

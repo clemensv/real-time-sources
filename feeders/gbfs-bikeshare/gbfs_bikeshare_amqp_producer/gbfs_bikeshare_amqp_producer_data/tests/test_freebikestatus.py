@@ -28,15 +28,15 @@ class Test_FreeBikeStatus(unittest.TestCase):
         Create instance of FreeBikeStatus for testing
         """
         instance = FreeBikeStatus(
-            system_id='nbpwaxqohzmrdpkcjgjz',
-            bike_id='gccblmhsusofrnekhrxs',
-            lat=float(28.231894469724917),
-            lon=float(87.4876065293331),
+            system_id='pxgjqbayjuuzflwupgck',
+            bike_id='lqboqawzmxytkrccmchf',
+            lat=float(14.887307169604092),
+            lon=float(27.838266789923104),
             is_reserved=True,
-            is_disabled=True,
-            vehicle_type_id='ysaoqkfzmvrmtttdmzdw',
-            current_range_meters=float(90.45868001752548),
-            last_reported=int(15)
+            is_disabled=False,
+            vehicle_type_id='mumnuxfqexatcrhdskxd',
+            current_range_meters=float(45.50469650703207),
+            last_reported=int(92)
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_FreeBikeStatus(unittest.TestCase):
         """
         Test system_id property
         """
-        test_value = 'nbpwaxqohzmrdpkcjgjz'
+        test_value = 'pxgjqbayjuuzflwupgck'
         self.instance.system_id = test_value
         self.assertEqual(self.instance.system_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_FreeBikeStatus(unittest.TestCase):
         """
         Test bike_id property
         """
-        test_value = 'gccblmhsusofrnekhrxs'
+        test_value = 'lqboqawzmxytkrccmchf'
         self.instance.bike_id = test_value
         self.assertEqual(self.instance.bike_id, test_value)
     
@@ -61,7 +61,7 @@ class Test_FreeBikeStatus(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(28.231894469724917)
+        test_value = float(14.887307169604092)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -69,7 +69,7 @@ class Test_FreeBikeStatus(unittest.TestCase):
         """
         Test lon property
         """
-        test_value = float(87.4876065293331)
+        test_value = float(27.838266789923104)
         self.instance.lon = test_value
         self.assertEqual(self.instance.lon, test_value)
     
@@ -85,7 +85,7 @@ class Test_FreeBikeStatus(unittest.TestCase):
         """
         Test is_disabled property
         """
-        test_value = True
+        test_value = False
         self.instance.is_disabled = test_value
         self.assertEqual(self.instance.is_disabled, test_value)
     
@@ -93,7 +93,7 @@ class Test_FreeBikeStatus(unittest.TestCase):
         """
         Test vehicle_type_id property
         """
-        test_value = 'ysaoqkfzmvrmtttdmzdw'
+        test_value = 'mumnuxfqexatcrhdskxd'
         self.instance.vehicle_type_id = test_value
         self.assertEqual(self.instance.vehicle_type_id, test_value)
     
@@ -101,7 +101,7 @@ class Test_FreeBikeStatus(unittest.TestCase):
         """
         Test current_range_meters property
         """
-        test_value = float(90.45868001752548)
+        test_value = float(45.50469650703207)
         self.instance.current_range_meters = test_value
         self.assertEqual(self.instance.current_range_meters, test_value)
     
@@ -109,7 +109,7 @@ class Test_FreeBikeStatus(unittest.TestCase):
         """
         Test last_reported property
         """
-        test_value = int(15)
+        test_value = int(92)
         self.instance.last_reported = test_value
         self.assertEqual(self.instance.last_reported, test_value)
     

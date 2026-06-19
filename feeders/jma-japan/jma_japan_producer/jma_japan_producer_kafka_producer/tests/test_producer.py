@@ -159,7 +159,7 @@ def test_jp_go_jma_weatherbulletins_mqtt_jpgojmaweatherbulletinsmqttweatherbulle
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "jp.go.jma.WeatherBulletins.mqtt.WeatherBulletin":
+            if cloudevent['type'] == "jp.go.jma.WeatherBulletin":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_jp_go_jma_weatherbulletins_amqp_jpgojmaweatherbulletinsamqpweatherbulle
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "jp.go.jma.WeatherBulletins.amqp.WeatherBulletin":
+            if cloudevent['type'] == "jp.go.jma.WeatherBulletin":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

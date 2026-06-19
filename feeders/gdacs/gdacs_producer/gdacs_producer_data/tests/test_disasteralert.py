@@ -33,33 +33,33 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         instance = DisasterAlert(
             event_type=EventTypeenum.EQ,
-            event_id='yzykpyegwvjpodvimutj',
-            episode_id='rwardkmkeskpdxlwbumk',
+            event_id='jlixxdtaezehttgxepcr',
+            episode_id='fhubjscftzrniwgvlmyw',
             alert_level=AlertLevelenum.Green,
-            alert_score=float(82.31364278228163),
-            episode_alert_level='uhmphimbxmudxggzyrjm',
-            episode_alert_score=float(25.214611094178395),
-            event_name='dtuymrvikbkeuqxajrok',
-            severity_value=float(54.74007165560906),
-            severity_unit='ksbzpnexypziztgqjdwa',
-            severity_text='uarhqzihrgkyyclaegcc',
-            country='nwmoiiyzycocleeuquej',
-            iso3='couauuqxmxvbonvpmppi',
-            latitude=float(18.246655437250592),
-            longitude=float(4.354858851571852),
+            alert_score=float(87.94445445975354),
+            episode_alert_level='uqnfcfkrbhjweeczvezr',
+            episode_alert_score=float(40.79647166151476),
+            event_name='ivwrbbnyentbqvkyuvbi',
+            severity_value=float(78.05074138546941),
+            severity_unit='sbdcxdkobknwmghofild',
+            severity_text='sucrlkzpwzsierqxixwv',
+            country='tkvbuwuhnoftetnescwq',
+            iso3='baqclbeaefqfomudbwhu',
+            latitude=float(1.0466821716502372),
+            longitude=float(93.46064704333152),
             from_date=datetime.datetime.now(datetime.timezone.utc),
             to_date=datetime.datetime.now(datetime.timezone.utc),
-            population_value=float(1.1179441928820477),
-            population_unit='ssazvcrzubuexsjaasuk',
-            vulnerability=float(25.84373561400366),
-            bbox_min_lon=float(41.31301828338506),
-            bbox_max_lon=float(49.94785846055569),
-            bbox_min_lat=float(58.17209498192042),
-            bbox_max_lat=float(33.47401077958),
-            is_current=False,
-            version=int(61),
-            description='xntpiqqmevlcdzpegzqw',
-            link='lbesftnqqrczrooibsfm',
+            population_value=float(94.88079385284738),
+            population_unit='zmtfdhlfiennolymdmrv',
+            vulnerability=float(48.5545531791669),
+            bbox_min_lon=float(23.82032677401846),
+            bbox_max_lon=float(13.70164813659821),
+            bbox_min_lat=float(33.84345534958395),
+            bbox_max_lat=float(77.89458179389615),
+            is_current=True,
+            version=int(22),
+            description='fglxrjgsnhczhvxbejrl',
+            link='vpdqxyujokqfrcgxndrp',
             pub_date=datetime.datetime.now(datetime.timezone.utc),
             alert_color=AlertColorenum.green
         )
@@ -78,7 +78,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'yzykpyegwvjpodvimutj'
+        test_value = 'jlixxdtaezehttgxepcr'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -86,7 +86,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test episode_id property
         """
-        test_value = 'rwardkmkeskpdxlwbumk'
+        test_value = 'fhubjscftzrniwgvlmyw'
         self.instance.episode_id = test_value
         self.assertEqual(self.instance.episode_id, test_value)
     
@@ -102,7 +102,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test alert_score property
         """
-        test_value = float(82.31364278228163)
+        test_value = float(87.94445445975354)
         self.instance.alert_score = test_value
         self.assertEqual(self.instance.alert_score, test_value)
     
@@ -110,7 +110,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test episode_alert_level property
         """
-        test_value = 'uhmphimbxmudxggzyrjm'
+        test_value = 'uqnfcfkrbhjweeczvezr'
         self.instance.episode_alert_level = test_value
         self.assertEqual(self.instance.episode_alert_level, test_value)
     
@@ -118,7 +118,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test episode_alert_score property
         """
-        test_value = float(25.214611094178395)
+        test_value = float(40.79647166151476)
         self.instance.episode_alert_score = test_value
         self.assertEqual(self.instance.episode_alert_score, test_value)
     
@@ -126,7 +126,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test event_name property
         """
-        test_value = 'dtuymrvikbkeuqxajrok'
+        test_value = 'ivwrbbnyentbqvkyuvbi'
         self.instance.event_name = test_value
         self.assertEqual(self.instance.event_name, test_value)
     
@@ -134,7 +134,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test severity_value property
         """
-        test_value = float(54.74007165560906)
+        test_value = float(78.05074138546941)
         self.instance.severity_value = test_value
         self.assertEqual(self.instance.severity_value, test_value)
     
@@ -142,7 +142,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test severity_unit property
         """
-        test_value = 'ksbzpnexypziztgqjdwa'
+        test_value = 'sbdcxdkobknwmghofild'
         self.instance.severity_unit = test_value
         self.assertEqual(self.instance.severity_unit, test_value)
     
@@ -150,7 +150,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test severity_text property
         """
-        test_value = 'uarhqzihrgkyyclaegcc'
+        test_value = 'sucrlkzpwzsierqxixwv'
         self.instance.severity_text = test_value
         self.assertEqual(self.instance.severity_text, test_value)
     
@@ -158,7 +158,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'nwmoiiyzycocleeuquej'
+        test_value = 'tkvbuwuhnoftetnescwq'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -166,7 +166,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test iso3 property
         """
-        test_value = 'couauuqxmxvbonvpmppi'
+        test_value = 'baqclbeaefqfomudbwhu'
         self.instance.iso3 = test_value
         self.assertEqual(self.instance.iso3, test_value)
     
@@ -174,7 +174,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(18.246655437250592)
+        test_value = float(1.0466821716502372)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -182,7 +182,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(4.354858851571852)
+        test_value = float(93.46064704333152)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -206,7 +206,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test population_value property
         """
-        test_value = float(1.1179441928820477)
+        test_value = float(94.88079385284738)
         self.instance.population_value = test_value
         self.assertEqual(self.instance.population_value, test_value)
     
@@ -214,7 +214,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test population_unit property
         """
-        test_value = 'ssazvcrzubuexsjaasuk'
+        test_value = 'zmtfdhlfiennolymdmrv'
         self.instance.population_unit = test_value
         self.assertEqual(self.instance.population_unit, test_value)
     
@@ -222,7 +222,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test vulnerability property
         """
-        test_value = float(25.84373561400366)
+        test_value = float(48.5545531791669)
         self.instance.vulnerability = test_value
         self.assertEqual(self.instance.vulnerability, test_value)
     
@@ -230,7 +230,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test bbox_min_lon property
         """
-        test_value = float(41.31301828338506)
+        test_value = float(23.82032677401846)
         self.instance.bbox_min_lon = test_value
         self.assertEqual(self.instance.bbox_min_lon, test_value)
     
@@ -238,7 +238,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test bbox_max_lon property
         """
-        test_value = float(49.94785846055569)
+        test_value = float(13.70164813659821)
         self.instance.bbox_max_lon = test_value
         self.assertEqual(self.instance.bbox_max_lon, test_value)
     
@@ -246,7 +246,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test bbox_min_lat property
         """
-        test_value = float(58.17209498192042)
+        test_value = float(33.84345534958395)
         self.instance.bbox_min_lat = test_value
         self.assertEqual(self.instance.bbox_min_lat, test_value)
     
@@ -254,7 +254,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test bbox_max_lat property
         """
-        test_value = float(33.47401077958)
+        test_value = float(77.89458179389615)
         self.instance.bbox_max_lat = test_value
         self.assertEqual(self.instance.bbox_max_lat, test_value)
     
@@ -262,7 +262,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test is_current property
         """
-        test_value = False
+        test_value = True
         self.instance.is_current = test_value
         self.assertEqual(self.instance.is_current, test_value)
     
@@ -270,7 +270,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test version property
         """
-        test_value = int(61)
+        test_value = int(22)
         self.instance.version = test_value
         self.assertEqual(self.instance.version, test_value)
     
@@ -278,7 +278,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'xntpiqqmevlcdzpegzqw'
+        test_value = 'fglxrjgsnhczhvxbejrl'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -286,7 +286,7 @@ class Test_DisasterAlert(unittest.TestCase):
         """
         Test link property
         """
-        test_value = 'lbesftnqqrczrooibsfm'
+        test_value = 'vpdqxyujokqfrcgxndrp'
         self.instance.link = test_value
         self.assertEqual(self.instance.link, test_value)
     

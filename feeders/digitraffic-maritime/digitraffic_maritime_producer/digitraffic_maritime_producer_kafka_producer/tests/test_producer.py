@@ -432,7 +432,7 @@ def test_fi_digitraffic_marine_ais_mqtt_fidigitrafficmarineaismqttlocation(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.marine.ais.mqtt.location":
+            if cloudevent['type'] == "fi.digitraffic.marine.ais.VesselLocation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -494,7 +494,7 @@ def test_fi_digitraffic_marine_ais_mqtt_fidigitrafficmarineaismqttmetadata(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.marine.ais.mqtt.metadata":
+            if cloudevent['type'] == "fi.digitraffic.marine.ais.VesselMetadata":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -556,7 +556,7 @@ def test_fi_digitraffic_marine_ais_amqp_fidigitrafficmarineaisamqplocation(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.marine.ais.amqp.location":
+            if cloudevent['type'] == "fi.digitraffic.marine.ais.VesselLocation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -618,7 +618,7 @@ def test_fi_digitraffic_marine_ais_amqp_fidigitrafficmarineaisamqpmetadata(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.marine.ais.amqp.metadata":
+            if cloudevent['type'] == "fi.digitraffic.marine.ais.VesselMetadata":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -680,7 +680,7 @@ def test_fi_digitraffic_marine_portcall_mqtt_fidigitrafficmarineportcallmqttport
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.marine.portcall.mqtt.port_call":
+            if cloudevent['type'] == "fi.digitraffic.marine.portcall.PortCall":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -742,7 +742,7 @@ def test_fi_digitraffic_marine_portcall_amqp_fidigitrafficmarineportcallamqpport
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.marine.portcall.amqp.port_call":
+            if cloudevent['type'] == "fi.digitraffic.marine.portcall.PortCall":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -804,7 +804,7 @@ def test_fi_digitraffic_marine_portcall_vesseldetails_mqtt_fidigitrafficmarinepo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.marine.portcall.vesseldetails.mqtt.vessel_details":
+            if cloudevent['type'] == "fi.digitraffic.marine.portcall.VesselDetails":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -866,7 +866,7 @@ def test_fi_digitraffic_marine_portcall_vesseldetails_amqp_fidigitrafficmarinepo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details":
+            if cloudevent['type'] == "fi.digitraffic.marine.portcall.VesselDetails":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -928,7 +928,7 @@ def test_fi_digitraffic_marine_portcall_portlocation_mqtt_fidigitrafficmarinepor
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.marine.portcall.portlocation.mqtt.port_location":
+            if cloudevent['type'] == "fi.digitraffic.marine.portcall.PortLocation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -990,7 +990,7 @@ def test_fi_digitraffic_marine_portcall_portlocation_amqp_fidigitrafficmarinepor
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.marine.portcall.portlocation.amqp.port_location":
+            if cloudevent['type'] == "fi.digitraffic.marine.portcall.PortLocation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

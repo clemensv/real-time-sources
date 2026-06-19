@@ -382,7 +382,7 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedRealTime.Vehicle.VehiclePosition.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedRealTime.Vehicle.VehiclePosition"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -420,7 +420,7 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedRealTime.Vehicle.VehiclePosition'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -474,7 +474,7 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedRealTime.Trip.TripUpdate.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedRealTime.Trip.TripUpdate"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -512,7 +512,7 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedRealTime.Trip.TripUpdate.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedRealTime.Trip.TripUpdate'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -566,7 +566,7 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedRealTime.Alert.Alert.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedRealTime.Alert.Alert"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -604,7 +604,7 @@ class TestGeneralTransitFeedRealTimeAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedRealTime.Alert.Alert.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedRealTime.Alert.Alert'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -718,7 +718,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Agency.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Agency"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -756,7 +756,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Agency.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Agency'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -810,7 +810,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Areas.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Areas"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -848,7 +848,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Areas.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Areas'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -902,7 +902,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Attributions.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Attributions"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -940,7 +940,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Attributions.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Attributions'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -994,7 +994,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeed.BookingRules.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeed.BookingRules"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1032,7 +1032,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeed.BookingRules.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeed.BookingRules'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -1086,7 +1086,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareAttributes.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareAttributes"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1124,7 +1124,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareAttributes.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareAttributes'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -1178,7 +1178,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareLegRules.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareLegRules"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1216,7 +1216,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareLegRules.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareLegRules'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -1270,7 +1270,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareMedia.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareMedia"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1308,7 +1308,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareMedia.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareMedia'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -1362,7 +1362,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareProducts.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareProducts"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1400,7 +1400,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareProducts.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareProducts'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -1454,7 +1454,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareRules.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareRules"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1492,7 +1492,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareRules.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareRules'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -1546,7 +1546,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareTransferRules.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FareTransferRules"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1584,7 +1584,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareTransferRules.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FareTransferRules'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -1638,7 +1638,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FeedInfo.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.FeedInfo"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1676,7 +1676,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FeedInfo.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.FeedInfo'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -1730,7 +1730,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Frequencies.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Frequencies"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1768,7 +1768,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Frequencies.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Frequencies'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -1822,7 +1822,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Levels.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Levels"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1860,7 +1860,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Levels.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Levels'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -1914,7 +1914,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.LocationGeoJson.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.LocationGeoJson"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1952,7 +1952,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.LocationGeoJson.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.LocationGeoJson'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2006,7 +2006,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.LocationGroups.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.LocationGroups"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2044,7 +2044,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.LocationGroups.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.LocationGroups'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2098,7 +2098,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.LocationGroupStores.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.LocationGroupStores"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2136,7 +2136,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.LocationGroupStores.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.LocationGroupStores'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2190,7 +2190,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Networks.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Networks"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2228,7 +2228,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Networks.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Networks'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2282,7 +2282,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Pathways.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Pathways"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2320,7 +2320,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Pathways.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Pathways'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2374,7 +2374,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.RouteNetworks.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.RouteNetworks"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2412,7 +2412,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.RouteNetworks.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.RouteNetworks'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2466,7 +2466,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Routes.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Routes"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2504,7 +2504,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Routes.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Routes'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2558,7 +2558,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Shapes.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Shapes"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2596,7 +2596,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Shapes.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Shapes'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2650,7 +2650,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.StopAreas.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.StopAreas"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2688,7 +2688,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.StopAreas.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.StopAreas'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2742,7 +2742,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Stops.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Stops"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2780,7 +2780,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Stops.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Stops'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2834,7 +2834,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.StopTimes.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.StopTimes"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2872,7 +2872,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.StopTimes.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.StopTimes'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -2926,7 +2926,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Timeframes.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Timeframes"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2964,7 +2964,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Timeframes.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Timeframes'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -3018,7 +3018,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Transfers.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Transfers"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -3056,7 +3056,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Transfers.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Transfers'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -3110,7 +3110,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Translations.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Translations"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -3148,7 +3148,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Translations.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Translations'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]
@@ -3202,7 +3202,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Trips.amqp"
+                    assert cloud_event_payload.get("type") == "GeneralTransitFeedStatic.Trips"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -3240,7 +3240,7 @@ class TestGeneralTransitFeedStaticAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Trips.amqp'
+        assert properties.get('cloudEvents:type') == 'GeneralTransitFeedStatic.Trips'
         assert received.body is not None
         assert received.subject == "{agencyid}".format(agencyid="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agencyid}".format(agencyid="value"))[:128]

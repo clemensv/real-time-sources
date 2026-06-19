@@ -165,11 +165,11 @@ class InstalledGenerationCapacityPerType:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='smcpegzuesuueghizygb',
-            psrType='zntlgyjcxvmlfoofjltd',
-            quantity=float(0.6656898184256521),
-            resolution='lsvaoaagheemgywreeli',
-            businessType='mxhvuurrhgiifnuntnns',
-            documentType='isfwpxjxfobwvsoppojt',
-            unitName='pajijaptjgiifsvsqspc'
+            inDomain='sigcdxpzgjaetfvyagle',
+            psrType='jfvhytuyhzmoutbwgyau',
+            quantity=float(19.02263379736373),
+            resolution='ssmsuvypbzeocncndjld',
+            businessType='hvgwoeckhkzgkulcfgkz',
+            documentType='dkvxknlkirzzuroudssq',
+            unitName='ghcgodcvqwwsvpezfzqy'
         )

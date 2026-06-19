@@ -29,12 +29,12 @@ class Test_MagneticFieldReading(unittest.TestCase):
         Create instance of MagneticFieldReading for testing
         """
         instance = MagneticFieldReading(
-            iaga_code='nmlulopezjwjeyhjvprc',
+            iaga_code='tbkqkgljcbqjhsuhddpm',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            h=float(53.11746772273116),
-            d=float(68.72639893342293),
-            z=float(91.023531169352),
-            f=float(59.08580499970368)
+            h=float(12.842900531415824),
+            d=float(83.65144170803302),
+            z=float(33.57463106829087),
+            f=float(55.03597305942015)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_MagneticFieldReading(unittest.TestCase):
         """
         Test iaga_code property
         """
-        test_value = 'nmlulopezjwjeyhjvprc'
+        test_value = 'tbkqkgljcbqjhsuhddpm'
         self.instance.iaga_code = test_value
         self.assertEqual(self.instance.iaga_code, test_value)
     
@@ -59,7 +59,7 @@ class Test_MagneticFieldReading(unittest.TestCase):
         """
         Test h property
         """
-        test_value = float(53.11746772273116)
+        test_value = float(12.842900531415824)
         self.instance.h = test_value
         self.assertEqual(self.instance.h, test_value)
     
@@ -67,7 +67,7 @@ class Test_MagneticFieldReading(unittest.TestCase):
         """
         Test d property
         """
-        test_value = float(68.72639893342293)
+        test_value = float(83.65144170803302)
         self.instance.d = test_value
         self.assertEqual(self.instance.d, test_value)
     
@@ -75,7 +75,7 @@ class Test_MagneticFieldReading(unittest.TestCase):
         """
         Test z property
         """
-        test_value = float(91.023531169352)
+        test_value = float(33.57463106829087)
         self.instance.z = test_value
         self.assertEqual(self.instance.z, test_value)
     
@@ -83,7 +83,7 @@ class Test_MagneticFieldReading(unittest.TestCase):
         """
         Test f property
         """
-        test_value = float(59.08580499970368)
+        test_value = float(55.03597305942015)
         self.instance.f = test_value
         self.assertEqual(self.instance.f, test_value)
     

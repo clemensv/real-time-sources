@@ -757,7 +757,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcgo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.mqtt":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -819,7 +819,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcgo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.mqtt":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -881,7 +881,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcgo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.mqtt":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -943,7 +943,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcgo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.mqtt":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1005,7 +1005,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcsp
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.mqtt":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1067,7 +1067,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_mqtt_microsoftopendatausnoaaswpcxr
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.mqtt":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1129,7 +1129,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcgo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux.amqp":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesXrayFlux":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1191,7 +1191,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcgo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux.amqp":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesProtonFlux":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1253,7 +1253,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcgo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux.amqp":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesElectronFlux":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1315,7 +1315,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcgo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer.amqp":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.GoesMagnetometer":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1377,7 +1377,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcsp
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert.amqp":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.SpaceWeatherAlert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1439,7 +1439,7 @@ def test_microsoft_opendata_us_noaa_swpc_goes_amqp_microsoftopendatausnoaaswpcxr
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare.amqp":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.SWPC.XrayFlare":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

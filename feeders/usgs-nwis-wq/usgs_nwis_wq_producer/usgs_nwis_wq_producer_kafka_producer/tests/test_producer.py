@@ -228,7 +228,7 @@ def test_usgs_waterquality_sites_mqtt_usgswaterqualitysitesmqttmonitoringsite(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.WaterQuality.Sites.mqtt.MonitoringSite":
+            if cloudevent['type'] == "USGS.WaterQuality.Sites.MonitoringSite":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -290,7 +290,7 @@ def test_usgs_waterquality_sites_amqp_usgswaterqualitysitesamqpmonitoringsite(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.WaterQuality.Sites.amqp.MonitoringSite":
+            if cloudevent['type'] == "USGS.WaterQuality.Sites.MonitoringSite":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -352,7 +352,7 @@ def test_usgs_waterquality_readings_mqtt_usgswaterqualityreadingsmqttwaterqualit
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.WaterQuality.Readings.mqtt.WaterQualityReading":
+            if cloudevent['type'] == "USGS.WaterQuality.Readings.WaterQualityReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -414,7 +414,7 @@ def test_usgs_waterquality_readings_amqp_usgswaterqualityreadingsamqpwaterqualit
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.WaterQuality.Readings.amqp.WaterQualityReading":
+            if cloudevent['type'] == "USGS.WaterQuality.Readings.WaterQualityReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

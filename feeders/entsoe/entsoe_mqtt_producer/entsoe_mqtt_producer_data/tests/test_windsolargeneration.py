@@ -28,13 +28,13 @@ class Test_WindSolarGeneration(unittest.TestCase):
         Create instance of WindSolarGeneration for testing
         """
         instance = WindSolarGeneration(
-            inDomain='qnzwdqbapducdrooabsl',
-            psrType='arxqhuctqsddlhinosok',
-            quantity=float(53.44682810035217),
-            resolution='ukrxmxkgfyhtzcwjjctw',
-            businessType='zyqjejmupswhjqqqvuod',
-            documentType='uxtvpggebtrtcyhutiwa',
-            unitName='glubuirsmyfhgemozuve'
+            inDomain='qfcqreqclycxrcrphmzx',
+            psrType='egrptawgdbglttlocxhf',
+            quantity=float(28.80414551753534),
+            resolution='yfoowlyodlmcoycvofxy',
+            businessType='uqhuomxxwdnsrhkvqaal',
+            documentType='xjnsdiajibglynwzgstf',
+            unitName='sxshqrpjqdddthcsowvk'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'qnzwdqbapducdrooabsl'
+        test_value = 'qfcqreqclycxrcrphmzx'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -51,7 +51,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test psrType property
         """
-        test_value = 'arxqhuctqsddlhinosok'
+        test_value = 'egrptawgdbglttlocxhf'
         self.instance.psrType = test_value
         self.assertEqual(self.instance.psrType, test_value)
     
@@ -59,7 +59,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(53.44682810035217)
+        test_value = float(28.80414551753534)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -67,7 +67,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'ukrxmxkgfyhtzcwjjctw'
+        test_value = 'yfoowlyodlmcoycvofxy'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -75,7 +75,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test businessType property
         """
-        test_value = 'zyqjejmupswhjqqqvuod'
+        test_value = 'uqhuomxxwdnsrhkvqaal'
         self.instance.businessType = test_value
         self.assertEqual(self.instance.businessType, test_value)
     
@@ -83,7 +83,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'uxtvpggebtrtcyhutiwa'
+        test_value = 'xjnsdiajibglynwzgstf'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -91,7 +91,7 @@ class Test_WindSolarGeneration(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'glubuirsmyfhgemozuve'
+        test_value = 'sxshqrpjqdddthcsowvk'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     

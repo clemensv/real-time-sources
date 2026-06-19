@@ -159,7 +159,7 @@ def test_usgs_earthquakes_mqtt_usgsearthquakesmqttevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.Earthquakes.mqtt.Event":
+            if cloudevent['type'] == "USGS.Earthquakes.Event":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_usgs_earthquakes_amqp_usgsearthquakesamqpevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.Earthquakes.amqp.Event":
+            if cloudevent['type'] == "USGS.Earthquakes.Event":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

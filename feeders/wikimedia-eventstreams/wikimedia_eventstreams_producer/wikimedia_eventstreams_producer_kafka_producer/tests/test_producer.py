@@ -159,7 +159,7 @@ def test_wikimedia_eventstreams_mqtt_wikimediaeventstreamsrecentchangemqtt(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Wikimedia.EventStreams.RecentChange.mqtt":
+            if cloudevent['type'] == "Wikimedia.EventStreams.RecentChange":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_wikimedia_eventstreams_amqp_wikimediaeventstreamsamqprecentchange(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Wikimedia.EventStreams.amqp.RecentChange":
+            if cloudevent['type'] == "Wikimedia.EventStreams.RecentChange":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

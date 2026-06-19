@@ -28,17 +28,17 @@ class Test_StaticDataClassB(unittest.TestCase):
         Create instance of StaticDataClassB for testing
         """
         instance = StaticDataClassB(
-            mmsi=int(54),
-            part_number=int(35),
-            ship_name='gsudxwabvntisyjhdugl',
-            ship_type=int(49),
-            callsign='xclafkahrglzugdbfczp',
-            dimension_to_bow=int(59),
-            dimension_to_stern=int(59),
-            dimension_to_port=int(97),
-            dimension_to_starboard=int(88),
-            timestamp='jzbzjlhuihraclvwdevn',
-            station_id='vsvgsbnqybtjgvpxztek'
+            mmsi=int(64),
+            part_number=int(32),
+            ship_name='quepjbamhifqrvrcdpmf',
+            ship_type=int(47),
+            callsign='qtozzsxecmvkovpfboch',
+            dimension_to_bow=int(81),
+            dimension_to_stern=int(97),
+            dimension_to_port=int(88),
+            dimension_to_starboard=int(65),
+            timestamp='gztirciinnxtownenmyv',
+            station_id='nemacojlphxjmvjrvutz'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(54)
+        test_value = int(64)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -55,7 +55,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test part_number property
         """
-        test_value = int(35)
+        test_value = int(32)
         self.instance.part_number = test_value
         self.assertEqual(self.instance.part_number, test_value)
     
@@ -63,7 +63,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test ship_name property
         """
-        test_value = 'gsudxwabvntisyjhdugl'
+        test_value = 'quepjbamhifqrvrcdpmf'
         self.instance.ship_name = test_value
         self.assertEqual(self.instance.ship_name, test_value)
     
@@ -71,7 +71,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test ship_type property
         """
-        test_value = int(49)
+        test_value = int(47)
         self.instance.ship_type = test_value
         self.assertEqual(self.instance.ship_type, test_value)
     
@@ -79,7 +79,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test callsign property
         """
-        test_value = 'xclafkahrglzugdbfczp'
+        test_value = 'qtozzsxecmvkovpfboch'
         self.instance.callsign = test_value
         self.assertEqual(self.instance.callsign, test_value)
     
@@ -87,7 +87,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test dimension_to_bow property
         """
-        test_value = int(59)
+        test_value = int(81)
         self.instance.dimension_to_bow = test_value
         self.assertEqual(self.instance.dimension_to_bow, test_value)
     
@@ -95,7 +95,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test dimension_to_stern property
         """
-        test_value = int(59)
+        test_value = int(97)
         self.instance.dimension_to_stern = test_value
         self.assertEqual(self.instance.dimension_to_stern, test_value)
     
@@ -103,7 +103,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test dimension_to_port property
         """
-        test_value = int(97)
+        test_value = int(88)
         self.instance.dimension_to_port = test_value
         self.assertEqual(self.instance.dimension_to_port, test_value)
     
@@ -111,7 +111,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test dimension_to_starboard property
         """
-        test_value = int(88)
+        test_value = int(65)
         self.instance.dimension_to_starboard = test_value
         self.assertEqual(self.instance.dimension_to_starboard, test_value)
     
@@ -119,7 +119,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'jzbzjlhuihraclvwdevn'
+        test_value = 'gztirciinnxtownenmyv'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -127,7 +127,7 @@ class Test_StaticDataClassB(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'vsvgsbnqybtjgvpxztek'
+        test_value = 'nemacojlphxjmvjrvutz'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     

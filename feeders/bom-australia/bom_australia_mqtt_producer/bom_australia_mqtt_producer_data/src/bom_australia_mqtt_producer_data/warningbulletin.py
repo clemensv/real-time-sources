@@ -175,15 +175,15 @@ class WarningBulletin:
             An instance of the dataclass.
         """
         return cls(
-            warning_id='peftsnpfuhzjiwcaycxn',
-            warning_url='rqsqlhbwfcdhqicixmyz',
-            feed_url='jxfzzcuacbmnidmykbre',
-            feed_title='euvjgncozsskltdwzpsf',
-            title='vubwkfhalleihiegohry',
+            warning_id='vhzyjxqnmvllpgyzeqlm',
+            warning_url='oqtvyeebidscopouynjz',
+            feed_url='ayabvlqrwzjgirowtrbm',
+            feed_title='midqrfzrdjqqmotbojne',
+            title='iykxaarxqiopwuighkmm',
             published_at=datetime.datetime.now(datetime.timezone.utc),
-            issued_local_time_text='rcsxklisbuoyhqsvdafv',
-            warning_type='shtiyflcrirnatdwmdmg',
-            affected_area_text='pvoxjvprtlvylelvxgpm',
-            severity='jjvsxyhqpyblankuuusl',
-            state='iyhrjhhwagtsyknyfxry'
+            issued_local_time_text='fmhqgjyvhavdlfrylipu',
+            warning_type='pyiglbbpgosiehfohqeo',
+            affected_area_text='rrhvjihmeoboaffkwdbz',
+            severity='jjodgzlsmtpygtoypuuk',
+            state='ysmnpxlbypyuyuezwiek'
         )

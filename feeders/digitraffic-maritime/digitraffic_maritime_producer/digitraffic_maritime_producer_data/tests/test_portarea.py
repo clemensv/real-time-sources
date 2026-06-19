@@ -28,10 +28,10 @@ class Test_PortArea(unittest.TestCase):
         Create instance of PortArea for testing
         """
         instance = PortArea(
-            port_area_code='xgxwxxbrebyiesaitpfr',
-            port_area_name='tanvfgxtmyhylkhxmrpz',
-            longitude=float(57.495408267790346),
-            latitude=float(99.69879747274496)
+            port_area_code='tlfwpwxgjpuryiblpzli',
+            port_area_name='clzxqkbykejhclzlpzxq',
+            longitude=float(54.88089585094165),
+            latitude=float(36.121348409081264)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_PortArea(unittest.TestCase):
         """
         Test port_area_code property
         """
-        test_value = 'xgxwxxbrebyiesaitpfr'
+        test_value = 'tlfwpwxgjpuryiblpzli'
         self.instance.port_area_code = test_value
         self.assertEqual(self.instance.port_area_code, test_value)
     
@@ -48,7 +48,7 @@ class Test_PortArea(unittest.TestCase):
         """
         Test port_area_name property
         """
-        test_value = 'tanvfgxtmyhylkhxmrpz'
+        test_value = 'clzxqkbykejhclzlpzxq'
         self.instance.port_area_name = test_value
         self.assertEqual(self.instance.port_area_name, test_value)
     
@@ -56,7 +56,7 @@ class Test_PortArea(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(57.495408267790346)
+        test_value = float(54.88089585094165)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -64,7 +64,7 @@ class Test_PortArea(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(99.69879747274496)
+        test_value = float(36.121348409081264)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     

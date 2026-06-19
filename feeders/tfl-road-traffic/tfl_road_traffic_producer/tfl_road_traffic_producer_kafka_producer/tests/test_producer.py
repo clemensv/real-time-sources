@@ -292,7 +292,7 @@ def test_uk_gov_tfl_road_mqtt_ukgovtflroadmqttroadcorridor(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.mqtt.RoadCorridor":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadCorridor":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -354,7 +354,7 @@ def test_uk_gov_tfl_road_mqtt_ukgovtflroadmqttroadstatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.mqtt.RoadStatus":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -416,7 +416,7 @@ def test_uk_gov_tfl_road_mqtt_ukgovtflroadmqttroaddisruptionserious(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.mqtt.RoadDisruptionSerious":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -478,7 +478,7 @@ def test_uk_gov_tfl_road_mqtt_ukgovtflroadmqttroaddisruptionsevere(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.mqtt.RoadDisruptionSevere":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -540,7 +540,7 @@ def test_uk_gov_tfl_road_mqtt_ukgovtflroadmqttroaddisruptionmoderate(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.mqtt.RoadDisruptionModerate":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -602,7 +602,7 @@ def test_uk_gov_tfl_road_mqtt_ukgovtflroadmqttroaddisruptionminor(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.mqtt.RoadDisruptionMinor":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -664,7 +664,7 @@ def test_uk_gov_tfl_road_mqtt_ukgovtflroadmqttroaddisruptioninformation(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.mqtt.RoadDisruptionInformation":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -726,7 +726,7 @@ def test_uk_gov_tfl_road_mqtt_ukgovtflroadmqttroaddisruptionclosure(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.mqtt.RoadDisruptionClosure":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -788,7 +788,7 @@ def test_uk_gov_tfl_road_amqp_ukgovtflroadamqproadcorridor(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.amqp.RoadCorridor":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadCorridor":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -850,7 +850,7 @@ def test_uk_gov_tfl_road_amqp_ukgovtflroadamqproadstatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.amqp.RoadStatus":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -912,7 +912,7 @@ def test_uk_gov_tfl_road_amqp_ukgovtflroadamqproaddisruptionserious(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.amqp.RoadDisruptionSerious":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -974,7 +974,7 @@ def test_uk_gov_tfl_road_amqp_ukgovtflroadamqproaddisruptionsevere(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.amqp.RoadDisruptionSevere":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1036,7 +1036,7 @@ def test_uk_gov_tfl_road_amqp_ukgovtflroadamqproaddisruptionmoderate(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.amqp.RoadDisruptionModerate":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1098,7 +1098,7 @@ def test_uk_gov_tfl_road_amqp_ukgovtflroadamqproaddisruptionminor(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.amqp.RoadDisruptionMinor":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1160,7 +1160,7 @@ def test_uk_gov_tfl_road_amqp_ukgovtflroadamqproaddisruptioninformation(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.amqp.RoadDisruptionInformation":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1222,7 +1222,7 @@ def test_uk_gov_tfl_road_amqp_ukgovtflroadamqproaddisruptionclosure(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.tfl.road.amqp.RoadDisruptionClosure":
+            if cloudevent['type'] == "uk.gov.tfl.road.RoadDisruption":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

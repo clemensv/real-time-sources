@@ -29,22 +29,22 @@ class Test_Sigmet(unittest.TestCase):
         Create instance of Sigmet for testing
         """
         instance = Sigmet(
-            icao_id='rpewnjsurypwyzvrfufu',
-            series_id='pnzdfawzuvxrfoxjsafz',
+            icao_id='nmcfsanfsvffluuqotgp',
+            series_id='daikjwtyomufziinveyr',
             valid_time_from=datetime.datetime.now(datetime.timezone.utc),
             valid_time_to=datetime.datetime.now(datetime.timezone.utc),
-            hazard='jewzbfwwctdnbisbeegd',
-            qualifier='fsvtvtshnupcfiqdukmf',
-            sigmet_type='npvivzxsmygqbzdebrsr',
-            altitude_hi=int(6),
-            altitude_low=int(5),
-            movement_dir='ovznupunlnpetkyyidzz',
-            movement_spd='ihneqdowhklcrxgpfrit',
-            severity='mmqfrxyktwqwgwcucwsw',
-            raw_sigmet='jremfxtaosjnxkydwacv',
-            coords='kpvlybobgxemffenkwck',
-            sigmet_id='glgqzuswujkdmkfxsjtz',
-            region='bkywgwnlkpnayzicawdr'
+            hazard='nowxvrfvbxpmritstacm',
+            qualifier='azeetlfoivnqbtqpuygy',
+            sigmet_type='kqhqeeedtovgwjolddwm',
+            altitude_hi=int(95),
+            altitude_low=int(44),
+            movement_dir='lklzmpgpuadivjolrlaq',
+            movement_spd='nuxoatrhxuetpfmtgnss',
+            severity='jolzaobelxluiqqsgajp',
+            raw_sigmet='wdksdvkqyonpllogupjb',
+            coords='vtxussqshssekxtgualy',
+            sigmet_id='gydwesthdyaxajgvcins',
+            region='elukbnzsqmigbhgtccqj'
         )
         return instance
 
@@ -53,7 +53,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test icao_id property
         """
-        test_value = 'rpewnjsurypwyzvrfufu'
+        test_value = 'nmcfsanfsvffluuqotgp'
         self.instance.icao_id = test_value
         self.assertEqual(self.instance.icao_id, test_value)
     
@@ -61,7 +61,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test series_id property
         """
-        test_value = 'pnzdfawzuvxrfoxjsafz'
+        test_value = 'daikjwtyomufziinveyr'
         self.instance.series_id = test_value
         self.assertEqual(self.instance.series_id, test_value)
     
@@ -85,7 +85,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test hazard property
         """
-        test_value = 'jewzbfwwctdnbisbeegd'
+        test_value = 'nowxvrfvbxpmritstacm'
         self.instance.hazard = test_value
         self.assertEqual(self.instance.hazard, test_value)
     
@@ -93,7 +93,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test qualifier property
         """
-        test_value = 'fsvtvtshnupcfiqdukmf'
+        test_value = 'azeetlfoivnqbtqpuygy'
         self.instance.qualifier = test_value
         self.assertEqual(self.instance.qualifier, test_value)
     
@@ -101,7 +101,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test sigmet_type property
         """
-        test_value = 'npvivzxsmygqbzdebrsr'
+        test_value = 'kqhqeeedtovgwjolddwm'
         self.instance.sigmet_type = test_value
         self.assertEqual(self.instance.sigmet_type, test_value)
     
@@ -109,7 +109,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test altitude_hi property
         """
-        test_value = int(6)
+        test_value = int(95)
         self.instance.altitude_hi = test_value
         self.assertEqual(self.instance.altitude_hi, test_value)
     
@@ -117,7 +117,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test altitude_low property
         """
-        test_value = int(5)
+        test_value = int(44)
         self.instance.altitude_low = test_value
         self.assertEqual(self.instance.altitude_low, test_value)
     
@@ -125,7 +125,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test movement_dir property
         """
-        test_value = 'ovznupunlnpetkyyidzz'
+        test_value = 'lklzmpgpuadivjolrlaq'
         self.instance.movement_dir = test_value
         self.assertEqual(self.instance.movement_dir, test_value)
     
@@ -133,7 +133,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test movement_spd property
         """
-        test_value = 'ihneqdowhklcrxgpfrit'
+        test_value = 'nuxoatrhxuetpfmtgnss'
         self.instance.movement_spd = test_value
         self.assertEqual(self.instance.movement_spd, test_value)
     
@@ -141,7 +141,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = 'mmqfrxyktwqwgwcucwsw'
+        test_value = 'jolzaobelxluiqqsgajp'
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -149,7 +149,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test raw_sigmet property
         """
-        test_value = 'jremfxtaosjnxkydwacv'
+        test_value = 'wdksdvkqyonpllogupjb'
         self.instance.raw_sigmet = test_value
         self.assertEqual(self.instance.raw_sigmet, test_value)
     
@@ -157,7 +157,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test coords property
         """
-        test_value = 'kpvlybobgxemffenkwck'
+        test_value = 'vtxussqshssekxtgualy'
         self.instance.coords = test_value
         self.assertEqual(self.instance.coords, test_value)
     
@@ -165,7 +165,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test sigmet_id property
         """
-        test_value = 'glgqzuswujkdmkfxsjtz'
+        test_value = 'gydwesthdyaxajgvcins'
         self.instance.sigmet_id = test_value
         self.assertEqual(self.instance.sigmet_id, test_value)
     
@@ -173,7 +173,7 @@ class Test_Sigmet(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'bkywgwnlkpnayzicawdr'
+        test_value = 'elukbnzsqmigbhgtccqj'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

@@ -165,11 +165,11 @@ class DissolvedOxygen:
             An instance of the dataclass.
         """
         return cls(
-            site_no='csegjsvzazpsvgmpwzld',
-            datetime='gnlsnunnvqmaikjqqoqw',
-            value=float(62.914840671206186),
-            exception='asdqtjpqoaanhjcimycv',
-            qualifiers=['bfkpkxqgisbzulugtwfq'],
-            parameter_cd='srezsmeyypaqxijjkzgi',
-            timeseries_cd='ituckbgyntuschlveyxg'
+            site_no='zljosbymymohiwyaqzuc',
+            datetime='qjrirwiavxplgkhytkoo',
+            value=float(90.83433257934755),
+            exception='jfqyckkndvtpetfroxbs',
+            qualifiers=['ciuacbwvgjfpocfwpjjv', 'nnygmhcvixicejaiwgmb', 'szxtwzphmyuujnehcqia', 'irxswawldihwaukvlqct'],
+            parameter_cd='mhgsehjbjqfhbkhqpepp',
+            timeseries_cd='hrbdyfupbovzzvpdflab'
         )

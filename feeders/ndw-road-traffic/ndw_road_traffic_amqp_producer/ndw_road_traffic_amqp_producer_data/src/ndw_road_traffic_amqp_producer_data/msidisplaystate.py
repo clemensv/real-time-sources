@@ -161,9 +161,9 @@ class MsiDisplayState:
             An instance of the dataclass.
         """
         return cls(
-            sign_id='wxdsinhjhecdklnvucws',
-            publication_time='gartrbikhmtdzvsuqwrb',
-            image_code='lpyfwddatlnbbgpoxzks',
-            state='ymntlhnexsllomvufyba',
-            speed_limit=int(16)
+            sign_id='kmuyamwtzmbzhralczxe',
+            publication_time='mrobzkdoeuopdubdjwnu',
+            image_code='uryacxhdrodqkrlcunyl',
+            state='mgprvbfeyhiawxlkbypq',
+            speed_limit=int(26)
         )

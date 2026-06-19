@@ -163,10 +163,10 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_triplet='xhktznjukroprnhfzbfq',
-            name='ivaifoslotnbqnmuqtkf',
-            state='zyeacqrokjysnahqlkpx',
-            elevation=float(66.00595427881905),
-            latitude=float(74.87166465051448),
-            longitude=float(85.81484460367423)
+            station_triplet='jgkkrmyxswltamhvdptp',
+            name='gyryplugfpilvsqejffa',
+            state='ijyaoplwshnhfanuvtvy',
+            elevation=float(79.68666647468642),
+            latitude=float(87.29021937026594),
+            longitude=float(95.54490953365891)
         )

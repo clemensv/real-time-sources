@@ -171,13 +171,13 @@ class RoadCorridor:
             An instance of the dataclass.
         """
         return cls(
-            road_id='yeydyiuiipwhwvhxdrwn',
-            display_name='zlufxfmtjxkblxlkeglb',
-            status_severity='kanhkfgnioeekqrrtwpt',
-            status_severity_description='fdjubhwgivyhpiagmhew',
-            bounds='myyxbjwoqgjskyxmgnbd',
-            envelope='aanfmncujglfpawraocm',
-            url='lrsdwxyviyjyrbuasgzx',
+            road_id='gnynprooknegerzzsajr',
+            display_name='kblrzlxlumefulmdkvvv',
+            status_severity='dpfegzflpplnosymbhqv',
+            status_severity_description='bnjmymihrmljneegkwps',
+            bounds='tjzvngamtsxpxzyibert',
+            envelope='ydwpcnjxaiyouzalpuvk',
+            url='zhchbeceuvaxnqfxrevv',
             status_aggregation_start_date=datetime.datetime.now(datetime.timezone.utc),
             status_aggregation_end_date=datetime.datetime.now(datetime.timezone.utc)
         )

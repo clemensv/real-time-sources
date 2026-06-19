@@ -225,7 +225,7 @@ def test_ca_gov_eccc_weather_mqtt_cagovecccweathermqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CA.Gov.ECCC.Weather.mqtt.Station":
+            if cloudevent['type'] == "CA.Gov.ECCC.Weather.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_ca_gov_eccc_weather_mqtt_cagovecccweathermqttweatherobservation(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CA.Gov.ECCC.Weather.mqtt.WeatherObservation":
+            if cloudevent['type'] == "CA.Gov.ECCC.Weather.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_ca_gov_eccc_weather_amqp_cagovecccweatheramqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CA.Gov.ECCC.Weather.amqp.Station":
+            if cloudevent['type'] == "CA.Gov.ECCC.Weather.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_ca_gov_eccc_weather_amqp_cagovecccweatheramqpweatherobservation(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CA.Gov.ECCC.Weather.amqp.WeatherObservation":
+            if cloudevent['type'] == "CA.Gov.ECCC.Weather.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

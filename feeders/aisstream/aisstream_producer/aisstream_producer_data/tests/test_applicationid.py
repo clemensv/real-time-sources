@@ -28,9 +28,9 @@ class Test_ApplicationID(unittest.TestCase):
         Create instance of ApplicationID for testing
         """
         instance = ApplicationID(
-            Valid=False,
-            DesignatedAreaCode=int(78),
-            FunctionIdentifier=int(93)
+            Valid=True,
+            DesignatedAreaCode=int(77),
+            FunctionIdentifier=int(67)
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_ApplicationID(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = False
+        test_value = True
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -47,7 +47,7 @@ class Test_ApplicationID(unittest.TestCase):
         """
         Test DesignatedAreaCode property
         """
-        test_value = int(78)
+        test_value = int(77)
         self.instance.DesignatedAreaCode = test_value
         self.assertEqual(self.instance.DesignatedAreaCode, test_value)
     
@@ -55,7 +55,7 @@ class Test_ApplicationID(unittest.TestCase):
         """
         Test FunctionIdentifier property
         """
-        test_value = int(93)
+        test_value = int(67)
         self.instance.FunctionIdentifier = test_value
         self.assertEqual(self.instance.FunctionIdentifier, test_value)
     

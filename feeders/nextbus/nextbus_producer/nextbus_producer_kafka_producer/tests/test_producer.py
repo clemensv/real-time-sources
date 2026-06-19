@@ -99,7 +99,7 @@ def test_nextbus_kafka_nextbuskafkavehicleposition(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nextbus.kafka.VehiclePosition":
+            if cloudevent['type'] == "nextbus.VehiclePosition":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -163,7 +163,7 @@ def test_nextbus_kafka_nextbuskafkarouteconfig(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nextbus.kafka.RouteConfig":
+            if cloudevent['type'] == "nextbus.RouteConfig":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -227,7 +227,7 @@ def test_nextbus_kafka_nextbuskafkaschedule(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nextbus.kafka.Schedule":
+            if cloudevent['type'] == "nextbus.Schedule":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -291,7 +291,7 @@ def test_nextbus_kafka_nextbuskafkamessage(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nextbus.kafka.Message":
+            if cloudevent['type'] == "nextbus.Message":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

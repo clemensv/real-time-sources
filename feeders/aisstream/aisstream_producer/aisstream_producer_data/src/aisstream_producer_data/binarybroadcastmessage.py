@@ -166,11 +166,11 @@ class BinaryBroadcastMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(59),
-            RepeatIndicator=int(81),
-            UserID=int(46),
-            Valid=False,
-            Spare=int(68),
+            MessageID=int(48),
+            RepeatIndicator=int(21),
+            UserID=int(92),
+            Valid=True,
+            Spare=int(74),
             ApplicationID=None,
-            BinaryData='kvfsmjizmbnsyjwwurnz'
+            BinaryData='ymkxebmajjqwhcfhsnpk'
         )

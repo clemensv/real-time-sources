@@ -161,9 +161,9 @@ class FareRules:
             An instance of the dataclass.
         """
         return cls(
-            fareId='faxjbzrclfebvlzprwgv',
-            routeId='lwhddtokzsutaoeewkbo',
-            originId='ypnoalhvegpsuqcfloag',
-            destinationId='tndayjbppfeifczbtrru',
-            containsId='czuhdrynzkhwddoftqwc'
+            fareId='agyyronzukkpnpzbhlsv',
+            routeId='nufuvovwgldbjmlxdtvh',
+            originId='scdevvxcndkqhhyotohf',
+            destinationId='tgixvmoigtesuaemqlpy',
+            containsId='ehpnzmlyzgrisobjedfk'
         )

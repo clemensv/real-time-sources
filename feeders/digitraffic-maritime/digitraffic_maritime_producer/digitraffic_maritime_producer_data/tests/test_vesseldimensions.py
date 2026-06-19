@@ -29,18 +29,18 @@ class Test_VesselDimensions(unittest.TestCase):
         Create instance of VesselDimensions for testing
         """
         instance = VesselDimensions(
-            tonnage_certificate_issuer='xvvoajhlnoxqyubjlxcn',
+            tonnage_certificate_issuer='dhsnxzcrremkxwhxdont',
             date_of_issue=datetime.datetime.now(datetime.timezone.utc),
-            gross_tonnage=int(29),
-            net_tonnage=int(82),
-            dead_weight=int(62),
-            length=float(13.891743583742288),
-            overall_length=float(78.40375750687254),
-            height=float(69.99544870098997),
-            breadth=float(90.91050224846087),
-            draught=float(32.63867592401033),
-            max_speed=float(31.185816419331058),
-            engine_power='lacmgzggciyzbqwngfiv'
+            gross_tonnage=int(83),
+            net_tonnage=int(65),
+            dead_weight=int(4),
+            length=float(9.764321688650412),
+            overall_length=float(49.03497877485433),
+            height=float(19.200300682068715),
+            breadth=float(30.459964097048864),
+            draught=float(12.555693745232322),
+            max_speed=float(80.06830448026336),
+            engine_power='mettyxpxrbmyqkcntxxm'
         )
         return instance
 
@@ -49,7 +49,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test tonnage_certificate_issuer property
         """
-        test_value = 'xvvoajhlnoxqyubjlxcn'
+        test_value = 'dhsnxzcrremkxwhxdont'
         self.instance.tonnage_certificate_issuer = test_value
         self.assertEqual(self.instance.tonnage_certificate_issuer, test_value)
     
@@ -65,7 +65,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test gross_tonnage property
         """
-        test_value = int(29)
+        test_value = int(83)
         self.instance.gross_tonnage = test_value
         self.assertEqual(self.instance.gross_tonnage, test_value)
     
@@ -73,7 +73,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test net_tonnage property
         """
-        test_value = int(82)
+        test_value = int(65)
         self.instance.net_tonnage = test_value
         self.assertEqual(self.instance.net_tonnage, test_value)
     
@@ -81,7 +81,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test dead_weight property
         """
-        test_value = int(62)
+        test_value = int(4)
         self.instance.dead_weight = test_value
         self.assertEqual(self.instance.dead_weight, test_value)
     
@@ -89,7 +89,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test length property
         """
-        test_value = float(13.891743583742288)
+        test_value = float(9.764321688650412)
         self.instance.length = test_value
         self.assertEqual(self.instance.length, test_value)
     
@@ -97,7 +97,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test overall_length property
         """
-        test_value = float(78.40375750687254)
+        test_value = float(49.03497877485433)
         self.instance.overall_length = test_value
         self.assertEqual(self.instance.overall_length, test_value)
     
@@ -105,7 +105,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test height property
         """
-        test_value = float(69.99544870098997)
+        test_value = float(19.200300682068715)
         self.instance.height = test_value
         self.assertEqual(self.instance.height, test_value)
     
@@ -113,7 +113,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test breadth property
         """
-        test_value = float(90.91050224846087)
+        test_value = float(30.459964097048864)
         self.instance.breadth = test_value
         self.assertEqual(self.instance.breadth, test_value)
     
@@ -121,7 +121,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test draught property
         """
-        test_value = float(32.63867592401033)
+        test_value = float(12.555693745232322)
         self.instance.draught = test_value
         self.assertEqual(self.instance.draught, test_value)
     
@@ -129,7 +129,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test max_speed property
         """
-        test_value = float(31.185816419331058)
+        test_value = float(80.06830448026336)
         self.instance.max_speed = test_value
         self.assertEqual(self.instance.max_speed, test_value)
     
@@ -137,7 +137,7 @@ class Test_VesselDimensions(unittest.TestCase):
         """
         Test engine_power property
         """
-        test_value = 'lacmgzggciyzbqwngfiv'
+        test_value = 'mettyxpxrbmyqkcntxxm'
         self.instance.engine_power = test_value
         self.assertEqual(self.instance.engine_power, test_value)
     

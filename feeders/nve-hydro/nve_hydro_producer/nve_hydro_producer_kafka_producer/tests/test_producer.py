@@ -225,7 +225,7 @@ def test_no_nve_hydrology_mqtt_nonvehydrologymqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NO.NVE.Hydrology.mqtt.Station":
+            if cloudevent['type'] == "NO.NVE.Hydrology.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_no_nve_hydrology_mqtt_nonvehydrologymqttwaterlevelobservation(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NO.NVE.Hydrology.mqtt.WaterLevelObservation":
+            if cloudevent['type'] == "NO.NVE.Hydrology.WaterLevelObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_no_nve_hydrology_amqp_nonvehydrologyamqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NO.NVE.Hydrology.amqp.Station":
+            if cloudevent['type'] == "NO.NVE.Hydrology.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_no_nve_hydrology_amqp_nonvehydrologyamqpwaterlevelobservation(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NO.NVE.Hydrology.amqp.WaterLevelObservation":
+            if cloudevent['type'] == "NO.NVE.Hydrology.WaterLevelObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

@@ -157,5 +157,5 @@ class Sensors:
             An instance of the dataclass.
         """
         return cls(
-            self_='toedlgagwvfhwpuizdss'
+            self_='bybwdedzsxbatqdnimjb'
         )

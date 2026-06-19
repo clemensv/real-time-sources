@@ -185,20 +185,20 @@ class ChannelManagement:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(11),
-            RepeatIndicator=int(45),
-            UserID=int(76),
+            MessageID=int(16),
+            RepeatIndicator=int(39),
+            UserID=int(53),
             Valid=True,
-            Spare1=int(96),
-            ChannelA=int(66),
-            ChannelB=int(86),
-            TxRxMode=int(27),
-            LowPower=True,
+            Spare1=int(69),
+            ChannelA=int(11),
+            ChannelB=int(26),
+            TxRxMode=int(72),
+            LowPower=False,
             Area=None,
             Unicast=None,
             IsAddressed=False,
             BwA=True,
             BwB=False,
-            TransitionalZoneSize=int(39),
-            Spare4=int(27)
+            TransitionalZoneSize=int(61),
+            Spare4=int(40)
         )

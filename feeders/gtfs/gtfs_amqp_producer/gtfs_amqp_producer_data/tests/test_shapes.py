@@ -28,11 +28,11 @@ class Test_Shapes(unittest.TestCase):
         Create instance of Shapes for testing
         """
         instance = Shapes(
-            shapeId='nsnnufanbtpfwozewwbp',
-            shapePtLat=float(92.76421067445987),
-            shapePtLon=float(44.41209122524199),
-            shapePtSequence=int(12),
-            shapeDistTraveled=float(53.28242523171689)
+            shapeId='dhcnsdzxkzzpcfdifkpn',
+            shapePtLat=float(17.431783831658933),
+            shapePtLon=float(20.535379622938976),
+            shapePtSequence=int(22),
+            shapeDistTraveled=float(34.9468388658217)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Shapes(unittest.TestCase):
         """
         Test shapeId property
         """
-        test_value = 'nsnnufanbtpfwozewwbp'
+        test_value = 'dhcnsdzxkzzpcfdifkpn'
         self.instance.shapeId = test_value
         self.assertEqual(self.instance.shapeId, test_value)
     
@@ -49,7 +49,7 @@ class Test_Shapes(unittest.TestCase):
         """
         Test shapePtLat property
         """
-        test_value = float(92.76421067445987)
+        test_value = float(17.431783831658933)
         self.instance.shapePtLat = test_value
         self.assertEqual(self.instance.shapePtLat, test_value)
     
@@ -57,7 +57,7 @@ class Test_Shapes(unittest.TestCase):
         """
         Test shapePtLon property
         """
-        test_value = float(44.41209122524199)
+        test_value = float(20.535379622938976)
         self.instance.shapePtLon = test_value
         self.assertEqual(self.instance.shapePtLon, test_value)
     
@@ -65,7 +65,7 @@ class Test_Shapes(unittest.TestCase):
         """
         Test shapePtSequence property
         """
-        test_value = int(12)
+        test_value = int(22)
         self.instance.shapePtSequence = test_value
         self.assertEqual(self.instance.shapePtSequence, test_value)
     
@@ -73,7 +73,7 @@ class Test_Shapes(unittest.TestCase):
         """
         Test shapeDistTraveled property
         """
-        test_value = float(53.28242523171689)
+        test_value = float(34.9468388658217)
         self.instance.shapeDistTraveled = test_value
         self.assertEqual(self.instance.shapeDistTraveled, test_value)
     

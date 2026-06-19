@@ -165,11 +165,11 @@ class FDOM:
             An instance of the dataclass.
         """
         return cls(
-            site_no='pofkyodpawdoslydgzes',
-            datetime='nlgoeqxfionwidugempk',
-            value=float(31.866715316137785),
-            exception='knaubpmnbuvjtvrbvedi',
-            qualifiers=['fpuibfqrheaoxwstjvcu', 'sqnqmhpwuwrrunwsjfai', 'jpwanhxrrspodrcwcnmb', 'yzleelhzugdbjfcmgwnq', 'rivnjxjaiwnntsejslkl'],
-            parameter_cd='xvcxsxfextxaroulrbwn',
-            timeseries_cd='qmyhsbtyumcqptbqbwce'
+            site_no='mogejbutntcfipmfojdj',
+            datetime='epsatluvfefesofpajux',
+            value=float(73.6857145957009),
+            exception='jifpvqkvvjcvpwjngkge',
+            qualifiers=['hyhzpepgimkuomermrvj', 'wsocibdhucuwbfeouque', 'nbjnnjaeqbhxvnowpvdw', 'mhobdwxbepyogvdylpal', 'dddfdewswktyzhlvxglb'],
+            parameter_cd='hastcesyfeskoflruoch',
+            timeseries_cd='qzlgufacyyzrtexkrzxe'
         )

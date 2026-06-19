@@ -159,8 +159,8 @@ class VesselSystem:
             An instance of the dataclass.
         """
         return cls(
-            ship_owner='yecuejytgpeycsfnkfcb',
-            ship_telephone_1='mrpwdnqmmikuowkgynid',
-            ship_email='pwlmlfibimyhmzrozoyk',
-            ship_verifier='umhmrdhklxhytpyajfys'
+            ship_owner='bdchzgrjwkakmjvsbsjz',
+            ship_telephone_1='pclzltfioofjbnkjwzoq',
+            ship_email='jnvdsfqtcgzolnhvrbgb',
+            ship_verifier='gkrkwdvtvhjnjqomrzuy'
         )

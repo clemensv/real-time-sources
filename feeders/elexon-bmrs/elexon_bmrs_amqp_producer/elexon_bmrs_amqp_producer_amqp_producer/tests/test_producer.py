@@ -325,7 +325,7 @@ class TestUKCoElexonBMRSAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "UK.Co.Elexon.BMRS.amqp.GenerationMix"
+                    assert cloud_event_payload.get("type") == "UK.Co.Elexon.BMRS.GenerationMix"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -362,7 +362,7 @@ class TestUKCoElexonBMRSAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'UK.Co.Elexon.BMRS.amqp.GenerationMix'
+        assert properties.get('cloudEvents:type') == 'UK.Co.Elexon.BMRS.GenerationMix'
         assert received.body is not None
         assert received.subject == "{settlement_period}".format(settlement_period="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{settlement_period}".format(settlement_period="value"))[:128]
@@ -415,7 +415,7 @@ class TestUKCoElexonBMRSAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "UK.Co.Elexon.BMRS.amqp.DemandOutturn"
+                    assert cloud_event_payload.get("type") == "UK.Co.Elexon.BMRS.DemandOutturn"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -452,7 +452,7 @@ class TestUKCoElexonBMRSAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'UK.Co.Elexon.BMRS.amqp.DemandOutturn'
+        assert properties.get('cloudEvents:type') == 'UK.Co.Elexon.BMRS.DemandOutturn'
         assert received.body is not None
         assert received.subject == "{settlement_period}".format(settlement_period="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{settlement_period}".format(settlement_period="value"))[:128]
@@ -505,7 +505,7 @@ class TestUKCoElexonBMRSAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "UK.Co.Elexon.BMRS.amqp.Info"
+                    assert cloud_event_payload.get("type") == "UK.Co.Elexon.BMRS.Info"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -542,7 +542,7 @@ class TestUKCoElexonBMRSAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'UK.Co.Elexon.BMRS.amqp.Info'
+        assert properties.get('cloudEvents:type') == 'UK.Co.Elexon.BMRS.Info'
         assert received.body is not None
         assert received.subject == "{settlement_period}".format(settlement_period="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{settlement_period}".format(settlement_period="value"))[:128]

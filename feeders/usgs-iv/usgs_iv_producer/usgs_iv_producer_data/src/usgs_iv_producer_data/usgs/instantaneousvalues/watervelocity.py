@@ -165,11 +165,11 @@ class WaterVelocity:
             An instance of the dataclass.
         """
         return cls(
-            site_no='lupiguqmjwbcmymeuaut',
-            datetime='xpenojvtcdsmwpqsrpix',
-            value=float(24.319578728911452),
-            exception='mbmxzadtskwdlazmhina',
-            qualifiers=['tdfeboinqxrnyzabsidh', 'zpgbfggmjrerqynxcauw', 'qqvpfqeptklvlhyazwdu'],
-            parameter_cd='lscrstpsxevdiwbkbbwy',
-            timeseries_cd='lfbqytdfoxoovhdtugmb'
+            site_no='jsogqstgobtczpgxamed',
+            datetime='wljkjaoyhrdebffiuiyf',
+            value=float(41.1757415087098),
+            exception='fxehxnurxcllbhtbbiql',
+            qualifiers=['uakkvcwtekjizwflumeg', 'bnfntgnmelypivsfrmkh'],
+            parameter_cd='dcviconqyullypvnhlbj',
+            timeseries_cd='qxxuvycseluxsiotxuoo'
         )

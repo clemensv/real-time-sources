@@ -322,7 +322,7 @@ class TestUSWASeattleFire911AmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "US.WA.Seattle.Fire911.amqp.Incident"
+                    assert cloud_event_payload.get("type") == "US.WA.Seattle.Fire911.Incident"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -361,7 +361,7 @@ class TestUSWASeattleFire911AmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'US.WA.Seattle.Fire911.amqp.Incident'
+        assert properties.get('cloudEvents:type') == 'US.WA.Seattle.Fire911.Incident'
         assert received.body is not None
         assert received.subject == "{incident_number}".format(incident_number="value")
         assert properties.get('incident_type_slug') == "{incident_type_slug}".format(incident_type_slug="value")

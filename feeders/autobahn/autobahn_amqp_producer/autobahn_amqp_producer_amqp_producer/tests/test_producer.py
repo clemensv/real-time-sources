@@ -330,7 +330,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.RoadworkAppeared"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.RoadworkAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -369,7 +369,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.RoadworkAppeared'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.RoadworkAppeared'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -424,7 +424,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.RoadworkUpdated"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.RoadworkUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -463,7 +463,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.RoadworkUpdated'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.RoadworkUpdated'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -518,7 +518,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.RoadworkResolved"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.RoadworkResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -557,7 +557,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.RoadworkResolved'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.RoadworkResolved'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -612,7 +612,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ShortTermRoadworkAppeared"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ShortTermRoadworkAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -651,7 +651,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ShortTermRoadworkAppeared'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ShortTermRoadworkAppeared'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -706,7 +706,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ShortTermRoadworkUpdated"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ShortTermRoadworkUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -745,7 +745,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ShortTermRoadworkUpdated'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ShortTermRoadworkUpdated'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -800,7 +800,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ShortTermRoadworkResolved"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ShortTermRoadworkResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -839,7 +839,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ShortTermRoadworkResolved'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ShortTermRoadworkResolved'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -894,7 +894,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ClosureAppeared"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ClosureAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -933,7 +933,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ClosureAppeared'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ClosureAppeared'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -988,7 +988,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ClosureUpdated"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ClosureUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1027,7 +1027,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ClosureUpdated'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ClosureUpdated'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -1082,7 +1082,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ClosureResolved"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ClosureResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1121,7 +1121,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ClosureResolved'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ClosureResolved'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -1176,7 +1176,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.EntryExitClosureAppeared"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.EntryExitClosureAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1215,7 +1215,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.EntryExitClosureAppeared'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.EntryExitClosureAppeared'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -1270,7 +1270,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.EntryExitClosureUpdated"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.EntryExitClosureUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1309,7 +1309,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.EntryExitClosureUpdated'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.EntryExitClosureUpdated'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -1364,7 +1364,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.EntryExitClosureResolved"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.EntryExitClosureResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1403,7 +1403,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.EntryExitClosureResolved'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.EntryExitClosureResolved'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -1458,7 +1458,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WarningAppeared"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.WarningAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1497,7 +1497,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.WarningAppeared'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.WarningAppeared'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -1552,7 +1552,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WarningUpdated"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.WarningUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1591,7 +1591,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.WarningUpdated'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.WarningUpdated'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -1646,7 +1646,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WarningResolved"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.WarningResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1685,7 +1685,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.WarningResolved'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.WarningResolved'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -1740,7 +1740,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WeightLimit35RestrictionAppeared"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.WeightLimit35RestrictionAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1779,7 +1779,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.WeightLimit35RestrictionAppeared'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.WeightLimit35RestrictionAppeared'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -1834,7 +1834,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WeightLimit35RestrictionUpdated"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.WeightLimit35RestrictionUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1873,7 +1873,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.WeightLimit35RestrictionUpdated'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.WeightLimit35RestrictionUpdated'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -1928,7 +1928,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WeightLimit35RestrictionResolved"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.WeightLimit35RestrictionResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1967,7 +1967,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.WeightLimit35RestrictionResolved'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.WeightLimit35RestrictionResolved'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2022,7 +2022,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WebcamAppeared"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.WebcamAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2061,7 +2061,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.WebcamAppeared'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.WebcamAppeared'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2116,7 +2116,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WebcamUpdated"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.WebcamUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2155,7 +2155,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.WebcamUpdated'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.WebcamUpdated'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2210,7 +2210,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.WebcamResolved"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.WebcamResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2249,7 +2249,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.WebcamResolved'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.WebcamResolved'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2304,7 +2304,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ParkingLorryAppeared"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ParkingLorryAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2343,7 +2343,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ParkingLorryAppeared'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ParkingLorryAppeared'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2398,7 +2398,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ParkingLorryUpdated"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ParkingLorryUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2437,7 +2437,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ParkingLorryUpdated'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ParkingLorryUpdated'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2492,7 +2492,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ParkingLorryResolved"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ParkingLorryResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2531,7 +2531,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ParkingLorryResolved'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ParkingLorryResolved'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2586,7 +2586,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ElectricChargingStationAppeared"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ElectricChargingStationAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2625,7 +2625,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ElectricChargingStationAppeared'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ElectricChargingStationAppeared'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2680,7 +2680,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ElectricChargingStationUpdated"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ElectricChargingStationUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2719,7 +2719,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ElectricChargingStationUpdated'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ElectricChargingStationUpdated'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2774,7 +2774,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.ElectricChargingStationResolved"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.ElectricChargingStationResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2813,7 +2813,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.ElectricChargingStationResolved'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.ElectricChargingStationResolved'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2868,7 +2868,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.StrongElectricChargingStationAppeared"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.StrongElectricChargingStationAppeared"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -2907,7 +2907,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.StrongElectricChargingStationAppeared'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.StrongElectricChargingStationAppeared'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -2962,7 +2962,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.StrongElectricChargingStationUpdated"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.StrongElectricChargingStationUpdated"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -3001,7 +3001,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.StrongElectricChargingStationUpdated'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.StrongElectricChargingStationUpdated'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")
@@ -3056,7 +3056,7 @@ class TestDEAutobahnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.Autobahn.amqp.StrongElectricChargingStationResolved"
+                    assert cloud_event_payload.get("type") == "DE.Autobahn.StrongElectricChargingStationResolved"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -3095,7 +3095,7 @@ class TestDEAutobahnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.Autobahn.amqp.StrongElectricChargingStationResolved'
+        assert properties.get('cloudEvents:type') == 'DE.Autobahn.StrongElectricChargingStationResolved'
         assert received.body is not None
         assert received.subject == "{identifier}".format(identifier="value")
         assert properties.get('road') == "{road}".format(road="value")

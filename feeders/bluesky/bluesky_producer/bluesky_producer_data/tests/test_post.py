@@ -28,23 +28,23 @@ class Test_Post(unittest.TestCase):
         Create instance of Post for testing
         """
         instance = Post(
-            uri='mlmleuruqnjqnmpjgycl',
-            cid='xilpteeoustbbketneja',
-            did='yuqcykjmykdeuhgthslh',
-            handle='ztkeywopgeenbojihwam',
-            text='vkqlgqpppxpayxvqvtqg',
-            langs=['xyiemiutwqfzqvunomnd', 'huggcrwhlohppjmvyiki', 'fovkskeqvfapjcirrnhe', 'erqphkzwlritftlavlhy'],
-            reply_parent='wmhcszgitkzjixtqsvgj',
-            reply_root='rwmbvnimptypusrhnhrn',
-            embed_type='pouwkllnbdirxjrzwyir',
-            embed_uri='kgagwvpgpoqaxhensgqp',
-            facets='lmjvsotacufxteewoznl',
-            tags=['bjmtfdhfdqyiwdtsakbp', 'cksyfktmrlikouphnnsn'],
-            created_at='cbmfhiyydpkfftmcbwkn',
-            indexed_at='wsngtdhlfxpuvmsqvtfq',
-            seq=int(38),
-            collection='nmdlarfdpsvbeipdasas',
-            lang='epdzbglppzgylcznhhmm'
+            uri='cnyenxyldqvxhhhycixq',
+            cid='glxybekcgnlanqezpfut',
+            did='zulfczjyxquctfrszfhq',
+            handle='qxgdmockddmlbfvjszet',
+            text='birwwalpfqwmdvwlskwe',
+            langs=['mrnqdwhkxpbeykpfuwzl', 'xxmvzcuruuovnjjkadep'],
+            reply_parent='elywqjjzljviivfwmsqm',
+            reply_root='tizmmmkpmjedgqebnwqq',
+            embed_type='gzncdygiwqgkgqiwbyfe',
+            embed_uri='aucabbhaeifpbcrpdzhf',
+            facets='sxojfwtnpzrdqgmunwrf',
+            tags=['asxbbqsdqiwbjobzxgpa', 'dhknwyohlurtnwkidfuf', 'yhpgmolbylzpabsadeng'],
+            created_at='ygvnlurnfptsezevuxcj',
+            indexed_at='xkqsrqvqorevextqgrzl',
+            seq=int(70),
+            collection='njoztdpqblcpzdissmjj',
+            lang='ongzwspkajomgikxnmvj'
         )
         return instance
 
@@ -53,7 +53,7 @@ class Test_Post(unittest.TestCase):
         """
         Test uri property
         """
-        test_value = 'mlmleuruqnjqnmpjgycl'
+        test_value = 'cnyenxyldqvxhhhycixq'
         self.instance.uri = test_value
         self.assertEqual(self.instance.uri, test_value)
     
@@ -61,7 +61,7 @@ class Test_Post(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = 'xilpteeoustbbketneja'
+        test_value = 'glxybekcgnlanqezpfut'
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -69,7 +69,7 @@ class Test_Post(unittest.TestCase):
         """
         Test did property
         """
-        test_value = 'yuqcykjmykdeuhgthslh'
+        test_value = 'zulfczjyxquctfrszfhq'
         self.instance.did = test_value
         self.assertEqual(self.instance.did, test_value)
     
@@ -77,7 +77,7 @@ class Test_Post(unittest.TestCase):
         """
         Test handle property
         """
-        test_value = 'ztkeywopgeenbojihwam'
+        test_value = 'qxgdmockddmlbfvjszet'
         self.instance.handle = test_value
         self.assertEqual(self.instance.handle, test_value)
     
@@ -85,7 +85,7 @@ class Test_Post(unittest.TestCase):
         """
         Test text property
         """
-        test_value = 'vkqlgqpppxpayxvqvtqg'
+        test_value = 'birwwalpfqwmdvwlskwe'
         self.instance.text = test_value
         self.assertEqual(self.instance.text, test_value)
     
@@ -93,7 +93,7 @@ class Test_Post(unittest.TestCase):
         """
         Test langs property
         """
-        test_value = ['xyiemiutwqfzqvunomnd', 'huggcrwhlohppjmvyiki', 'fovkskeqvfapjcirrnhe', 'erqphkzwlritftlavlhy']
+        test_value = ['mrnqdwhkxpbeykpfuwzl', 'xxmvzcuruuovnjjkadep']
         self.instance.langs = test_value
         self.assertEqual(self.instance.langs, test_value)
     
@@ -101,7 +101,7 @@ class Test_Post(unittest.TestCase):
         """
         Test reply_parent property
         """
-        test_value = 'wmhcszgitkzjixtqsvgj'
+        test_value = 'elywqjjzljviivfwmsqm'
         self.instance.reply_parent = test_value
         self.assertEqual(self.instance.reply_parent, test_value)
     
@@ -109,7 +109,7 @@ class Test_Post(unittest.TestCase):
         """
         Test reply_root property
         """
-        test_value = 'rwmbvnimptypusrhnhrn'
+        test_value = 'tizmmmkpmjedgqebnwqq'
         self.instance.reply_root = test_value
         self.assertEqual(self.instance.reply_root, test_value)
     
@@ -117,7 +117,7 @@ class Test_Post(unittest.TestCase):
         """
         Test embed_type property
         """
-        test_value = 'pouwkllnbdirxjrzwyir'
+        test_value = 'gzncdygiwqgkgqiwbyfe'
         self.instance.embed_type = test_value
         self.assertEqual(self.instance.embed_type, test_value)
     
@@ -125,7 +125,7 @@ class Test_Post(unittest.TestCase):
         """
         Test embed_uri property
         """
-        test_value = 'kgagwvpgpoqaxhensgqp'
+        test_value = 'aucabbhaeifpbcrpdzhf'
         self.instance.embed_uri = test_value
         self.assertEqual(self.instance.embed_uri, test_value)
     
@@ -133,7 +133,7 @@ class Test_Post(unittest.TestCase):
         """
         Test facets property
         """
-        test_value = 'lmjvsotacufxteewoznl'
+        test_value = 'sxojfwtnpzrdqgmunwrf'
         self.instance.facets = test_value
         self.assertEqual(self.instance.facets, test_value)
     
@@ -141,7 +141,7 @@ class Test_Post(unittest.TestCase):
         """
         Test tags property
         """
-        test_value = ['bjmtfdhfdqyiwdtsakbp', 'cksyfktmrlikouphnnsn']
+        test_value = ['asxbbqsdqiwbjobzxgpa', 'dhknwyohlurtnwkidfuf', 'yhpgmolbylzpabsadeng']
         self.instance.tags = test_value
         self.assertEqual(self.instance.tags, test_value)
     
@@ -149,7 +149,7 @@ class Test_Post(unittest.TestCase):
         """
         Test created_at property
         """
-        test_value = 'cbmfhiyydpkfftmcbwkn'
+        test_value = 'ygvnlurnfptsezevuxcj'
         self.instance.created_at = test_value
         self.assertEqual(self.instance.created_at, test_value)
     
@@ -157,7 +157,7 @@ class Test_Post(unittest.TestCase):
         """
         Test indexed_at property
         """
-        test_value = 'wsngtdhlfxpuvmsqvtfq'
+        test_value = 'xkqsrqvqorevextqgrzl'
         self.instance.indexed_at = test_value
         self.assertEqual(self.instance.indexed_at, test_value)
     
@@ -165,7 +165,7 @@ class Test_Post(unittest.TestCase):
         """
         Test seq property
         """
-        test_value = int(38)
+        test_value = int(70)
         self.instance.seq = test_value
         self.assertEqual(self.instance.seq, test_value)
     
@@ -173,7 +173,7 @@ class Test_Post(unittest.TestCase):
         """
         Test collection property
         """
-        test_value = 'nmdlarfdpsvbeipdasas'
+        test_value = 'njoztdpqblcpzdissmjj'
         self.instance.collection = test_value
         self.assertEqual(self.instance.collection, test_value)
     
@@ -181,7 +181,7 @@ class Test_Post(unittest.TestCase):
         """
         Test lang property
         """
-        test_value = 'epdzbglppzgylcznhhmm'
+        test_value = 'ongzwspkajomgikxnmvj'
         self.instance.lang = test_value
         self.assertEqual(self.instance.lang, test_value)
     

@@ -28,15 +28,15 @@ class Test_SafetyRelatedMessage(unittest.TestCase):
         Create instance of SafetyRelatedMessage for testing
         """
         instance = SafetyRelatedMessage(
-            situation_record_id='gxpggvfajnmvxwrzxnpq',
-            version_time='pzpbqenosyzhyrbknivf',
-            validity_status='jqahlopuqudmvqnjfcxw',
-            start_time='toeneurnhfqnclfavexs',
-            end_time='ruipyanfoaqowgalpkin',
-            road_name='ucrcqsexzibixnxdwqae',
-            message_type='lewlayyfdajfgcoiqzio',
-            description='gvicthwxzedipyxurgmr',
-            urgency='uwfzxypdlcdxpvdnpkhg'
+            situation_record_id='vbjjppagsakvgotfpmct',
+            version_time='sssoxbifbkqljhpqasli',
+            validity_status='owpkfboctilqtamgtgxa',
+            start_time='utugeijnnamdrddcunhg',
+            end_time='epbrasjuyljoxuezpkdw',
+            road_name='wwtayekrcrjslykyuzsu',
+            message_type='ilvzbzzjddiutxcspikt',
+            description='druspvjjtzlbopjplnjn',
+            urgency='ploonuievenqmotztlec'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_SafetyRelatedMessage(unittest.TestCase):
         """
         Test situation_record_id property
         """
-        test_value = 'gxpggvfajnmvxwrzxnpq'
+        test_value = 'vbjjppagsakvgotfpmct'
         self.instance.situation_record_id = test_value
         self.assertEqual(self.instance.situation_record_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_SafetyRelatedMessage(unittest.TestCase):
         """
         Test version_time property
         """
-        test_value = 'pzpbqenosyzhyrbknivf'
+        test_value = 'sssoxbifbkqljhpqasli'
         self.instance.version_time = test_value
         self.assertEqual(self.instance.version_time, test_value)
     
@@ -61,7 +61,7 @@ class Test_SafetyRelatedMessage(unittest.TestCase):
         """
         Test validity_status property
         """
-        test_value = 'jqahlopuqudmvqnjfcxw'
+        test_value = 'owpkfboctilqtamgtgxa'
         self.instance.validity_status = test_value
         self.assertEqual(self.instance.validity_status, test_value)
     
@@ -69,7 +69,7 @@ class Test_SafetyRelatedMessage(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'toeneurnhfqnclfavexs'
+        test_value = 'utugeijnnamdrddcunhg'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -77,7 +77,7 @@ class Test_SafetyRelatedMessage(unittest.TestCase):
         """
         Test end_time property
         """
-        test_value = 'ruipyanfoaqowgalpkin'
+        test_value = 'epbrasjuyljoxuezpkdw'
         self.instance.end_time = test_value
         self.assertEqual(self.instance.end_time, test_value)
     
@@ -85,7 +85,7 @@ class Test_SafetyRelatedMessage(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'ucrcqsexzibixnxdwqae'
+        test_value = 'wwtayekrcrjslykyuzsu'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -93,7 +93,7 @@ class Test_SafetyRelatedMessage(unittest.TestCase):
         """
         Test message_type property
         """
-        test_value = 'lewlayyfdajfgcoiqzio'
+        test_value = 'ilvzbzzjddiutxcspikt'
         self.instance.message_type = test_value
         self.assertEqual(self.instance.message_type, test_value)
     
@@ -101,7 +101,7 @@ class Test_SafetyRelatedMessage(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'gvicthwxzedipyxurgmr'
+        test_value = 'druspvjjtzlbopjplnjn'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -109,7 +109,7 @@ class Test_SafetyRelatedMessage(unittest.TestCase):
         """
         Test urgency property
         """
-        test_value = 'uwfzxypdlcdxpvdnpkhg'
+        test_value = 'ploonuievenqmotztlec'
         self.instance.urgency = test_value
         self.assertEqual(self.instance.urgency, test_value)
     

@@ -29,19 +29,19 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         Create instance of MultiSlotBinaryMessage for testing
         """
         instance = MultiSlotBinaryMessage(
-            MessageID=int(14),
-            RepeatIndicator=int(97),
-            UserID=int(34),
-            Valid=True,
-            DestinationIDValid=True,
+            MessageID=int(42),
+            RepeatIndicator=int(95),
+            UserID=int(18),
+            Valid=False,
+            DestinationIDValid=False,
             ApplicationIDValid=False,
-            DestinationID=int(31),
-            Spare1=int(67),
+            DestinationID=int(74),
+            Spare1=int(65),
             ApplicationID=None,
-            Payload='fbuikovetjguhbhqgvqz',
-            Spare2=int(34),
-            CommunicationStateIsItdma=True,
-            CommunicationState=int(96)
+            Payload='uufmqaldyxifeumgpfyo',
+            Spare2=int(48),
+            CommunicationStateIsItdma=False,
+            CommunicationState=int(56)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(14)
+        test_value = int(42)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -58,7 +58,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(97)
+        test_value = int(95)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -66,7 +66,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(34)
+        test_value = int(18)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -74,7 +74,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = True
+        test_value = False
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -82,7 +82,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test DestinationIDValid property
         """
-        test_value = True
+        test_value = False
         self.instance.DestinationIDValid = test_value
         self.assertEqual(self.instance.DestinationIDValid, test_value)
     
@@ -98,7 +98,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test DestinationID property
         """
-        test_value = int(31)
+        test_value = int(74)
         self.instance.DestinationID = test_value
         self.assertEqual(self.instance.DestinationID, test_value)
     
@@ -106,7 +106,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test Spare1 property
         """
-        test_value = int(67)
+        test_value = int(65)
         self.instance.Spare1 = test_value
         self.assertEqual(self.instance.Spare1, test_value)
     
@@ -122,7 +122,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test Payload property
         """
-        test_value = 'fbuikovetjguhbhqgvqz'
+        test_value = 'uufmqaldyxifeumgpfyo'
         self.instance.Payload = test_value
         self.assertEqual(self.instance.Payload, test_value)
     
@@ -130,7 +130,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test Spare2 property
         """
-        test_value = int(34)
+        test_value = int(48)
         self.instance.Spare2 = test_value
         self.assertEqual(self.instance.Spare2, test_value)
     
@@ -138,7 +138,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test CommunicationStateIsItdma property
         """
-        test_value = True
+        test_value = False
         self.instance.CommunicationStateIsItdma = test_value
         self.assertEqual(self.instance.CommunicationStateIsItdma, test_value)
     
@@ -146,7 +146,7 @@ class Test_MultiSlotBinaryMessage(unittest.TestCase):
         """
         Test CommunicationState property
         """
-        test_value = int(96)
+        test_value = int(56)
         self.instance.CommunicationState = test_value
         self.assertEqual(self.instance.CommunicationState, test_value)
     

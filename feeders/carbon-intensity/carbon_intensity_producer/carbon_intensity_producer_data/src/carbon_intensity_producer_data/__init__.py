@@ -1,5 +1,5 @@
-from .intensity import Intensity
 from .generationmix import GenerationMix
+from .intensity import Intensity
 from .regionalintensity import RegionalIntensity
 
-__all__ = ["Intensity", "GenerationMix", "RegionalIntensity"]
+__all__ = ["GenerationMix", "Intensity", "RegionalIntensity"]

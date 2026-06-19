@@ -225,7 +225,7 @@ def test_us_epa_uvindex_mqtt_usepauvindexmqtthourlyforecast(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "US.EPA.UVIndex.mqtt.HourlyForecast":
+            if cloudevent['type'] == "US.EPA.UVIndex.HourlyForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_us_epa_uvindex_mqtt_usepauvindexmqttdailyforecast(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "US.EPA.UVIndex.mqtt.DailyForecast":
+            if cloudevent['type'] == "US.EPA.UVIndex.DailyForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_us_epa_uvindex_amqp_usepauvindexamqphourlyforecast(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "US.EPA.UVIndex.amqp.HourlyForecast":
+            if cloudevent['type'] == "US.EPA.UVIndex.HourlyForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_us_epa_uvindex_amqp_usepauvindexamqpdailyforecast(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "US.EPA.UVIndex.amqp.DailyForecast":
+            if cloudevent['type'] == "US.EPA.UVIndex.DailyForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

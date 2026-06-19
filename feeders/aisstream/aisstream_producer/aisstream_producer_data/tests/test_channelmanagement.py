@@ -30,22 +30,22 @@ class Test_ChannelManagement(unittest.TestCase):
         Create instance of ChannelManagement for testing
         """
         instance = ChannelManagement(
-            MessageID=int(11),
-            RepeatIndicator=int(45),
-            UserID=int(76),
+            MessageID=int(16),
+            RepeatIndicator=int(39),
+            UserID=int(53),
             Valid=True,
-            Spare1=int(96),
-            ChannelA=int(66),
-            ChannelB=int(86),
-            TxRxMode=int(27),
-            LowPower=True,
+            Spare1=int(69),
+            ChannelA=int(11),
+            ChannelB=int(26),
+            TxRxMode=int(72),
+            LowPower=False,
             Area=None,
             Unicast=None,
             IsAddressed=False,
             BwA=True,
             BwB=False,
-            TransitionalZoneSize=int(39),
-            Spare4=int(27)
+            TransitionalZoneSize=int(61),
+            Spare4=int(40)
         )
         return instance
 
@@ -54,7 +54,7 @@ class Test_ChannelManagement(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(11)
+        test_value = int(16)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -62,7 +62,7 @@ class Test_ChannelManagement(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(45)
+        test_value = int(39)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -70,7 +70,7 @@ class Test_ChannelManagement(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(76)
+        test_value = int(53)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -86,7 +86,7 @@ class Test_ChannelManagement(unittest.TestCase):
         """
         Test Spare1 property
         """
-        test_value = int(96)
+        test_value = int(69)
         self.instance.Spare1 = test_value
         self.assertEqual(self.instance.Spare1, test_value)
     
@@ -94,7 +94,7 @@ class Test_ChannelManagement(unittest.TestCase):
         """
         Test ChannelA property
         """
-        test_value = int(66)
+        test_value = int(11)
         self.instance.ChannelA = test_value
         self.assertEqual(self.instance.ChannelA, test_value)
     
@@ -102,7 +102,7 @@ class Test_ChannelManagement(unittest.TestCase):
         """
         Test ChannelB property
         """
-        test_value = int(86)
+        test_value = int(26)
         self.instance.ChannelB = test_value
         self.assertEqual(self.instance.ChannelB, test_value)
     
@@ -110,7 +110,7 @@ class Test_ChannelManagement(unittest.TestCase):
         """
         Test TxRxMode property
         """
-        test_value = int(27)
+        test_value = int(72)
         self.instance.TxRxMode = test_value
         self.assertEqual(self.instance.TxRxMode, test_value)
     
@@ -118,7 +118,7 @@ class Test_ChannelManagement(unittest.TestCase):
         """
         Test LowPower property
         """
-        test_value = True
+        test_value = False
         self.instance.LowPower = test_value
         self.assertEqual(self.instance.LowPower, test_value)
     
@@ -166,7 +166,7 @@ class Test_ChannelManagement(unittest.TestCase):
         """
         Test TransitionalZoneSize property
         """
-        test_value = int(39)
+        test_value = int(61)
         self.instance.TransitionalZoneSize = test_value
         self.assertEqual(self.instance.TransitionalZoneSize, test_value)
     
@@ -174,7 +174,7 @@ class Test_ChannelManagement(unittest.TestCase):
         """
         Test Spare4 property
         """
-        test_value = int(27)
+        test_value = int(40)
         self.instance.Spare4 = test_value
         self.assertEqual(self.instance.Spare4, test_value)
     

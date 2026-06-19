@@ -159,7 +159,7 @@ def test_nina_warnings_mqtt_ninawarningsmqttcivilwarning(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NINA.Warnings.mqtt.CivilWarning":
+            if cloudevent['type'] == "NINA.CivilWarning":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_nina_warnings_amqp_ninawarningsamqpcivilwarning(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NINA.Warnings.amqp.CivilWarning":
+            if cloudevent['type'] == "NINA.CivilWarning":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

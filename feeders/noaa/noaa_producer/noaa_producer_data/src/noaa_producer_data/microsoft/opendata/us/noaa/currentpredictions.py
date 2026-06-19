@@ -167,12 +167,12 @@ class CurrentPredictions:
             An instance of the dataclass.
         """
         return cls(
-            station_id='yplpbdxhfnfgvqxxcobt',
-            timestamp='wxveckzylxtvpsfbgnaq',
-            velocity_major=float(48.061087358267095),
-            mean_flood_dir=float(30.11037872518689),
-            mean_ebb_dir=float(61.97943034501968),
-            depth=float(22.200803064823017),
-            bin='hcvzupuogeowikhvilwp',
-            region='moywqjqmdtvgbidezclx'
+            station_id='lcbqarvvzdoqkkzkrquf',
+            timestamp='aydutnclrarcqvdpbxlv',
+            velocity_major=float(9.396062595492161),
+            mean_flood_dir=float(48.017128294370124),
+            mean_ebb_dir=float(47.30420175070462),
+            depth=float(85.24310014045507),
+            bin='ltrtteocimeqvrkhsxfz',
+            region='gpkqkdzcwxqoysomirzu'
         )

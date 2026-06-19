@@ -28,12 +28,12 @@ class Test_AssignedModeCommand(unittest.TestCase):
         Create instance of AssignedModeCommand for testing
         """
         instance = AssignedModeCommand(
-            MessageID=int(51),
-            RepeatIndicator=int(98),
-            UserID=int(7),
-            Valid=False,
-            Spare=int(26),
-            Commands={'dnmlanqzdhnohywdnnrr': 'cqtqocnwxsqjrfupbkiz', 'khtcifjjiugzrdczmkzj': 'qftikxxiezdudtlaqhut', 'wxihjfddrxapnckqouwi': 'slpbyembvjbztnycozsr', 'owsyehddkniepgxjxnky': 'kvrvunfpuhfquvzhcaxq', 'vrklymdosopmodxrryrs': 'whhnhkaznkgwlznzjcst'}
+            MessageID=int(37),
+            RepeatIndicator=int(67),
+            UserID=int(50),
+            Valid=True,
+            Spare=int(15),
+            Commands={'lregbasfacuprbopmdze': 'hjukriuuvftchekyhfbn'}
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(51)
+        test_value = int(37)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -50,7 +50,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(98)
+        test_value = int(67)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -58,7 +58,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(7)
+        test_value = int(50)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -66,7 +66,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = False
+        test_value = True
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -74,7 +74,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(26)
+        test_value = int(15)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -82,7 +82,7 @@ class Test_AssignedModeCommand(unittest.TestCase):
         """
         Test Commands property
         """
-        test_value = {'dnmlanqzdhnohywdnnrr': 'cqtqocnwxsqjrfupbkiz', 'khtcifjjiugzrdczmkzj': 'qftikxxiezdudtlaqhut', 'wxihjfddrxapnckqouwi': 'slpbyembvjbztnycozsr', 'owsyehddkniepgxjxnky': 'kvrvunfpuhfquvzhcaxq', 'vrklymdosopmodxrryrs': 'whhnhkaznkgwlznzjcst'}
+        test_value = {'lregbasfacuprbopmdze': 'hjukriuuvftchekyhfbn'}
         self.instance.Commands = test_value
         self.assertEqual(self.instance.Commands, test_value)
     

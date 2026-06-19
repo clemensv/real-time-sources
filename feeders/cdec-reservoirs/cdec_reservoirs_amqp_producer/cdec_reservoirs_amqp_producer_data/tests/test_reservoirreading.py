@@ -28,15 +28,15 @@ class Test_ReservoirReading(unittest.TestCase):
         Create instance of ReservoirReading for testing
         """
         instance = ReservoirReading(
-            station_id='dwlcibucilzneiqbsczw',
-            sensor_num=int(59),
-            sensor_type='egrcqdblwrvbjcjrjxqf',
-            value=float(22.143867130306873),
-            units='oczwnnnthsekpblncfrb',
-            date='ikxuozackpjriqxubnju',
-            dur_code='xufkywxiqbsgjrvzvvuu',
-            data_flag='tdvqbpcudfvyjvqvgfbs',
-            basin='ngupsxuhfymhfppsdurv'
+            station_id='oyncooydoxmkkprgvxmt',
+            sensor_num=int(37),
+            sensor_type='texulkhkavvlopmniuae',
+            value=float(45.98271163770662),
+            units='ogffsgtkckrdwzzsahho',
+            date='xmrwvhopkukgyghjdnnq',
+            dur_code='opbtpxewzganndezrkux',
+            data_flag='uujutzgcwjvnljozjrwl',
+            basin='hrfaclfceimqcskspuqv'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'dwlcibucilzneiqbsczw'
+        test_value = 'oyncooydoxmkkprgvxmt'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test sensor_num property
         """
-        test_value = int(59)
+        test_value = int(37)
         self.instance.sensor_num = test_value
         self.assertEqual(self.instance.sensor_num, test_value)
     
@@ -61,7 +61,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test sensor_type property
         """
-        test_value = 'egrcqdblwrvbjcjrjxqf'
+        test_value = 'texulkhkavvlopmniuae'
         self.instance.sensor_type = test_value
         self.assertEqual(self.instance.sensor_type, test_value)
     
@@ -69,7 +69,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(22.143867130306873)
+        test_value = float(45.98271163770662)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -77,7 +77,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test units property
         """
-        test_value = 'oczwnnnthsekpblncfrb'
+        test_value = 'ogffsgtkckrdwzzsahho'
         self.instance.units = test_value
         self.assertEqual(self.instance.units, test_value)
     
@@ -85,7 +85,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test date property
         """
-        test_value = 'ikxuozackpjriqxubnju'
+        test_value = 'xmrwvhopkukgyghjdnnq'
         self.instance.date = test_value
         self.assertEqual(self.instance.date, test_value)
     
@@ -93,7 +93,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test dur_code property
         """
-        test_value = 'xufkywxiqbsgjrvzvvuu'
+        test_value = 'opbtpxewzganndezrkux'
         self.instance.dur_code = test_value
         self.assertEqual(self.instance.dur_code, test_value)
     
@@ -101,7 +101,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test data_flag property
         """
-        test_value = 'tdvqbpcudfvyjvqvgfbs'
+        test_value = 'uujutzgcwjvnljozjrwl'
         self.instance.data_flag = test_value
         self.assertEqual(self.instance.data_flag, test_value)
     
@@ -109,7 +109,7 @@ class Test_ReservoirReading(unittest.TestCase):
         """
         Test basin property
         """
-        test_value = 'ngupsxuhfymhfppsdurv'
+        test_value = 'hrfaclfceimqcskspuqv'
         self.instance.basin = test_value
         self.assertEqual(self.instance.basin, test_value)
     

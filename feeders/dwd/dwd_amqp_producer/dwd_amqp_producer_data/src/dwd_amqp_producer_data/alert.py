@@ -185,21 +185,21 @@ class Alert:
             An instance of the dataclass.
         """
         return cls(
-            identifier='bumziptgypsllwkfxfzs',
-            sender='zovsrbpkaxoiatijqfut',
-            sent='drtjzoqzifhsqbdaptkx',
-            status='itlspyttaxatmmedwvty',
-            msg_type='xevtpqmwcyhljitpihfs',
-            severity='njqyrcdgeptfjudetwna',
-            urgency='kqdiwleuxbiswcaritdo',
-            certainty='yrldzysbaeadpxrtxdif',
-            event='zbrxjtxggeniyxmheuku',
-            headline='ipsumitxehznccssmhec',
-            description='etxtngyzpysycifxlzrm',
-            effective='bwnrvfihtmglsuupkyki',
-            onset='ebrzrowchrshxoyotmxm',
-            expires='mmcymcvhglmbnutdzbnw',
-            area_desc='iiqqlxrgjhiblnbaqunr',
-            geocodes='sftjmpdnldimnwuixvbf',
-            state='salezdbxesrhvshngizc'
+            identifier='hempkrykxchlwdyxwagz',
+            sender='pznzvcmfjzqctnjsksqj',
+            sent='giicqkrdafmsuxzcymnf',
+            status='aoxnpcvredprexjkcuoc',
+            msg_type='lndsjeitejlkjdctegyf',
+            severity='zqaqtspxswwixjsalagu',
+            urgency='mcffezyfzzpjspmrxjso',
+            certainty='vbqodxanqaopqoefnfjg',
+            event='hdojalhlswoacpismimr',
+            headline='oiungcebfpafibjcfeak',
+            description='ssvnqtyulcfukhmtqcvc',
+            effective='arqivgtbffqvtmrzfbyz',
+            onset='yvadhatbucfontqjdevl',
+            expires='rkhsnyisahiypmhgzwyp',
+            area_desc='owcczgrvhxgcqczpoekh',
+            geocodes='qksckprblkbrwchcolsk',
+            state='lmjixdyucpetsyvisnfe'
         )

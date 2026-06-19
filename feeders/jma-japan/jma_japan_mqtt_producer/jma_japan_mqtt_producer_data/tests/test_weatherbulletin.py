@@ -30,14 +30,14 @@ class Test_WeatherBulletin(unittest.TestCase):
         Create instance of WeatherBulletin for testing
         """
         instance = WeatherBulletin(
-            bulletin_id='wcqlsldjxqeramsnnuxg',
-            title='lembupjsqgsdqrzilogk',
-            author='gnwnboftjpafucvjsvlx',
+            bulletin_id='mxrvvtyykiitluzmyrpw',
+            title='nvbtsuwwprzosupqbpgp',
+            author='isvehzzrzorammkcswbd',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            link='zgtgbujfdtoikfucdkhy',
-            content='enwpubmvlzmqfrxrsisj',
+            link='qpjhsiqbacmqqobauttq',
+            content='ygubodkhelmftoodyjgz',
             feed_type=FeedTypeenum.regular,
-            office='aiovdqodwvptbonkhwiu'
+            office='mvsamqnpmmszestqjapu'
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_WeatherBulletin(unittest.TestCase):
         """
         Test bulletin_id property
         """
-        test_value = 'wcqlsldjxqeramsnnuxg'
+        test_value = 'mxrvvtyykiitluzmyrpw'
         self.instance.bulletin_id = test_value
         self.assertEqual(self.instance.bulletin_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_WeatherBulletin(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'lembupjsqgsdqrzilogk'
+        test_value = 'nvbtsuwwprzosupqbpgp'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -62,7 +62,7 @@ class Test_WeatherBulletin(unittest.TestCase):
         """
         Test author property
         """
-        test_value = 'gnwnboftjpafucvjsvlx'
+        test_value = 'isvehzzrzorammkcswbd'
         self.instance.author = test_value
         self.assertEqual(self.instance.author, test_value)
     
@@ -78,7 +78,7 @@ class Test_WeatherBulletin(unittest.TestCase):
         """
         Test link property
         """
-        test_value = 'zgtgbujfdtoikfucdkhy'
+        test_value = 'qpjhsiqbacmqqobauttq'
         self.instance.link = test_value
         self.assertEqual(self.instance.link, test_value)
     
@@ -86,7 +86,7 @@ class Test_WeatherBulletin(unittest.TestCase):
         """
         Test content property
         """
-        test_value = 'enwpubmvlzmqfrxrsisj'
+        test_value = 'ygubodkhelmftoodyjgz'
         self.instance.content = test_value
         self.assertEqual(self.instance.content, test_value)
     
@@ -102,7 +102,7 @@ class Test_WeatherBulletin(unittest.TestCase):
         """
         Test office property
         """
-        test_value = 'aiovdqodwvptbonkhwiu'
+        test_value = 'mvsamqnpmmszestqjapu'
         self.instance.office = test_value
         self.assertEqual(self.instance.office, test_value)
     

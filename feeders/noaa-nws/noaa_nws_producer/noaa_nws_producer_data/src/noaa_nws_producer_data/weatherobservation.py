@@ -185,20 +185,20 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='onixwxkfepsggbrnovcp',
+            station_id='obxawjxmbiwaixdmpprr',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            text_description='quapilyglmivuyawqczf',
-            temperature=float(9.114732198879928),
-            dewpoint=float(74.75507470202031),
-            wind_direction=float(20.07073123012697),
-            wind_speed=float(87.69801317954175),
-            wind_gust=float(87.86671207603227),
-            barometric_pressure=float(31.992893790588152),
-            sea_level_pressure=float(25.9349172334683),
-            visibility=float(16.844269610540586),
-            relative_humidity=float(39.95667253904883),
-            wind_chill=float(13.26398298763365),
-            heat_index=float(69.79881562251119),
-            state='uprcmrzxbcmhmdknmazn',
-            zone_id='zjvoftvbluznkwpymnyq'
+            text_description='rcmhjqsravkirblxsesd',
+            temperature=float(4.770221376518502),
+            dewpoint=float(78.47318258416958),
+            wind_direction=float(65.31382142523677),
+            wind_speed=float(91.65581781174474),
+            wind_gust=float(79.1855591657831),
+            barometric_pressure=float(11.240910187634178),
+            sea_level_pressure=float(57.139036131329235),
+            visibility=float(76.26494905819072),
+            relative_humidity=float(64.40313512155615),
+            wind_chill=float(20.432291995558426),
+            heat_index=float(92.19380976378942),
+            state='jxnmhbsmuajgvnnmwfel',
+            zone_id='dvuuuwvpyspwvzgebdlk'
         )

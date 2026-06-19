@@ -28,13 +28,13 @@ class Test_Conductivity(unittest.TestCase):
         Create instance of Conductivity for testing
         """
         instance = Conductivity(
-            station_id='ahafccoqlbmosoqargyk',
-            timestamp='dmjzhhfmavetslbsycjx',
-            value=float(7.736083712646147),
+            station_id='yykcwdubmmaknsvbkaej',
+            timestamp='sfkjdzsotskxwcehamxm',
+            value=float(99.02248658099471),
             max_conductivity_exceeded=True,
             min_conductivity_exceeded=True,
-            rate_of_change_exceeded=False,
-            region='nywunjjaijghvvrtcqwa'
+            rate_of_change_exceeded=True,
+            region='lvwizwwakjzjigjjdzte'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ahafccoqlbmosoqargyk'
+        test_value = 'yykcwdubmmaknsvbkaej'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'dmjzhhfmavetslbsycjx'
+        test_value = 'sfkjdzsotskxwcehamxm'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(7.736083712646147)
+        test_value = float(99.02248658099471)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -83,7 +83,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     
@@ -91,7 +91,7 @@ class Test_Conductivity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'nywunjjaijghvvrtcqwa'
+        test_value = 'lvwizwwakjzjigjjdzte'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

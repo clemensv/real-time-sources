@@ -28,15 +28,15 @@ class Test_BuoyStation(unittest.TestCase):
         Create instance of BuoyStation for testing
         """
         instance = BuoyStation(
-            station_id='drxzgohldqymzyjiqale',
-            owner='cqpmdthnfsqatsrqzjhu',
-            station_type='mhrmdoxwydmppkcsjnrl',
-            hull='jlhpfeaygdxjarcxpjma',
-            name='rsqlmicanboosrwrfcdt',
-            latitude=float(72.5348347278503),
-            longitude=float(51.46695001622684),
-            timezone='uhtasqjhzuvxvjrfqogg',
-            region='lnywmmutaalkzonexrkb'
+            station_id='thqcevwyydvdfhjfdbjw',
+            owner='zgcbexglknwfehmkjbiq',
+            station_type='vnelpxhyibhgqxrxstxc',
+            hull='exnswayhleaxuciiviac',
+            name='rzgxytrakebhxdjrenxo',
+            latitude=float(39.74375092126904),
+            longitude=float(69.06589700008763),
+            timezone='mjytjjqqloqvyjybzlts',
+            region='ekhgocjsjsycpmollvoa'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'drxzgohldqymzyjiqale'
+        test_value = 'thqcevwyydvdfhjfdbjw'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test owner property
         """
-        test_value = 'cqpmdthnfsqatsrqzjhu'
+        test_value = 'zgcbexglknwfehmkjbiq'
         self.instance.owner = test_value
         self.assertEqual(self.instance.owner, test_value)
     
@@ -61,7 +61,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test station_type property
         """
-        test_value = 'mhrmdoxwydmppkcsjnrl'
+        test_value = 'vnelpxhyibhgqxrxstxc'
         self.instance.station_type = test_value
         self.assertEqual(self.instance.station_type, test_value)
     
@@ -69,7 +69,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test hull property
         """
-        test_value = 'jlhpfeaygdxjarcxpjma'
+        test_value = 'exnswayhleaxuciiviac'
         self.instance.hull = test_value
         self.assertEqual(self.instance.hull, test_value)
     
@@ -77,7 +77,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'rsqlmicanboosrwrfcdt'
+        test_value = 'rzgxytrakebhxdjrenxo'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -85,7 +85,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(72.5348347278503)
+        test_value = float(39.74375092126904)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -93,7 +93,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(51.46695001622684)
+        test_value = float(69.06589700008763)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -101,7 +101,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test timezone property
         """
-        test_value = 'uhtasqjhzuvxvjrfqogg'
+        test_value = 'mjytjjqqloqvyjybzlts'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
     
@@ -109,7 +109,7 @@ class Test_BuoyStation(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'lnywmmutaalkzonexrkb'
+        test_value = 'ekhgocjsjsycpmollvoa'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

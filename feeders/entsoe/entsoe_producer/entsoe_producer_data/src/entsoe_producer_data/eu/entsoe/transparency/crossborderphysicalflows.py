@@ -163,10 +163,10 @@ class CrossBorderPhysicalFlows:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='ogewyviiprbkhmwaomve',
-            outDomain='zyrugdehxfootombvuxr',
-            quantity=float(55.2570137142784),
-            resolution='xsnntygvovcftffleawh',
-            documentType='ukpenjjfcbrcsrbuterj',
-            unitName='vakifgxabrstfqmwnpye'
+            inDomain='tqkbdhpavfcbmenfyche',
+            outDomain='zplhvjslyjftouojremn',
+            quantity=float(63.37022417212075),
+            resolution='wtbraqzsnnbggybhrvzf',
+            documentType='nvoifesnbabmqbdqoxtd',
+            unitName='bjybaatayltwwomusidd'
         )

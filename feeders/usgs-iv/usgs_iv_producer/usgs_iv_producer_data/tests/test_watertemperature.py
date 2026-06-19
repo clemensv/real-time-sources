@@ -28,13 +28,13 @@ class Test_WaterTemperature(unittest.TestCase):
         Create instance of WaterTemperature for testing
         """
         instance = WaterTemperature(
-            site_no='uwfmhsxsggdxzfwaesna',
-            datetime='ikdsbxgrmxfqhwahxkay',
-            value=float(43.75604106991784),
-            exception='ycjcymrqwrxtrrxqbugc',
-            qualifiers=['gtrdpxvcritenjdgzkak', 'apvspdebqeueguzlwjus', 'qbamkbobinvetfyakauu', 'oghfhnfjneczjgovvmul', 'rndqzbnvwfmlhgckankp'],
-            parameter_cd='uaaxnpdwdqwcfujfqlty',
-            timeseries_cd='pvzhoxttjoubddgwnklu'
+            site_no='zfjemeuxuzrurhlgruem',
+            datetime='xqeehxixbpcdmnzktoer',
+            value=float(52.165162318100265),
+            exception='zidlpszzwtwaqjnlzhyd',
+            qualifiers=['fnsuftllwfdmcakatdys', 'wefotjklkxggvfupnurb', 'dfhprnsdgxoqivctmgst', 'gtxrmlzrnptvlidoucqu'],
+            parameter_cd='bujbhjfwgooglfgjfybr',
+            timeseries_cd='drfavlbaammffmihjhkt'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'uwfmhsxsggdxzfwaesna'
+        test_value = 'zfjemeuxuzrurhlgruem'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'ikdsbxgrmxfqhwahxkay'
+        test_value = 'xqeehxixbpcdmnzktoer'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(43.75604106991784)
+        test_value = float(52.165162318100265)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'ycjcymrqwrxtrrxqbugc'
+        test_value = 'zidlpszzwtwaqjnlzhyd'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['gtrdpxvcritenjdgzkak', 'apvspdebqeueguzlwjus', 'qbamkbobinvetfyakauu', 'oghfhnfjneczjgovvmul', 'rndqzbnvwfmlhgckankp']
+        test_value = ['fnsuftllwfdmcakatdys', 'wefotjklkxggvfupnurb', 'dfhprnsdgxoqivctmgst', 'gtxrmlzrnptvlidoucqu']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'uaaxnpdwdqwcfujfqlty'
+        test_value = 'bujbhjfwgooglfgjfybr'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_WaterTemperature(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'pvzhoxttjoubddgwnklu'
+        test_value = 'drfavlbaammffmihjhkt'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

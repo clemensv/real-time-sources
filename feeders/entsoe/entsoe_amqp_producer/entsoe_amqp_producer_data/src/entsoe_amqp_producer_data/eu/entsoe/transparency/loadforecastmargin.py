@@ -161,9 +161,9 @@ class LoadForecastMargin:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='eicdbhraidzwnwklwrrn',
-            quantity=float(80.03528456060147),
-            resolution='lqbwrxwvoekuqlroehxk',
-            documentType='evgxjhduiwimjajmhozv',
-            unitName='yfrailgawnvbgvjtlveq'
+            inDomain='zyqhdsmccdwmsuzbpfql',
+            quantity=float(58.76382509769692),
+            resolution='kjufvgajwsfriqdjbzyp',
+            documentType='gjzyrouigfkbvdirqbkn',
+            unitName='ehawpwqilmqmjiymybxw'
         )

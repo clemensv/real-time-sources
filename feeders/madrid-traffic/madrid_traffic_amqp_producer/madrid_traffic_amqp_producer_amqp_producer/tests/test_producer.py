@@ -323,7 +323,7 @@ class TestEsMadridInformoAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "es.madrid.informo.MeasurementPoint.amqp"
+                    assert cloud_event_payload.get("type") == "es.madrid.informo.MeasurementPoint"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -360,7 +360,7 @@ class TestEsMadridInformoAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'es.madrid.informo.MeasurementPoint.amqp'
+        assert properties.get('cloudEvents:type') == 'es.madrid.informo.MeasurementPoint'
         assert received.body is not None
         assert received.subject == "{sensor_id}".format(sensor_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{sensor_id}".format(sensor_id="value"))[:128]
@@ -413,7 +413,7 @@ class TestEsMadridInformoAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "es.madrid.informo.TrafficReading.amqp"
+                    assert cloud_event_payload.get("type") == "es.madrid.informo.TrafficReading"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -450,7 +450,7 @@ class TestEsMadridInformoAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'es.madrid.informo.TrafficReading.amqp'
+        assert properties.get('cloudEvents:type') == 'es.madrid.informo.TrafficReading'
         assert received.body is not None
         assert received.subject == "{sensor_id}".format(sensor_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{sensor_id}".format(sensor_id="value"))[:128]

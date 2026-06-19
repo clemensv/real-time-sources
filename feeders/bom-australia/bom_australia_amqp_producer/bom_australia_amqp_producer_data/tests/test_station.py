@@ -28,13 +28,13 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_wmo='dlfokfstvdhqbpnkvsjt',
-            name='ejosvhmjlybnybcvqvfl',
-            product_id='tepesggflbatmznjrwrd',
-            state='botnyszkkojhwvinyotv',
-            time_zone='ocqqjxinetwtqmhrltgh',
-            latitude=float(66.7659787737363),
-            longitude=float(99.26469247618147)
+            station_wmo='bbdlvybcsdvxklijlnpd',
+            name='cvuuazhwpwkiudzamegh',
+            product_id='pzasdanqzyrgyslcgnec',
+            state='mbjrsyqaocvcybyaraaw',
+            time_zone='wtfjruwyxhiwerhwryvv',
+            latitude=float(13.640648153282065),
+            longitude=float(72.70536602163152)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_wmo property
         """
-        test_value = 'dlfokfstvdhqbpnkvsjt'
+        test_value = 'bbdlvybcsdvxklijlnpd'
         self.instance.station_wmo = test_value
         self.assertEqual(self.instance.station_wmo, test_value)
     
@@ -51,7 +51,7 @@ class Test_Station(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'ejosvhmjlybnybcvqvfl'
+        test_value = 'cvuuazhwpwkiudzamegh'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -59,7 +59,7 @@ class Test_Station(unittest.TestCase):
         """
         Test product_id property
         """
-        test_value = 'tepesggflbatmznjrwrd'
+        test_value = 'pzasdanqzyrgyslcgnec'
         self.instance.product_id = test_value
         self.assertEqual(self.instance.product_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_Station(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'botnyszkkojhwvinyotv'
+        test_value = 'mbjrsyqaocvcybyaraaw'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -75,7 +75,7 @@ class Test_Station(unittest.TestCase):
         """
         Test time_zone property
         """
-        test_value = 'ocqqjxinetwtqmhrltgh'
+        test_value = 'wtfjruwyxhiwerhwryvv'
         self.instance.time_zone = test_value
         self.assertEqual(self.instance.time_zone, test_value)
     
@@ -83,7 +83,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(66.7659787737363)
+        test_value = float(13.640648153282065)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -91,7 +91,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(99.26469247618147)
+        test_value = float(72.70536602163152)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

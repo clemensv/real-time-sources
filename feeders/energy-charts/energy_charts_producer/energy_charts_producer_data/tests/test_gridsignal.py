@@ -29,11 +29,11 @@ class Test_GridSignal(unittest.TestCase):
         Create instance of GridSignal for testing
         """
         instance = GridSignal(
-            country='wwclxvpubntjcevpavyz',
+            country='gyjgocwzondoqxtxmuzu',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(8),
-            signal=int(49),
-            renewable_share_pct=float(31.723514594115198),
+            unix_seconds=int(63),
+            signal=int(37),
+            renewable_share_pct=float(67.89603387468917),
             substitute=True
         )
         return instance
@@ -43,7 +43,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'wwclxvpubntjcevpavyz'
+        test_value = 'gyjgocwzondoqxtxmuzu'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -59,7 +59,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test unix_seconds property
         """
-        test_value = int(8)
+        test_value = int(63)
         self.instance.unix_seconds = test_value
         self.assertEqual(self.instance.unix_seconds, test_value)
     
@@ -67,7 +67,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test signal property
         """
-        test_value = int(49)
+        test_value = int(37)
         self.instance.signal = test_value
         self.assertEqual(self.instance.signal, test_value)
     
@@ -75,7 +75,7 @@ class Test_GridSignal(unittest.TestCase):
         """
         Test renewable_share_pct property
         """
-        test_value = float(31.723514594115198)
+        test_value = float(67.89603387468917)
         self.instance.renewable_share_pct = test_value
         self.assertEqual(self.instance.renewable_share_pct, test_value)
     

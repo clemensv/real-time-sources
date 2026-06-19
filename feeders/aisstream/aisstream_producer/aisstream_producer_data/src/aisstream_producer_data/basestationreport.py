@@ -187,22 +187,22 @@ class BaseStationReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(38),
-            RepeatIndicator=int(100),
-            UserID=int(80),
-            Valid=True,
-            UtcYear=int(100),
-            UtcMonth=int(69),
-            UtcDay=int(83),
-            UtcHour=int(45),
-            UtcMinute=int(90),
-            UtcSecond=int(41),
+            MessageID=int(78),
+            RepeatIndicator=int(88),
+            UserID=int(64),
+            Valid=False,
+            UtcYear=int(29),
+            UtcMonth=int(51),
+            UtcDay=int(34),
+            UtcHour=int(15),
+            UtcMinute=int(39),
+            UtcSecond=int(34),
             PositionAccuracy=True,
-            Longitude=float(85.34553679179366),
-            Latitude=float(91.72901939347443),
-            FixType=int(70),
-            LongRangeEnable=True,
-            Spare=int(85),
+            Longitude=float(89.01789523857141),
+            Latitude=float(79.1065215442521),
+            FixType=int(96),
+            LongRangeEnable=False,
+            Spare=int(76),
             Raim=False,
-            CommunicationState=int(37)
+            CommunicationState=int(45)
         )

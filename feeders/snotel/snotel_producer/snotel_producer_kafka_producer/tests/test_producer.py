@@ -225,7 +225,7 @@ def test_gov_usda_nrcs_snotel_mqtt_govusdanrcssnotelmqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.usda.nrcs.snotel.mqtt.Station":
+            if cloudevent['type'] == "gov.usda.nrcs.snotel.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_gov_usda_nrcs_snotel_mqtt_govusdanrcssnotelmqttsnowobservation(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.usda.nrcs.snotel.mqtt.SnowObservation":
+            if cloudevent['type'] == "gov.usda.nrcs.snotel.SnowObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_gov_usda_nrcs_snotel_amqp_govusdanrcssnotelamqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.usda.nrcs.snotel.amqp.Station":
+            if cloudevent['type'] == "gov.usda.nrcs.snotel.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_gov_usda_nrcs_snotel_amqp_govusdanrcssnotelamqpsnowobservation(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.usda.nrcs.snotel.amqp.SnowObservation":
+            if cloudevent['type'] == "gov.usda.nrcs.snotel.SnowObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

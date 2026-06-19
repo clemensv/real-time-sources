@@ -12,11 +12,11 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from noaa_nws_producer_data.messagetypeenum import MessageTypeenum
-from noaa_nws_producer_data.certaintyenum import CertaintyEnum
 from noaa_nws_producer_data.categoryenum import CategoryEnum
 from noaa_nws_producer_data.severityenum import SeverityEnum
 from noaa_nws_producer_data.urgencyenum import UrgencyEnum
+from noaa_nws_producer_data.messagetypeenum import MessageTypeenum
+from noaa_nws_producer_data.certaintyenum import CertaintyEnum
 from noaa_nws_producer_data.statusenum import StatusEnum
 import datetime
 
@@ -195,8 +195,8 @@ class WeatherAlert:
             An instance of the dataclass.
         """
         return cls(
-            alert_id='tfkxxrpwamehkiekjskb',
-            area_desc='drqcpryphtrifimzylws',
+            alert_id='rtgkgtbqdowryhmvncjg',
+            area_desc='bkjgyzrcfckfvjsdvgqz',
             sent=datetime.datetime.now(datetime.timezone.utc),
             effective=datetime.datetime.now(datetime.timezone.utc),
             expires=datetime.datetime.now(datetime.timezone.utc),
@@ -206,11 +206,11 @@ class WeatherAlert:
             severity=SeverityEnum.Extreme,
             certainty=CertaintyEnum.Observed,
             urgency=UrgencyEnum.Immediate,
-            event='jotnqeggbpcugjzbjtfm',
-            sender_name='tsbfcqxbcyzfkqgrmeud',
-            headline='vykqzxdybnktnxfriyfe',
-            description='kpwkuijbzwolzigsinfg',
-            zone_id='efhjarfmoqvzfswtlzgi',
-            state='ppzdpmgiadrpxxmbjqwb',
-            event_type='pfqvweziqmrkajdjwtwh'
+            event='gbghxhndummjqiklyxtm',
+            sender_name='yernrgwtiboieuaofyog',
+            headline='rgltykbfezktsluziohy',
+            description='wknxvoqqplgzzyawisjv',
+            zone_id='qpootzxalimtsviozvnm',
+            state='yadrtsyuosvdbvdqxeez',
+            event_type='nxlhwjnjfjweqrtpaybi'
         )

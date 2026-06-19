@@ -30,15 +30,15 @@ class Test_DemandForecast(unittest.TestCase):
         """
         instance = DemandForecast(
             date=datetime.date.today(),
-            time='zckpskrhgptfjtysfdxt',
+            time='vbrhmxoqzhekdisyusjj',
             datetime=datetime.datetime.now(datetime.timezone.utc),
             datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            forecast_demand_mw=float(46.17502911488334),
-            forecast_demand_jp_unit_value=int(6),
-            usage_pct=float(44.623785363668866),
-            supply_capacity_mw=float(14.29848183256517),
-            supply_capacity_jp_unit_value=int(80),
-            area_code='glkrinnprxdfjaapuamj'
+            forecast_demand_mw=float(97.84432424219727),
+            forecast_demand_jp_unit_value=int(3),
+            usage_pct=float(98.16535315360835),
+            supply_capacity_mw=float(9.694217309424424),
+            supply_capacity_jp_unit_value=int(18),
+            area_code='hnrawnwdieescpctpcsa'
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_DemandForecast(unittest.TestCase):
         """
         Test time property
         """
-        test_value = 'zckpskrhgptfjtysfdxt'
+        test_value = 'vbrhmxoqzhekdisyusjj'
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -79,7 +79,7 @@ class Test_DemandForecast(unittest.TestCase):
         """
         Test forecast_demand_mw property
         """
-        test_value = float(46.17502911488334)
+        test_value = float(97.84432424219727)
         self.instance.forecast_demand_mw = test_value
         self.assertEqual(self.instance.forecast_demand_mw, test_value)
     
@@ -87,7 +87,7 @@ class Test_DemandForecast(unittest.TestCase):
         """
         Test forecast_demand_jp_unit_value property
         """
-        test_value = int(6)
+        test_value = int(3)
         self.instance.forecast_demand_jp_unit_value = test_value
         self.assertEqual(self.instance.forecast_demand_jp_unit_value, test_value)
     
@@ -95,7 +95,7 @@ class Test_DemandForecast(unittest.TestCase):
         """
         Test usage_pct property
         """
-        test_value = float(44.623785363668866)
+        test_value = float(98.16535315360835)
         self.instance.usage_pct = test_value
         self.assertEqual(self.instance.usage_pct, test_value)
     
@@ -103,7 +103,7 @@ class Test_DemandForecast(unittest.TestCase):
         """
         Test supply_capacity_mw property
         """
-        test_value = float(14.29848183256517)
+        test_value = float(9.694217309424424)
         self.instance.supply_capacity_mw = test_value
         self.assertEqual(self.instance.supply_capacity_mw, test_value)
     
@@ -111,7 +111,7 @@ class Test_DemandForecast(unittest.TestCase):
         """
         Test supply_capacity_jp_unit_value property
         """
-        test_value = int(80)
+        test_value = int(18)
         self.instance.supply_capacity_jp_unit_value = test_value
         self.assertEqual(self.instance.supply_capacity_jp_unit_value, test_value)
     
@@ -119,7 +119,7 @@ class Test_DemandForecast(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'glkrinnprxdfjaapuamj'
+        test_value = 'hnrawnwdieescpctpcsa'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
     

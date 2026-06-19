@@ -325,7 +325,7 @@ class TestGovNoaaAviationweatherAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "gov.noaa.aviationweather.amqp.Station"
+                    assert cloud_event_payload.get("type") == "gov.noaa.aviationweather.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -361,7 +361,7 @@ class TestGovNoaaAviationweatherAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'gov.noaa.aviationweather.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'gov.noaa.aviationweather.Station'
         assert received.body is not None
         assert received.subject == "{icao_id}".format(icao_id="value")
     
@@ -413,7 +413,7 @@ class TestGovNoaaAviationweatherAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "gov.noaa.aviationweather.amqp.Metar"
+                    assert cloud_event_payload.get("type") == "gov.noaa.aviationweather.Metar"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -449,7 +449,7 @@ class TestGovNoaaAviationweatherAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'gov.noaa.aviationweather.amqp.Metar'
+        assert properties.get('cloudEvents:type') == 'gov.noaa.aviationweather.Metar'
         assert received.body is not None
         assert received.subject == "{icao_id}".format(icao_id="value")
     
@@ -502,7 +502,7 @@ class TestGovNoaaAviationweatherAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "gov.noaa.aviationweather.amqp.Sigmet"
+                    assert cloud_event_payload.get("type") == "gov.noaa.aviationweather.Sigmet"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -539,7 +539,7 @@ class TestGovNoaaAviationweatherAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'gov.noaa.aviationweather.amqp.Sigmet'
+        assert properties.get('cloudEvents:type') == 'gov.noaa.aviationweather.Sigmet'
         assert received.body is not None
         assert received.subject == "{region}/{sigmet_id}".format(region="value", sigmet_id="value")
 

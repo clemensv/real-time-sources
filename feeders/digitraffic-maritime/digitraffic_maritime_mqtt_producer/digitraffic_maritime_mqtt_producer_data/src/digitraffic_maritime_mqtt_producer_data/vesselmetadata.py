@@ -179,18 +179,18 @@ class VesselMetadata:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(75),
-            timestamp=int(84),
-            name='dwrfyvfrjeabgpuuknwx',
-            callSign='luskaitnrjvsqfxgaivy',
-            imo=int(0),
-            type=int(10),
+            mmsi=int(84),
+            timestamp=int(48),
+            name='hcmopdbehkjlzdissvro',
+            callSign='jhlanvevodedgfxuqojn',
+            imo=int(6),
+            type=int(78),
             draught=int(75),
-            eta=int(38),
-            destination='cxszvnlofdxphpdaibzg',
-            posType=int(10),
-            refA=int(66),
-            refB=int(65),
-            refC=int(57),
-            refD=int(27)
+            eta=int(37),
+            destination='ezyixubwitbhjxihavzx',
+            posType=int(38),
+            refA=int(64),
+            refB=int(50),
+            refC=int(90),
+            refD=int(97)
         )

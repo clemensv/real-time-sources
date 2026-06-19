@@ -29,25 +29,25 @@ class Test_BuoyObservation(unittest.TestCase):
         Create instance of BuoyObservation for testing
         """
         instance = BuoyObservation(
-            station_id='eejlqtjlorzarxhhvaad',
-            latitude=float(52.99910774161827),
-            longitude=float(6.319013733675726),
+            station_id='vxumrqahgilokjysvpes',
+            latitude=float(38.262822177562406),
+            longitude=float(41.97631389322034),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            wind_direction=float(13.115324033321196),
-            wind_speed=float(16.727282559639146),
-            gust=float(56.5410343471608),
-            wave_height=float(32.9673742326298),
-            dominant_wave_period=float(30.646895265666096),
-            average_wave_period=float(75.08474959443848),
-            mean_wave_direction=float(39.83826143051938),
-            pressure=float(30.857685165581284),
-            air_temperature=float(20.306203311143978),
-            water_temperature=float(61.604813355675915),
-            dewpoint=float(20.677184182976085),
-            pressure_tendency=float(21.649775681364105),
-            visibility=float(51.48278979802108),
-            tide=float(7.009222177860874),
-            region='zwebkydgseinttguyygk'
+            wind_direction=float(86.09647732068318),
+            wind_speed=float(95.96576214472924),
+            gust=float(69.89725480367012),
+            wave_height=float(70.3545703295257),
+            dominant_wave_period=float(88.13780112883268),
+            average_wave_period=float(58.807339871725176),
+            mean_wave_direction=float(12.181548859392421),
+            pressure=float(72.39786104627433),
+            air_temperature=float(22.668737134686346),
+            water_temperature=float(24.871833159929025),
+            dewpoint=float(58.85277821898225),
+            pressure_tendency=float(58.85184426843628),
+            visibility=float(66.37062557739873),
+            tide=float(2.8163731797273495),
+            region='isayqvbwceqhxrfcwnls'
         )
         return instance
 
@@ -56,7 +56,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'eejlqtjlorzarxhhvaad'
+        test_value = 'vxumrqahgilokjysvpes'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -64,7 +64,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(52.99910774161827)
+        test_value = float(38.262822177562406)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -72,7 +72,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(6.319013733675726)
+        test_value = float(41.97631389322034)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -88,7 +88,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test wind_direction property
         """
-        test_value = float(13.115324033321196)
+        test_value = float(86.09647732068318)
         self.instance.wind_direction = test_value
         self.assertEqual(self.instance.wind_direction, test_value)
     
@@ -96,7 +96,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test wind_speed property
         """
-        test_value = float(16.727282559639146)
+        test_value = float(95.96576214472924)
         self.instance.wind_speed = test_value
         self.assertEqual(self.instance.wind_speed, test_value)
     
@@ -104,7 +104,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test gust property
         """
-        test_value = float(56.5410343471608)
+        test_value = float(69.89725480367012)
         self.instance.gust = test_value
         self.assertEqual(self.instance.gust, test_value)
     
@@ -112,7 +112,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test wave_height property
         """
-        test_value = float(32.9673742326298)
+        test_value = float(70.3545703295257)
         self.instance.wave_height = test_value
         self.assertEqual(self.instance.wave_height, test_value)
     
@@ -120,7 +120,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test dominant_wave_period property
         """
-        test_value = float(30.646895265666096)
+        test_value = float(88.13780112883268)
         self.instance.dominant_wave_period = test_value
         self.assertEqual(self.instance.dominant_wave_period, test_value)
     
@@ -128,7 +128,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test average_wave_period property
         """
-        test_value = float(75.08474959443848)
+        test_value = float(58.807339871725176)
         self.instance.average_wave_period = test_value
         self.assertEqual(self.instance.average_wave_period, test_value)
     
@@ -136,7 +136,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test mean_wave_direction property
         """
-        test_value = float(39.83826143051938)
+        test_value = float(12.181548859392421)
         self.instance.mean_wave_direction = test_value
         self.assertEqual(self.instance.mean_wave_direction, test_value)
     
@@ -144,7 +144,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test pressure property
         """
-        test_value = float(30.857685165581284)
+        test_value = float(72.39786104627433)
         self.instance.pressure = test_value
         self.assertEqual(self.instance.pressure, test_value)
     
@@ -152,7 +152,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test air_temperature property
         """
-        test_value = float(20.306203311143978)
+        test_value = float(22.668737134686346)
         self.instance.air_temperature = test_value
         self.assertEqual(self.instance.air_temperature, test_value)
     
@@ -160,7 +160,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test water_temperature property
         """
-        test_value = float(61.604813355675915)
+        test_value = float(24.871833159929025)
         self.instance.water_temperature = test_value
         self.assertEqual(self.instance.water_temperature, test_value)
     
@@ -168,7 +168,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test dewpoint property
         """
-        test_value = float(20.677184182976085)
+        test_value = float(58.85277821898225)
         self.instance.dewpoint = test_value
         self.assertEqual(self.instance.dewpoint, test_value)
     
@@ -176,7 +176,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test pressure_tendency property
         """
-        test_value = float(21.649775681364105)
+        test_value = float(58.85184426843628)
         self.instance.pressure_tendency = test_value
         self.assertEqual(self.instance.pressure_tendency, test_value)
     
@@ -184,7 +184,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test visibility property
         """
-        test_value = float(51.48278979802108)
+        test_value = float(66.37062557739873)
         self.instance.visibility = test_value
         self.assertEqual(self.instance.visibility, test_value)
     
@@ -192,7 +192,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test tide property
         """
-        test_value = float(7.009222177860874)
+        test_value = float(2.8163731797273495)
         self.instance.tide = test_value
         self.assertEqual(self.instance.tide, test_value)
     
@@ -200,7 +200,7 @@ class Test_BuoyObservation(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'zwebkydgseinttguyygk'
+        test_value = 'isayqvbwceqhxrfcwnls'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

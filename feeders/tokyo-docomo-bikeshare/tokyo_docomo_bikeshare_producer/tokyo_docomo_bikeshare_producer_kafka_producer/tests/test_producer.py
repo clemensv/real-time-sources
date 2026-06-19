@@ -294,7 +294,7 @@ def test_jp_odpt_docomobikeshare_system_mqtt_jpodptdocomobikesharebikesharesyste
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareSystem.mqtt":
+            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareSystem":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -356,7 +356,7 @@ def test_jp_odpt_docomobikeshare_stations_mqtt_jpodptdocomobikesharebikesharesta
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareStation.mqtt":
+            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -418,7 +418,7 @@ def test_jp_odpt_docomobikeshare_stations_mqtt_jpodptdocomobikesharebikesharesta
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareStationStatus.mqtt":
+            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareStationStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -480,7 +480,7 @@ def test_jp_odpt_docomobikeshare_system_amqp_jpodptdocomobikesharebikesharesyste
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareSystem.amqp":
+            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareSystem":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -542,7 +542,7 @@ def test_jp_odpt_docomobikeshare_stations_amqp_jpodptdocomobikesharebikesharesta
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareStation.amqp":
+            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -604,7 +604,7 @@ def test_jp_odpt_docomobikeshare_stations_amqp_jpodptdocomobikesharebikesharesta
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareStationStatus.amqp":
+            if cloudevent['type'] == "JP.ODPT.DocomoBikeshare.BikeshareStationStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

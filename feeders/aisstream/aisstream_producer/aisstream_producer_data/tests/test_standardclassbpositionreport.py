@@ -28,28 +28,28 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         Create instance of StandardClassBPositionReport for testing
         """
         instance = StandardClassBPositionReport(
-            MessageID=int(32),
-            RepeatIndicator=int(64),
-            UserID=int(43),
+            MessageID=int(66),
+            RepeatIndicator=int(48),
+            UserID=int(68),
             Valid=False,
-            Spare1=int(76),
-            Sog=float(71.6279318705122),
+            Spare1=int(20),
+            Sog=float(52.821584565717785),
             PositionAccuracy=True,
-            Longitude=float(89.04050404890317),
-            Latitude=float(85.29594115150859),
-            Cog=float(70.65619112156838),
-            TrueHeading=int(44),
-            Timestamp=int(96),
-            Spare2=int(4),
-            ClassBUnit=True,
-            ClassBDisplay=False,
-            ClassBDsc=True,
-            ClassBBand=True,
+            Longitude=float(77.18482865465499),
+            Latitude=float(37.60999692061247),
+            Cog=float(10.89826020654937),
+            TrueHeading=int(51),
+            Timestamp=int(73),
+            Spare2=int(15),
+            ClassBUnit=False,
+            ClassBDisplay=True,
+            ClassBDsc=False,
+            ClassBBand=False,
             ClassBMsg22=True,
             AssignedMode=True,
             Raim=True,
             CommunicationStateIsItdma=True,
-            CommunicationState=int(98)
+            CommunicationState=int(89)
         )
         return instance
 
@@ -58,7 +58,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(32)
+        test_value = int(66)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -66,7 +66,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(64)
+        test_value = int(48)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -74,7 +74,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(43)
+        test_value = int(68)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -90,7 +90,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test Spare1 property
         """
-        test_value = int(76)
+        test_value = int(20)
         self.instance.Spare1 = test_value
         self.assertEqual(self.instance.Spare1, test_value)
     
@@ -98,7 +98,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test Sog property
         """
-        test_value = float(71.6279318705122)
+        test_value = float(52.821584565717785)
         self.instance.Sog = test_value
         self.assertEqual(self.instance.Sog, test_value)
     
@@ -114,7 +114,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test Longitude property
         """
-        test_value = float(89.04050404890317)
+        test_value = float(77.18482865465499)
         self.instance.Longitude = test_value
         self.assertEqual(self.instance.Longitude, test_value)
     
@@ -122,7 +122,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test Latitude property
         """
-        test_value = float(85.29594115150859)
+        test_value = float(37.60999692061247)
         self.instance.Latitude = test_value
         self.assertEqual(self.instance.Latitude, test_value)
     
@@ -130,7 +130,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test Cog property
         """
-        test_value = float(70.65619112156838)
+        test_value = float(10.89826020654937)
         self.instance.Cog = test_value
         self.assertEqual(self.instance.Cog, test_value)
     
@@ -138,7 +138,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test TrueHeading property
         """
-        test_value = int(44)
+        test_value = int(51)
         self.instance.TrueHeading = test_value
         self.assertEqual(self.instance.TrueHeading, test_value)
     
@@ -146,7 +146,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test Timestamp property
         """
-        test_value = int(96)
+        test_value = int(73)
         self.instance.Timestamp = test_value
         self.assertEqual(self.instance.Timestamp, test_value)
     
@@ -154,7 +154,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test Spare2 property
         """
-        test_value = int(4)
+        test_value = int(15)
         self.instance.Spare2 = test_value
         self.assertEqual(self.instance.Spare2, test_value)
     
@@ -162,7 +162,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test ClassBUnit property
         """
-        test_value = True
+        test_value = False
         self.instance.ClassBUnit = test_value
         self.assertEqual(self.instance.ClassBUnit, test_value)
     
@@ -170,7 +170,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test ClassBDisplay property
         """
-        test_value = False
+        test_value = True
         self.instance.ClassBDisplay = test_value
         self.assertEqual(self.instance.ClassBDisplay, test_value)
     
@@ -178,7 +178,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test ClassBDsc property
         """
-        test_value = True
+        test_value = False
         self.instance.ClassBDsc = test_value
         self.assertEqual(self.instance.ClassBDsc, test_value)
     
@@ -186,7 +186,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test ClassBBand property
         """
-        test_value = True
+        test_value = False
         self.instance.ClassBBand = test_value
         self.assertEqual(self.instance.ClassBBand, test_value)
     
@@ -226,7 +226,7 @@ class Test_StandardClassBPositionReport(unittest.TestCase):
         """
         Test CommunicationState property
         """
-        test_value = int(98)
+        test_value = int(89)
         self.instance.CommunicationState = test_value
         self.assertEqual(self.instance.CommunicationState, test_value)
     

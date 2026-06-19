@@ -165,11 +165,11 @@ class MaintenanceTracking:
             An instance of the dataclass.
         """
         return cls(
-            domain='tgqdquufkjgwljpzywdy',
-            time=int(31),
-            source='fkadjcxyjuwxvozrzkat',
-            tasks=['tzhtvjzuegkhhwoiiini', 'bgpxvbkltpukoljtfobw', 'letrrlgffzdcvocgstst'],
-            x=float(13.456056956804407),
-            y=float(2.563186542785556),
-            direction=float(7.051124039414846)
+            domain='srcieectbtnewqosyhyd',
+            time=int(55),
+            source='jnwafbgvzytxcvmvvnyv',
+            tasks=['kfkmxmewiutfdtmzprbb', 'vmxwedwgpffwrpzunhqc', 'wgyabybdchxtittaiugh'],
+            x=float(83.41922257719513),
+            y=float(42.356838772017134),
+            direction=float(89.75061824948384)
         )

@@ -325,7 +325,7 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.energinet.energidataservice.amqp.PowerSystemSnapshot"
+                    assert cloud_event_payload.get("type") == "dk.energinet.energidataservice.PowerSystemSnapshot"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -362,7 +362,7 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.energinet.energidataservice.amqp.PowerSystemSnapshot'
+        assert properties.get('cloudEvents:type') == 'dk.energinet.energidataservice.PowerSystemSnapshot'
         assert received.body is not None
         assert received.subject == "{price_area}".format(price_area="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{price_area}".format(price_area="value"))[:128]
@@ -415,7 +415,7 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.energinet.energidataservice.amqp.SpotPrice"
+                    assert cloud_event_payload.get("type") == "dk.energinet.energidataservice.SpotPrice"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -452,7 +452,7 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.energinet.energidataservice.amqp.SpotPrice'
+        assert properties.get('cloudEvents:type') == 'dk.energinet.energidataservice.SpotPrice'
         assert received.body is not None
         assert received.subject == "{price_area}".format(price_area="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{price_area}".format(price_area="value"))[:128]
@@ -505,7 +505,7 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.energinet.energidataservice.amqp.Info"
+                    assert cloud_event_payload.get("type") == "dk.energinet.energidataservice.Info"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -542,7 +542,7 @@ class TestDkEnerginetEnergidataserviceAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.energinet.energidataservice.amqp.Info'
+        assert properties.get('cloudEvents:type') == 'dk.energinet.energidataservice.Info'
         assert received.body is not None
         assert received.subject == "{price_area}".format(price_area="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{price_area}".format(price_area="value"))[:128]

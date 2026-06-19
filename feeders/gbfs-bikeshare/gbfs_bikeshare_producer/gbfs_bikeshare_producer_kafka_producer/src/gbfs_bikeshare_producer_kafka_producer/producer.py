@@ -1,5 +1,6 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
+import time
 import json
 import re
 import uuid
@@ -89,6 +90,14 @@ class OrgGbfsSystemEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_system_information(self,_feed_url : str, _system_id : str, data: SystemInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SystemInformation], str]=None) -> None:
         """
         Sends the 'org.gbfs.SystemInformation' event to the Kafka topic
@@ -117,11 +126,40 @@ class OrgGbfsSystemEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -205,6 +243,14 @@ class OrgGbfsStationsEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_station_information(self,_feed_url : str, _system_id : str, _station_id : str, data: StationInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StationInformation], str]=None) -> None:
         """
         Sends the 'org.gbfs.StationInformation' event to the Kafka topic
@@ -234,7 +280,7 @@ class OrgGbfsStationsEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -269,11 +315,40 @@ class OrgGbfsStationsEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -357,6 +432,14 @@ class OrgGbfsFreeBikesEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_free_bike_status(self,_feed_url : str, _system_id : str, _bike_id : str, data: FreeBikeStatus, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FreeBikeStatus], str]=None) -> None:
         """
         Sends the 'org.gbfs.FreeBikeStatus' event to the Kafka topic
@@ -386,11 +469,40 @@ class OrgGbfsFreeBikesEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -474,6 +586,14 @@ class OrgGbfsKafkaSystemEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_kafka_system_information(self,_feed_url : str, _system_id : str, data: SystemInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SystemInformation], str]=None) -> None:
         """
         Sends the 'org.gbfs.kafka.SystemInformation' event to the Kafka topic
@@ -503,11 +623,40 @@ class OrgGbfsKafkaSystemEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -591,6 +740,14 @@ class OrgGbfsKafkaStationsEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_kafka_station_information(self,_feed_url : str, _system_id : str, _station_id : str, data: StationInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StationInformation], str]=None) -> None:
         """
         Sends the 'org.gbfs.kafka.StationInformation' event to the Kafka topic
@@ -621,7 +778,7 @@ class OrgGbfsKafkaStationsEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -657,11 +814,40 @@ class OrgGbfsKafkaStationsEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -745,6 +931,14 @@ class OrgGbfsKafkaFreeBikesEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_kafka_free_bike_status(self,_feed_url : str, _system_id : str, _bike_id : str, data: FreeBikeStatus, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FreeBikeStatus], str]=None) -> None:
         """
         Sends the 'org.gbfs.kafka.FreeBikeStatus' event to the Kafka topic
@@ -775,11 +969,40 @@ class OrgGbfsKafkaFreeBikesEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -863,6 +1086,14 @@ class OrgGbfsMqttSystemEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_mqtt_system_information(self,_feed_url : str, _system_id : str, data: SystemInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SystemInformation], str]=None) -> None:
         """
         Sends the 'org.gbfs.mqtt.SystemInformation' event to the Kafka topic
@@ -891,11 +1122,40 @@ class OrgGbfsMqttSystemEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -979,6 +1239,14 @@ class OrgGbfsMqttStationsEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_mqtt_station_information(self,_feed_url : str, _system_id : str, _station_id : str, data: StationInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StationInformation], str]=None) -> None:
         """
         Sends the 'org.gbfs.mqtt.StationInformation' event to the Kafka topic
@@ -1008,7 +1276,7 @@ class OrgGbfsMqttStationsEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -1043,11 +1311,40 @@ class OrgGbfsMqttStationsEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -1131,6 +1428,14 @@ class OrgGbfsMqttFreeBikesEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_mqtt_free_bike_status(self,_feed_url : str, _system_id : str, _bike_id : str, data: FreeBikeStatus, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FreeBikeStatus], str]=None) -> None:
         """
         Sends the 'org.gbfs.mqtt.FreeBikeStatus' event to the Kafka topic
@@ -1160,11 +1465,40 @@ class OrgGbfsMqttFreeBikesEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -1248,6 +1582,14 @@ class OrgGbfsAmqpSystemEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_amqp_system_information(self,_feed_url : str, _system_id : str, data: SystemInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, SystemInformation], str]=None) -> None:
         """
         Sends the 'org.gbfs.amqp.SystemInformation' event to the Kafka topic
@@ -1276,11 +1618,40 @@ class OrgGbfsAmqpSystemEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -1364,6 +1735,14 @@ class OrgGbfsAmqpStationsEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_amqp_station_information(self,_feed_url : str, _system_id : str, _station_id : str, data: StationInformation, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, StationInformation], str]=None) -> None:
         """
         Sends the 'org.gbfs.amqp.StationInformation' event to the Kafka topic
@@ -1393,7 +1772,7 @@ class OrgGbfsAmqpStationsEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -1428,11 +1807,40 @@ class OrgGbfsAmqpStationsEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -1516,6 +1924,14 @@ class OrgGbfsAmqpFreeBikesEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_gbfs_amqp_free_bike_status(self,_feed_url : str, _system_id : str, _bike_id : str, data: FreeBikeStatus, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, FreeBikeStatus], str]=None) -> None:
         """
         Sends the 'org.gbfs.amqp.FreeBikeStatus' event to the Kafka topic
@@ -1545,11 +1961,40 @@ class OrgGbfsAmqpFreeBikesEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:

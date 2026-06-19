@@ -28,10 +28,10 @@ class Test_Unicast(unittest.TestCase):
         Create instance of Unicast for testing
         """
         instance = Unicast(
-            AddressStation1=int(43),
-            Spare2=int(99),
-            AddressStation2=int(45),
-            Spare3=int(46)
+            AddressStation1=int(97),
+            Spare2=int(59),
+            AddressStation2=int(63),
+            Spare3=int(82)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Unicast(unittest.TestCase):
         """
         Test AddressStation1 property
         """
-        test_value = int(43)
+        test_value = int(97)
         self.instance.AddressStation1 = test_value
         self.assertEqual(self.instance.AddressStation1, test_value)
     
@@ -48,7 +48,7 @@ class Test_Unicast(unittest.TestCase):
         """
         Test Spare2 property
         """
-        test_value = int(99)
+        test_value = int(59)
         self.instance.Spare2 = test_value
         self.assertEqual(self.instance.Spare2, test_value)
     
@@ -56,7 +56,7 @@ class Test_Unicast(unittest.TestCase):
         """
         Test AddressStation2 property
         """
-        test_value = int(45)
+        test_value = int(63)
         self.instance.AddressStation2 = test_value
         self.assertEqual(self.instance.AddressStation2, test_value)
     
@@ -64,7 +64,7 @@ class Test_Unicast(unittest.TestCase):
         """
         Test Spare3 property
         """
-        test_value = int(46)
+        test_value = int(82)
         self.instance.Spare3 = test_value
         self.assertEqual(self.instance.Spare3, test_value)
     

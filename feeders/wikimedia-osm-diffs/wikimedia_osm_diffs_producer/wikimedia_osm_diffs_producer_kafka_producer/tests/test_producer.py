@@ -225,7 +225,7 @@ def test_org_openstreetmap_diffs_mqtt_orgopenstreetmapdiffsmqttnode(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.mqtt.Node":
+            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.MapChange":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_org_openstreetmap_diffs_mqtt_orgopenstreetmapdiffsmqttway(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.mqtt.Way":
+            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.MapChange":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_org_openstreetmap_diffs_mqtt_orgopenstreetmapdiffsmqttrelation(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.mqtt.Relation":
+            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.MapChange":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_org_openstreetmap_diffs_mqtt_orgopenstreetmapdiffsmqttreplicationstate(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.mqtt.ReplicationState":
+            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.ReplicationState":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -473,7 +473,7 @@ def test_org_openstreetmap_diffs_amqp_orgopenstreetmapdiffsamqpmapchange(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.amqp.MapChange":
+            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.MapChange":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -535,7 +535,7 @@ def test_org_openstreetmap_diffs_amqp_orgopenstreetmapdiffsamqpreplicationstate(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.amqp.ReplicationState":
+            if cloudevent['type'] == "Org.OpenStreetMap.Diffs.ReplicationState":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

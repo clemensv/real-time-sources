@@ -346,7 +346,7 @@ class TestDEDWDCDCAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.amqp.StationMetadata"
+                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.StationMetadata"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -384,7 +384,7 @@ class TestDEDWDCDCAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.amqp.StationMetadata'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.StationMetadata'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -438,7 +438,7 @@ class TestDEDWDCDCAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.amqp.AirTemperature10Min"
+                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.AirTemperature10Min"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -476,7 +476,7 @@ class TestDEDWDCDCAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.amqp.AirTemperature10Min'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.AirTemperature10Min'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -530,7 +530,7 @@ class TestDEDWDCDCAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.amqp.Precipitation10Min"
+                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.Precipitation10Min"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -568,7 +568,7 @@ class TestDEDWDCDCAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.amqp.Precipitation10Min'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.Precipitation10Min'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -622,7 +622,7 @@ class TestDEDWDCDCAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.amqp.Wind10Min"
+                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.Wind10Min"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -660,7 +660,7 @@ class TestDEDWDCDCAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.amqp.Wind10Min'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.Wind10Min'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -714,7 +714,7 @@ class TestDEDWDCDCAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.amqp.Solar10Min"
+                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.Solar10Min"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -752,7 +752,7 @@ class TestDEDWDCDCAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.amqp.Solar10Min'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.Solar10Min'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -806,7 +806,7 @@ class TestDEDWDCDCAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.amqp.HourlyObservation"
+                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.HourlyObservation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -844,7 +844,7 @@ class TestDEDWDCDCAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.amqp.HourlyObservation'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.HourlyObservation'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -898,7 +898,7 @@ class TestDEDWDCDCAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.amqp.ExtremeWind10Min"
+                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.ExtremeWind10Min"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -936,7 +936,7 @@ class TestDEDWDCDCAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.amqp.ExtremeWind10Min'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.ExtremeWind10Min'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -990,7 +990,7 @@ class TestDEDWDCDCAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.amqp.ExtremeTemperature10Min"
+                    assert cloud_event_payload.get("type") == "DE.DWD.CDC.ExtremeTemperature10Min"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1028,7 +1028,7 @@ class TestDEDWDCDCAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.amqp.ExtremeTemperature10Min'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.CDC.ExtremeTemperature10Min'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -1143,7 +1143,7 @@ class TestDEDWDWeatherAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.Weather.amqp.Alert"
+                    assert cloud_event_payload.get("type") == "DE.DWD.Weather.Alert"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1181,7 +1181,7 @@ class TestDEDWDWeatherAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.Weather.amqp.Alert'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.Weather.Alert'
         assert received.body is not None
         assert received.subject == "{state}/{severity}/{identifier}".format(state="value", severity="value", identifier="value")
 
@@ -1293,7 +1293,7 @@ class TestDEDWDRadarAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.Radar.amqp.RadarProductCatalog"
+                    assert cloud_event_payload.get("type") == "DE.DWD.Radar.RadarProductCatalog"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1329,7 +1329,7 @@ class TestDEDWDRadarAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.Radar.amqp.RadarProductCatalog'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.Radar.RadarProductCatalog'
         assert received.body is not None
         assert received.subject == "{kind}".format(kind="value")
     
@@ -1382,7 +1382,7 @@ class TestDEDWDRadarAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.Radar.amqp.RadarFileProduct"
+                    assert cloud_event_payload.get("type") == "DE.DWD.Radar.RadarFileProduct"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1419,7 +1419,7 @@ class TestDEDWDRadarAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.Radar.amqp.RadarFileProduct'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.Radar.RadarFileProduct'
         assert received.body is not None
         assert received.subject == "{product_type}/{file_id}".format(product_type="value", file_id="value")
 
@@ -1531,7 +1531,7 @@ class TestDEDWDForecastAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.Forecast.amqp.ForecastModelCatalog"
+                    assert cloud_event_payload.get("type") == "DE.DWD.Forecast.ForecastModelCatalog"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1567,7 +1567,7 @@ class TestDEDWDForecastAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.Forecast.amqp.ForecastModelCatalog'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.Forecast.ForecastModelCatalog'
         assert received.body is not None
         assert received.subject == "{kind}".format(kind="value")
     
@@ -1620,7 +1620,7 @@ class TestDEDWDForecastAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.Forecast.amqp.IconD2ForecastFile"
+                    assert cloud_event_payload.get("type") == "DE.DWD.Forecast.IconD2ForecastFile"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1657,7 +1657,7 @@ class TestDEDWDForecastAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.Forecast.amqp.IconD2ForecastFile'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.Forecast.IconD2ForecastFile'
         assert received.body is not None
         assert received.subject == "{variable}/{file_id}".format(variable="value", file_id="value")
 

@@ -161,9 +161,9 @@ class ActualTotalLoad:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='hmaeudynpgqhtuvbshjs',
-            quantity=float(32.90534956456683),
-            resolution='rlvzyxmxcgevfadmkdof',
-            outDomain='zarofqovlgspboylrbrc',
-            documentType='ctpbecgfzkkoxkxrqqwz'
+            inDomain='xokhbeavhceeswuswgih',
+            quantity=float(87.30836564439213),
+            resolution='bsdfunocqhhknlozcumd',
+            outDomain='wnbdigcpwtlkyqizijrf',
+            documentType='zuicpriucfrjauoedpai'
         )

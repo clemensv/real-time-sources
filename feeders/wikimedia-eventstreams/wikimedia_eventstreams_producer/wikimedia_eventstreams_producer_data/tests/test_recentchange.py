@@ -29,35 +29,35 @@ class Test_RecentChange(unittest.TestCase):
         Create instance of RecentChange for testing
         """
         instance = RecentChange(
-            event_id='wgkqgkwzccctgqmxixey',
-            event_time='wqexajobrgluhbykhvls',
-            schema_uri='koyxvjxajzzlkyjibuys',
+            event_id='nqmfnqmnmyxpjxwnizis',
+            event_time='twsdzozvvpsuqxihkxdi',
+            schema_uri='gojwwgkgmbmyhizrucgq',
             meta=None,
-            id='rijkpcvyuqmqgzhbiqhp',
-            type='pembvbwifvhnkpwduhpw',
-            namespace_id=int(31),
-            title='fhintsqsojkceznjhxwc',
-            title_url='jamlsvnnqycrviqyjggy',
-            comment='cewsdmllxriypokupabc',
-            timestamp=int(40),
-            user='wnemxvlmrfnukyaperxh',
+            id='vwlxwwpoehufjbusheis',
+            type='duygjigumxamxrmcsmsp',
+            namespace_id=int(76),
+            title='wgndpwwcflklaxoteebn',
+            title_url='hbxdkganjcuqzklhxlph',
+            comment='dguwzuqnqkwootfhrnor',
+            timestamp=int(30),
+            user='qnhtvxxbltwrezzwhwhu',
             bot=True,
-            minor=False,
-            patrolled=False,
+            minor=True,
+            patrolled=True,
             length=None,
             revision=None,
-            server_url='socodansdvxlbupvoukd',
-            server_name='gyqustcmtwkfogcpaqxo',
-            server_script_path='ixqolzxkwproagkrwdzv',
-            wiki='aqcdnnfarvajzwuqmnij',
-            namespace='qwtrjdhnqqcxelxggfja',
-            parsedcomment='sssrgyymuafuwcueeswm',
-            notify_url='pnxcbkvjgdwkqtussitt',
-            log_type='axttqalrhkoiluxxwgbd',
-            log_action='ongpzkwsadwqovlyxwaj',
-            log_action_comment='mhghhatwrfjbobapbkrk',
-            log_id='nxtjxpxtvdtzeglepuvs',
-            log_params_json='aujhcsdfsdarbgjtkrtv'
+            server_url='gtwsjuxgaweyibupvbvm',
+            server_name='qwhsxctibpzniehokzjd',
+            server_script_path='bddteskhjwrfkyaawnnb',
+            wiki='pkfsugvgxuzmhawncklx',
+            namespace='sgunorevpeesduisygeh',
+            parsedcomment='avcdqgmmfugdjrgvcwad',
+            notify_url='rszudbwtarsemoisrrry',
+            log_type='vvtzkonilaefctjzqywj',
+            log_action='wdftbamliehbbwcxzkkn',
+            log_action_comment='rdhmrlpgcfskjxfaeatt',
+            log_id='szkcnrteukdpvhyzoozv',
+            log_params_json='hsznrdpotvszcgxoamec'
         )
         return instance
 
@@ -66,7 +66,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'wgkqgkwzccctgqmxixey'
+        test_value = 'nqmfnqmnmyxpjxwnizis'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -74,7 +74,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test event_time property
         """
-        test_value = 'wqexajobrgluhbykhvls'
+        test_value = 'twsdzozvvpsuqxihkxdi'
         self.instance.event_time = test_value
         self.assertEqual(self.instance.event_time, test_value)
     
@@ -82,7 +82,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test schema_uri property
         """
-        test_value = 'koyxvjxajzzlkyjibuys'
+        test_value = 'gojwwgkgmbmyhizrucgq'
         self.instance.schema_uri = test_value
         self.assertEqual(self.instance.schema_uri, test_value)
     
@@ -98,7 +98,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'rijkpcvyuqmqgzhbiqhp'
+        test_value = 'vwlxwwpoehufjbusheis'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -106,7 +106,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'pembvbwifvhnkpwduhpw'
+        test_value = 'duygjigumxamxrmcsmsp'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -114,7 +114,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test namespace_id property
         """
-        test_value = int(31)
+        test_value = int(76)
         self.instance.namespace_id = test_value
         self.assertEqual(self.instance.namespace_id, test_value)
     
@@ -122,7 +122,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'fhintsqsojkceznjhxwc'
+        test_value = 'wgndpwwcflklaxoteebn'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -130,7 +130,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test title_url property
         """
-        test_value = 'jamlsvnnqycrviqyjggy'
+        test_value = 'hbxdkganjcuqzklhxlph'
         self.instance.title_url = test_value
         self.assertEqual(self.instance.title_url, test_value)
     
@@ -138,7 +138,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test comment property
         """
-        test_value = 'cewsdmllxriypokupabc'
+        test_value = 'dguwzuqnqkwootfhrnor'
         self.instance.comment = test_value
         self.assertEqual(self.instance.comment, test_value)
     
@@ -146,7 +146,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(40)
+        test_value = int(30)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -154,7 +154,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test user property
         """
-        test_value = 'wnemxvlmrfnukyaperxh'
+        test_value = 'qnhtvxxbltwrezzwhwhu'
         self.instance.user = test_value
         self.assertEqual(self.instance.user, test_value)
     
@@ -170,7 +170,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test minor property
         """
-        test_value = False
+        test_value = True
         self.instance.minor = test_value
         self.assertEqual(self.instance.minor, test_value)
     
@@ -178,7 +178,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test patrolled property
         """
-        test_value = False
+        test_value = True
         self.instance.patrolled = test_value
         self.assertEqual(self.instance.patrolled, test_value)
     
@@ -202,7 +202,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test server_url property
         """
-        test_value = 'socodansdvxlbupvoukd'
+        test_value = 'gtwsjuxgaweyibupvbvm'
         self.instance.server_url = test_value
         self.assertEqual(self.instance.server_url, test_value)
     
@@ -210,7 +210,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test server_name property
         """
-        test_value = 'gyqustcmtwkfogcpaqxo'
+        test_value = 'qwhsxctibpzniehokzjd'
         self.instance.server_name = test_value
         self.assertEqual(self.instance.server_name, test_value)
     
@@ -218,7 +218,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test server_script_path property
         """
-        test_value = 'ixqolzxkwproagkrwdzv'
+        test_value = 'bddteskhjwrfkyaawnnb'
         self.instance.server_script_path = test_value
         self.assertEqual(self.instance.server_script_path, test_value)
     
@@ -226,7 +226,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test wiki property
         """
-        test_value = 'aqcdnnfarvajzwuqmnij'
+        test_value = 'pkfsugvgxuzmhawncklx'
         self.instance.wiki = test_value
         self.assertEqual(self.instance.wiki, test_value)
     
@@ -234,7 +234,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test namespace property
         """
-        test_value = 'qwtrjdhnqqcxelxggfja'
+        test_value = 'sgunorevpeesduisygeh'
         self.instance.namespace = test_value
         self.assertEqual(self.instance.namespace, test_value)
     
@@ -242,7 +242,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test parsedcomment property
         """
-        test_value = 'sssrgyymuafuwcueeswm'
+        test_value = 'avcdqgmmfugdjrgvcwad'
         self.instance.parsedcomment = test_value
         self.assertEqual(self.instance.parsedcomment, test_value)
     
@@ -250,7 +250,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test notify_url property
         """
-        test_value = 'pnxcbkvjgdwkqtussitt'
+        test_value = 'rszudbwtarsemoisrrry'
         self.instance.notify_url = test_value
         self.assertEqual(self.instance.notify_url, test_value)
     
@@ -258,7 +258,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test log_type property
         """
-        test_value = 'axttqalrhkoiluxxwgbd'
+        test_value = 'vvtzkonilaefctjzqywj'
         self.instance.log_type = test_value
         self.assertEqual(self.instance.log_type, test_value)
     
@@ -266,7 +266,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test log_action property
         """
-        test_value = 'ongpzkwsadwqovlyxwaj'
+        test_value = 'wdftbamliehbbwcxzkkn'
         self.instance.log_action = test_value
         self.assertEqual(self.instance.log_action, test_value)
     
@@ -274,7 +274,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test log_action_comment property
         """
-        test_value = 'mhghhatwrfjbobapbkrk'
+        test_value = 'rdhmrlpgcfskjxfaeatt'
         self.instance.log_action_comment = test_value
         self.assertEqual(self.instance.log_action_comment, test_value)
     
@@ -282,7 +282,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test log_id property
         """
-        test_value = 'nxtjxpxtvdtzeglepuvs'
+        test_value = 'szkcnrteukdpvhyzoozv'
         self.instance.log_id = test_value
         self.assertEqual(self.instance.log_id, test_value)
     
@@ -290,7 +290,7 @@ class Test_RecentChange(unittest.TestCase):
         """
         Test log_params_json property
         """
-        test_value = 'aujhcsdfsdarbgjtkrtv'
+        test_value = 'hsznrdpotvszcgxoamec'
         self.instance.log_params_json = test_value
         self.assertEqual(self.instance.log_params_json, test_value)
     

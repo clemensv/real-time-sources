@@ -28,13 +28,13 @@ class Test_MeasurementPoint(unittest.TestCase):
         Create instance of MeasurementPoint for testing
         """
         instance = MeasurementPoint(
-            sensor_id='dgzrpwvfrykslhytvfde',
-            description='vgglbzwaadobdsrqjemj',
-            element_type='nptysonqzfzdzqcaksom',
-            subarea='puogrjmbpolnckhyqynz',
-            longitude=float(37.40926009303745),
-            latitude=float(0.9827072012753568),
-            saturation_intensity=int(78)
+            sensor_id='yvjwovebovrppdwrafiu',
+            description='rutdrokychxqmdifdzww',
+            element_type='atjazsrsrdowahpbnuyo',
+            subarea='ghvptqopqplemnzjstca',
+            longitude=float(9.555880185161458),
+            latitude=float(34.127740407465254),
+            saturation_intensity=int(76)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_MeasurementPoint(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = 'dgzrpwvfrykslhytvfde'
+        test_value = 'yvjwovebovrppdwrafiu'
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_MeasurementPoint(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'vgglbzwaadobdsrqjemj'
+        test_value = 'rutdrokychxqmdifdzww'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -59,7 +59,7 @@ class Test_MeasurementPoint(unittest.TestCase):
         """
         Test element_type property
         """
-        test_value = 'nptysonqzfzdzqcaksom'
+        test_value = 'atjazsrsrdowahpbnuyo'
         self.instance.element_type = test_value
         self.assertEqual(self.instance.element_type, test_value)
     
@@ -67,7 +67,7 @@ class Test_MeasurementPoint(unittest.TestCase):
         """
         Test subarea property
         """
-        test_value = 'puogrjmbpolnckhyqynz'
+        test_value = 'ghvptqopqplemnzjstca'
         self.instance.subarea = test_value
         self.assertEqual(self.instance.subarea, test_value)
     
@@ -75,7 +75,7 @@ class Test_MeasurementPoint(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(37.40926009303745)
+        test_value = float(9.555880185161458)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -83,7 +83,7 @@ class Test_MeasurementPoint(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(0.9827072012753568)
+        test_value = float(34.127740407465254)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -91,7 +91,7 @@ class Test_MeasurementPoint(unittest.TestCase):
         """
         Test saturation_intensity property
         """
-        test_value = int(78)
+        test_value = int(76)
         self.instance.saturation_intensity = test_value
         self.assertEqual(self.instance.saturation_intensity, test_value)
     

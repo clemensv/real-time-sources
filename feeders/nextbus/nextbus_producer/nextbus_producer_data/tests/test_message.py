@@ -28,11 +28,11 @@ class Test_Message(unittest.TestCase):
         Create instance of Message for testing
         """
         instance = Message(
-            agency_id='tbvgrgtmrfzsoglbmsen',
-            route_tag='biwontxztphpibmewiih',
-            stop_or_vehicle_id='acgpyqrhpjchatdbxuzj',
-            event_type='uekwvrhcdadserppkprp',
-            message='mauyeujrtwoeaydjtktv'
+            agency_id='pcnpjxwmmuikygwztykb',
+            route_tag='qsbupqyufzzwdqpqrxrt',
+            stop_or_vehicle_id='iixdscaglgsjretsziez',
+            event_type='iefnahofooonyiadlthg',
+            message='capgbifumsnflojlvopl'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Message(unittest.TestCase):
         """
         Test agency_id property
         """
-        test_value = 'tbvgrgtmrfzsoglbmsen'
+        test_value = 'pcnpjxwmmuikygwztykb'
         self.instance.agency_id = test_value
         self.assertEqual(self.instance.agency_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_Message(unittest.TestCase):
         """
         Test route_tag property
         """
-        test_value = 'biwontxztphpibmewiih'
+        test_value = 'qsbupqyufzzwdqpqrxrt'
         self.instance.route_tag = test_value
         self.assertEqual(self.instance.route_tag, test_value)
     
@@ -57,7 +57,7 @@ class Test_Message(unittest.TestCase):
         """
         Test stop_or_vehicle_id property
         """
-        test_value = 'acgpyqrhpjchatdbxuzj'
+        test_value = 'iixdscaglgsjretsziez'
         self.instance.stop_or_vehicle_id = test_value
         self.assertEqual(self.instance.stop_or_vehicle_id, test_value)
     
@@ -65,7 +65,7 @@ class Test_Message(unittest.TestCase):
         """
         Test event_type property
         """
-        test_value = 'uekwvrhcdadserppkprp'
+        test_value = 'iefnahofooonyiadlthg'
         self.instance.event_type = test_value
         self.assertEqual(self.instance.event_type, test_value)
     
@@ -73,7 +73,7 @@ class Test_Message(unittest.TestCase):
         """
         Test message property
         """
-        test_value = 'mauyeujrtwoeaydjtktv'
+        test_value = 'capgbifumsnflojlvopl'
         self.instance.message = test_value
         self.assertEqual(self.instance.message, test_value)
     

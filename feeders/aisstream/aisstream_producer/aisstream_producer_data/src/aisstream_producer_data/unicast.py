@@ -159,8 +159,8 @@ class Unicast:
             An instance of the dataclass.
         """
         return cls(
-            AddressStation1=int(43),
-            Spare2=int(99),
-            AddressStation2=int(45),
-            Spare3=int(46)
+            AddressStation1=int(97),
+            Spare2=int(59),
+            AddressStation2=int(63),
+            Spare3=int(82)
         )

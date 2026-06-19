@@ -163,10 +163,10 @@ class Currents:
             An instance of the dataclass.
         """
         return cls(
-            station_id='qyjahinedbbsaewwtiyd',
-            timestamp='uiqkrkvhuivmlncobjvg',
-            speed=float(74.93613453446312),
-            direction_degrees=float(3.0148148517430307),
-            bin='scmelgorqhcvcshvutjf',
-            region='usbyoibclvqhmxcbjbmy'
+            station_id='wudvlepijitdporrpulh',
+            timestamp='dccufrabftbfinyqdzhq',
+            speed=float(11.39419307555547),
+            direction_degrees=float(23.98491910211884),
+            bin='mlngqgvpvbkkcbzffvea',
+            region='lszlyefhjjxqgluvkbhf'
         )

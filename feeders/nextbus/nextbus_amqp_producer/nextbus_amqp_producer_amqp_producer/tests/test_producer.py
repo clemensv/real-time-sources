@@ -329,7 +329,7 @@ class TestNextbusAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "nextbus.VehiclePosition.amqp"
+                    assert cloud_event_payload.get("type") == "nextbus.VehiclePosition"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -368,7 +368,7 @@ class TestNextbusAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'nextbus.VehiclePosition.amqp'
+        assert properties.get('cloudEvents:type') == 'nextbus.VehiclePosition'
         assert received.body is not None
         assert received.subject == "{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id="value", route_tag="value", vehicle_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agency_id}/{route_tag}/vehicle/{vehicle_id}".format(agency_id="value", route_tag="value", vehicle_id="value"))[:128]
@@ -423,7 +423,7 @@ class TestNextbusAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "nextbus.RouteConfig.amqp"
+                    assert cloud_event_payload.get("type") == "nextbus.RouteConfig"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -462,7 +462,7 @@ class TestNextbusAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'nextbus.RouteConfig.amqp'
+        assert properties.get('cloudEvents:type') == 'nextbus.RouteConfig'
         assert received.body is not None
         assert received.subject == "{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agency_id}/{route_tag}/route-config/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value"))[:128]
@@ -517,7 +517,7 @@ class TestNextbusAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "nextbus.Schedule.amqp"
+                    assert cloud_event_payload.get("type") == "nextbus.Schedule"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -556,7 +556,7 @@ class TestNextbusAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'nextbus.Schedule.amqp'
+        assert properties.get('cloudEvents:type') == 'nextbus.Schedule'
         assert received.body is not None
         assert received.subject == "{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agency_id}/{route_tag}/schedule/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value"))[:128]
@@ -611,7 +611,7 @@ class TestNextbusAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "nextbus.Message.amqp"
+                    assert cloud_event_payload.get("type") == "nextbus.Message"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -650,7 +650,7 @@ class TestNextbusAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'nextbus.Message.amqp'
+        assert properties.get('cloudEvents:type') == 'nextbus.Message'
         assert received.body is not None
         assert received.subject == "{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{agency_id}/{route_tag}/message/{stop_or_vehicle_id}".format(agency_id="value", route_tag="value", stop_or_vehicle_id="value"))[:128]

@@ -225,7 +225,7 @@ def test_be_vlaanderen_waterinfo_vmm_mqtt_bevlaanderenwaterinfovmmmqttstation(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BE.Vlaanderen.Waterinfo.VMM.mqtt.Station":
+            if cloudevent['type'] == "BE.Vlaanderen.Waterinfo.VMM.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_be_vlaanderen_waterinfo_vmm_mqtt_bevlaanderenwaterinfovmmmqttwaterlevel
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BE.Vlaanderen.Waterinfo.VMM.mqtt.WaterLevelReading":
+            if cloudevent['type'] == "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_be_vlaanderen_waterinfo_vmm_amqp_bevlaanderenwaterinfovmmamqpstation(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BE.Vlaanderen.Waterinfo.VMM.amqp.Station":
+            if cloudevent['type'] == "BE.Vlaanderen.Waterinfo.VMM.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_be_vlaanderen_waterinfo_vmm_amqp_bevlaanderenwaterinfovmmamqpwaterlevel
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading":
+            if cloudevent['type'] == "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

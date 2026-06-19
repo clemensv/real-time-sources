@@ -159,8 +159,8 @@ class Station1Msg1:
             An instance of the dataclass.
         """
         return cls(
-            Valid=False,
-            StationID=int(83),
-            MessageID=int(70),
-            SlotOffset=int(34)
+            Valid=True,
+            StationID=int(70),
+            MessageID=int(32),
+            SlotOffset=int(71)
         )

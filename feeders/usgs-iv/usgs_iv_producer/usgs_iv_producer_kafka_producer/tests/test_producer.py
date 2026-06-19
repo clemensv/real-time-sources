@@ -1947,7 +1947,7 @@ def test_usgs_sites_mqtt_usgssitesmqttsite(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.Sites.mqtt.Site":
+            if cloudevent['type'] == "USGS.Sites.Site":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2009,7 +2009,7 @@ def test_usgs_sitetimeseries_mqtt_usgssitetimeseriesmqttsitetimeseries(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.SiteTimeseries.mqtt.SiteTimeseries":
+            if cloudevent['type'] == "USGS.Sites.SiteTimeseries":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2071,7 +2071,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttotherparameter
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.OtherParameter":
+            if cloudevent['type'] == "USGS.InstantaneousValues.OtherParameter":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2133,7 +2133,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttprecipitation(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.Precipitation":
+            if cloudevent['type'] == "USGS.InstantaneousValues.Precipitation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2195,7 +2195,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttstreamflow(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.Streamflow":
+            if cloudevent['type'] == "USGS.InstantaneousValues.Streamflow":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2257,7 +2257,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttgageheight(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.GageHeight":
+            if cloudevent['type'] == "USGS.InstantaneousValues.GageHeight":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2319,7 +2319,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttwatertemperatu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.WaterTemperature":
+            if cloudevent['type'] == "USGS.InstantaneousValues.WaterTemperature":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2381,7 +2381,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttdissolvedoxyge
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.DissolvedOxygen":
+            if cloudevent['type'] == "USGS.InstantaneousValues.DissolvedOxygen":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2443,7 +2443,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttph(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.pH":
+            if cloudevent['type'] == "USGS.InstantaneousValues.pH":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2505,7 +2505,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttspecificconduc
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.SpecificConductance":
+            if cloudevent['type'] == "USGS.InstantaneousValues.SpecificConductance":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2567,7 +2567,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttturbidity(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.Turbidity":
+            if cloudevent['type'] == "USGS.InstantaneousValues.Turbidity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2629,7 +2629,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttairtemperature
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.AirTemperature":
+            if cloudevent['type'] == "USGS.InstantaneousValues.AirTemperature":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2691,7 +2691,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttwindspeed(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.WindSpeed":
+            if cloudevent['type'] == "USGS.InstantaneousValues.WindSpeed":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2753,7 +2753,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttwinddirection(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.WindDirection":
+            if cloudevent['type'] == "USGS.InstantaneousValues.WindDirection":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2815,7 +2815,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttrelativehumidi
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.RelativeHumidity":
+            if cloudevent['type'] == "USGS.InstantaneousValues.RelativeHumidity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2877,7 +2877,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttbarometricpres
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.BarometricPressure":
+            if cloudevent['type'] == "USGS.InstantaneousValues.BarometricPressure":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2939,7 +2939,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttturbidityfnu(k
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.TurbidityFNU":
+            if cloudevent['type'] == "USGS.InstantaneousValues.TurbidityFNU":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3001,7 +3001,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttfdom(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.fDOM":
+            if cloudevent['type'] == "USGS.InstantaneousValues.fDOM":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3063,7 +3063,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttreservoirstora
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.ReservoirStorage":
+            if cloudevent['type'] == "USGS.InstantaneousValues.ReservoirStorage":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3125,7 +3125,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttlakeelevationn
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.LakeElevationNGVD29":
+            if cloudevent['type'] == "USGS.InstantaneousValues.LakeElevationNGVD29":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3187,7 +3187,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttwaterdepth(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.WaterDepth":
+            if cloudevent['type'] == "USGS.InstantaneousValues.WaterDepth":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3249,7 +3249,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttequipmentstatu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.EquipmentStatus":
+            if cloudevent['type'] == "USGS.InstantaneousValues.EquipmentStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3311,7 +3311,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqtttidallyfiltere
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.TidallyFilteredDischarge":
+            if cloudevent['type'] == "USGS.InstantaneousValues.TidallyFilteredDischarge":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3373,7 +3373,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttwatervelocity(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.WaterVelocity":
+            if cloudevent['type'] == "USGS.InstantaneousValues.WaterVelocity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3435,7 +3435,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttestuaryelevati
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.EstuaryElevationNGVD29":
+            if cloudevent['type'] == "USGS.InstantaneousValues.EstuaryElevationNGVD29":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3497,7 +3497,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttlakeelevationn
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.LakeElevationNAVD88":
+            if cloudevent['type'] == "USGS.InstantaneousValues.LakeElevationNAVD88":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3559,7 +3559,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttsalinity(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.Salinity":
+            if cloudevent['type'] == "USGS.InstantaneousValues.Salinity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3621,7 +3621,7 @@ def test_usgs_instantaneousvalues_mqtt_usgsinstantaneousvaluesmqttgateopening(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.mqtt.GateOpening":
+            if cloudevent['type'] == "USGS.InstantaneousValues.GateOpening":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3683,7 +3683,7 @@ def test_usgs_sites_amqp_usgssitesamqpsite(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.Sites.amqp.Site":
+            if cloudevent['type'] == "USGS.Sites.Site":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3745,7 +3745,7 @@ def test_usgs_sitetimeseries_amqp_usgssitetimeseriesamqpsitetimeseries(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.SiteTimeseries.amqp.SiteTimeseries":
+            if cloudevent['type'] == "USGS.Sites.SiteTimeseries":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3807,7 +3807,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpotherparameter
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.OtherParameter":
+            if cloudevent['type'] == "USGS.InstantaneousValues.OtherParameter":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3869,7 +3869,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpprecipitation(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.Precipitation":
+            if cloudevent['type'] == "USGS.InstantaneousValues.Precipitation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3931,7 +3931,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpstreamflow(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.Streamflow":
+            if cloudevent['type'] == "USGS.InstantaneousValues.Streamflow":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3993,7 +3993,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpgageheight(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.GageHeight":
+            if cloudevent['type'] == "USGS.InstantaneousValues.GageHeight":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4055,7 +4055,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpwatertemperatu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.WaterTemperature":
+            if cloudevent['type'] == "USGS.InstantaneousValues.WaterTemperature":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4117,7 +4117,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpdissolvedoxyge
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.DissolvedOxygen":
+            if cloudevent['type'] == "USGS.InstantaneousValues.DissolvedOxygen":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4179,7 +4179,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpph(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.pH":
+            if cloudevent['type'] == "USGS.InstantaneousValues.pH":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4241,7 +4241,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpspecificconduc
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.SpecificConductance":
+            if cloudevent['type'] == "USGS.InstantaneousValues.SpecificConductance":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4303,7 +4303,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpturbidity(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.Turbidity":
+            if cloudevent['type'] == "USGS.InstantaneousValues.Turbidity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4365,7 +4365,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpairtemperature
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.AirTemperature":
+            if cloudevent['type'] == "USGS.InstantaneousValues.AirTemperature":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4427,7 +4427,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpwindspeed(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.WindSpeed":
+            if cloudevent['type'] == "USGS.InstantaneousValues.WindSpeed":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4489,7 +4489,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpwinddirection(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.WindDirection":
+            if cloudevent['type'] == "USGS.InstantaneousValues.WindDirection":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4551,7 +4551,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqprelativehumidi
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.RelativeHumidity":
+            if cloudevent['type'] == "USGS.InstantaneousValues.RelativeHumidity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4613,7 +4613,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpbarometricpres
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.BarometricPressure":
+            if cloudevent['type'] == "USGS.InstantaneousValues.BarometricPressure":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4675,7 +4675,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpturbidityfnu(k
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.TurbidityFNU":
+            if cloudevent['type'] == "USGS.InstantaneousValues.TurbidityFNU":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4737,7 +4737,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpfdom(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.fDOM":
+            if cloudevent['type'] == "USGS.InstantaneousValues.fDOM":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4799,7 +4799,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpreservoirstora
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.ReservoirStorage":
+            if cloudevent['type'] == "USGS.InstantaneousValues.ReservoirStorage":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4861,7 +4861,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqplakeelevationn
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.LakeElevationNGVD29":
+            if cloudevent['type'] == "USGS.InstantaneousValues.LakeElevationNGVD29":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4923,7 +4923,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpwaterdepth(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.WaterDepth":
+            if cloudevent['type'] == "USGS.InstantaneousValues.WaterDepth":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4985,7 +4985,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpequipmentstatu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.EquipmentStatus":
+            if cloudevent['type'] == "USGS.InstantaneousValues.EquipmentStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5047,7 +5047,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqptidallyfiltere
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.TidallyFilteredDischarge":
+            if cloudevent['type'] == "USGS.InstantaneousValues.TidallyFilteredDischarge":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5109,7 +5109,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpwatervelocity(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.WaterVelocity":
+            if cloudevent['type'] == "USGS.InstantaneousValues.WaterVelocity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5171,7 +5171,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpestuaryelevati
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.EstuaryElevationNGVD29":
+            if cloudevent['type'] == "USGS.InstantaneousValues.EstuaryElevationNGVD29":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5233,7 +5233,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqplakeelevationn
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.LakeElevationNAVD88":
+            if cloudevent['type'] == "USGS.InstantaneousValues.LakeElevationNAVD88":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5295,7 +5295,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpsalinity(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.Salinity":
+            if cloudevent['type'] == "USGS.InstantaneousValues.Salinity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5357,7 +5357,7 @@ def test_usgs_instantaneousvalues_amqp_usgsinstantaneousvaluesamqpgateopening(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "USGS.InstantaneousValues.amqp.GateOpening":
+            if cloudevent['type'] == "USGS.InstantaneousValues.GateOpening":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

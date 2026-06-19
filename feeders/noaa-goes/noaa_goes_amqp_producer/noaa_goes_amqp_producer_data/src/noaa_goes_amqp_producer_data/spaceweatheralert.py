@@ -157,7 +157,7 @@ class SpaceWeatherAlert:
             An instance of the dataclass.
         """
         return cls(
-            product_id='vfqumbpihvkngynskvay',
-            issue_datetime='lcyzqdurnogzbmbgmicr',
-            message='qbifgjvpqyxzzswzhkav'
+            product_id='xtbdvfyzflrqzhllwfoz',
+            issue_datetime='jnwvoxlkjaqjycizgwyf',
+            message='kziadwddlamdrpobflxz'
         )

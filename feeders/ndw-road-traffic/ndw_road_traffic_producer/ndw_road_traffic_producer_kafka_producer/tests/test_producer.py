@@ -960,7 +960,7 @@ def test_nl_ndw_avg_mqtt_nlndwavgpointmeasurementsitemqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.AVG.PointMeasurementSite.mqtt":
+            if cloudevent['type'] == "NL.NDW.AVG.PointMeasurementSite":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1022,7 +1022,7 @@ def test_nl_ndw_avg_mqtt_nlndwavgroutemeasurementsitemqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.AVG.RouteMeasurementSite.mqtt":
+            if cloudevent['type'] == "NL.NDW.AVG.RouteMeasurementSite":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1084,7 +1084,7 @@ def test_nl_ndw_avg_mqtt_nlndwavgtrafficobservationmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.AVG.TrafficObservation.mqtt":
+            if cloudevent['type'] == "NL.NDW.AVG.TrafficObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1146,7 +1146,7 @@ def test_nl_ndw_avg_mqtt_nlndwavgtraveltimeobservationmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.AVG.TravelTimeObservation.mqtt":
+            if cloudevent['type'] == "NL.NDW.AVG.TravelTimeObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1208,7 +1208,7 @@ def test_nl_ndw_drip_mqtt_nlndwdripdripsignmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.DRIP.DripSign.mqtt":
+            if cloudevent['type'] == "NL.NDW.DRIP.DripSign":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1270,7 +1270,7 @@ def test_nl_ndw_drip_mqtt_nlndwdripdripdisplaystatemqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.DRIP.DripDisplayState.mqtt":
+            if cloudevent['type'] == "NL.NDW.DRIP.DripDisplayState":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1332,7 +1332,7 @@ def test_nl_ndw_msi_mqtt_nlndwmsimsisignmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.MSI.MsiSign.mqtt":
+            if cloudevent['type'] == "NL.NDW.MSI.MsiSign":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1394,7 +1394,7 @@ def test_nl_ndw_msi_mqtt_nlndwmsimsidisplaystatemqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.MSI.MsiDisplayState.mqtt":
+            if cloudevent['type'] == "NL.NDW.MSI.MsiDisplayState":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1456,7 +1456,7 @@ def test_nl_ndw_situations_mqtt_nlndwsituationsroadworkmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.Situations.Roadwork.mqtt":
+            if cloudevent['type'] == "NL.NDW.Situations.Roadwork":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1518,7 +1518,7 @@ def test_nl_ndw_situations_mqtt_nlndwsituationsbridgeopeningmqtt(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.Situations.BridgeOpening.mqtt":
+            if cloudevent['type'] == "NL.NDW.Situations.BridgeOpening":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1580,7 +1580,7 @@ def test_nl_ndw_situations_mqtt_nlndwsituationstemporaryclosuremqtt(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.Situations.TemporaryClosure.mqtt":
+            if cloudevent['type'] == "NL.NDW.Situations.TemporaryClosure":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1642,7 +1642,7 @@ def test_nl_ndw_situations_mqtt_nlndwsituationstemporaryspeedlimitmqtt(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.Situations.TemporarySpeedLimit.mqtt":
+            if cloudevent['type'] == "NL.NDW.Situations.TemporarySpeedLimit":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1704,7 +1704,7 @@ def test_nl_ndw_situations_mqtt_nlndwsituationssafetyrelatedmessagemqtt(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.Situations.SafetyRelatedMessage.mqtt":
+            if cloudevent['type'] == "NL.NDW.Situations.SafetyRelatedMessage":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1766,7 +1766,7 @@ def test_nl_ndw_avg_amqp_nlndwavgpointmeasurementsiteamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.AVG.PointMeasurementSite.amqp":
+            if cloudevent['type'] == "NL.NDW.AVG.PointMeasurementSite":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1828,7 +1828,7 @@ def test_nl_ndw_avg_amqp_nlndwavgroutemeasurementsiteamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.AVG.RouteMeasurementSite.amqp":
+            if cloudevent['type'] == "NL.NDW.AVG.RouteMeasurementSite":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1890,7 +1890,7 @@ def test_nl_ndw_avg_amqp_nlndwavgtrafficobservationamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.AVG.TrafficObservation.amqp":
+            if cloudevent['type'] == "NL.NDW.AVG.TrafficObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1952,7 +1952,7 @@ def test_nl_ndw_avg_amqp_nlndwavgtraveltimeobservationamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.AVG.TravelTimeObservation.amqp":
+            if cloudevent['type'] == "NL.NDW.AVG.TravelTimeObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2014,7 +2014,7 @@ def test_nl_ndw_drip_amqp_nlndwdripdripsignamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.DRIP.DripSign.amqp":
+            if cloudevent['type'] == "NL.NDW.DRIP.DripSign":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2076,7 +2076,7 @@ def test_nl_ndw_drip_amqp_nlndwdripdripdisplaystateamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.DRIP.DripDisplayState.amqp":
+            if cloudevent['type'] == "NL.NDW.DRIP.DripDisplayState":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2138,7 +2138,7 @@ def test_nl_ndw_msi_amqp_nlndwmsimsisignamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.MSI.MsiSign.amqp":
+            if cloudevent['type'] == "NL.NDW.MSI.MsiSign":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2200,7 +2200,7 @@ def test_nl_ndw_msi_amqp_nlndwmsimsidisplaystateamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.MSI.MsiDisplayState.amqp":
+            if cloudevent['type'] == "NL.NDW.MSI.MsiDisplayState":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2262,7 +2262,7 @@ def test_nl_ndw_situations_amqp_nlndwsituationsroadworkamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.Situations.Roadwork.amqp":
+            if cloudevent['type'] == "NL.NDW.Situations.Roadwork":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2324,7 +2324,7 @@ def test_nl_ndw_situations_amqp_nlndwsituationsbridgeopeningamqp(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.Situations.BridgeOpening.amqp":
+            if cloudevent['type'] == "NL.NDW.Situations.BridgeOpening":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2386,7 +2386,7 @@ def test_nl_ndw_situations_amqp_nlndwsituationstemporaryclosureamqp(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.Situations.TemporaryClosure.amqp":
+            if cloudevent['type'] == "NL.NDW.Situations.TemporaryClosure":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2448,7 +2448,7 @@ def test_nl_ndw_situations_amqp_nlndwsituationstemporaryspeedlimitamqp(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.Situations.TemporarySpeedLimit.amqp":
+            if cloudevent['type'] == "NL.NDW.Situations.TemporarySpeedLimit":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2510,7 +2510,7 @@ def test_nl_ndw_situations_amqp_nlndwsituationssafetyrelatedmessageamqp(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.NDW.Situations.SafetyRelatedMessage.amqp":
+            if cloudevent['type'] == "NL.NDW.Situations.SafetyRelatedMessage":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

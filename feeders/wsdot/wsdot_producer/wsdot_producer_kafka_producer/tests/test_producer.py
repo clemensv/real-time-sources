@@ -801,7 +801,7 @@ def test_us_wa_wsdot_traffic_mqtt_uswawsdottraffictrafficflowstationmqtt(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.traffic.TrafficFlowStation.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.traffic.TrafficFlowStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -863,7 +863,7 @@ def test_us_wa_wsdot_traffic_mqtt_uswawsdottraffictrafficflowreadingmqtt(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.traffic.TrafficFlowReading.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.traffic.TrafficFlowReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -925,7 +925,7 @@ def test_us_wa_wsdot_traveltimes_mqtt_uswawsdottraveltimestraveltimeroutemqtt(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.traveltimes.TravelTimeRoute.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.traveltimes.TravelTimeRoute":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -987,7 +987,7 @@ def test_us_wa_wsdot_mountainpass_mqtt_uswawsdotmountainpassmountainpassconditio
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.mountainpass.MountainPassCondition.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.mountainpass.MountainPassCondition":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1049,7 +1049,7 @@ def test_us_wa_wsdot_weather_mqtt_uswawsdotweatherweatherstationmqtt(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.weather.WeatherStation.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.weather.WeatherStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1111,7 +1111,7 @@ def test_us_wa_wsdot_weather_mqtt_uswawsdotweatherweatherreadingmqtt(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.weather.WeatherReading.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.weather.WeatherReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1173,7 +1173,7 @@ def test_us_wa_wsdot_tolls_mqtt_uswawsdottollstollratemqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.tolls.TollRate.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.tolls.TollRate":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1235,7 +1235,7 @@ def test_us_wa_wsdot_cvrestrictions_mqtt_uswawsdotcvrestrictionscommercialvehicl
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1297,7 +1297,7 @@ def test_us_wa_wsdot_border_mqtt_uswawsdotborderbordercrossingmqtt(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.border.BorderCrossing.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.border.BorderCrossing":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1359,7 +1359,7 @@ def test_us_wa_wsdot_ferries_mqtt_uswawsdotferriesvessellocationmqtt(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.ferries.VesselLocation.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.ferries.VesselLocation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1421,7 +1421,7 @@ def test_us_wa_wsdot_traffic_amqp_uswawsdottraffictrafficflowstationamqp(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.traffic.TrafficFlowStation.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.traffic.TrafficFlowStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1483,7 +1483,7 @@ def test_us_wa_wsdot_traffic_amqp_uswawsdottraffictrafficflowreadingamqp(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.traffic.TrafficFlowReading.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.traffic.TrafficFlowReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1545,7 +1545,7 @@ def test_us_wa_wsdot_traveltimes_amqp_uswawsdottraveltimestraveltimerouteamqp(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.traveltimes.TravelTimeRoute.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.traveltimes.TravelTimeRoute":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1607,7 +1607,7 @@ def test_us_wa_wsdot_mountainpass_amqp_uswawsdotmountainpassmountainpassconditio
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.mountainpass.MountainPassCondition.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.mountainpass.MountainPassCondition":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1669,7 +1669,7 @@ def test_us_wa_wsdot_weather_amqp_uswawsdotweatherweatherstationamqp(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.weather.WeatherStation.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.weather.WeatherStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1731,7 +1731,7 @@ def test_us_wa_wsdot_weather_amqp_uswawsdotweatherweatherreadingamqp(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.weather.WeatherReading.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.weather.WeatherReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1793,7 +1793,7 @@ def test_us_wa_wsdot_tolls_amqp_uswawsdottollstollrateamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.tolls.TollRate.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.tolls.TollRate":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1855,7 +1855,7 @@ def test_us_wa_wsdot_cvrestrictions_amqp_uswawsdotcvrestrictionscommercialvehicl
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.cvrestrictions.CommercialVehicleRestriction":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1917,7 +1917,7 @@ def test_us_wa_wsdot_border_amqp_uswawsdotborderbordercrossingamqp(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.border.BorderCrossing.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.border.BorderCrossing":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1979,7 +1979,7 @@ def test_us_wa_wsdot_ferries_amqp_uswawsdotferriesvessellocationamqp(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.ferries.VesselLocation.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.ferries.VesselLocation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2425,7 +2425,7 @@ def test_us_wa_wsdot_roadweather_mqtt_uswawsdotroadweatherroadweatherstationmqtt
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.roadweather.RoadWeatherStation.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.roadweather.RoadWeatherStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2487,7 +2487,7 @@ def test_us_wa_wsdot_roadweather_mqtt_uswawsdotroadweatherroadweatherreadingmqtt
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.roadweather.RoadWeatherReading.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.roadweather.RoadWeatherReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2549,7 +2549,7 @@ def test_us_wa_wsdot_alerts_mqtt_uswawsdotalertshighwayalertmqtt(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.alerts.HighwayAlert.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.alerts.HighwayAlert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2611,7 +2611,7 @@ def test_us_wa_wsdot_cameras_mqtt_uswawsdotcamerashighwaycameramqtt(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.cameras.HighwayCamera.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.cameras.HighwayCamera":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2673,7 +2673,7 @@ def test_us_wa_wsdot_bridgeclearances_mqtt_uswawsdotbridgeclearancesbridgecleara
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.bridgeclearances.BridgeClearance.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.bridgeclearances.BridgeClearance":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2735,7 +2735,7 @@ def test_us_wa_wsdot_ferryterminals_mqtt_uswawsdotferryterminalsterminalsailings
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.ferryterminals.TerminalSailingSpace.mqtt":
+            if cloudevent['type'] == "us.wa.wsdot.ferryterminals.TerminalSailingSpace":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2797,7 +2797,7 @@ def test_us_wa_wsdot_roadweather_amqp_uswawsdotroadweatherroadweatherstationamqp
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.roadweather.RoadWeatherStation.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.roadweather.RoadWeatherStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2859,7 +2859,7 @@ def test_us_wa_wsdot_roadweather_amqp_uswawsdotroadweatherroadweatherreadingamqp
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.roadweather.RoadWeatherReading.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.roadweather.RoadWeatherReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2921,7 +2921,7 @@ def test_us_wa_wsdot_alerts_amqp_uswawsdotalertshighwayalertamqp(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.alerts.HighwayAlert.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.alerts.HighwayAlert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2983,7 +2983,7 @@ def test_us_wa_wsdot_cameras_amqp_uswawsdotcamerashighwaycameraamqp(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.cameras.HighwayCamera.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.cameras.HighwayCamera":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3045,7 +3045,7 @@ def test_us_wa_wsdot_bridgeclearances_amqp_uswawsdotbridgeclearancesbridgecleara
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.bridgeclearances.BridgeClearance.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.bridgeclearances.BridgeClearance":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3107,7 +3107,7 @@ def test_us_wa_wsdot_ferryterminals_amqp_uswawsdotferryterminalsterminalsailings
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "us.wa.wsdot.ferryterminals.TerminalSailingSpace.amqp":
+            if cloudevent['type'] == "us.wa.wsdot.ferryterminals.TerminalSailingSpace":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

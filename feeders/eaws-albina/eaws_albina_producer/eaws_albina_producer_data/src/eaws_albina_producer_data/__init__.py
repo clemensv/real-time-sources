@@ -1,5 +1,5 @@
+from .avalancheregion import AvalancheRegion
 from .maxdangerratingenum import MaxDangerRatingenum
 from .avalanchebulletin import AvalancheBulletin
-from .avalancheregion import AvalancheRegion
 
-__all__ = ["MaxDangerRatingenum", "AvalancheBulletin", "AvalancheRegion"]
+__all__ = ["AvalancheRegion", "MaxDangerRatingenum", "AvalancheBulletin"]

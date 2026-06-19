@@ -173,14 +173,14 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            station_number='bswpktfppcwvmutiagry',
-            identifier='pbgdpuvyenofibafupvs',
-            station_name='pdnsclftynpwevnjaupn',
-            prov_terr_state_loc='etfeiksdgzrkjwshihnu',
+            station_number='igetsgvvqennabdhmbtk',
+            identifier='ulusnmfuwujqhshkipnj',
+            station_name='noxzreitvipuvudbmjwv',
+            prov_terr_state_loc='numofzwrzjcbtekvxjvo',
             observation_datetime=datetime.datetime.now(datetime.timezone.utc),
-            level=float(60.99570201812029),
-            discharge=float(69.14431850337628),
-            latitude=float(8.468047958539081),
-            longitude=float(46.502875991865665),
-            basin='qaepobteizjpqjgyyigj'
+            level=float(86.02395240409493),
+            discharge=float(10.561237644185184),
+            latitude=float(39.420512360789836),
+            longitude=float(81.04169594950152),
+            basin='ycbfsttycaudnowcsskc'
         )

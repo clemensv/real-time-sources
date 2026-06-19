@@ -29,19 +29,19 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         Create instance of BuoyOceanographicObservation for testing
         """
         instance = BuoyOceanographicObservation(
-            station_id='rgisjczlxrlqezfzecrv',
+            station_id='wymkngydzsyeqtlymqan',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            depth=float(10.399631357211526),
-            ocean_temperature=float(30.606607134312704),
-            conductivity=float(88.0093622492191),
-            salinity=float(34.375773435560575),
-            oxygen_saturation=float(91.66036478673587),
-            oxygen_concentration=float(94.15805671150565),
-            chlorophyll_concentration=float(53.70728561130902),
-            turbidity=float(37.3377170652465),
-            ph=float(97.59997002565434),
-            redox_potential=float(69.84745181323201),
-            region='vdlijypxgjpffggghkmy'
+            depth=float(52.64966521443265),
+            ocean_temperature=float(4.201721753106424),
+            conductivity=float(35.87757431888019),
+            salinity=float(18.172906209864614),
+            oxygen_saturation=float(78.95720013800764),
+            oxygen_concentration=float(98.3564036865505),
+            chlorophyll_concentration=float(57.9550133552174),
+            turbidity=float(29.08325725486508),
+            ph=float(30.184368862696587),
+            redox_potential=float(27.035982598636178),
+            region='btoazgfswwcjqajbawvz'
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'rgisjczlxrlqezfzecrv'
+        test_value = 'wymkngydzsyeqtlymqan'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -66,7 +66,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test depth property
         """
-        test_value = float(10.399631357211526)
+        test_value = float(52.64966521443265)
         self.instance.depth = test_value
         self.assertEqual(self.instance.depth, test_value)
     
@@ -74,7 +74,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test ocean_temperature property
         """
-        test_value = float(30.606607134312704)
+        test_value = float(4.201721753106424)
         self.instance.ocean_temperature = test_value
         self.assertEqual(self.instance.ocean_temperature, test_value)
     
@@ -82,7 +82,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test conductivity property
         """
-        test_value = float(88.0093622492191)
+        test_value = float(35.87757431888019)
         self.instance.conductivity = test_value
         self.assertEqual(self.instance.conductivity, test_value)
     
@@ -90,7 +90,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test salinity property
         """
-        test_value = float(34.375773435560575)
+        test_value = float(18.172906209864614)
         self.instance.salinity = test_value
         self.assertEqual(self.instance.salinity, test_value)
     
@@ -98,7 +98,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test oxygen_saturation property
         """
-        test_value = float(91.66036478673587)
+        test_value = float(78.95720013800764)
         self.instance.oxygen_saturation = test_value
         self.assertEqual(self.instance.oxygen_saturation, test_value)
     
@@ -106,7 +106,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test oxygen_concentration property
         """
-        test_value = float(94.15805671150565)
+        test_value = float(98.3564036865505)
         self.instance.oxygen_concentration = test_value
         self.assertEqual(self.instance.oxygen_concentration, test_value)
     
@@ -114,7 +114,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test chlorophyll_concentration property
         """
-        test_value = float(53.70728561130902)
+        test_value = float(57.9550133552174)
         self.instance.chlorophyll_concentration = test_value
         self.assertEqual(self.instance.chlorophyll_concentration, test_value)
     
@@ -122,7 +122,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test turbidity property
         """
-        test_value = float(37.3377170652465)
+        test_value = float(29.08325725486508)
         self.instance.turbidity = test_value
         self.assertEqual(self.instance.turbidity, test_value)
     
@@ -130,7 +130,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test ph property
         """
-        test_value = float(97.59997002565434)
+        test_value = float(30.184368862696587)
         self.instance.ph = test_value
         self.assertEqual(self.instance.ph, test_value)
     
@@ -138,7 +138,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test redox_potential property
         """
-        test_value = float(69.84745181323201)
+        test_value = float(27.035982598636178)
         self.instance.redox_potential = test_value
         self.assertEqual(self.instance.redox_potential, test_value)
     
@@ -146,7 +146,7 @@ class Test_BuoyOceanographicObservation(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'vdlijypxgjpffggghkmy'
+        test_value = 'btoazgfswwcjqajbawvz'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

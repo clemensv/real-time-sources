@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -197,25 +197,25 @@ class ParkingLorry:
             An instance of the dataclass.
         """
         return cls(
-            identifier='llpfoxumsltvfehxabta',
-            road='zzsabtrqfssqfvyuayuv',
-            road_ids=['ukxzmkjncyhktlxjdjmf', 'nqmflevibjgahcoesvin', 'ykxgdiqgtfsshwyucykq', 'mrspbrmhayvhdlsklteb', 'uvhntrkugzezhvjayszt'],
+            identifier='usaneuehoklttjhutnuj',
+            road='fzpvpvcrivlmvgltzich',
+            road_ids=['wzbhctouabxxlsglfglf', 'hcfqbxhgilnztofvnfby'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.PARKING,
-            title='zbxaknspcrsylulnkhgo',
-            subtitle='nlslljakrtzkqvffsnyv',
+            display_type=DisplayTypeenum.ROADWORKS,
+            title='inkkwkqcuznaxrlpafbl',
+            subtitle='pqjzqomhnymvqbyjaswn',
             description_lines=None,
             future=False,
-            is_blocked=True,
-            icon='mniulbecanfwbsymmpgc',
-            start_lc_position=int(59),
-            extent='mkhlgrofhbmrklazdoag',
-            point='kaxaxegqcztwqiajkqcl',
-            coordinate_lat=float(3.4491077184337193),
-            coordinate_lon=float(16.032914234074592),
-            route_recommendation_json='lhfepcylsrpckgqfdgkf',
+            is_blocked=False,
+            icon='huuckumvuqmmposwmwej',
+            start_lc_position=int(92),
+            extent='acqtgkorklwyehifqpta',
+            point='lserieatgotxvgyydrlp',
+            coordinate_lat=float(23.50150093330522),
+            coordinate_lon=float(25.01757056309796),
+            route_recommendation_json='einsqdsgqbprzaeflnad',
             footer_lines=None,
             amenity_descriptions=None,
-            car_space_count=int(49),
-            lorry_space_count=int(5)
+            car_space_count=int(20),
+            lorry_space_count=int(63)
         )

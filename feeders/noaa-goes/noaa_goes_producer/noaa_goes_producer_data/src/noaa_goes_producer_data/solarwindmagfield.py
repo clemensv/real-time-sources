@@ -165,11 +165,11 @@ class SolarWindMagField:
             An instance of the dataclass.
         """
         return cls(
-            observation_time='ktypvvplidcmlcyndrie',
-            bx_gsm=float(34.58381498905274),
-            by_gsm=float(59.03942222230136),
-            bz_gsm=float(82.57646785651622),
-            lon_gsm=float(17.91091277654261),
-            lat_gsm=float(80.66526137116627),
-            bt=float(26.512684183599234)
+            observation_time='fdbxxdwtjmjdepsdmgxp',
+            bx_gsm=float(85.94034418104035),
+            by_gsm=float(66.91781204482844),
+            bz_gsm=float(95.50304749916182),
+            lon_gsm=float(22.29769794403743),
+            lat_gsm=float(92.983182227289),
+            bt=float(63.99117514763416)
         )

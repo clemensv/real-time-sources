@@ -555,7 +555,7 @@ def test_no_kystverket_ais_mqtt_nokystverketaismqttpositionreport(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NO.Kystverket.AIS.mqtt.PositionReport":
+            if cloudevent['type'] == "NO.Kystverket.AIS.PositionReport":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -617,7 +617,7 @@ def test_no_kystverket_ais_mqtt_nokystverketaismqttshipstatic(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NO.Kystverket.AIS.mqtt.ShipStatic":
+            if cloudevent['type'] == "NO.Kystverket.AIS.ShipStatic":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -679,7 +679,7 @@ def test_no_kystverket_ais_mqtt_nokystverketaismqttaidtonavigation(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NO.Kystverket.AIS.mqtt.AidToNavigation":
+            if cloudevent['type'] == "NO.Kystverket.AIS.AidToNavigation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -741,7 +741,7 @@ def test_no_kystverket_ais_amqp_nokystverketaisamqppositionreport(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NO.Kystverket.AIS.amqp.PositionReport":
+            if cloudevent['type'] == "NO.Kystverket.AIS.PositionReport":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -803,7 +803,7 @@ def test_no_kystverket_ais_amqp_nokystverketaisamqpshipstatic(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NO.Kystverket.AIS.amqp.ShipStatic":
+            if cloudevent['type'] == "NO.Kystverket.AIS.ShipStatic":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -865,7 +865,7 @@ def test_no_kystverket_ais_amqp_nokystverketaisamqpaidtonavigation(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NO.Kystverket.AIS.amqp.AidToNavigation":
+            if cloudevent['type'] == "NO.Kystverket.AIS.AidToNavigation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

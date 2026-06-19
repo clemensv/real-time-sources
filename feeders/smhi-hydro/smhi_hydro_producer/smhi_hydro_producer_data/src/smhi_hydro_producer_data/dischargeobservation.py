@@ -165,10 +165,10 @@ class DischargeObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='khxwdbhxfoauulwjenpe',
-            station_name='rghzxaplpdihgmfvtmot',
-            catchment_name='mrkdhlhvcqhzhdmmnmqy',
+            station_id='phaarllqeuconxqfvirs',
+            station_name='qtqtynsaqybuluyskqoy',
+            catchment_name='tirfmjifrkbcnvkkfzgo',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(8.704554721601031),
-            quality='mfcwnkbgbhyqxrkjzzgs'
+            discharge=float(21.383314721383506),
+            quality='vrkuoshleetmiihfifla'
         )

@@ -161,9 +161,9 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_code='vwujfdrehbmefzhlwxpc',
-            name='zwrqvtghbawgvcsahyof',
-            latitude=float(66.87447564731512),
-            longitude=float(76.74739667203633),
-            coordinate_system='pbssrenwijjvzuxrodux'
+            station_code='tevvwckpnvnjrpidqqys',
+            name='rvpamcjlwcrytgoonraf',
+            latitude=float(33.15896351838832),
+            longitude=float(92.17851998190247),
+            coordinate_system='iwjmfwyzecbgjxkapcpc'
         )

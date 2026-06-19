@@ -183,20 +183,20 @@ class GroupAssignmentCommand:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(13),
-            RepeatIndicator=int(26),
-            UserID=int(23),
-            Valid=True,
-            Spare1=int(100),
-            Longitude1=float(83.10659848487548),
-            Latitude1=float(42.673657433121406),
-            Longitude2=float(79.73404809970359),
-            Latitude2=float(40.956501843682055),
-            StationType=int(84),
-            ShipType=int(7),
-            Spare2=int(88),
-            TxRxMode=int(71),
-            ReportingInterval=int(82),
-            QuietTime=int(61),
-            Spare3=int(0)
+            MessageID=int(39),
+            RepeatIndicator=int(30),
+            UserID=int(66),
+            Valid=False,
+            Spare1=int(9),
+            Longitude1=float(74.99130332236062),
+            Latitude1=float(93.11185140561375),
+            Longitude2=float(51.95708813738852),
+            Latitude2=float(33.649938435759054),
+            StationType=int(20),
+            ShipType=int(50),
+            Spare2=int(33),
+            TxRxMode=int(29),
+            ReportingInterval=int(66),
+            QuietTime=int(69),
+            Spare3=int(81)
         )

@@ -330,7 +330,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.TEPCO.Denkiyoho.amqp.SupplyCapacity"
+                    assert cloud_event_payload.get("type") == "JP.TEPCO.Denkiyoho.SupplyCapacity"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -368,7 +368,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.amqp.SupplyCapacity'
+        assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.SupplyCapacity'
         assert received.body is not None
         assert received.subject == "{area_code}".format(area_code="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
@@ -422,7 +422,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast"
+                    assert cloud_event_payload.get("type") == "JP.TEPCO.Denkiyoho.PeakDemandForecast"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -460,7 +460,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.amqp.PeakDemandForecast'
+        assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.PeakDemandForecast'
         assert received.body is not None
         assert received.subject == "{area_code}".format(area_code="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
@@ -514,7 +514,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.TEPCO.Denkiyoho.amqp.DemandActual"
+                    assert cloud_event_payload.get("type") == "JP.TEPCO.Denkiyoho.DemandActual"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -552,7 +552,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.amqp.DemandActual'
+        assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.DemandActual'
         assert received.body is not None
         assert received.subject == "{area_code}".format(area_code="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
@@ -606,7 +606,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.TEPCO.Denkiyoho.amqp.DemandForecast"
+                    assert cloud_event_payload.get("type") == "JP.TEPCO.Denkiyoho.DemandForecast"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -644,7 +644,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.amqp.DemandForecast'
+        assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.DemandForecast'
         assert received.body is not None
         assert received.subject == "{area_code}".format(area_code="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]
@@ -697,7 +697,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.TEPCO.Denkiyoho.amqp.Info"
+                    assert cloud_event_payload.get("type") == "JP.TEPCO.Denkiyoho.Info"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -734,7 +734,7 @@ class TestJPTEPCODenkiyohoAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.amqp.Info'
+        assert properties.get('cloudEvents:type') == 'JP.TEPCO.Denkiyoho.Info'
         assert received.body is not None
         assert received.subject == "{area_code}".format(area_code="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{area_code}".format(area_code="value"))[:128]

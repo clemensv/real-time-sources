@@ -165,10 +165,10 @@ class MagneticFieldReading:
             An instance of the dataclass.
         """
         return cls(
-            iaga_code='nmlulopezjwjeyhjvprc',
+            iaga_code='tbkqkgljcbqjhsuhddpm',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            h=float(53.11746772273116),
-            d=float(68.72639893342293),
-            z=float(91.023531169352),
-            f=float(59.08580499970368)
+            h=float(12.842900531415824),
+            d=float(83.65144170803302),
+            z=float(33.57463106829087),
+            f=float(55.03597305942015)
         )

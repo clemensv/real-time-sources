@@ -225,7 +225,7 @@ def test_org_eaws_albina_mqtt_orgeawsalbinamqttavalanchebulletin(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.EAWS.ALBINA.mqtt.AvalancheBulletin":
+            if cloudevent['type'] == "org.EAWS.ALBINA.AvalancheBulletin":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_org_eaws_albina_amqp_orgeawsalbinaamqpavalanchebulletin(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.EAWS.ALBINA.amqp.AvalancheBulletin":
+            if cloudevent['type'] == "org.EAWS.ALBINA.AvalancheBulletin":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

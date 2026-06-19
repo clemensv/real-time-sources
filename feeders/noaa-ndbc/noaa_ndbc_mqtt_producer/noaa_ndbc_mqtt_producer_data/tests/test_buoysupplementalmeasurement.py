@@ -29,14 +29,14 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         Create instance of BuoySupplementalMeasurement for testing
         """
         instance = BuoySupplementalMeasurement(
-            station_id='ekzrobpregeyfnltnedi',
+            station_id='hmgepujutoclmzluppxu',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            lowest_pressure=float(9.89414589265497),
-            lowest_pressure_time_code='tqbinywrtyywzbudguya',
-            highest_wind_speed=float(49.41035715737934),
-            highest_wind_direction=float(99.07305193567991),
-            highest_wind_time_code='auuqyzuddxyoryabmskk',
-            region='dvzpistclfiytzmzuorp'
+            lowest_pressure=float(93.74077472611869),
+            lowest_pressure_time_code='mczeokfsxdlfwnbmtgpn',
+            highest_wind_speed=float(2.538002862965827),
+            highest_wind_direction=float(68.8465173244477),
+            highest_wind_time_code='auxmniuzbrdpypphjank',
+            region='zeartjyrneisofgfcmrf'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ekzrobpregeyfnltnedi'
+        test_value = 'hmgepujutoclmzluppxu'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -61,7 +61,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test lowest_pressure property
         """
-        test_value = float(9.89414589265497)
+        test_value = float(93.74077472611869)
         self.instance.lowest_pressure = test_value
         self.assertEqual(self.instance.lowest_pressure, test_value)
     
@@ -69,7 +69,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test lowest_pressure_time_code property
         """
-        test_value = 'tqbinywrtyywzbudguya'
+        test_value = 'mczeokfsxdlfwnbmtgpn'
         self.instance.lowest_pressure_time_code = test_value
         self.assertEqual(self.instance.lowest_pressure_time_code, test_value)
     
@@ -77,7 +77,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test highest_wind_speed property
         """
-        test_value = float(49.41035715737934)
+        test_value = float(2.538002862965827)
         self.instance.highest_wind_speed = test_value
         self.assertEqual(self.instance.highest_wind_speed, test_value)
     
@@ -85,7 +85,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test highest_wind_direction property
         """
-        test_value = float(99.07305193567991)
+        test_value = float(68.8465173244477)
         self.instance.highest_wind_direction = test_value
         self.assertEqual(self.instance.highest_wind_direction, test_value)
     
@@ -93,7 +93,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test highest_wind_time_code property
         """
-        test_value = 'auuqyzuddxyoryabmskk'
+        test_value = 'auxmniuzbrdpypphjank'
         self.instance.highest_wind_time_code = test_value
         self.assertEqual(self.instance.highest_wind_time_code, test_value)
     
@@ -101,7 +101,7 @@ class Test_BuoySupplementalMeasurement(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'dvzpistclfiytzmzuorp'
+        test_value = 'zeartjyrneisofgfcmrf'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

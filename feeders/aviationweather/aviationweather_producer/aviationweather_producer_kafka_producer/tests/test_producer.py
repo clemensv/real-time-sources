@@ -291,7 +291,7 @@ def test_gov_noaa_aviationweather_mqtt_govnoaaaviationweathermqttstation(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.noaa.aviationweather.mqtt.Station":
+            if cloudevent['type'] == "gov.noaa.aviationweather.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -353,7 +353,7 @@ def test_gov_noaa_aviationweather_mqtt_govnoaaaviationweathermqttmetar(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.noaa.aviationweather.mqtt.Metar":
+            if cloudevent['type'] == "gov.noaa.aviationweather.Metar":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -415,7 +415,7 @@ def test_gov_noaa_aviationweather_mqtt_govnoaaaviationweathermqttsigmet(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.noaa.aviationweather.mqtt.Sigmet":
+            if cloudevent['type'] == "gov.noaa.aviationweather.Sigmet":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -477,7 +477,7 @@ def test_gov_noaa_aviationweather_amqp_govnoaaaviationweatheramqpstation(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.noaa.aviationweather.amqp.Station":
+            if cloudevent['type'] == "gov.noaa.aviationweather.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -539,7 +539,7 @@ def test_gov_noaa_aviationweather_amqp_govnoaaaviationweatheramqpmetar(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.noaa.aviationweather.amqp.Metar":
+            if cloudevent['type'] == "gov.noaa.aviationweather.Metar":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -601,7 +601,7 @@ def test_gov_noaa_aviationweather_amqp_govnoaaaviationweatheramqpsigmet(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.noaa.aviationweather.amqp.Sigmet":
+            if cloudevent['type'] == "gov.noaa.aviationweather.Sigmet":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

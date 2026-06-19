@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from typing import Any
 from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
+from typing import Any
 import datetime
 
 
@@ -195,24 +195,24 @@ class Webcam:
             An instance of the dataclass.
         """
         return cls(
-            identifier='mdrlwcrakbragdbhparb',
-            road='njqzimzchonbdrfazxay',
-            road_ids=['aypwdvhqcskoepymkefa'],
+            identifier='qvrtvqhpendjaseqdjcr',
+            road='dxmqaqnaikevytyqojso',
+            road_ids=['mxwfqyhobftkqdetldss', 'cphxwtbyreyrtvgcibkp', 'lowteybzcnjoyloattci'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.PARKING,
-            title='cvioickkviainndiyham',
-            subtitle='byipzarjphkuxvphugmh',
+            display_type=DisplayTypeenum.ROADWORKS,
+            title='icmwoolndjeiagatzxwc',
+            subtitle='fpychjdpjvuikxabkbig',
             description_lines=None,
             future=True,
             is_blocked=True,
-            icon='csnrtubcsyzxtbuxkdgy',
-            extent='uduthbmprufakzwgabqj',
-            point='mkrjxsszhxmvmzpnoceu',
-            coordinate_lat=float(99.55511967345925),
-            coordinate_lon=float(8.082551240161163),
-            route_recommendation_json='yjenomzhnapnusswynlw',
+            icon='kobcfvzynygxnovoulxb',
+            extent='hmxfdlcqacgpimknsnzq',
+            point='fktslgnvdynwfywqyivv',
+            coordinate_lat=float(46.30922205941368),
+            coordinate_lon=float(61.99127671974313),
+            route_recommendation_json='cymedrxifdjydbtlyaiw',
             footer_lines=None,
-            operator_name='vvwxuidirssnkfmsoakq',
-            image_url='upoclbhigdehevkzgzpn',
-            stream_url='untmobhtmjxxezseldoi'
+            operator_name='oiongugrlgbtftsqwwoz',
+            image_url='rqcmlzygeuqrlnrtaatq',
+            stream_url='ocslerteqtugvcxvguxb'
         )

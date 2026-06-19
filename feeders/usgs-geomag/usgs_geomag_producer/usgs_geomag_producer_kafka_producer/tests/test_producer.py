@@ -225,7 +225,7 @@ def test_gov_usgs_geomag_mqtt_govusgsgeomagmqttobservatory(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.usgs.geomag.mqtt.Observatory":
+            if cloudevent['type'] == "gov.usgs.geomag.Observatory":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_gov_usgs_geomag_mqtt_govusgsgeomagmqttmagneticfieldreading(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.usgs.geomag.mqtt.MagneticFieldReading":
+            if cloudevent['type'] == "gov.usgs.geomag.MagneticFieldReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_gov_usgs_geomag_amqp_govusgsgeomagamqpobservatory(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.usgs.geomag.amqp.Observatory":
+            if cloudevent['type'] == "gov.usgs.geomag.Observatory":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_gov_usgs_geomag_amqp_govusgsgeomagamqpmagneticfieldreading(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.usgs.geomag.amqp.MagneticFieldReading":
+            if cloudevent['type'] == "gov.usgs.geomag.MagneticFieldReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

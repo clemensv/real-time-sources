@@ -325,7 +325,7 @@ class TestBeIrailAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "be.irail.amqp.Station"
+                    assert cloud_event_payload.get("type") == "be.irail.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -362,7 +362,7 @@ class TestBeIrailAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'be.irail.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'be.irail.Station'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
@@ -415,7 +415,7 @@ class TestBeIrailAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "be.irail.amqp.StationBoard"
+                    assert cloud_event_payload.get("type") == "be.irail.StationBoard"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -452,7 +452,7 @@ class TestBeIrailAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'be.irail.amqp.StationBoard'
+        assert properties.get('cloudEvents:type') == 'be.irail.StationBoard'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]
@@ -505,7 +505,7 @@ class TestBeIrailAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "be.irail.amqp.ArrivalBoard"
+                    assert cloud_event_payload.get("type") == "be.irail.ArrivalBoard"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -542,7 +542,7 @@ class TestBeIrailAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'be.irail.amqp.ArrivalBoard'
+        assert properties.get('cloudEvents:type') == 'be.irail.ArrivalBoard'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{station_id}".format(station_id="value"))[:128]

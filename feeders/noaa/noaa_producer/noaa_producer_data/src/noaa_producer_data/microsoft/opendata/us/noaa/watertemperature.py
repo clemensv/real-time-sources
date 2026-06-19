@@ -165,11 +165,11 @@ class WaterTemperature:
             An instance of the dataclass.
         """
         return cls(
-            station_id='nxonnwmfssmajnhnrcgo',
-            timestamp='pgpafvrvgiwvhibbtfrw',
-            value=float(90.68743492310657),
+            station_id='njwlukzqvedlwhptblmk',
+            timestamp='akghstqbvkchvurqyhwm',
+            value=float(70.7704683321046),
             max_temp_exceeded=False,
-            min_temp_exceeded=True,
-            rate_of_change_exceeded=True,
-            region='dxxkjshqeovrzcrsbesb'
+            min_temp_exceeded=False,
+            rate_of_change_exceeded=False,
+            region='kzbtjnzaotsktvbnnhcz'
         )

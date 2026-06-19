@@ -28,10 +28,10 @@ class Test_VesselSystem(unittest.TestCase):
         Create instance of VesselSystem for testing
         """
         instance = VesselSystem(
-            ship_owner='yecuejytgpeycsfnkfcb',
-            ship_telephone_1='mrpwdnqmmikuowkgynid',
-            ship_email='pwlmlfibimyhmzrozoyk',
-            ship_verifier='umhmrdhklxhytpyajfys'
+            ship_owner='bdchzgrjwkakmjvsbsjz',
+            ship_telephone_1='pclzltfioofjbnkjwzoq',
+            ship_email='jnvdsfqtcgzolnhvrbgb',
+            ship_verifier='gkrkwdvtvhjnjqomrzuy'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_VesselSystem(unittest.TestCase):
         """
         Test ship_owner property
         """
-        test_value = 'yecuejytgpeycsfnkfcb'
+        test_value = 'bdchzgrjwkakmjvsbsjz'
         self.instance.ship_owner = test_value
         self.assertEqual(self.instance.ship_owner, test_value)
     
@@ -48,7 +48,7 @@ class Test_VesselSystem(unittest.TestCase):
         """
         Test ship_telephone_1 property
         """
-        test_value = 'mrpwdnqmmikuowkgynid'
+        test_value = 'pclzltfioofjbnkjwzoq'
         self.instance.ship_telephone_1 = test_value
         self.assertEqual(self.instance.ship_telephone_1, test_value)
     
@@ -56,7 +56,7 @@ class Test_VesselSystem(unittest.TestCase):
         """
         Test ship_email property
         """
-        test_value = 'pwlmlfibimyhmzrozoyk'
+        test_value = 'jnvdsfqtcgzolnhvrbgb'
         self.instance.ship_email = test_value
         self.assertEqual(self.instance.ship_email, test_value)
     
@@ -64,7 +64,7 @@ class Test_VesselSystem(unittest.TestCase):
         """
         Test ship_verifier property
         """
-        test_value = 'umhmrdhklxhytpyajfys'
+        test_value = 'gkrkwdvtvhjnjqomrzuy'
         self.instance.ship_verifier = test_value
         self.assertEqual(self.instance.ship_verifier, test_value)
     

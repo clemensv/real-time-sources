@@ -171,14 +171,14 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_no='dhoxracvpukoflgqzjat',
-            station_name='lgjkihiyaluqqrwjzyil',
-            station_id='kndrqnwzvnycgnycdfcr',
-            station_latitude=float(23.464415986413968),
-            station_longitude=float(7.298708932794495),
-            river_name='wqmzsnqksybbkcbelqvx',
-            stationparameter_name='cuoiflrwsrofwwywqehz',
-            ts_id='mtctleafhyuvhrkqvvno',
-            ts_unitname='ezkoopqvguduiewvdmgz',
-            water_body='zqixwobuxswbemnkqbce'
+            station_no='tinsadjtrwdnswjrocie',
+            station_name='xtmjolwjbsplyluocqvg',
+            station_id='renttdpznacfgouqdcka',
+            station_latitude=float(60.60380420225655),
+            station_longitude=float(0.6268571784068144),
+            river_name='fkdxoctmzlipjtjwombe',
+            stationparameter_name='nzgxiqqjkvshuofrfbdq',
+            ts_id='zzpwlorranuxshnqgobh',
+            ts_unitname='jnyczskbmolgtmqbjrbv',
+            water_body='osqcmwmpldlhgwszwebw'
         )

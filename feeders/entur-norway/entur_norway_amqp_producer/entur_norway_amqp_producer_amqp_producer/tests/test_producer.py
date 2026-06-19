@@ -328,7 +328,7 @@ class TestNoEnturAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "no.entur.amqp.EstimatedVehicleJourney"
+                    assert cloud_event_payload.get("type") == "no.entur.EstimatedVehicleJourney"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -372,7 +372,7 @@ class TestNoEnturAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'no.entur.amqp.EstimatedVehicleJourney'
+        assert properties.get('cloudEvents:type') == 'no.entur.EstimatedVehicleJourney'
         assert received.body is not None
         assert received.subject == "journeys/{operating_day}/{service_journey_id}".format(operating_day="value", service_journey_id="value")
         assert properties.get('operating_day') == "{operating_day}".format(operating_day="value")
@@ -432,7 +432,7 @@ class TestNoEnturAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "no.entur.amqp.MonitoredVehicleJourney"
+                    assert cloud_event_payload.get("type") == "no.entur.MonitoredVehicleJourney"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -476,7 +476,7 @@ class TestNoEnturAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'no.entur.amqp.MonitoredVehicleJourney'
+        assert properties.get('cloudEvents:type') == 'no.entur.MonitoredVehicleJourney'
         assert received.body is not None
         assert received.subject == "journeys/{operating_day}/{service_journey_id}".format(operating_day="value", service_journey_id="value")
         assert properties.get('operating_day') == "{operating_day}".format(operating_day="value")
@@ -534,7 +534,7 @@ class TestNoEnturAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "no.entur.amqp.PtSituationElement"
+                    assert cloud_event_payload.get("type") == "no.entur.PtSituationElement"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -574,7 +574,7 @@ class TestNoEnturAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'no.entur.amqp.PtSituationElement'
+        assert properties.get('cloudEvents:type') == 'no.entur.PtSituationElement'
         assert received.body is not None
         assert received.subject == "situations/{situation_number}".format(situation_number="value")
         assert properties.get('situation_number') == "{situation_number}".format(situation_number="value")

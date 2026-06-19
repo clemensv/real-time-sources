@@ -28,20 +28,20 @@ class Test_TollRate(unittest.TestCase):
         Create instance of TollRate for testing
         """
         instance = TollRate(
-            trip_name='azgwtdmjnntyxciokksd',
-            state_route='udsaqgebrihylztdmruh',
-            travel_direction='gcrapshcewhuqzpeqcae',
-            current_toll=int(25),
-            current_message='tipewtxvlqmjszztvyzj',
-            time_updated='rghghhrrppzrgazvcemo',
-            start_location_name='uhyfjbtznafluggvvzbc',
-            start_latitude=float(17.464822282148862),
-            start_longitude=float(72.20736838963073),
-            start_milepost=float(68.85233196380992),
-            end_location_name='qcthsydcpxdtdgtfsiuk',
-            end_latitude=float(15.528408085711787),
-            end_longitude=float(44.63344771093809),
-            end_milepost=float(0.0420712226404274)
+            trip_name='xinvfflcbrffvyshektc',
+            state_route='dlzitkkqmnmzvjostjmb',
+            travel_direction='wtyrsniymytjrhgktxwf',
+            current_toll=int(79),
+            current_message='vnxhvtnntljxkdhbyzro',
+            time_updated='eqnmzhynvtktoufswuvx',
+            start_location_name='lzvqygtbsamiwnwysdqy',
+            start_latitude=float(15.364542710644024),
+            start_longitude=float(26.204129720383186),
+            start_milepost=float(68.76776667537854),
+            end_location_name='ocvqjyyevwwbhmevhrwt',
+            end_latitude=float(88.52885346452263),
+            end_longitude=float(5.55848080231166),
+            end_milepost=float(92.754116127015)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test trip_name property
         """
-        test_value = 'azgwtdmjnntyxciokksd'
+        test_value = 'xinvfflcbrffvyshektc'
         self.instance.trip_name = test_value
         self.assertEqual(self.instance.trip_name, test_value)
     
@@ -58,7 +58,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test state_route property
         """
-        test_value = 'udsaqgebrihylztdmruh'
+        test_value = 'dlzitkkqmnmzvjostjmb'
         self.instance.state_route = test_value
         self.assertEqual(self.instance.state_route, test_value)
     
@@ -66,7 +66,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test travel_direction property
         """
-        test_value = 'gcrapshcewhuqzpeqcae'
+        test_value = 'wtyrsniymytjrhgktxwf'
         self.instance.travel_direction = test_value
         self.assertEqual(self.instance.travel_direction, test_value)
     
@@ -74,7 +74,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test current_toll property
         """
-        test_value = int(25)
+        test_value = int(79)
         self.instance.current_toll = test_value
         self.assertEqual(self.instance.current_toll, test_value)
     
@@ -82,7 +82,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test current_message property
         """
-        test_value = 'tipewtxvlqmjszztvyzj'
+        test_value = 'vnxhvtnntljxkdhbyzro'
         self.instance.current_message = test_value
         self.assertEqual(self.instance.current_message, test_value)
     
@@ -90,7 +90,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test time_updated property
         """
-        test_value = 'rghghhrrppzrgazvcemo'
+        test_value = 'eqnmzhynvtktoufswuvx'
         self.instance.time_updated = test_value
         self.assertEqual(self.instance.time_updated, test_value)
     
@@ -98,7 +98,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test start_location_name property
         """
-        test_value = 'uhyfjbtznafluggvvzbc'
+        test_value = 'lzvqygtbsamiwnwysdqy'
         self.instance.start_location_name = test_value
         self.assertEqual(self.instance.start_location_name, test_value)
     
@@ -106,7 +106,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test start_latitude property
         """
-        test_value = float(17.464822282148862)
+        test_value = float(15.364542710644024)
         self.instance.start_latitude = test_value
         self.assertEqual(self.instance.start_latitude, test_value)
     
@@ -114,7 +114,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test start_longitude property
         """
-        test_value = float(72.20736838963073)
+        test_value = float(26.204129720383186)
         self.instance.start_longitude = test_value
         self.assertEqual(self.instance.start_longitude, test_value)
     
@@ -122,7 +122,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test start_milepost property
         """
-        test_value = float(68.85233196380992)
+        test_value = float(68.76776667537854)
         self.instance.start_milepost = test_value
         self.assertEqual(self.instance.start_milepost, test_value)
     
@@ -130,7 +130,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test end_location_name property
         """
-        test_value = 'qcthsydcpxdtdgtfsiuk'
+        test_value = 'ocvqjyyevwwbhmevhrwt'
         self.instance.end_location_name = test_value
         self.assertEqual(self.instance.end_location_name, test_value)
     
@@ -138,7 +138,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test end_latitude property
         """
-        test_value = float(15.528408085711787)
+        test_value = float(88.52885346452263)
         self.instance.end_latitude = test_value
         self.assertEqual(self.instance.end_latitude, test_value)
     
@@ -146,7 +146,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test end_longitude property
         """
-        test_value = float(44.63344771093809)
+        test_value = float(5.55848080231166)
         self.instance.end_longitude = test_value
         self.assertEqual(self.instance.end_longitude, test_value)
     
@@ -154,7 +154,7 @@ class Test_TollRate(unittest.TestCase):
         """
         Test end_milepost property
         """
-        test_value = float(0.0420712226404274)
+        test_value = float(92.754116127015)
         self.instance.end_milepost = test_value
         self.assertEqual(self.instance.end_milepost, test_value)
     

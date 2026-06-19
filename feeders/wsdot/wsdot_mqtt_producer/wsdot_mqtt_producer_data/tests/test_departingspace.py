@@ -29,12 +29,12 @@ class Test_DepartingSpace(unittest.TestCase):
         Create instance of DepartingSpace for testing
         """
         instance = DepartingSpace(
-            departure='xsjogsszswggesllwwus',
-            is_cancelled=False,
-            vessel_id=int(63),
-            vessel_name='ajasbaodrhhroaittpeq',
-            max_space_count=int(67),
-            space_for_arrival_terminals=[None]
+            departure='ooonwoenkbbyleetbyzh',
+            is_cancelled=True,
+            vessel_id=int(54),
+            vessel_name='alkrtvsftfkesehacygx',
+            max_space_count=int(22),
+            space_for_arrival_terminals=[None, None]
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test departure property
         """
-        test_value = 'xsjogsszswggesllwwus'
+        test_value = 'ooonwoenkbbyleetbyzh'
         self.instance.departure = test_value
         self.assertEqual(self.instance.departure, test_value)
     
@@ -51,7 +51,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test is_cancelled property
         """
-        test_value = False
+        test_value = True
         self.instance.is_cancelled = test_value
         self.assertEqual(self.instance.is_cancelled, test_value)
     
@@ -59,7 +59,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test vessel_id property
         """
-        test_value = int(63)
+        test_value = int(54)
         self.instance.vessel_id = test_value
         self.assertEqual(self.instance.vessel_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test vessel_name property
         """
-        test_value = 'ajasbaodrhhroaittpeq'
+        test_value = 'alkrtvsftfkesehacygx'
         self.instance.vessel_name = test_value
         self.assertEqual(self.instance.vessel_name, test_value)
     
@@ -75,7 +75,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test max_space_count property
         """
-        test_value = int(67)
+        test_value = int(22)
         self.instance.max_space_count = test_value
         self.assertEqual(self.instance.max_space_count, test_value)
     
@@ -83,7 +83,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test space_for_arrival_terminals property
         """
-        test_value = [None]
+        test_value = [None, None]
         self.instance.space_for_arrival_terminals = test_value
         self.assertEqual(self.instance.space_for_arrival_terminals, test_value)
     

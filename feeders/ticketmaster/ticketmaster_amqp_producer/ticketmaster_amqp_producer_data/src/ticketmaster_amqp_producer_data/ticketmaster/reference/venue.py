@@ -175,16 +175,16 @@ class Venue:
             An instance of the dataclass.
         """
         return cls(
-            entity_id='tqgwmlgairalmvzapvjf',
-            name='nlqbqtulvjrajliuaace',
-            url='eqptahtewwglldfezcpl',
-            locale='crmxrszumseuvjxbvlkl',
-            timezone='pawfhtnbbvkebapguvlz',
-            city='njqsvcmeinyclfjghbck',
-            state_code='snhvkrshxlymjrsojqia',
-            country_code='nuvznkvnfoidnvicmstg',
-            address='vzmawougdgknexnzwufz',
-            postal_code='uqmejtrdmvkaivouuyht',
-            latitude=float(8.536593817980343),
-            longitude=float(96.9266539727198)
+            entity_id='fzqtprhcparspspbnnxy',
+            name='vhokeveinrvcukzqbyzw',
+            url='vtuxhusxnggsrgahytfc',
+            locale='zjiayzlieyzmiugrniod',
+            timezone='iqvmykppldzfkbavpctp',
+            city='ftfcivwtivkrgwuoukeh',
+            state_code='oamxbpsmynxjebknljam',
+            country_code='dmnjgewhgouctvuvhxrm',
+            address='jddegyktvgjoyhuvfzdk',
+            postal_code='dgtyulwolcfpyonnhpst',
+            latitude=float(17.85521807765703),
+            longitude=float(10.939015713702528)
         )

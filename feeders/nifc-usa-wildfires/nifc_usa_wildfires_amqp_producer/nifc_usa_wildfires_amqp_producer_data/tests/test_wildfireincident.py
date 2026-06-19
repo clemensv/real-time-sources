@@ -28,37 +28,37 @@ class Test_WildfireIncident(unittest.TestCase):
         Create instance of WildfireIncident for testing
         """
         instance = WildfireIncident(
-            irwin_id='azozwyyabsmprkcbkese',
-            incident_name='uzcxiycubvklpdsfaywd',
-            unique_fire_identifier='aryfnkbbwcrlfzuilznk',
-            incident_type_category='tgzrjjmmxhqldkqsftur',
-            incident_type_kind='tassxslquxfxjwultcst',
-            fire_discovery_datetime='nqmwhrnzpkstfzjajxfw',
-            daily_acres=float(66.7470301923789),
-            calculated_acres=float(0.7102892623855661),
-            discovery_acres=float(99.63990890593011),
-            percent_contained=float(24.002129664238403),
-            poo_state='aecictuqkghuqcpajfsj',
-            poo_county='omjyuyrclfhseturcrvp',
-            latitude=float(90.63911519562488),
-            longitude=float(38.02976571281283),
-            fire_cause='ljutypmzeireqsgycppd',
-            fire_cause_general='wahuctsfeummaibxlomu',
-            gacc='cvalkiacilrkssogqris',
-            total_incident_personnel=int(72),
-            incident_management_organization='ezlacjzigkwqcnnszoho',
-            fire_mgmt_complexity='vbfnvwkeuaqhjlzicpfv',
-            residences_destroyed=int(54),
-            other_structures_destroyed=int(97),
-            injuries=int(78),
-            fatalities=int(35),
-            containment_datetime='hpbkatqdnkfvmmeulzti',
-            control_datetime='mfejeyhmrcluhnrssqfl',
-            fire_out_datetime='ysonynmcylrjjojfutkk',
-            final_acres=float(57.51360780877371),
-            modified_on_datetime='azikyzdpgzlcpmcpzruz',
-            state='gafovwzlwwzjoxpupovz',
-            status='lrpyeokpjagwsxrlvwle'
+            irwin_id='pqjhwtumkzfuhrdmcejn',
+            incident_name='zqvwcgotknbzziaefhyy',
+            unique_fire_identifier='ekytizdwrlnunlubiznk',
+            incident_type_category='adaasjgkwizbpudogmfd',
+            incident_type_kind='jstffpxoumsnbnuaxcyv',
+            fire_discovery_datetime='gyjzlwltfdypvcdlwcps',
+            daily_acres=float(52.79958467893275),
+            calculated_acres=float(64.02238144573698),
+            discovery_acres=float(47.689060633462496),
+            percent_contained=float(10.469086831834918),
+            poo_state='ziumonnektxhtxsqdmfu',
+            poo_county='mojbsbscapmndaxcuzhd',
+            latitude=float(73.46405946896674),
+            longitude=float(57.603126568870714),
+            fire_cause='fvyqcfofgwesjomenjgq',
+            fire_cause_general='wwkitjtdqqwhunzwoqus',
+            gacc='ygwqxyzfhvhsuehotuzb',
+            total_incident_personnel=int(19),
+            incident_management_organization='ymgxplybjpirlxawwlld',
+            fire_mgmt_complexity='emdmsnnutfkbkqdsmvfp',
+            residences_destroyed=int(38),
+            other_structures_destroyed=int(0),
+            injuries=int(89),
+            fatalities=int(2),
+            containment_datetime='htydhfvowfejgjevtlrc',
+            control_datetime='gspfuhtwqadhjtohvdbi',
+            fire_out_datetime='txgznipuyftmjprqohip',
+            final_acres=float(43.0063780056933),
+            modified_on_datetime='tubdkzrwqpmirreuxssf',
+            state='desardwxjfajycfbnetg',
+            status='hoadossrycsghdududhm'
         )
         return instance
 
@@ -67,7 +67,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test irwin_id property
         """
-        test_value = 'azozwyyabsmprkcbkese'
+        test_value = 'pqjhwtumkzfuhrdmcejn'
         self.instance.irwin_id = test_value
         self.assertEqual(self.instance.irwin_id, test_value)
     
@@ -75,7 +75,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test incident_name property
         """
-        test_value = 'uzcxiycubvklpdsfaywd'
+        test_value = 'zqvwcgotknbzziaefhyy'
         self.instance.incident_name = test_value
         self.assertEqual(self.instance.incident_name, test_value)
     
@@ -83,7 +83,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test unique_fire_identifier property
         """
-        test_value = 'aryfnkbbwcrlfzuilznk'
+        test_value = 'ekytizdwrlnunlubiznk'
         self.instance.unique_fire_identifier = test_value
         self.assertEqual(self.instance.unique_fire_identifier, test_value)
     
@@ -91,7 +91,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test incident_type_category property
         """
-        test_value = 'tgzrjjmmxhqldkqsftur'
+        test_value = 'adaasjgkwizbpudogmfd'
         self.instance.incident_type_category = test_value
         self.assertEqual(self.instance.incident_type_category, test_value)
     
@@ -99,7 +99,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test incident_type_kind property
         """
-        test_value = 'tassxslquxfxjwultcst'
+        test_value = 'jstffpxoumsnbnuaxcyv'
         self.instance.incident_type_kind = test_value
         self.assertEqual(self.instance.incident_type_kind, test_value)
     
@@ -107,7 +107,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test fire_discovery_datetime property
         """
-        test_value = 'nqmwhrnzpkstfzjajxfw'
+        test_value = 'gyjzlwltfdypvcdlwcps'
         self.instance.fire_discovery_datetime = test_value
         self.assertEqual(self.instance.fire_discovery_datetime, test_value)
     
@@ -115,7 +115,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test daily_acres property
         """
-        test_value = float(66.7470301923789)
+        test_value = float(52.79958467893275)
         self.instance.daily_acres = test_value
         self.assertEqual(self.instance.daily_acres, test_value)
     
@@ -123,7 +123,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test calculated_acres property
         """
-        test_value = float(0.7102892623855661)
+        test_value = float(64.02238144573698)
         self.instance.calculated_acres = test_value
         self.assertEqual(self.instance.calculated_acres, test_value)
     
@@ -131,7 +131,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test discovery_acres property
         """
-        test_value = float(99.63990890593011)
+        test_value = float(47.689060633462496)
         self.instance.discovery_acres = test_value
         self.assertEqual(self.instance.discovery_acres, test_value)
     
@@ -139,7 +139,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test percent_contained property
         """
-        test_value = float(24.002129664238403)
+        test_value = float(10.469086831834918)
         self.instance.percent_contained = test_value
         self.assertEqual(self.instance.percent_contained, test_value)
     
@@ -147,7 +147,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test poo_state property
         """
-        test_value = 'aecictuqkghuqcpajfsj'
+        test_value = 'ziumonnektxhtxsqdmfu'
         self.instance.poo_state = test_value
         self.assertEqual(self.instance.poo_state, test_value)
     
@@ -155,7 +155,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test poo_county property
         """
-        test_value = 'omjyuyrclfhseturcrvp'
+        test_value = 'mojbsbscapmndaxcuzhd'
         self.instance.poo_county = test_value
         self.assertEqual(self.instance.poo_county, test_value)
     
@@ -163,7 +163,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(90.63911519562488)
+        test_value = float(73.46405946896674)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -171,7 +171,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(38.02976571281283)
+        test_value = float(57.603126568870714)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -179,7 +179,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test fire_cause property
         """
-        test_value = 'ljutypmzeireqsgycppd'
+        test_value = 'fvyqcfofgwesjomenjgq'
         self.instance.fire_cause = test_value
         self.assertEqual(self.instance.fire_cause, test_value)
     
@@ -187,7 +187,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test fire_cause_general property
         """
-        test_value = 'wahuctsfeummaibxlomu'
+        test_value = 'wwkitjtdqqwhunzwoqus'
         self.instance.fire_cause_general = test_value
         self.assertEqual(self.instance.fire_cause_general, test_value)
     
@@ -195,7 +195,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test gacc property
         """
-        test_value = 'cvalkiacilrkssogqris'
+        test_value = 'ygwqxyzfhvhsuehotuzb'
         self.instance.gacc = test_value
         self.assertEqual(self.instance.gacc, test_value)
     
@@ -203,7 +203,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test total_incident_personnel property
         """
-        test_value = int(72)
+        test_value = int(19)
         self.instance.total_incident_personnel = test_value
         self.assertEqual(self.instance.total_incident_personnel, test_value)
     
@@ -211,7 +211,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test incident_management_organization property
         """
-        test_value = 'ezlacjzigkwqcnnszoho'
+        test_value = 'ymgxplybjpirlxawwlld'
         self.instance.incident_management_organization = test_value
         self.assertEqual(self.instance.incident_management_organization, test_value)
     
@@ -219,7 +219,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test fire_mgmt_complexity property
         """
-        test_value = 'vbfnvwkeuaqhjlzicpfv'
+        test_value = 'emdmsnnutfkbkqdsmvfp'
         self.instance.fire_mgmt_complexity = test_value
         self.assertEqual(self.instance.fire_mgmt_complexity, test_value)
     
@@ -227,7 +227,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test residences_destroyed property
         """
-        test_value = int(54)
+        test_value = int(38)
         self.instance.residences_destroyed = test_value
         self.assertEqual(self.instance.residences_destroyed, test_value)
     
@@ -235,7 +235,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test other_structures_destroyed property
         """
-        test_value = int(97)
+        test_value = int(0)
         self.instance.other_structures_destroyed = test_value
         self.assertEqual(self.instance.other_structures_destroyed, test_value)
     
@@ -243,7 +243,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test injuries property
         """
-        test_value = int(78)
+        test_value = int(89)
         self.instance.injuries = test_value
         self.assertEqual(self.instance.injuries, test_value)
     
@@ -251,7 +251,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test fatalities property
         """
-        test_value = int(35)
+        test_value = int(2)
         self.instance.fatalities = test_value
         self.assertEqual(self.instance.fatalities, test_value)
     
@@ -259,7 +259,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test containment_datetime property
         """
-        test_value = 'hpbkatqdnkfvmmeulzti'
+        test_value = 'htydhfvowfejgjevtlrc'
         self.instance.containment_datetime = test_value
         self.assertEqual(self.instance.containment_datetime, test_value)
     
@@ -267,7 +267,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test control_datetime property
         """
-        test_value = 'mfejeyhmrcluhnrssqfl'
+        test_value = 'gspfuhtwqadhjtohvdbi'
         self.instance.control_datetime = test_value
         self.assertEqual(self.instance.control_datetime, test_value)
     
@@ -275,7 +275,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test fire_out_datetime property
         """
-        test_value = 'ysonynmcylrjjojfutkk'
+        test_value = 'txgznipuyftmjprqohip'
         self.instance.fire_out_datetime = test_value
         self.assertEqual(self.instance.fire_out_datetime, test_value)
     
@@ -283,7 +283,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test final_acres property
         """
-        test_value = float(57.51360780877371)
+        test_value = float(43.0063780056933)
         self.instance.final_acres = test_value
         self.assertEqual(self.instance.final_acres, test_value)
     
@@ -291,7 +291,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test modified_on_datetime property
         """
-        test_value = 'azikyzdpgzlcpmcpzruz'
+        test_value = 'tubdkzrwqpmirreuxssf'
         self.instance.modified_on_datetime = test_value
         self.assertEqual(self.instance.modified_on_datetime, test_value)
     
@@ -299,7 +299,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'gafovwzlwwzjoxpupovz'
+        test_value = 'desardwxjfajycfbnetg'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -307,7 +307,7 @@ class Test_WildfireIncident(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'lrpyeokpjagwsxrlvwle'
+        test_value = 'hoadossrycsghdududhm'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     

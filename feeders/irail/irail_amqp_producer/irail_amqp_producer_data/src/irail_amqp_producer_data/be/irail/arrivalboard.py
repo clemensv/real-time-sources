@@ -162,9 +162,9 @@ class ArrivalBoard:
             An instance of the dataclass.
         """
         return cls(
-            station_id='ufpwtnrexmrcpaamcbeb',
-            station_name='kxjbdnvkuumhcrwyiwhr',
-            retrieved_at='qdanhbiqsfliozwqcuui',
-            arrival_count=int(89),
-            arrivals=[None]
+            station_id='cfczefktulttiqgnjzyn',
+            station_name='ugmqbfpjmsnhpxuexyrq',
+            retrieved_at='xlibfuegwusfidrceekl',
+            arrival_count=int(0),
+            arrivals=[None, None, None, None, None]
         )

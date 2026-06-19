@@ -165,11 +165,11 @@ class Precipitation:
             An instance of the dataclass.
         """
         return cls(
-            site_no='ryhyikpccstcadqcormu',
-            datetime='fdwertnqswgkhkcfzhhr',
-            value=float(26.854501527687745),
-            exception='ozfazighvownhfxogmkj',
-            qualifiers=['jcfphngekgdaeaddfyah', 'qiicjhkzlrkekxkchnzo', 'ymxxlufwqabqhzwxsylo', 'meacswlxpakfiudeqzet'],
-            parameter_cd='nagpajqyfcaaeacpiqqk',
-            timeseries_cd='ncinaiowykfyuzqcvgve'
+            site_no='iksmiskpktqvcihxgzku',
+            datetime='bvbyazykvajfgqxchkgs',
+            value=float(61.227926685811696),
+            exception='pxwewxuppolvsrrqxdch',
+            qualifiers=['ecbjaycksbzkbstvpyir', 'mcnytosndulqujsnoolx'],
+            parameter_cd='lcyqipxenkknqopjilro',
+            timeseries_cd='dolnjzliangmnlwkdebe'
         )

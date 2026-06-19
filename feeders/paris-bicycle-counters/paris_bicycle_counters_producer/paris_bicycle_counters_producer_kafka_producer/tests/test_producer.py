@@ -225,7 +225,7 @@ def test_fr_paris_opendata_velo_mqtt_frparisopendatavelomqttcounter(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "FR.Paris.OpenData.Velo.mqtt.Counter":
+            if cloudevent['type'] == "FR.Paris.OpenData.Velo.Counter":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_fr_paris_opendata_velo_mqtt_frparisopendatavelomqttbicyclecount(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "FR.Paris.OpenData.Velo.mqtt.BicycleCount":
+            if cloudevent['type'] == "FR.Paris.OpenData.Velo.BicycleCount":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_fr_paris_opendata_velo_amqp_frparisopendataveloamqpcounter(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "FR.Paris.OpenData.Velo.amqp.Counter":
+            if cloudevent['type'] == "FR.Paris.OpenData.Velo.Counter":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_fr_paris_opendata_velo_amqp_frparisopendataveloamqpbicyclecount(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "FR.Paris.OpenData.Velo.amqp.BicycleCount":
+            if cloudevent['type'] == "FR.Paris.OpenData.Velo.BicycleCount":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

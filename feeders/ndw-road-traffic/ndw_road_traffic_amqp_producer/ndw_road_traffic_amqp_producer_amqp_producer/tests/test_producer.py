@@ -345,7 +345,7 @@ class TestNLNDWAVGAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.AVG.PointMeasurementSite.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.AVG.PointMeasurementSite"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -382,7 +382,7 @@ class TestNLNDWAVGAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.PointMeasurementSite.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.PointMeasurementSite'
         assert received.body is not None
         assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
@@ -435,7 +435,7 @@ class TestNLNDWAVGAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.AVG.RouteMeasurementSite.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.AVG.RouteMeasurementSite"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -472,7 +472,7 @@ class TestNLNDWAVGAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.RouteMeasurementSite.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.RouteMeasurementSite'
         assert received.body is not None
         assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
@@ -525,7 +525,7 @@ class TestNLNDWAVGAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.AVG.TrafficObservation.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.AVG.TrafficObservation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -562,7 +562,7 @@ class TestNLNDWAVGAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.TrafficObservation.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.TrafficObservation'
         assert received.body is not None
         assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
@@ -615,7 +615,7 @@ class TestNLNDWAVGAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.AVG.TravelTimeObservation.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.AVG.TravelTimeObservation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -652,7 +652,7 @@ class TestNLNDWAVGAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.TravelTimeObservation.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.AVG.TravelTimeObservation'
         assert received.body is not None
         assert received.subject == "measurement-sites/{measurement_site_id}".format(measurement_site_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("measurement-sites/{measurement_site_id}".format(measurement_site_id="value"))[:128]
@@ -766,7 +766,7 @@ class TestNLNDWDRIPAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.DRIP.DripSign.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.DRIP.DripSign"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -804,7 +804,7 @@ class TestNLNDWDRIPAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.DRIP.DripSign.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.DRIP.DripSign'
         assert received.body is not None
         assert received.subject == "drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value"))[:128]
@@ -858,7 +858,7 @@ class TestNLNDWDRIPAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.DRIP.DripDisplayState.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.DRIP.DripDisplayState"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -896,7 +896,7 @@ class TestNLNDWDRIPAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.DRIP.DripDisplayState.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.DRIP.DripDisplayState'
         assert received.body is not None
         assert received.subject == "drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("drips/{vms_controller_id}/{vms_index}".format(vms_controller_id="value", vms_index="value"))[:128]
@@ -1009,7 +1009,7 @@ class TestNLNDWMSIAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.MSI.MsiSign.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.MSI.MsiSign"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1046,7 +1046,7 @@ class TestNLNDWMSIAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.MSI.MsiSign.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.MSI.MsiSign'
         assert received.body is not None
         assert received.subject == "msi-signs/{sign_id}".format(sign_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("msi-signs/{sign_id}".format(sign_id="value"))[:128]
@@ -1099,7 +1099,7 @@ class TestNLNDWMSIAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.MSI.MsiDisplayState.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.MSI.MsiDisplayState"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1136,7 +1136,7 @@ class TestNLNDWMSIAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.MSI.MsiDisplayState.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.MSI.MsiDisplayState'
         assert received.body is not None
         assert received.subject == "msi-signs/{sign_id}".format(sign_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("msi-signs/{sign_id}".format(sign_id="value"))[:128]
@@ -1249,7 +1249,7 @@ class TestNLNDWSituationsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.Situations.Roadwork.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.Situations.Roadwork"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1286,7 +1286,7 @@ class TestNLNDWSituationsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.Roadwork.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.Roadwork'
         assert received.body is not None
         assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
@@ -1339,7 +1339,7 @@ class TestNLNDWSituationsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.Situations.BridgeOpening.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.Situations.BridgeOpening"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1376,7 +1376,7 @@ class TestNLNDWSituationsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.BridgeOpening.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.BridgeOpening'
         assert received.body is not None
         assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
@@ -1429,7 +1429,7 @@ class TestNLNDWSituationsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.Situations.TemporaryClosure.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.Situations.TemporaryClosure"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1466,7 +1466,7 @@ class TestNLNDWSituationsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.TemporaryClosure.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.TemporaryClosure'
         assert received.body is not None
         assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
@@ -1519,7 +1519,7 @@ class TestNLNDWSituationsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.Situations.TemporarySpeedLimit.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.Situations.TemporarySpeedLimit"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1556,7 +1556,7 @@ class TestNLNDWSituationsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.TemporarySpeedLimit.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.TemporarySpeedLimit'
         assert received.body is not None
         assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]
@@ -1609,7 +1609,7 @@ class TestNLNDWSituationsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NL.NDW.Situations.SafetyRelatedMessage.amqp"
+                    assert cloud_event_payload.get("type") == "NL.NDW.Situations.SafetyRelatedMessage"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1646,7 +1646,7 @@ class TestNLNDWSituationsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.SafetyRelatedMessage.amqp'
+        assert properties.get('cloudEvents:type') == 'NL.NDW.Situations.SafetyRelatedMessage'
         assert received.body is not None
         assert received.subject == "situations/{situation_record_id}".format(situation_record_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("situations/{situation_record_id}".format(situation_record_id="value"))[:128]

@@ -291,7 +291,7 @@ def test_uk_co_elexon_bmrs_mqtt_ukcoelexonbmrsmqttgenerationmix(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "UK.Co.Elexon.BMRS.mqtt.GenerationMix":
+            if cloudevent['type'] == "UK.Co.Elexon.BMRS.GenerationMix":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -353,7 +353,7 @@ def test_uk_co_elexon_bmrs_mqtt_ukcoelexonbmrsmqttdemandoutturn(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "UK.Co.Elexon.BMRS.mqtt.DemandOutturn":
+            if cloudevent['type'] == "UK.Co.Elexon.BMRS.DemandOutturn":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -415,7 +415,7 @@ def test_uk_co_elexon_bmrs_mqtt_ukcoelexonbmrsmqttinfo(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "UK.Co.Elexon.BMRS.mqtt.Info":
+            if cloudevent['type'] == "UK.Co.Elexon.BMRS.Info":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -477,7 +477,7 @@ def test_uk_co_elexon_bmrs_amqp_ukcoelexonbmrsamqpgenerationmix(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "UK.Co.Elexon.BMRS.amqp.GenerationMix":
+            if cloudevent['type'] == "UK.Co.Elexon.BMRS.GenerationMix":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -539,7 +539,7 @@ def test_uk_co_elexon_bmrs_amqp_ukcoelexonbmrsamqpdemandoutturn(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "UK.Co.Elexon.BMRS.amqp.DemandOutturn":
+            if cloudevent['type'] == "UK.Co.Elexon.BMRS.DemandOutturn":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -601,7 +601,7 @@ def test_uk_co_elexon_bmrs_amqp_ukcoelexonbmrsamqpinfo(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "UK.Co.Elexon.BMRS.amqp.Info":
+            if cloudevent['type'] == "UK.Co.Elexon.BMRS.Info":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

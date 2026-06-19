@@ -173,15 +173,15 @@ class Repost:
             An instance of the dataclass.
         """
         return cls(
-            uri='rwlwsujfcifbnuxqgwby',
-            cid='otfvizbzxrdmuzmykhgj',
-            did='kjdujyqzxqgwoapvafqf',
-            handle='gmxjuwlxurbfzzrvzqtn',
-            subject_uri='eopltgkbwvkbbvzugqrv',
-            subject_cid='vbklhmnfatzyhpdbhxeg',
-            created_at='nwcqbgddxkengtzwspdb',
-            indexed_at='jjfkitmugguouenrglri',
-            seq=int(50),
-            collection='iarmjcaxkrmqowvwaksa',
-            lang='eynlgxvnipefwkwmauuj'
+            uri='zjuiztlpnlnxcldlqpyq',
+            cid='xxtylcxacazxvstlkjqf',
+            did='shqvybnefdalbizqpybn',
+            handle='ucxfzdplrhlmkbxclyio',
+            subject_uri='ypdbxjzxydmexfrmgecn',
+            subject_cid='oaawsxgycjwhzllsdyvu',
+            created_at='ueeneisqmpxyqjycvnpn',
+            indexed_at='hzdljjeemzdmeopqxgcp',
+            seq=int(92),
+            collection='smruobgovmtybjecxcxu',
+            lang='baymzmvkfmsxzzjtbbro'
         )

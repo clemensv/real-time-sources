@@ -100,6 +100,8 @@ class FreeBikeStatus:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class FreeBikeStatus:
             An instance of the dataclass.
         """
         return cls(
-            system_id='xojkdtrcpetjtvdqvwyd',
-            bike_id='rpzkixzgorzvdysrlqxj',
-            lat=float(43.76962169514513),
-            lon=float(77.15411172370837),
-            is_reserved=True,
-            is_disabled=True,
-            vehicle_type_id='xqfaptcyfthecjfqkddt',
-            current_range_meters=float(31.332574580271988),
-            last_reported=int(66)
+            system_id='baswjyntnxcigenjrabq',
+            bike_id='xhnbknjnrgrgkjlhldnz',
+            lat=float(9.504063230549631),
+            lon=float(16.207332880579507),
+            is_reserved=False,
+            is_disabled=False,
+            vehicle_type_id='vtsjkmjxvhaztucfdsdc',
+            current_range_meters=float(74.29526249603843),
+            last_reported=int(98)
         )

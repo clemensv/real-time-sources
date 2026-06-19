@@ -323,7 +323,7 @@ class TestOrgEAWSALBINAAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "org.EAWS.ALBINA.amqp.AvalancheBulletin"
+                    assert cloud_event_payload.get("type") == "org.EAWS.ALBINA.AvalancheBulletin"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -364,7 +364,7 @@ class TestOrgEAWSALBINAAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'org.EAWS.ALBINA.amqp.AvalancheBulletin'
+        assert properties.get('cloudEvents:type') == 'org.EAWS.ALBINA.AvalancheBulletin'
         assert received.body is not None
         assert received.subject == "{region_id}".format(region_id="value")
         assert properties.get('country') == "{country}".format(country="value")

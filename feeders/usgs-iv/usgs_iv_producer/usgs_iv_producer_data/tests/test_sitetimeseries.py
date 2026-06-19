@@ -28,11 +28,11 @@ class Test_SiteTimeseries(unittest.TestCase):
         Create instance of SiteTimeseries for testing
         """
         instance = SiteTimeseries(
-            agency_cd='waajlfbbgejpscbpdmuj',
-            site_no='gydzbqvlqcdlssylhogm',
-            parameter_cd='wfbfagyvljvriopbpqdl',
-            timeseries_cd='sbblvekwsxvzdyygtmyk',
-            description='wgncvpgnnkymkvvbemdh'
+            agency_cd='qfpckkqbhuecbjcckygm',
+            site_no='sqxhopxsvbjrxlfljbql',
+            parameter_cd='cbvgypjymiutecevjgme',
+            timeseries_cd='hrnjvqplopdvzftlgwhs',
+            description='xnfejvrgtaiyjdmtdxkg'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_SiteTimeseries(unittest.TestCase):
         """
         Test agency_cd property
         """
-        test_value = 'waajlfbbgejpscbpdmuj'
+        test_value = 'qfpckkqbhuecbjcckygm'
         self.instance.agency_cd = test_value
         self.assertEqual(self.instance.agency_cd, test_value)
     
@@ -49,7 +49,7 @@ class Test_SiteTimeseries(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'gydzbqvlqcdlssylhogm'
+        test_value = 'sqxhopxsvbjrxlfljbql'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -57,7 +57,7 @@ class Test_SiteTimeseries(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'wfbfagyvljvriopbpqdl'
+        test_value = 'cbvgypjymiutecevjgme'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -65,7 +65,7 @@ class Test_SiteTimeseries(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'sbblvekwsxvzdyygtmyk'
+        test_value = 'hrnjvqplopdvzftlgwhs'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     
@@ -73,7 +73,7 @@ class Test_SiteTimeseries(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'wgncvpgnnkymkvvbemdh'
+        test_value = 'xnfejvrgtaiyjdmtdxkg'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     

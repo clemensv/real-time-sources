@@ -329,7 +329,7 @@ class TestFiDigitrafficMarineAisAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.marine.ais.amqp.location"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.marine.ais.VesselLocation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -366,7 +366,7 @@ class TestFiDigitrafficMarineAisAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.ais.amqp.location'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.ais.VesselLocation'
         assert received.body is not None
         assert received.subject == "{mmsi}".format(mmsi="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{mmsi}".format(mmsi="value"))[:128]
@@ -419,7 +419,7 @@ class TestFiDigitrafficMarineAisAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.marine.ais.amqp.metadata"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.marine.ais.VesselMetadata"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -456,7 +456,7 @@ class TestFiDigitrafficMarineAisAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.ais.amqp.metadata'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.ais.VesselMetadata'
         assert received.body is not None
         assert received.subject == "{mmsi}".format(mmsi="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{mmsi}".format(mmsi="value"))[:128]
@@ -569,7 +569,7 @@ class TestFiDigitrafficMarinePortcallAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.marine.portcall.amqp.port_call"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.marine.portcall.PortCall"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -606,7 +606,7 @@ class TestFiDigitrafficMarinePortcallAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.portcall.amqp.port_call'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.portcall.PortCall'
         assert received.body is not None
         assert received.subject == "{port_call_id}".format(port_call_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{port_call_id}".format(port_call_id="value"))[:128]
@@ -719,7 +719,7 @@ class TestFiDigitrafficMarinePortcallVesseldetailsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.marine.portcall.VesselDetails"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -756,7 +756,7 @@ class TestFiDigitrafficMarinePortcallVesseldetailsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.portcall.vesseldetails.amqp.vessel_details'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.portcall.VesselDetails'
         assert received.body is not None
         assert received.subject == "{vessel_id}".format(vessel_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{vessel_id}".format(vessel_id="value"))[:128]
@@ -869,7 +869,7 @@ class TestFiDigitrafficMarinePortcallPortlocationAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.marine.portcall.portlocation.amqp.port_location"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.marine.portcall.PortLocation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -906,7 +906,7 @@ class TestFiDigitrafficMarinePortcallPortlocationAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.portcall.portlocation.amqp.port_location'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.marine.portcall.PortLocation'
         assert received.body is not None
         assert received.subject == "{locode}".format(locode="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{locode}".format(locode="value"))[:128]

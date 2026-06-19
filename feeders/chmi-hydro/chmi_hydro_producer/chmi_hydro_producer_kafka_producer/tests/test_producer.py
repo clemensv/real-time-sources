@@ -225,7 +225,7 @@ def test_cz_gov_chmi_hydro_mqtt_czgovchmihydromqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CZ.Gov.CHMI.Hydro.mqtt.Station":
+            if cloudevent['type'] == "CZ.Gov.CHMI.Hydro.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_cz_gov_chmi_hydro_mqtt_czgovchmihydromqttwaterlevelobservation(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CZ.Gov.CHMI.Hydro.mqtt.WaterLevelObservation":
+            if cloudevent['type'] == "CZ.Gov.CHMI.Hydro.WaterLevelObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_cz_gov_chmi_hydro_amqp_czgovchmihydroamqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CZ.Gov.CHMI.Hydro.amqp.Station":
+            if cloudevent['type'] == "CZ.Gov.CHMI.Hydro.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_cz_gov_chmi_hydro_amqp_czgovchmihydroamqpwaterlevelobservation(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CZ.Gov.CHMI.Hydro.amqp.WaterLevelObservation":
+            if cloudevent['type'] == "CZ.Gov.CHMI.Hydro.WaterLevelObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

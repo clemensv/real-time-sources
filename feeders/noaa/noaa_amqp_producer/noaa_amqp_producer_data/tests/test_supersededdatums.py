@@ -28,7 +28,7 @@ class Test_Supersededdatums(unittest.TestCase):
         Create instance of Supersededdatums for testing
         """
         instance = Supersededdatums(
-            self_='txihlaptmvgusjvulzai'
+            self_='mqwwrtxwudjfekchfpad'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_Supersededdatums(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'txihlaptmvgusjvulzai'
+        test_value = 'mqwwrtxwudjfekchfpad'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

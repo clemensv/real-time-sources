@@ -825,7 +825,7 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttda
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.mqtt.DayAheadPrices":
+            if cloudevent['type'] == "eu.entsoe.transparency.DayAheadPrices":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -887,7 +887,7 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttac
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.mqtt.ActualTotalLoad":
+            if cloudevent['type'] == "eu.entsoe.transparency.ActualTotalLoad":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -949,7 +949,7 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttlo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.mqtt.LoadForecastMargin":
+            if cloudevent['type'] == "eu.entsoe.transparency.LoadForecastMargin":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1011,7 +1011,7 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttge
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.mqtt.GenerationForecast":
+            if cloudevent['type'] == "eu.entsoe.transparency.GenerationForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1073,7 +1073,7 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttre
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.mqtt.ReservoirFillingInformation":
+            if cloudevent['type'] == "eu.entsoe.transparency.ReservoirFillingInformation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1135,7 +1135,7 @@ def test_eu_entsoe_transparency_bydomain_mqtt_euentsoetransparencybydomainmqttac
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.mqtt.ActualGeneration":
+            if cloudevent['type'] == "eu.entsoe.transparency.ActualGeneration":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1197,7 +1197,7 @@ def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_euentsoetransparencybydomai
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomainPsrType.mqtt.ActualGenerationPerType":
+            if cloudevent['type'] == "eu.entsoe.transparency.ActualGenerationPerType":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1259,7 +1259,7 @@ def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_euentsoetransparencybydomai
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarForecast":
+            if cloudevent['type'] == "eu.entsoe.transparency.WindSolarForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1321,7 +1321,7 @@ def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_euentsoetransparencybydomai
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomainPsrType.mqtt.WindSolarGeneration":
+            if cloudevent['type'] == "eu.entsoe.transparency.WindSolarGeneration":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1383,7 +1383,7 @@ def test_eu_entsoe_transparency_bydomainpsrtype_mqtt_euentsoetransparencybydomai
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomainPsrType.mqtt.InstalledGenerationCapacityPerType":
+            if cloudevent['type'] == "eu.entsoe.transparency.InstalledGenerationCapacityPerType":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1445,7 +1445,7 @@ def test_eu_entsoe_transparency_crossborder_mqtt_euentsoetransparencycrossborder
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.CrossBorder.mqtt.CrossBorderPhysicalFlows":
+            if cloudevent['type'] == "eu.entsoe.transparency.CrossBorderPhysicalFlows":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1507,7 +1507,7 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqpda
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices":
+            if cloudevent['type'] == "eu.entsoe.transparency.DayAheadPrices":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1569,7 +1569,7 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqpac
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad":
+            if cloudevent['type'] == "eu.entsoe.transparency.ActualTotalLoad":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1631,7 +1631,7 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqplo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin":
+            if cloudevent['type'] == "eu.entsoe.transparency.LoadForecastMargin":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1693,7 +1693,7 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqpge
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.amqp.GenerationForecast":
+            if cloudevent['type'] == "eu.entsoe.transparency.GenerationForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1755,7 +1755,7 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqpre
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation":
+            if cloudevent['type'] == "eu.entsoe.transparency.ReservoirFillingInformation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1817,7 +1817,7 @@ def test_eu_entsoe_transparency_bydomain_amqp_euentsoetransparencybydomainamqpac
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomain.amqp.ActualGeneration":
+            if cloudevent['type'] == "eu.entsoe.transparency.ActualGeneration":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1879,7 +1879,7 @@ def test_eu_entsoe_transparency_bydomainpsrtype_amqp_euentsoetransparencybydomai
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType":
+            if cloudevent['type'] == "eu.entsoe.transparency.ActualGenerationPerType":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1941,7 +1941,7 @@ def test_eu_entsoe_transparency_bydomainpsrtype_amqp_euentsoetransparencybydomai
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast":
+            if cloudevent['type'] == "eu.entsoe.transparency.WindSolarForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2003,7 +2003,7 @@ def test_eu_entsoe_transparency_bydomainpsrtype_amqp_euentsoetransparencybydomai
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration":
+            if cloudevent['type'] == "eu.entsoe.transparency.WindSolarGeneration":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2065,7 +2065,7 @@ def test_eu_entsoe_transparency_bydomainpsrtype_amqp_euentsoetransparencybydomai
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType":
+            if cloudevent['type'] == "eu.entsoe.transparency.InstalledGenerationCapacityPerType":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2127,7 +2127,7 @@ def test_eu_entsoe_transparency_crossborder_amqp_euentsoetransparencycrossborder
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows":
+            if cloudevent['type'] == "eu.entsoe.transparency.CrossBorderPhysicalFlows":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

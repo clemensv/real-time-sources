@@ -28,29 +28,29 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         Create instance of CommercialVehicleRestriction for testing
         """
         instance = CommercialVehicleRestriction(
-            state_route_id='lxsoepreuurpzitdcilt',
-            bridge_number='gwssnopralprirxwfqom',
-            bridge_name='zpjhetgeduhwzazgugci',
-            location_name='omclvesdrrltngikxnlc',
-            location_description='fiqbwyaledgwpryulptt',
-            latitude=float(84.87777856470015),
-            longitude=float(89.08930864993734),
-            state='zvkxfwwfrrmdauomxcsy',
-            restriction_type='kxhgwjnfporldhxbxona',
-            vehicle_type='dievieazqbxwdeeutvhq',
+            state_route_id='ksvdfwzetzrlqmgqfiqo',
+            bridge_number='heonigpeqopcxdoalvru',
+            bridge_name='owcgmuthmsnikmcwbemh',
+            location_name='lhhigzxhvihsjrwbvcpx',
+            location_description='rgxuywcowdgywqfxflig',
+            latitude=float(20.744643062342373),
+            longitude=float(99.71942263308465),
+            state='phxulcvweavmmyltxiax',
+            restriction_type='cuzhcbfkaxrcxfimrlgk',
+            vehicle_type='efwtyuywfzdppqtcqlbr',
             restriction_weight_in_pounds=int(16),
-            maximum_gross_vehicle_weight_in_pounds=int(28),
-            restriction_height_in_inches=int(4),
-            restriction_width_in_inches=int(24),
-            restriction_length_in_inches=int(10),
+            maximum_gross_vehicle_weight_in_pounds=int(0),
+            restriction_height_in_inches=int(78),
+            restriction_width_in_inches=int(16),
+            restriction_length_in_inches=int(27),
             is_permanent_restriction=True,
-            is_warning=False,
-            is_detour_available=False,
+            is_warning=True,
+            is_detour_available=True,
             is_exceptions_allowed=True,
-            restriction_comment='xnlmumxqzefifohtinhp',
-            date_posted='hghhmwgrwqvkwazvbexl',
-            date_effective='poradtxwssdtpzwdnjuq',
-            date_expires='loepgoltfjavlcpsaqsz'
+            restriction_comment='yacphgiqjjlztxdivcfp',
+            date_posted='ytpuwmkjlwbiatlkqlnd',
+            date_effective='xgpqyhmzoildrzqemsre',
+            date_expires='yrhtiogmuurvnwfraabs'
         )
         return instance
 
@@ -59,7 +59,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test state_route_id property
         """
-        test_value = 'lxsoepreuurpzitdcilt'
+        test_value = 'ksvdfwzetzrlqmgqfiqo'
         self.instance.state_route_id = test_value
         self.assertEqual(self.instance.state_route_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test bridge_number property
         """
-        test_value = 'gwssnopralprirxwfqom'
+        test_value = 'heonigpeqopcxdoalvru'
         self.instance.bridge_number = test_value
         self.assertEqual(self.instance.bridge_number, test_value)
     
@@ -75,7 +75,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test bridge_name property
         """
-        test_value = 'zpjhetgeduhwzazgugci'
+        test_value = 'owcgmuthmsnikmcwbemh'
         self.instance.bridge_name = test_value
         self.assertEqual(self.instance.bridge_name, test_value)
     
@@ -83,7 +83,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test location_name property
         """
-        test_value = 'omclvesdrrltngikxnlc'
+        test_value = 'lhhigzxhvihsjrwbvcpx'
         self.instance.location_name = test_value
         self.assertEqual(self.instance.location_name, test_value)
     
@@ -91,7 +91,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test location_description property
         """
-        test_value = 'fiqbwyaledgwpryulptt'
+        test_value = 'rgxuywcowdgywqfxflig'
         self.instance.location_description = test_value
         self.assertEqual(self.instance.location_description, test_value)
     
@@ -99,7 +99,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(84.87777856470015)
+        test_value = float(20.744643062342373)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -107,7 +107,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(89.08930864993734)
+        test_value = float(99.71942263308465)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -115,7 +115,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'zvkxfwwfrrmdauomxcsy'
+        test_value = 'phxulcvweavmmyltxiax'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -123,7 +123,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test restriction_type property
         """
-        test_value = 'kxhgwjnfporldhxbxona'
+        test_value = 'cuzhcbfkaxrcxfimrlgk'
         self.instance.restriction_type = test_value
         self.assertEqual(self.instance.restriction_type, test_value)
     
@@ -131,7 +131,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test vehicle_type property
         """
-        test_value = 'dievieazqbxwdeeutvhq'
+        test_value = 'efwtyuywfzdppqtcqlbr'
         self.instance.vehicle_type = test_value
         self.assertEqual(self.instance.vehicle_type, test_value)
     
@@ -147,7 +147,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test maximum_gross_vehicle_weight_in_pounds property
         """
-        test_value = int(28)
+        test_value = int(0)
         self.instance.maximum_gross_vehicle_weight_in_pounds = test_value
         self.assertEqual(self.instance.maximum_gross_vehicle_weight_in_pounds, test_value)
     
@@ -155,7 +155,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test restriction_height_in_inches property
         """
-        test_value = int(4)
+        test_value = int(78)
         self.instance.restriction_height_in_inches = test_value
         self.assertEqual(self.instance.restriction_height_in_inches, test_value)
     
@@ -163,7 +163,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test restriction_width_in_inches property
         """
-        test_value = int(24)
+        test_value = int(16)
         self.instance.restriction_width_in_inches = test_value
         self.assertEqual(self.instance.restriction_width_in_inches, test_value)
     
@@ -171,7 +171,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test restriction_length_in_inches property
         """
-        test_value = int(10)
+        test_value = int(27)
         self.instance.restriction_length_in_inches = test_value
         self.assertEqual(self.instance.restriction_length_in_inches, test_value)
     
@@ -187,7 +187,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test is_warning property
         """
-        test_value = False
+        test_value = True
         self.instance.is_warning = test_value
         self.assertEqual(self.instance.is_warning, test_value)
     
@@ -195,7 +195,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test is_detour_available property
         """
-        test_value = False
+        test_value = True
         self.instance.is_detour_available = test_value
         self.assertEqual(self.instance.is_detour_available, test_value)
     
@@ -211,7 +211,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test restriction_comment property
         """
-        test_value = 'xnlmumxqzefifohtinhp'
+        test_value = 'yacphgiqjjlztxdivcfp'
         self.instance.restriction_comment = test_value
         self.assertEqual(self.instance.restriction_comment, test_value)
     
@@ -219,7 +219,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test date_posted property
         """
-        test_value = 'hghhmwgrwqvkwazvbexl'
+        test_value = 'ytpuwmkjlwbiatlkqlnd'
         self.instance.date_posted = test_value
         self.assertEqual(self.instance.date_posted, test_value)
     
@@ -227,7 +227,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test date_effective property
         """
-        test_value = 'poradtxwssdtpzwdnjuq'
+        test_value = 'xgpqyhmzoildrzqemsre'
         self.instance.date_effective = test_value
         self.assertEqual(self.instance.date_effective, test_value)
     
@@ -235,7 +235,7 @@ class Test_CommercialVehicleRestriction(unittest.TestCase):
         """
         Test date_expires property
         """
-        test_value = 'loepgoltfjavlcpsaqsz'
+        test_value = 'yrhtiogmuurvnwfraabs'
         self.instance.date_expires = test_value
         self.assertEqual(self.instance.date_expires, test_value)
     

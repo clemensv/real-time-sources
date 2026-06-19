@@ -28,11 +28,11 @@ class Test_RoadWeatherStation(unittest.TestCase):
         Create instance of RoadWeatherStation for testing
         """
         instance = RoadWeatherStation(
-            station_id='zfkmviygxcuhsixpclqn',
-            station_name='alulewfsgzfllayygxpd',
-            latitude=float(60.44706564973994),
-            longitude=float(59.246494089303305),
-            elevation=int(82)
+            station_id='wzepkitwavtkbiwsvops',
+            station_name='cufpfgxnmwnzlwzcfcsc',
+            latitude=float(58.74059806811955),
+            longitude=float(47.0688263042396),
+            elevation=int(28)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_RoadWeatherStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'zfkmviygxcuhsixpclqn'
+        test_value = 'wzepkitwavtkbiwsvops'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_RoadWeatherStation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'alulewfsgzfllayygxpd'
+        test_value = 'cufpfgxnmwnzlwzcfcsc'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -57,7 +57,7 @@ class Test_RoadWeatherStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(60.44706564973994)
+        test_value = float(58.74059806811955)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -65,7 +65,7 @@ class Test_RoadWeatherStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(59.246494089303305)
+        test_value = float(47.0688263042396)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -73,7 +73,7 @@ class Test_RoadWeatherStation(unittest.TestCase):
         """
         Test elevation property
         """
-        test_value = int(82)
+        test_value = int(28)
         self.instance.elevation = test_value
         self.assertEqual(self.instance.elevation, test_value)
     

@@ -361,7 +361,7 @@ def test_microsoft_opendata_us_noaa_nws_alerts_mqtt_microsoftopendatausnoaanwsal
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.Alerts.mqtt.WeatherAlert":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -423,7 +423,7 @@ def test_microsoft_opendata_us_noaa_nws_alerts_amqp_microsoftopendatausnoaanwsal
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -485,7 +485,7 @@ def test_microsoft_opendata_us_noaa_nws_observations_mqtt_microsoftopendatausnoa
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.ObservationStation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.ObservationStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -547,7 +547,7 @@ def test_microsoft_opendata_us_noaa_nws_observations_mqtt_microsoftopendatausnoa
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.Observations.mqtt.WeatherObservation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -609,7 +609,7 @@ def test_microsoft_opendata_us_noaa_nws_observations_amqp_microsoftopendatausnoa
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.ObservationStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -671,7 +671,7 @@ def test_microsoft_opendata_us_noaa_nws_observations_amqp_microsoftopendatausnoa
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

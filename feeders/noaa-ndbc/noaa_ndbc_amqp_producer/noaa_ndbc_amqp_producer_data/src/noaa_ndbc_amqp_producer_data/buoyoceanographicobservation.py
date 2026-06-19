@@ -179,17 +179,17 @@ class BuoyOceanographicObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='nrqqqeskljblhnrhceuy',
+            station_id='uuqadthjneeefupkyesw',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            depth=float(67.1142482610027),
-            ocean_temperature=float(99.74815814383615),
-            conductivity=float(19.599169860356934),
-            salinity=float(91.70054949168141),
-            oxygen_saturation=float(35.86001117524711),
-            oxygen_concentration=float(66.62950628663475),
-            chlorophyll_concentration=float(10.395153751404651),
-            turbidity=float(89.55884468101578),
-            ph=float(42.140997804415505),
-            redox_potential=float(81.83843328295396),
-            region='fzuoxmrympkzzwktjfoc'
+            depth=float(15.368057697590698),
+            ocean_temperature=float(25.1730113160884),
+            conductivity=float(53.833541701205256),
+            salinity=float(95.46403085682967),
+            oxygen_saturation=float(52.183111132586966),
+            oxygen_concentration=float(70.31755329582015),
+            chlorophyll_concentration=float(70.851516185225),
+            turbidity=float(82.5118854813752),
+            ph=float(72.01076725522972),
+            redox_potential=float(26.973202540633267),
+            region='arpmkccsdhhmcufsoqce'
         )

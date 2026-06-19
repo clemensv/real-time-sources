@@ -30,23 +30,23 @@ class Test_AvalancheBulletin(unittest.TestCase):
         Create instance of AvalancheBulletin for testing
         """
         instance = AvalancheBulletin(
-            region_id='axxppaxbocetyzgtwwio',
-            region_name='xgmvxlxkcbsperhrkhcm',
-            bulletin_id='gesglwwxlbkrbtjvpmfq',
+            region_id='ntdttckhehyvjvdyzayb',
+            region_name='okuqswkzesfxstdlhbjb',
+            bulletin_id='qnjughimlfiayckcnpyv',
             publication_time=datetime.datetime.now(datetime.timezone.utc),
             valid_time_start=datetime.datetime.now(datetime.timezone.utc),
             valid_time_end=datetime.datetime.now(datetime.timezone.utc),
-            lang='knhoilrsitoyvulxxwlz',
+            lang='ocsqebczsckreoupulpr',
             max_danger_rating=MaxDangerRatingenum.low,
-            max_danger_rating_value=int(43),
-            danger_ratings_json='selmbmuzrtntkkskgfkv',
-            avalanche_problems_json='pfefnfvlbxuhdpqwxtoi',
-            tendency_type='jfpollorfxcjtrybgeom',
-            danger_patterns_json='xqpscqfebvhviixjavtn',
-            avalanche_activity_highlights='audflheyxljhtczugsoy',
-            snowpack_structure_comment='laynxdwqetbnhkoictyg',
-            country='wjbhflhindzxhkhqfsxm',
-            danger_level='tqwrplpebjbrazzxxkto'
+            max_danger_rating_value=int(37),
+            danger_ratings_json='vyoixbaegifueexnomvc',
+            avalanche_problems_json='qlqdhxauzgkuftluammp',
+            tendency_type='mswgbbxpkonaxdilwsax',
+            danger_patterns_json='ptyprfzvuvjtaluzjjpm',
+            avalanche_activity_highlights='nrpqukaczycfawpdvqlu',
+            snowpack_structure_comment='mxoidfhefbsktbkjqiuq',
+            country='deqdnpkyfkvyefdfzpey',
+            danger_level='zrubjdyjgxbsjpdmmejq'
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = 'axxppaxbocetyzgtwwio'
+        test_value = 'ntdttckhehyvjvdyzayb'
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test region_name property
         """
-        test_value = 'xgmvxlxkcbsperhrkhcm'
+        test_value = 'okuqswkzesfxstdlhbjb'
         self.instance.region_name = test_value
         self.assertEqual(self.instance.region_name, test_value)
     
@@ -71,7 +71,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test bulletin_id property
         """
-        test_value = 'gesglwwxlbkrbtjvpmfq'
+        test_value = 'qnjughimlfiayckcnpyv'
         self.instance.bulletin_id = test_value
         self.assertEqual(self.instance.bulletin_id, test_value)
     
@@ -103,7 +103,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test lang property
         """
-        test_value = 'knhoilrsitoyvulxxwlz'
+        test_value = 'ocsqebczsckreoupulpr'
         self.instance.lang = test_value
         self.assertEqual(self.instance.lang, test_value)
     
@@ -119,7 +119,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test max_danger_rating_value property
         """
-        test_value = int(43)
+        test_value = int(37)
         self.instance.max_danger_rating_value = test_value
         self.assertEqual(self.instance.max_danger_rating_value, test_value)
     
@@ -127,7 +127,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test danger_ratings_json property
         """
-        test_value = 'selmbmuzrtntkkskgfkv'
+        test_value = 'vyoixbaegifueexnomvc'
         self.instance.danger_ratings_json = test_value
         self.assertEqual(self.instance.danger_ratings_json, test_value)
     
@@ -135,7 +135,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test avalanche_problems_json property
         """
-        test_value = 'pfefnfvlbxuhdpqwxtoi'
+        test_value = 'qlqdhxauzgkuftluammp'
         self.instance.avalanche_problems_json = test_value
         self.assertEqual(self.instance.avalanche_problems_json, test_value)
     
@@ -143,7 +143,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test tendency_type property
         """
-        test_value = 'jfpollorfxcjtrybgeom'
+        test_value = 'mswgbbxpkonaxdilwsax'
         self.instance.tendency_type = test_value
         self.assertEqual(self.instance.tendency_type, test_value)
     
@@ -151,7 +151,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test danger_patterns_json property
         """
-        test_value = 'xqpscqfebvhviixjavtn'
+        test_value = 'ptyprfzvuvjtaluzjjpm'
         self.instance.danger_patterns_json = test_value
         self.assertEqual(self.instance.danger_patterns_json, test_value)
     
@@ -159,7 +159,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test avalanche_activity_highlights property
         """
-        test_value = 'audflheyxljhtczugsoy'
+        test_value = 'nrpqukaczycfawpdvqlu'
         self.instance.avalanche_activity_highlights = test_value
         self.assertEqual(self.instance.avalanche_activity_highlights, test_value)
     
@@ -167,7 +167,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test snowpack_structure_comment property
         """
-        test_value = 'laynxdwqetbnhkoictyg'
+        test_value = 'mxoidfhefbsktbkjqiuq'
         self.instance.snowpack_structure_comment = test_value
         self.assertEqual(self.instance.snowpack_structure_comment, test_value)
     
@@ -175,7 +175,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'wjbhflhindzxhkhqfsxm'
+        test_value = 'deqdnpkyfkvyefdfzpey'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -183,7 +183,7 @@ class Test_AvalancheBulletin(unittest.TestCase):
         """
         Test danger_level property
         """
-        test_value = 'tqwrplpebjbrazzxxkto'
+        test_value = 'zrubjdyjgxbsjpdmmejq'
         self.instance.danger_level = test_value
         self.assertEqual(self.instance.danger_level, test_value)
     

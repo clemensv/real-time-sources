@@ -195,17 +195,17 @@ class MapChange:
             An instance of the dataclass.
         """
         return cls(
-            change_type='bvbkgxshvpytrtvemyws',
-            element_type='xdkgisizhqruxklhiqgf',
-            element_id=int(16),
-            geohash5='sveabcpsbcmqolneqrqc',
-            version=int(34),
+            change_type='ywourxyvprajixnhbvxg',
+            element_type='dcsfxptysxljtnenbwhc',
+            element_id=int(95),
+            geohash5='tpyjxgmfiukzmdbjzahw',
+            version=int(85),
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            changeset_id=int(23),
-            user_name='diavudoaskryklultmyd',
-            user_id=int(14),
-            latitude=float(13.462029332196613),
-            longitude=float(58.19355875535807),
-            tags='ncgxcaqqcdvfeawjdswm',
-            sequence_number=int(82)
+            changeset_id=int(83),
+            user_name='dezvyvddzfzfpburndmf',
+            user_id=int(60),
+            latitude=float(77.00236233783212),
+            longitude=float(97.77545182880151),
+            tags='imkjmyuxqawcawcxhdrz',
+            sequence_number=int(46)
         )

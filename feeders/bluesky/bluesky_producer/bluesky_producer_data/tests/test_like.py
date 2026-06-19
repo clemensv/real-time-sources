@@ -28,17 +28,17 @@ class Test_Like(unittest.TestCase):
         Create instance of Like for testing
         """
         instance = Like(
-            uri='zseonpefnotbrrhzpbin',
-            cid='wdsliukkdefodqcgmkzh',
-            did='dljlpkngurimptoltaco',
-            handle='xltcvmpvxtkkpscteetw',
-            subject_uri='aeifwokqucltileeqdro',
-            subject_cid='wwtkewntxfmmuyrxlewq',
-            created_at='awnhkfkmrsktjysnlvbb',
-            indexed_at='eojofwsioukrmbqszgze',
-            seq=int(2),
-            collection='cwjqfgfkoytspdpiwoik',
-            lang='cmwoiabjvubslyczspku'
+            uri='multulppwqibhlfxvgyf',
+            cid='nwulzujnokserpxfnbog',
+            did='ylmghwdbciqfrqahvxwm',
+            handle='hsdfhkvcwdecqizpcmer',
+            subject_uri='yohxiygpelksuccosxyq',
+            subject_cid='nwrotsjwhxzhudeglxoa',
+            created_at='elhpedkjqdnoxxiybbft',
+            indexed_at='qowjfmmelzomluavcgrt',
+            seq=int(76),
+            collection='etyvipmjgelasdoaxtxl',
+            lang='xwlogqydawisksmfmruj'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Like(unittest.TestCase):
         """
         Test uri property
         """
-        test_value = 'zseonpefnotbrrhzpbin'
+        test_value = 'multulppwqibhlfxvgyf'
         self.instance.uri = test_value
         self.assertEqual(self.instance.uri, test_value)
     
@@ -55,7 +55,7 @@ class Test_Like(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = 'wdsliukkdefodqcgmkzh'
+        test_value = 'nwulzujnokserpxfnbog'
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -63,7 +63,7 @@ class Test_Like(unittest.TestCase):
         """
         Test did property
         """
-        test_value = 'dljlpkngurimptoltaco'
+        test_value = 'ylmghwdbciqfrqahvxwm'
         self.instance.did = test_value
         self.assertEqual(self.instance.did, test_value)
     
@@ -71,7 +71,7 @@ class Test_Like(unittest.TestCase):
         """
         Test handle property
         """
-        test_value = 'xltcvmpvxtkkpscteetw'
+        test_value = 'hsdfhkvcwdecqizpcmer'
         self.instance.handle = test_value
         self.assertEqual(self.instance.handle, test_value)
     
@@ -79,7 +79,7 @@ class Test_Like(unittest.TestCase):
         """
         Test subject_uri property
         """
-        test_value = 'aeifwokqucltileeqdro'
+        test_value = 'yohxiygpelksuccosxyq'
         self.instance.subject_uri = test_value
         self.assertEqual(self.instance.subject_uri, test_value)
     
@@ -87,7 +87,7 @@ class Test_Like(unittest.TestCase):
         """
         Test subject_cid property
         """
-        test_value = 'wwtkewntxfmmuyrxlewq'
+        test_value = 'nwrotsjwhxzhudeglxoa'
         self.instance.subject_cid = test_value
         self.assertEqual(self.instance.subject_cid, test_value)
     
@@ -95,7 +95,7 @@ class Test_Like(unittest.TestCase):
         """
         Test created_at property
         """
-        test_value = 'awnhkfkmrsktjysnlvbb'
+        test_value = 'elhpedkjqdnoxxiybbft'
         self.instance.created_at = test_value
         self.assertEqual(self.instance.created_at, test_value)
     
@@ -103,7 +103,7 @@ class Test_Like(unittest.TestCase):
         """
         Test indexed_at property
         """
-        test_value = 'eojofwsioukrmbqszgze'
+        test_value = 'qowjfmmelzomluavcgrt'
         self.instance.indexed_at = test_value
         self.assertEqual(self.instance.indexed_at, test_value)
     
@@ -111,7 +111,7 @@ class Test_Like(unittest.TestCase):
         """
         Test seq property
         """
-        test_value = int(2)
+        test_value = int(76)
         self.instance.seq = test_value
         self.assertEqual(self.instance.seq, test_value)
     
@@ -119,7 +119,7 @@ class Test_Like(unittest.TestCase):
         """
         Test collection property
         """
-        test_value = 'cwjqfgfkoytspdpiwoik'
+        test_value = 'etyvipmjgelasdoaxtxl'
         self.instance.collection = test_value
         self.assertEqual(self.instance.collection, test_value)
     
@@ -127,7 +127,7 @@ class Test_Like(unittest.TestCase):
         """
         Test lang property
         """
-        test_value = 'cmwoiabjvubslyczspku'
+        test_value = 'xwlogqydawisksmfmruj'
         self.instance.lang = test_value
         self.assertEqual(self.instance.lang, test_value)
     

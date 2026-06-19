@@ -687,7 +687,7 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyObservation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -749,7 +749,7 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyStation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -811,7 +811,7 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySolarRadiationObservation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -873,7 +873,7 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyOceanographicObservation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -935,7 +935,7 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDartMeasurement":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -997,7 +997,7 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyContinuousWindObservation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1059,7 +1059,7 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoySupplementalMeasurement":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1121,7 +1121,7 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyDetailedWaveSummary":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1183,7 +1183,7 @@ def test_microsoft_opendata_us_noaa_ndbc_mqtt_microsoftopendatausnoaandbcmqttbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.mqtt.BuoyHourlyRainMeasurement":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1245,7 +1245,7 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyObservation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1307,7 +1307,7 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyStation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1369,7 +1369,7 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySolarRadiationObservation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoySolarRadiationObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1431,7 +1431,7 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyOceanographicObservation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyOceanographicObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1493,7 +1493,7 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDartMeasurement":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyDartMeasurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1555,7 +1555,7 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyContinuousWindObservation":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyContinuousWindObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1617,7 +1617,7 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoySupplementalMeasurement":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoySupplementalMeasurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1679,7 +1679,7 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyDetailedWaveSummary":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyDetailedWaveSummary":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1741,7 +1741,7 @@ def test_microsoft_opendata_us_noaa_ndbc_amqp_microsoftopendatausnoaandbcamqpbuo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.amqp.BuoyHourlyRainMeasurement":
+            if cloudevent['type'] == "Microsoft.OpenData.US.NOAA.NDBC.BuoyHourlyRainMeasurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

@@ -292,7 +292,7 @@ def test_uk_org_carbonintensity_mqtt_ukorgcarbonintensitymqttintensity(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.org.carbonintensity.mqtt.Intensity":
+            if cloudevent['type'] == "uk.org.carbonintensity.Intensity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -354,7 +354,7 @@ def test_uk_org_carbonintensity_mqtt_ukorgcarbonintensitymqttgenerationmix(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.org.carbonintensity.mqtt.GenerationMix":
+            if cloudevent['type'] == "uk.org.carbonintensity.GenerationMix":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -416,7 +416,7 @@ def test_uk_org_carbonintensity_mqtt_ukorgcarbonintensitymqttregionalintensity(k
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.org.carbonintensity.mqtt.RegionalIntensity":
+            if cloudevent['type'] == "uk.org.carbonintensity.RegionalIntensity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -478,7 +478,7 @@ def test_uk_org_carbonintensity_amqp_ukorgcarbonintensityamqpintensity(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.org.carbonintensity.amqp.Intensity":
+            if cloudevent['type'] == "uk.org.carbonintensity.Intensity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -540,7 +540,7 @@ def test_uk_org_carbonintensity_amqp_ukorgcarbonintensityamqpgenerationmix(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.org.carbonintensity.amqp.GenerationMix":
+            if cloudevent['type'] == "uk.org.carbonintensity.GenerationMix":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -602,7 +602,7 @@ def test_uk_org_carbonintensity_amqp_ukorgcarbonintensityamqpregionalintensity(k
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.org.carbonintensity.amqp.RegionalIntensity":
+            if cloudevent['type'] == "uk.org.carbonintensity.RegionalIntensity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

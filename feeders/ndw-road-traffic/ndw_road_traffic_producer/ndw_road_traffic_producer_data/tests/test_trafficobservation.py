@@ -28,11 +28,11 @@ class Test_TrafficObservation(unittest.TestCase):
         Create instance of TrafficObservation for testing
         """
         instance = TrafficObservation(
-            measurement_site_id='ihdpijxqoqlwcxiqbvgs',
-            measurement_time='iirnnrtuxccmbswmyjuz',
-            average_speed=float(63.947076217208554),
-            vehicle_flow_rate=int(50),
-            number_of_lanes_with_data=int(54)
+            measurement_site_id='djjjyxmabqfshvmhgfue',
+            measurement_time='aebecomefnnalkmttssk',
+            average_speed=float(63.32192891917967),
+            vehicle_flow_rate=int(18),
+            number_of_lanes_with_data=int(58)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_TrafficObservation(unittest.TestCase):
         """
         Test measurement_site_id property
         """
-        test_value = 'ihdpijxqoqlwcxiqbvgs'
+        test_value = 'djjjyxmabqfshvmhgfue'
         self.instance.measurement_site_id = test_value
         self.assertEqual(self.instance.measurement_site_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_TrafficObservation(unittest.TestCase):
         """
         Test measurement_time property
         """
-        test_value = 'iirnnrtuxccmbswmyjuz'
+        test_value = 'aebecomefnnalkmttssk'
         self.instance.measurement_time = test_value
         self.assertEqual(self.instance.measurement_time, test_value)
     
@@ -57,7 +57,7 @@ class Test_TrafficObservation(unittest.TestCase):
         """
         Test average_speed property
         """
-        test_value = float(63.947076217208554)
+        test_value = float(63.32192891917967)
         self.instance.average_speed = test_value
         self.assertEqual(self.instance.average_speed, test_value)
     
@@ -65,7 +65,7 @@ class Test_TrafficObservation(unittest.TestCase):
         """
         Test vehicle_flow_rate property
         """
-        test_value = int(50)
+        test_value = int(18)
         self.instance.vehicle_flow_rate = test_value
         self.assertEqual(self.instance.vehicle_flow_rate, test_value)
     
@@ -73,7 +73,7 @@ class Test_TrafficObservation(unittest.TestCase):
         """
         Test number_of_lanes_with_data property
         """
-        test_value = int(54)
+        test_value = int(58)
         self.instance.number_of_lanes_with_data = test_value
         self.assertEqual(self.instance.number_of_lanes_with_data, test_value)
     

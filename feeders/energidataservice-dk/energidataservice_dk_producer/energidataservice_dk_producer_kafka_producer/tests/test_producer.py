@@ -291,7 +291,7 @@ def test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttpow
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.energinet.energidataservice.mqtt.PowerSystemSnapshot":
+            if cloudevent['type'] == "dk.energinet.energidataservice.PowerSystemSnapshot":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -353,7 +353,7 @@ def test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttspo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.energinet.energidataservice.mqtt.SpotPrice":
+            if cloudevent['type'] == "dk.energinet.energidataservice.SpotPrice":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -415,7 +415,7 @@ def test_dk_energinet_energidataservice_mqtt_dkenerginetenergidataservicemqttinf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.energinet.energidataservice.mqtt.Info":
+            if cloudevent['type'] == "dk.energinet.energidataservice.Info":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -477,7 +477,7 @@ def test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqppow
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.energinet.energidataservice.amqp.PowerSystemSnapshot":
+            if cloudevent['type'] == "dk.energinet.energidataservice.PowerSystemSnapshot":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -539,7 +539,7 @@ def test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqpspo
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.energinet.energidataservice.amqp.SpotPrice":
+            if cloudevent['type'] == "dk.energinet.energidataservice.SpotPrice":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -601,7 +601,7 @@ def test_dk_energinet_energidataservice_amqp_dkenerginetenergidataserviceamqpinf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.energinet.energidataservice.amqp.Info":
+            if cloudevent['type'] == "dk.energinet.energidataservice.Info":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

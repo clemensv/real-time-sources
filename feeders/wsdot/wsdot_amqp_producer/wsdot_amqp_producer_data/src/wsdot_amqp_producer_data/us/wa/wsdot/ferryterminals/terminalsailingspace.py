@@ -170,13 +170,13 @@ class TerminalSailingSpace:
             An instance of the dataclass.
         """
         return cls(
-            terminal_id='ighrbdqrywbzfoxcfeww',
-            terminal_subject_id=int(20),
-            region_id=int(6),
-            terminal_name='symyutpmhltfhlsxqftw',
-            terminal_abbrev='kmslseglqiymbtesclxk',
-            sort_seq=int(16),
-            departing_spaces=[None, None, None],
+            terminal_id='savundioxnecjyjzzzcr',
+            terminal_subject_id=int(73),
+            region_id=int(82),
+            terminal_name='cferprrrlzulnjoouexj',
+            terminal_abbrev='rncbugncuykknpavvqzi',
+            sort_seq=int(11),
+            departing_spaces=[None, None, None, None, None],
             is_no_fare_collected=True,
-            no_fare_collected_msg='tfodnbyksoqmryussldf'
+            no_fare_collected_msg='datquvsauelrhstxykgi'
         )

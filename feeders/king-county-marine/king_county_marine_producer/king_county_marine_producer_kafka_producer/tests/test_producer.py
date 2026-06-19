@@ -225,7 +225,7 @@ def test_us_wa_kingcounty_marine_mqtt_uswakingcountymarinemqttstation(kafka_emul
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "US.WA.KingCounty.Marine.mqtt.Station":
+            if cloudevent['type'] == "US.WA.KingCounty.Marine.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_us_wa_kingcounty_marine_mqtt_uswakingcountymarinemqttwaterqualityreadin
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "US.WA.KingCounty.Marine.mqtt.WaterQualityReading":
+            if cloudevent['type'] == "US.WA.KingCounty.Marine.WaterQualityReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_us_wa_kingcounty_marine_amqp_uswakingcountymarineamqpstation(kafka_emul
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "US.WA.KingCounty.Marine.amqp.Station":
+            if cloudevent['type'] == "US.WA.KingCounty.Marine.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_us_wa_kingcounty_marine_amqp_uswakingcountymarineamqpwaterqualityreadin
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "US.WA.KingCounty.Marine.amqp.WaterQualityReading":
+            if cloudevent['type'] == "US.WA.KingCounty.Marine.WaterQualityReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

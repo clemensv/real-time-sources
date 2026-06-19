@@ -28,25 +28,25 @@ class Test_BridgeClearance(unittest.TestCase):
         Create instance of BridgeClearance for testing
         """
         instance = BridgeClearance(
-            crossing_location_id='xsexncwrhzomnpogcsvr',
-            bridge_number='keigzssiftmbrptppoif',
-            state_route_id='ccjccssvrwjzkzqsneom',
-            state_structure_id='alncsnzwbwhrozvtsgef',
-            crossing_description='jlnbbzfbhaivwkjjuget',
-            inventory_direction='ffwvcwedhgtiqxdfxkwm',
-            srmp=float(11.015466510286087),
-            srmp_ahead_back_indicator='yowhdvvibnrrltchpnsx',
-            latitude=float(93.95513581116889),
-            longitude=float(64.11321521549534),
-            vertical_clearance_maximum_inches=int(67),
-            vertical_clearance_maximum_feet_inch='volcyywvixrnlalcbgdv',
-            vertical_clearance_minimum_inches=int(30),
-            vertical_clearance_minimum_feet_inch='hjeokrcgagsjwbvxzwou',
-            control_entity_guid='rmbqkyihkphslbfjecsj',
-            crossing_record_guid='gedfuvifpdwjzzsthohe',
-            location_guid='wnfwooaxbenxxrytxedl',
-            route_date='mauqvpdxgmbgaqamgreb',
-            api_last_update='bmwgmchipmpbcdfzhgks'
+            crossing_location_id='vubsydqwhpfjwhbhwwqg',
+            bridge_number='aadvnydsqagcynxvkigg',
+            state_route_id='bpbrcvmzdwmcolrgcesz',
+            state_structure_id='zneovxxhctohnomxtyct',
+            crossing_description='kfhoseakwqrmwewcwlgv',
+            inventory_direction='ozlwmudsvgybgggtoxlf',
+            srmp=float(28.18387537738204),
+            srmp_ahead_back_indicator='nbdcwtmlvlihmmpmcxfn',
+            latitude=float(94.8390155492651),
+            longitude=float(94.70785295293817),
+            vertical_clearance_maximum_inches=int(37),
+            vertical_clearance_maximum_feet_inch='ywstuafapfrpduxdbzsg',
+            vertical_clearance_minimum_inches=int(68),
+            vertical_clearance_minimum_feet_inch='gkopfoacabascggysnnu',
+            control_entity_guid='jfdhydnhfpnjbeeyhapk',
+            crossing_record_guid='aipjeiyerkucngwlnuov',
+            location_guid='fjgmwsizfyhscdqduznb',
+            route_date='mojmcsaxjwavjuzhqxgq',
+            api_last_update='scjndlfkgycjyfkyvfvf'
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test crossing_location_id property
         """
-        test_value = 'xsexncwrhzomnpogcsvr'
+        test_value = 'vubsydqwhpfjwhbhwwqg'
         self.instance.crossing_location_id = test_value
         self.assertEqual(self.instance.crossing_location_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test bridge_number property
         """
-        test_value = 'keigzssiftmbrptppoif'
+        test_value = 'aadvnydsqagcynxvkigg'
         self.instance.bridge_number = test_value
         self.assertEqual(self.instance.bridge_number, test_value)
     
@@ -71,7 +71,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test state_route_id property
         """
-        test_value = 'ccjccssvrwjzkzqsneom'
+        test_value = 'bpbrcvmzdwmcolrgcesz'
         self.instance.state_route_id = test_value
         self.assertEqual(self.instance.state_route_id, test_value)
     
@@ -79,7 +79,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test state_structure_id property
         """
-        test_value = 'alncsnzwbwhrozvtsgef'
+        test_value = 'zneovxxhctohnomxtyct'
         self.instance.state_structure_id = test_value
         self.assertEqual(self.instance.state_structure_id, test_value)
     
@@ -87,7 +87,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test crossing_description property
         """
-        test_value = 'jlnbbzfbhaivwkjjuget'
+        test_value = 'kfhoseakwqrmwewcwlgv'
         self.instance.crossing_description = test_value
         self.assertEqual(self.instance.crossing_description, test_value)
     
@@ -95,7 +95,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test inventory_direction property
         """
-        test_value = 'ffwvcwedhgtiqxdfxkwm'
+        test_value = 'ozlwmudsvgybgggtoxlf'
         self.instance.inventory_direction = test_value
         self.assertEqual(self.instance.inventory_direction, test_value)
     
@@ -103,7 +103,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test srmp property
         """
-        test_value = float(11.015466510286087)
+        test_value = float(28.18387537738204)
         self.instance.srmp = test_value
         self.assertEqual(self.instance.srmp, test_value)
     
@@ -111,7 +111,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test srmp_ahead_back_indicator property
         """
-        test_value = 'yowhdvvibnrrltchpnsx'
+        test_value = 'nbdcwtmlvlihmmpmcxfn'
         self.instance.srmp_ahead_back_indicator = test_value
         self.assertEqual(self.instance.srmp_ahead_back_indicator, test_value)
     
@@ -119,7 +119,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(93.95513581116889)
+        test_value = float(94.8390155492651)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -127,7 +127,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(64.11321521549534)
+        test_value = float(94.70785295293817)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -135,7 +135,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test vertical_clearance_maximum_inches property
         """
-        test_value = int(67)
+        test_value = int(37)
         self.instance.vertical_clearance_maximum_inches = test_value
         self.assertEqual(self.instance.vertical_clearance_maximum_inches, test_value)
     
@@ -143,7 +143,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test vertical_clearance_maximum_feet_inch property
         """
-        test_value = 'volcyywvixrnlalcbgdv'
+        test_value = 'ywstuafapfrpduxdbzsg'
         self.instance.vertical_clearance_maximum_feet_inch = test_value
         self.assertEqual(self.instance.vertical_clearance_maximum_feet_inch, test_value)
     
@@ -151,7 +151,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test vertical_clearance_minimum_inches property
         """
-        test_value = int(30)
+        test_value = int(68)
         self.instance.vertical_clearance_minimum_inches = test_value
         self.assertEqual(self.instance.vertical_clearance_minimum_inches, test_value)
     
@@ -159,7 +159,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test vertical_clearance_minimum_feet_inch property
         """
-        test_value = 'hjeokrcgagsjwbvxzwou'
+        test_value = 'gkopfoacabascggysnnu'
         self.instance.vertical_clearance_minimum_feet_inch = test_value
         self.assertEqual(self.instance.vertical_clearance_minimum_feet_inch, test_value)
     
@@ -167,7 +167,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test control_entity_guid property
         """
-        test_value = 'rmbqkyihkphslbfjecsj'
+        test_value = 'jfdhydnhfpnjbeeyhapk'
         self.instance.control_entity_guid = test_value
         self.assertEqual(self.instance.control_entity_guid, test_value)
     
@@ -175,7 +175,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test crossing_record_guid property
         """
-        test_value = 'gedfuvifpdwjzzsthohe'
+        test_value = 'aipjeiyerkucngwlnuov'
         self.instance.crossing_record_guid = test_value
         self.assertEqual(self.instance.crossing_record_guid, test_value)
     
@@ -183,7 +183,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test location_guid property
         """
-        test_value = 'wnfwooaxbenxxrytxedl'
+        test_value = 'fjgmwsizfyhscdqduznb'
         self.instance.location_guid = test_value
         self.assertEqual(self.instance.location_guid, test_value)
     
@@ -191,7 +191,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test route_date property
         """
-        test_value = 'mauqvpdxgmbgaqamgreb'
+        test_value = 'mojmcsaxjwavjuzhqxgq'
         self.instance.route_date = test_value
         self.assertEqual(self.instance.route_date, test_value)
     
@@ -199,7 +199,7 @@ class Test_BridgeClearance(unittest.TestCase):
         """
         Test api_last_update property
         """
-        test_value = 'bmwgmchipmpbcdfzhgks'
+        test_value = 'scjndlfkgycjyfkyvfvf'
         self.instance.api_last_update = test_value
         self.assertEqual(self.instance.api_last_update, test_value)
     

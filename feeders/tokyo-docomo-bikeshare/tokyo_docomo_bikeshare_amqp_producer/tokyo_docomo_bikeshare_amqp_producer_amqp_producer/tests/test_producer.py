@@ -325,7 +325,7 @@ class TestJPODPTDocomoBikeshareSystemAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.ODPT.DocomoBikeshare.BikeshareSystem.amqp"
+                    assert cloud_event_payload.get("type") == "JP.ODPT.DocomoBikeshare.BikeshareSystem"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -362,7 +362,7 @@ class TestJPODPTDocomoBikeshareSystemAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.ODPT.DocomoBikeshare.BikeshareSystem.amqp'
+        assert properties.get('cloudEvents:type') == 'JP.ODPT.DocomoBikeshare.BikeshareSystem'
         assert received.body is not None
         assert received.subject == "{system_id}".format(system_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{system_id}".format(system_id="value"))[:128]
@@ -476,7 +476,7 @@ class TestJPODPTDocomoBikeshareStationsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.ODPT.DocomoBikeshare.BikeshareStation.amqp"
+                    assert cloud_event_payload.get("type") == "JP.ODPT.DocomoBikeshare.BikeshareStation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -514,7 +514,7 @@ class TestJPODPTDocomoBikeshareStationsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.ODPT.DocomoBikeshare.BikeshareStation.amqp'
+        assert properties.get('cloudEvents:type') == 'JP.ODPT.DocomoBikeshare.BikeshareStation'
         assert received.body is not None
         assert received.subject == "{system_id}/{station_id}".format(system_id="value", station_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{system_id}/{station_id}".format(system_id="value", station_id="value"))[:128]
@@ -568,7 +568,7 @@ class TestJPODPTDocomoBikeshareStationsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.ODPT.DocomoBikeshare.BikeshareStationStatus.amqp"
+                    assert cloud_event_payload.get("type") == "JP.ODPT.DocomoBikeshare.BikeshareStationStatus"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -606,7 +606,7 @@ class TestJPODPTDocomoBikeshareStationsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus.amqp'
+        assert properties.get('cloudEvents:type') == 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus'
         assert received.body is not None
         assert received.subject == "{system_id}/{station_id}".format(system_id="value", station_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{system_id}/{station_id}".format(system_id="value", station_id="value"))[:128]

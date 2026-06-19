@@ -159,7 +159,7 @@ def test_gov_ca_water_cdec_mqtt_govcawatercdecmqttreservoirreading(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.ca.water.cdec.mqtt.ReservoirReading":
+            if cloudevent['type'] == "gov.ca.water.cdec.ReservoirReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_gov_ca_water_cdec_amqp_govcawatercdecamqpreservoirreading(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.ca.water.cdec.amqp.ReservoirReading":
+            if cloudevent['type'] == "gov.ca.water.cdec.ReservoirReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

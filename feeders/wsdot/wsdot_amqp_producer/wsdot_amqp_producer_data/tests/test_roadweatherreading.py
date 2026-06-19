@@ -30,30 +30,30 @@ class Test_RoadWeatherReading(unittest.TestCase):
         Create instance of RoadWeatherReading for testing
         """
         instance = RoadWeatherReading(
-            station_id='mckyalbjtyrmvabliioi',
-            station_name='mkznytlupbjdzbudhsqp',
-            latitude=float(28.99105418391136),
-            longitude=float(68.73080942612634),
-            elevation=int(53),
-            reading_time='lcornxcvdsfwpmvxjnqh',
-            air_temperature=float(32.180729740996284),
-            relative_humidity=int(84),
-            average_wind_speed=float(76.66320391178276),
-            average_wind_direction=int(83),
-            wind_gust=float(93.68619572754262),
-            visibility=int(73),
-            precipitation_intensity=int(100),
-            precipitation_type=int(58),
-            precipitation_past_1_hour=float(23.9659113936446),
-            precipitation_past_3_hours=float(67.76588403704835),
-            precipitation_past_6_hours=float(99.86751093523901),
-            precipitation_past_12_hours=float(64.32761857028632),
-            precipitation_past_24_hours=float(93.20792669773155),
-            precipitation_accumulation=float(40.393176893731194),
-            barometric_pressure=float(6.665210474324068),
-            snow_depth=float(5.5772711633958805),
-            surface_measurements=[None, None],
-            sub_surface_measurements=[None]
+            station_id='elymwlbtmiokabvfqvqi',
+            station_name='wgshieibspujgbfkshiq',
+            latitude=float(28.870348346623054),
+            longitude=float(51.38302392216083),
+            elevation=int(24),
+            reading_time='ikbkqfjelzilsqtmjryh',
+            air_temperature=float(96.3531254629154),
+            relative_humidity=int(65),
+            average_wind_speed=float(67.996761673949),
+            average_wind_direction=int(42),
+            wind_gust=float(2.687567974671312),
+            visibility=int(30),
+            precipitation_intensity=int(78),
+            precipitation_type=int(34),
+            precipitation_past_1_hour=float(66.75413254258852),
+            precipitation_past_3_hours=float(85.42162835239236),
+            precipitation_past_6_hours=float(83.80116858217657),
+            precipitation_past_12_hours=float(26.138512975296436),
+            precipitation_past_24_hours=float(71.04532067402481),
+            precipitation_accumulation=float(97.97374969116869),
+            barometric_pressure=float(89.11194474234826),
+            snow_depth=float(15.025659215644316),
+            surface_measurements=[None, None, None],
+            sub_surface_measurements=[None, None]
         )
         return instance
 
@@ -62,7 +62,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'mckyalbjtyrmvabliioi'
+        test_value = 'elymwlbtmiokabvfqvqi'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -70,7 +70,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'mkznytlupbjdzbudhsqp'
+        test_value = 'wgshieibspujgbfkshiq'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -78,7 +78,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(28.99105418391136)
+        test_value = float(28.870348346623054)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -86,7 +86,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(68.73080942612634)
+        test_value = float(51.38302392216083)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -94,7 +94,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test elevation property
         """
-        test_value = int(53)
+        test_value = int(24)
         self.instance.elevation = test_value
         self.assertEqual(self.instance.elevation, test_value)
     
@@ -102,7 +102,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test reading_time property
         """
-        test_value = 'lcornxcvdsfwpmvxjnqh'
+        test_value = 'ikbkqfjelzilsqtmjryh'
         self.instance.reading_time = test_value
         self.assertEqual(self.instance.reading_time, test_value)
     
@@ -110,7 +110,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test air_temperature property
         """
-        test_value = float(32.180729740996284)
+        test_value = float(96.3531254629154)
         self.instance.air_temperature = test_value
         self.assertEqual(self.instance.air_temperature, test_value)
     
@@ -118,7 +118,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test relative_humidity property
         """
-        test_value = int(84)
+        test_value = int(65)
         self.instance.relative_humidity = test_value
         self.assertEqual(self.instance.relative_humidity, test_value)
     
@@ -126,7 +126,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test average_wind_speed property
         """
-        test_value = float(76.66320391178276)
+        test_value = float(67.996761673949)
         self.instance.average_wind_speed = test_value
         self.assertEqual(self.instance.average_wind_speed, test_value)
     
@@ -134,7 +134,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test average_wind_direction property
         """
-        test_value = int(83)
+        test_value = int(42)
         self.instance.average_wind_direction = test_value
         self.assertEqual(self.instance.average_wind_direction, test_value)
     
@@ -142,7 +142,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test wind_gust property
         """
-        test_value = float(93.68619572754262)
+        test_value = float(2.687567974671312)
         self.instance.wind_gust = test_value
         self.assertEqual(self.instance.wind_gust, test_value)
     
@@ -150,7 +150,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test visibility property
         """
-        test_value = int(73)
+        test_value = int(30)
         self.instance.visibility = test_value
         self.assertEqual(self.instance.visibility, test_value)
     
@@ -158,7 +158,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test precipitation_intensity property
         """
-        test_value = int(100)
+        test_value = int(78)
         self.instance.precipitation_intensity = test_value
         self.assertEqual(self.instance.precipitation_intensity, test_value)
     
@@ -166,7 +166,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test precipitation_type property
         """
-        test_value = int(58)
+        test_value = int(34)
         self.instance.precipitation_type = test_value
         self.assertEqual(self.instance.precipitation_type, test_value)
     
@@ -174,7 +174,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test precipitation_past_1_hour property
         """
-        test_value = float(23.9659113936446)
+        test_value = float(66.75413254258852)
         self.instance.precipitation_past_1_hour = test_value
         self.assertEqual(self.instance.precipitation_past_1_hour, test_value)
     
@@ -182,7 +182,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test precipitation_past_3_hours property
         """
-        test_value = float(67.76588403704835)
+        test_value = float(85.42162835239236)
         self.instance.precipitation_past_3_hours = test_value
         self.assertEqual(self.instance.precipitation_past_3_hours, test_value)
     
@@ -190,7 +190,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test precipitation_past_6_hours property
         """
-        test_value = float(99.86751093523901)
+        test_value = float(83.80116858217657)
         self.instance.precipitation_past_6_hours = test_value
         self.assertEqual(self.instance.precipitation_past_6_hours, test_value)
     
@@ -198,7 +198,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test precipitation_past_12_hours property
         """
-        test_value = float(64.32761857028632)
+        test_value = float(26.138512975296436)
         self.instance.precipitation_past_12_hours = test_value
         self.assertEqual(self.instance.precipitation_past_12_hours, test_value)
     
@@ -206,7 +206,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test precipitation_past_24_hours property
         """
-        test_value = float(93.20792669773155)
+        test_value = float(71.04532067402481)
         self.instance.precipitation_past_24_hours = test_value
         self.assertEqual(self.instance.precipitation_past_24_hours, test_value)
     
@@ -214,7 +214,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test precipitation_accumulation property
         """
-        test_value = float(40.393176893731194)
+        test_value = float(97.97374969116869)
         self.instance.precipitation_accumulation = test_value
         self.assertEqual(self.instance.precipitation_accumulation, test_value)
     
@@ -222,7 +222,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test barometric_pressure property
         """
-        test_value = float(6.665210474324068)
+        test_value = float(89.11194474234826)
         self.instance.barometric_pressure = test_value
         self.assertEqual(self.instance.barometric_pressure, test_value)
     
@@ -230,7 +230,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test snow_depth property
         """
-        test_value = float(5.5772711633958805)
+        test_value = float(15.025659215644316)
         self.instance.snow_depth = test_value
         self.assertEqual(self.instance.snow_depth, test_value)
     
@@ -238,7 +238,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test surface_measurements property
         """
-        test_value = [None, None]
+        test_value = [None, None, None]
         self.instance.surface_measurements = test_value
         self.assertEqual(self.instance.surface_measurements, test_value)
     
@@ -246,7 +246,7 @@ class Test_RoadWeatherReading(unittest.TestCase):
         """
         Test sub_surface_measurements property
         """
-        test_value = [None]
+        test_value = [None, None]
         self.instance.sub_surface_measurements = test_value
         self.assertEqual(self.instance.sub_surface_measurements, test_value)
     

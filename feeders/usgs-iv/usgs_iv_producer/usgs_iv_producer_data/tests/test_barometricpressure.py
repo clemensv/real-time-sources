@@ -28,13 +28,13 @@ class Test_BarometricPressure(unittest.TestCase):
         Create instance of BarometricPressure for testing
         """
         instance = BarometricPressure(
-            site_no='kijsgrmxmljbavuwsrsj',
-            datetime='ulsfyukbpcbkwbwflrmo',
-            value=float(66.30871846218052),
-            exception='jvgnawqqhbpthrarnhuv',
-            qualifiers=['oohsbkdnekfmpxtrphdk'],
-            parameter_cd='lvdaeyevgzzhowmmdqvv',
-            timeseries_cd='uueihgicwjmhlhhmnqxi'
+            site_no='mtsreeuetmxextvgrcdg',
+            datetime='isurdnilkwscchnjymaf',
+            value=float(8.737651167543847),
+            exception='dhlhdvcufosciywyxfxz',
+            qualifiers=['dgcnztnixzcqvfevydot', 'smrfjtbguyxraqffwdtt', 'nfhuibjiiqhcygmtcdyd'],
+            parameter_cd='brgsoqgrdzzvnflxiimr',
+            timeseries_cd='cbsrkzrifposocgdjgur'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_BarometricPressure(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'kijsgrmxmljbavuwsrsj'
+        test_value = 'mtsreeuetmxextvgrcdg'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_BarometricPressure(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'ulsfyukbpcbkwbwflrmo'
+        test_value = 'isurdnilkwscchnjymaf'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_BarometricPressure(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(66.30871846218052)
+        test_value = float(8.737651167543847)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_BarometricPressure(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'jvgnawqqhbpthrarnhuv'
+        test_value = 'dhlhdvcufosciywyxfxz'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_BarometricPressure(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['oohsbkdnekfmpxtrphdk']
+        test_value = ['dgcnztnixzcqvfevydot', 'smrfjtbguyxraqffwdtt', 'nfhuibjiiqhcygmtcdyd']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_BarometricPressure(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'lvdaeyevgzzhowmmdqvv'
+        test_value = 'brgsoqgrdzzvnflxiimr'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_BarometricPressure(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'uueihgicwjmhlhhmnqxi'
+        test_value = 'cbsrkzrifposocgdjgur'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

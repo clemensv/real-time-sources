@@ -17,7 +17,7 @@ import json
 @dataclass
 class WeatherStation:
     """
-    Reference data for a GeoSphere Austria TAWES automatic weather station, including location, elevation, and federal state.
+    Reference data for a GeoSphere Austria TAWES (Teilautomatische Wetterstationen) automatic weather station. The station identifier is the GeoSphere numeric station ID. Metadata is sourced from the TAWES v1 10-minute current dataset metadata endpoint.
     
     Attributes:
         station_id (str)
@@ -26,7 +26,6 @@ class WeatherStation:
         longitude (float)
         altitude (float)
         state (typing.Optional[str])
-        bundesland (typing.Optional[str])
     """
     
     
@@ -36,7 +35,6 @@ class WeatherStation:
     longitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="longitude"))
     altitude: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="altitude"))
     state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
-    bundesland: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bundesland"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherStation':
@@ -165,11 +163,10 @@ class WeatherStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='iqebqmupgdgunanfeaxm',
-            station_name='rqejvypdqmcvrtjpmgtd',
-            latitude=float(22.586298914795734),
-            longitude=float(84.11227528124455),
-            altitude=float(79.06425834704642),
-            state='dwywiopkvjpetnxczggg',
-            bundesland='mvimisdumwodbnhskyjf'
+            station_id='vzaqfcdjqfpmuuhiqsea',
+            station_name='ctvzkvjsodrmguqmigyl',
+            latitude=float(2.6875437349347497),
+            longitude=float(65.84092468497522),
+            altitude=float(95.42264380479553),
+            state='fbdwitcclyukhcylxgik'
         )

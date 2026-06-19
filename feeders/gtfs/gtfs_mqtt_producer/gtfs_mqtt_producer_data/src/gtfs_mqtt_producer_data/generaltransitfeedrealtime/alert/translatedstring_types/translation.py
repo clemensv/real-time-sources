@@ -155,6 +155,6 @@ class Translation:
             An instance of the dataclass.
         """
         return cls(
-            text='xrliqhevxsrrmvwseoxw',
-            language='nultosjyfhgemtfnqkdg'
+            text='nndwgqaoeahvnvlxmqco',
+            language='fwmtuwhprsaakvgbwmht'
         )

@@ -324,7 +324,7 @@ class TestUKGovEnvironmentEAFloodMonitoringAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "UK.Gov.Environment.EA.FloodMonitoring.amqp.Station"
+                    assert cloud_event_payload.get("type") == "UK.Gov.Environment.EA.FloodMonitoring.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -363,7 +363,7 @@ class TestUKGovEnvironmentEAFloodMonitoringAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'UK.Gov.Environment.EA.FloodMonitoring.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'UK.Gov.Environment.EA.FloodMonitoring.Station'
         assert received.body is not None
         assert received.subject == "{station_reference}".format(station_reference="value")
         assert properties.get('river') == "{river}".format(river="value")
@@ -418,7 +418,7 @@ class TestUKGovEnvironmentEAFloodMonitoringAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading"
+                    assert cloud_event_payload.get("type") == "UK.Gov.Environment.EA.FloodMonitoring.Reading"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -457,7 +457,7 @@ class TestUKGovEnvironmentEAFloodMonitoringAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'UK.Gov.Environment.EA.FloodMonitoring.amqp.Reading'
+        assert properties.get('cloudEvents:type') == 'UK.Gov.Environment.EA.FloodMonitoring.Reading'
         assert received.body is not None
         assert received.subject == "{station_reference}".format(station_reference="value")
         assert properties.get('river') == "{river}".format(river="value")

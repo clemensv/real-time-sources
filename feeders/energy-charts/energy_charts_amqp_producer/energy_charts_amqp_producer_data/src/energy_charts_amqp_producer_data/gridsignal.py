@@ -169,10 +169,10 @@ class GridSignal:
             An instance of the dataclass.
         """
         return cls(
-            country='kusmzttgovraogsplsdl',
+            country='wzxtfhiqzqfxfjmfdder',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            unix_seconds=int(97),
-            signal=int(17),
-            renewable_share_pct=float(70.23407924245578),
+            unix_seconds=int(20),
+            signal=int(20),
+            renewable_share_pct=float(7.298433266248749),
             substitute=False
         )

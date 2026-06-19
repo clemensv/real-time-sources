@@ -28,13 +28,13 @@ class Test_TidallyFilteredDischarge(unittest.TestCase):
         Create instance of TidallyFilteredDischarge for testing
         """
         instance = TidallyFilteredDischarge(
-            site_no='itcvutebewxzcibmieyi',
-            datetime='brkwkmafqusvymkxacvn',
-            value=float(35.271947293153225),
-            exception='jyaamliqzeshuthbbhci',
-            qualifiers=['ahhryubktmzpzqnoymft', 'qvnzkvdhwjnpaxtfdliy', 'xhjyzmqwqlbnlyrnpxut', 'xkonulfmbbzimfvhgdua'],
-            parameter_cd='tqsfdpiovbzegdqswtzo',
-            timeseries_cd='lcqslhhftvqzfffqxjgw'
+            site_no='fnnvuftgkdnvfptladzu',
+            datetime='psuovwkhfosedmfhjdls',
+            value=float(5.442442306234407),
+            exception='nghxahwmcfprdennsfqx',
+            qualifiers=['wdjfrdhowriwxseqxedh', 'ombettahtopwbmploasq'],
+            parameter_cd='emxrlwyciscaipympiis',
+            timeseries_cd='hegginbigpabpcxazmdb'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_TidallyFilteredDischarge(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'itcvutebewxzcibmieyi'
+        test_value = 'fnnvuftgkdnvfptladzu'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_TidallyFilteredDischarge(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'brkwkmafqusvymkxacvn'
+        test_value = 'psuovwkhfosedmfhjdls'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_TidallyFilteredDischarge(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(35.271947293153225)
+        test_value = float(5.442442306234407)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_TidallyFilteredDischarge(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'jyaamliqzeshuthbbhci'
+        test_value = 'nghxahwmcfprdennsfqx'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_TidallyFilteredDischarge(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['ahhryubktmzpzqnoymft', 'qvnzkvdhwjnpaxtfdliy', 'xhjyzmqwqlbnlyrnpxut', 'xkonulfmbbzimfvhgdua']
+        test_value = ['wdjfrdhowriwxseqxedh', 'ombettahtopwbmploasq']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_TidallyFilteredDischarge(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'tqsfdpiovbzegdqswtzo'
+        test_value = 'emxrlwyciscaipympiis'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_TidallyFilteredDischarge(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'lcqslhhftvqzfffqxjgw'
+        test_value = 'hegginbigpabpcxazmdb'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

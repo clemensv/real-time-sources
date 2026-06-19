@@ -328,7 +328,7 @@ class TestMicrosoftOpenDataUSNOAANWSAlertsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert"
+                    assert cloud_event_payload.get("type") == "Microsoft.OpenData.US.NOAA.NWS.WeatherAlert"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -367,7 +367,7 @@ class TestMicrosoftOpenDataUSNOAANWSAlertsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NWS.Alerts.amqp.WeatherAlert'
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NWS.WeatherAlert'
         assert received.body is not None
         assert received.subject == "{state}/{severity}/{event_type}/{alert_id}".format(state="value", severity="value", event_type="value", alert_id="value")
 
@@ -481,7 +481,7 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation"
+                    assert cloud_event_payload.get("type") == "Microsoft.OpenData.US.NOAA.NWS.ObservationStation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -521,7 +521,7 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.ObservationStation'
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NWS.ObservationStation'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -577,7 +577,7 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation"
+                    assert cloud_event_payload.get("type") == "Microsoft.OpenData.US.NOAA.NWS.WeatherObservation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -617,7 +617,7 @@ class TestMicrosoftOpenDataUSNOAANWSObservationsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NWS.Observations.amqp.WeatherObservation'
+        assert properties.get('cloudEvents:type') == 'Microsoft.OpenData.US.NOAA.NWS.WeatherObservation'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('state') == "{state}".format(state="value")

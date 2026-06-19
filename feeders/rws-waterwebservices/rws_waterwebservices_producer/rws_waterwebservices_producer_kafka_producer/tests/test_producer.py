@@ -225,7 +225,7 @@ def test_nl_rws_waterwebservices_mqtt_nlrwswaterwebservicesmqttstation(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.RWS.Waterwebservices.mqtt.Station":
+            if cloudevent['type'] == "NL.RWS.Waterwebservices.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_nl_rws_waterwebservices_mqtt_nlrwswaterwebservicesmqttwaterlevelobserva
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.RWS.Waterwebservices.mqtt.WaterLevelObservation":
+            if cloudevent['type'] == "NL.RWS.Waterwebservices.WaterLevelObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_nl_rws_waterwebservices_amqp_nlrwswaterwebservicesamqpstation(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.RWS.Waterwebservices.amqp.Station":
+            if cloudevent['type'] == "NL.RWS.Waterwebservices.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_nl_rws_waterwebservices_amqp_nlrwswaterwebservicesamqpwaterlevelobserva
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NL.RWS.Waterwebservices.amqp.WaterLevelObservation":
+            if cloudevent['type'] == "NL.RWS.Waterwebservices.WaterLevelObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

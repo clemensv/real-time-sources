@@ -167,11 +167,11 @@ class TrafficReading:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='bxiudwxinrjkdfddxyau',
-            intensity=int(25),
-            occupancy=int(25),
-            load=int(48),
-            service_level=int(15),
-            error_flag='spszgowxwlkvzjhmepyf',
+            sensor_id='cubfzgrexmgohjvegziw',
+            intensity=int(96),
+            occupancy=int(91),
+            load=int(35),
+            service_level=int(38),
+            error_flag='ngjiktxcqmeddmpwjgbb',
             timestamp=datetime.datetime.now(datetime.timezone.utc)
         )

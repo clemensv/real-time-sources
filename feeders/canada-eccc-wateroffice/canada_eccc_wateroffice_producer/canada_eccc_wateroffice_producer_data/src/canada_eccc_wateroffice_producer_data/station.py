@@ -175,16 +175,16 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_number='tlejjycislrmvyjjlmtx',
-            station_name='smhprbpwczdltkxtsrhr',
-            prov_terr_state_loc='rojiqfyepvizhxbiihrs',
-            status_en='yqltqahsqioxjwrxmuah',
-            contributor_en='gvmqhjtgadwvkmkklmxj',
-            drainage_area_gross=float(45.73310295439388),
-            drainage_area_effect=float(62.227151291035334),
+            station_number='amcdfdftniuujlnsfojd',
+            station_name='rppszluplqgdcaxmkaid',
+            prov_terr_state_loc='sfirqffbbdqlyxdgbopc',
+            status_en='erexjazgyswliwnfsnid',
+            contributor_en='hrnpyjowzmgwiupfpaen',
+            drainage_area_gross=float(76.74798179527416),
+            drainage_area_effect=float(56.10753923254441),
             rhbn=False,
-            real_time=True,
-            latitude=float(41.06487598163435),
-            longitude=float(28.61515576749908),
-            basin='kqbzqmmczqmjnzdigxyd'
+            real_time=False,
+            latitude=float(65.19592838135885),
+            longitude=float(69.39833955249597),
+            basin='gngnthzfqlthtvsxjkby'
         )

@@ -169,13 +169,13 @@ class WaterLevelReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='yvxbgivjfppqbeglbryl',
-            title='rnldhjxorxephpowxfgw',
-            basin='axmfrqhtbahlqaxfyyjx',
-            water_level=float(0.49772007516442063),
-            danger_level=float(75.02333972753598),
-            warning_level=float(15.57683088532632),
-            status='vljqywnrghsepjsayxal',
-            trend='klhnipglbddpyihpunql',
-            water_level_on='wgvcdznrqxxkgakgshcx'
+            station_id='hacqsrwqdgfbyesakvga',
+            title='cdnqbaunmactynuktewb',
+            basin='bfrpagenmuquteqsirmu',
+            water_level=float(86.45327851310036),
+            danger_level=float(13.574272244757946),
+            warning_level=float(91.62266542609456),
+            status='svrewsoxuajpswrnfpzo',
+            trend='azinzibjzzukxohqgimf',
+            water_level_on='fondxewpelgrlkzttssg'
         )

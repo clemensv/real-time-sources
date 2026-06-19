@@ -225,7 +225,7 @@ def test_hk_gov_epd_aqhi_mqtt_hkgovepdaqhimqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "HK.Gov.EPD.AQHI.mqtt.Station":
+            if cloudevent['type'] == "HK.Gov.EPD.AQHI.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_hk_gov_epd_aqhi_mqtt_hkgovepdaqhimqttaqhireading(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "HK.Gov.EPD.AQHI.mqtt.AQHIReading":
+            if cloudevent['type'] == "HK.Gov.EPD.AQHI.AQHIReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_hk_gov_epd_aqhi_amqp_hkgovepdaqhiamqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "HK.Gov.EPD.AQHI.amqp.Station":
+            if cloudevent['type'] == "HK.Gov.EPD.AQHI.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_hk_gov_epd_aqhi_amqp_hkgovepdaqhiamqpaqhireading(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "HK.Gov.EPD.AQHI.amqp.AQHIReading":
+            if cloudevent['type'] == "HK.Gov.EPD.AQHI.AQHIReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

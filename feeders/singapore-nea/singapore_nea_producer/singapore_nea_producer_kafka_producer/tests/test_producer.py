@@ -426,7 +426,7 @@ def test_sg_gov_nea_weather_mqtt_sggovneaweatherstationmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "SG.Gov.NEA.Weather.Station.mqtt":
+            if cloudevent['type'] == "SG.Gov.NEA.Weather.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -488,7 +488,7 @@ def test_sg_gov_nea_weather_mqtt_sggovneaweatherweatherobservationmqtt(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "SG.Gov.NEA.Weather.WeatherObservation.mqtt":
+            if cloudevent['type'] == "SG.Gov.NEA.Weather.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -550,7 +550,7 @@ def test_sg_gov_nea_airquality_mqtt_sggovneaairqualityregionmqtt(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.Region.mqtt":
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.Region":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -612,7 +612,7 @@ def test_sg_gov_nea_airquality_mqtt_sggovneaairqualitypsireadingmqtt(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PSIReading.mqtt":
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PSIReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -674,7 +674,7 @@ def test_sg_gov_nea_airquality_mqtt_sggovneaairqualitypm25readingmqtt(kafka_emul
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PM25Reading.mqtt":
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PM25Reading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -736,7 +736,7 @@ def test_sg_gov_nea_weather_amqp_sggovneaweatherstationamqp(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "SG.Gov.NEA.Weather.Station.amqp":
+            if cloudevent['type'] == "SG.Gov.NEA.Weather.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -798,7 +798,7 @@ def test_sg_gov_nea_weather_amqp_sggovneaweatherweatherobservationamqp(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "SG.Gov.NEA.Weather.WeatherObservation.amqp":
+            if cloudevent['type'] == "SG.Gov.NEA.Weather.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -860,7 +860,7 @@ def test_sg_gov_nea_airquality_amqp_sggovneaairqualityregionamqp(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.Region.amqp":
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.Region":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -922,7 +922,7 @@ def test_sg_gov_nea_airquality_amqp_sggovneaairqualitypsireadingamqp(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PSIReading.amqp":
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PSIReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -984,7 +984,7 @@ def test_sg_gov_nea_airquality_amqp_sggovneaairqualitypm25readingamqp(kafka_emul
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PM25Reading.amqp":
+            if cloudevent['type'] == "SG.Gov.NEA.AirQuality.PM25Reading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

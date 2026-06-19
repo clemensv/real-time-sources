@@ -29,12 +29,12 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         Create instance of BuoySolarRadiationObservation for testing
         """
         instance = BuoySolarRadiationObservation(
-            station_id='hsocfnsynhwbtmmzogpk',
+            station_id='qtfjpabykwrsuejuqkoz',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            shortwave_radiation_licor=float(57.654077370508304),
-            shortwave_radiation_eppley=float(44.347280501066635),
-            longwave_radiation=float(75.62855054566764),
-            region='jgjhfsfqbxjibamkquhr'
+            shortwave_radiation_licor=float(30.546543100695946),
+            shortwave_radiation_eppley=float(12.902508016571701),
+            longwave_radiation=float(65.36412511766625),
+            region='rqivvwggpyxwjpyogwzt'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'hsocfnsynhwbtmmzogpk'
+        test_value = 'qtfjpabykwrsuejuqkoz'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -59,7 +59,7 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         """
         Test shortwave_radiation_licor property
         """
-        test_value = float(57.654077370508304)
+        test_value = float(30.546543100695946)
         self.instance.shortwave_radiation_licor = test_value
         self.assertEqual(self.instance.shortwave_radiation_licor, test_value)
     
@@ -67,7 +67,7 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         """
         Test shortwave_radiation_eppley property
         """
-        test_value = float(44.347280501066635)
+        test_value = float(12.902508016571701)
         self.instance.shortwave_radiation_eppley = test_value
         self.assertEqual(self.instance.shortwave_radiation_eppley, test_value)
     
@@ -75,7 +75,7 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         """
         Test longwave_radiation property
         """
-        test_value = float(75.62855054566764)
+        test_value = float(65.36412511766625)
         self.instance.longwave_radiation = test_value
         self.assertEqual(self.instance.longwave_radiation, test_value)
     
@@ -83,7 +83,7 @@ class Test_BuoySolarRadiationObservation(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'jgjhfsfqbxjibamkquhr'
+        test_value = 'rqivvwggpyxwjpyogwzt'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

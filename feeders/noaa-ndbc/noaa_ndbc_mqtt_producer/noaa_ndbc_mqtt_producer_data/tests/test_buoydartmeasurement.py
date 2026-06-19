@@ -29,11 +29,11 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         Create instance of BuoyDartMeasurement for testing
         """
         instance = BuoyDartMeasurement(
-            station_id='mziuhlvgrlzxyphxgvvb',
+            station_id='tqqnbpkwivvaxmpxtqdx',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            measurement_type_code=int(75),
-            water_column_height=float(98.48227622283414),
-            region='pnaweezvueoruvkkhdwy'
+            measurement_type_code=int(88),
+            water_column_height=float(23.521820736870723),
+            region='vrjjboccfvashsnefoim'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'mziuhlvgrlzxyphxgvvb'
+        test_value = 'tqqnbpkwivvaxmpxtqdx'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test measurement_type_code property
         """
-        test_value = int(75)
+        test_value = int(88)
         self.instance.measurement_type_code = test_value
         self.assertEqual(self.instance.measurement_type_code, test_value)
     
@@ -66,7 +66,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test water_column_height property
         """
-        test_value = float(98.48227622283414)
+        test_value = float(23.521820736870723)
         self.instance.water_column_height = test_value
         self.assertEqual(self.instance.water_column_height, test_value)
     
@@ -74,7 +74,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'pnaweezvueoruvkkhdwy'
+        test_value = 'vrjjboccfvashsnefoim'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

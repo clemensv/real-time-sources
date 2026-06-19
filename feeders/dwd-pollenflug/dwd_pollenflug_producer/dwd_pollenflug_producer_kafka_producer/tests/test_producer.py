@@ -225,7 +225,7 @@ def test_de_dwd_pollenflug_mqtt_dedwdpollenflugmqttregion(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Pollenflug.mqtt.Region":
+            if cloudevent['type'] == "DE.DWD.Pollenflug.Region":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_de_dwd_pollenflug_mqtt_dedwdpollenflugmqttpollenforecast(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Pollenflug.mqtt.PollenForecast":
+            if cloudevent['type'] == "DE.DWD.Pollenflug.PollenForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_de_dwd_pollenflug_amqp_dedwdpollenflugamqpregion(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Pollenflug.amqp.Region":
+            if cloudevent['type'] == "DE.DWD.Pollenflug.Region":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_de_dwd_pollenflug_amqp_dedwdpollenflugamqppollenforecast(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Pollenflug.amqp.PollenForecast":
+            if cloudevent['type'] == "DE.DWD.Pollenflug.PollenForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

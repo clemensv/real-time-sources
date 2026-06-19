@@ -28,15 +28,15 @@ class Test_EventSaleStatus(unittest.TestCase):
         Create instance of EventSaleStatus for testing
         """
         instance = EventSaleStatus(
-            event_id='qelxpnuuebczibleqzap',
-            name='cluveyyrleoypizocerl',
-            sale_status='dkxqyorunumjblngzvib',
-            event_status='rymxkhxfdqokkajuzsyc',
-            start='vlyfyhgbytfordrzrnxs',
-            end='lvlcsphcgvoiwlauhzwd',
-            url='ovbzwoxdconppmotbrgf',
-            buy_tickets_url='prekvkkiagfazjknbour',
-            observed_at='lsussujsmsvpeqnmcman'
+            event_id='jsalnohbbkshzgmaxdbj',
+            name='jkuyolousujxkneileqv',
+            sale_status='urdzlzzaghqzwexalyoe',
+            event_status='cnjlcdtlqmyygcdncawr',
+            start='bapfdaoarwicuygzukcx',
+            end='xvhefaqhdjuffvnknogp',
+            url='ndertyckjzzymphnqeuo',
+            buy_tickets_url='mwwodguluypgcyqnvdgm',
+            observed_at='yvklkkjrwhpzvjvwuskx'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'qelxpnuuebczibleqzap'
+        test_value = 'jsalnohbbkshzgmaxdbj'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'cluveyyrleoypizocerl'
+        test_value = 'jkuyolousujxkneileqv'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -61,7 +61,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test sale_status property
         """
-        test_value = 'dkxqyorunumjblngzvib'
+        test_value = 'urdzlzzaghqzwexalyoe'
         self.instance.sale_status = test_value
         self.assertEqual(self.instance.sale_status, test_value)
     
@@ -69,7 +69,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test event_status property
         """
-        test_value = 'rymxkhxfdqokkajuzsyc'
+        test_value = 'cnjlcdtlqmyygcdncawr'
         self.instance.event_status = test_value
         self.assertEqual(self.instance.event_status, test_value)
     
@@ -77,7 +77,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test start property
         """
-        test_value = 'vlyfyhgbytfordrzrnxs'
+        test_value = 'bapfdaoarwicuygzukcx'
         self.instance.start = test_value
         self.assertEqual(self.instance.start, test_value)
     
@@ -85,7 +85,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test end property
         """
-        test_value = 'lvlcsphcgvoiwlauhzwd'
+        test_value = 'xvhefaqhdjuffvnknogp'
         self.instance.end = test_value
         self.assertEqual(self.instance.end, test_value)
     
@@ -93,7 +93,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'ovbzwoxdconppmotbrgf'
+        test_value = 'ndertyckjzzymphnqeuo'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
@@ -101,7 +101,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test buy_tickets_url property
         """
-        test_value = 'prekvkkiagfazjknbour'
+        test_value = 'mwwodguluypgcyqnvdgm'
         self.instance.buy_tickets_url = test_value
         self.assertEqual(self.instance.buy_tickets_url, test_value)
     
@@ -109,7 +109,7 @@ class Test_EventSaleStatus(unittest.TestCase):
         """
         Test observed_at property
         """
-        test_value = 'lsussujsmsvpeqnmcman'
+        test_value = 'yvklkkjrwhpzvjvwuskx'
         self.instance.observed_at = test_value
         self.assertEqual(self.instance.observed_at, test_value)
     

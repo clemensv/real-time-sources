@@ -325,7 +325,7 @@ class TestUSGSWaterQualitySitesAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "USGS.WaterQuality.Sites.amqp.MonitoringSite"
+                    assert cloud_event_payload.get("type") == "USGS.WaterQuality.Sites.MonitoringSite"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -365,7 +365,7 @@ class TestUSGSWaterQualitySitesAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'USGS.WaterQuality.Sites.amqp.MonitoringSite'
+        assert properties.get('cloudEvents:type') == 'USGS.WaterQuality.Sites.MonitoringSite'
         assert received.body is not None
         assert received.subject == "{site_number}".format(site_number="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -482,7 +482,7 @@ class TestUSGSWaterQualityReadingsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "USGS.WaterQuality.Readings.amqp.WaterQualityReading"
+                    assert cloud_event_payload.get("type") == "USGS.WaterQuality.Readings.WaterQualityReading"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -524,7 +524,7 @@ class TestUSGSWaterQualityReadingsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'USGS.WaterQuality.Readings.amqp.WaterQualityReading'
+        assert properties.get('cloudEvents:type') == 'USGS.WaterQuality.Readings.WaterQualityReading'
         assert received.body is not None
         assert received.subject == "{site_number}/{parameter_code}".format(site_number="value", parameter_code="value")
         assert properties.get('state') == "{state}".format(state="value")

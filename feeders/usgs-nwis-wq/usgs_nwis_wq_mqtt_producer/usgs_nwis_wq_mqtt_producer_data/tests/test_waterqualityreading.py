@@ -28,15 +28,15 @@ class Test_WaterQualityReading(unittest.TestCase):
         Create instance of WaterQualityReading for testing
         """
         instance = WaterQualityReading(
-            site_number='ratmhukpkdotsycbyoky',
-            site_name='lxjcwrnwahtulncsyyto',
-            parameter_code='ketdemeirldsmgtsfxbe',
-            parameter_name='qtczmcgpszqtenudmxes',
-            value=float(50.5384763535073),
-            unit='hvftuwmqibvrtzewrnzi',
-            qualifier='mfuemjslozjuojfmkqgs',
-            date_time='qrxpjwfrxqquprtiphlu',
-            state='eknjebfzjqczjbdhkqmv'
+            site_number='etcgzwinkehrafbrqfnn',
+            site_name='tvrjvjlkvotzgoeqdpbz',
+            parameter_code='bpkhpxniraeoxbizdinn',
+            parameter_name='mrwmayskocnxnvkfsvaj',
+            value=float(12.19043976528299),
+            unit='czyoubnngrgjaunfinyx',
+            qualifier='blyxkeuycgtqwqvoxgmb',
+            date_time='wxjgbiqlreqgjmdejclk',
+            state='kfxismnfgofiugroplto'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test site_number property
         """
-        test_value = 'ratmhukpkdotsycbyoky'
+        test_value = 'etcgzwinkehrafbrqfnn'
         self.instance.site_number = test_value
         self.assertEqual(self.instance.site_number, test_value)
     
@@ -53,7 +53,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test site_name property
         """
-        test_value = 'lxjcwrnwahtulncsyyto'
+        test_value = 'tvrjvjlkvotzgoeqdpbz'
         self.instance.site_name = test_value
         self.assertEqual(self.instance.site_name, test_value)
     
@@ -61,7 +61,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test parameter_code property
         """
-        test_value = 'ketdemeirldsmgtsfxbe'
+        test_value = 'bpkhpxniraeoxbizdinn'
         self.instance.parameter_code = test_value
         self.assertEqual(self.instance.parameter_code, test_value)
     
@@ -69,7 +69,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test parameter_name property
         """
-        test_value = 'qtczmcgpszqtenudmxes'
+        test_value = 'mrwmayskocnxnvkfsvaj'
         self.instance.parameter_name = test_value
         self.assertEqual(self.instance.parameter_name, test_value)
     
@@ -77,7 +77,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(50.5384763535073)
+        test_value = float(12.19043976528299)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -85,7 +85,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test unit property
         """
-        test_value = 'hvftuwmqibvrtzewrnzi'
+        test_value = 'czyoubnngrgjaunfinyx'
         self.instance.unit = test_value
         self.assertEqual(self.instance.unit, test_value)
     
@@ -93,7 +93,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test qualifier property
         """
-        test_value = 'mfuemjslozjuojfmkqgs'
+        test_value = 'blyxkeuycgtqwqvoxgmb'
         self.instance.qualifier = test_value
         self.assertEqual(self.instance.qualifier, test_value)
     
@@ -101,7 +101,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test date_time property
         """
-        test_value = 'qrxpjwfrxqquprtiphlu'
+        test_value = 'wxjgbiqlreqgjmdejclk'
         self.instance.date_time = test_value
         self.assertEqual(self.instance.date_time, test_value)
     
@@ -109,7 +109,7 @@ class Test_WaterQualityReading(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'eknjebfzjqczjbdhkqmv'
+        test_value = 'kfxismnfgofiugroplto'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     

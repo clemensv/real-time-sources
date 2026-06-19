@@ -29,19 +29,19 @@ class Test_Routes(unittest.TestCase):
         Create instance of Routes for testing
         """
         instance = Routes(
-            routeId='exobbbzqfdsyhqsdlaqg',
-            agencyId='epjxcjunsetpvtyglcka',
-            routeShortName='rgfkvjzgmdmvzsgywgir',
-            routeLongName='pjvtwupkvleksfcmzvrs',
-            routeDesc='vacefysszuxjkywkwlrl',
+            routeId='wxxrhbodksvsawarzuto',
+            agencyId='nsmdezfillxkfimntehn',
+            routeShortName='eghwxgrvdkidxwgkkdvg',
+            routeLongName='hyruamesvpdkzvdszscs',
+            routeDesc='tgkldaspssnibscfmbxy',
             routeType=None,
-            routeUrl='tuynzpyhiaeorfdjodee',
-            routeColor='hdnxiocujjjiqmkqniop',
-            routeTextColor='gbyqdoneiyqfuupkqgff',
+            routeUrl='jvqywtdnztjxchgiphvr',
+            routeColor='tybsnkwofxtpfacmlltm',
+            routeTextColor='gkconxjaxaslgkgiifjt',
             routeSortOrder=int(65),
             continuousPickup=None,
             continuousDropOff=None,
-            networkId='zucddajfqpjiqxnzicba'
+            networkId='fjixktfawuothydsiiwx'
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeId property
         """
-        test_value = 'exobbbzqfdsyhqsdlaqg'
+        test_value = 'wxxrhbodksvsawarzuto'
         self.instance.routeId = test_value
         self.assertEqual(self.instance.routeId, test_value)
     
@@ -58,7 +58,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test agencyId property
         """
-        test_value = 'epjxcjunsetpvtyglcka'
+        test_value = 'nsmdezfillxkfimntehn'
         self.instance.agencyId = test_value
         self.assertEqual(self.instance.agencyId, test_value)
     
@@ -66,7 +66,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeShortName property
         """
-        test_value = 'rgfkvjzgmdmvzsgywgir'
+        test_value = 'eghwxgrvdkidxwgkkdvg'
         self.instance.routeShortName = test_value
         self.assertEqual(self.instance.routeShortName, test_value)
     
@@ -74,7 +74,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeLongName property
         """
-        test_value = 'pjvtwupkvleksfcmzvrs'
+        test_value = 'hyruamesvpdkzvdszscs'
         self.instance.routeLongName = test_value
         self.assertEqual(self.instance.routeLongName, test_value)
     
@@ -82,7 +82,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeDesc property
         """
-        test_value = 'vacefysszuxjkywkwlrl'
+        test_value = 'tgkldaspssnibscfmbxy'
         self.instance.routeDesc = test_value
         self.assertEqual(self.instance.routeDesc, test_value)
     
@@ -98,7 +98,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeUrl property
         """
-        test_value = 'tuynzpyhiaeorfdjodee'
+        test_value = 'jvqywtdnztjxchgiphvr'
         self.instance.routeUrl = test_value
         self.assertEqual(self.instance.routeUrl, test_value)
     
@@ -106,7 +106,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeColor property
         """
-        test_value = 'hdnxiocujjjiqmkqniop'
+        test_value = 'tybsnkwofxtpfacmlltm'
         self.instance.routeColor = test_value
         self.assertEqual(self.instance.routeColor, test_value)
     
@@ -114,7 +114,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test routeTextColor property
         """
-        test_value = 'gbyqdoneiyqfuupkqgff'
+        test_value = 'gkconxjaxaslgkgiifjt'
         self.instance.routeTextColor = test_value
         self.assertEqual(self.instance.routeTextColor, test_value)
     
@@ -146,7 +146,7 @@ class Test_Routes(unittest.TestCase):
         """
         Test networkId property
         """
-        test_value = 'zucddajfqpjiqxnzicba'
+        test_value = 'fjixktfawuothydsiiwx'
         self.instance.networkId = test_value
         self.assertEqual(self.instance.networkId, test_value)
     

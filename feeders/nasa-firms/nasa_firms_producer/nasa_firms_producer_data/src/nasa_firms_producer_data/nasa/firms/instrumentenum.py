@@ -3,7 +3,7 @@ from enum import Enum
 
 class InstrumentEnum(Enum):
     """
-    Sensor that produced the detection: `VIIRS` or `MODIS`. Discriminates which of the brightness fields are populated. Sourced from the CSV `instrument` column.
+    Sensor family of the source: `VIIRS` or `MODIS`. Derived by the bridge from the source identifier.
     """
     VIIRS = 'VIIRS'
     MODIS = 'MODIS'

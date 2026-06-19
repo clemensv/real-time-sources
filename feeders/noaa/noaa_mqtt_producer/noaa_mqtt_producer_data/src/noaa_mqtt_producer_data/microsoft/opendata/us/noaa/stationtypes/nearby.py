@@ -157,5 +157,5 @@ class Nearby:
             An instance of the dataclass.
         """
         return cls(
-            self_='klqxqxjgypgswqugoflw'
+            self_='jvgvymyycpkyfwqjokeq'
         )

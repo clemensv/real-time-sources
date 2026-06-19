@@ -324,7 +324,7 @@ class TestGovNIFCWildfiresAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Gov.NIFC.Wildfires.amqp.WildfireIncident"
+                    assert cloud_event_payload.get("type") == "Gov.NIFC.Wildfires.WildfireIncident"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -365,7 +365,7 @@ class TestGovNIFCWildfiresAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Gov.NIFC.Wildfires.amqp.WildfireIncident'
+        assert properties.get('cloudEvents:type') == 'Gov.NIFC.Wildfires.WildfireIncident'
         assert received.body is not None
         assert received.subject == "{irwin_id}".format(irwin_id="value")
         assert properties.get('state') == "{state}".format(state="value")

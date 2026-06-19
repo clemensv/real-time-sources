@@ -225,7 +225,7 @@ def test_ca_gov_eccc_hydro_mqtt_cagoveccchydromqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CA.Gov.ECCC.Hydro.mqtt.Station":
+            if cloudevent['type'] == "CA.Gov.ECCC.Hydro.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_ca_gov_eccc_hydro_mqtt_cagoveccchydromqttobservation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CA.Gov.ECCC.Hydro.mqtt.Observation":
+            if cloudevent['type'] == "CA.Gov.ECCC.Hydro.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_ca_gov_eccc_hydro_amqp_cagoveccchydroamqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CA.Gov.ECCC.Hydro.amqp.Station":
+            if cloudevent['type'] == "CA.Gov.ECCC.Hydro.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_ca_gov_eccc_hydro_amqp_cagoveccchydroamqpobservation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "CA.Gov.ECCC.Hydro.amqp.Observation":
+            if cloudevent['type'] == "CA.Gov.ECCC.Hydro.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

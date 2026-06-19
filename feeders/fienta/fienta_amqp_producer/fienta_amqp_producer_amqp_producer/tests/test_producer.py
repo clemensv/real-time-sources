@@ -323,7 +323,7 @@ class TestComFientaAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Com.Fienta.amqp.Event"
+                    assert cloud_event_payload.get("type") == "Com.Fienta.Event"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -360,7 +360,7 @@ class TestComFientaAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Com.Fienta.amqp.Event'
+        assert properties.get('cloudEvents:type') == 'Com.Fienta.Event'
         assert received.body is not None
         assert received.subject == "{event_id}".format(event_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{event_id}".format(event_id="value"))[:128]
@@ -413,7 +413,7 @@ class TestComFientaAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Com.Fienta.amqp.EventSaleStatus"
+                    assert cloud_event_payload.get("type") == "Com.Fienta.EventSaleStatus"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -450,7 +450,7 @@ class TestComFientaAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Com.Fienta.amqp.EventSaleStatus'
+        assert properties.get('cloudEvents:type') == 'Com.Fienta.EventSaleStatus'
         assert received.body is not None
         assert received.subject == "{event_id}".format(event_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{event_id}".format(event_id="value"))[:128]

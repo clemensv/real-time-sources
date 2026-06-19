@@ -28,13 +28,13 @@ class Test_OtherParameter(unittest.TestCase):
         Create instance of OtherParameter for testing
         """
         instance = OtherParameter(
-            site_no='maravpebtngjzwckyvur',
-            datetime='bhdcwhnhqbfdqrhffzlm',
-            value=float(83.08074839868816),
-            exception='ofsrtsdjpncytderhsjx',
-            qualifiers=['vfhffguwlygohjwfftya', 'uzlqpzqgifrutxfpmtxj', 'acybbnfyonkxwotufpic', 'gajqfxfqoilqpwqsxbhb', 'qxuzvpojcaggkosnvavc'],
-            parameter_cd='ntmmfqvujexhuujslgxr',
-            timeseries_cd='ozmeiqtlghgzcgvrxlzb'
+            site_no='lpxmwwudrkhugikbmljs',
+            datetime='jikrxqismmsjdnoydtdv',
+            value=float(89.31952101570576),
+            exception='vnoyfqwboxhgkljnzjhy',
+            qualifiers=['etxcclborabzmbhoimwm'],
+            parameter_cd='enxhgdroxxyvprcxebas',
+            timeseries_cd='wdjoueigehipzcbafnmv'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_OtherParameter(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'maravpebtngjzwckyvur'
+        test_value = 'lpxmwwudrkhugikbmljs'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_OtherParameter(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'bhdcwhnhqbfdqrhffzlm'
+        test_value = 'jikrxqismmsjdnoydtdv'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_OtherParameter(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(83.08074839868816)
+        test_value = float(89.31952101570576)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_OtherParameter(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'ofsrtsdjpncytderhsjx'
+        test_value = 'vnoyfqwboxhgkljnzjhy'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_OtherParameter(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['vfhffguwlygohjwfftya', 'uzlqpzqgifrutxfpmtxj', 'acybbnfyonkxwotufpic', 'gajqfxfqoilqpwqsxbhb', 'qxuzvpojcaggkosnvavc']
+        test_value = ['etxcclborabzmbhoimwm']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_OtherParameter(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'ntmmfqvujexhuujslgxr'
+        test_value = 'enxhgdroxxyvprcxebas'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_OtherParameter(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'ozmeiqtlghgzcgvrxlzb'
+        test_value = 'wdjoueigehipzcbafnmv'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

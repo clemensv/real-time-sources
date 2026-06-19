@@ -10,9 +10,9 @@ sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src
 
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.vehicleposition import VehiclePosition
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.position import Position
 from typing import Any
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor import TripDescriptor
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.vehicle.position import Position
 
 
 class Test_VehiclePosition(unittest.TestCase):
@@ -35,10 +35,10 @@ class Test_VehiclePosition(unittest.TestCase):
             trip=None,
             vehicle=None,
             position=None,
-            current_stop_sequence=int(13),
-            stop_id='wlohmeoouygnspczqdfx',
+            current_stop_sequence=int(25),
+            stop_id='bgtsdwzujssfiofxonwg',
             current_status=None,
-            timestamp=int(14),
+            timestamp=int(73),
             congestion_level=None,
             occupancy_status=None
         )
@@ -73,7 +73,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test current_stop_sequence property
         """
-        test_value = int(13)
+        test_value = int(25)
         self.instance.current_stop_sequence = test_value
         self.assertEqual(self.instance.current_stop_sequence, test_value)
     
@@ -81,7 +81,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test stop_id property
         """
-        test_value = 'wlohmeoouygnspczqdfx'
+        test_value = 'bgtsdwzujssfiofxonwg'
         self.instance.stop_id = test_value
         self.assertEqual(self.instance.stop_id, test_value)
     
@@ -97,7 +97,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(14)
+        test_value = int(73)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     

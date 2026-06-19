@@ -334,7 +334,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.amqp.TmsSensorData"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.sensors.TmsSensorData"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -374,7 +374,7 @@ class TestFiDigitrafficRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.TmsSensorData'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.sensors.TmsSensorData'
         assert received.body is not None
         assert received.subject == "{station_id}/{sensor_id}".format(station_id="value", sensor_id="value")
         assert properties.get('station_id') == "{station_id}".format(station_id="value")
@@ -430,7 +430,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.amqp.WeatherSensorData"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.sensors.WeatherSensorData"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -470,7 +470,7 @@ class TestFiDigitrafficRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.WeatherSensorData'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.sensors.WeatherSensorData'
         assert received.body is not None
         assert received.subject == "{station_id}/{sensor_id}".format(station_id="value", sensor_id="value")
         assert properties.get('station_id') == "{station_id}".format(station_id="value")
@@ -525,7 +525,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.amqp.TrafficAnnouncement"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.messages.TrafficAnnouncement"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -562,7 +562,7 @@ class TestFiDigitrafficRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.TrafficAnnouncement'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.messages.TrafficAnnouncement'
         assert received.body is not None
         assert received.subject == "{situation_id}".format(situation_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
@@ -615,7 +615,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.amqp.RoadWork"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.messages.RoadWork"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -652,7 +652,7 @@ class TestFiDigitrafficRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.RoadWork'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.messages.RoadWork'
         assert received.body is not None
         assert received.subject == "{situation_id}".format(situation_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
@@ -705,7 +705,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.amqp.WeightRestriction"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.messages.WeightRestriction"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -742,7 +742,7 @@ class TestFiDigitrafficRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.WeightRestriction'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.messages.WeightRestriction'
         assert received.body is not None
         assert received.subject == "{situation_id}".format(situation_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
@@ -795,7 +795,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.amqp.ExemptedTransport"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.messages.ExemptedTransport"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -832,7 +832,7 @@ class TestFiDigitrafficRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.ExemptedTransport'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.messages.ExemptedTransport'
         assert received.body is not None
         assert received.subject == "{situation_id}".format(situation_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]
@@ -885,7 +885,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.amqp.MaintenanceTracking"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.maintenance.MaintenanceTracking"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -923,7 +923,7 @@ class TestFiDigitrafficRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.MaintenanceTracking'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.maintenance.MaintenanceTracking'
         assert received.body is not None
         assert received.subject == "{domain}".format(domain="value")
         assert properties.get('domain') == "{domain}".format(domain="value")
@@ -977,7 +977,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.amqp.TmsStation"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.stations.TmsStation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1015,7 +1015,7 @@ class TestFiDigitrafficRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.TmsStation'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.stations.TmsStation'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('station_id') == "{station_id}".format(station_id="value")
@@ -1069,7 +1069,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.amqp.WeatherStation"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.stations.WeatherStation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1107,7 +1107,7 @@ class TestFiDigitrafficRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.WeatherStation'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.stations.WeatherStation'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('station_id') == "{station_id}".format(station_id="value")
@@ -1161,7 +1161,7 @@ class TestFiDigitrafficRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.amqp.MaintenanceTaskType"
+                    assert cloud_event_payload.get("type") == "fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1199,7 +1199,7 @@ class TestFiDigitrafficRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.amqp.MaintenanceTaskType'
+        assert properties.get('cloudEvents:type') == 'fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType'
         assert received.body is not None
         assert received.subject == "{task_id}".format(task_id="value")
         assert properties.get('task_id') == "{task_id}".format(task_id="value")

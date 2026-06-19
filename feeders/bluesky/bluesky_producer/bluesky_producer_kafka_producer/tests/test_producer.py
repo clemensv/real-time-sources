@@ -489,7 +489,7 @@ def test_blueskyfirehose_mqtt_blueskyfeedpostmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Bluesky.Feed.Post.mqtt":
+            if cloudevent['type'] == "Bluesky.Feed.Post":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -551,7 +551,7 @@ def test_blueskyfirehose_mqtt_blueskyfeedlikemqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Bluesky.Feed.Like.mqtt":
+            if cloudevent['type'] == "Bluesky.Feed.Like":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -613,7 +613,7 @@ def test_blueskyfirehose_mqtt_blueskyfeedrepostmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Bluesky.Feed.Repost.mqtt":
+            if cloudevent['type'] == "Bluesky.Feed.Repost":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -675,7 +675,7 @@ def test_blueskyfirehose_mqtt_blueskygraphfollowmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Bluesky.Graph.Follow.mqtt":
+            if cloudevent['type'] == "Bluesky.Graph.Follow":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -737,7 +737,7 @@ def test_blueskyfirehose_mqtt_blueskygraphblockmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Bluesky.Graph.Block.mqtt":
+            if cloudevent['type'] == "Bluesky.Graph.Block":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -799,7 +799,7 @@ def test_blueskyfirehose_mqtt_blueskyactorprofilemqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Bluesky.Actor.Profile.mqtt":
+            if cloudevent['type'] == "Bluesky.Actor.Profile":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -861,7 +861,7 @@ def test_blueskyfirehose_amqp_blueskyfirehoseamqppost(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BlueskyFirehose.amqp.Post":
+            if cloudevent['type'] == "Bluesky.Feed.Post":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -923,7 +923,7 @@ def test_blueskyfirehose_amqp_blueskyfirehoseamqplike(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BlueskyFirehose.amqp.Like":
+            if cloudevent['type'] == "Bluesky.Feed.Like":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -985,7 +985,7 @@ def test_blueskyfirehose_amqp_blueskyfirehoseamqprepost(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BlueskyFirehose.amqp.Repost":
+            if cloudevent['type'] == "Bluesky.Feed.Repost":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1047,7 +1047,7 @@ def test_blueskyfirehose_amqp_blueskyfirehoseamqpfollow(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BlueskyFirehose.amqp.Follow":
+            if cloudevent['type'] == "Bluesky.Graph.Follow":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1109,7 +1109,7 @@ def test_blueskyfirehose_amqp_blueskyfirehoseamqpblock(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BlueskyFirehose.amqp.Block":
+            if cloudevent['type'] == "Bluesky.Graph.Block":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1171,7 +1171,7 @@ def test_blueskyfirehose_amqp_blueskyfirehoseamqpprofile(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BlueskyFirehose.amqp.Profile":
+            if cloudevent['type'] == "Bluesky.Actor.Profile":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

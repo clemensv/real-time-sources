@@ -157,5 +157,5 @@ class Products:
             An instance of the dataclass.
         """
         return cls(
-            self_='gngxsyxbtmyecjfwvuqz'
+            self_='lfktxmfesjoimmxgxdfc'
         )

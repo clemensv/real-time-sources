@@ -28,11 +28,11 @@ class Test_Street(unittest.TestCase):
         Create instance of Street for testing
         """
         instance = Street(
-            name='tijftmmgtplccgnmbjym',
-            closure='etskyzldqhllxpfiizql',
-            directions='dkhxzsfbokmmhnlmzhrm',
-            source_system_id='iuiitdplpimszxjybmlu',
-            source_system_key='fenguoxfzqtrehhvdjfv'
+            name='lyfmeasbssshwcqzmnik',
+            closure='xwzyfuykriafucxdxtgf',
+            directions='tstjphkjkrkaotgevdpt',
+            source_system_id='dulicmtyhuxayhdylskw',
+            source_system_key='hscxauxuwibpstjarroa'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Street(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'tijftmmgtplccgnmbjym'
+        test_value = 'lyfmeasbssshwcqzmnik'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -49,7 +49,7 @@ class Test_Street(unittest.TestCase):
         """
         Test closure property
         """
-        test_value = 'etskyzldqhllxpfiizql'
+        test_value = 'xwzyfuykriafucxdxtgf'
         self.instance.closure = test_value
         self.assertEqual(self.instance.closure, test_value)
     
@@ -57,7 +57,7 @@ class Test_Street(unittest.TestCase):
         """
         Test directions property
         """
-        test_value = 'dkhxzsfbokmmhnlmzhrm'
+        test_value = 'tstjphkjkrkaotgevdpt'
         self.instance.directions = test_value
         self.assertEqual(self.instance.directions, test_value)
     
@@ -65,7 +65,7 @@ class Test_Street(unittest.TestCase):
         """
         Test source_system_id property
         """
-        test_value = 'iuiitdplpimszxjybmlu'
+        test_value = 'dulicmtyhuxayhdylskw'
         self.instance.source_system_id = test_value
         self.assertEqual(self.instance.source_system_id, test_value)
     
@@ -73,7 +73,7 @@ class Test_Street(unittest.TestCase):
         """
         Test source_system_key property
         """
-        test_value = 'fenguoxfzqtrehhvdjfv'
+        test_value = 'hscxauxuwibpstjarroa'
         self.instance.source_system_key = test_value
         self.assertEqual(self.instance.source_system_key, test_value)
     

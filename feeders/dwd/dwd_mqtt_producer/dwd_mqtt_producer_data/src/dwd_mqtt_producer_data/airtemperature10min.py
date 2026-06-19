@@ -169,13 +169,13 @@ class AirTemperature10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='mahgbsoibyqggeaxxkce',
-            timestamp='wkblcimumkpstekultgl',
-            quality_level=int(96),
-            pressure_station_level=float(30.924017518179546),
-            air_temperature_2m=float(63.6586341954256),
-            air_temperature_5cm=float(13.217610498999887),
-            relative_humidity=float(65.1961522167628),
-            dew_point_temperature=float(15.023724784713332),
-            state='quxswgxmkbuxevjofcii'
+            station_id='csxytleuoseiyaptmknw',
+            timestamp='zbbonlnmezlrbagdztgj',
+            quality_level=int(32),
+            pressure_station_level=float(14.902210989254627),
+            air_temperature_2m=float(72.66458080049658),
+            air_temperature_5cm=float(12.857431684138021),
+            relative_humidity=float(53.340949029368325),
+            dew_point_temperature=float(78.58932588851323),
+            state='xizjujuafrawdbduyqit'
         )

@@ -321,7 +321,7 @@ class TestUSWASeattleStreetClosuresAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "US.WA.Seattle.StreetClosures.StreetClosure.amqp"
+                    assert cloud_event_payload.get("type") == "US.WA.Seattle.StreetClosures.StreetClosure"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -358,7 +358,7 @@ class TestUSWASeattleStreetClosuresAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'US.WA.Seattle.StreetClosures.StreetClosure.amqp'
+        assert properties.get('cloudEvents:type') == 'US.WA.Seattle.StreetClosures.StreetClosure'
         assert received.body is not None
         assert received.subject == "{closure_id}".format(closure_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{closure_id}".format(closure_id="value"))[:128]

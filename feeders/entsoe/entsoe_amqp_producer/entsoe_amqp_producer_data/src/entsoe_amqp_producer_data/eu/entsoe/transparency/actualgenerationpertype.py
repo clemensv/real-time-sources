@@ -165,11 +165,11 @@ class ActualGenerationPerType:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='mfmgzgfwtpowpzezglrm',
-            psrType='yirtscltroznseekvpep',
-            quantity=float(70.00391743357356),
-            resolution='niahahazudmlsdzmrpqf',
-            businessType='qxrpuxvidlopaofgxkvc',
-            documentType='gmfuyalwnacidxaysuck',
-            unitName='ntxsudvmcvmssfxzefni'
+            inDomain='wexgrmwcnhpvuxnoptqx',
+            psrType='fcvzphujirrbqohfhxxa',
+            quantity=float(44.07410327535389),
+            resolution='rtdtsemgslqoovtwhvjv',
+            businessType='fbokgveydebopcbdnifm',
+            documentType='mpveihexdsaiwvlczuhi',
+            unitName='bnfherbhjrheqsbhfdjt'
         )

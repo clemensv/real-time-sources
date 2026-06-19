@@ -171,13 +171,13 @@ class VesselConstruction:
             An instance of the dataclass.
         """
         return cls(
-            vessel_type_code=int(18),
-            vessel_type_name='qrejknsoqiiyzqmiasrj',
-            ice_class_code='ldrdcxpcxrtmcfquxoqk',
+            vessel_type_code=int(51),
+            vessel_type_name='xamorjbfdvuuniibzyzf',
+            ice_class_code='qjxtwbhyvkzznlrvtfzt',
             ice_class_issue_date=datetime.datetime.now(datetime.timezone.utc),
-            ice_class_issue_place='lokgufwumkwpzddshcng',
+            ice_class_issue_place='blrsebnxgbypfoblinli',
             ice_class_end_date=datetime.datetime.now(datetime.timezone.utc),
-            double_bottom=True,
+            double_bottom=False,
             inert_gas_system=False,
-            ballast_tank=True
+            ballast_tank=False
         )

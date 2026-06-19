@@ -28,16 +28,16 @@ class Test_StationInformation(unittest.TestCase):
         Create instance of StationInformation for testing
         """
         instance = StationInformation(
-            system_id='pmcggwtdttbhjkgzobyx',
-            station_id='rkooxfsxqofuvdgvwpnv',
-            name='kkrxipamamatwmmcbtfb',
-            short_name='cctankhffczljhznduty',
-            lat=float(50.45506399926584),
-            lon=float(21.51075820162749),
-            capacity=int(70),
-            region_id='lmxfsnvswrhyomtgoeuh',
-            address='zanitchqgrychgsdemnr',
-            post_code='hoaiijntznbcvuxnslra'
+            system_id='nnlexwranlpwfbsksaqb',
+            station_id='zgdcbbtmvtozbthobzzi',
+            name='xpautmoptafqhgcgvjze',
+            short_name='jduntdxcdklxpvdhmasi',
+            lat=float(44.66228898833246),
+            lon=float(29.226435227383508),
+            capacity=int(85),
+            region_id='adldooeuhucaunlrjnkj',
+            address='zpkzlkxbakcbmsvcclir',
+            post_code='trmdbdrxuvewivxgnpcu'
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_StationInformation(unittest.TestCase):
         """
         Test system_id property
         """
-        test_value = 'pmcggwtdttbhjkgzobyx'
+        test_value = 'nnlexwranlpwfbsksaqb'
         self.instance.system_id = test_value
         self.assertEqual(self.instance.system_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_StationInformation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'rkooxfsxqofuvdgvwpnv'
+        test_value = 'zgdcbbtmvtozbthobzzi'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -62,7 +62,7 @@ class Test_StationInformation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'kkrxipamamatwmmcbtfb'
+        test_value = 'xpautmoptafqhgcgvjze'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -70,7 +70,7 @@ class Test_StationInformation(unittest.TestCase):
         """
         Test short_name property
         """
-        test_value = 'cctankhffczljhznduty'
+        test_value = 'jduntdxcdklxpvdhmasi'
         self.instance.short_name = test_value
         self.assertEqual(self.instance.short_name, test_value)
     
@@ -78,7 +78,7 @@ class Test_StationInformation(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(50.45506399926584)
+        test_value = float(44.66228898833246)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -86,7 +86,7 @@ class Test_StationInformation(unittest.TestCase):
         """
         Test lon property
         """
-        test_value = float(21.51075820162749)
+        test_value = float(29.226435227383508)
         self.instance.lon = test_value
         self.assertEqual(self.instance.lon, test_value)
     
@@ -94,7 +94,7 @@ class Test_StationInformation(unittest.TestCase):
         """
         Test capacity property
         """
-        test_value = int(70)
+        test_value = int(85)
         self.instance.capacity = test_value
         self.assertEqual(self.instance.capacity, test_value)
     
@@ -102,7 +102,7 @@ class Test_StationInformation(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = 'lmxfsnvswrhyomtgoeuh'
+        test_value = 'adldooeuhucaunlrjnkj'
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -110,7 +110,7 @@ class Test_StationInformation(unittest.TestCase):
         """
         Test address property
         """
-        test_value = 'zanitchqgrychgsdemnr'
+        test_value = 'zpkzlkxbakcbmsvcclir'
         self.instance.address = test_value
         self.assertEqual(self.instance.address, test_value)
     
@@ -118,7 +118,7 @@ class Test_StationInformation(unittest.TestCase):
         """
         Test post_code property
         """
-        test_value = 'hoaiijntznbcvuxnslra'
+        test_value = 'trmdbdrxuvewivxgnpcu'
         self.instance.post_code = test_value
         self.assertEqual(self.instance.post_code, test_value)
     

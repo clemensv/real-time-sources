@@ -1,5 +1,6 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
+import time
 import json
 import re
 import uuid
@@ -179,6 +180,35 @@ class UsWaWsdotTrafficEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -304,6 +334,35 @@ class UsWaWsdotTraveltimesEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -428,6 +487,35 @@ class UsWaWsdotMountainpassEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -589,6 +677,35 @@ class UsWaWsdotWeatherEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -713,6 +830,35 @@ class UsWaWsdotTollsEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -840,6 +986,35 @@ class UsWaWsdotCvrestrictionsEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -965,6 +1140,35 @@ class UsWaWsdotBorderEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -1089,6 +1293,35 @@ class UsWaWsdotFerriesEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -1248,6 +1481,35 @@ class UsWaWsdotTrafficMqttEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -1372,6 +1634,35 @@ class UsWaWsdotTraveltimesMqttEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -1495,6 +1786,35 @@ class UsWaWsdotMountainpassMqttEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -1654,6 +1974,35 @@ class UsWaWsdotWeatherMqttEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -1777,6 +2126,35 @@ class UsWaWsdotTollsMqttEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -1903,6 +2281,35 @@ class UsWaWsdotCvrestrictionsMqttEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -2027,6 +2434,35 @@ class UsWaWsdotBorderMqttEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -2150,6 +2586,35 @@ class UsWaWsdotFerriesMqttEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -2309,6 +2774,35 @@ class UsWaWsdotTrafficAmqpEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -2433,6 +2927,35 @@ class UsWaWsdotTraveltimesAmqpEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -2556,6 +3079,35 @@ class UsWaWsdotMountainpassAmqpEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -2715,6 +3267,35 @@ class UsWaWsdotWeatherAmqpEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -2838,6 +3419,35 @@ class UsWaWsdotTollsAmqpEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -2964,6 +3574,35 @@ class UsWaWsdotCvrestrictionsAmqpEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -3088,6 +3727,35 @@ class UsWaWsdotBorderAmqpEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -3211,6 +3879,35 @@ class UsWaWsdotFerriesAmqpEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -3372,6 +4069,35 @@ class UsWaWsdotRoadweatherEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -3496,6 +4222,35 @@ class UsWaWsdotAlertsEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -3622,6 +4377,35 @@ class UsWaWsdotCamerasEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -3747,6 +4531,35 @@ class UsWaWsdotBridgeclearancesEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -3871,6 +4684,35 @@ class UsWaWsdotFerryterminalsEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -4030,6 +4872,35 @@ class UsWaWsdotRoadweatherMqttEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -4153,6 +5024,35 @@ class UsWaWsdotAlertsMqttEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -4278,6 +5178,35 @@ class UsWaWsdotCamerasMqttEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -4402,6 +5331,35 @@ class UsWaWsdotBridgeclearancesMqttEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -4525,6 +5483,35 @@ class UsWaWsdotFerryterminalsMqttEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -4684,6 +5671,35 @@ class UsWaWsdotRoadweatherAmqpEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -4807,6 +5823,35 @@ class UsWaWsdotAlertsAmqpEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -4932,6 +5977,35 @@ class UsWaWsdotCamerasAmqpEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -5056,6 +6130,35 @@ class UsWaWsdotBridgeclearancesAmqpEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -5179,6 +6282,35 @@ class UsWaWsdotFerryterminalsAmqpEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:

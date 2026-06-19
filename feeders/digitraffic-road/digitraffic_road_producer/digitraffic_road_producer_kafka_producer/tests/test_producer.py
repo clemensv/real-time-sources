@@ -751,7 +751,7 @@ def test_fi_digitraffic_road_mqtt_fidigitrafficroadmqtttmssensordata(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.mqtt.TmsSensorData":
+            if cloudevent['type'] == "fi.digitraffic.road.sensors.TmsSensorData":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -813,7 +813,7 @@ def test_fi_digitraffic_road_mqtt_fidigitrafficroadmqttweathersensordata(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.mqtt.WeatherSensorData":
+            if cloudevent['type'] == "fi.digitraffic.road.sensors.WeatherSensorData":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -875,7 +875,7 @@ def test_fi_digitraffic_road_mqtt_fidigitrafficroadmqtttrafficannouncement(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.mqtt.TrafficAnnouncement":
+            if cloudevent['type'] == "fi.digitraffic.road.messages.TrafficAnnouncement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -937,7 +937,7 @@ def test_fi_digitraffic_road_mqtt_fidigitrafficroadmqttroadwork(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.mqtt.RoadWork":
+            if cloudevent['type'] == "fi.digitraffic.road.messages.RoadWork":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -999,7 +999,7 @@ def test_fi_digitraffic_road_mqtt_fidigitrafficroadmqttweightrestriction(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.mqtt.WeightRestriction":
+            if cloudevent['type'] == "fi.digitraffic.road.messages.WeightRestriction":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1061,7 +1061,7 @@ def test_fi_digitraffic_road_mqtt_fidigitrafficroadmqttexemptedtransport(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.mqtt.ExemptedTransport":
+            if cloudevent['type'] == "fi.digitraffic.road.messages.ExemptedTransport":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1123,7 +1123,7 @@ def test_fi_digitraffic_road_mqtt_fidigitrafficroadmqttmaintenancetracking(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.mqtt.MaintenanceTracking":
+            if cloudevent['type'] == "fi.digitraffic.road.maintenance.MaintenanceTracking":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1185,7 +1185,7 @@ def test_fi_digitraffic_road_mqtt_fidigitrafficroadmqtttmsstation(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.mqtt.TmsStation":
+            if cloudevent['type'] == "fi.digitraffic.road.stations.TmsStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1247,7 +1247,7 @@ def test_fi_digitraffic_road_mqtt_fidigitrafficroadmqttweatherstation(kafka_emul
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.mqtt.WeatherStation":
+            if cloudevent['type'] == "fi.digitraffic.road.stations.WeatherStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1309,7 +1309,7 @@ def test_fi_digitraffic_road_mqtt_fidigitrafficroadmqttmaintenancetasktype(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.mqtt.MaintenanceTaskType":
+            if cloudevent['type'] == "fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1371,7 +1371,7 @@ def test_fi_digitraffic_road_amqp_fidigitrafficroadamqptmssensordata(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.amqp.TmsSensorData":
+            if cloudevent['type'] == "fi.digitraffic.road.sensors.TmsSensorData":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1433,7 +1433,7 @@ def test_fi_digitraffic_road_amqp_fidigitrafficroadamqpweathersensordata(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.amqp.WeatherSensorData":
+            if cloudevent['type'] == "fi.digitraffic.road.sensors.WeatherSensorData":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1495,7 +1495,7 @@ def test_fi_digitraffic_road_amqp_fidigitrafficroadamqptrafficannouncement(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.amqp.TrafficAnnouncement":
+            if cloudevent['type'] == "fi.digitraffic.road.messages.TrafficAnnouncement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1557,7 +1557,7 @@ def test_fi_digitraffic_road_amqp_fidigitrafficroadamqproadwork(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.amqp.RoadWork":
+            if cloudevent['type'] == "fi.digitraffic.road.messages.RoadWork":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1619,7 +1619,7 @@ def test_fi_digitraffic_road_amqp_fidigitrafficroadamqpweightrestriction(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.amqp.WeightRestriction":
+            if cloudevent['type'] == "fi.digitraffic.road.messages.WeightRestriction":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1681,7 +1681,7 @@ def test_fi_digitraffic_road_amqp_fidigitrafficroadamqpexemptedtransport(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.amqp.ExemptedTransport":
+            if cloudevent['type'] == "fi.digitraffic.road.messages.ExemptedTransport":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1743,7 +1743,7 @@ def test_fi_digitraffic_road_amqp_fidigitrafficroadamqpmaintenancetracking(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.amqp.MaintenanceTracking":
+            if cloudevent['type'] == "fi.digitraffic.road.maintenance.MaintenanceTracking":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1805,7 +1805,7 @@ def test_fi_digitraffic_road_amqp_fidigitrafficroadamqptmsstation(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.amqp.TmsStation":
+            if cloudevent['type'] == "fi.digitraffic.road.stations.TmsStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1867,7 +1867,7 @@ def test_fi_digitraffic_road_amqp_fidigitrafficroadamqpweatherstation(kafka_emul
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.amqp.WeatherStation":
+            if cloudevent['type'] == "fi.digitraffic.road.stations.WeatherStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1929,7 +1929,7 @@ def test_fi_digitraffic_road_amqp_fidigitrafficroadamqpmaintenancetasktype(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.digitraffic.road.amqp.MaintenanceTaskType":
+            if cloudevent['type'] == "fi.digitraffic.road.maintenance.tasks.MaintenanceTaskType":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

@@ -11,10 +11,10 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
 from typing import Any
-from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
-from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -169,8 +169,8 @@ class Alert:
             An instance of the dataclass.
         """
         return cls(
-            active_period=[None],
-            informed_entity=[None, None, None],
+            active_period=[None, None, None],
+            informed_entity=[None],
             cause=None,
             effect=None,
             url=None,

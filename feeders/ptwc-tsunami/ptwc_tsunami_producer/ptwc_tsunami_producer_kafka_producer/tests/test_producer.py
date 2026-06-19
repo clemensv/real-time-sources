@@ -159,7 +159,7 @@ def test_ptwc_bulletins_mqtt_ptwcbulletinsmqtttsunamibulletin(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "PTWC.Bulletins.mqtt.TsunamiBulletin":
+            if cloudevent['type'] == "PTWC.TsunamiBulletin":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_ptwc_bulletins_amqp_ptwcbulletinsamqptsunamibulletin(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "PTWC.Bulletins.amqp.TsunamiBulletin":
+            if cloudevent['type'] == "PTWC.TsunamiBulletin":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

@@ -1,5 +1,6 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
+import time
 import json
 import re
 import uuid
@@ -127,6 +128,35 @@ class NWSAlertsEventProducer:
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
@@ -383,6 +413,35 @@ class NWSAlertsMqttEventProducer:
             self.producer.flush()
 
 
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
+
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
         """
@@ -414,261 +473,6 @@ class NWSAlertsMqttEventProducer:
 
     @classmethod
     def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'NWSAlertsMqttEventProducer':
-        """
-        Create a Kafka producer from a connection string and a topic name.
-
-        Args:
-            connection_string (str): The connection string.
-            topic (Optional[str]): The Kafka topic.
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-
-        Returns:
-            Producer: The Kafka producer
-        """
-        config, topic_name = cls.parse_connection_string(connection_string)
-        if topic:
-            topic_name = topic
-        if not topic_name:
-            raise ValueError("Topic name not found in connection string")
-        return cls(Producer(config), topic_name, content_mode)
-
-
-
-class NWSAlertsAmqpEventProducer:
-    def __init__(self, producer: Producer, topic: str, content_mode:typing.Literal['structured','binary']='structured'):
-        """
-        Initializes the Kafka producer
-
-        Args:
-            producer (Producer): The Kafka producer client
-            topic (str): The Kafka topic to send events to
-            content_mode (typing.Literal['structured','binary']): The content mode to use for sending events
-        """
-        self.producer = producer
-        self.topic = topic
-        self.content_mode = content_mode
-
-    @staticmethod
-    def __key_mapper(x: CloudEvent, m: typing.Any, key_mapper: typing.Callable[[CloudEvent, typing.Any], str], default_key: typing.Optional[str] = None) -> typing.Optional[str]:
-        """
-        Maps a CloudEvent to a Kafka key
-
-        Args:
-            x (CloudEvent): The CloudEvent to map
-            m (Any): The event data
-            key_mapper (Callable[[CloudEvent, Any], str]): The user's key mapper function
-            default_key (Optional[str]): The resolved key from the xRegistry model declaration
-        """
-        if key_mapper:
-            return key_mapper(x, m)
-        elif default_key is not None:
-            return default_key
-        return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
-
-    @staticmethod
-    def __binary_data_marshaller(data: typing.Any) -> bytes:
-        """Serialize dataclass payloads to bytes for Kafka binary mode."""
-        payload = data.to_byte_array("application/json")
-        if isinstance(payload, str):
-            payload = payload.encode('utf-8')
-        return payload
-
-    def send_nws_alerts_amqp_weather_alert_minor(self,_alert_id : str, data: WeatherAlert, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherAlert], str]=None) -> None:
-        """
-        Sends the 'NWS.Alerts.amqp.WeatherAlertMinor' event to the Kafka topic
-
-        Args:
-            _alert_id(str):  Value for placeholder alert_id in attribute subject
-            data: (WeatherAlert): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, WeatherAlert], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"NWS.WeatherAlert",
-             "source":"https://api.weather.gov",
-             "subject":"{alert_id}".format(alert_id = _alert_id)
-        }
-        attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_nws_alerts_amqp_weather_alert_moderate(self,_alert_id : str, data: WeatherAlert, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherAlert], str]=None) -> None:
-        """
-        Sends the 'NWS.Alerts.amqp.WeatherAlertModerate' event to the Kafka topic
-
-        Args:
-            _alert_id(str):  Value for placeholder alert_id in attribute subject
-            data: (WeatherAlert): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, WeatherAlert], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"NWS.WeatherAlert",
-             "source":"https://api.weather.gov",
-             "subject":"{alert_id}".format(alert_id = _alert_id)
-        }
-        attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_nws_alerts_amqp_weather_alert_severe(self,_alert_id : str, data: WeatherAlert, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherAlert], str]=None) -> None:
-        """
-        Sends the 'NWS.Alerts.amqp.WeatherAlertSevere' event to the Kafka topic
-
-        Args:
-            _alert_id(str):  Value for placeholder alert_id in attribute subject
-            data: (WeatherAlert): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, WeatherAlert], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"NWS.WeatherAlert",
-             "source":"https://api.weather.gov",
-             "subject":"{alert_id}".format(alert_id = _alert_id)
-        }
-        attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_nws_alerts_amqp_weather_alert_extreme(self,_alert_id : str, data: WeatherAlert, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherAlert], str]=None) -> None:
-        """
-        Sends the 'NWS.Alerts.amqp.WeatherAlertExtreme' event to the Kafka topic
-
-        Args:
-            _alert_id(str):  Value for placeholder alert_id in attribute subject
-            data: (WeatherAlert): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, WeatherAlert], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"NWS.WeatherAlert",
-             "source":"https://api.weather.gov",
-             "subject":"{alert_id}".format(alert_id = _alert_id)
-        }
-        attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    def send_nws_alerts_amqp_weather_alert_unknown(self,_alert_id : str, data: WeatherAlert, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, WeatherAlert], str]=None) -> None:
-        """
-        Sends the 'NWS.Alerts.amqp.WeatherAlertUnknown' event to the Kafka topic
-
-        Args:
-            _alert_id(str):  Value for placeholder alert_id in attribute subject
-            data: (WeatherAlert): The event data to be sent
-            content_type (str): The content type that the event data shall be sent with
-            _time(typing.Optional[typing.Union[str, datetime]]): CloudEvents time override. Defaults to current UTC when no catalog time is used.
-            flush_producer(bool): Whether to flush the producer after sending the event (default: True)
-            key_mapper(Callable[[CloudEvent, WeatherAlert], str]): A function to map the CloudEvent contents to a Kafka key (default: None).
-        """
-        kafka_key = None
-        attributes = {
-             "type":"NWS.WeatherAlert",
-             "source":"https://api.weather.gov",
-             "subject":"{alert_id}".format(alert_id = _alert_id)
-        }
-        attributes["datacontenttype"] = content_type
-        attributes["time"] = _resolve_cloudevents_time(_time, attributes.get("time"))
-        event = CloudEvent.create(attributes, data)
-        if self.content_mode == "structured":
-            message = to_structured(event, data_marshaller=lambda x: json.loads(x.to_json()), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-            message.headers["content-type"] = b"application/cloudevents+json"
-        else:
-            # For binary mode, datacontenttype is already set in attributes above
-            # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
-        self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
-        if flush_producer:
-            self.producer.flush()
-
-
-    @classmethod
-    def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:
-        """
-        Parse the connection string and extract bootstrap server, topic name, username, and password.
-
-        Args:
-            connection_string (str): The connection string.
-
-        Returns:
-            Tuple[Dict[str, str], str]: Kafka config, topic name
-        """
-        config_dict = {
-            'security.protocol': 'SASL_SSL',
-            'sasl.mechanisms': 'PLAIN',
-            'sasl.username': '$ConnectionString',
-            'sasl.password': connection_string.strip()
-        }
-        kafka_topic = None
-        try:
-            for part in connection_string.split(';'):
-                if 'Endpoint' in part:
-                    config_dict['bootstrap.servers'] = part.split('=')[1].strip(
-                        '"').replace('sb://', '').replace('/', '')+':9093'
-                elif 'EntityPath' in part:
-                    kafka_topic = part.split('=')[1].strip('"')
-        except IndexError as e:
-            raise ValueError("Invalid connection string format") from e
-        return config_dict, kafka_topic
-
-    @classmethod
-    def from_connection_string(cls, connection_string: str, topic: typing.Optional[str]=None, content_mode: typing.Literal['structured','binary']='structured') -> 'NWSAlertsAmqpEventProducer':
         """
         Create a Kafka producer from a connection string and a topic name.
 

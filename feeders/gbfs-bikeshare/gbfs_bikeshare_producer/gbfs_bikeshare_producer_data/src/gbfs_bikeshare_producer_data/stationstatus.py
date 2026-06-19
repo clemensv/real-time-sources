@@ -100,6 +100,8 @@ class StationStatus:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -167,13 +169,13 @@ class StationStatus:
             An instance of the dataclass.
         """
         return cls(
-            system_id='ixobhnldffpqomsfabdj',
-            station_id='scbucvgywwjgzogityxl',
-            num_bikes_available=int(44),
-            num_docks_available=int(29),
-            num_ebikes_available=int(16),
+            system_id='vchcwgqtydpiftrwvovx',
+            station_id='mcvtcrkpeoihxuwsdlxb',
+            num_bikes_available=int(40),
+            num_docks_available=int(56),
+            num_ebikes_available=int(95),
             is_installed=True,
             is_renting=False,
-            is_returning=True,
-            last_reported=int(92)
+            is_returning=False,
+            last_reported=int(79)
         )

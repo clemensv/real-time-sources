@@ -165,11 +165,11 @@ class HourlyForecast:
             An instance of the dataclass.
         """
         return cls(
-            location_id='izoogidmkuxeyyydzpxr',
-            city='rrnswsgzrjddgbwjsuif',
-            state='pspfokipkvvamjghqbpi',
-            forecast_datetime='knmwqdmurzzljzlqdxvb',
-            uv_index=int(11),
-            city_slug='knbmtwrkeszetswnuylb',
-            forecast_hour='gbtxdzcsjyfsomkcqmoz'
+            location_id='cqqtipimmbkmbnfkfkzw',
+            city='kqcvblgihfbxnnryvgsf',
+            state='awutlhzhrmfnzgpvfeon',
+            forecast_datetime='kwssliknqoplrvhxxuao',
+            uv_index=int(8),
+            city_slug='vauogtxpcymujqgymaew',
+            forecast_hour='llwpwlsuhulgiltvgslp'
         )

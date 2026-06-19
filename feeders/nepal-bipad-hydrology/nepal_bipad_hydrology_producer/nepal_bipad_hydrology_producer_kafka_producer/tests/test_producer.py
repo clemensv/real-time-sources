@@ -225,7 +225,7 @@ def test_np_gov_bipad_hydrology_mqtt_npgovbipadhydrologymqttriverstation(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "np.gov.bipad.hydrology.mqtt.RiverStation":
+            if cloudevent['type'] == "np.gov.bipad.hydrology.RiverStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_np_gov_bipad_hydrology_mqtt_npgovbipadhydrologymqttwaterlevelreading(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "np.gov.bipad.hydrology.mqtt.WaterLevelReading":
+            if cloudevent['type'] == "np.gov.bipad.hydrology.WaterLevelReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_np_gov_bipad_hydrology_amqp_npgovbipadhydrologyamqpriverstation(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "np.gov.bipad.hydrology.amqp.RiverStation":
+            if cloudevent['type'] == "np.gov.bipad.hydrology.RiverStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_np_gov_bipad_hydrology_amqp_npgovbipadhydrologyamqpwaterlevelreading(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "np.gov.bipad.hydrology.amqp.WaterLevelReading":
+            if cloudevent['type'] == "np.gov.bipad.hydrology.WaterLevelReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

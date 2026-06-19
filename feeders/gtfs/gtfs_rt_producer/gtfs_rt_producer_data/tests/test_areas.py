@@ -28,10 +28,10 @@ class Test_Areas(unittest.TestCase):
         Create instance of Areas for testing
         """
         instance = Areas(
-            areaId='fsstvgussxgazczrcdxn',
-            areaName='qmfjclzcczgpntyqoltu',
-            areaDesc='lghagueqtvtklqdlwekm',
-            areaUrl='vvndqvhxwjactyrjoioz'
+            areaId='cghtzodwxfokbzuzgrlx',
+            areaName='ofslmejgnewevaymohnt',
+            areaDesc='lkvodysdnlihhjkqnksx',
+            areaUrl='vzgaicofdmzhuvetjcjs'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaId property
         """
-        test_value = 'fsstvgussxgazczrcdxn'
+        test_value = 'cghtzodwxfokbzuzgrlx'
         self.instance.areaId = test_value
         self.assertEqual(self.instance.areaId, test_value)
     
@@ -48,7 +48,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaName property
         """
-        test_value = 'qmfjclzcczgpntyqoltu'
+        test_value = 'ofslmejgnewevaymohnt'
         self.instance.areaName = test_value
         self.assertEqual(self.instance.areaName, test_value)
     
@@ -56,7 +56,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaDesc property
         """
-        test_value = 'lghagueqtvtklqdlwekm'
+        test_value = 'lkvodysdnlihhjkqnksx'
         self.instance.areaDesc = test_value
         self.assertEqual(self.instance.areaDesc, test_value)
     
@@ -64,7 +64,7 @@ class Test_Areas(unittest.TestCase):
         """
         Test areaUrl property
         """
-        test_value = 'vvndqvhxwjactyrjoioz'
+        test_value = 'vzgaicofdmzhuvetjcjs'
         self.instance.areaUrl = test_value
         self.assertEqual(self.instance.areaUrl, test_value)
     

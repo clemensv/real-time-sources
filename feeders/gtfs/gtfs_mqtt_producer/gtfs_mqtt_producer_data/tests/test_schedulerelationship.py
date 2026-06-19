@@ -4,7 +4,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.alert.tripdescriptor_types.schedulerelationship import ScheduleRelationship
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.tripdescriptor_types.schedulerelationship import ScheduleRelationship
 
 
 class Test_ScheduleRelationship(unittest.TestCase):

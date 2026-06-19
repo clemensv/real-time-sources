@@ -170,13 +170,13 @@ class ReportB:
             An instance of the dataclass.
         """
         return cls(
-            Valid=True,
-            ShipType=int(36),
-            VendorIDName='tyoefjhdynaykgefngcu',
-            VenderIDModel=int(54),
-            VenderIDSerial=int(52),
-            CallSign='lewsryohnvkxzoluodkq',
+            Valid=False,
+            ShipType=int(41),
+            VendorIDName='vqfewptmuqbamzfouril',
+            VenderIDModel=int(56),
+            VenderIDSerial=int(66),
+            CallSign='erulpmjsvqffdqdjixfv',
             Dimension=None,
-            FixType=int(81),
-            Spare=int(87)
+            FixType=int(30),
+            Spare=int(37)
         )

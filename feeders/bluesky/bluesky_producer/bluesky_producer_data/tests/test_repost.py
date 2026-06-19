@@ -28,17 +28,17 @@ class Test_Repost(unittest.TestCase):
         Create instance of Repost for testing
         """
         instance = Repost(
-            uri='rwlwsujfcifbnuxqgwby',
-            cid='otfvizbzxrdmuzmykhgj',
-            did='kjdujyqzxqgwoapvafqf',
-            handle='gmxjuwlxurbfzzrvzqtn',
-            subject_uri='eopltgkbwvkbbvzugqrv',
-            subject_cid='vbklhmnfatzyhpdbhxeg',
-            created_at='nwcqbgddxkengtzwspdb',
-            indexed_at='jjfkitmugguouenrglri',
-            seq=int(50),
-            collection='iarmjcaxkrmqowvwaksa',
-            lang='eynlgxvnipefwkwmauuj'
+            uri='zjuiztlpnlnxcldlqpyq',
+            cid='xxtylcxacazxvstlkjqf',
+            did='shqvybnefdalbizqpybn',
+            handle='ucxfzdplrhlmkbxclyio',
+            subject_uri='ypdbxjzxydmexfrmgecn',
+            subject_cid='oaawsxgycjwhzllsdyvu',
+            created_at='ueeneisqmpxyqjycvnpn',
+            indexed_at='hzdljjeemzdmeopqxgcp',
+            seq=int(92),
+            collection='smruobgovmtybjecxcxu',
+            lang='baymzmvkfmsxzzjtbbro'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test uri property
         """
-        test_value = 'rwlwsujfcifbnuxqgwby'
+        test_value = 'zjuiztlpnlnxcldlqpyq'
         self.instance.uri = test_value
         self.assertEqual(self.instance.uri, test_value)
     
@@ -55,7 +55,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = 'otfvizbzxrdmuzmykhgj'
+        test_value = 'xxtylcxacazxvstlkjqf'
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -63,7 +63,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test did property
         """
-        test_value = 'kjdujyqzxqgwoapvafqf'
+        test_value = 'shqvybnefdalbizqpybn'
         self.instance.did = test_value
         self.assertEqual(self.instance.did, test_value)
     
@@ -71,7 +71,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test handle property
         """
-        test_value = 'gmxjuwlxurbfzzrvzqtn'
+        test_value = 'ucxfzdplrhlmkbxclyio'
         self.instance.handle = test_value
         self.assertEqual(self.instance.handle, test_value)
     
@@ -79,7 +79,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test subject_uri property
         """
-        test_value = 'eopltgkbwvkbbvzugqrv'
+        test_value = 'ypdbxjzxydmexfrmgecn'
         self.instance.subject_uri = test_value
         self.assertEqual(self.instance.subject_uri, test_value)
     
@@ -87,7 +87,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test subject_cid property
         """
-        test_value = 'vbklhmnfatzyhpdbhxeg'
+        test_value = 'oaawsxgycjwhzllsdyvu'
         self.instance.subject_cid = test_value
         self.assertEqual(self.instance.subject_cid, test_value)
     
@@ -95,7 +95,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test created_at property
         """
-        test_value = 'nwcqbgddxkengtzwspdb'
+        test_value = 'ueeneisqmpxyqjycvnpn'
         self.instance.created_at = test_value
         self.assertEqual(self.instance.created_at, test_value)
     
@@ -103,7 +103,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test indexed_at property
         """
-        test_value = 'jjfkitmugguouenrglri'
+        test_value = 'hzdljjeemzdmeopqxgcp'
         self.instance.indexed_at = test_value
         self.assertEqual(self.instance.indexed_at, test_value)
     
@@ -111,7 +111,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test seq property
         """
-        test_value = int(50)
+        test_value = int(92)
         self.instance.seq = test_value
         self.assertEqual(self.instance.seq, test_value)
     
@@ -119,7 +119,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test collection property
         """
-        test_value = 'iarmjcaxkrmqowvwaksa'
+        test_value = 'smruobgovmtybjecxcxu'
         self.instance.collection = test_value
         self.assertEqual(self.instance.collection, test_value)
     
@@ -127,7 +127,7 @@ class Test_Repost(unittest.TestCase):
         """
         Test lang property
         """
-        test_value = 'eynlgxvnipefwkwmauuj'
+        test_value = 'baymzmvkfmsxzzjtbbro'
         self.instance.lang = test_value
         self.assertEqual(self.instance.lang, test_value)
     

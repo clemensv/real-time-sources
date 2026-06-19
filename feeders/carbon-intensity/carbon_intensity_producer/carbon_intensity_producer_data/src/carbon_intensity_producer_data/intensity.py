@@ -169,9 +169,9 @@ class Intensity:
         return cls(
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            forecast=int(35),
-            actual=int(60),
-            index='qkmqhzydbqzygvkyjail',
-            region='yhehzwyocblvnpilltgq',
-            ce_id='wsmbzepswcedxwwhpqxm'
+            forecast=int(14),
+            actual=int(52),
+            index='scilgubtrnzyyyeyctis',
+            region='sgukkkvdxasirhfxtdxz',
+            ce_id='awjlxbrbjfngduizylmb'
         )

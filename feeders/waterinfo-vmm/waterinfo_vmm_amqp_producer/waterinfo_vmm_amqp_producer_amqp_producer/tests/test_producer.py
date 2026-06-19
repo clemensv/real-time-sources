@@ -324,7 +324,7 @@ class TestBEVlaanderenWaterinfoVMMAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "BE.Vlaanderen.Waterinfo.VMM.amqp.Station"
+                    assert cloud_event_payload.get("type") == "BE.Vlaanderen.Waterinfo.VMM.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -363,7 +363,7 @@ class TestBEVlaanderenWaterinfoVMMAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'BE.Vlaanderen.Waterinfo.VMM.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'BE.Vlaanderen.Waterinfo.VMM.Station'
         assert received.body is not None
         assert received.subject == "{station_no}".format(station_no="value")
         assert properties.get('water_body') == "{water_body}".format(water_body="value")
@@ -418,7 +418,7 @@ class TestBEVlaanderenWaterinfoVMMAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading"
+                    assert cloud_event_payload.get("type") == "BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -457,7 +457,7 @@ class TestBEVlaanderenWaterinfoVMMAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'BE.Vlaanderen.Waterinfo.VMM.amqp.WaterLevelReading'
+        assert properties.get('cloudEvents:type') == 'BE.Vlaanderen.Waterinfo.VMM.WaterLevelReading'
         assert received.body is not None
         assert received.subject == "{station_no}".format(station_no="value")
         assert properties.get('water_body') == "{water_body}".format(water_body="value")

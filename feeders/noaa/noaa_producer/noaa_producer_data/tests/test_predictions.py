@@ -28,10 +28,10 @@ class Test_Predictions(unittest.TestCase):
         Create instance of Predictions for testing
         """
         instance = Predictions(
-            station_id='ybmapfrvqbeoylywkuro',
-            timestamp='uztpwgglhvmfnxhrldcy',
-            value=float(52.4380460961994),
-            region='fnbkrrwcuhcljgbebhri'
+            station_id='yurbiqjjaqxpgrnapxdo',
+            timestamp='qoeoffoxodfexwzecclu',
+            value=float(74.28306953053917),
+            region='fyxxhqklqhsiebqyygjv'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Predictions(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ybmapfrvqbeoylywkuro'
+        test_value = 'yurbiqjjaqxpgrnapxdo'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -48,7 +48,7 @@ class Test_Predictions(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'uztpwgglhvmfnxhrldcy'
+        test_value = 'qoeoffoxodfexwzecclu'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -56,7 +56,7 @@ class Test_Predictions(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(52.4380460961994)
+        test_value = float(74.28306953053917)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -64,7 +64,7 @@ class Test_Predictions(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'fnbkrrwcuhcljgbebhri'
+        test_value = 'fyxxhqklqhsiebqyygjv'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

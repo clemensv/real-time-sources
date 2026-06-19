@@ -1801,7 +1801,7 @@ def test_io_aisstream_amqp_ioaisstreamamqppositionreport(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "IO.AISstream.amqp.PositionReport":
+            if cloudevent['type'] == "IO.AISstream.mqtt.PositionReport":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1863,7 +1863,7 @@ def test_io_aisstream_amqp_ioaisstreamamqpshipstatic(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "IO.AISstream.amqp.ShipStatic":
+            if cloudevent['type'] == "IO.AISstream.mqtt.ShipStatic":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1925,7 +1925,7 @@ def test_io_aisstream_amqp_ioaisstreamamqpaidtonavigation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "IO.AISstream.amqp.AidToNavigation":
+            if cloudevent['type'] == "IO.AISstream.mqtt.AidToNavigation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

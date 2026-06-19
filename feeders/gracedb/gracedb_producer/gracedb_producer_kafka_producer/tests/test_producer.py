@@ -159,7 +159,7 @@ def test_org_ligo_gracedb_mqtt_orgligogracedbmqttsuperevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.ligo.gracedb.mqtt.Superevent":
+            if cloudevent['type'] == "org.ligo.gracedb.Superevent":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_org_ligo_gracedb_amqp_orgligogracedbamqpsuperevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.ligo.gracedb.amqp.Superevent":
+            if cloudevent['type'] == "org.ligo.gracedb.Superevent":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

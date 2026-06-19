@@ -29,10 +29,10 @@ class Test_AvalancheRegion(unittest.TestCase):
         Create instance of AvalancheRegion for testing
         """
         instance = AvalancheRegion(
-            region_id='xfzqoriwwcjikxwduwwk',
-            lang='gkgbmknjjrydipxvraam',
+            region_id='obzbazotyngzwxxmbaii',
+            lang='dvvtppfymhsjpickqkfi',
             configured_at=datetime.datetime.now(datetime.timezone.utc),
-            bulletin_base_url='xrlpculcnzgcuazieemm'
+            bulletin_base_url='ttvijbdzbvuvoszfsnvy'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_AvalancheRegion(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = 'xfzqoriwwcjikxwduwwk'
+        test_value = 'obzbazotyngzwxxmbaii'
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_AvalancheRegion(unittest.TestCase):
         """
         Test lang property
         """
-        test_value = 'gkgbmknjjrydipxvraam'
+        test_value = 'dvvtppfymhsjpickqkfi'
         self.instance.lang = test_value
         self.assertEqual(self.instance.lang, test_value)
     
@@ -65,7 +65,7 @@ class Test_AvalancheRegion(unittest.TestCase):
         """
         Test bulletin_base_url property
         """
-        test_value = 'xrlpculcnzgcuazieemm'
+        test_value = 'ttvijbdzbvuvoszfsnvy'
         self.instance.bulletin_base_url = test_value
         self.assertEqual(self.instance.bulletin_base_url, test_value)
     

@@ -185,21 +185,21 @@ class PositionReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(94),
-            RepeatIndicator=int(72),
-            UserID=int(55),
+            MessageID=int(10),
+            RepeatIndicator=int(17),
+            UserID=int(48),
             Valid=False,
-            NavigationalStatus=int(50),
-            RateOfTurn=int(43),
-            Sog=float(41.08648826055394),
-            PositionAccuracy=False,
-            Longitude=float(89.63066438879818),
-            Latitude=float(44.916143620889805),
-            Cog=float(78.44998418491036),
-            TrueHeading=int(29),
-            Timestamp=int(74),
-            SpecialManoeuvreIndicator=int(87),
-            Spare=int(93),
-            Raim=False,
-            CommunicationState=int(96)
+            NavigationalStatus=int(0),
+            RateOfTurn=int(74),
+            Sog=float(11.892517001114467),
+            PositionAccuracy=True,
+            Longitude=float(17.510597972291265),
+            Latitude=float(87.43376733123193),
+            Cog=float(62.263057946096154),
+            TrueHeading=int(18),
+            Timestamp=int(25),
+            SpecialManoeuvreIndicator=int(22),
+            Spare=int(98),
+            Raim=True,
+            CommunicationState=int(44)
         )

@@ -357,7 +357,7 @@ def test_info_energycharts_mqtt_infoenergychartsmqttpublicpower(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "info.energy_charts.mqtt.PublicPower":
+            if cloudevent['type'] == "info.energy_charts.PublicPower":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -419,7 +419,7 @@ def test_info_energycharts_mqtt_infoenergychartsmqttspotprice(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "info.energy_charts.mqtt.SpotPrice":
+            if cloudevent['type'] == "info.energy_charts.SpotPrice":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -481,7 +481,7 @@ def test_info_energycharts_mqtt_infoenergychartsmqttgridsignal(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "info.energy_charts.mqtt.GridSignal":
+            if cloudevent['type'] == "info.energy_charts.GridSignal":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -543,7 +543,7 @@ def test_info_energycharts_mqtt_infoenergychartsmqttinfo(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "info.energy_charts.mqtt.Info":
+            if cloudevent['type'] == "info.energy_charts.Info":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -605,7 +605,7 @@ def test_info_energycharts_amqp_infoenergychartsamqppublicpower(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "info.energy_charts.amqp.PublicPower":
+            if cloudevent['type'] == "info.energy_charts.PublicPower":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -667,7 +667,7 @@ def test_info_energycharts_amqp_infoenergychartsamqpspotprice(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "info.energy_charts.amqp.SpotPrice":
+            if cloudevent['type'] == "info.energy_charts.SpotPrice":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -729,7 +729,7 @@ def test_info_energycharts_amqp_infoenergychartsamqpgridsignal(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "info.energy_charts.amqp.GridSignal":
+            if cloudevent['type'] == "info.energy_charts.GridSignal":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -791,7 +791,7 @@ def test_info_energycharts_amqp_infoenergychartsamqpinfo(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "info.energy_charts.amqp.Info":
+            if cloudevent['type'] == "info.energy_charts.Info":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

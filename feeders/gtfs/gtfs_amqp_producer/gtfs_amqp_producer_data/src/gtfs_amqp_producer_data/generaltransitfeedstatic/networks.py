@@ -159,8 +159,8 @@ class Networks:
             An instance of the dataclass.
         """
         return cls(
-            networkId='rnalrhzrwidlmixjtnus',
-            networkName='wqxcnosemvqgobkahwhy',
-            networkDesc='ezsgasfzrettybqvewjf',
-            networkUrl='dhpqinbghdcifroxrmgh'
+            networkId='yqfnidnzmxgcijltecjr',
+            networkName='jvuiiglclmnkjhdfjekk',
+            networkDesc='sucgwsvpqnethmsskgco',
+            networkUrl='jgivfkmcyzwffdmwoude'
         )

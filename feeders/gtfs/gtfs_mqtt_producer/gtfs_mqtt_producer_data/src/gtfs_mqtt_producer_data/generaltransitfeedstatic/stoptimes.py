@@ -176,16 +176,16 @@ class StopTimes:
             An instance of the dataclass.
         """
         return cls(
-            tripId='bmhiyhpxnlaufzznmxkt',
-            arrivalTime='qokkqowtpsbrmxxtxkhi',
-            departureTime='jnwnflaofipgmsbowtfj',
-            stopId='swlaxgwnqetboowoltgj',
-            stopSequence=int(25),
-            stopHeadsign='pskxmnncprlwzhsziova',
+            tripId='djquxsekrybrfhehnnsn',
+            arrivalTime='jdflxxdsfaxdinfgmtfw',
+            departureTime='kfcicvpjozhyhbpgdpuu',
+            stopId='zdcngopjiaxtqcmxrtoy',
+            stopSequence=int(86),
+            stopHeadsign='jxhbglryexkppazodtvi',
             pickupType=None,
             dropOffType=None,
             continuousPickup=None,
             continuousDropOff=None,
-            shapeDistTraveled=float(70.66481852995354),
+            shapeDistTraveled=float(32.73724406871694),
             timepoint=None
         )

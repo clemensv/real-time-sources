@@ -183,19 +183,19 @@ class DeforestationAlert:
             An instance of the dataclass.
         """
         return cls(
-            alert_id='fonfyctoijarjzqsznhe',
+            alert_id='irggqgreigdguuurcqvm',
             biome=BiomeEnum.amazon,
-            classname='jlhqcqugvhhgkmtbaegf',
-            view_date='kzynchrgfgzqugtxwdgs',
-            satellite='hyjgotuczzkvnzttzqvm',
-            sensor='znlooinlorsvapqirlbm',
-            area_km2=float(84.40674027031201),
-            municipality='urgcwqmciwtviyzobvrb',
-            state_code='vfjubdzvhjayglqlodks',
-            path_row='zoopwankxwkdhcgmcbfd',
-            publish_month='reuvlgpbpzifyddmfvon',
-            centroid_latitude=float(4.834442003418859),
-            centroid_longitude=float(82.32355077570197),
-            state_slug='ayzcyrstaavfzhucvvkz',
+            classname='phmylacsijmxjrphmkaq',
+            view_date='ixgbbkwdkufrdchegiph',
+            satellite='mpfaqynlxrxhtjukuxie',
+            sensor='dglvfieoddmpiiemjylv',
+            area_km2=float(28.64838145897306),
+            municipality='ronpucybxgqvugcuarkk',
+            state_code='sulizzdymdvchnnmtzin',
+            path_row='rtrquykdsacvshzstdbv',
+            publish_month='hlbprexeeihqcbfhdvbw',
+            centroid_latitude=float(77.85751710385298),
+            centroid_longitude=float(67.01249009092516),
+            state_slug='xumrirtfmxaydgmppbvc',
             class_slug=ClassSlugenum.desmatamento_MINUScr
         )

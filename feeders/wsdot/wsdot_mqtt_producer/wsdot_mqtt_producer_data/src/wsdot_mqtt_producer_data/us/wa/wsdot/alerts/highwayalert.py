@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from wsdot_mqtt_producer_data.us.wa.wsdot.alerts.priorityenum import PriorityEnum
 from wsdot_mqtt_producer_data.us.wa.wsdot.alerts.eventstatusenum import EventStatusenum
+from wsdot_mqtt_producer_data.us.wa.wsdot.alerts.priorityenum import PriorityEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -199,27 +199,27 @@ class HighwayAlert:
             An instance of the dataclass.
         """
         return cls(
-            alert_id='wxuyqjylgbdbopltuyct',
-            county='avrfqnyhqqadethyrlef',
-            region='rtawcawronljoujlfmig',
+            alert_id='ackolqrvpszcpnvjijhi',
+            county='fagxfuuutczuwfluvuuh',
+            region='tyqdgvfxplxmczauqdxm',
             priority=PriorityEnum.Highest,
-            event_category='thwkrhsjslqxrkjlngom',
+            event_category='etmagvgxnsyheindracm',
             event_status=EventStatusenum.Open,
-            headline_description='pujkuzpsdeovsmlszqhq',
-            extended_description='xecxkrhjfsluzdinoppw',
-            start_time='eqbuaaepgbiejimibbmt',
-            end_time='atsoskgmrmpqmlogpngs',
-            last_updated_time='yoznftypbppbqyojmoss',
-            start_description='lglstteibxrgykojksbc',
-            start_direction='vkqemytyxysqxguczuzc',
-            start_road_name='ndwiitcmtozrunstyvpj',
-            start_milepost=float(87.25953991183297),
-            start_latitude=float(42.01886366886094),
-            start_longitude=float(31.41092549591408),
-            end_description='heuxqetuupzbuyixkcwp',
-            end_direction='aurgwfdufbpthruovzpt',
-            end_road_name='euusywbvzekbzpgyadrr',
-            end_milepost=float(65.34404757466649),
-            end_latitude=float(50.56659353524785),
-            end_longitude=float(55.80440474361418)
+            headline_description='vrouabjvpwvcdmtixvkg',
+            extended_description='csheiltyliqddoyqddne',
+            start_time='vduzptzmivnstagpuaqh',
+            end_time='qyiogbcaukweclobosnb',
+            last_updated_time='ptxsfnlkkybiqwdsjifd',
+            start_description='surizzthynzzfclmquqt',
+            start_direction='dfjompvqchybicktivmf',
+            start_road_name='acuvunxsginuiakyujfg',
+            start_milepost=float(20.662227210034047),
+            start_latitude=float(17.32566282443563),
+            start_longitude=float(2.864518030580332),
+            end_description='tihqgpqoitfmossmfakk',
+            end_direction='raxdcddwgbmvwdpmrmuc',
+            end_road_name='lwanoistyjufgifdwdad',
+            end_milepost=float(74.17495563106307),
+            end_latitude=float(77.16812255575555),
+            end_longitude=float(53.835407251330444)
         )

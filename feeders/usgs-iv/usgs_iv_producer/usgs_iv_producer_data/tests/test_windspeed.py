@@ -28,13 +28,13 @@ class Test_WindSpeed(unittest.TestCase):
         Create instance of WindSpeed for testing
         """
         instance = WindSpeed(
-            site_no='rycqxkvujgnoxtpgwpfc',
-            datetime='ebogqkabliihyoyxrnsk',
-            value=float(39.410467108085875),
-            exception='iqluxlxxqijxxaoxrvay',
-            qualifiers=['oqzmivlfwafklfjsvxbd', 'gidpxgiwmgpusuqqkubz', 'rhalthcamtbfawkyrhhr'],
-            parameter_cd='piicyfawkasvaifenuvc',
-            timeseries_cd='ltwikeftpysyrfkzfnrz'
+            site_no='nrxfhscvltwdyxhnbuhj',
+            datetime='rjvkicpsnacgmtppkljs',
+            value=float(35.12767338090838),
+            exception='stxcfjwdlxaodsefczae',
+            qualifiers=['gggbpexesejcmnujktuy', 'sfdizxkyoyaxhmhbkljt'],
+            parameter_cd='wqcsufuafclpkqgqlswo',
+            timeseries_cd='gguimihjsddvcjwvfxqy'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WindSpeed(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'rycqxkvujgnoxtpgwpfc'
+        test_value = 'nrxfhscvltwdyxhnbuhj'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_WindSpeed(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'ebogqkabliihyoyxrnsk'
+        test_value = 'rjvkicpsnacgmtppkljs'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_WindSpeed(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(39.410467108085875)
+        test_value = float(35.12767338090838)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_WindSpeed(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'iqluxlxxqijxxaoxrvay'
+        test_value = 'stxcfjwdlxaodsefczae'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_WindSpeed(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['oqzmivlfwafklfjsvxbd', 'gidpxgiwmgpusuqqkubz', 'rhalthcamtbfawkyrhhr']
+        test_value = ['gggbpexesejcmnujktuy', 'sfdizxkyoyaxhmhbkljt']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_WindSpeed(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'piicyfawkasvaifenuvc'
+        test_value = 'wqcsufuafclpkqgqlswo'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_WindSpeed(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'ltwikeftpysyrfkzfnrz'
+        test_value = 'gguimihjsddvcjwvfxqy'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

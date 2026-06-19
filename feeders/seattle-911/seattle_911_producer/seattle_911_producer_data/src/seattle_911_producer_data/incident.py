@@ -169,12 +169,12 @@ class Incident:
             An instance of the dataclass.
         """
         return cls(
-            incident_number='esnhngrpbgkuyggagxdw',
-            incident_type='yrhiugyxwphpdlwvfalq',
-            incident_datetime='laqikitsjwojahduoeko',
-            address='zpgtybefciujiplwuwyd',
-            latitude=float(57.84856865280833),
-            longitude=float(10.00916785810011),
-            incident_type_slug='hryufxrywlyefexbtdyq',
+            incident_number='ajiijtjfgooyzohzmzzo',
+            incident_type='gszdhrctdwwgczjyhosd',
+            incident_datetime='xehfovrbkkeanwqepflk',
+            address='auawrlytiimmqvklbyer',
+            latitude=float(53.21518758035457),
+            longitude=float(59.90692487184555),
+            incident_type_slug='vvvjbwrvqjyskpjsijmk',
             incident_datetime_utc=datetime.datetime.now(datetime.timezone.utc)
         )

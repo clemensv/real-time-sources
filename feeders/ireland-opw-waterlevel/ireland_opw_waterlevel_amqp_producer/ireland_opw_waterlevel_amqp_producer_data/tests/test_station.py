@@ -28,12 +28,12 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_ref='vwdmcxqainkqvesklven',
-            station_name='qgpyvtphhotohpqnizpa',
-            region_id=int(8),
-            longitude=float(1.6880794621518591),
-            latitude=float(31.998542105307415),
-            basin='niuusagkafigslcdmtqz'
+            station_ref='gwqzmawhyvffztesxgcf',
+            station_name='vbiraiqizbxerufkicso',
+            region_id=int(87),
+            longitude=float(34.312624508719345),
+            latitude=float(91.29517210593458),
+            basin='xhcrbgdmffxuoioodpmb'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_ref property
         """
-        test_value = 'vwdmcxqainkqvesklven'
+        test_value = 'gwqzmawhyvffztesxgcf'
         self.instance.station_ref = test_value
         self.assertEqual(self.instance.station_ref, test_value)
     
@@ -50,7 +50,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'qgpyvtphhotohpqnizpa'
+        test_value = 'vbiraiqizbxerufkicso'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -58,7 +58,7 @@ class Test_Station(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = int(8)
+        test_value = int(87)
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -66,7 +66,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(1.6880794621518591)
+        test_value = float(34.312624508719345)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -74,7 +74,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(31.998542105307415)
+        test_value = float(91.29517210593458)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -82,7 +82,7 @@ class Test_Station(unittest.TestCase):
         """
         Test basin property
         """
-        test_value = 'niuusagkafigslcdmtqz'
+        test_value = 'xhcrbgdmffxuoioodpmb'
         self.instance.basin = test_value
         self.assertEqual(self.instance.basin, test_value)
     

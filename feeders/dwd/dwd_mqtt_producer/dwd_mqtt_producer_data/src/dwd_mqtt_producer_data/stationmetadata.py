@@ -167,12 +167,12 @@ class StationMetadata:
             An instance of the dataclass.
         """
         return cls(
-            station_id='ixcdnuywdpcyvhmtwoko',
-            station_name='zoayuiqixgwkksefiodp',
-            latitude=float(2.2431994901232044),
-            longitude=float(24.415093730618263),
-            elevation=float(12.866779494679948),
-            state='pdwbdhvzxorhkjgxyxqq',
-            from_date='dpqptcgbnffrahiwfdax',
-            to_date='lbprzogwnzvpdhczlybt'
+            station_id='zzhfbjmynzzvsxdiemuc',
+            station_name='weuvyizawaeivpcllyku',
+            latitude=float(95.66104876704496),
+            longitude=float(97.90677982998488),
+            elevation=float(67.7725987499011),
+            state='xbmciavztmgkrounmaxe',
+            from_date='cyxevnwpwhotylfiwbbl',
+            to_date='izbxjwajunknauhuxkdr'
         )

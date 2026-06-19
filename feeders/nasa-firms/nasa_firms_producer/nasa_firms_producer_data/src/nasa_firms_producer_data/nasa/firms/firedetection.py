@@ -12,9 +12,9 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from nasa_firms_producer_data.nasa.firms.confidencelevelenum import ConfidenceLevelenum
-from nasa_firms_producer_data.nasa.firms.instrumentenum import InstrumentEnum
 from nasa_firms_producer_data.nasa.firms.daynightenum import DaynightEnum
+from nasa_firms_producer_data.nasa.firms.instrumentenum import InstrumentEnum
+from nasa_firms_producer_data.nasa.firms.confidencelevelenum import ConfidenceLevelenum
 import datetime
 
 
@@ -198,25 +198,25 @@ class FireDetection:
             An instance of the dataclass.
         """
         return cls(
-            source='dcncgocxcexhzjhgoefz',
-            record_id='eizpqswiitdyimtbkdxu',
-            latitude=float(37.82873124045244),
-            longitude=float(2.0746434879620024),
-            brightness=float(92.50623120320354),
-            bright_t31=float(0.2898980515498528),
-            bright_ti4=float(17.01222554555225),
-            bright_ti5=float(94.96785668101269),
-            scan=float(21.533584442443377),
-            track=float(0.25056722012161137),
+            source='fouydzjgehjwckfsjrpa',
+            record_id='tnhtmyqbqwfrriuhvmhm',
+            latitude=float(61.350386776574894),
+            longitude=float(49.16935805216316),
+            brightness=float(20.00690905643907),
+            bright_t31=float(82.18762720543084),
+            bright_ti4=float(77.18469877277414),
+            bright_ti5=float(54.20691372056904),
+            scan=float(3.4646888403939147),
+            track=float(92.87982428303276),
             acq_date=datetime.date.today(),
-            acq_time='yjtytjogrohbyxidhugm',
+            acq_time='rivlrmjldifzdmgcbvpy',
             acq_datetime=datetime.datetime.now(datetime.timezone.utc),
-            satellite='kzitkmkbujhbluudqbcr',
+            satellite='zssgpsjdrypvietynesv',
             instrument=InstrumentEnum.VIIRS,
-            confidence='iwdvwfngasxscslljovw',
+            confidence='sehuztgdfpxqaqcqptwo',
             confidence_level=ConfidenceLevelenum.low,
-            version='zvjcsiexldosqcghtopw',
-            frp=float(15.834547086195094),
+            version='jivdrxuhvoxonsezbxns',
+            frp=float(50.55569221353699),
             daynight=DaynightEnum.D,
-            tile='afazfwhmrdqshhonvyxz'
+            tile='yxzfeciorvuckjiuwvqw'
         )

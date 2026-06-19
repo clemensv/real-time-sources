@@ -225,7 +225,7 @@ def test_ie_gov_opw_waterlevel_mqtt_iegovopwwaterlevelmqttstation(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "ie.gov.opw.waterlevel.mqtt.Station":
+            if cloudevent['type'] == "ie.gov.opw.waterlevel.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_ie_gov_opw_waterlevel_mqtt_iegovopwwaterlevelmqttwaterlevelreading(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "ie.gov.opw.waterlevel.mqtt.WaterLevelReading":
+            if cloudevent['type'] == "ie.gov.opw.waterlevel.WaterLevelReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_ie_gov_opw_waterlevel_amqp_iegovopwwaterlevelamqpstation(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "ie.gov.opw.waterlevel.amqp.Station":
+            if cloudevent['type'] == "ie.gov.opw.waterlevel.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_ie_gov_opw_waterlevel_amqp_iegovopwwaterlevelamqpwaterlevelreading(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "ie.gov.opw.waterlevel.amqp.WaterLevelReading":
+            if cloudevent['type'] == "ie.gov.opw.waterlevel.WaterLevelReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

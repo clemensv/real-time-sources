@@ -28,10 +28,10 @@ class Test_SolarWindPlasma(unittest.TestCase):
         Create instance of SolarWindPlasma for testing
         """
         instance = SolarWindPlasma(
-            observation_time='hoqrdbnxeoqgsmncpzop',
-            density=float(48.46592628276743),
-            speed=float(6.142636676985158),
-            temperature=float(25.530033519011564)
+            observation_time='qajlrkakohuozgofdxpy',
+            density=float(76.20214637984607),
+            speed=float(92.752684219709),
+            temperature=float(97.02750219285889)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_SolarWindPlasma(unittest.TestCase):
         """
         Test observation_time property
         """
-        test_value = 'hoqrdbnxeoqgsmncpzop'
+        test_value = 'qajlrkakohuozgofdxpy'
         self.instance.observation_time = test_value
         self.assertEqual(self.instance.observation_time, test_value)
     
@@ -48,7 +48,7 @@ class Test_SolarWindPlasma(unittest.TestCase):
         """
         Test density property
         """
-        test_value = float(48.46592628276743)
+        test_value = float(76.20214637984607)
         self.instance.density = test_value
         self.assertEqual(self.instance.density, test_value)
     
@@ -56,7 +56,7 @@ class Test_SolarWindPlasma(unittest.TestCase):
         """
         Test speed property
         """
-        test_value = float(6.142636676985158)
+        test_value = float(92.752684219709)
         self.instance.speed = test_value
         self.assertEqual(self.instance.speed, test_value)
     
@@ -64,7 +64,7 @@ class Test_SolarWindPlasma(unittest.TestCase):
         """
         Test temperature property
         """
-        test_value = float(25.530033519011564)
+        test_value = float(97.02750219285889)
         self.instance.temperature = test_value
         self.assertEqual(self.instance.temperature, test_value)
     

@@ -185,21 +185,21 @@ class Post:
             An instance of the dataclass.
         """
         return cls(
-            uri='mlmleuruqnjqnmpjgycl',
-            cid='xilpteeoustbbketneja',
-            did='yuqcykjmykdeuhgthslh',
-            handle='ztkeywopgeenbojihwam',
-            text='vkqlgqpppxpayxvqvtqg',
-            langs=['xyiemiutwqfzqvunomnd', 'huggcrwhlohppjmvyiki', 'fovkskeqvfapjcirrnhe', 'erqphkzwlritftlavlhy'],
-            reply_parent='wmhcszgitkzjixtqsvgj',
-            reply_root='rwmbvnimptypusrhnhrn',
-            embed_type='pouwkllnbdirxjrzwyir',
-            embed_uri='kgagwvpgpoqaxhensgqp',
-            facets='lmjvsotacufxteewoznl',
-            tags=['bjmtfdhfdqyiwdtsakbp', 'cksyfktmrlikouphnnsn'],
-            created_at='cbmfhiyydpkfftmcbwkn',
-            indexed_at='wsngtdhlfxpuvmsqvtfq',
-            seq=int(38),
-            collection='nmdlarfdpsvbeipdasas',
-            lang='epdzbglppzgylcznhhmm'
+            uri='cnyenxyldqvxhhhycixq',
+            cid='glxybekcgnlanqezpfut',
+            did='zulfczjyxquctfrszfhq',
+            handle='qxgdmockddmlbfvjszet',
+            text='birwwalpfqwmdvwlskwe',
+            langs=['mrnqdwhkxpbeykpfuwzl', 'xxmvzcuruuovnjjkadep'],
+            reply_parent='elywqjjzljviivfwmsqm',
+            reply_root='tizmmmkpmjedgqebnwqq',
+            embed_type='gzncdygiwqgkgqiwbyfe',
+            embed_uri='aucabbhaeifpbcrpdzhf',
+            facets='sxojfwtnpzrdqgmunwrf',
+            tags=['asxbbqsdqiwbjobzxgpa', 'dhknwyohlurtnwkidfuf', 'yhpgmolbylzpabsadeng'],
+            created_at='ygvnlurnfptsezevuxcj',
+            indexed_at='xkqsrqvqorevextqgrzl',
+            seq=int(70),
+            collection='njoztdpqblcpzdissmjj',
+            lang='ongzwspkajomgikxnmvj'
         )

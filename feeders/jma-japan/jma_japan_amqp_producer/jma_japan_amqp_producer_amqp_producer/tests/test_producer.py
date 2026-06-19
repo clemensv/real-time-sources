@@ -322,7 +322,7 @@ class TestJpGoJmaWeatherBulletinsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "jp.go.jma.WeatherBulletins.amqp.WeatherBulletin"
+                    assert cloud_event_payload.get("type") == "jp.go.jma.WeatherBulletin"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -359,7 +359,7 @@ class TestJpGoJmaWeatherBulletinsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'jp.go.jma.WeatherBulletins.amqp.WeatherBulletin'
+        assert properties.get('cloudEvents:type') == 'jp.go.jma.WeatherBulletin'
         assert received.body is not None
         assert received.subject == "{office}/{bulletin_id}".format(office="value", bulletin_id="value")
 

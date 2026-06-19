@@ -162,9 +162,9 @@ class StationBoard:
             An instance of the dataclass.
         """
         return cls(
-            station_id='bitprgblsdmnybcpjzui',
-            station_name='uepwpoxcjdlixzxiadps',
-            retrieved_at='ppzaezqujvieojihkcbw',
-            departure_count=int(25),
-            departures=[None, None, None, None, None]
+            station_id='nnkdhphqpaorkahrqaed',
+            station_name='kadvqmluhmhfotnajzez',
+            retrieved_at='nbqgrebhipdwkfyvzysl',
+            departure_count=int(89),
+            departures=[None]
         )

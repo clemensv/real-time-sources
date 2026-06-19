@@ -324,7 +324,7 @@ class TestCAGovECCCWeatherAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "CA.Gov.ECCC.Weather.amqp.Station"
+                    assert cloud_event_payload.get("type") == "CA.Gov.ECCC.Weather.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -362,7 +362,7 @@ class TestCAGovECCCWeatherAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'CA.Gov.ECCC.Weather.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'CA.Gov.ECCC.Weather.Station'
         assert received.body is not None
         assert received.subject == "{msc_id}".format(msc_id="value")
         assert properties.get('province') == "{province}".format(province="value")
@@ -416,7 +416,7 @@ class TestCAGovECCCWeatherAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "CA.Gov.ECCC.Weather.amqp.WeatherObservation"
+                    assert cloud_event_payload.get("type") == "CA.Gov.ECCC.Weather.WeatherObservation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -454,7 +454,7 @@ class TestCAGovECCCWeatherAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'CA.Gov.ECCC.Weather.amqp.WeatherObservation'
+        assert properties.get('cloudEvents:type') == 'CA.Gov.ECCC.Weather.WeatherObservation'
         assert received.body is not None
         assert received.subject == "{msc_id}".format(msc_id="value")
         assert properties.get('province') == "{province}".format(province="value")

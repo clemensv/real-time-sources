@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from wsdot_producer_data.us.wa.wsdot.roadweather.subsurfacemeasurement import SubSurfaceMeasurement
 from wsdot_producer_data.us.wa.wsdot.roadweather.surfacemeasurement import SurfaceMeasurement
+from wsdot_producer_data.us.wa.wsdot.roadweather.subsurfacemeasurement import SubSurfaceMeasurement
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -201,28 +201,28 @@ class RoadWeatherReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='syyehhxdhtwydpetelrv',
-            station_name='xbckbhxnchgimsrzkwau',
-            latitude=float(5.395154034733462),
-            longitude=float(7.2951665871377465),
-            elevation=int(76),
-            reading_time='izychyoptxyrxuomajcr',
-            air_temperature=float(54.69318773803467),
-            relative_humidity=int(98),
-            average_wind_speed=float(21.03167528980274),
-            average_wind_direction=int(25),
-            wind_gust=float(40.03431364610491),
-            visibility=int(59),
-            precipitation_intensity=int(87),
-            precipitation_type=int(46),
-            precipitation_past_1_hour=float(46.213945262006185),
-            precipitation_past_3_hours=float(45.985759325350884),
-            precipitation_past_6_hours=float(9.37935322334036),
-            precipitation_past_12_hours=float(2.1586587106716904),
-            precipitation_past_24_hours=float(70.02734324853564),
-            precipitation_accumulation=float(59.245432404020995),
-            barometric_pressure=float(74.0028374403),
-            snow_depth=float(29.112240769135056),
+            station_id='raxmzbszebhtggzafkou',
+            station_name='smbyymplwkvkzcobvisk',
+            latitude=float(15.024681516642147),
+            longitude=float(88.6575484942296),
+            elevation=int(21),
+            reading_time='flxsaiiztyxnwaerphal',
+            air_temperature=float(33.29101975297366),
+            relative_humidity=int(61),
+            average_wind_speed=float(24.673687445164038),
+            average_wind_direction=int(99),
+            wind_gust=float(4.456507222708616),
+            visibility=int(34),
+            precipitation_intensity=int(49),
+            precipitation_type=int(35),
+            precipitation_past_1_hour=float(22.370452528294273),
+            precipitation_past_3_hours=float(58.468365548219104),
+            precipitation_past_6_hours=float(57.542379703413204),
+            precipitation_past_12_hours=float(45.93323854963709),
+            precipitation_past_24_hours=float(95.19055570280742),
+            precipitation_accumulation=float(50.70660199336237),
+            barometric_pressure=float(81.9067805484795),
+            snow_depth=float(85.17993798253997),
             surface_measurements=[None, None, None, None],
-            sub_surface_measurements=[None, None, None]
+            sub_surface_measurements=[None, None, None, None]
         )

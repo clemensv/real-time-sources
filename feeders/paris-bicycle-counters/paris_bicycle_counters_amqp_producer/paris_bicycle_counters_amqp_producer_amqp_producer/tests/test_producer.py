@@ -324,7 +324,7 @@ class TestFRParisOpenDataVeloAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "FR.Paris.OpenData.Velo.amqp.Counter"
+                    assert cloud_event_payload.get("type") == "FR.Paris.OpenData.Velo.Counter"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -362,7 +362,7 @@ class TestFRParisOpenDataVeloAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'FR.Paris.OpenData.Velo.amqp.Counter'
+        assert properties.get('cloudEvents:type') == 'FR.Paris.OpenData.Velo.Counter'
         assert received.body is not None
         assert received.subject == "{counter_id}".format(counter_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{counter_id}".format(counter_id="value"))[:128]
@@ -416,7 +416,7 @@ class TestFRParisOpenDataVeloAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "FR.Paris.OpenData.Velo.amqp.BicycleCount"
+                    assert cloud_event_payload.get("type") == "FR.Paris.OpenData.Velo.BicycleCount"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -454,7 +454,7 @@ class TestFRParisOpenDataVeloAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'FR.Paris.OpenData.Velo.amqp.BicycleCount'
+        assert properties.get('cloudEvents:type') == 'FR.Paris.OpenData.Velo.BicycleCount'
         assert received.body is not None
         assert received.subject == "{counter_id}".format(counter_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{counter_id}".format(counter_id="value"))[:128]

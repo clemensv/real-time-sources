@@ -324,7 +324,7 @@ class TestXceedAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "xceed.amqp.Event"
+                    assert cloud_event_payload.get("type") == "xceed.Event"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -362,7 +362,7 @@ class TestXceedAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'xceed.amqp.Event'
+        assert properties.get('cloudEvents:type') == 'xceed.Event'
         assert received.body is not None
         assert received.subject == "{event_id}".format(event_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{event_id}".format(event_id="value"))[:128]
@@ -477,7 +477,7 @@ class TestXceedAdmissionsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "xceed.admissions.amqp.EventAdmission"
+                    assert cloud_event_payload.get("type") == "xceed.EventAdmission"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -516,7 +516,7 @@ class TestXceedAdmissionsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'xceed.admissions.amqp.EventAdmission'
+        assert properties.get('cloudEvents:type') == 'xceed.EventAdmission'
         assert received.body is not None
         assert received.subject == "{event_id}/{admission_id}".format(event_id="value", admission_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{event_id}/{admission_id}".format(event_id="value", admission_id="value"))[:128]

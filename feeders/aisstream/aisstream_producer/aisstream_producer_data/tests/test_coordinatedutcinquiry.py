@@ -28,13 +28,13 @@ class Test_CoordinatedUTCInquiry(unittest.TestCase):
         Create instance of CoordinatedUTCInquiry for testing
         """
         instance = CoordinatedUTCInquiry(
-            MessageID=int(6),
-            RepeatIndicator=int(91),
-            UserID=int(68),
+            MessageID=int(20),
+            RepeatIndicator=int(20),
+            UserID=int(93),
             Valid=True,
-            Spare1=int(39),
-            DestinationID=int(100),
-            Spare2=int(24)
+            Spare1=int(6),
+            DestinationID=int(74),
+            Spare2=int(9)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_CoordinatedUTCInquiry(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(6)
+        test_value = int(20)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -51,7 +51,7 @@ class Test_CoordinatedUTCInquiry(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(91)
+        test_value = int(20)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -59,7 +59,7 @@ class Test_CoordinatedUTCInquiry(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(68)
+        test_value = int(93)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -75,7 +75,7 @@ class Test_CoordinatedUTCInquiry(unittest.TestCase):
         """
         Test Spare1 property
         """
-        test_value = int(39)
+        test_value = int(6)
         self.instance.Spare1 = test_value
         self.assertEqual(self.instance.Spare1, test_value)
     
@@ -83,7 +83,7 @@ class Test_CoordinatedUTCInquiry(unittest.TestCase):
         """
         Test DestinationID property
         """
-        test_value = int(100)
+        test_value = int(74)
         self.instance.DestinationID = test_value
         self.assertEqual(self.instance.DestinationID, test_value)
     
@@ -91,7 +91,7 @@ class Test_CoordinatedUTCInquiry(unittest.TestCase):
         """
         Test Spare2 property
         """
-        test_value = int(24)
+        test_value = int(9)
         self.instance.Spare2 = test_value
         self.assertEqual(self.instance.Spare2, test_value)
     

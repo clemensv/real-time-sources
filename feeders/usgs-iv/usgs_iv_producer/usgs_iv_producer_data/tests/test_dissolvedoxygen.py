@@ -28,13 +28,13 @@ class Test_DissolvedOxygen(unittest.TestCase):
         Create instance of DissolvedOxygen for testing
         """
         instance = DissolvedOxygen(
-            site_no='csegjsvzazpsvgmpwzld',
-            datetime='gnlsnunnvqmaikjqqoqw',
-            value=float(62.914840671206186),
-            exception='asdqtjpqoaanhjcimycv',
-            qualifiers=['bfkpkxqgisbzulugtwfq'],
-            parameter_cd='srezsmeyypaqxijjkzgi',
-            timeseries_cd='ituckbgyntuschlveyxg'
+            site_no='zljosbymymohiwyaqzuc',
+            datetime='qjrirwiavxplgkhytkoo',
+            value=float(90.83433257934755),
+            exception='jfqyckkndvtpetfroxbs',
+            qualifiers=['ciuacbwvgjfpocfwpjjv', 'nnygmhcvixicejaiwgmb', 'szxtwzphmyuujnehcqia', 'irxswawldihwaukvlqct'],
+            parameter_cd='mhgsehjbjqfhbkhqpepp',
+            timeseries_cd='hrbdyfupbovzzvpdflab'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'csegjsvzazpsvgmpwzld'
+        test_value = 'zljosbymymohiwyaqzuc'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'gnlsnunnvqmaikjqqoqw'
+        test_value = 'qjrirwiavxplgkhytkoo'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(62.914840671206186)
+        test_value = float(90.83433257934755)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'asdqtjpqoaanhjcimycv'
+        test_value = 'jfqyckkndvtpetfroxbs'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['bfkpkxqgisbzulugtwfq']
+        test_value = ['ciuacbwvgjfpocfwpjjv', 'nnygmhcvixicejaiwgmb', 'szxtwzphmyuujnehcqia', 'irxswawldihwaukvlqct']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'srezsmeyypaqxijjkzgi'
+        test_value = 'mhgsehjbjqfhbkhqpepp'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_DissolvedOxygen(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'ituckbgyntuschlveyxg'
+        test_value = 'hrbdyfupbovzzvpdflab'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

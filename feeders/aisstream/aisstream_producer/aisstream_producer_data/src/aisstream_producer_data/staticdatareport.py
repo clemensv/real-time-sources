@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_producer_data.reportb import ReportB
 from aisstream_producer_data.reporta import ReportA
+from aisstream_producer_data.reportb import ReportB
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -169,11 +169,11 @@ class StaticDataReport:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(45),
-            RepeatIndicator=int(62),
-            UserID=int(87),
-            Valid=True,
-            Reserved=int(71),
+            MessageID=int(92),
+            RepeatIndicator=int(18),
+            UserID=int(69),
+            Valid=False,
+            Reserved=int(33),
             PartNumber=True,
             ReportA=None,
             ReportB=None

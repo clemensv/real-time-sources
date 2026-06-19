@@ -323,7 +323,7 @@ class TestNINAWarningsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NINA.Warnings.amqp.CivilWarning"
+                    assert cloud_event_payload.get("type") == "NINA.CivilWarning"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -364,7 +364,7 @@ class TestNINAWarningsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NINA.Warnings.amqp.CivilWarning'
+        assert properties.get('cloudEvents:type') == 'NINA.CivilWarning'
         assert received.body is not None
         assert received.subject == "{warning_id}".format(warning_id="value")
         assert properties.get('state') == "{state}".format(state="value")

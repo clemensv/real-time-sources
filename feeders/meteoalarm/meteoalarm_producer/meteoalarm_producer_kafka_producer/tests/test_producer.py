@@ -159,7 +159,7 @@ def test_meteoalarm_warnings_mqtt_meteoalarmwarningsmqttweatherwarning(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Meteoalarm.Warnings.mqtt.WeatherWarning":
+            if cloudevent['type'] == "Meteoalarm.WeatherWarning":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_meteoalarm_warnings_amqp_meteoalarmwarningsamqpweatherwarning(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Meteoalarm.Warnings.amqp.WeatherWarning":
+            if cloudevent['type'] == "Meteoalarm.WeatherWarning":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

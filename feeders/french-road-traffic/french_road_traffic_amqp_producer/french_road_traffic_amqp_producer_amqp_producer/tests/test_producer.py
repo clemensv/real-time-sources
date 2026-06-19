@@ -324,7 +324,7 @@ class TestFrGouvTransportBisonFuteTrafficFlowAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fr.gouv.transport.bison_fute.TrafficFlowMeasurement.amqp"
+                    assert cloud_event_payload.get("type") == "fr.gouv.transport.bison_fute.TrafficFlowMeasurement"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -362,7 +362,7 @@ class TestFrGouvTransportBisonFuteTrafficFlowAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement.amqp'
+        assert properties.get('cloudEvents:type') == 'fr.gouv.transport.bison_fute.TrafficFlowMeasurement'
         assert received.body is not None
         assert received.subject == "{site_id}".format(site_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{site_id}".format(site_id="value"))[:128]
@@ -476,7 +476,7 @@ class TestFrGouvTransportBisonFuteRoadEventAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fr.gouv.transport.bison_fute.RoadEvent.amqp"
+                    assert cloud_event_payload.get("type") == "fr.gouv.transport.bison_fute.RoadEvent"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -514,7 +514,7 @@ class TestFrGouvTransportBisonFuteRoadEventAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fr.gouv.transport.bison_fute.RoadEvent.amqp'
+        assert properties.get('cloudEvents:type') == 'fr.gouv.transport.bison_fute.RoadEvent'
         assert received.body is not None
         assert received.subject == "{situation_id}".format(situation_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{situation_id}".format(situation_id="value"))[:128]

@@ -165,11 +165,11 @@ class GateOpening:
             An instance of the dataclass.
         """
         return cls(
-            site_no='dzsnrehpqpzujxlmgnig',
-            datetime='cvecyqrztxqmsypvicqo',
-            value=float(87.69985525828099),
-            exception='hdftaajpnegwzgkivmip',
-            qualifiers=['bmlzefgsnnjviqgvubcn', 'ueuhzlpqoytsytjcnvjr'],
-            parameter_cd='qkjkkizsiaviwihgmimu',
-            timeseries_cd='yrrniengodrsgfnzjbvg'
+            site_no='wjnxwtiudgqxzblgelrq',
+            datetime='sapgdpfibcvmtlctjlug',
+            value=float(96.85227294490348),
+            exception='hpbzudbueldxjufaznov',
+            qualifiers=['fukppkdbizrmolplyhsf'],
+            parameter_cd='fvupiglixtwumyiugmjo',
+            timeseries_cd='maqiipohrjszrxxalsym'
         )

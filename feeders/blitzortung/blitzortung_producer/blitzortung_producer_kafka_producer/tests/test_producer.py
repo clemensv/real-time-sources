@@ -159,7 +159,7 @@ def test_blitzortung_lightning_mqtt_blitzortunglightningmqttlightningstroke(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Blitzortung.Lightning.mqtt.LightningStroke":
+            if cloudevent['type'] == "Blitzortung.Lightning.LightningStroke":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_blitzortung_lightning_amqp_blitzortunglightningamqplightningstroke(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Blitzortung.Lightning.amqp.LightningStroke":
+            if cloudevent['type'] == "Blitzortung.Lightning.LightningStroke":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

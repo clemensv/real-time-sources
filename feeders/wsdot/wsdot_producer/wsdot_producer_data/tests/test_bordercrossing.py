@@ -28,13 +28,13 @@ class Test_BorderCrossing(unittest.TestCase):
         Create instance of BorderCrossing for testing
         """
         instance = BorderCrossing(
-            crossing_name='ltjxprgkkmubcjhatbeb',
-            wait_time=int(52),
-            time='zjgyimmhpznnyrpgjxnv',
-            description='nflkzlwkhxnjrajaalwn',
-            road_name='qiwjqrmioaxwclkrsstx',
-            latitude=float(63.68134028083534),
-            longitude=float(95.28263558782113)
+            crossing_name='tcsfrudwuuwddnnlqgmn',
+            wait_time=int(85),
+            time='pblrihibcpgysxjbrnuu',
+            description='bwgyidcalnvtlmngepns',
+            road_name='sqnxhntmhnmoyeqygilb',
+            latitude=float(33.96902343459871),
+            longitude=float(96.67835399934724)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_BorderCrossing(unittest.TestCase):
         """
         Test crossing_name property
         """
-        test_value = 'ltjxprgkkmubcjhatbeb'
+        test_value = 'tcsfrudwuuwddnnlqgmn'
         self.instance.crossing_name = test_value
         self.assertEqual(self.instance.crossing_name, test_value)
     
@@ -51,7 +51,7 @@ class Test_BorderCrossing(unittest.TestCase):
         """
         Test wait_time property
         """
-        test_value = int(52)
+        test_value = int(85)
         self.instance.wait_time = test_value
         self.assertEqual(self.instance.wait_time, test_value)
     
@@ -59,7 +59,7 @@ class Test_BorderCrossing(unittest.TestCase):
         """
         Test time property
         """
-        test_value = 'zjgyimmhpznnyrpgjxnv'
+        test_value = 'pblrihibcpgysxjbrnuu'
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -67,7 +67,7 @@ class Test_BorderCrossing(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'nflkzlwkhxnjrajaalwn'
+        test_value = 'bwgyidcalnvtlmngepns'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -75,7 +75,7 @@ class Test_BorderCrossing(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'qiwjqrmioaxwclkrsstx'
+        test_value = 'sqnxhntmhnmoyeqygilb'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -83,7 +83,7 @@ class Test_BorderCrossing(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(63.68134028083534)
+        test_value = float(33.96902343459871)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -91,7 +91,7 @@ class Test_BorderCrossing(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(95.28263558782113)
+        test_value = float(96.67835399934724)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

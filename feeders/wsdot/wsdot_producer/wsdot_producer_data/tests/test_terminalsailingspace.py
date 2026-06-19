@@ -29,15 +29,15 @@ class Test_TerminalSailingSpace(unittest.TestCase):
         Create instance of TerminalSailingSpace for testing
         """
         instance = TerminalSailingSpace(
-            terminal_id='wnjhxlkgkwxxeygyghkk',
-            terminal_subject_id=int(65),
-            region_id=int(25),
-            terminal_name='ftlcbevchrtekzipcsfh',
-            terminal_abbrev='rnpcbvacuskkmmdvbkep',
-            sort_seq=int(49),
-            departing_spaces=[None, None],
+            terminal_id='mnwdiudnsuxzosfwgplv',
+            terminal_subject_id=int(29),
+            region_id=int(54),
+            terminal_name='cerbfnbnzvyzldmmxdxd',
+            terminal_abbrev='mliawhscybittxgnymep',
+            sort_seq=int(43),
+            departing_spaces=[None, None, None, None],
             is_no_fare_collected=False,
-            no_fare_collected_msg='wpajydbbipkgagalwhmv'
+            no_fare_collected_msg='npsgpfwwyxxpoxxowgva'
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_TerminalSailingSpace(unittest.TestCase):
         """
         Test terminal_id property
         """
-        test_value = 'wnjhxlkgkwxxeygyghkk'
+        test_value = 'mnwdiudnsuxzosfwgplv'
         self.instance.terminal_id = test_value
         self.assertEqual(self.instance.terminal_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_TerminalSailingSpace(unittest.TestCase):
         """
         Test terminal_subject_id property
         """
-        test_value = int(65)
+        test_value = int(29)
         self.instance.terminal_subject_id = test_value
         self.assertEqual(self.instance.terminal_subject_id, test_value)
     
@@ -62,7 +62,7 @@ class Test_TerminalSailingSpace(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = int(25)
+        test_value = int(54)
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -70,7 +70,7 @@ class Test_TerminalSailingSpace(unittest.TestCase):
         """
         Test terminal_name property
         """
-        test_value = 'ftlcbevchrtekzipcsfh'
+        test_value = 'cerbfnbnzvyzldmmxdxd'
         self.instance.terminal_name = test_value
         self.assertEqual(self.instance.terminal_name, test_value)
     
@@ -78,7 +78,7 @@ class Test_TerminalSailingSpace(unittest.TestCase):
         """
         Test terminal_abbrev property
         """
-        test_value = 'rnpcbvacuskkmmdvbkep'
+        test_value = 'mliawhscybittxgnymep'
         self.instance.terminal_abbrev = test_value
         self.assertEqual(self.instance.terminal_abbrev, test_value)
     
@@ -86,7 +86,7 @@ class Test_TerminalSailingSpace(unittest.TestCase):
         """
         Test sort_seq property
         """
-        test_value = int(49)
+        test_value = int(43)
         self.instance.sort_seq = test_value
         self.assertEqual(self.instance.sort_seq, test_value)
     
@@ -94,7 +94,7 @@ class Test_TerminalSailingSpace(unittest.TestCase):
         """
         Test departing_spaces property
         """
-        test_value = [None, None]
+        test_value = [None, None, None, None]
         self.instance.departing_spaces = test_value
         self.assertEqual(self.instance.departing_spaces, test_value)
     
@@ -110,7 +110,7 @@ class Test_TerminalSailingSpace(unittest.TestCase):
         """
         Test no_fare_collected_msg property
         """
-        test_value = 'wpajydbbipkgagalwhmv'
+        test_value = 'npsgpfwwyxxpoxxowgva'
         self.instance.no_fare_collected_msg = test_value
         self.assertEqual(self.instance.no_fare_collected_msg, test_value)
     

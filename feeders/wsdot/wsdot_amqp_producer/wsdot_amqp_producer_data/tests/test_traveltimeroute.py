@@ -28,25 +28,25 @@ class Test_TravelTimeRoute(unittest.TestCase):
         Create instance of TravelTimeRoute for testing
         """
         instance = TravelTimeRoute(
-            travel_time_id='jwzngttydabkysoxtznp',
-            name='zigaudwbctdlwgaixhoh',
-            description='ejvyncyeqehwoczehaqi',
-            distance=float(34.72701317687243),
-            average_time=int(67),
-            current_time=int(37),
-            time_updated='xbtmpvuhbiwosnzodlxl',
-            start_description='qfkeqzcbyhrzizssohtp',
-            start_road_name='tcgdxpzfcretzjhkwnpd',
-            start_direction='bgkpomelulntsckacpuk',
-            start_milepost=float(27.271192134629917),
-            start_latitude=float(69.37993864966076),
-            start_longitude=float(47.44388643943099),
-            end_description='njlnffsjuwgyidaxtybe',
-            end_road_name='mkrxczmrlexjjztufejt',
-            end_direction='pdgecedvdddkijkezxbw',
-            end_milepost=float(62.21316079524918),
-            end_latitude=float(91.082173511243),
-            end_longitude=float(86.57156886613191)
+            travel_time_id='vakuzokyxpraoxqqhghy',
+            name='cqaycdkxicqenyawikvy',
+            description='kgpvxfebgmgcvpiwvmhi',
+            distance=float(91.27570635010272),
+            average_time=int(100),
+            current_time=int(10),
+            time_updated='naqozqxflrxscjkxpang',
+            start_description='zbvzurgnnikgiuirxako',
+            start_road_name='wbsdwggwwhjwaxpviyqg',
+            start_direction='szxozpxvxsqkypbcprgg',
+            start_milepost=float(92.73103988135719),
+            start_latitude=float(30.66179498785496),
+            start_longitude=float(35.935969823721905),
+            end_description='elhoeanjpqfecdzujheg',
+            end_road_name='xhfalzjwpphsglmpxczc',
+            end_direction='kokxqgmwvrayhookrvqb',
+            end_milepost=float(19.483561535412043),
+            end_latitude=float(12.69646035360129),
+            end_longitude=float(33.812246486290256)
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test travel_time_id property
         """
-        test_value = 'jwzngttydabkysoxtznp'
+        test_value = 'vakuzokyxpraoxqqhghy'
         self.instance.travel_time_id = test_value
         self.assertEqual(self.instance.travel_time_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'zigaudwbctdlwgaixhoh'
+        test_value = 'cqaycdkxicqenyawikvy'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -71,7 +71,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'ejvyncyeqehwoczehaqi'
+        test_value = 'kgpvxfebgmgcvpiwvmhi'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -79,7 +79,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test distance property
         """
-        test_value = float(34.72701317687243)
+        test_value = float(91.27570635010272)
         self.instance.distance = test_value
         self.assertEqual(self.instance.distance, test_value)
     
@@ -87,7 +87,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test average_time property
         """
-        test_value = int(67)
+        test_value = int(100)
         self.instance.average_time = test_value
         self.assertEqual(self.instance.average_time, test_value)
     
@@ -95,7 +95,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test current_time property
         """
-        test_value = int(37)
+        test_value = int(10)
         self.instance.current_time = test_value
         self.assertEqual(self.instance.current_time, test_value)
     
@@ -103,7 +103,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test time_updated property
         """
-        test_value = 'xbtmpvuhbiwosnzodlxl'
+        test_value = 'naqozqxflrxscjkxpang'
         self.instance.time_updated = test_value
         self.assertEqual(self.instance.time_updated, test_value)
     
@@ -111,7 +111,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test start_description property
         """
-        test_value = 'qfkeqzcbyhrzizssohtp'
+        test_value = 'zbvzurgnnikgiuirxako'
         self.instance.start_description = test_value
         self.assertEqual(self.instance.start_description, test_value)
     
@@ -119,7 +119,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test start_road_name property
         """
-        test_value = 'tcgdxpzfcretzjhkwnpd'
+        test_value = 'wbsdwggwwhjwaxpviyqg'
         self.instance.start_road_name = test_value
         self.assertEqual(self.instance.start_road_name, test_value)
     
@@ -127,7 +127,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test start_direction property
         """
-        test_value = 'bgkpomelulntsckacpuk'
+        test_value = 'szxozpxvxsqkypbcprgg'
         self.instance.start_direction = test_value
         self.assertEqual(self.instance.start_direction, test_value)
     
@@ -135,7 +135,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test start_milepost property
         """
-        test_value = float(27.271192134629917)
+        test_value = float(92.73103988135719)
         self.instance.start_milepost = test_value
         self.assertEqual(self.instance.start_milepost, test_value)
     
@@ -143,7 +143,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test start_latitude property
         """
-        test_value = float(69.37993864966076)
+        test_value = float(30.66179498785496)
         self.instance.start_latitude = test_value
         self.assertEqual(self.instance.start_latitude, test_value)
     
@@ -151,7 +151,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test start_longitude property
         """
-        test_value = float(47.44388643943099)
+        test_value = float(35.935969823721905)
         self.instance.start_longitude = test_value
         self.assertEqual(self.instance.start_longitude, test_value)
     
@@ -159,7 +159,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test end_description property
         """
-        test_value = 'njlnffsjuwgyidaxtybe'
+        test_value = 'elhoeanjpqfecdzujheg'
         self.instance.end_description = test_value
         self.assertEqual(self.instance.end_description, test_value)
     
@@ -167,7 +167,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test end_road_name property
         """
-        test_value = 'mkrxczmrlexjjztufejt'
+        test_value = 'xhfalzjwpphsglmpxczc'
         self.instance.end_road_name = test_value
         self.assertEqual(self.instance.end_road_name, test_value)
     
@@ -175,7 +175,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test end_direction property
         """
-        test_value = 'pdgecedvdddkijkezxbw'
+        test_value = 'kokxqgmwvrayhookrvqb'
         self.instance.end_direction = test_value
         self.assertEqual(self.instance.end_direction, test_value)
     
@@ -183,7 +183,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test end_milepost property
         """
-        test_value = float(62.21316079524918)
+        test_value = float(19.483561535412043)
         self.instance.end_milepost = test_value
         self.assertEqual(self.instance.end_milepost, test_value)
     
@@ -191,7 +191,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test end_latitude property
         """
-        test_value = float(91.082173511243)
+        test_value = float(12.69646035360129)
         self.instance.end_latitude = test_value
         self.assertEqual(self.instance.end_latitude, test_value)
     
@@ -199,7 +199,7 @@ class Test_TravelTimeRoute(unittest.TestCase):
         """
         Test end_longitude property
         """
-        test_value = float(86.57156886613191)
+        test_value = float(33.812246486290256)
         self.instance.end_longitude = test_value
         self.assertEqual(self.instance.end_longitude, test_value)
     

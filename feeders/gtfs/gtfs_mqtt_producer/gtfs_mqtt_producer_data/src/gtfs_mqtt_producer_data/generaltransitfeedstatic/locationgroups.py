@@ -159,8 +159,8 @@ class LocationGroups:
             An instance of the dataclass.
         """
         return cls(
-            locationGroupId='gufwihdhjjdrraeedgig',
-            locationGroupName='pnjfwhimbjjebpmyxmvp',
-            locationGroupDesc='nsaxekbckzvblsjxkkhn',
-            locationGroupUrl='xepccplcozffwonnhdjq'
+            locationGroupId='jmfrdqfqflnkrcovjrvr',
+            locationGroupName='aphgtrykmhismoextqiv',
+            locationGroupDesc='jgfsabjbgqkrfpaofynh',
+            locationGroupUrl='jlqezrrjsufdraantadd'
         )

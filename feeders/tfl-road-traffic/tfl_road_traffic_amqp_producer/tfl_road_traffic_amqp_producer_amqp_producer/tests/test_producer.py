@@ -325,7 +325,7 @@ class TestUkGovTflRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.amqp.RoadCorridor"
+                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.RoadCorridor"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -363,7 +363,7 @@ class TestUkGovTflRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadCorridor'
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.RoadCorridor'
         assert received.body is not None
         assert received.subject == "roads/{road_id}".format(road_id="value")
         assert properties.get('road_id') == "{road_id}".format(road_id="value")
@@ -417,7 +417,7 @@ class TestUkGovTflRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.amqp.RoadStatus"
+                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.RoadStatus"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -455,7 +455,7 @@ class TestUkGovTflRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadStatus'
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.RoadStatus'
         assert received.body is not None
         assert received.subject == "roads/{road_id}".format(road_id="value")
         assert properties.get('road_id') == "{road_id}".format(road_id="value")
@@ -511,7 +511,7 @@ class TestUkGovTflRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.amqp.RoadDisruptionSerious"
+                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.RoadDisruption"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -553,7 +553,7 @@ class TestUkGovTflRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionSerious'
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.RoadDisruption'
         assert received.body is not None
         assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
         assert properties.get('road_id') == "{road_id}".format(road_id="value")
@@ -611,7 +611,7 @@ class TestUkGovTflRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.amqp.RoadDisruptionSevere"
+                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.RoadDisruption"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -653,7 +653,7 @@ class TestUkGovTflRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionSevere'
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.RoadDisruption'
         assert received.body is not None
         assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
         assert properties.get('road_id') == "{road_id}".format(road_id="value")
@@ -711,7 +711,7 @@ class TestUkGovTflRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.amqp.RoadDisruptionModerate"
+                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.RoadDisruption"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -753,7 +753,7 @@ class TestUkGovTflRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionModerate'
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.RoadDisruption'
         assert received.body is not None
         assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
         assert properties.get('road_id') == "{road_id}".format(road_id="value")
@@ -811,7 +811,7 @@ class TestUkGovTflRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.amqp.RoadDisruptionMinor"
+                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.RoadDisruption"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -853,7 +853,7 @@ class TestUkGovTflRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionMinor'
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.RoadDisruption'
         assert received.body is not None
         assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
         assert properties.get('road_id') == "{road_id}".format(road_id="value")
@@ -911,7 +911,7 @@ class TestUkGovTflRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.amqp.RoadDisruptionInformation"
+                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.RoadDisruption"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -953,7 +953,7 @@ class TestUkGovTflRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionInformation'
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.RoadDisruption'
         assert received.body is not None
         assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
         assert properties.get('road_id') == "{road_id}".format(road_id="value")
@@ -1011,7 +1011,7 @@ class TestUkGovTflRoadAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.amqp.RoadDisruptionClosure"
+                    assert cloud_event_payload.get("type") == "uk.gov.tfl.road.RoadDisruption"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1053,7 +1053,7 @@ class TestUkGovTflRoadAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.amqp.RoadDisruptionClosure'
+        assert properties.get('cloudEvents:type') == 'uk.gov.tfl.road.RoadDisruption'
         assert received.body is not None
         assert received.subject == "disruptions/{road_id}/{severity}/{disruption_id}".format(road_id="value", severity="value", disruption_id="value")
         assert properties.get('road_id') == "{road_id}".format(road_id="value")

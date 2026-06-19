@@ -159,7 +159,7 @@ def test_us_wa_seattle_fire911_mqtt_uswaseattlefire911mqttincident(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "US.WA.Seattle.Fire911.mqtt.Incident":
+            if cloudevent['type'] == "US.WA.Seattle.Fire911.Incident":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_us_wa_seattle_fire911_amqp_uswaseattlefire911amqpincident(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "US.WA.Seattle.Fire911.amqp.Incident":
+            if cloudevent['type'] == "US.WA.Seattle.Fire911.Incident":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

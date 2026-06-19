@@ -159,8 +159,8 @@ class FareMedia:
             An instance of the dataclass.
         """
         return cls(
-            fareMediaId='qjkyrmrwnbpegrntobmc',
-            fareMediaName='wtlnnzadaimwjzctrfuy',
-            fareMediaDesc='xnhvtbbabmaavexwyjwl',
-            fareMediaUrl='rvfyntjqzifygkbqlxio'
+            fareMediaId='hwamhacmrpyiboihywii',
+            fareMediaName='tgwgfyfqhhfbeebpkmzw',
+            fareMediaDesc='evdtxbvjlcswvcougkpv',
+            fareMediaUrl='vyqgfrrxgckuxgimgeku'
         )

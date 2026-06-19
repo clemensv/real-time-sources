@@ -27,13 +27,13 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from gbfs_bikeshare_amqp_producer_amqp_producer import *
 from gbfs_bikeshare_amqp_producer_data import SystemInformation
-from test_gbfs_bikeshare_amqp_producer_data_systeminformation import Test_SystemInformation
+from test_systeminformation import Test_SystemInformation
 from gbfs_bikeshare_amqp_producer_data import StationInformation
-from test_gbfs_bikeshare_amqp_producer_data_stationinformation import Test_StationInformation
+from test_stationinformation import Test_StationInformation
 from gbfs_bikeshare_amqp_producer_data import StationStatus
-from test_gbfs_bikeshare_amqp_producer_data_stationstatus import Test_StationStatus
+from test_stationstatus import Test_StationStatus
 from gbfs_bikeshare_amqp_producer_data import FreeBikeStatus
-from test_gbfs_bikeshare_amqp_producer_data_freebikestatus import Test_FreeBikeStatus
+from test_freebikestatus import Test_FreeBikeStatus
 
 
 
@@ -328,7 +328,7 @@ class TestOrgGbfsAmqpSystemProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "org.gbfs.amqp.SystemInformation"
+                    assert cloud_event_payload.get("type") == "org.gbfs.SystemInformation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -366,7 +366,7 @@ class TestOrgGbfsAmqpSystemProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'org.gbfs.amqp.SystemInformation'
+        assert properties.get('cloudEvents:type') == 'org.gbfs.SystemInformation'
         assert received.body is not None
         assert received.subject == "{system_id}".format(system_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{system_id}".format(system_id="value"))[:128]
@@ -481,7 +481,7 @@ class TestOrgGbfsAmqpStationsProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "org.gbfs.amqp.StationInformation"
+                    assert cloud_event_payload.get("type") == "org.gbfs.StationInformation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -520,7 +520,7 @@ class TestOrgGbfsAmqpStationsProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'org.gbfs.amqp.StationInformation'
+        assert properties.get('cloudEvents:type') == 'org.gbfs.StationInformation'
         assert received.body is not None
         assert received.subject == "{system_id}/{station_id}".format(system_id="value", station_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{system_id}/{station_id}".format(system_id="value", station_id="value"))[:128]
@@ -575,7 +575,7 @@ class TestOrgGbfsAmqpStationsProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "org.gbfs.amqp.StationStatus"
+                    assert cloud_event_payload.get("type") == "org.gbfs.StationStatus"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -614,7 +614,7 @@ class TestOrgGbfsAmqpStationsProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'org.gbfs.amqp.StationStatus'
+        assert properties.get('cloudEvents:type') == 'org.gbfs.StationStatus'
         assert received.body is not None
         assert received.subject == "{system_id}/{station_id}".format(system_id="value", station_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{system_id}/{station_id}".format(system_id="value", station_id="value"))[:128]
@@ -729,7 +729,7 @@ class TestOrgGbfsAmqpFreeBikesProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "org.gbfs.amqp.FreeBikeStatus"
+                    assert cloud_event_payload.get("type") == "org.gbfs.FreeBikeStatus"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -768,7 +768,7 @@ class TestOrgGbfsAmqpFreeBikesProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'org.gbfs.amqp.FreeBikeStatus'
+        assert properties.get('cloudEvents:type') == 'org.gbfs.FreeBikeStatus'
         assert received.body is not None
         assert received.subject == "{system_id}/{bike_id}".format(system_id="value", bike_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{system_id}/{bike_id}".format(system_id="value", bike_id="value"))[:128]

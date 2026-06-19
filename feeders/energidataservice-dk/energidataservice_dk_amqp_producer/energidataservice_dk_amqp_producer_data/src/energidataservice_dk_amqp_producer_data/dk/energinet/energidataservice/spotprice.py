@@ -161,9 +161,9 @@ class SpotPrice:
             An instance of the dataclass.
         """
         return cls(
-            hour_utc='obqrctkdwgjdbjwrmzpn',
-            hour_dk='wfhtbcbfpjckjqjmsmxv',
-            price_area='virbnvznettxuhsexvic',
-            spot_price_dkk=float(97.5476327093463),
-            spot_price_eur=float(66.16826654133915)
+            hour_utc='ypyccpzqfdzkyaozhkbp',
+            hour_dk='nrjlioyndmntlbmlkhui',
+            price_area='zfpwsecxelzukigtjqvy',
+            spot_price_dkk=float(34.37904425150789),
+            spot_price_eur=float(49.37198562906988)
         )

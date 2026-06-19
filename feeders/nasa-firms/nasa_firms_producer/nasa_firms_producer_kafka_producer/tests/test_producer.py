@@ -225,7 +225,7 @@ def test_nasa_firms_mqtt_nasafirmsmqttfiredetection(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NASA.FIRMS.mqtt.FireDetection":
+            if cloudevent['type'] == "NASA.FIRMS.FireDetection":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_nasa_firms_mqtt_nasafirmsmqttdataavailability(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NASA.FIRMS.mqtt.DataAvailability":
+            if cloudevent['type'] == "NASA.FIRMS.DataAvailability":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_nasa_firms_amqp_nasafirmsamqpfiredetection(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NASA.FIRMS.amqp.FireDetection":
+            if cloudevent['type'] == "NASA.FIRMS.FireDetection":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_nasa_firms_amqp_nasafirmsamqpdataavailability(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "NASA.FIRMS.amqp.DataAvailability":
+            if cloudevent['type'] == "NASA.FIRMS.DataAvailability":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

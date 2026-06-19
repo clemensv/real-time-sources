@@ -426,7 +426,7 @@ def test_ticketmaster_events_mqtt_ticketmastereventsmqttevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Ticketmaster.Events.mqtt.Event":
+            if cloudevent['type'] == "Ticketmaster.Events.Event":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -488,7 +488,7 @@ def test_ticketmaster_events_amqp_ticketmastereventsamqpevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Ticketmaster.Events.amqp.Event":
+            if cloudevent['type'] == "Ticketmaster.Events.Event":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -550,7 +550,7 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttvenue(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Ticketmaster.Reference.mqtt.Venue":
+            if cloudevent['type'] == "Ticketmaster.Reference.Venue":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -612,7 +612,7 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttattraction(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Ticketmaster.Reference.mqtt.Attraction":
+            if cloudevent['type'] == "Ticketmaster.Reference.Attraction":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -674,7 +674,7 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttclassification(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Ticketmaster.Reference.mqtt.Classification":
+            if cloudevent['type'] == "Ticketmaster.Reference.Classification":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -736,7 +736,7 @@ def test_ticketmaster_reference_mqtt_ticketmasterreferencemqttinfo(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Ticketmaster.Reference.mqtt.Info":
+            if cloudevent['type'] == "Ticketmaster.Reference.Info":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -798,7 +798,7 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpvenue(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Ticketmaster.Reference.amqp.Venue":
+            if cloudevent['type'] == "Ticketmaster.Reference.Venue":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -860,7 +860,7 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpattraction(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Ticketmaster.Reference.amqp.Attraction":
+            if cloudevent['type'] == "Ticketmaster.Reference.Attraction":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -922,7 +922,7 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpclassification(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Ticketmaster.Reference.amqp.Classification":
+            if cloudevent['type'] == "Ticketmaster.Reference.Classification":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -984,7 +984,7 @@ def test_ticketmaster_reference_amqp_ticketmasterreferenceamqpinfo(kafka_emulato
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Ticketmaster.Reference.amqp.Info":
+            if cloudevent['type'] == "Ticketmaster.Reference.Info":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

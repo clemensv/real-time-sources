@@ -324,7 +324,7 @@ class TestGovCaWaterCdecAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "gov.ca.water.cdec.amqp.ReservoirReading"
+                    assert cloud_event_payload.get("type") == "gov.ca.water.cdec.ReservoirReading"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -366,7 +366,7 @@ class TestGovCaWaterCdecAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'gov.ca.water.cdec.amqp.ReservoirReading'
+        assert properties.get('cloudEvents:type') == 'gov.ca.water.cdec.ReservoirReading'
         assert received.body is not None
         assert received.subject == "{station_id}/{sensor_num}".format(station_id="value", sensor_num="value")
         assert properties.get('basin') == "{basin}".format(basin="value")

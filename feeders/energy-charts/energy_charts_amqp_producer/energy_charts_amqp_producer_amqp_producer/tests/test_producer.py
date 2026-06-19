@@ -327,7 +327,7 @@ class TestInfoEnergyChartsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "info.energy_charts.amqp.PublicPower"
+                    assert cloud_event_payload.get("type") == "info.energy_charts.PublicPower"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -364,7 +364,7 @@ class TestInfoEnergyChartsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'info.energy_charts.amqp.PublicPower'
+        assert properties.get('cloudEvents:type') == 'info.energy_charts.PublicPower'
         assert received.body is not None
         assert received.subject == "{country}".format(country="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{country}".format(country="value"))[:128]
@@ -417,7 +417,7 @@ class TestInfoEnergyChartsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "info.energy_charts.amqp.SpotPrice"
+                    assert cloud_event_payload.get("type") == "info.energy_charts.SpotPrice"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -454,7 +454,7 @@ class TestInfoEnergyChartsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'info.energy_charts.amqp.SpotPrice'
+        assert properties.get('cloudEvents:type') == 'info.energy_charts.SpotPrice'
         assert received.body is not None
         assert received.subject == "{country}".format(country="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{country}".format(country="value"))[:128]
@@ -507,7 +507,7 @@ class TestInfoEnergyChartsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "info.energy_charts.amqp.GridSignal"
+                    assert cloud_event_payload.get("type") == "info.energy_charts.GridSignal"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -544,7 +544,7 @@ class TestInfoEnergyChartsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'info.energy_charts.amqp.GridSignal'
+        assert properties.get('cloudEvents:type') == 'info.energy_charts.GridSignal'
         assert received.body is not None
         assert received.subject == "{country}".format(country="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{country}".format(country="value"))[:128]
@@ -597,7 +597,7 @@ class TestInfoEnergyChartsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "info.energy_charts.amqp.Info"
+                    assert cloud_event_payload.get("type") == "info.energy_charts.Info"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -634,7 +634,7 @@ class TestInfoEnergyChartsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'info.energy_charts.amqp.Info'
+        assert properties.get('cloudEvents:type') == 'info.energy_charts.Info'
         assert received.body is not None
         assert received.subject == "{country}".format(country="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{country}".format(country="value"))[:128]

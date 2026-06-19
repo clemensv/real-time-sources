@@ -29,12 +29,12 @@ class Test_DepartingSpace(unittest.TestCase):
         Create instance of DepartingSpace for testing
         """
         instance = DepartingSpace(
-            departure='epmrzqulrnttibwwbnhj',
+            departure='meicuftvzufcfutldrye',
             is_cancelled=True,
-            vessel_id=int(23),
-            vessel_name='dscqvwklgwttqmlcmeve',
-            max_space_count=int(40),
-            space_for_arrival_terminals=[None, None]
+            vessel_id=int(76),
+            vessel_name='htdhbmndpfnyctyzewtu',
+            max_space_count=int(10),
+            space_for_arrival_terminals=[None, None, None]
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test departure property
         """
-        test_value = 'epmrzqulrnttibwwbnhj'
+        test_value = 'meicuftvzufcfutldrye'
         self.instance.departure = test_value
         self.assertEqual(self.instance.departure, test_value)
     
@@ -59,7 +59,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test vessel_id property
         """
-        test_value = int(23)
+        test_value = int(76)
         self.instance.vessel_id = test_value
         self.assertEqual(self.instance.vessel_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test vessel_name property
         """
-        test_value = 'dscqvwklgwttqmlcmeve'
+        test_value = 'htdhbmndpfnyctyzewtu'
         self.instance.vessel_name = test_value
         self.assertEqual(self.instance.vessel_name, test_value)
     
@@ -75,7 +75,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test max_space_count property
         """
-        test_value = int(40)
+        test_value = int(10)
         self.instance.max_space_count = test_value
         self.assertEqual(self.instance.max_space_count, test_value)
     
@@ -83,7 +83,7 @@ class Test_DepartingSpace(unittest.TestCase):
         """
         Test space_for_arrival_terminals property
         """
-        test_value = [None, None]
+        test_value = [None, None, None]
         self.instance.space_for_arrival_terminals = test_value
         self.assertEqual(self.instance.space_for_arrival_terminals, test_value)
     

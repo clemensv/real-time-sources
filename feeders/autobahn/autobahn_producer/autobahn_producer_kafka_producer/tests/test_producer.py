@@ -2023,7 +2023,7 @@ def test_de_autobahn_mqtt_deautobahnroadworkappearedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.RoadworkAppeared.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.RoadworkAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2085,7 +2085,7 @@ def test_de_autobahn_mqtt_deautobahnroadworkupdatedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.RoadworkUpdated.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.RoadworkUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2147,7 +2147,7 @@ def test_de_autobahn_mqtt_deautobahnroadworkresolvedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.RoadworkResolved.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.RoadworkResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2209,7 +2209,7 @@ def test_de_autobahn_mqtt_deautobahnshorttermroadworkappearedmqtt(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ShortTermRoadworkAppeared.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ShortTermRoadworkAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2271,7 +2271,7 @@ def test_de_autobahn_mqtt_deautobahnshorttermroadworkupdatedmqtt(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ShortTermRoadworkUpdated.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ShortTermRoadworkUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2333,7 +2333,7 @@ def test_de_autobahn_mqtt_deautobahnshorttermroadworkresolvedmqtt(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ShortTermRoadworkResolved.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ShortTermRoadworkResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2395,7 +2395,7 @@ def test_de_autobahn_mqtt_deautobahnclosureappearedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ClosureAppeared.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ClosureAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2457,7 +2457,7 @@ def test_de_autobahn_mqtt_deautobahnclosureupdatedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ClosureUpdated.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ClosureUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2519,7 +2519,7 @@ def test_de_autobahn_mqtt_deautobahnclosureresolvedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ClosureResolved.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ClosureResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2581,7 +2581,7 @@ def test_de_autobahn_mqtt_deautobahnentryexitclosureappearedmqtt(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.EntryExitClosureAppeared.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.EntryExitClosureAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2643,7 +2643,7 @@ def test_de_autobahn_mqtt_deautobahnentryexitclosureupdatedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.EntryExitClosureUpdated.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.EntryExitClosureUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2705,7 +2705,7 @@ def test_de_autobahn_mqtt_deautobahnentryexitclosureresolvedmqtt(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.EntryExitClosureResolved.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.EntryExitClosureResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2767,7 +2767,7 @@ def test_de_autobahn_mqtt_deautobahnwarningappearedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.WarningAppeared.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.WarningAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2829,7 +2829,7 @@ def test_de_autobahn_mqtt_deautobahnwarningupdatedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.WarningUpdated.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.WarningUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2891,7 +2891,7 @@ def test_de_autobahn_mqtt_deautobahnwarningresolvedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.WarningResolved.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.WarningResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2953,7 +2953,7 @@ def test_de_autobahn_mqtt_deautobahnweightlimit35restrictionappearedmqtt(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.WeightLimit35RestrictionAppeared.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.WeightLimit35RestrictionAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3015,7 +3015,7 @@ def test_de_autobahn_mqtt_deautobahnweightlimit35restrictionupdatedmqtt(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.WeightLimit35RestrictionUpdated.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.WeightLimit35RestrictionUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3077,7 +3077,7 @@ def test_de_autobahn_mqtt_deautobahnweightlimit35restrictionresolvedmqtt(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.WeightLimit35RestrictionResolved.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.WeightLimit35RestrictionResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3139,7 +3139,7 @@ def test_de_autobahn_mqtt_deautobahnwebcamappearedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.WebcamAppeared.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.WebcamAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3201,7 +3201,7 @@ def test_de_autobahn_mqtt_deautobahnwebcamupdatedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.WebcamUpdated.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.WebcamUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3263,7 +3263,7 @@ def test_de_autobahn_mqtt_deautobahnwebcamresolvedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.WebcamResolved.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.WebcamResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3325,7 +3325,7 @@ def test_de_autobahn_mqtt_deautobahnparkinglorryappearedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ParkingLorryAppeared.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ParkingLorryAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3387,7 +3387,7 @@ def test_de_autobahn_mqtt_deautobahnparkinglorryupdatedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ParkingLorryUpdated.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ParkingLorryUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3449,7 +3449,7 @@ def test_de_autobahn_mqtt_deautobahnparkinglorryresolvedmqtt(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ParkingLorryResolved.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ParkingLorryResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3511,7 +3511,7 @@ def test_de_autobahn_mqtt_deautobahnelectricchargingstationappearedmqtt(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ElectricChargingStationAppeared.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ElectricChargingStationAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3573,7 +3573,7 @@ def test_de_autobahn_mqtt_deautobahnelectricchargingstationupdatedmqtt(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ElectricChargingStationUpdated.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ElectricChargingStationUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3635,7 +3635,7 @@ def test_de_autobahn_mqtt_deautobahnelectricchargingstationresolvedmqtt(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.ElectricChargingStationResolved.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.ElectricChargingStationResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3697,7 +3697,7 @@ def test_de_autobahn_mqtt_deautobahnstrongelectricchargingstationappearedmqtt(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.StrongElectricChargingStationAppeared.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.StrongElectricChargingStationAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3759,7 +3759,7 @@ def test_de_autobahn_mqtt_deautobahnstrongelectricchargingstationupdatedmqtt(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.StrongElectricChargingStationUpdated.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.StrongElectricChargingStationUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3821,7 +3821,7 @@ def test_de_autobahn_mqtt_deautobahnstrongelectricchargingstationresolvedmqtt(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.StrongElectricChargingStationResolved.mqtt":
+            if cloudevent['type'] == "DE.Autobahn.StrongElectricChargingStationResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3883,7 +3883,7 @@ def test_de_autobahn_amqp_deautobahnamqproadworkappeared(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.RoadworkAppeared":
+            if cloudevent['type'] == "DE.Autobahn.RoadworkAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -3945,7 +3945,7 @@ def test_de_autobahn_amqp_deautobahnamqproadworkupdated(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.RoadworkUpdated":
+            if cloudevent['type'] == "DE.Autobahn.RoadworkUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4007,7 +4007,7 @@ def test_de_autobahn_amqp_deautobahnamqproadworkresolved(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.RoadworkResolved":
+            if cloudevent['type'] == "DE.Autobahn.RoadworkResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4069,7 +4069,7 @@ def test_de_autobahn_amqp_deautobahnamqpshorttermroadworkappeared(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ShortTermRoadworkAppeared":
+            if cloudevent['type'] == "DE.Autobahn.ShortTermRoadworkAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4131,7 +4131,7 @@ def test_de_autobahn_amqp_deautobahnamqpshorttermroadworkupdated(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ShortTermRoadworkUpdated":
+            if cloudevent['type'] == "DE.Autobahn.ShortTermRoadworkUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4193,7 +4193,7 @@ def test_de_autobahn_amqp_deautobahnamqpshorttermroadworkresolved(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ShortTermRoadworkResolved":
+            if cloudevent['type'] == "DE.Autobahn.ShortTermRoadworkResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4255,7 +4255,7 @@ def test_de_autobahn_amqp_deautobahnamqpclosureappeared(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ClosureAppeared":
+            if cloudevent['type'] == "DE.Autobahn.ClosureAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4317,7 +4317,7 @@ def test_de_autobahn_amqp_deautobahnamqpclosureupdated(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ClosureUpdated":
+            if cloudevent['type'] == "DE.Autobahn.ClosureUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4379,7 +4379,7 @@ def test_de_autobahn_amqp_deautobahnamqpclosureresolved(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ClosureResolved":
+            if cloudevent['type'] == "DE.Autobahn.ClosureResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4441,7 +4441,7 @@ def test_de_autobahn_amqp_deautobahnamqpentryexitclosureappeared(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.EntryExitClosureAppeared":
+            if cloudevent['type'] == "DE.Autobahn.EntryExitClosureAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4503,7 +4503,7 @@ def test_de_autobahn_amqp_deautobahnamqpentryexitclosureupdated(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.EntryExitClosureUpdated":
+            if cloudevent['type'] == "DE.Autobahn.EntryExitClosureUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4565,7 +4565,7 @@ def test_de_autobahn_amqp_deautobahnamqpentryexitclosureresolved(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.EntryExitClosureResolved":
+            if cloudevent['type'] == "DE.Autobahn.EntryExitClosureResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4627,7 +4627,7 @@ def test_de_autobahn_amqp_deautobahnamqpwarningappeared(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.WarningAppeared":
+            if cloudevent['type'] == "DE.Autobahn.WarningAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4689,7 +4689,7 @@ def test_de_autobahn_amqp_deautobahnamqpwarningupdated(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.WarningUpdated":
+            if cloudevent['type'] == "DE.Autobahn.WarningUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4751,7 +4751,7 @@ def test_de_autobahn_amqp_deautobahnamqpwarningresolved(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.WarningResolved":
+            if cloudevent['type'] == "DE.Autobahn.WarningResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4813,7 +4813,7 @@ def test_de_autobahn_amqp_deautobahnamqpweightlimit35restrictionappeared(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.WeightLimit35RestrictionAppeared":
+            if cloudevent['type'] == "DE.Autobahn.WeightLimit35RestrictionAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4875,7 +4875,7 @@ def test_de_autobahn_amqp_deautobahnamqpweightlimit35restrictionupdated(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.WeightLimit35RestrictionUpdated":
+            if cloudevent['type'] == "DE.Autobahn.WeightLimit35RestrictionUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4937,7 +4937,7 @@ def test_de_autobahn_amqp_deautobahnamqpweightlimit35restrictionresolved(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.WeightLimit35RestrictionResolved":
+            if cloudevent['type'] == "DE.Autobahn.WeightLimit35RestrictionResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -4999,7 +4999,7 @@ def test_de_autobahn_amqp_deautobahnamqpwebcamappeared(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.WebcamAppeared":
+            if cloudevent['type'] == "DE.Autobahn.WebcamAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5061,7 +5061,7 @@ def test_de_autobahn_amqp_deautobahnamqpwebcamupdated(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.WebcamUpdated":
+            if cloudevent['type'] == "DE.Autobahn.WebcamUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5123,7 +5123,7 @@ def test_de_autobahn_amqp_deautobahnamqpwebcamresolved(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.WebcamResolved":
+            if cloudevent['type'] == "DE.Autobahn.WebcamResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5185,7 +5185,7 @@ def test_de_autobahn_amqp_deautobahnamqpparkinglorryappeared(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ParkingLorryAppeared":
+            if cloudevent['type'] == "DE.Autobahn.ParkingLorryAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5247,7 +5247,7 @@ def test_de_autobahn_amqp_deautobahnamqpparkinglorryupdated(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ParkingLorryUpdated":
+            if cloudevent['type'] == "DE.Autobahn.ParkingLorryUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5309,7 +5309,7 @@ def test_de_autobahn_amqp_deautobahnamqpparkinglorryresolved(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ParkingLorryResolved":
+            if cloudevent['type'] == "DE.Autobahn.ParkingLorryResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5371,7 +5371,7 @@ def test_de_autobahn_amqp_deautobahnamqpelectricchargingstationappeared(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ElectricChargingStationAppeared":
+            if cloudevent['type'] == "DE.Autobahn.ElectricChargingStationAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5433,7 +5433,7 @@ def test_de_autobahn_amqp_deautobahnamqpelectricchargingstationupdated(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ElectricChargingStationUpdated":
+            if cloudevent['type'] == "DE.Autobahn.ElectricChargingStationUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5495,7 +5495,7 @@ def test_de_autobahn_amqp_deautobahnamqpelectricchargingstationresolved(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.ElectricChargingStationResolved":
+            if cloudevent['type'] == "DE.Autobahn.ElectricChargingStationResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5557,7 +5557,7 @@ def test_de_autobahn_amqp_deautobahnamqpstrongelectricchargingstationappeared(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.StrongElectricChargingStationAppeared":
+            if cloudevent['type'] == "DE.Autobahn.StrongElectricChargingStationAppeared":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5619,7 +5619,7 @@ def test_de_autobahn_amqp_deautobahnamqpstrongelectricchargingstationupdated(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.StrongElectricChargingStationUpdated":
+            if cloudevent['type'] == "DE.Autobahn.StrongElectricChargingStationUpdated":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -5681,7 +5681,7 @@ def test_de_autobahn_amqp_deautobahnamqpstrongelectricchargingstationresolved(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Autobahn.amqp.StrongElectricChargingStationResolved":
+            if cloudevent['type'] == "DE.Autobahn.StrongElectricChargingStationResolved":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

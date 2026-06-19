@@ -170,13 +170,13 @@ class TrafficFlowStation:
             An instance of the dataclass.
         """
         return cls(
-            flow_data_id='enfpagofctqvmbzvycgv',
-            station_name='ybqeebnyxrpistvfxxqh',
+            flow_data_id='dhvfbhiihwjaeigvqzeg',
+            station_name='fnxvduovwqasbfryezxp',
             region=RegionEnum.Eastern,
-            description='fmxgschlweljxnxclyeh',
-            road_name='qrkkqtfwupfdfjrenfsy',
-            direction='uqyrggildoqbrkencqfx',
-            milepost=float(41.29735683533939),
-            latitude=float(88.12536703013329),
-            longitude=float(91.46173547381179)
+            description='fjtzvpidynnfilnkycsh',
+            road_name='eudhwqcvsdhosmdyfwnq',
+            direction='fpzjvgqkmjlsbmnmfefp',
+            milepost=float(2.079608574563996),
+            latitude=float(37.28473014830136),
+            longitude=float(52.09429059637978)
         )

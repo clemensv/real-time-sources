@@ -324,7 +324,7 @@ class TestGovCbpBorderwaitAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "gov.cbp.borderwait.amqp.Port"
+                    assert cloud_event_payload.get("type") == "gov.cbp.borderwait.Port"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -363,7 +363,7 @@ class TestGovCbpBorderwaitAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'gov.cbp.borderwait.amqp.Port'
+        assert properties.get('cloudEvents:type') == 'gov.cbp.borderwait.Port'
         assert received.body is not None
         assert received.subject == "{port_number}".format(port_number="value")
         assert properties.get('border_slug') == "{border_slug}".format(border_slug="value")
@@ -418,7 +418,7 @@ class TestGovCbpBorderwaitAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "gov.cbp.borderwait.amqp.WaitTime"
+                    assert cloud_event_payload.get("type") == "gov.cbp.borderwait.WaitTime"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -457,7 +457,7 @@ class TestGovCbpBorderwaitAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'gov.cbp.borderwait.amqp.WaitTime'
+        assert properties.get('cloudEvents:type') == 'gov.cbp.borderwait.WaitTime'
         assert received.body is not None
         assert received.subject == "{port_number}".format(port_number="value")
         assert properties.get('border_slug') == "{border_slug}".format(border_slug="value")

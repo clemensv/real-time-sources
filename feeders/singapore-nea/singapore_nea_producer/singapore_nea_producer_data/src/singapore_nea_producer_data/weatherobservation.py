@@ -169,12 +169,12 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='bbxexeeujzxqbixcatgy',
-            station_name='whxzsomoagkqkqzdnmjk',
+            station_id='uqrrbhayhfimqvhrwtcz',
+            station_name='ykmgpgxxfyxpyqgjdpbo',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            air_temperature=float(29.009653058603668),
-            rainfall=float(84.84151095115821),
-            relative_humidity=float(76.99646877694344),
-            wind_speed=float(89.32516022066334),
-            wind_direction=float(84.49843649738935)
+            air_temperature=float(76.69828874871),
+            rainfall=float(68.4692196819376),
+            relative_humidity=float(40.21765539815868),
+            wind_speed=float(5.435680043174296),
+            wind_direction=float(19.50695571208536)
         )

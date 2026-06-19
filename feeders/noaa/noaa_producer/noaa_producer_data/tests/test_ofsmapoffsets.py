@@ -28,7 +28,7 @@ class Test_OfsMapOffsets(unittest.TestCase):
         Create instance of OfsMapOffsets for testing
         """
         instance = OfsMapOffsets(
-            self_='wnxuvvxavdumdaezwzin'
+            self_='akvzjvnbrpjbereewwqu'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_OfsMapOffsets(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'wnxuvvxavdumdaezwzin'
+        test_value = 'akvzjvnbrpjbereewwqu'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

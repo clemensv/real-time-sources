@@ -16,17 +16,21 @@ class Test_DisplayTypeenum(unittest.TestCase):
         """
         Setup test
         """
-        self.instance = DisplayTypeenum.PARKING
+        self.instance = DisplayTypeenum.ROADWORKS
 
     @staticmethod
     def create_instance():
         """
         Create instance of DisplayTypeenum
         """
-        return DisplayTypeenum.PARKING
+        return DisplayTypeenum.ROADWORKS
 
     def test_enum_values(self):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(DisplayTypeenum.PARKING.value, 'PARKING')
+        self.assertEqual(DisplayTypeenum.ROADWORKS.value, 'ROADWORKS')
+        self.assertEqual(DisplayTypeenum.SHORT_TERM_ROADWORKS.value, 'SHORT_TERM_ROADWORKS')
+        self.assertEqual(DisplayTypeenum.CLOSURE.value, 'CLOSURE')
+        self.assertEqual(DisplayTypeenum.CLOSURE_ENTRY_EXIT.value, 'CLOSURE_ENTRY_EXIT')
+        self.assertEqual(DisplayTypeenum.WEIGHT_LIMIT_35.value, 'WEIGHT_LIMIT_35')

@@ -28,16 +28,17 @@ class Test_WeatherObservation(unittest.TestCase):
         Create instance of WeatherObservation for testing
         """
         instance = WeatherObservation(
-            station_id='dafxpimjlpuyoavcvymt',
-            observation_time='nwierirsxfrqenwbhnot',
-            temperature=float(2.724967564423042),
-            humidity=float(31.370077450228806),
-            precipitation=float(37.16533416576555),
-            wind_direction=float(96.72652505787936),
-            wind_speed=float(34.27368803140628),
-            pressure=float(8.89277847295541),
-            sunshine_duration=float(56.74926806902059),
-            global_radiation=float(36.22895591833263)
+            station_id='tatsgwhnojsgfqwbfmhf',
+            observation_time='cnhfllulhkocakamehiv',
+            temperature=float(63.74505160150227),
+            humidity=float(11.776311596133837),
+            precipitation=float(6.299055165422529),
+            wind_direction=float(33.902969942904996),
+            wind_speed=float(83.67429649333853),
+            pressure=float(39.902955635829414),
+            sunshine_duration=float(70.22587968188041),
+            global_radiation=float(43.01233519088651),
+            bundesland='pteahjiewzsnxkmzyerj'
         )
         return instance
 
@@ -46,7 +47,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'dafxpimjlpuyoavcvymt'
+        test_value = 'tatsgwhnojsgfqwbfmhf'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -54,7 +55,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test observation_time property
         """
-        test_value = 'nwierirsxfrqenwbhnot'
+        test_value = 'cnhfllulhkocakamehiv'
         self.instance.observation_time = test_value
         self.assertEqual(self.instance.observation_time, test_value)
     
@@ -62,7 +63,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test temperature property
         """
-        test_value = float(2.724967564423042)
+        test_value = float(63.74505160150227)
         self.instance.temperature = test_value
         self.assertEqual(self.instance.temperature, test_value)
     
@@ -70,7 +71,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test humidity property
         """
-        test_value = float(31.370077450228806)
+        test_value = float(11.776311596133837)
         self.instance.humidity = test_value
         self.assertEqual(self.instance.humidity, test_value)
     
@@ -78,7 +79,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test precipitation property
         """
-        test_value = float(37.16533416576555)
+        test_value = float(6.299055165422529)
         self.instance.precipitation = test_value
         self.assertEqual(self.instance.precipitation, test_value)
     
@@ -86,7 +87,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test wind_direction property
         """
-        test_value = float(96.72652505787936)
+        test_value = float(33.902969942904996)
         self.instance.wind_direction = test_value
         self.assertEqual(self.instance.wind_direction, test_value)
     
@@ -94,7 +95,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test wind_speed property
         """
-        test_value = float(34.27368803140628)
+        test_value = float(83.67429649333853)
         self.instance.wind_speed = test_value
         self.assertEqual(self.instance.wind_speed, test_value)
     
@@ -102,7 +103,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test pressure property
         """
-        test_value = float(8.89277847295541)
+        test_value = float(39.902955635829414)
         self.instance.pressure = test_value
         self.assertEqual(self.instance.pressure, test_value)
     
@@ -110,7 +111,7 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test sunshine_duration property
         """
-        test_value = float(56.74926806902059)
+        test_value = float(70.22587968188041)
         self.instance.sunshine_duration = test_value
         self.assertEqual(self.instance.sunshine_duration, test_value)
     
@@ -118,9 +119,17 @@ class Test_WeatherObservation(unittest.TestCase):
         """
         Test global_radiation property
         """
-        test_value = float(36.22895591833263)
+        test_value = float(43.01233519088651)
         self.instance.global_radiation = test_value
         self.assertEqual(self.instance.global_radiation, test_value)
+    
+    def test_bundesland_property(self):
+        """
+        Test bundesland property
+        """
+        test_value = 'pteahjiewzsnxkmzyerj'
+        self.instance.bundesland = test_value
+        self.assertEqual(self.instance.bundesland, test_value)
     
     def test_to_byte_array_json(self):
         """

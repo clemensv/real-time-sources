@@ -175,16 +175,16 @@ class SpaceForArrivalTerminal:
             An instance of the dataclass.
         """
         return cls(
-            terminal_id=int(60),
-            terminal_name='uadaanmgcszulyqechzc',
-            vessel_id=int(86),
-            vessel_name='kxiwsznordyvgckszsif',
+            terminal_id=int(4),
+            terminal_name='pokcgmgyqkffzamqnjcb',
+            vessel_id=int(17),
+            vessel_name='uwggjfbgfgcpurgrvffx',
             display_reservable_space=True,
-            reservable_space_count=int(38),
-            reservable_space_hex_color='byrnkmygptxjhhkmffsh',
+            reservable_space_count=int(54),
+            reservable_space_hex_color='ejpxjjnatsmjpuvvsips',
             display_drive_up_space=False,
-            drive_up_space_count=int(86),
-            drive_up_space_hex_color='rslkorsqpvquwlflzudi',
-            max_space_count=int(71),
-            arrival_terminal_ids=[int(26), int(47), int(35), int(52)]
+            drive_up_space_count=int(49),
+            drive_up_space_hex_color='eswlwuishjknutkhmkow',
+            max_space_count=int(6),
+            arrival_terminal_ids=[int(83), int(87)]
         )

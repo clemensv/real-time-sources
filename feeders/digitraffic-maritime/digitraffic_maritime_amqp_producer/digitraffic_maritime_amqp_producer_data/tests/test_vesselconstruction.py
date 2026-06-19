@@ -29,14 +29,14 @@ class Test_VesselConstruction(unittest.TestCase):
         Create instance of VesselConstruction for testing
         """
         instance = VesselConstruction(
-            vessel_type_code=int(70),
-            vessel_type_name='hwlntpexlmbhteozqsba',
-            ice_class_code='obxfyamatcrrzbtkraqb',
+            vessel_type_code=int(84),
+            vessel_type_name='wbftxclepgahhmozucza',
+            ice_class_code='moktcuzcfxlcrqzomsee',
             ice_class_issue_date=datetime.datetime.now(datetime.timezone.utc),
-            ice_class_issue_place='asgponfqcoptdapurfcq',
+            ice_class_issue_place='kyarneivcggkcopdfszo',
             ice_class_end_date=datetime.datetime.now(datetime.timezone.utc),
             double_bottom=False,
-            inert_gas_system=False,
+            inert_gas_system=True,
             ballast_tank=False
         )
         return instance
@@ -46,7 +46,7 @@ class Test_VesselConstruction(unittest.TestCase):
         """
         Test vessel_type_code property
         """
-        test_value = int(70)
+        test_value = int(84)
         self.instance.vessel_type_code = test_value
         self.assertEqual(self.instance.vessel_type_code, test_value)
     
@@ -54,7 +54,7 @@ class Test_VesselConstruction(unittest.TestCase):
         """
         Test vessel_type_name property
         """
-        test_value = 'hwlntpexlmbhteozqsba'
+        test_value = 'wbftxclepgahhmozucza'
         self.instance.vessel_type_name = test_value
         self.assertEqual(self.instance.vessel_type_name, test_value)
     
@@ -62,7 +62,7 @@ class Test_VesselConstruction(unittest.TestCase):
         """
         Test ice_class_code property
         """
-        test_value = 'obxfyamatcrrzbtkraqb'
+        test_value = 'moktcuzcfxlcrqzomsee'
         self.instance.ice_class_code = test_value
         self.assertEqual(self.instance.ice_class_code, test_value)
     
@@ -78,7 +78,7 @@ class Test_VesselConstruction(unittest.TestCase):
         """
         Test ice_class_issue_place property
         """
-        test_value = 'asgponfqcoptdapurfcq'
+        test_value = 'kyarneivcggkcopdfszo'
         self.instance.ice_class_issue_place = test_value
         self.assertEqual(self.instance.ice_class_issue_place, test_value)
     
@@ -102,7 +102,7 @@ class Test_VesselConstruction(unittest.TestCase):
         """
         Test inert_gas_system property
         """
-        test_value = False
+        test_value = True
         self.instance.inert_gas_system = test_value
         self.assertEqual(self.instance.inert_gas_system, test_value)
     

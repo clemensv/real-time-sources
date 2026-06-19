@@ -31,25 +31,25 @@ class Test_ChargingStation(unittest.TestCase):
         Create instance of ChargingStation for testing
         """
         instance = ChargingStation(
-            identifier='tfobkhfucbiozlsquozs',
-            road='xyrtmbveitvvibfswhyb',
-            road_ids=['mqabyidfcdslebsibkuh', 'dcpxlopzwihhasnyplbh', 'tjwflrnzmmoelwkchnjv', 'jiitspvnkrvyizlmrkzn'],
+            identifier='buhwfgjaiuxfqbpjgcot',
+            road='oqfpfjxunsfsqjvkkaqp',
+            road_ids=['edpfkvhjocrcahsqwauq'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
-            display_type=DisplayTypeenum.ELECTRIC_CHARGING_STATION,
-            title='tpgcxogfkwzqazmxlhko',
-            subtitle='qpzulwagorqqiwtwhdxc',
+            display_type=DisplayTypeenum.PARKING,
+            title='drjsyuvwloiwkppgslbg',
+            subtitle='htsphtfhfbsvffslzeby',
             description_lines=None,
-            future=True,
-            is_blocked=False,
-            icon='hlsdkuthzpjvveupvljg',
-            extent='lbgmphuybihfuiuisjmy',
-            point='xfxtdsfiemoyxpzjnwpm',
-            coordinate_lat=float(27.925463833034037),
-            coordinate_lon=float(82.92980793462425),
-            address_line='zuvkoddrocgyzhvdjmgd',
-            charging_point_count=int(97),
-            charging_points_json='kulvgxevbinzniiucdxa',
-            route_recommendation_json='mvlgsratixuchamiklzw',
+            future=False,
+            is_blocked=True,
+            icon='jzhqvsvbimcvvrfqukrl',
+            extent='dpnrrqjbqldapdgqvkci',
+            point='jwgeungjdptxhckakmym',
+            coordinate_lat=float(66.875229351363),
+            coordinate_lon=float(26.3190796200661),
+            address_line='fxhcrtmdhkcvtzdbsawe',
+            charging_point_count=int(37),
+            charging_points_json='vxtekzjkfykpvefbrykq',
+            route_recommendation_json='dlfpspdpvynpkvksddhy',
             footer_lines=None
         )
         return instance
@@ -59,7 +59,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'tfobkhfucbiozlsquozs'
+        test_value = 'buhwfgjaiuxfqbpjgcot'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
     
@@ -67,7 +67,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test road property
         """
-        test_value = 'xyrtmbveitvvibfswhyb'
+        test_value = 'oqfpfjxunsfsqjvkkaqp'
         self.instance.road = test_value
         self.assertEqual(self.instance.road, test_value)
     
@@ -75,7 +75,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test road_ids property
         """
-        test_value = ['mqabyidfcdslebsibkuh', 'dcpxlopzwihhasnyplbh', 'tjwflrnzmmoelwkchnjv', 'jiitspvnkrvyizlmrkzn']
+        test_value = ['edpfkvhjocrcahsqwauq']
         self.instance.road_ids = test_value
         self.assertEqual(self.instance.road_ids, test_value)
     
@@ -91,7 +91,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test display_type property
         """
-        test_value = DisplayTypeenum.ELECTRIC_CHARGING_STATION
+        test_value = DisplayTypeenum.PARKING
         self.instance.display_type = test_value
         self.assertEqual(self.instance.display_type, test_value)
     
@@ -99,7 +99,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'tpgcxogfkwzqazmxlhko'
+        test_value = 'drjsyuvwloiwkppgslbg'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -107,7 +107,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test subtitle property
         """
-        test_value = 'qpzulwagorqqiwtwhdxc'
+        test_value = 'htsphtfhfbsvffslzeby'
         self.instance.subtitle = test_value
         self.assertEqual(self.instance.subtitle, test_value)
     
@@ -123,7 +123,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test future property
         """
-        test_value = True
+        test_value = False
         self.instance.future = test_value
         self.assertEqual(self.instance.future, test_value)
     
@@ -131,7 +131,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test is_blocked property
         """
-        test_value = False
+        test_value = True
         self.instance.is_blocked = test_value
         self.assertEqual(self.instance.is_blocked, test_value)
     
@@ -139,7 +139,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test icon property
         """
-        test_value = 'hlsdkuthzpjvveupvljg'
+        test_value = 'jzhqvsvbimcvvrfqukrl'
         self.instance.icon = test_value
         self.assertEqual(self.instance.icon, test_value)
     
@@ -147,7 +147,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test extent property
         """
-        test_value = 'lbgmphuybihfuiuisjmy'
+        test_value = 'dpnrrqjbqldapdgqvkci'
         self.instance.extent = test_value
         self.assertEqual(self.instance.extent, test_value)
     
@@ -155,7 +155,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test point property
         """
-        test_value = 'xfxtdsfiemoyxpzjnwpm'
+        test_value = 'jwgeungjdptxhckakmym'
         self.instance.point = test_value
         self.assertEqual(self.instance.point, test_value)
     
@@ -163,7 +163,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test coordinate_lat property
         """
-        test_value = float(27.925463833034037)
+        test_value = float(66.875229351363)
         self.instance.coordinate_lat = test_value
         self.assertEqual(self.instance.coordinate_lat, test_value)
     
@@ -171,7 +171,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test coordinate_lon property
         """
-        test_value = float(82.92980793462425)
+        test_value = float(26.3190796200661)
         self.instance.coordinate_lon = test_value
         self.assertEqual(self.instance.coordinate_lon, test_value)
     
@@ -179,7 +179,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test address_line property
         """
-        test_value = 'zuvkoddrocgyzhvdjmgd'
+        test_value = 'fxhcrtmdhkcvtzdbsawe'
         self.instance.address_line = test_value
         self.assertEqual(self.instance.address_line, test_value)
     
@@ -187,7 +187,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test charging_point_count property
         """
-        test_value = int(97)
+        test_value = int(37)
         self.instance.charging_point_count = test_value
         self.assertEqual(self.instance.charging_point_count, test_value)
     
@@ -195,7 +195,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test charging_points_json property
         """
-        test_value = 'kulvgxevbinzniiucdxa'
+        test_value = 'vxtekzjkfykpvefbrykq'
         self.instance.charging_points_json = test_value
         self.assertEqual(self.instance.charging_points_json, test_value)
     
@@ -203,7 +203,7 @@ class Test_ChargingStation(unittest.TestCase):
         """
         Test route_recommendation_json property
         """
-        test_value = 'mvlgsratixuchamiklzw'
+        test_value = 'dlfpspdpvynpkvksddhy'
         self.instance.route_recommendation_json = test_value
         self.assertEqual(self.instance.route_recommendation_json, test_value)
     

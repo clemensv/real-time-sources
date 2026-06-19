@@ -28,10 +28,10 @@ class Test_SolarWindSummary(unittest.TestCase):
         Create instance of SolarWindSummary for testing
         """
         instance = SolarWindSummary(
-            observation_time='kcilnxpcryoupifsjbhs',
-            wind_speed=float(74.072620060652),
-            bt=float(30.25441150819098),
-            bz=float(12.441406945583356)
+            observation_time='nczrtwzlyoefhvazrzhg',
+            wind_speed=float(15.513374527744395),
+            bt=float(43.1747258505734),
+            bz=float(20.466791665004823)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_SolarWindSummary(unittest.TestCase):
         """
         Test observation_time property
         """
-        test_value = 'kcilnxpcryoupifsjbhs'
+        test_value = 'nczrtwzlyoefhvazrzhg'
         self.instance.observation_time = test_value
         self.assertEqual(self.instance.observation_time, test_value)
     
@@ -48,7 +48,7 @@ class Test_SolarWindSummary(unittest.TestCase):
         """
         Test wind_speed property
         """
-        test_value = float(74.072620060652)
+        test_value = float(15.513374527744395)
         self.instance.wind_speed = test_value
         self.assertEqual(self.instance.wind_speed, test_value)
     
@@ -56,7 +56,7 @@ class Test_SolarWindSummary(unittest.TestCase):
         """
         Test bt property
         """
-        test_value = float(30.25441150819098)
+        test_value = float(43.1747258505734)
         self.instance.bt = test_value
         self.assertEqual(self.instance.bt, test_value)
     
@@ -64,7 +64,7 @@ class Test_SolarWindSummary(unittest.TestCase):
         """
         Test bz property
         """
-        test_value = float(12.441406945583356)
+        test_value = float(20.466791665004823)
         self.instance.bz = test_value
         self.assertEqual(self.instance.bz, test_value)
     

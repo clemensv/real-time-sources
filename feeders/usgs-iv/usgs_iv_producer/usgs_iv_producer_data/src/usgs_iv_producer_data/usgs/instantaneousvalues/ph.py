@@ -165,11 +165,11 @@ class PH:
             An instance of the dataclass.
         """
         return cls(
-            site_no='hxzdfsipptgakeubzgqa',
-            datetime='srzrrkdxdebbsixsljzv',
-            value=float(13.519214817469273),
-            exception='dupndwmgaykzuyyotlvy',
-            qualifiers=['kloyddgamoqgcsefuetz', 'uwfxbpfzziyfwuncomrc', 'zcfcmhufgcmhzsqaqwcu', 'ukahkqveyagbmfujcgmd'],
-            parameter_cd='frgulamyvafamamitkht',
-            timeseries_cd='tycijecxtecwaxjcxjfx'
+            site_no='xiheazvtseegyozagnni',
+            datetime='jsnxxcmfwyirxfoxocfk',
+            value=float(87.38043480482276),
+            exception='kvpsdbosggwrpavcxtnt',
+            qualifiers=['kmqunkbhyijcehddstwp', 'bmcsvyvacujuywpjqfrh', 'vfjydgrznvsokcmisuyq'],
+            parameter_cd='azrooqwtfftpxzvvlkbz',
+            timeseries_cd='qlniybpcdiumbboiwjcv'
         )

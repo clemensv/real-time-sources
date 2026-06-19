@@ -20,15 +20,15 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from gbfs_bikeshare_producer_kafka_producer.producer import OrgGbfsSystemEventProducer
 from gbfs_bikeshare_producer_data import SystemInformation
-from test_gbfs_bikeshare_producer_data_systeminformation import Test_SystemInformation
+from test_systeminformation import Test_SystemInformation
 from gbfs_bikeshare_producer_kafka_producer.producer import OrgGbfsStationsEventProducer
 from gbfs_bikeshare_producer_data import StationInformation
-from test_gbfs_bikeshare_producer_data_stationinformation import Test_StationInformation
+from test_stationinformation import Test_StationInformation
 from gbfs_bikeshare_producer_data import StationStatus
-from test_gbfs_bikeshare_producer_data_stationstatus import Test_StationStatus
+from test_stationstatus import Test_StationStatus
 from gbfs_bikeshare_producer_kafka_producer.producer import OrgGbfsFreeBikesEventProducer
 from gbfs_bikeshare_producer_data import FreeBikeStatus
-from test_gbfs_bikeshare_producer_data_freebikestatus import Test_FreeBikeStatus
+from test_freebikestatus import Test_FreeBikeStatus
 from gbfs_bikeshare_producer_kafka_producer.producer import OrgGbfsKafkaSystemEventProducer
 from gbfs_bikeshare_producer_kafka_producer.producer import OrgGbfsKafkaStationsEventProducer
 from gbfs_bikeshare_producer_kafka_producer.producer import OrgGbfsKafkaFreeBikesEventProducer
@@ -358,7 +358,7 @@ def test_org_gbfs_kafka_system_orggbfskafkasysteminformation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.kafka.SystemInformation":
+            if cloudevent['type'] == "org.gbfs.SystemInformation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -422,7 +422,7 @@ def test_org_gbfs_kafka_stations_orggbfskafkastationinformation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.kafka.StationInformation":
+            if cloudevent['type'] == "org.gbfs.StationInformation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -486,7 +486,7 @@ def test_org_gbfs_kafka_stations_orggbfskafkastationstatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.kafka.StationStatus":
+            if cloudevent['type'] == "org.gbfs.StationStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -550,7 +550,7 @@ def test_org_gbfs_kafka_freebikes_orggbfskafkafreebikestatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.kafka.FreeBikeStatus":
+            if cloudevent['type'] == "org.gbfs.FreeBikeStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -614,7 +614,7 @@ def test_org_gbfs_mqtt_system_orggbfsmqttsysteminformation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.mqtt.SystemInformation":
+            if cloudevent['type'] == "org.gbfs.SystemInformation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -676,7 +676,7 @@ def test_org_gbfs_mqtt_stations_orggbfsmqttstationinformation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.mqtt.StationInformation":
+            if cloudevent['type'] == "org.gbfs.StationInformation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -738,7 +738,7 @@ def test_org_gbfs_mqtt_stations_orggbfsmqttstationstatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.mqtt.StationStatus":
+            if cloudevent['type'] == "org.gbfs.StationStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -800,7 +800,7 @@ def test_org_gbfs_mqtt_freebikes_orggbfsmqttfreebikestatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.mqtt.FreeBikeStatus":
+            if cloudevent['type'] == "org.gbfs.FreeBikeStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -862,7 +862,7 @@ def test_org_gbfs_amqp_system_orggbfsamqpsysteminformation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.amqp.SystemInformation":
+            if cloudevent['type'] == "org.gbfs.SystemInformation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -924,7 +924,7 @@ def test_org_gbfs_amqp_stations_orggbfsamqpstationinformation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.amqp.StationInformation":
+            if cloudevent['type'] == "org.gbfs.StationInformation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -986,7 +986,7 @@ def test_org_gbfs_amqp_stations_orggbfsamqpstationstatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.amqp.StationStatus":
+            if cloudevent['type'] == "org.gbfs.StationStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1048,7 +1048,7 @@ def test_org_gbfs_amqp_freebikes_orggbfsamqpfreebikestatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.gbfs.amqp.FreeBikeStatus":
+            if cloudevent['type'] == "org.gbfs.FreeBikeStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

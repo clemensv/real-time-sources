@@ -169,13 +169,13 @@ class EventSaleStatus:
             An instance of the dataclass.
         """
         return cls(
-            event_id='zfbwghlbnzorvarxfrfz',
-            name='fnzvsfrufmctwnesmzkl',
-            sale_status='wsjytidcpnlsiyxbnwkf',
-            event_status='vdoxcdwxsbtiwiuuqopf',
-            start='mrhxhpvvzpkzplswbyfg',
-            end='fbkndafktcxwfxnlmhgi',
-            url='atzkcprsfuvsrbxiowik',
-            buy_tickets_url='udnhnwbykgswdrvqsatc',
-            observed_at='kzikymibmlzrbvdbedzx'
+            event_id='uxeydfdhoglsbrbtxpqa',
+            name='qlcbktmihkzizptllayf',
+            sale_status='olzrkpvrwhlroqdgtcjg',
+            event_status='heubdswivuzcoufrtsou',
+            start='mhmawdyvlivairpbyhls',
+            end='zudszrwpagyidbnajmsr',
+            url='kewhusnthrhvoqzxcjmq',
+            buy_tickets_url='jljckgawfbljkkwdjwdu',
+            observed_at='kuhjxzxgajnlmbcknqmi'
         )

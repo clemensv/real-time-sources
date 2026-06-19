@@ -28,13 +28,13 @@ class Test_Counter(unittest.TestCase):
         Create instance of Counter for testing
         """
         instance = Counter(
-            counter_id='ovjpjbzoxtfwumlbblxz',
-            counter_name='ucnfcyerafucefwnfvly',
-            channel_name='oxampxlbkgcrywokklzd',
-            installation_date='rxqswprwufqhdjekpfgp',
-            longitude=float(79.26080759306618),
-            latitude=float(39.533824450221154),
-            ce_id='fpgofxmzfycuzyyespul'
+            counter_id='trrphnzaeyffhqgzhkez',
+            counter_name='frxhpcdthgoavjogokpx',
+            channel_name='fereymzrcudgtlzlgeeq',
+            installation_date='sdzfsdjbwdppqktbresf',
+            longitude=float(89.93085740973126),
+            latitude=float(30.289213870576713),
+            ce_id='yosbtkeigklggtzzashc'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Counter(unittest.TestCase):
         """
         Test counter_id property
         """
-        test_value = 'ovjpjbzoxtfwumlbblxz'
+        test_value = 'trrphnzaeyffhqgzhkez'
         self.instance.counter_id = test_value
         self.assertEqual(self.instance.counter_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Counter(unittest.TestCase):
         """
         Test counter_name property
         """
-        test_value = 'ucnfcyerafucefwnfvly'
+        test_value = 'frxhpcdthgoavjogokpx'
         self.instance.counter_name = test_value
         self.assertEqual(self.instance.counter_name, test_value)
     
@@ -59,7 +59,7 @@ class Test_Counter(unittest.TestCase):
         """
         Test channel_name property
         """
-        test_value = 'oxampxlbkgcrywokklzd'
+        test_value = 'fereymzrcudgtlzlgeeq'
         self.instance.channel_name = test_value
         self.assertEqual(self.instance.channel_name, test_value)
     
@@ -67,7 +67,7 @@ class Test_Counter(unittest.TestCase):
         """
         Test installation_date property
         """
-        test_value = 'rxqswprwufqhdjekpfgp'
+        test_value = 'sdzfsdjbwdppqktbresf'
         self.instance.installation_date = test_value
         self.assertEqual(self.instance.installation_date, test_value)
     
@@ -75,7 +75,7 @@ class Test_Counter(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(79.26080759306618)
+        test_value = float(89.93085740973126)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -83,7 +83,7 @@ class Test_Counter(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(39.533824450221154)
+        test_value = float(30.289213870576713)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -91,7 +91,7 @@ class Test_Counter(unittest.TestCase):
         """
         Test ce_id property
         """
-        test_value = 'fpgofxmzfycuzyyespul'
+        test_value = 'yosbtkeigklggtzzashc'
         self.instance.ce_id = test_value
         self.assertEqual(self.instance.ce_id, test_value)
     

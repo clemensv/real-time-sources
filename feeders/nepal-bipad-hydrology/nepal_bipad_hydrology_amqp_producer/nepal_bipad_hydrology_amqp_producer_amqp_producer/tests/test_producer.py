@@ -325,7 +325,7 @@ class TestNpGovBipadHydrologyAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "np.gov.bipad.hydrology.amqp.RiverStation"
+                    assert cloud_event_payload.get("type") == "np.gov.bipad.hydrology.RiverStation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -365,7 +365,7 @@ class TestNpGovBipadHydrologyAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'np.gov.bipad.hydrology.amqp.RiverStation'
+        assert properties.get('cloudEvents:type') == 'np.gov.bipad.hydrology.RiverStation'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('basin') == "{basin}".format(basin="value")
@@ -421,7 +421,7 @@ class TestNpGovBipadHydrologyAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "np.gov.bipad.hydrology.amqp.WaterLevelReading"
+                    assert cloud_event_payload.get("type") == "np.gov.bipad.hydrology.WaterLevelReading"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -461,7 +461,7 @@ class TestNpGovBipadHydrologyAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'np.gov.bipad.hydrology.amqp.WaterLevelReading'
+        assert properties.get('cloudEvents:type') == 'np.gov.bipad.hydrology.WaterLevelReading'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('basin') == "{basin}".format(basin="value")

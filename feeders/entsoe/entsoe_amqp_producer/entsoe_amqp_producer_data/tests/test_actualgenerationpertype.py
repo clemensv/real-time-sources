@@ -28,13 +28,13 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         Create instance of ActualGenerationPerType for testing
         """
         instance = ActualGenerationPerType(
-            inDomain='mfmgzgfwtpowpzezglrm',
-            psrType='yirtscltroznseekvpep',
-            quantity=float(70.00391743357356),
-            resolution='niahahazudmlsdzmrpqf',
-            businessType='qxrpuxvidlopaofgxkvc',
-            documentType='gmfuyalwnacidxaysuck',
-            unitName='ntxsudvmcvmssfxzefni'
+            inDomain='wexgrmwcnhpvuxnoptqx',
+            psrType='fcvzphujirrbqohfhxxa',
+            quantity=float(44.07410327535389),
+            resolution='rtdtsemgslqoovtwhvjv',
+            businessType='fbokgveydebopcbdnifm',
+            documentType='mpveihexdsaiwvlczuhi',
+            unitName='bnfherbhjrheqsbhfdjt'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'mfmgzgfwtpowpzezglrm'
+        test_value = 'wexgrmwcnhpvuxnoptqx'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -51,7 +51,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test psrType property
         """
-        test_value = 'yirtscltroznseekvpep'
+        test_value = 'fcvzphujirrbqohfhxxa'
         self.instance.psrType = test_value
         self.assertEqual(self.instance.psrType, test_value)
     
@@ -59,7 +59,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test quantity property
         """
-        test_value = float(70.00391743357356)
+        test_value = float(44.07410327535389)
         self.instance.quantity = test_value
         self.assertEqual(self.instance.quantity, test_value)
     
@@ -67,7 +67,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'niahahazudmlsdzmrpqf'
+        test_value = 'rtdtsemgslqoovtwhvjv'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -75,7 +75,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test businessType property
         """
-        test_value = 'qxrpuxvidlopaofgxkvc'
+        test_value = 'fbokgveydebopcbdnifm'
         self.instance.businessType = test_value
         self.assertEqual(self.instance.businessType, test_value)
     
@@ -83,7 +83,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'gmfuyalwnacidxaysuck'
+        test_value = 'mpveihexdsaiwvlczuhi'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     
@@ -91,7 +91,7 @@ class Test_ActualGenerationPerType(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'ntxsudvmcvmssfxzefni'
+        test_value = 'bnfherbhjrheqsbhfdjt'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     

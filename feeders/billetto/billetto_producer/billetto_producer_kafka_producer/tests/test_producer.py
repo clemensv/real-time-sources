@@ -159,7 +159,7 @@ def test_billetto_events_mqtt_billettoeventsmqttevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Billetto.Events.mqtt.Event":
+            if cloudevent['type'] == "Billetto.Events.Event":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_billetto_events_amqp_billettoeventsamqpevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Billetto.Events.amqp.Event":
+            if cloudevent['type'] == "Billetto.Events.Event":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

@@ -225,7 +225,7 @@ def test_com_fienta_mqtt_comfientamqttevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Com.Fienta.mqtt.Event":
+            if cloudevent['type'] == "Com.Fienta.Event":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_com_fienta_mqtt_comfientamqtteventsalestatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Com.Fienta.mqtt.EventSaleStatus":
+            if cloudevent['type'] == "Com.Fienta.EventSaleStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_com_fienta_amqp_comfientaamqpevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Com.Fienta.amqp.Event":
+            if cloudevent['type'] == "Com.Fienta.Event":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_com_fienta_amqp_comfientaamqpeventsalestatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Com.Fienta.amqp.EventSaleStatus":
+            if cloudevent['type'] == "Com.Fienta.EventSaleStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

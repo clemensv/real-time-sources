@@ -165,11 +165,11 @@ class ReservoirStorage:
             An instance of the dataclass.
         """
         return cls(
-            site_no='ayyjverordotfbsirnqs',
-            datetime='sqmnvhpobecfnhvmaysy',
-            value=float(56.21239480255665),
-            exception='rbxcvwmkrzmaifgkdzsu',
-            qualifiers=['qoglongbagrwsagfbpyf', 'syykrlpfxxynvhxucdyq', 'mgouovngqrzmtpwlxaqd', 'usbyvegrwjpvihqcpsmf'],
-            parameter_cd='lzlwdkychuuzgghtobif',
-            timeseries_cd='abjutrvqztvfclhifkcs'
+            site_no='dgehuylgbgjzfkhqiyqe',
+            datetime='zaabhpsokwmplxpwzivz',
+            value=float(83.6217486422014),
+            exception='ezdfvtucdafgoqidosko',
+            qualifiers=['osjslfuavjwowskrbubl', 'ncfmcodvdlbnihtixiut'],
+            parameter_cd='heciarjgahmfvrbowddz',
+            timeseries_cd='ocbxlwuaaistukzcttxb'
         )

@@ -96,6 +96,8 @@ class SystemInformation:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -163,11 +165,11 @@ class SystemInformation:
             An instance of the dataclass.
         """
         return cls(
-            system_id='dencoretxvxwkusmzrur',
-            name='lngfmulpyktfooqlaobw',
-            operator='rltymyryrzcgwylfhxno',
-            url='nbcobmompqpvldledgml',
-            timezone='xhqtoybjcxcmkupcmaie',
-            language='nwugslypqheqdbdlfqyh',
-            phone_number='fhphzwqevyteuvpjoonh'
+            system_id='jdtecjaclxgygbeerskt',
+            name='quqcvlwdgckhovmwslvj',
+            operator='dinyjveanxejrwtmqech',
+            url='tekfecpnwvgdvjkidnxj',
+            timezone='ckleqfucmyoihidfsqwc',
+            language='cexcfgxasdhqshmbtyif',
+            phone_number='exigxbsdgwlmynetuvgb'
         )

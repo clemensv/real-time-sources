@@ -28,25 +28,25 @@ class Test_HighwayCamera(unittest.TestCase):
         Create instance of HighwayCamera for testing
         """
         instance = HighwayCamera(
-            camera_id='cvodfwdanqlymcpkjcbz',
-            title='egirpskixjoafywvqpxu',
-            description='amrelhqnpfxeyslqrwaj',
-            camera_owner='kbbbcyiahqeizofdprow',
-            owner_url='ovvjqsndmfzpwbaojnsj',
-            image_url='vsrcdijwgxalxmllagne',
-            image_width=int(39),
-            image_height=int(94),
+            camera_id='jfrhxworurkmazmrvudy',
+            title='zxladkzhnudoeltmjpdc',
+            description='cfgjddxmxudlkphkqmjt',
+            camera_owner='brjonqgvwzyorrezaivi',
+            owner_url='iiibcrebsrjjtrgtsggf',
+            image_url='rgelbxtxdgupdykstezl',
+            image_width=int(30),
+            image_height=int(19),
             is_active=False,
-            region='gxmvkrohzzitioeqjwzn',
-            sort_order=int(82),
-            display_latitude=float(73.08486068735317),
-            display_longitude=float(20.295456290136627),
-            location_description='gohsnwurhrryrxuleyld',
-            location_direction='xdfheaiztvqtfludcocx',
-            location_road_name='kksnmrmmfsbursgmryxc',
-            location_milepost=float(12.635694174217138),
-            location_latitude=float(12.196173637156239),
-            location_longitude=float(78.28135741277099)
+            region='httwkibegtrgsauhklwg',
+            sort_order=int(52),
+            display_latitude=float(72.91189276780868),
+            display_longitude=float(30.221491971484017),
+            location_description='sltkzqjprqallvtjprwi',
+            location_direction='hguuukpsdmuvfgqruzhe',
+            location_road_name='zsoeeofhuvjbdwjesssj',
+            location_milepost=float(33.30407553715248),
+            location_latitude=float(94.7976921265637),
+            location_longitude=float(61.50547003888423)
         )
         return instance
 
@@ -55,7 +55,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test camera_id property
         """
-        test_value = 'cvodfwdanqlymcpkjcbz'
+        test_value = 'jfrhxworurkmazmrvudy'
         self.instance.camera_id = test_value
         self.assertEqual(self.instance.camera_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'egirpskixjoafywvqpxu'
+        test_value = 'zxladkzhnudoeltmjpdc'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -71,7 +71,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'amrelhqnpfxeyslqrwaj'
+        test_value = 'cfgjddxmxudlkphkqmjt'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -79,7 +79,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test camera_owner property
         """
-        test_value = 'kbbbcyiahqeizofdprow'
+        test_value = 'brjonqgvwzyorrezaivi'
         self.instance.camera_owner = test_value
         self.assertEqual(self.instance.camera_owner, test_value)
     
@@ -87,7 +87,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test owner_url property
         """
-        test_value = 'ovvjqsndmfzpwbaojnsj'
+        test_value = 'iiibcrebsrjjtrgtsggf'
         self.instance.owner_url = test_value
         self.assertEqual(self.instance.owner_url, test_value)
     
@@ -95,7 +95,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test image_url property
         """
-        test_value = 'vsrcdijwgxalxmllagne'
+        test_value = 'rgelbxtxdgupdykstezl'
         self.instance.image_url = test_value
         self.assertEqual(self.instance.image_url, test_value)
     
@@ -103,7 +103,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test image_width property
         """
-        test_value = int(39)
+        test_value = int(30)
         self.instance.image_width = test_value
         self.assertEqual(self.instance.image_width, test_value)
     
@@ -111,7 +111,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test image_height property
         """
-        test_value = int(94)
+        test_value = int(19)
         self.instance.image_height = test_value
         self.assertEqual(self.instance.image_height, test_value)
     
@@ -127,7 +127,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'gxmvkrohzzitioeqjwzn'
+        test_value = 'httwkibegtrgsauhklwg'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -135,7 +135,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test sort_order property
         """
-        test_value = int(82)
+        test_value = int(52)
         self.instance.sort_order = test_value
         self.assertEqual(self.instance.sort_order, test_value)
     
@@ -143,7 +143,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test display_latitude property
         """
-        test_value = float(73.08486068735317)
+        test_value = float(72.91189276780868)
         self.instance.display_latitude = test_value
         self.assertEqual(self.instance.display_latitude, test_value)
     
@@ -151,7 +151,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test display_longitude property
         """
-        test_value = float(20.295456290136627)
+        test_value = float(30.221491971484017)
         self.instance.display_longitude = test_value
         self.assertEqual(self.instance.display_longitude, test_value)
     
@@ -159,7 +159,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test location_description property
         """
-        test_value = 'gohsnwurhrryrxuleyld'
+        test_value = 'sltkzqjprqallvtjprwi'
         self.instance.location_description = test_value
         self.assertEqual(self.instance.location_description, test_value)
     
@@ -167,7 +167,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test location_direction property
         """
-        test_value = 'xdfheaiztvqtfludcocx'
+        test_value = 'hguuukpsdmuvfgqruzhe'
         self.instance.location_direction = test_value
         self.assertEqual(self.instance.location_direction, test_value)
     
@@ -175,7 +175,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test location_road_name property
         """
-        test_value = 'kksnmrmmfsbursgmryxc'
+        test_value = 'zsoeeofhuvjbdwjesssj'
         self.instance.location_road_name = test_value
         self.assertEqual(self.instance.location_road_name, test_value)
     
@@ -183,7 +183,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test location_milepost property
         """
-        test_value = float(12.635694174217138)
+        test_value = float(33.30407553715248)
         self.instance.location_milepost = test_value
         self.assertEqual(self.instance.location_milepost, test_value)
     
@@ -191,7 +191,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test location_latitude property
         """
-        test_value = float(12.196173637156239)
+        test_value = float(94.7976921265637)
         self.instance.location_latitude = test_value
         self.assertEqual(self.instance.location_latitude, test_value)
     
@@ -199,7 +199,7 @@ class Test_HighwayCamera(unittest.TestCase):
         """
         Test location_longitude property
         """
-        test_value = float(78.28135741277099)
+        test_value = float(61.50547003888423)
         self.instance.location_longitude = test_value
         self.assertEqual(self.instance.location_longitude, test_value)
     

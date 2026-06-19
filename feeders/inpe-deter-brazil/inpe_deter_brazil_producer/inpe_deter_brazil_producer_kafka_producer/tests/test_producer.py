@@ -159,7 +159,7 @@ def test_br_inpe_deter_mqtt_brinpedetermqttdeforestationalert(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BR.INPE.DETER.mqtt.DeforestationAlert":
+            if cloudevent['type'] == "BR.INPE.DETER.DeforestationAlert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_br_inpe_deter_amqp_brinpedeteramqpdeforestationalert(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "BR.INPE.DETER.amqp.DeforestationAlert":
+            if cloudevent['type'] == "BR.INPE.DETER.DeforestationAlert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

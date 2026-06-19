@@ -161,9 +161,9 @@ class Frequencies:
             An instance of the dataclass.
         """
         return cls(
-            tripId='jmvwwkiomxbcculeotyh',
-            startTime='ktntrnxguxaegzungtpr',
-            endTime='uzgszybpyoplgauilicq',
-            headwaySecs=int(63),
-            exactTimes=int(60)
+            tripId='rkvorxhawcfmachparmd',
+            startTime='rjxhbordithckhqmhxxe',
+            endTime='vkgzmmpabbpihgajxllx',
+            headwaySecs=int(25),
+            exactTimes=int(82)
         )

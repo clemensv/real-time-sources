@@ -341,7 +341,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.DayAheadPrices"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -380,7 +380,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.DayAheadPrices'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.DayAheadPrices'
         assert received.body is not None
         assert received.subject == "{inDomain}".format(inDomain="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
@@ -435,7 +435,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ActualTotalLoad"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -474,7 +474,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.ActualTotalLoad'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ActualTotalLoad'
         assert received.body is not None
         assert received.subject == "{inDomain}".format(inDomain="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
@@ -529,7 +529,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.LoadForecastMargin"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -568,7 +568,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.LoadForecastMargin'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.LoadForecastMargin'
         assert received.body is not None
         assert received.subject == "{inDomain}".format(inDomain="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
@@ -623,7 +623,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ByDomain.amqp.GenerationForecast"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.GenerationForecast"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -662,7 +662,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.GenerationForecast'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.GenerationForecast'
         assert received.body is not None
         assert received.subject == "{inDomain}".format(inDomain="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
@@ -717,7 +717,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ReservoirFillingInformation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -756,7 +756,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.ReservoirFillingInformation'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ReservoirFillingInformation'
         assert received.body is not None
         assert received.subject == "{inDomain}".format(inDomain="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
@@ -811,7 +811,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ByDomain.amqp.ActualGeneration"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ActualGeneration"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -850,7 +850,7 @@ class TestEuEntsoeTransparencyByDomainAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomain.amqp.ActualGeneration'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ActualGeneration'
         assert received.body is not None
         assert received.subject == "{inDomain}".format(inDomain="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
@@ -966,7 +966,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ActualGenerationPerType"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1007,7 +1007,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomainPsrType.amqp.ActualGenerationPerType'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ActualGenerationPerType'
         assert received.body is not None
         assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
@@ -1064,7 +1064,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.WindSolarForecast"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1105,7 +1105,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarForecast'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.WindSolarForecast'
         assert received.body is not None
         assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
@@ -1162,7 +1162,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.WindSolarGeneration"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1203,7 +1203,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomainPsrType.amqp.WindSolarGeneration'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.WindSolarGeneration'
         assert received.body is not None
         assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
@@ -1260,7 +1260,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.InstalledGenerationCapacityPerType"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1301,7 +1301,7 @@ class TestEuEntsoeTransparencyByDomainPsrTypeAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.ByDomainPsrType.amqp.InstalledGenerationCapacityPerType'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.InstalledGenerationCapacityPerType'
         assert received.body is not None
         assert received.subject == "{inDomain}/{psrType}".format(inDomain="value", psrType="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")
@@ -1418,7 +1418,7 @@ class TestEuEntsoeTransparencyCrossBorderAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows"
+                    assert cloud_event_payload.get("type") == "eu.entsoe.transparency.CrossBorderPhysicalFlows"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1459,7 +1459,7 @@ class TestEuEntsoeTransparencyCrossBorderAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.CrossBorder.amqp.CrossBorderPhysicalFlows'
+        assert properties.get('cloudEvents:type') == 'eu.entsoe.transparency.CrossBorderPhysicalFlows'
         assert received.body is not None
         assert received.subject == "{inDomain}/{outDomain}".format(inDomain="value", outDomain="value")
         assert properties.get('in-domain') == "{inDomain}".format(inDomain="value")

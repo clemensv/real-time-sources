@@ -159,8 +159,8 @@ class PlanetaryKIndex:
             An instance of the dataclass.
         """
         return cls(
-            observation_time='kfmpxmlmflqqppwhexsf',
-            kp=float(94.76880753181672),
-            a_running=float(72.63583893883404),
-            station_count=int(31)
+            observation_time='yhsijwviqvweblnqxxad',
+            kp=float(42.34720745032862),
+            a_running=float(17.322734358218305),
+            station_count=int(84)
         )

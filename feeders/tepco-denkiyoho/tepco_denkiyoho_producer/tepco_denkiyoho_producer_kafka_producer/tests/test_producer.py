@@ -101,7 +101,7 @@ def test_jp_tepco_denkiyoho_kafka_jptepcodenkiyohokafkasupplycapacity(kafka_emul
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.TEPCO.Denkiyoho.kafka.SupplyCapacity":
+            if cloudevent['type'] == "JP.TEPCO.Denkiyoho.SupplyCapacity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -165,7 +165,7 @@ def test_jp_tepco_denkiyoho_kafka_jptepcodenkiyohokafkapeakdemandforecast(kafka_
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.TEPCO.Denkiyoho.kafka.PeakDemandForecast":
+            if cloudevent['type'] == "JP.TEPCO.Denkiyoho.PeakDemandForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -229,7 +229,7 @@ def test_jp_tepco_denkiyoho_kafka_jptepcodenkiyohokafkademandactual(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.TEPCO.Denkiyoho.kafka.DemandActual":
+            if cloudevent['type'] == "JP.TEPCO.Denkiyoho.DemandActual":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -293,7 +293,7 @@ def test_jp_tepco_denkiyoho_kafka_jptepcodenkiyohokafkademandforecast(kafka_emul
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.TEPCO.Denkiyoho.kafka.DemandForecast":
+            if cloudevent['type'] == "JP.TEPCO.Denkiyoho.DemandForecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -357,7 +357,7 @@ def test_jp_tepco_denkiyoho_kafka_jptepcodenkiyohokafkainfo(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.TEPCO.Denkiyoho.kafka.Info":
+            if cloudevent['type'] == "JP.TEPCO.Denkiyoho.Info":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

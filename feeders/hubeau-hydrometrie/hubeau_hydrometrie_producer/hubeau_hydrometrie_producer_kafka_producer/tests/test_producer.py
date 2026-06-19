@@ -225,7 +225,7 @@ def test_fr_gov_eaufrance_hubeau_hydrometrie_mqtt_frgoveaufrancehubeauhydrometri
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Station":
+            if cloudevent['type'] == "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_fr_gov_eaufrance_hubeau_hydrometrie_mqtt_frgoveaufrancehubeauhydrometri
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "FR.Gov.Eaufrance.HubEau.Hydrometrie.mqtt.Observation":
+            if cloudevent['type'] == "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_fr_gov_eaufrance_hubeau_hydrometrie_amqp_frgoveaufrancehubeauhydrometri
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Station":
+            if cloudevent['type'] == "FR.Gov.Eaufrance.HubEau.Hydrometrie.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_fr_gov_eaufrance_hubeau_hydrometrie_amqp_frgoveaufrancehubeauhydrometri
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "FR.Gov.Eaufrance.HubEau.Hydrometrie.amqp.Observation":
+            if cloudevent['type'] == "FR.Gov.Eaufrance.HubEau.Hydrometrie.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

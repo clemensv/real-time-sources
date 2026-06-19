@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from digitraffic_maritime_amqp_producer_data.portcallagent import PortCallAgent
 from digitraffic_maritime_amqp_producer_data.portcallareadetail import PortCallAreaDetail
+from digitraffic_maritime_amqp_producer_data.portcallagent import PortCallAgent
 import datetime
 
 
@@ -197,25 +197,25 @@ class PortCall:
             An instance of the dataclass.
         """
         return cls(
-            port_call_id=int(96),
+            port_call_id=int(14),
             updated_at=datetime.datetime.now(datetime.timezone.utc),
-            customs_reference='qqnzktwnihixvpdocmyx',
-            port_to_visit='hiuastrpdwqektouaurt',
-            previous_port='tuhbgptcchqdwxrersyg',
-            next_port='bbkhntovdezdzxiguonk',
-            mmsi=int(35),
-            imo_lloyds=int(47),
-            vessel_name='wzizrukmwuawfmxfxmmo',
-            vessel_name_prefix='rezdndvrmupxrbnqnrbj',
-            radio_call_sign='jfmjbuiqrtmaqmrdjhnp',
-            nationality='wplnioyndwzuysxpakkc',
-            vessel_type_code=int(18),
-            domestic_traffic_arrival=False,
+            customs_reference='swrxsazxzefanxyrghbk',
+            port_to_visit='bgltewytscnyhudikurg',
+            previous_port='feomzmtucmgapitwjrsc',
+            next_port='xwagyomhdscsuvqwsfae',
+            mmsi=int(5),
+            imo_lloyds=int(73),
+            vessel_name='fpxomzeayjbqkkzofwue',
+            vessel_name_prefix='yvpovabrsyivjreeywtu',
+            radio_call_sign='pkhhqbgmagzkxpyrnsuv',
+            nationality='nockymoopxiglfhiseqa',
+            vessel_type_code=int(40),
+            domestic_traffic_arrival=True,
             domestic_traffic_departure=False,
-            arrival_with_cargo=True,
-            not_loading=False,
-            discharge=int(45),
-            current_security_level=int(28),
-            agents=[None, None, None],
-            port_areas=[None]
+            arrival_with_cargo=False,
+            not_loading=True,
+            discharge=int(11),
+            current_security_level=int(58),
+            agents=[None, None, None, None, None],
+            port_areas=[None, None, None, None, None]
         )

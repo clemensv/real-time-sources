@@ -323,7 +323,7 @@ class TestDEDWDPollenflugAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.Pollenflug.amqp.Region"
+                    assert cloud_event_payload.get("type") == "DE.DWD.Pollenflug.Region"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -359,7 +359,7 @@ class TestDEDWDPollenflugAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.Pollenflug.amqp.Region'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.Pollenflug.Region'
         assert received.body is not None
         assert received.subject == "{region_id}".format(region_id="value")
     
@@ -412,7 +412,7 @@ class TestDEDWDPollenflugAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "DE.DWD.Pollenflug.amqp.PollenForecast"
+                    assert cloud_event_payload.get("type") == "DE.DWD.Pollenflug.PollenForecast"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -449,7 +449,7 @@ class TestDEDWDPollenflugAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'DE.DWD.Pollenflug.amqp.PollenForecast'
+        assert properties.get('cloudEvents:type') == 'DE.DWD.Pollenflug.PollenForecast'
         assert received.body is not None
         assert received.subject == "{region_id}/{pollen_type}".format(region_id="value", pollen_type="value")
 

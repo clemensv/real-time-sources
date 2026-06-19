@@ -324,7 +324,7 @@ class TestGovUsdaNrcsSnotelAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "gov.usda.nrcs.snotel.amqp.Station"
+                    assert cloud_event_payload.get("type") == "gov.usda.nrcs.snotel.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -363,7 +363,7 @@ class TestGovUsdaNrcsSnotelAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'gov.usda.nrcs.snotel.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'gov.usda.nrcs.snotel.Station'
         assert received.body is not None
         assert received.subject == "{station_triplet}".format(station_triplet="value")
         assert properties.get('state') == "{state}".format(state="value")
@@ -418,7 +418,7 @@ class TestGovUsdaNrcsSnotelAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "gov.usda.nrcs.snotel.amqp.SnowObservation"
+                    assert cloud_event_payload.get("type") == "gov.usda.nrcs.snotel.SnowObservation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -457,7 +457,7 @@ class TestGovUsdaNrcsSnotelAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'gov.usda.nrcs.snotel.amqp.SnowObservation'
+        assert properties.get('cloudEvents:type') == 'gov.usda.nrcs.snotel.SnowObservation'
         assert received.body is not None
         assert received.subject == "{station_triplet}".format(station_triplet="value")
         assert properties.get('state') == "{state}".format(state="value")

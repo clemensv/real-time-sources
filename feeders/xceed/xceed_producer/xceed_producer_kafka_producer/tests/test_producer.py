@@ -228,7 +228,7 @@ def test_xceed_mqtt_xceedmqttevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "xceed.mqtt.Event":
+            if cloudevent['type'] == "xceed.Event":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -290,7 +290,7 @@ def test_xceed_amqp_xceedamqpevent(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "xceed.amqp.Event":
+            if cloudevent['type'] == "xceed.Event":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -352,7 +352,7 @@ def test_xceed_admissions_mqtt_xceedadmissionsmqtteventadmission(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "xceed.admissions.mqtt.EventAdmission":
+            if cloudevent['type'] == "xceed.EventAdmission":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -414,7 +414,7 @@ def test_xceed_admissions_amqp_xceedadmissionsamqpeventadmission(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "xceed.admissions.amqp.EventAdmission":
+            if cloudevent['type'] == "xceed.EventAdmission":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

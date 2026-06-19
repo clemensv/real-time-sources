@@ -324,7 +324,7 @@ class TestGDACSAlertsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "GDACS.Alerts.amqp.DisasterAlert"
+                    assert cloud_event_payload.get("type") == "GDACS.DisasterAlert"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -368,7 +368,7 @@ class TestGDACSAlertsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'GDACS.Alerts.amqp.DisasterAlert'
+        assert properties.get('cloudEvents:type') == 'GDACS.DisasterAlert'
         assert received.body is not None
         assert received.subject == "{event_type}/{event_id}".format(event_type="value", event_id="value")
         assert properties.get('event_type') == "{event_type}".format(event_type="value")

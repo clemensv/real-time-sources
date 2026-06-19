@@ -329,7 +329,7 @@ class TestTicketmasterEventsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Ticketmaster.Events.amqp.Event"
+                    assert cloud_event_payload.get("type") == "Ticketmaster.Events.Event"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -366,7 +366,7 @@ class TestTicketmasterEventsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Ticketmaster.Events.amqp.Event'
+        assert properties.get('cloudEvents:type') == 'Ticketmaster.Events.Event'
         assert received.body is not None
         assert received.subject == "{event_id}".format(event_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{event_id}".format(event_id="value"))[:128]
@@ -479,7 +479,7 @@ class TestTicketmasterReferenceAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Ticketmaster.Reference.amqp.Venue"
+                    assert cloud_event_payload.get("type") == "Ticketmaster.Reference.Venue"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -516,7 +516,7 @@ class TestTicketmasterReferenceAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Ticketmaster.Reference.amqp.Venue'
+        assert properties.get('cloudEvents:type') == 'Ticketmaster.Reference.Venue'
         assert received.body is not None
         assert received.subject == "{entity_id}".format(entity_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{entity_id}".format(entity_id="value"))[:128]
@@ -569,7 +569,7 @@ class TestTicketmasterReferenceAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Ticketmaster.Reference.amqp.Attraction"
+                    assert cloud_event_payload.get("type") == "Ticketmaster.Reference.Attraction"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -606,7 +606,7 @@ class TestTicketmasterReferenceAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Ticketmaster.Reference.amqp.Attraction'
+        assert properties.get('cloudEvents:type') == 'Ticketmaster.Reference.Attraction'
         assert received.body is not None
         assert received.subject == "{entity_id}".format(entity_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{entity_id}".format(entity_id="value"))[:128]
@@ -659,7 +659,7 @@ class TestTicketmasterReferenceAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Ticketmaster.Reference.amqp.Classification"
+                    assert cloud_event_payload.get("type") == "Ticketmaster.Reference.Classification"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -696,7 +696,7 @@ class TestTicketmasterReferenceAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Ticketmaster.Reference.amqp.Classification'
+        assert properties.get('cloudEvents:type') == 'Ticketmaster.Reference.Classification'
         assert received.body is not None
         assert received.subject == "{entity_id}".format(entity_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{entity_id}".format(entity_id="value"))[:128]
@@ -749,7 +749,7 @@ class TestTicketmasterReferenceAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Ticketmaster.Reference.amqp.Info"
+                    assert cloud_event_payload.get("type") == "Ticketmaster.Reference.Info"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -786,7 +786,7 @@ class TestTicketmasterReferenceAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Ticketmaster.Reference.amqp.Info'
+        assert properties.get('cloudEvents:type') == 'Ticketmaster.Reference.Info'
         assert received.body is not None
         assert received.subject == "{entity_id}".format(entity_id="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{entity_id}".format(entity_id="value"))[:128]

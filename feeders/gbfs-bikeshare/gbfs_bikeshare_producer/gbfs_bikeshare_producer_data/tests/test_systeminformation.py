@@ -28,13 +28,13 @@ class Test_SystemInformation(unittest.TestCase):
         Create instance of SystemInformation for testing
         """
         instance = SystemInformation(
-            system_id='meqihvnsqmtwhitwdiuw',
-            name='mhrbbknyqxsesmvllnkr',
-            operator='vtcekcyqqckphrqeqbjj',
-            url='iiqxefqmxfslvhdoeisc',
-            timezone='yewsgbuwzbaqlltpkydx',
-            language='dguevobwhzfuqzmfzbwx',
-            phone_number='jcsjllnrkwyxalqnhcvb'
+            system_id='phygbtjcreyklbisfhsy',
+            name='kneaguyzcgdxlidconpl',
+            operator='vbgtyjjqdnrdsoccopmb',
+            url='cotgdowmqvsxbnvakgyt',
+            timezone='axfbbufjhopjcfelqxhm',
+            language='rnfyebfgcmktesyykpqu',
+            phone_number='dmjhttyuyppzjtyoykbk'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_SystemInformation(unittest.TestCase):
         """
         Test system_id property
         """
-        test_value = 'meqihvnsqmtwhitwdiuw'
+        test_value = 'phygbtjcreyklbisfhsy'
         self.instance.system_id = test_value
         self.assertEqual(self.instance.system_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_SystemInformation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'mhrbbknyqxsesmvllnkr'
+        test_value = 'kneaguyzcgdxlidconpl'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -59,7 +59,7 @@ class Test_SystemInformation(unittest.TestCase):
         """
         Test operator property
         """
-        test_value = 'vtcekcyqqckphrqeqbjj'
+        test_value = 'vbgtyjjqdnrdsoccopmb'
         self.instance.operator = test_value
         self.assertEqual(self.instance.operator, test_value)
     
@@ -67,7 +67,7 @@ class Test_SystemInformation(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'iiqxefqmxfslvhdoeisc'
+        test_value = 'cotgdowmqvsxbnvakgyt'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
@@ -75,7 +75,7 @@ class Test_SystemInformation(unittest.TestCase):
         """
         Test timezone property
         """
-        test_value = 'yewsgbuwzbaqlltpkydx'
+        test_value = 'axfbbufjhopjcfelqxhm'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
     
@@ -83,7 +83,7 @@ class Test_SystemInformation(unittest.TestCase):
         """
         Test language property
         """
-        test_value = 'dguevobwhzfuqzmfzbwx'
+        test_value = 'rnfyebfgcmktesyykpqu'
         self.instance.language = test_value
         self.assertEqual(self.instance.language, test_value)
     
@@ -91,7 +91,7 @@ class Test_SystemInformation(unittest.TestCase):
         """
         Test phone_number property
         """
-        test_value = 'jcsjllnrkwyxalqnhcvb'
+        test_value = 'dmjhttyuyppzjtyoykbk'
         self.instance.phone_number = test_value
         self.assertEqual(self.instance.phone_number, test_value)
     

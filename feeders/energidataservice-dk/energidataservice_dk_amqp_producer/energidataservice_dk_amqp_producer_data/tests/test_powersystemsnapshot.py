@@ -28,31 +28,31 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         Create instance of PowerSystemSnapshot for testing
         """
         instance = PowerSystemSnapshot(
-            minutes1_utc='bpxiuowbrlrcuxjocfzm',
-            minutes1_dk='xnpmttendvylxokvzzgy',
-            price_area='rbwthmrsmjgdcqwjjisn',
-            co2_emission=float(62.96444384519493),
-            production_ge_100mw=float(27.482452791616907),
-            production_lt_100mw=float(2.266522255847636),
-            solar_power=float(8.40200205592735),
-            offshore_wind_power=float(78.33569713820914),
-            onshore_wind_power=float(19.72640995072904),
-            exchange_sum=float(10.649610701120448),
-            exchange_dk1_de=float(57.74585996879813),
-            exchange_dk1_nl=float(64.86126603815438),
-            exchange_dk1_gb=float(43.74928833043077),
-            exchange_dk1_no=float(41.094335512383886),
-            exchange_dk1_se=float(59.31998283039768),
-            exchange_dk1_dk2=float(6.976521734783036),
-            exchange_dk2_de=float(64.7357436212105),
-            exchange_dk2_se=float(3.7757852788593893),
-            exchange_bornholm_se=float(39.86076993290081),
-            afrr_activated_dk1=float(34.847326861887865),
-            afrr_activated_dk2=float(23.81896403943722),
-            mfrr_activated_dk1=float(35.06633366373014),
-            mfrr_activated_dk2=float(85.9858486451197),
-            imbalance_dk1=float(58.570552214357186),
-            imbalance_dk2=float(43.40503041488244)
+            minutes1_utc='jmftxhxsrnybkdskkpnk',
+            minutes1_dk='mggxgxucsfamdugmtwxp',
+            price_area='pvykrejnakcfnaphjqoi',
+            co2_emission=float(59.04485803743826),
+            production_ge_100mw=float(79.34293178878825),
+            production_lt_100mw=float(17.441591145210378),
+            solar_power=float(15.726293254290535),
+            offshore_wind_power=float(88.01350781343456),
+            onshore_wind_power=float(73.55077945974055),
+            exchange_sum=float(38.41460416452184),
+            exchange_dk1_de=float(25.316822544376862),
+            exchange_dk1_nl=float(10.723758191143562),
+            exchange_dk1_gb=float(41.325965127209884),
+            exchange_dk1_no=float(80.20231910802539),
+            exchange_dk1_se=float(97.15259193810456),
+            exchange_dk1_dk2=float(89.78508103132312),
+            exchange_dk2_de=float(13.317965064457503),
+            exchange_dk2_se=float(39.909633539019794),
+            exchange_bornholm_se=float(27.527917276739032),
+            afrr_activated_dk1=float(94.7169091879845),
+            afrr_activated_dk2=float(28.388749388791567),
+            mfrr_activated_dk1=float(87.32755807043857),
+            mfrr_activated_dk2=float(10.204714628586487),
+            imbalance_dk1=float(11.875638314235438),
+            imbalance_dk2=float(57.239866665234985)
         )
         return instance
 
@@ -61,7 +61,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test minutes1_utc property
         """
-        test_value = 'bpxiuowbrlrcuxjocfzm'
+        test_value = 'jmftxhxsrnybkdskkpnk'
         self.instance.minutes1_utc = test_value
         self.assertEqual(self.instance.minutes1_utc, test_value)
     
@@ -69,7 +69,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test minutes1_dk property
         """
-        test_value = 'xnpmttendvylxokvzzgy'
+        test_value = 'mggxgxucsfamdugmtwxp'
         self.instance.minutes1_dk = test_value
         self.assertEqual(self.instance.minutes1_dk, test_value)
     
@@ -77,7 +77,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test price_area property
         """
-        test_value = 'rbwthmrsmjgdcqwjjisn'
+        test_value = 'pvykrejnakcfnaphjqoi'
         self.instance.price_area = test_value
         self.assertEqual(self.instance.price_area, test_value)
     
@@ -85,7 +85,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test co2_emission property
         """
-        test_value = float(62.96444384519493)
+        test_value = float(59.04485803743826)
         self.instance.co2_emission = test_value
         self.assertEqual(self.instance.co2_emission, test_value)
     
@@ -93,7 +93,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test production_ge_100mw property
         """
-        test_value = float(27.482452791616907)
+        test_value = float(79.34293178878825)
         self.instance.production_ge_100mw = test_value
         self.assertEqual(self.instance.production_ge_100mw, test_value)
     
@@ -101,7 +101,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test production_lt_100mw property
         """
-        test_value = float(2.266522255847636)
+        test_value = float(17.441591145210378)
         self.instance.production_lt_100mw = test_value
         self.assertEqual(self.instance.production_lt_100mw, test_value)
     
@@ -109,7 +109,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test solar_power property
         """
-        test_value = float(8.40200205592735)
+        test_value = float(15.726293254290535)
         self.instance.solar_power = test_value
         self.assertEqual(self.instance.solar_power, test_value)
     
@@ -117,7 +117,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test offshore_wind_power property
         """
-        test_value = float(78.33569713820914)
+        test_value = float(88.01350781343456)
         self.instance.offshore_wind_power = test_value
         self.assertEqual(self.instance.offshore_wind_power, test_value)
     
@@ -125,7 +125,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test onshore_wind_power property
         """
-        test_value = float(19.72640995072904)
+        test_value = float(73.55077945974055)
         self.instance.onshore_wind_power = test_value
         self.assertEqual(self.instance.onshore_wind_power, test_value)
     
@@ -133,7 +133,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test exchange_sum property
         """
-        test_value = float(10.649610701120448)
+        test_value = float(38.41460416452184)
         self.instance.exchange_sum = test_value
         self.assertEqual(self.instance.exchange_sum, test_value)
     
@@ -141,7 +141,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test exchange_dk1_de property
         """
-        test_value = float(57.74585996879813)
+        test_value = float(25.316822544376862)
         self.instance.exchange_dk1_de = test_value
         self.assertEqual(self.instance.exchange_dk1_de, test_value)
     
@@ -149,7 +149,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test exchange_dk1_nl property
         """
-        test_value = float(64.86126603815438)
+        test_value = float(10.723758191143562)
         self.instance.exchange_dk1_nl = test_value
         self.assertEqual(self.instance.exchange_dk1_nl, test_value)
     
@@ -157,7 +157,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test exchange_dk1_gb property
         """
-        test_value = float(43.74928833043077)
+        test_value = float(41.325965127209884)
         self.instance.exchange_dk1_gb = test_value
         self.assertEqual(self.instance.exchange_dk1_gb, test_value)
     
@@ -165,7 +165,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test exchange_dk1_no property
         """
-        test_value = float(41.094335512383886)
+        test_value = float(80.20231910802539)
         self.instance.exchange_dk1_no = test_value
         self.assertEqual(self.instance.exchange_dk1_no, test_value)
     
@@ -173,7 +173,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test exchange_dk1_se property
         """
-        test_value = float(59.31998283039768)
+        test_value = float(97.15259193810456)
         self.instance.exchange_dk1_se = test_value
         self.assertEqual(self.instance.exchange_dk1_se, test_value)
     
@@ -181,7 +181,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test exchange_dk1_dk2 property
         """
-        test_value = float(6.976521734783036)
+        test_value = float(89.78508103132312)
         self.instance.exchange_dk1_dk2 = test_value
         self.assertEqual(self.instance.exchange_dk1_dk2, test_value)
     
@@ -189,7 +189,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test exchange_dk2_de property
         """
-        test_value = float(64.7357436212105)
+        test_value = float(13.317965064457503)
         self.instance.exchange_dk2_de = test_value
         self.assertEqual(self.instance.exchange_dk2_de, test_value)
     
@@ -197,7 +197,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test exchange_dk2_se property
         """
-        test_value = float(3.7757852788593893)
+        test_value = float(39.909633539019794)
         self.instance.exchange_dk2_se = test_value
         self.assertEqual(self.instance.exchange_dk2_se, test_value)
     
@@ -205,7 +205,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test exchange_bornholm_se property
         """
-        test_value = float(39.86076993290081)
+        test_value = float(27.527917276739032)
         self.instance.exchange_bornholm_se = test_value
         self.assertEqual(self.instance.exchange_bornholm_se, test_value)
     
@@ -213,7 +213,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test afrr_activated_dk1 property
         """
-        test_value = float(34.847326861887865)
+        test_value = float(94.7169091879845)
         self.instance.afrr_activated_dk1 = test_value
         self.assertEqual(self.instance.afrr_activated_dk1, test_value)
     
@@ -221,7 +221,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test afrr_activated_dk2 property
         """
-        test_value = float(23.81896403943722)
+        test_value = float(28.388749388791567)
         self.instance.afrr_activated_dk2 = test_value
         self.assertEqual(self.instance.afrr_activated_dk2, test_value)
     
@@ -229,7 +229,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test mfrr_activated_dk1 property
         """
-        test_value = float(35.06633366373014)
+        test_value = float(87.32755807043857)
         self.instance.mfrr_activated_dk1 = test_value
         self.assertEqual(self.instance.mfrr_activated_dk1, test_value)
     
@@ -237,7 +237,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test mfrr_activated_dk2 property
         """
-        test_value = float(85.9858486451197)
+        test_value = float(10.204714628586487)
         self.instance.mfrr_activated_dk2 = test_value
         self.assertEqual(self.instance.mfrr_activated_dk2, test_value)
     
@@ -245,7 +245,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test imbalance_dk1 property
         """
-        test_value = float(58.570552214357186)
+        test_value = float(11.875638314235438)
         self.instance.imbalance_dk1 = test_value
         self.assertEqual(self.instance.imbalance_dk1, test_value)
     
@@ -253,7 +253,7 @@ class Test_PowerSystemSnapshot(unittest.TestCase):
         """
         Test imbalance_dk2 property
         """
-        test_value = float(43.40503041488244)
+        test_value = float(57.239866665234985)
         self.instance.imbalance_dk2 = test_value
         self.assertEqual(self.instance.imbalance_dk2, test_value)
     
