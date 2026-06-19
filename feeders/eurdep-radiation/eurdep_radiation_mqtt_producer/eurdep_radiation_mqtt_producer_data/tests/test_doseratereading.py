@@ -28,16 +28,16 @@ class Test_DoseRateReading(unittest.TestCase):
         Create instance of DoseRateReading for testing
         """
         instance = DoseRateReading(
-            station_id='lfktriumjvqtbjgdehln',
-            name='moqpzjzlikjtxgduauek',
-            value=float(15.10762703997467),
-            unit='ivflvahgelpqwkutmhlz',
-            start_measure='vckcueumxbaqxgugsaei',
-            end_measure='njawhpodskgvqfratvzb',
-            nuclide='ttshuikpcrnatdnsftyg',
-            duration='oqjltoxcdjflgirjjdsu',
-            validated=int(43),
-            country='uvxxhxiqvkejngeyyajz'
+            station_id='fmeqfocpfbzvmsjpvvqc',
+            name='ocdzkzoynmaugaybpqrj',
+            value=float(24.120342653602822),
+            unit='wvdmaxwlnwtuhgxiyxlz',
+            start_measure='lzsqazgifebbuxjxunju',
+            end_measure='ddqesyhsfgmrpqqkhgsi',
+            nuclide='ryeeszytingfkesrsoae',
+            duration='ennrpknjefxvdyshqbav',
+            validated=int(77),
+            country='habxvutrulofhaqybcyp'
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_DoseRateReading(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'lfktriumjvqtbjgdehln'
+        test_value = 'fmeqfocpfbzvmsjpvvqc'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_DoseRateReading(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'moqpzjzlikjtxgduauek'
+        test_value = 'ocdzkzoynmaugaybpqrj'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -62,7 +62,7 @@ class Test_DoseRateReading(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(15.10762703997467)
+        test_value = float(24.120342653602822)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -70,7 +70,7 @@ class Test_DoseRateReading(unittest.TestCase):
         """
         Test unit property
         """
-        test_value = 'ivflvahgelpqwkutmhlz'
+        test_value = 'wvdmaxwlnwtuhgxiyxlz'
         self.instance.unit = test_value
         self.assertEqual(self.instance.unit, test_value)
     
@@ -78,7 +78,7 @@ class Test_DoseRateReading(unittest.TestCase):
         """
         Test start_measure property
         """
-        test_value = 'vckcueumxbaqxgugsaei'
+        test_value = 'lzsqazgifebbuxjxunju'
         self.instance.start_measure = test_value
         self.assertEqual(self.instance.start_measure, test_value)
     
@@ -86,7 +86,7 @@ class Test_DoseRateReading(unittest.TestCase):
         """
         Test end_measure property
         """
-        test_value = 'njawhpodskgvqfratvzb'
+        test_value = 'ddqesyhsfgmrpqqkhgsi'
         self.instance.end_measure = test_value
         self.assertEqual(self.instance.end_measure, test_value)
     
@@ -94,7 +94,7 @@ class Test_DoseRateReading(unittest.TestCase):
         """
         Test nuclide property
         """
-        test_value = 'ttshuikpcrnatdnsftyg'
+        test_value = 'ryeeszytingfkesrsoae'
         self.instance.nuclide = test_value
         self.assertEqual(self.instance.nuclide, test_value)
     
@@ -102,7 +102,7 @@ class Test_DoseRateReading(unittest.TestCase):
         """
         Test duration property
         """
-        test_value = 'oqjltoxcdjflgirjjdsu'
+        test_value = 'ennrpknjefxvdyshqbav'
         self.instance.duration = test_value
         self.assertEqual(self.instance.duration, test_value)
     
@@ -110,7 +110,7 @@ class Test_DoseRateReading(unittest.TestCase):
         """
         Test validated property
         """
-        test_value = int(43)
+        test_value = int(77)
         self.instance.validated = test_value
         self.assertEqual(self.instance.validated, test_value)
     
@@ -118,7 +118,7 @@ class Test_DoseRateReading(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'uvxxhxiqvkejngeyyajz'
+        test_value = 'habxvutrulofhaqybcyp'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     

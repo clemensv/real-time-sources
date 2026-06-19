@@ -28,11 +28,11 @@ class Test_Species(unittest.TestCase):
         Create instance of Species for testing
         """
         instance = Species(
-            species_code='qshpcjsabyffconycwdg',
-            species_name='tuvasllhqyujslycpjgo',
-            description='ayhowyphvuwwcuulggue',
-            health_effect='bvgscjsspmtswtzykyep',
-            link='mgaiqdbrxisujcswyvfc'
+            species_code='calkaqnbeorkdgrxnfmb',
+            species_name='mmqtqalpabgozavjuojs',
+            description='qqjfqtfksrotwufsaeey',
+            health_effect='oxvhzhusgsvrvjcxfvqx',
+            link='gibntmoirwoubqtclgkz'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_Species(unittest.TestCase):
         """
         Test species_code property
         """
-        test_value = 'qshpcjsabyffconycwdg'
+        test_value = 'calkaqnbeorkdgrxnfmb'
         self.instance.species_code = test_value
         self.assertEqual(self.instance.species_code, test_value)
     
@@ -49,7 +49,7 @@ class Test_Species(unittest.TestCase):
         """
         Test species_name property
         """
-        test_value = 'tuvasllhqyujslycpjgo'
+        test_value = 'mmqtqalpabgozavjuojs'
         self.instance.species_name = test_value
         self.assertEqual(self.instance.species_name, test_value)
     
@@ -57,7 +57,7 @@ class Test_Species(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'ayhowyphvuwwcuulggue'
+        test_value = 'qqjfqtfksrotwufsaeey'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -65,7 +65,7 @@ class Test_Species(unittest.TestCase):
         """
         Test health_effect property
         """
-        test_value = 'bvgscjsspmtswtzykyep'
+        test_value = 'oxvhzhusgsvrvjcxfvqx'
         self.instance.health_effect = test_value
         self.assertEqual(self.instance.health_effect, test_value)
     
@@ -73,7 +73,7 @@ class Test_Species(unittest.TestCase):
         """
         Test link property
         """
-        test_value = 'mgaiqdbrxisujcswyvfc'
+        test_value = 'gibntmoirwoubqtclgkz'
         self.instance.link = test_value
         self.assertEqual(self.instance.link, test_value)
     

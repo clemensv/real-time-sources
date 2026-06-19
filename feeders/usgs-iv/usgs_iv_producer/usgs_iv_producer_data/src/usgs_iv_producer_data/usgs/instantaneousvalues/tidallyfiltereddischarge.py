@@ -165,11 +165,11 @@ class TidallyFilteredDischarge:
             An instance of the dataclass.
         """
         return cls(
-            site_no='fnnvuftgkdnvfptladzu',
-            datetime='psuovwkhfosedmfhjdls',
-            value=float(5.442442306234407),
-            exception='nghxahwmcfprdennsfqx',
-            qualifiers=['wdjfrdhowriwxseqxedh', 'ombettahtopwbmploasq'],
-            parameter_cd='emxrlwyciscaipympiis',
-            timeseries_cd='hegginbigpabpcxazmdb'
+            site_no='xrkqkywsydgncnxowhyc',
+            datetime='cekgxjuwnivzsaznfhqt',
+            value=float(31.347733901824558),
+            exception='fotgtgbocctonjcvkxsl',
+            qualifiers=['loqgosrkuhwabhzwzjze', 'ukvwocylsahjatfbmlao'],
+            parameter_cd='tdlkhviznudkwcxztkdp',
+            timeseries_cd='inabcjrvcwprsuvcydmw'
         )

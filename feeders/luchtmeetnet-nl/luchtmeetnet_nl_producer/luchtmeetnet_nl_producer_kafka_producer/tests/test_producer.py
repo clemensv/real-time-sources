@@ -360,7 +360,7 @@ def test_nl_rivm_luchtmeetnet_mqtt_nlrivmluchtmeetnetmqttstation(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nl.rivm.luchtmeetnet.mqtt.Station":
+            if cloudevent['type'] == "nl.rivm.luchtmeetnet.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -422,7 +422,7 @@ def test_nl_rivm_luchtmeetnet_mqtt_nlrivmluchtmeetnetmqttmeasurement(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nl.rivm.luchtmeetnet.mqtt.Measurement":
+            if cloudevent['type'] == "nl.rivm.luchtmeetnet.Measurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -484,7 +484,7 @@ def test_nl_rivm_luchtmeetnet_mqtt_nlrivmluchtmeetnetmqttlki(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nl.rivm.luchtmeetnet.mqtt.LKI":
+            if cloudevent['type'] == "nl.rivm.luchtmeetnet.LKI":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -546,7 +546,7 @@ def test_nl_rivm_luchtmeetnet_amqp_nlrivmluchtmeetnetamqpstation(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nl.rivm.luchtmeetnet.amqp.Station":
+            if cloudevent['type'] == "nl.rivm.luchtmeetnet.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -608,7 +608,7 @@ def test_nl_rivm_luchtmeetnet_amqp_nlrivmluchtmeetnetamqpmeasurement(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nl.rivm.luchtmeetnet.amqp.Measurement":
+            if cloudevent['type'] == "nl.rivm.luchtmeetnet.Measurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -670,7 +670,7 @@ def test_nl_rivm_luchtmeetnet_amqp_nlrivmluchtmeetnetamqplki(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nl.rivm.luchtmeetnet.amqp.LKI":
+            if cloudevent['type'] == "nl.rivm.luchtmeetnet.LKI":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -732,7 +732,7 @@ def test_nl_rivm_luchtmeetnet_components_mqtt_nlrivmluchtmeetnetcomponentsmqttco
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nl.rivm.luchtmeetnet.components.mqtt.Component":
+            if cloudevent['type'] == "nl.rivm.luchtmeetnet.components.Component":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -794,7 +794,7 @@ def test_nl_rivm_luchtmeetnet_components_amqp_nlrivmluchtmeetnetcomponentsamqpco
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "nl.rivm.luchtmeetnet.components.amqp.Component":
+            if cloudevent['type'] == "nl.rivm.luchtmeetnet.components.Component":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

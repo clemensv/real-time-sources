@@ -171,14 +171,14 @@ class BikeshareStationStatus:
             An instance of the dataclass.
         """
         return cls(
-            system_id='jjsosavbepbvcqrssreq',
-            station_id='mqgjtyshuvfyevrsjdtv',
-            num_bikes_available=int(27),
-            num_bikes_disabled=int(31),
-            num_docks_available=int(2),
-            num_docks_disabled=int(7),
+            system_id='amogvsihnjzwrciuncrs',
+            station_id='hyentetijcyusrnnmauf',
+            num_bikes_available=int(54),
+            num_bikes_disabled=int(14),
+            num_docks_available=int(72),
+            num_docks_disabled=int(40),
             is_installed=True,
             is_renting=False,
             is_returning=False,
-            last_reported=int(68)
+            last_reported=int(33)
         )

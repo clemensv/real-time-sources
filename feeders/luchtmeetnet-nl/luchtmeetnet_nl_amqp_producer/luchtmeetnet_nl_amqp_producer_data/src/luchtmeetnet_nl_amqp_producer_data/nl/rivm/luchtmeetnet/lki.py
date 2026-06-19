@@ -157,7 +157,7 @@ class LKI:
             An instance of the dataclass.
         """
         return cls(
-            station_number='fwbskhpoqyokbnrtrsne',
-            value=int(95),
-            timestamp_measured='jcrnloxjxzwuurijwvaa'
+            station_number='joctbhkrhscxgcygskrt',
+            value=int(38),
+            timestamp_measured='wohseytveugvxxjmvemr'
         )

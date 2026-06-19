@@ -1,5 +1,5 @@
-from .info import Info
-from .demandoutturn import DemandOutturn
 from .generationmix import GenerationMix
+from .demandoutturn import DemandOutturn
+from .info import Info
 
-__all__ = ["Info", "DemandOutturn", "GenerationMix"]
+__all__ = ["GenerationMix", "DemandOutturn", "Info"]

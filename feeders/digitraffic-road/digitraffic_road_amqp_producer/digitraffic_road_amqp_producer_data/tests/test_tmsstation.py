@@ -28,34 +28,34 @@ class Test_TmsStation(unittest.TestCase):
         Create instance of TmsStation for testing
         """
         instance = TmsStation(
-            station_id=int(96),
-            name='qvjvybsomozhdxxxukyh',
-            tms_number=int(39),
-            names_fi='blakwipqitonhojqypfv',
-            names_sv='gdceigsbcnaozdarydzs',
-            names_en='jrjsxfhfjjoaorczjdho',
-            longitude=float(74.3813486507342),
-            latitude=float(49.545140843909074),
-            altitude=float(15.95651741485189),
-            municipality='zibpgppqjnkuwpljcieg',
-            municipality_code=int(86),
-            province='vhsuciogxbaesuavfajx',
-            province_code=int(41),
-            road_number=int(63),
-            road_section=int(72),
-            distance_from_section_start=int(85),
-            carriageway='qmwnxylndalyjianwfcn',
-            side='ribsbtiaqvsuoukelwmp',
-            station_type='gvimpfshdtpwxdkaskjm',
-            collection_status='utiwkfqttbodqdhkhwbw',
-            state='pwictgnebxbfiblsdgnq',
-            free_flow_speed_1=float(71.89793024774607),
-            free_flow_speed_2=float(65.66192685653279),
-            bearing=int(22),
-            start_time='kjehkaciehxpcwbpuxrf',
-            livi_id='siewyzmxnbayfxusxdma',
-            sensors=[int(88), int(55)],
-            data_updated_time='knatbzsexlhrzvmwtbbk'
+            station_id=int(80),
+            name='ytkxopggkasjfnylymsl',
+            tms_number=int(68),
+            names_fi='xtdnxxezstknfksxihmv',
+            names_sv='jnmwzetailzvbtujwbte',
+            names_en='ydordnxtfktdxzxijzdw',
+            longitude=float(96.22128974533582),
+            latitude=float(64.18271489594748),
+            altitude=float(67.47938768092715),
+            municipality='yabvpzkqtkbqoyltwthd',
+            municipality_code=int(24),
+            province='qrvgdpkalvskutvuwdpo',
+            province_code=int(74),
+            road_number=int(28),
+            road_section=int(46),
+            distance_from_section_start=int(5),
+            carriageway='orxoomjagjhjgzifwdtw',
+            side='vgsalzytyqahobruzmce',
+            station_type='hmmnmnmcatczrdxmgtoq',
+            collection_status='zrpyuijwvvguazaryffn',
+            state='yoksmwkhzfzziadagscz',
+            free_flow_speed_1=float(84.29551725476921),
+            free_flow_speed_2=float(4.752137487157793),
+            bearing=int(33),
+            start_time='ggouhmkitkjdfvoyrnae',
+            livi_id='amjujvhevhifbbivedwx',
+            sensors=[int(66), int(23), int(43)],
+            data_updated_time='hopqucydbpvyarqpvbra'
         )
         return instance
 
@@ -64,7 +64,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(96)
+        test_value = int(80)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -72,7 +72,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'qvjvybsomozhdxxxukyh'
+        test_value = 'ytkxopggkasjfnylymsl'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -80,7 +80,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test tms_number property
         """
-        test_value = int(39)
+        test_value = int(68)
         self.instance.tms_number = test_value
         self.assertEqual(self.instance.tms_number, test_value)
     
@@ -88,7 +88,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test names_fi property
         """
-        test_value = 'blakwipqitonhojqypfv'
+        test_value = 'xtdnxxezstknfksxihmv'
         self.instance.names_fi = test_value
         self.assertEqual(self.instance.names_fi, test_value)
     
@@ -96,7 +96,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test names_sv property
         """
-        test_value = 'gdceigsbcnaozdarydzs'
+        test_value = 'jnmwzetailzvbtujwbte'
         self.instance.names_sv = test_value
         self.assertEqual(self.instance.names_sv, test_value)
     
@@ -104,7 +104,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test names_en property
         """
-        test_value = 'jrjsxfhfjjoaorczjdho'
+        test_value = 'ydordnxtfktdxzxijzdw'
         self.instance.names_en = test_value
         self.assertEqual(self.instance.names_en, test_value)
     
@@ -112,7 +112,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(74.3813486507342)
+        test_value = float(96.22128974533582)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -120,7 +120,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(49.545140843909074)
+        test_value = float(64.18271489594748)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -128,7 +128,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test altitude property
         """
-        test_value = float(15.95651741485189)
+        test_value = float(67.47938768092715)
         self.instance.altitude = test_value
         self.assertEqual(self.instance.altitude, test_value)
     
@@ -136,7 +136,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test municipality property
         """
-        test_value = 'zibpgppqjnkuwpljcieg'
+        test_value = 'yabvpzkqtkbqoyltwthd'
         self.instance.municipality = test_value
         self.assertEqual(self.instance.municipality, test_value)
     
@@ -144,7 +144,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test municipality_code property
         """
-        test_value = int(86)
+        test_value = int(24)
         self.instance.municipality_code = test_value
         self.assertEqual(self.instance.municipality_code, test_value)
     
@@ -152,7 +152,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'vhsuciogxbaesuavfajx'
+        test_value = 'qrvgdpkalvskutvuwdpo'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -160,7 +160,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test province_code property
         """
-        test_value = int(41)
+        test_value = int(74)
         self.instance.province_code = test_value
         self.assertEqual(self.instance.province_code, test_value)
     
@@ -168,7 +168,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test road_number property
         """
-        test_value = int(63)
+        test_value = int(28)
         self.instance.road_number = test_value
         self.assertEqual(self.instance.road_number, test_value)
     
@@ -176,7 +176,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test road_section property
         """
-        test_value = int(72)
+        test_value = int(46)
         self.instance.road_section = test_value
         self.assertEqual(self.instance.road_section, test_value)
     
@@ -184,7 +184,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test distance_from_section_start property
         """
-        test_value = int(85)
+        test_value = int(5)
         self.instance.distance_from_section_start = test_value
         self.assertEqual(self.instance.distance_from_section_start, test_value)
     
@@ -192,7 +192,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test carriageway property
         """
-        test_value = 'qmwnxylndalyjianwfcn'
+        test_value = 'orxoomjagjhjgzifwdtw'
         self.instance.carriageway = test_value
         self.assertEqual(self.instance.carriageway, test_value)
     
@@ -200,7 +200,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test side property
         """
-        test_value = 'ribsbtiaqvsuoukelwmp'
+        test_value = 'vgsalzytyqahobruzmce'
         self.instance.side = test_value
         self.assertEqual(self.instance.side, test_value)
     
@@ -208,7 +208,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test station_type property
         """
-        test_value = 'gvimpfshdtpwxdkaskjm'
+        test_value = 'hmmnmnmcatczrdxmgtoq'
         self.instance.station_type = test_value
         self.assertEqual(self.instance.station_type, test_value)
     
@@ -216,7 +216,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test collection_status property
         """
-        test_value = 'utiwkfqttbodqdhkhwbw'
+        test_value = 'zrpyuijwvvguazaryffn'
         self.instance.collection_status = test_value
         self.assertEqual(self.instance.collection_status, test_value)
     
@@ -224,7 +224,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'pwictgnebxbfiblsdgnq'
+        test_value = 'yoksmwkhzfzziadagscz'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -232,7 +232,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test free_flow_speed_1 property
         """
-        test_value = float(71.89793024774607)
+        test_value = float(84.29551725476921)
         self.instance.free_flow_speed_1 = test_value
         self.assertEqual(self.instance.free_flow_speed_1, test_value)
     
@@ -240,7 +240,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test free_flow_speed_2 property
         """
-        test_value = float(65.66192685653279)
+        test_value = float(4.752137487157793)
         self.instance.free_flow_speed_2 = test_value
         self.assertEqual(self.instance.free_flow_speed_2, test_value)
     
@@ -248,7 +248,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test bearing property
         """
-        test_value = int(22)
+        test_value = int(33)
         self.instance.bearing = test_value
         self.assertEqual(self.instance.bearing, test_value)
     
@@ -256,7 +256,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'kjehkaciehxpcwbpuxrf'
+        test_value = 'ggouhmkitkjdfvoyrnae'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -264,7 +264,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test livi_id property
         """
-        test_value = 'siewyzmxnbayfxusxdma'
+        test_value = 'amjujvhevhifbbivedwx'
         self.instance.livi_id = test_value
         self.assertEqual(self.instance.livi_id, test_value)
     
@@ -272,7 +272,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test sensors property
         """
-        test_value = [int(88), int(55)]
+        test_value = [int(66), int(23), int(43)]
         self.instance.sensors = test_value
         self.assertEqual(self.instance.sensors, test_value)
     
@@ -280,7 +280,7 @@ class Test_TmsStation(unittest.TestCase):
         """
         Test data_updated_time property
         """
-        test_value = 'knatbzsexlhrzvmwtbbk'
+        test_value = 'hopqucydbpvyarqpvbra'
         self.instance.data_updated_time = test_value
         self.assertEqual(self.instance.data_updated_time, test_value)
     

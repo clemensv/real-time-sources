@@ -28,13 +28,13 @@ class Test_Visibility(unittest.TestCase):
         Create instance of Visibility for testing
         """
         instance = Visibility(
-            timestamp='uggmuwxrgwbwiisxnflv',
-            value=float(35.346733241178576),
+            timestamp='tkwukkcopqdlvcpypxes',
+            value=float(15.054659588907782),
             max_visibility_exceeded=False,
             min_visibility_exceeded=False,
-            rate_of_change_exceeded=False,
-            station_id='cadbbsronysrkvjmhvur',
-            region='monqrkesmgsvwwazthln'
+            rate_of_change_exceeded=True,
+            station_id='zrcxobuhmqqeqtrmfzhw',
+            region='bjczujgojylzvdnqnhjt'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'uggmuwxrgwbwiisxnflv'
+        test_value = 'tkwukkcopqdlvcpypxes'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -51,7 +51,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(35.346733241178576)
+        test_value = float(15.054659588907782)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -75,7 +75,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     
@@ -83,7 +83,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'cadbbsronysrkvjmhvur'
+        test_value = 'zrcxobuhmqqeqtrmfzhw'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -91,7 +91,7 @@ class Test_Visibility(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'monqrkesmgsvwwazthln'
+        test_value = 'bjczujgojylzvdnqnhjt'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

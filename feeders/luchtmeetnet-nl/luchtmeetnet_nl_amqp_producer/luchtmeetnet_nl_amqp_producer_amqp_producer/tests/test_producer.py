@@ -329,7 +329,7 @@ class TestNlRivmLuchtmeetnetAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "nl.rivm.luchtmeetnet.amqp.Station"
+                    assert cloud_event_payload.get("type") == "nl.rivm.luchtmeetnet.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -369,7 +369,7 @@ class TestNlRivmLuchtmeetnetAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'nl.rivm.luchtmeetnet.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'nl.rivm.luchtmeetnet.Station'
         assert received.body is not None
         assert received.subject == "{station_number}".format(station_number="value")
         assert properties.get('region') == "{region}".format(region="value")
@@ -425,7 +425,7 @@ class TestNlRivmLuchtmeetnetAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "nl.rivm.luchtmeetnet.amqp.Measurement"
+                    assert cloud_event_payload.get("type") == "nl.rivm.luchtmeetnet.Measurement"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -465,7 +465,7 @@ class TestNlRivmLuchtmeetnetAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'nl.rivm.luchtmeetnet.amqp.Measurement'
+        assert properties.get('cloudEvents:type') == 'nl.rivm.luchtmeetnet.Measurement'
         assert received.body is not None
         assert received.subject == "{station_number}".format(station_number="value")
         assert properties.get('region') == "{region}".format(region="value")
@@ -521,7 +521,7 @@ class TestNlRivmLuchtmeetnetAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "nl.rivm.luchtmeetnet.amqp.LKI"
+                    assert cloud_event_payload.get("type") == "nl.rivm.luchtmeetnet.LKI"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -561,7 +561,7 @@ class TestNlRivmLuchtmeetnetAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'nl.rivm.luchtmeetnet.amqp.LKI'
+        assert properties.get('cloudEvents:type') == 'nl.rivm.luchtmeetnet.LKI'
         assert received.body is not None
         assert received.subject == "{station_number}".format(station_number="value")
         assert properties.get('region') == "{region}".format(region="value")
@@ -677,7 +677,7 @@ class TestNlRivmLuchtmeetnetComponentsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "nl.rivm.luchtmeetnet.components.amqp.Component"
+                    assert cloud_event_payload.get("type") == "nl.rivm.luchtmeetnet.components.Component"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -717,7 +717,7 @@ class TestNlRivmLuchtmeetnetComponentsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'nl.rivm.luchtmeetnet.components.amqp.Component'
+        assert properties.get('cloudEvents:type') == 'nl.rivm.luchtmeetnet.components.Component'
         assert received.body is not None
         assert received.subject == "{formula}".format(formula="value")
         assert properties.get('region') == "{region}".format(region="value")

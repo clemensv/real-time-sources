@@ -360,7 +360,7 @@ def test_uk_kcl_laqn_mqtt_ukkcllaqnmqttsite(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.kcl.laqn.mqtt.Site":
+            if cloudevent['type'] == "uk.kcl.laqn.Site":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -422,7 +422,7 @@ def test_uk_kcl_laqn_mqtt_ukkcllaqnmqttmeasurement(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.kcl.laqn.mqtt.Measurement":
+            if cloudevent['type'] == "uk.kcl.laqn.Measurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -484,7 +484,7 @@ def test_uk_kcl_laqn_mqtt_ukkcllaqnmqttdailyindex(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.kcl.laqn.mqtt.DailyIndex":
+            if cloudevent['type'] == "uk.kcl.laqn.DailyIndex":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -546,7 +546,7 @@ def test_uk_kcl_laqn_amqp_ukkcllaqnamqpsite(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.kcl.laqn.amqp.Site":
+            if cloudevent['type'] == "uk.kcl.laqn.Site":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -608,7 +608,7 @@ def test_uk_kcl_laqn_amqp_ukkcllaqnamqpmeasurement(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.kcl.laqn.amqp.Measurement":
+            if cloudevent['type'] == "uk.kcl.laqn.Measurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -670,7 +670,7 @@ def test_uk_kcl_laqn_amqp_ukkcllaqnamqpdailyindex(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.kcl.laqn.amqp.DailyIndex":
+            if cloudevent['type'] == "uk.kcl.laqn.DailyIndex":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -732,7 +732,7 @@ def test_uk_kcl_laqn_species_mqtt_ukkcllaqnspeciesmqttspecies(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.kcl.laqn.species.mqtt.Species":
+            if cloudevent['type'] == "uk.kcl.laqn.Species":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -794,7 +794,7 @@ def test_uk_kcl_laqn_species_amqp_ukkcllaqnspeciesamqpspecies(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.kcl.laqn.species.amqp.Species":
+            if cloudevent['type'] == "uk.kcl.laqn.Species":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

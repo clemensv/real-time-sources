@@ -94,10 +94,8 @@ async def test_jp_jma_quake_mqtt_jp_jma_quake_mqtt_earthquake_report_py(mosquitt
             serial=f"test_serial_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            prefecture="test_prefecture",
-            magnitude_bucket="test_magnitude_bucket",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

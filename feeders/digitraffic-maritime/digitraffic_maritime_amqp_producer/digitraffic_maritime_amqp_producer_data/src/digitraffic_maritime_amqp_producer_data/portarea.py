@@ -159,8 +159,8 @@ class PortArea:
             An instance of the dataclass.
         """
         return cls(
-            port_area_code='uqvycjyzaondlsjhunha',
-            port_area_name='hhpncqsjzvaimyuvwxiy',
-            longitude=float(28.19562883626495),
-            latitude=float(82.71022793632635)
+            port_area_code='uilsettffoiooppppotd',
+            port_area_name='rucrbvkcyklajdxszbnu',
+            longitude=float(3.1782924232147347),
+            latitude=float(64.68805541384157)
         )

@@ -28,15 +28,15 @@ class Test_TemporarySpeedLimit(unittest.TestCase):
         Create instance of TemporarySpeedLimit for testing
         """
         instance = TemporarySpeedLimit(
-            situation_record_id='swsxgnxqwzvjmlgtctok',
-            version_time='odmqqmjzwplyxuvcvftj',
-            validity_status='yfggpzehdokylphopval',
-            start_time='lzgztxbsbjdopzuyewyi',
-            end_time='xwrosplacxuadnhvrlty',
-            road_name='ubzgbrippgpyswytdhxp',
-            speed_limit_kmh=int(33),
-            description='wkqtiahhqkzwfjdoepxy',
-            location_description='mjhkmgmrqysazcbeboom'
+            situation_record_id='kcdqhxdolxtjuqscnctd',
+            version_time='lfxplqtdacrdgstqperh',
+            validity_status='asrknhcaizqgwdgzatnm',
+            start_time='cfpjzjrhpbksakividxt',
+            end_time='huxlibldenrnatjsarcb',
+            road_name='iclgopqkqcddhpmtcqbc',
+            speed_limit_kmh=int(72),
+            description='spixrnjfojioifntcmge',
+            location_description='vcpnqfbpnacuuicwlors'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_TemporarySpeedLimit(unittest.TestCase):
         """
         Test situation_record_id property
         """
-        test_value = 'swsxgnxqwzvjmlgtctok'
+        test_value = 'kcdqhxdolxtjuqscnctd'
         self.instance.situation_record_id = test_value
         self.assertEqual(self.instance.situation_record_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_TemporarySpeedLimit(unittest.TestCase):
         """
         Test version_time property
         """
-        test_value = 'odmqqmjzwplyxuvcvftj'
+        test_value = 'lfxplqtdacrdgstqperh'
         self.instance.version_time = test_value
         self.assertEqual(self.instance.version_time, test_value)
     
@@ -61,7 +61,7 @@ class Test_TemporarySpeedLimit(unittest.TestCase):
         """
         Test validity_status property
         """
-        test_value = 'yfggpzehdokylphopval'
+        test_value = 'asrknhcaizqgwdgzatnm'
         self.instance.validity_status = test_value
         self.assertEqual(self.instance.validity_status, test_value)
     
@@ -69,7 +69,7 @@ class Test_TemporarySpeedLimit(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'lzgztxbsbjdopzuyewyi'
+        test_value = 'cfpjzjrhpbksakividxt'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -77,7 +77,7 @@ class Test_TemporarySpeedLimit(unittest.TestCase):
         """
         Test end_time property
         """
-        test_value = 'xwrosplacxuadnhvrlty'
+        test_value = 'huxlibldenrnatjsarcb'
         self.instance.end_time = test_value
         self.assertEqual(self.instance.end_time, test_value)
     
@@ -85,7 +85,7 @@ class Test_TemporarySpeedLimit(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'ubzgbrippgpyswytdhxp'
+        test_value = 'iclgopqkqcddhpmtcqbc'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -93,7 +93,7 @@ class Test_TemporarySpeedLimit(unittest.TestCase):
         """
         Test speed_limit_kmh property
         """
-        test_value = int(33)
+        test_value = int(72)
         self.instance.speed_limit_kmh = test_value
         self.assertEqual(self.instance.speed_limit_kmh, test_value)
     
@@ -101,7 +101,7 @@ class Test_TemporarySpeedLimit(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'wkqtiahhqkzwfjdoepxy'
+        test_value = 'spixrnjfojioifntcmge'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -109,7 +109,7 @@ class Test_TemporarySpeedLimit(unittest.TestCase):
         """
         Test location_description property
         """
-        test_value = 'mjhkmgmrqysazcbeboom'
+        test_value = 'vcpnqfbpnacuuicwlors'
         self.instance.location_description = test_value
         self.assertEqual(self.instance.location_description, test_value)
     

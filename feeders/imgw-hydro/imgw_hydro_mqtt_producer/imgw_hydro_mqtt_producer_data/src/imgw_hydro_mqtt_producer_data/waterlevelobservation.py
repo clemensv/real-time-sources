@@ -179,17 +179,17 @@ class WaterLevelObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='yjnyrxyfqaoneabtdhtm',
-            station_name='dfgcbjatrrsjtfbxuyjt',
-            river='osqmsikidiesgpkjdywa',
-            voivodeship='zxxwznczmrbrdhmzqfvr',
-            water_level=float(75.15583059901181),
+            station_id='rjvfaeppxdmtanfdigty',
+            station_name='mkoogeesuzikmwejqalx',
+            river='qcfopucooyvictbbdzpp',
+            voivodeship='nxbhoabwrhbewrryigbc',
+            water_level=float(46.90226190815962),
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            water_temperature=float(12.58649736613644),
+            water_temperature=float(35.558110934713284),
             water_temperature_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(92.05306930137262),
+            discharge=float(47.61497418674594),
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            ice_phenomenon_code='csjhwlstipzbsazthphp',
-            overgrowth_code='cxowhezdlgmheclggvhu',
-            basin='numzwniiikjlpplbplzx'
+            ice_phenomenon_code='gvdfuxbrvcwastlqloob',
+            overgrowth_code='vuktabpjddiwvgizlhao',
+            basin='kxjwzcqdhdgvtpqdjthi'
         )

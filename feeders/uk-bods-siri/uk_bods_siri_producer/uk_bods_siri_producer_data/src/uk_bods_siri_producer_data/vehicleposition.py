@@ -124,6 +124,8 @@ class VehiclePosition:
             #pylint: disable=no-member
             result = self.to_json()
             #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
 
         if result is not None and content_type.endswith('+gzip'):
             # Handle string result from to_json()
@@ -191,24 +193,24 @@ class VehiclePosition:
             An instance of the dataclass.
         """
         return cls(
-            operator_ref='dmorscbgprftmfvjmtla',
-            vehicle_ref='febxvdawyrcqvbbmvlzl',
-            line_ref='tvggmdycugjnxyhlqhud',
-            direction_ref='agprdjgabienyqzyksbg',
-            published_line_name='pxhghzswjloxtkkszqec',
-            origin_ref='eujhxzkzbfzjyqnxrvmm',
-            origin_name='lzzazotgbwfurajooizq',
-            destination_ref='fhxmoxyjdtakscwvczdv',
-            destination_name='uudyofpkhijhtbnqauqr',
-            longitude=float(88.01654611038879),
-            latitude=float(85.8723180725231),
-            bearing=int(65),
+            operator_ref='mhkvonkyjtyonifxhehs',
+            vehicle_ref='xfbgofhkqvgeayiavlwp',
+            line_ref='hfjxtvjumhtcnwoobvjj',
+            direction_ref='gaxgycvunnkldaximzoy',
+            published_line_name='ehewwaapnvcqccutqbix',
+            origin_ref='hixxhndzhrcjeoelzrjq',
+            origin_name='xovfhpjukwetzyabvkog',
+            destination_ref='ypwipasekinhzsuhtqso',
+            destination_name='qhgszjantchjmokvzuon',
+            longitude=float(12.80979250729779),
+            latitude=float(94.49543885114772),
+            bearing=int(99),
             recorded_at_time=datetime.datetime.now(datetime.timezone.utc),
             valid_until_time=datetime.datetime.now(datetime.timezone.utc),
-            block_ref='uruxfigdfcotaxxlgjst',
-            vehicle_journey_ref='wnoxulcwmwblutjradmg',
+            block_ref='shfifbvkyajvkcoapkli',
+            vehicle_journey_ref='elvmgjblxxhzldscmzky',
             origin_aimed_departure_time=datetime.datetime.now(datetime.timezone.utc),
-            data_frame_ref='kibxtjxqdozxnovjqejt',
-            dated_vehicle_journey_ref='kvswgpqpkjcllzgyjwsq',
-            item_identifier='gginlawpryfitpxapmea'
+            data_frame_ref='sbariwssupetzjdkfjvx',
+            dated_vehicle_journey_ref='kewyfpodlvndqmlpwyyy',
+            item_identifier='buqirsnieeygimmhllig'
         )

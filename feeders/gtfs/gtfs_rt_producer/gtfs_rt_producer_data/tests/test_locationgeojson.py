@@ -28,9 +28,9 @@ class Test_LocationGeoJson(unittest.TestCase):
         Create instance of LocationGeoJson for testing
         """
         instance = LocationGeoJson(
-            locationGeoJsonId='phbtdcksgqqyqmpskcrh',
-            locationGeoJsonType='iscwscjhgqwhdursbons',
-            locationGeoJsonData='ytvaejtspkzclueaimcq'
+            locationGeoJsonId='deqrcprwkulsvcptodvo',
+            locationGeoJsonType='ymxiharsikcaznafadru',
+            locationGeoJsonData='bpjwmwlrnrxkewhizvbo'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_LocationGeoJson(unittest.TestCase):
         """
         Test locationGeoJsonId property
         """
-        test_value = 'phbtdcksgqqyqmpskcrh'
+        test_value = 'deqrcprwkulsvcptodvo'
         self.instance.locationGeoJsonId = test_value
         self.assertEqual(self.instance.locationGeoJsonId, test_value)
     
@@ -47,7 +47,7 @@ class Test_LocationGeoJson(unittest.TestCase):
         """
         Test locationGeoJsonType property
         """
-        test_value = 'iscwscjhgqwhdursbons'
+        test_value = 'ymxiharsikcaznafadru'
         self.instance.locationGeoJsonType = test_value
         self.assertEqual(self.instance.locationGeoJsonType, test_value)
     
@@ -55,7 +55,7 @@ class Test_LocationGeoJson(unittest.TestCase):
         """
         Test locationGeoJsonData property
         """
-        test_value = 'ytvaejtspkzclueaimcq'
+        test_value = 'bpjwmwlrnrxkewhizvbo'
         self.instance.locationGeoJsonData = test_value
         self.assertEqual(self.instance.locationGeoJsonData, test_value)
     

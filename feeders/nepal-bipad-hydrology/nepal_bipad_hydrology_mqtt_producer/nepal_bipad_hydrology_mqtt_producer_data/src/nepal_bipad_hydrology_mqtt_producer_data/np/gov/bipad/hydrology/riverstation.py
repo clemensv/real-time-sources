@@ -179,18 +179,18 @@ class RiverStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='zodxmiryodsgoydzoyeu',
-            title='kjtfdgctimhdbhwkpgjv',
-            basin='rqaztjidbinfrpsgdsbk',
-            latitude=float(26.367504014150544),
-            longitude=float(7.898204960290234),
-            elevation=int(70),
-            danger_level=float(18.98733087250828),
-            warning_level=float(61.19939604876843),
-            description='uvdhvekbxvgozodnppqk',
-            data_source='cvuhkjcmhjmrpvrxpxvt',
-            province=int(84),
-            district=int(49),
-            municipality=int(50),
-            ward=int(14)
+            station_id='zdaxsxtybdsacdtdlnhb',
+            title='hsyxeqnwojucgnogbtdr',
+            basin='vkvtvbgodtrnhesjietz',
+            latitude=float(81.72268953985733),
+            longitude=float(11.714478011700747),
+            elevation=int(25),
+            danger_level=float(69.52269911269528),
+            warning_level=float(62.20659509396016),
+            description='warcajfaabcsaegzwqez',
+            data_source='sluiydfphnclvafzmvqg',
+            province=int(55),
+            district=int(26),
+            municipality=int(92),
+            ward=int(68)
         )

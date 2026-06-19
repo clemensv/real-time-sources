@@ -291,7 +291,7 @@ def test_ca_gc_weather_aqhi_mqtt_cagcweatheraqhimqttcommunity(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "ca.gc.weather.aqhi.mqtt.Community":
+            if cloudevent['type'] == "ca.gc.weather.aqhi.Community":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -353,7 +353,7 @@ def test_ca_gc_weather_aqhi_mqtt_cagcweatheraqhimqttobservation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "ca.gc.weather.aqhi.mqtt.Observation":
+            if cloudevent['type'] == "ca.gc.weather.aqhi.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -415,7 +415,7 @@ def test_ca_gc_weather_aqhi_mqtt_cagcweatheraqhimqttforecast(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "ca.gc.weather.aqhi.mqtt.Forecast":
+            if cloudevent['type'] == "ca.gc.weather.aqhi.Forecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -477,7 +477,7 @@ def test_ca_gc_weather_aqhi_amqp_cagcweatheraqhiamqpcommunity(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "ca.gc.weather.aqhi.amqp.Community":
+            if cloudevent['type'] == "ca.gc.weather.aqhi.Community":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -539,7 +539,7 @@ def test_ca_gc_weather_aqhi_amqp_cagcweatheraqhiamqpobservation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "ca.gc.weather.aqhi.amqp.Observation":
+            if cloudevent['type'] == "ca.gc.weather.aqhi.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -601,7 +601,7 @@ def test_ca_gc_weather_aqhi_amqp_cagcweatheraqhiamqpforecast(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "ca.gc.weather.aqhi.amqp.Forecast":
+            if cloudevent['type'] == "ca.gc.weather.aqhi.Forecast":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

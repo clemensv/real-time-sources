@@ -165,11 +165,11 @@ class MeasurementPoint:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='iewlegbfxvcbjbsowlmo',
-            description='lhiqilgbxgbryvosxchl',
-            element_type='dnoeickxiuphadtopocq',
-            subarea='qnimogylmviyddqgvhzj',
-            longitude=float(21.987669052984604),
-            latitude=float(61.03069339097975),
-            saturation_intensity=int(89)
+            sensor_id='xtbbusmxfnxxgfkozmlp',
+            description='vaafnxqmnncfxiapchts',
+            element_type='mnxnstxvwpvxxvfuidnn',
+            subarea='vggvfpksnyjweqvdvtec',
+            longitude=float(12.205287660024633),
+            latitude=float(29.322629437648352),
+            saturation_intensity=int(27)
         )

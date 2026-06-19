@@ -28,9 +28,9 @@ class Test_SpaceWeatherAlert(unittest.TestCase):
         Create instance of SpaceWeatherAlert for testing
         """
         instance = SpaceWeatherAlert(
-            product_id='rlindmvnmramoesbalzl',
-            issue_datetime='plprhdlajachqxzvasxb',
-            message='dtfscgrwtkfqutfgdfod'
+            product_id='qdcyzsuiaiqhcsavjely',
+            issue_datetime='rsxbpfhpdkqowqaljose',
+            message='zptyflzeoqqjyauivtnn'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_SpaceWeatherAlert(unittest.TestCase):
         """
         Test product_id property
         """
-        test_value = 'rlindmvnmramoesbalzl'
+        test_value = 'qdcyzsuiaiqhcsavjely'
         self.instance.product_id = test_value
         self.assertEqual(self.instance.product_id, test_value)
     
@@ -47,7 +47,7 @@ class Test_SpaceWeatherAlert(unittest.TestCase):
         """
         Test issue_datetime property
         """
-        test_value = 'plprhdlajachqxzvasxb'
+        test_value = 'rsxbpfhpdkqowqaljose'
         self.instance.issue_datetime = test_value
         self.assertEqual(self.instance.issue_datetime, test_value)
     
@@ -55,7 +55,7 @@ class Test_SpaceWeatherAlert(unittest.TestCase):
         """
         Test message property
         """
-        test_value = 'dtfscgrwtkfqutfgdfod'
+        test_value = 'zptyflzeoqqjyauivtnn'
         self.instance.message = test_value
         self.assertEqual(self.instance.message, test_value)
     

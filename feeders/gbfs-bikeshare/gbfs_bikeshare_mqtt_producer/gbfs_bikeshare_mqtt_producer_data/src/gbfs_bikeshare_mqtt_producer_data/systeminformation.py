@@ -165,11 +165,11 @@ class SystemInformation:
             An instance of the dataclass.
         """
         return cls(
-            system_id='tbbwkiixedevuzbsbllx',
-            name='abdgoxtrubkkevghuccy',
-            operator='dgjpthsctcnytalqdypn',
-            url='rlghmrpvezacdzljhdxd',
-            timezone='gpydlmkvzdxcxqppuypg',
-            language='oxvqhgvgkjfxtpliiomn',
-            phone_number='rpiuoucylyteovaaokfa'
+            system_id='uvfctkfqucjlefncznsd',
+            name='fmuawzvymjecjnvyhnqp',
+            operator='lqdqsbbpinaoejxhrmue',
+            url='kzahepqkxarwihigqjkz',
+            timezone='rvljbuirccqvyptjhywu',
+            language='othsfmbhhlhplnmptmlr',
+            phone_number='qwnpjndqjloqeyztvcuc'
         )

@@ -157,7 +157,7 @@ class Levels:
             An instance of the dataclass.
         """
         return cls(
-            levelId='xjelfniokyshhwqfgrfj',
-            levelIndex=float(28.27573819571475),
-            levelName='ndfapjlyrwzjotukosxz'
+            levelId='sfxcpdhlidyjzxuybbxm',
+            levelIndex=float(60.40117019675263),
+            levelName='bhsekfaqmcfoldjbtven'
         )

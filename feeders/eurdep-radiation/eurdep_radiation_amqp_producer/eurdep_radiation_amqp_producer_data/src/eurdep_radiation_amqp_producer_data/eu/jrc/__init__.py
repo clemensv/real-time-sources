@@ -1,3 +1,3 @@
-from .eurdep import DoseRateReading, Station
+from .eurdep import Station, DoseRateReading
 
-__all__ = ["DoseRateReading", "Station"]
+__all__ = ["Station", "DoseRateReading"]

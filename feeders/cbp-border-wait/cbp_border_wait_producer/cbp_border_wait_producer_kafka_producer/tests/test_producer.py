@@ -225,7 +225,7 @@ def test_gov_cbp_borderwait_mqtt_govcbpborderwaitmqttport(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.cbp.borderwait.mqtt.Port":
+            if cloudevent['type'] == "gov.cbp.borderwait.Port":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_gov_cbp_borderwait_mqtt_govcbpborderwaitmqttwaittime(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.cbp.borderwait.mqtt.WaitTime":
+            if cloudevent['type'] == "gov.cbp.borderwait.WaitTime":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_gov_cbp_borderwait_amqp_govcbpborderwaitamqpport(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.cbp.borderwait.amqp.Port":
+            if cloudevent['type'] == "gov.cbp.borderwait.Port":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_gov_cbp_borderwait_amqp_govcbpborderwaitamqpwaittime(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.cbp.borderwait.amqp.WaitTime":
+            if cloudevent['type'] == "gov.cbp.borderwait.WaitTime":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

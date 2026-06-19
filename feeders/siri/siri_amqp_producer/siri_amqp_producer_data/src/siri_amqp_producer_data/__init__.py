@@ -1,4 +1,4 @@
-from .vehicleposition import VehiclePosition
 from .operator import Operator
+from .vehicleposition import VehiclePosition
 
-__all__ = ["VehiclePosition", "Operator"]
+__all__ = ["Operator", "VehiclePosition"]

@@ -325,7 +325,7 @@ class TestEuJrcEurdepAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.jrc.eurdep.amqp.Station"
+                    assert cloud_event_payload.get("type") == "eu.jrc.eurdep.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -364,7 +364,7 @@ class TestEuJrcEurdepAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.jrc.eurdep.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'eu.jrc.eurdep.Station'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('country') == "{country}".format(country="value")
@@ -419,7 +419,7 @@ class TestEuJrcEurdepAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "eu.jrc.eurdep.amqp.DoseRateReading"
+                    assert cloud_event_payload.get("type") == "eu.jrc.eurdep.DoseRateReading"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -458,7 +458,7 @@ class TestEuJrcEurdepAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'eu.jrc.eurdep.amqp.DoseRateReading'
+        assert properties.get('cloudEvents:type') == 'eu.jrc.eurdep.DoseRateReading'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('country') == "{country}".format(country="value")

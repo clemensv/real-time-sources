@@ -175,16 +175,16 @@ class DatedServiceJourney:
             An instance of the dataclass.
         """
         return cls(
-            service_journey_id='bhclnjulrxfcgiewufta',
-            operating_day='fykqhlkclewiudkezisk',
-            line_ref='vgnkiaecyuekwcfnneka',
-            operator_ref='wyzqpcdvqvdhsehzxgaa',
-            direction_ref='idaxsyhvbpfvmsjbvqkn',
-            vehicle_mode='rsamhxfwcferrudwjpkv',
-            route_ref='uvlpdtpioghogjykyobr',
-            published_line_name='rtnotstzdlkvnlrdnzjo',
-            external_line_ref='tqtidlcmbcsckyvnunyu',
-            origin_name='wvkuttwsglhshkchsinl',
-            destination_name='mvrjrmpxxgnkpbqjmixy',
-            data_source='kfjaeuzgbulbmfwhssyg'
+            service_journey_id='cvmjvetmnwhtvqsmbqmj',
+            operating_day='myoecsvfvfslscaqsbed',
+            line_ref='vxizvnyeyvfppubdxqjv',
+            operator_ref='hfatoybrktdctduyuoww',
+            direction_ref='olyqwfytyzmccvxsvckd',
+            vehicle_mode='wghbcygfrxhmtuzidsvv',
+            route_ref='igedbkwyfawarekwbcnt',
+            published_line_name='grunizrygifmxxitnesf',
+            external_line_ref='vlzgtskxvqgtehjtriay',
+            origin_name='afpfrexoqlwmwpcfspaa',
+            destination_name='rwlifoepdtarburbqexv',
+            data_source='wogupxplfibswqzthkab'
         )

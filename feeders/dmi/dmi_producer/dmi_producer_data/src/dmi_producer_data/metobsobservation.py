@@ -168,11 +168,11 @@ class MetObsObservation:
             An instance of the dataclass.
         """
         return cls(
-            observation_id='jjffdjumyljeftlbwsck',
-            station_id='lzkiwnulpmnihvoirulh',
+            observation_id='fiashvyjrlkjxoiacryf',
+            station_id='bpazxgqwncfbzgpbrwpf',
             parameter_id=ParameterIdenum.sealev_dvr,
             observed=datetime.datetime.now(datetime.timezone.utc),
-            value=float(45.76173978930401),
-            latitude=float(36.97306283168803),
-            longitude=float(64.00550513699879)
+            value=float(19.8673563800533),
+            latitude=float(12.50335306954189),
+            longitude=float(85.31854472045683)
         )

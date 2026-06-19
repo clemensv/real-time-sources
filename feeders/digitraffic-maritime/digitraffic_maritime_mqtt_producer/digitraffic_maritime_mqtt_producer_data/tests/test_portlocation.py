@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from digitraffic_maritime_mqtt_producer_data.portlocation import PortLocation
-from digitraffic_maritime_mqtt_producer_data.berth import Berth
 from digitraffic_maritime_mqtt_producer_data.portarea import PortArea
+from digitraffic_maritime_mqtt_producer_data.berth import Berth
 import datetime
 
 
@@ -31,14 +31,14 @@ class Test_PortLocation(unittest.TestCase):
         Create instance of PortLocation for testing
         """
         instance = PortLocation(
-            locode='qmpchbedpvaiwkddonar',
+            locode='bplkdbddwkdritzyxtvo',
             data_updated_time=datetime.datetime.now(datetime.timezone.utc),
-            location_name='cawldkvcsxqncfmvptrq',
-            country='mtqgyfoacexviyvfsmkl',
-            longitude=float(6.669252226129807),
-            latitude=float(49.53804824508882),
+            location_name='teullbbhodgwzrtoouor',
+            country='mtjqqvpkwtgkchthfetw',
+            longitude=float(1.290229671073495),
+            latitude=float(95.5054454252793),
             port_areas=[None],
-            berths=[None, None, None, None]
+            berths=[None]
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_PortLocation(unittest.TestCase):
         """
         Test locode property
         """
-        test_value = 'qmpchbedpvaiwkddonar'
+        test_value = 'bplkdbddwkdritzyxtvo'
         self.instance.locode = test_value
         self.assertEqual(self.instance.locode, test_value)
     
@@ -63,7 +63,7 @@ class Test_PortLocation(unittest.TestCase):
         """
         Test location_name property
         """
-        test_value = 'cawldkvcsxqncfmvptrq'
+        test_value = 'teullbbhodgwzrtoouor'
         self.instance.location_name = test_value
         self.assertEqual(self.instance.location_name, test_value)
     
@@ -71,7 +71,7 @@ class Test_PortLocation(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'mtqgyfoacexviyvfsmkl'
+        test_value = 'mtjqqvpkwtgkchthfetw'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -79,7 +79,7 @@ class Test_PortLocation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(6.669252226129807)
+        test_value = float(1.290229671073495)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -87,7 +87,7 @@ class Test_PortLocation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(49.53804824508882)
+        test_value = float(95.5054454252793)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -103,7 +103,7 @@ class Test_PortLocation(unittest.TestCase):
         """
         Test berths property
         """
-        test_value = [None, None, None, None]
+        test_value = [None]
         self.instance.berths = test_value
         self.assertEqual(self.instance.berths, test_value)
     

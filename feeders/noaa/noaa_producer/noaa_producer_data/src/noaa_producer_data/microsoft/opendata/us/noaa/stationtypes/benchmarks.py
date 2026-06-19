@@ -157,5 +157,5 @@ class Benchmarks:
             An instance of the dataclass.
         """
         return cls(
-            self_='wsinfsutjounyuvznydo'
+            self_='nzzcrqzmmamutnpwhpbf'
         )

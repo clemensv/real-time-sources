@@ -294,7 +294,7 @@ def test_au_gov_bom_weather_mqtt_augovbomweathermqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "AU.Gov.BOM.Weather.mqtt.Station":
+            if cloudevent['type'] == "AU.Gov.BOM.Weather.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -356,7 +356,7 @@ def test_au_gov_bom_weather_mqtt_augovbomweathermqttweatherobservation(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "AU.Gov.BOM.Weather.mqtt.WeatherObservation":
+            if cloudevent['type'] == "AU.Gov.BOM.Weather.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -418,7 +418,7 @@ def test_au_gov_bom_weather_amqp_augovbomweatheramqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "AU.Gov.BOM.Weather.amqp.Station":
+            if cloudevent['type'] == "AU.Gov.BOM.Weather.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -480,7 +480,7 @@ def test_au_gov_bom_weather_amqp_augovbomweatheramqpweatherobservation(kafka_emu
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "AU.Gov.BOM.Weather.amqp.WeatherObservation":
+            if cloudevent['type'] == "AU.Gov.BOM.Weather.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -542,7 +542,7 @@ def test_au_gov_bom_warning_mqtt_augovbomwarningmqttwarningbulletin(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "AU.Gov.BOM.Warning.mqtt.WarningBulletin":
+            if cloudevent['type'] == "AU.Gov.BOM.Warning.WarningBulletin":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -604,7 +604,7 @@ def test_au_gov_bom_warning_amqp_augovbomwarningamqpwarningbulletin(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "AU.Gov.BOM.Warning.amqp.WarningBulletin":
+            if cloudevent['type'] == "AU.Gov.BOM.Warning.WarningBulletin":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

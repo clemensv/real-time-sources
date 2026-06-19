@@ -225,7 +225,7 @@ def test_de_waters_hydrology_mqtt_dewatershydrologymqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Waters.Hydrology.mqtt.Station":
+            if cloudevent['type'] == "DE.Waters.Hydrology.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_de_waters_hydrology_mqtt_dewatershydrologymqttwaterlevelobservation(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Waters.Hydrology.mqtt.WaterLevelObservation":
+            if cloudevent['type'] == "DE.Waters.Hydrology.WaterLevelObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_de_waters_hydrology_amqp_dewatershydrologyamqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Waters.Hydrology.amqp.Station":
+            if cloudevent['type'] == "DE.Waters.Hydrology.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_de_waters_hydrology_amqp_dewatershydrologyamqpwaterlevelobservation(kaf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.Waters.Hydrology.amqp.WaterLevelObservation":
+            if cloudevent['type'] == "DE.Waters.Hydrology.WaterLevelObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

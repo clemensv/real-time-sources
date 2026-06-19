@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -195,24 +195,24 @@ class Webcam:
             An instance of the dataclass.
         """
         return cls(
-            identifier='qvrtvqhpendjaseqdjcr',
-            road='dxmqaqnaikevytyqojso',
-            road_ids=['mxwfqyhobftkqdetldss', 'cphxwtbyreyrtvgcibkp', 'lowteybzcnjoyloattci'],
+            identifier='ghfschmgiryavvndmpgb',
+            road='tjcznxeipylfzcgnugte',
+            road_ids=['yzkcdhwzbzsntmjrmutc', 'veznojsyxwkpebtysihm', 'rdkjqkqhxrapglgvqrsa'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
             display_type=DisplayTypeenum.ROADWORKS,
-            title='icmwoolndjeiagatzxwc',
-            subtitle='fpychjdpjvuikxabkbig',
+            title='mivlzmlxoxkcaynkivxt',
+            subtitle='enkkioaxzpxgosquzbqn',
             description_lines=None,
             future=True,
-            is_blocked=True,
-            icon='kobcfvzynygxnovoulxb',
-            extent='hmxfdlcqacgpimknsnzq',
-            point='fktslgnvdynwfywqyivv',
-            coordinate_lat=float(46.30922205941368),
-            coordinate_lon=float(61.99127671974313),
-            route_recommendation_json='cymedrxifdjydbtlyaiw',
+            is_blocked=False,
+            icon='ouwkcgcgqgdjgghpctio',
+            extent='cudiszgxdvalloqyusfa',
+            point='bmrtcpqbtrzxveqxokyc',
+            coordinate_lat=float(51.45984880835742),
+            coordinate_lon=float(25.431668374935988),
+            route_recommendation_json='gykjiykquapgzpdrrvwr',
             footer_lines=None,
-            operator_name='oiongugrlgbtftsqwwoz',
-            image_url='rqcmlzygeuqrlnrtaatq',
-            stream_url='ocslerteqtugvcxvguxb'
+            operator_name='trogbumgscqofdwoikbl',
+            image_url='ugveqgkowtruzajoudrz',
+            stream_url='vnzaldzqolfepjetjtuc'
         )

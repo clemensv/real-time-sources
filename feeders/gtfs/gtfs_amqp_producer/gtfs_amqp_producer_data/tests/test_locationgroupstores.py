@@ -28,9 +28,9 @@ class Test_LocationGroupStores(unittest.TestCase):
         Create instance of LocationGroupStores for testing
         """
         instance = LocationGroupStores(
-            locationGroupStoreId='icirwnchlsvfgadkaqoj',
-            locationGroupId='etmhidyexvnliupxmppi',
-            storeId='zcoqyjztttfjcnjrgwpy'
+            locationGroupStoreId='udciqyfkovnysqwpwivj',
+            locationGroupId='iehioqdhpjrbjvxiogms',
+            storeId='ajxfhyjtlkqztongsgjr'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_LocationGroupStores(unittest.TestCase):
         """
         Test locationGroupStoreId property
         """
-        test_value = 'icirwnchlsvfgadkaqoj'
+        test_value = 'udciqyfkovnysqwpwivj'
         self.instance.locationGroupStoreId = test_value
         self.assertEqual(self.instance.locationGroupStoreId, test_value)
     
@@ -47,7 +47,7 @@ class Test_LocationGroupStores(unittest.TestCase):
         """
         Test locationGroupId property
         """
-        test_value = 'etmhidyexvnliupxmppi'
+        test_value = 'iehioqdhpjrbjvxiogms'
         self.instance.locationGroupId = test_value
         self.assertEqual(self.instance.locationGroupId, test_value)
     
@@ -55,7 +55,7 @@ class Test_LocationGroupStores(unittest.TestCase):
         """
         Test storeId property
         """
-        test_value = 'zcoqyjztttfjcnjrgwpy'
+        test_value = 'ajxfhyjtlkqztongsgjr'
         self.instance.storeId = test_value
         self.assertEqual(self.instance.storeId, test_value)
     

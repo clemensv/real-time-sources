@@ -109,7 +109,7 @@ def test_dk_dmi_metobs_kafka_dkdmimetobskafkastation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.dmi.metObs.kafka.Station":
+            if cloudevent['type'] == "dk.dmi.metObs.MetObsStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -173,7 +173,7 @@ def test_dk_dmi_metobs_kafka_dkdmimetobskafkaobservation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.dmi.metObs.kafka.Observation":
+            if cloudevent['type'] == "dk.dmi.metObs.MetObsObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -237,7 +237,7 @@ def test_dk_dmi_oceanobs_kafka_dkdmioceanobskafkastation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.dmi.oceanObs.kafka.Station":
+            if cloudevent['type'] == "dk.dmi.oceanObs.OceanStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -301,7 +301,7 @@ def test_dk_dmi_oceanobs_kafka_dkdmioceanobskafkatidewaterstation(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.dmi.oceanObs.kafka.TidewaterStation":
+            if cloudevent['type'] == "dk.dmi.oceanObs.TidewaterStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -365,7 +365,7 @@ def test_dk_dmi_oceanobs_kafka_dkdmioceanobskafkaobservation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.dmi.oceanObs.kafka.Observation":
+            if cloudevent['type'] == "dk.dmi.oceanObs.OceanObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -429,7 +429,7 @@ def test_dk_dmi_oceanobs_kafka_dkdmioceanobskafkatidewaterprediction(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.dmi.oceanObs.kafka.TidewaterPrediction":
+            if cloudevent['type'] == "dk.dmi.oceanObs.TidewaterPrediction":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -493,7 +493,7 @@ def test_dk_dmi_lightning_kafka_dkdmilightningkafkasensor(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.dmi.lightning.kafka.Sensor":
+            if cloudevent['type'] == "dk.dmi.lightning.LightningSensor":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -557,7 +557,7 @@ def test_dk_dmi_lightning_kafka_dkdmilightningkafkastrike(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "dk.dmi.lightning.kafka.Strike":
+            if cloudevent['type'] == "dk.dmi.lightning.LightningStrike":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

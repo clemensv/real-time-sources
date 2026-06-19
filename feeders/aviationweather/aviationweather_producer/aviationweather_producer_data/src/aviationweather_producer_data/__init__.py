@@ -1,5 +1,5 @@
-from .metar import Metar
-from .sigmet import Sigmet
 from .station import Station
+from .sigmet import Sigmet
+from .metar import Metar
 
-__all__ = ["Metar", "Sigmet", "Station"]
+__all__ = ["Station", "Sigmet", "Metar"]

@@ -159,8 +159,8 @@ class Areas:
             An instance of the dataclass.
         """
         return cls(
-            areaId='rejeljctydwsxixeiqzc',
-            areaName='wwywvrfmurnfyxphulsx',
-            areaDesc='yjawirwzaphrxpwjwuve',
-            areaUrl='hujeotdxjmpcaeemhptx'
+            areaId='fbpqzmqadbjyppnfkttk',
+            areaName='nledoqqpoiuwpdqumvpk',
+            areaDesc='asyyhpqjxzzhjqwmonhg',
+            areaUrl='jrgysvxwikbqsrgcvuwx'
         )

@@ -28,20 +28,20 @@ class Test_SensorReading(unittest.TestCase):
         Create instance of SensorReading for testing
         """
         instance = SensorReading(
-            sensor_id=int(68),
-            timestamp='terhksdmlmvdqrdihool',
-            sensor_type_name='pqcetwdwtgzcwdmlvvbi',
-            pm10_ug_m3=float(27.410182276065253),
-            pm2_5_ug_m3=float(89.66505417654534),
-            pm1_0_ug_m3=float(21.28758331357559),
-            pm4_0_ug_m3=float(95.63106847581611),
-            temperature_celsius=float(74.05868099045121),
-            humidity_percent=float(52.405202474551956),
-            pressure_pa=float(36.09105607301921),
-            pressure_sealevel_pa=float(46.604886337476245),
-            noise_laeq_db=float(50.452350382143116),
-            noise_la_min_db=float(32.26302358936374),
-            noise_la_max_db=float(80.65838757418446)
+            sensor_id=int(85),
+            timestamp='tiihnezvcozqyvpsbsvg',
+            sensor_type_name='xlvmmafylnybiksohmmx',
+            pm10_ug_m3=float(37.24290410668114),
+            pm2_5_ug_m3=float(18.788230767604453),
+            pm1_0_ug_m3=float(87.15876545625201),
+            pm4_0_ug_m3=float(93.11095035254014),
+            temperature_celsius=float(94.84106795950039),
+            humidity_percent=float(27.241353137450975),
+            pressure_pa=float(69.77641029917724),
+            pressure_sealevel_pa=float(42.30934860852271),
+            noise_laeq_db=float(36.90053034159596),
+            noise_la_min_db=float(72.03629743718973),
+            noise_la_max_db=float(13.872311736200515)
         )
         return instance
 
@@ -50,7 +50,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = int(68)
+        test_value = int(85)
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'terhksdmlmvdqrdihool'
+        test_value = 'tiihnezvcozqyvpsbsvg'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -66,7 +66,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test sensor_type_name property
         """
-        test_value = 'pqcetwdwtgzcwdmlvvbi'
+        test_value = 'xlvmmafylnybiksohmmx'
         self.instance.sensor_type_name = test_value
         self.assertEqual(self.instance.sensor_type_name, test_value)
     
@@ -74,7 +74,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test pm10_ug_m3 property
         """
-        test_value = float(27.410182276065253)
+        test_value = float(37.24290410668114)
         self.instance.pm10_ug_m3 = test_value
         self.assertEqual(self.instance.pm10_ug_m3, test_value)
     
@@ -82,7 +82,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test pm2_5_ug_m3 property
         """
-        test_value = float(89.66505417654534)
+        test_value = float(18.788230767604453)
         self.instance.pm2_5_ug_m3 = test_value
         self.assertEqual(self.instance.pm2_5_ug_m3, test_value)
     
@@ -90,7 +90,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test pm1_0_ug_m3 property
         """
-        test_value = float(21.28758331357559)
+        test_value = float(87.15876545625201)
         self.instance.pm1_0_ug_m3 = test_value
         self.assertEqual(self.instance.pm1_0_ug_m3, test_value)
     
@@ -98,7 +98,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test pm4_0_ug_m3 property
         """
-        test_value = float(95.63106847581611)
+        test_value = float(93.11095035254014)
         self.instance.pm4_0_ug_m3 = test_value
         self.assertEqual(self.instance.pm4_0_ug_m3, test_value)
     
@@ -106,7 +106,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test temperature_celsius property
         """
-        test_value = float(74.05868099045121)
+        test_value = float(94.84106795950039)
         self.instance.temperature_celsius = test_value
         self.assertEqual(self.instance.temperature_celsius, test_value)
     
@@ -114,7 +114,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test humidity_percent property
         """
-        test_value = float(52.405202474551956)
+        test_value = float(27.241353137450975)
         self.instance.humidity_percent = test_value
         self.assertEqual(self.instance.humidity_percent, test_value)
     
@@ -122,7 +122,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test pressure_pa property
         """
-        test_value = float(36.09105607301921)
+        test_value = float(69.77641029917724)
         self.instance.pressure_pa = test_value
         self.assertEqual(self.instance.pressure_pa, test_value)
     
@@ -130,7 +130,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test pressure_sealevel_pa property
         """
-        test_value = float(46.604886337476245)
+        test_value = float(42.30934860852271)
         self.instance.pressure_sealevel_pa = test_value
         self.assertEqual(self.instance.pressure_sealevel_pa, test_value)
     
@@ -138,7 +138,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test noise_laeq_db property
         """
-        test_value = float(50.452350382143116)
+        test_value = float(36.90053034159596)
         self.instance.noise_laeq_db = test_value
         self.assertEqual(self.instance.noise_laeq_db, test_value)
     
@@ -146,7 +146,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test noise_la_min_db property
         """
-        test_value = float(32.26302358936374)
+        test_value = float(72.03629743718973)
         self.instance.noise_la_min_db = test_value
         self.assertEqual(self.instance.noise_la_min_db, test_value)
     
@@ -154,7 +154,7 @@ class Test_SensorReading(unittest.TestCase):
         """
         Test noise_la_max_db property
         """
-        test_value = float(80.65838757418446)
+        test_value = float(13.872311736200515)
         self.instance.noise_la_max_db = test_value
         self.assertEqual(self.instance.noise_la_max_db, test_value)
     

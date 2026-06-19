@@ -291,7 +291,7 @@ def test_be_irail_mqtt_beirailmqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irail.mqtt.Station":
+            if cloudevent['type'] == "be.irail.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -353,7 +353,7 @@ def test_be_irail_mqtt_beirailmqttstationboard(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irail.mqtt.StationBoard":
+            if cloudevent['type'] == "be.irail.StationBoard":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -415,7 +415,7 @@ def test_be_irail_mqtt_beirailmqttarrivalboard(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irail.mqtt.ArrivalBoard":
+            if cloudevent['type'] == "be.irail.ArrivalBoard":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -477,7 +477,7 @@ def test_be_irail_amqp_beirailamqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irail.amqp.Station":
+            if cloudevent['type'] == "be.irail.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -539,7 +539,7 @@ def test_be_irail_amqp_beirailamqpstationboard(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irail.amqp.StationBoard":
+            if cloudevent['type'] == "be.irail.StationBoard":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -601,7 +601,7 @@ def test_be_irail_amqp_beirailamqparrivalboard(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irail.amqp.ArrivalBoard":
+            if cloudevent['type'] == "be.irail.ArrivalBoard":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

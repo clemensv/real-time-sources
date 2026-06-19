@@ -183,17 +183,17 @@ class TsunamiAlert:
             An instance of the dataclass.
         """
         return cls(
-            event_id='zlvhubqlmdbcdtkuezdw',
-            serial=int(65),
+            event_id='kococdpvlkkrlpghswnr',
+            serial=int(82),
             info_type=InfoTypeenum.ISSUED,
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            title_jp='nagjdxlihumfsegjepdd',
-            title_en='vucaiwmxenefjbmgqoyn',
-            bulletin_type='heftxeatgsyxdtgsyzzo',
-            detail_url='xseorafnydwzacctgypi',
-            affected_coastal_regions=[None, None],
-            observations=[None, None, None],
-            prefecture='vcgvfqukdiogwlvninbk',
-            severity=SeverityEnum.advisory
+            title_jp='nqlmcwqtjavyovxwafux',
+            title_en='swhtaiasmtgnuglambox',
+            bulletin_type='tzigxcfqfsesccojgtfj',
+            detail_url='uchzfvnslpvcsfmfudlj',
+            affected_coastal_regions=[None],
+            observations=[None, None],
+            prefecture='xhyiosoifyyeaeuhxllf',
+            severity=SeverityEnum.info
         )

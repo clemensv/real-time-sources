@@ -166,10 +166,10 @@ class AffectedCoastalRegion:
             An instance of the dataclass.
         """
         return cls(
-            code='xxditkbbwqvhqlafczci',
-            name='viuigaksnefbukatoigy',
+            code='ewirnsltkdaatmlksrsx',
+            name='cysjilqatrqizstiyapx',
             category=CategoryEnum.MAJOR_WARNING,
-            expected_max_wave_height_m=float(32.79191049050026),
+            expected_max_wave_height_m=float(75.57543199099031),
             expected_arrival_datetime=datetime.datetime.now(datetime.timezone.utc),
             expected_arrival_datetime_local=datetime.datetime.now(datetime.timezone.utc)
         )

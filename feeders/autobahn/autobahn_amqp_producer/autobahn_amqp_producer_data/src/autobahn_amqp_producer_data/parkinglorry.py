@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -197,25 +197,25 @@ class ParkingLorry:
             An instance of the dataclass.
         """
         return cls(
-            identifier='usaneuehoklttjhutnuj',
-            road='fzpvpvcrivlmvgltzich',
-            road_ids=['wzbhctouabxxlsglfglf', 'hcfqbxhgilnztofvnfby'],
+            identifier='fnlgofvjmawozhlatdvr',
+            road='pcnlofkvlcxjzohrgaui',
+            road_ids=['yayvlxuhtaftokfctwsk', 'jcqcxjssjxdoiwycvdnn', 'jszwzgubdhmigxfflgnv'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
             display_type=DisplayTypeenum.ROADWORKS,
-            title='inkkwkqcuznaxrlpafbl',
-            subtitle='pqjzqomhnymvqbyjaswn',
+            title='cjlecmcerfwubfzqidpq',
+            subtitle='gkkckqjzmldugjxaopqj',
             description_lines=None,
             future=False,
-            is_blocked=False,
-            icon='huuckumvuqmmposwmwej',
-            start_lc_position=int(92),
-            extent='acqtgkorklwyehifqpta',
-            point='lserieatgotxvgyydrlp',
-            coordinate_lat=float(23.50150093330522),
-            coordinate_lon=float(25.01757056309796),
-            route_recommendation_json='einsqdsgqbprzaeflnad',
+            is_blocked=True,
+            icon='iljfnzwnakmjhlqxotvk',
+            start_lc_position=int(56),
+            extent='iczlkatmutelqkwgatzn',
+            point='rloytnsoveattudeuyzu',
+            coordinate_lat=float(9.474335264746259),
+            coordinate_lon=float(20.453171744195487),
+            route_recommendation_json='grmxplrpyvgyqruypopr',
             footer_lines=None,
             amenity_descriptions=None,
-            car_space_count=int(20),
-            lorry_space_count=int(63)
+            car_space_count=int(1),
+            lorry_space_count=int(27)
         )

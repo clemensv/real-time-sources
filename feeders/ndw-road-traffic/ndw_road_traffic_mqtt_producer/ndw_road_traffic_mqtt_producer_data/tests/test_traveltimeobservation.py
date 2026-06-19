@@ -28,13 +28,13 @@ class Test_TravelTimeObservation(unittest.TestCase):
         Create instance of TravelTimeObservation for testing
         """
         instance = TravelTimeObservation(
-            measurement_site_id='qrvkgvpoossvijwphpac',
-            measurement_time='bcueuccrnlemajjoqqyx',
-            duration=float(46.33363490209164),
-            reference_duration=float(14.772258073834688),
-            accuracy=float(60.488216728233),
-            data_quality=float(85.51385511939421),
-            number_of_input_values=int(80)
+            measurement_site_id='kfyzwnjsvxalpvgbazhv',
+            measurement_time='rgxsheanvamhhohvqdqu',
+            duration=float(53.14099726811568),
+            reference_duration=float(96.11693288394964),
+            accuracy=float(17.569361874829127),
+            data_quality=float(29.67647069973214),
+            number_of_input_values=int(23)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_TravelTimeObservation(unittest.TestCase):
         """
         Test measurement_site_id property
         """
-        test_value = 'qrvkgvpoossvijwphpac'
+        test_value = 'kfyzwnjsvxalpvgbazhv'
         self.instance.measurement_site_id = test_value
         self.assertEqual(self.instance.measurement_site_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_TravelTimeObservation(unittest.TestCase):
         """
         Test measurement_time property
         """
-        test_value = 'bcueuccrnlemajjoqqyx'
+        test_value = 'rgxsheanvamhhohvqdqu'
         self.instance.measurement_time = test_value
         self.assertEqual(self.instance.measurement_time, test_value)
     
@@ -59,7 +59,7 @@ class Test_TravelTimeObservation(unittest.TestCase):
         """
         Test duration property
         """
-        test_value = float(46.33363490209164)
+        test_value = float(53.14099726811568)
         self.instance.duration = test_value
         self.assertEqual(self.instance.duration, test_value)
     
@@ -67,7 +67,7 @@ class Test_TravelTimeObservation(unittest.TestCase):
         """
         Test reference_duration property
         """
-        test_value = float(14.772258073834688)
+        test_value = float(96.11693288394964)
         self.instance.reference_duration = test_value
         self.assertEqual(self.instance.reference_duration, test_value)
     
@@ -75,7 +75,7 @@ class Test_TravelTimeObservation(unittest.TestCase):
         """
         Test accuracy property
         """
-        test_value = float(60.488216728233)
+        test_value = float(17.569361874829127)
         self.instance.accuracy = test_value
         self.assertEqual(self.instance.accuracy, test_value)
     
@@ -83,7 +83,7 @@ class Test_TravelTimeObservation(unittest.TestCase):
         """
         Test data_quality property
         """
-        test_value = float(85.51385511939421)
+        test_value = float(29.67647069973214)
         self.instance.data_quality = test_value
         self.assertEqual(self.instance.data_quality, test_value)
     
@@ -91,7 +91,7 @@ class Test_TravelTimeObservation(unittest.TestCase):
         """
         Test number_of_input_values property
         """
-        test_value = int(80)
+        test_value = int(23)
         self.instance.number_of_input_values = test_value
         self.assertEqual(self.instance.number_of_input_values, test_value)
     

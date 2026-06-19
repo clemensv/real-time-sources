@@ -169,13 +169,13 @@ class FeedInfo:
             An instance of the dataclass.
         """
         return cls(
-            feedPublisherName='xpppgelcrpiqdompytje',
-            feedPublisherUrl='usgbalnilmpqvojtldbt',
-            feedLang='tzlfmkrlvhsaosroirgw',
-            defaultLang='bsczdmmatnkepxjrctgl',
-            feedStartDate='msyltlcxotijmefolbte',
-            feedEndDate='lwntadxwqohteiqfjapl',
-            feedVersion='xubfdxnxvpqqzavbqlqx',
-            feedContactEmail='hzhjoddtfdcbccigrhiv',
-            feedContactUrl='mhhzzwbdcivwjqfnwodz'
+            feedPublisherName='tgbskmgeptksapsevsba',
+            feedPublisherUrl='fimgggtnczrbgfwstdfl',
+            feedLang='ipigvinksinaqfqwihdi',
+            defaultLang='hhqfttvlcbcthzfvygbr',
+            feedStartDate='xmwmrybkmwaqamrehlei',
+            feedEndDate='jhyiqdigvksapznhpyrf',
+            feedVersion='usnwpmyvjriexyovpnrm',
+            feedContactEmail='geywmoumtzqkqppcqrth',
+            feedContactUrl='zlpnjxiktponyqcagpdr'
         )

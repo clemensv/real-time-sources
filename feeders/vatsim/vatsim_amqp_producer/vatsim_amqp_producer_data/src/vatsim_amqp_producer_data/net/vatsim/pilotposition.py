@@ -185,21 +185,21 @@ class PilotPosition:
             An instance of the dataclass.
         """
         return cls(
-            cid=int(87),
-            callsign='kqcalumuamlsrmnxztgl',
-            latitude=float(99.12334630214126),
-            longitude=float(31.025264187182),
-            altitude=int(89),
-            groundspeed=int(6),
-            heading=int(50),
-            transponder='kjyvipbajghdhdrumzko',
-            qnh_mb=int(16),
-            flight_rules='yckaabvqagobcdabfolk',
-            aircraft_short='nzfiigqgtdkkdbqpstfz',
-            departure='tubqzhysekdkiekjcqsr',
-            arrival='izbjfpkhlgjrwyrzqbfs',
-            route='exwkyjiyicpjlsyennou',
-            cruise_altitude='iucfkmbxuzlsfvervjed',
-            pilot_rating=int(43),
-            last_updated='epmzbhiwawqxcazpnsaf'
+            cid=int(35),
+            callsign='otcxbniadolberqwrsuw',
+            latitude=float(22.847745806696807),
+            longitude=float(35.77089157916934),
+            altitude=int(75),
+            groundspeed=int(18),
+            heading=int(76),
+            transponder='wqzwwbgmfbywuslpdmyp',
+            qnh_mb=int(36),
+            flight_rules='snrvpncmopgkzlzblcww',
+            aircraft_short='buqndlxiktklgskgfylz',
+            departure='azmmansvqfmapszbnoqm',
+            arrival='lmchwuimftclxxlqokwx',
+            route='vkhatwifmppitwhlfpax',
+            cruise_altitude='ajlzflcbnrubqpxsvsva',
+            pilot_rating=int(34),
+            last_updated='jrmbmvlqppoxzscrdzej'
         )

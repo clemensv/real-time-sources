@@ -11,9 +11,9 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
 from jma_bosai_warning_amqp_producer_data.eventenum import EventEnum
 from jma_bosai_warning_amqp_producer_data.officetypeenum import OfficeTypeenum
-from jma_bosai_warning_amqp_producer_data.severityenum import SeverityEnum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -172,13 +172,13 @@ class Office:
             An instance of the dataclass.
         """
         return cls(
-            office_code='zeesjkihyghtrscbkqzv',
-            area_code='vgzezerxylqhmobjqbov',
-            name_jp='xyztmkgwkwnykvwzrkzq',
-            name_en='oidukdmaljlqvjmfozeg',
-            parent_office_code='xfcifyhjhehtyhtomosj',
+            office_code='wjdjcmogyrahvfxjrwts',
+            area_code='bqtwyuniznrkujgtpklc',
+            name_jp='qlsoscancivfftowgwdf',
+            name_en='pbfewbwkthuqdzodnyfj',
+            parent_office_code='fkivdukoastjokrmlaca',
             office_type=OfficeTypeenum.PREFECTURE,
-            prefecture='isfvbaelfoxcxcthtlfr',
+            prefecture='esmmmbstpqajxnuarjwk',
             severity=SeverityEnum.info,
-            event=EventEnum.warning
+            event=EventEnum.info
         )

@@ -28,13 +28,13 @@ class Test_EstuaryElevationNGVD29(unittest.TestCase):
         Create instance of EstuaryElevationNGVD29 for testing
         """
         instance = EstuaryElevationNGVD29(
-            site_no='rkthnstpmhnrlegszdko',
-            datetime='fzaoamkakfckkfaagcle',
-            value=float(77.1019828220584),
-            exception='kuxezvespfvlqmwdrwep',
-            qualifiers=['nbpqodslsgxvbmriebkh', 'pzuqfaafrooepmzdukyf', 'ybmebbbyrunimgutebnf'],
-            parameter_cd='nhwfyoaemusbvczdthnr',
-            timeseries_cd='nsmlwufacfhxmoencrdq'
+            site_no='hsgysuirgvksnezztcgy',
+            datetime='gdcjfacdndokxwgskqzv',
+            value=float(70.26702972408754),
+            exception='avrgfigqrmnavapsgauf',
+            qualifiers=['odyqlbctlkjdecnqzxxj', 'nyxxmjotvzeqhdjkdbnj', 'ydggfbzpwinnjqtiscsw'],
+            parameter_cd='mxsjqdzvxztzjhmdtabc',
+            timeseries_cd='ebbklzftsxbgmrjwhjcf'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_EstuaryElevationNGVD29(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'rkthnstpmhnrlegszdko'
+        test_value = 'hsgysuirgvksnezztcgy'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_EstuaryElevationNGVD29(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'fzaoamkakfckkfaagcle'
+        test_value = 'gdcjfacdndokxwgskqzv'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_EstuaryElevationNGVD29(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(77.1019828220584)
+        test_value = float(70.26702972408754)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_EstuaryElevationNGVD29(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'kuxezvespfvlqmwdrwep'
+        test_value = 'avrgfigqrmnavapsgauf'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_EstuaryElevationNGVD29(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['nbpqodslsgxvbmriebkh', 'pzuqfaafrooepmzdukyf', 'ybmebbbyrunimgutebnf']
+        test_value = ['odyqlbctlkjdecnqzxxj', 'nyxxmjotvzeqhdjkdbnj', 'ydggfbzpwinnjqtiscsw']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_EstuaryElevationNGVD29(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'nhwfyoaemusbvczdthnr'
+        test_value = 'mxsjqdzvxztzjhmdtabc'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_EstuaryElevationNGVD29(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'nsmlwufacfhxmoencrdq'
+        test_value = 'ebbklzftsxbgmrjwhjcf'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

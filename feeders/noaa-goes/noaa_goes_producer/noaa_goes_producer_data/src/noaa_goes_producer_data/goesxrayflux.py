@@ -159,8 +159,8 @@ class GoesXrayFlux:
             An instance of the dataclass.
         """
         return cls(
-            time_tag='micmjfuqulxpuigzrnlo',
-            satellite=int(47),
-            flux=float(12.208501664186056),
-            energy='sszhzvajctynmojacrep'
+            time_tag='fjcunvxlrttvjnrpccne',
+            satellite=int(10),
+            flux=float(60.35038860624642),
+            energy='bctxtgwdvwmpgcjojrse'
         )

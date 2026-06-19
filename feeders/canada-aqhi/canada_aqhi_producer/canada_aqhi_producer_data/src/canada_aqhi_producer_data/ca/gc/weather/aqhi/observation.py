@@ -164,10 +164,10 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            province='asntlntpdsnsbospwkvv',
-            community_name='zomlmdrnamlomzqxwdsc',
-            cgndb_code='bwislpyouumvwfiewnzz',
-            observation_datetime='gohxjawkgnngdnozducq',
-            aqhi=float(18.925537326834096),
+            province='pstchqzfmdrtfljbndfh',
+            community_name='dcihhedamupxurmlhwos',
+            cgndb_code='nrjwtcqvnespqaxikbme',
+            observation_datetime='zldoceghgspiumldxvsh',
+            aqhi=float(11.34243338400156),
             aqhi_category=AqhiCategoryenum.Low
         )

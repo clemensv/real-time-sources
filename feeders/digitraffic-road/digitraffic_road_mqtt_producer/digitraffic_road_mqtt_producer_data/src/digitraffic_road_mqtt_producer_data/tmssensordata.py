@@ -163,10 +163,10 @@ class TmsSensorData:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(22),
-            sensor_id=int(94),
-            value=float(57.739946637469664),
-            time=int(29),
-            start=int(69),
-            end=int(4)
+            station_id=int(43),
+            sensor_id=int(30),
+            value=float(15.29425696634128),
+            time=int(51),
+            start=int(46),
+            end=int(2)
         )

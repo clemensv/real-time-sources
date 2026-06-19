@@ -188,21 +188,21 @@ class EstimatedVehicleJourney:
             An instance of the dataclass.
         """
         return cls(
-            service_journey_id='pxxsblrpowcaeqfwofcs',
-            operating_day='jgwpiomqaimvggqruwhs',
-            line_ref='xhbtjgcjdtkfdomgrwva',
-            operator_ref='cjscoxpgytvtfpkzhdjc',
-            direction_ref='tohlcthfxnrznlmkbxkk',
-            vehicle_mode='sgmmopvdzndghvwpjwnw',
-            published_line_name='oxjzokqandxghryoxtjr',
-            route_ref='dbubvjeysrwuoggjcwuv',
-            origin_name='ccbigxzrwnyjdkvdtjfp',
-            destination_name='cbsbjliuxdeweowajjol',
+            service_journey_id='loklswfnggxqdezyftpk',
+            operating_day='vapvquicvwyodybndhdb',
+            line_ref='feogeyirqncametwkhqi',
+            operator_ref='dqrrispfpljnuogqohay',
+            direction_ref='fxnkpmbdwuuaqdwpejkh',
+            vehicle_mode='ueojhyfandtazpjvdpqh',
+            published_line_name='fleehuihsfhkpbomffzw',
+            route_ref='udvpedhiuzxnsczkmkpc',
+            origin_name='mjzbhfnorugtcnguovle',
+            destination_name='tjptxfldnckkqcqgkbol',
             is_cancellation=True,
-            is_extra_journey=True,
+            is_extra_journey=False,
             is_complete_stop_sequence=True,
-            monitored=True,
-            data_source='cnrkpsbmzwiojafplidm',
+            monitored=False,
+            data_source='qcaplyqirbihkmlumpth',
             recorded_at_time=datetime.datetime.now(datetime.timezone.utc),
-            estimated_calls=[None, None, None, None, None]
+            estimated_calls=[None]
         )

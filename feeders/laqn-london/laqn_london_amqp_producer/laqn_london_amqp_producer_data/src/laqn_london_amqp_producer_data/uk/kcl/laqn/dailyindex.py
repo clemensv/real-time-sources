@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from laqn_london_amqp_producer_data.uk.kcl.laqn.airqualitybandenum import AirQualityBandenum
 from laqn_london_amqp_producer_data.uk.kcl.laqn.indexsourceenum import IndexSourceenum
+from laqn_london_amqp_producer_data.uk.kcl.laqn.airqualitybandenum import AirQualityBandenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -165,10 +165,10 @@ class DailyIndex:
             An instance of the dataclass.
         """
         return cls(
-            site_code='lsmdhuncyrtkfosbxyno',
-            bulletin_date='bajeqjkmiwtzuzctkcfy',
-            species_code='jcrqsqosidfenemxrhnu',
-            air_quality_index=int(14),
+            site_code='idqdfsktdpaxnbdzquyx',
+            bulletin_date='ccgqngobdqamfwrthvwj',
+            species_code='kirvpnfwqnvywgzqjjib',
+            air_quality_index=int(65),
             air_quality_band=AirQualityBandenum.Low,
             index_source=IndexSourceenum.Measurement
         )

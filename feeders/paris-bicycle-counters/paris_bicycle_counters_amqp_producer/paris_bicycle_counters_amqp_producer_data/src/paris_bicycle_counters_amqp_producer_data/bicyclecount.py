@@ -167,11 +167,11 @@ class BicycleCount:
             An instance of the dataclass.
         """
         return cls(
-            counter_id='wavbgcszixjckewaffqb',
-            counter_name='ycxfdurixpybqsvxdmhs',
-            count=int(78),
+            counter_id='kabqkeavajkhydlcsvhi',
+            counter_name='qblopoyknrbddiitwzfm',
+            count=int(69),
             date=datetime.datetime.now(datetime.timezone.utc),
-            longitude=float(78.07366346915259),
-            latitude=float(29.006317977771435),
-            ce_id='ilvsdplbelacsgjmobtg'
+            longitude=float(30.126790350020038),
+            latitude=float(28.982268438969893),
+            ce_id='kizxxfzqbnuxffxqqekc'
         )

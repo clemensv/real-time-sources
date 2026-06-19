@@ -28,12 +28,12 @@ class Test_Wind10Min(unittest.TestCase):
         Create instance of Wind10Min for testing
         """
         instance = Wind10Min(
-            station_id='itqhtabseraumcmwnerz',
-            timestamp='tqtbaxfzvplxpeywnnwt',
-            quality_level=int(21),
-            wind_speed=float(20.81440921568839),
-            wind_direction=float(6.2141398388734785),
-            state='mndqficrvpuoiqlrcljj'
+            station_id='itrkxeevllcjjbykdvhn',
+            timestamp='kgrejrdrpwqtceiypbve',
+            quality_level=int(23),
+            wind_speed=float(13.538997274459508),
+            wind_direction=float(75.4620952850964),
+            state='qtyxvgzeikuvickyqirb'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'itqhtabseraumcmwnerz'
+        test_value = 'itrkxeevllcjjbykdvhn'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'tqtbaxfzvplxpeywnnwt'
+        test_value = 'kgrejrdrpwqtceiypbve'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -58,7 +58,7 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(21)
+        test_value = int(23)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -66,7 +66,7 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test wind_speed property
         """
-        test_value = float(20.81440921568839)
+        test_value = float(13.538997274459508)
         self.instance.wind_speed = test_value
         self.assertEqual(self.instance.wind_speed, test_value)
     
@@ -74,7 +74,7 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test wind_direction property
         """
-        test_value = float(6.2141398388734785)
+        test_value = float(75.4620952850964)
         self.instance.wind_direction = test_value
         self.assertEqual(self.instance.wind_direction, test_value)
     
@@ -82,7 +82,7 @@ class Test_Wind10Min(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'mndqficrvpuoiqlrcljj'
+        test_value = 'qtyxvgzeikuvickyqirb'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     

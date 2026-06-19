@@ -225,7 +225,7 @@ def test_at_geosphere_tawes_mqtt_atgeospheretawesmqttweatherstation(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "at.geosphere.tawes.mqtt.WeatherStation":
+            if cloudevent['type'] == "at.geosphere.tawes.WeatherStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_at_geosphere_tawes_mqtt_atgeospheretawesmqttweatherobservation(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "at.geosphere.tawes.mqtt.WeatherObservation":
+            if cloudevent['type'] == "at.geosphere.tawes.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_at_geosphere_tawes_amqp_atgeospheretawesamqpweatherstation(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "at.geosphere.tawes.amqp.WeatherStation":
+            if cloudevent['type'] == "at.geosphere.tawes.WeatherStation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_at_geosphere_tawes_amqp_atgeospheretawesamqpweatherobservation(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "at.geosphere.tawes.amqp.WeatherObservation":
+            if cloudevent['type'] == "at.geosphere.tawes.WeatherObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

@@ -93,7 +93,7 @@ def test_modes_kafka_modeskafkaadsb(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Mode_S.kafka.ADSB":
+            if cloudevent['type'] == "Mode_S.ADSB":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -157,7 +157,7 @@ def test_modes_kafka_modeskafkaaltitudereply(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Mode_S.kafka.AltitudeReply":
+            if cloudevent['type'] == "Mode_S.AltitudeReply":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_modes_kafka_modeskafkaidentityreply(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Mode_S.kafka.IdentityReply":
+            if cloudevent['type'] == "Mode_S.IdentityReply":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -285,7 +285,7 @@ def test_modes_kafka_modeskafkaacquisitionreply(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Mode_S.kafka.AcquisitionReply":
+            if cloudevent['type'] == "Mode_S.AcquisitionReply":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_modes_kafka_modeskafkacommbaltitude(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Mode_S.kafka.CommBAltitude":
+            if cloudevent['type'] == "Mode_S.CommBAltitude":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -413,7 +413,7 @@ def test_modes_kafka_modeskafkacommbidentity(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Mode_S.kafka.CommBIdentity":
+            if cloudevent['type'] == "Mode_S.CommBIdentity":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

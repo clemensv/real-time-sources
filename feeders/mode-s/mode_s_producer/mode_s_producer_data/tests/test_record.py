@@ -28,22 +28,22 @@ class Test_Record(unittest.TestCase):
         Create instance of Record for testing
         """
         instance = Record(
-            icao24='mdufdzavwaxnsoeckdlh',
-            receiver_id='gzbfawrizjscdubwygmb',
-            msg_type='umyccmjftvjvigfcnfsk',
-            ts=int(60),
-            df=int(51),
-            tc=int(44),
-            bcode='lzuvtinqbjoxnenoyscm',
-            alt=int(90),
-            cs='cjpewmuwlmvcstikwpzr',
-            sq='mvcydrjljfyovknerwwg',
-            lat=float(40.59004914089422),
-            lon=float(48.31838831201435),
-            spd=float(3.580064889619061),
-            ang=float(29.132896977906064),
-            vr=int(57),
-            rssi=float(90.48835667497752)
+            icao24='tiqyostnlqnoowqdxwqy',
+            receiver_id='oscoqbckmkxsygxxwpxr',
+            msg_type='gsqwigbrkdmikuhmyarb',
+            ts=int(2),
+            df=int(83),
+            tc=int(63),
+            bcode='ksnqiqsulgwsttmsympv',
+            alt=int(32),
+            cs='btptirnfjirjakfqzjbx',
+            sq='bzlrjdpqljinxdktzolf',
+            lat=float(97.55697156873465),
+            lon=float(54.62488383586229),
+            spd=float(48.79649818556659),
+            ang=float(27.051708758911996),
+            vr=int(27),
+            rssi=float(3.971138007186592)
         )
         return instance
 
@@ -52,7 +52,7 @@ class Test_Record(unittest.TestCase):
         """
         Test icao24 property
         """
-        test_value = 'mdufdzavwaxnsoeckdlh'
+        test_value = 'tiqyostnlqnoowqdxwqy'
         self.instance.icao24 = test_value
         self.assertEqual(self.instance.icao24, test_value)
     
@@ -60,7 +60,7 @@ class Test_Record(unittest.TestCase):
         """
         Test receiver_id property
         """
-        test_value = 'gzbfawrizjscdubwygmb'
+        test_value = 'oscoqbckmkxsygxxwpxr'
         self.instance.receiver_id = test_value
         self.assertEqual(self.instance.receiver_id, test_value)
     
@@ -68,7 +68,7 @@ class Test_Record(unittest.TestCase):
         """
         Test msg_type property
         """
-        test_value = 'umyccmjftvjvigfcnfsk'
+        test_value = 'gsqwigbrkdmikuhmyarb'
         self.instance.msg_type = test_value
         self.assertEqual(self.instance.msg_type, test_value)
     
@@ -76,7 +76,7 @@ class Test_Record(unittest.TestCase):
         """
         Test ts property
         """
-        test_value = int(60)
+        test_value = int(2)
         self.instance.ts = test_value
         self.assertEqual(self.instance.ts, test_value)
     
@@ -84,7 +84,7 @@ class Test_Record(unittest.TestCase):
         """
         Test df property
         """
-        test_value = int(51)
+        test_value = int(83)
         self.instance.df = test_value
         self.assertEqual(self.instance.df, test_value)
     
@@ -92,7 +92,7 @@ class Test_Record(unittest.TestCase):
         """
         Test tc property
         """
-        test_value = int(44)
+        test_value = int(63)
         self.instance.tc = test_value
         self.assertEqual(self.instance.tc, test_value)
     
@@ -100,7 +100,7 @@ class Test_Record(unittest.TestCase):
         """
         Test bcode property
         """
-        test_value = 'lzuvtinqbjoxnenoyscm'
+        test_value = 'ksnqiqsulgwsttmsympv'
         self.instance.bcode = test_value
         self.assertEqual(self.instance.bcode, test_value)
     
@@ -108,7 +108,7 @@ class Test_Record(unittest.TestCase):
         """
         Test alt property
         """
-        test_value = int(90)
+        test_value = int(32)
         self.instance.alt = test_value
         self.assertEqual(self.instance.alt, test_value)
     
@@ -116,7 +116,7 @@ class Test_Record(unittest.TestCase):
         """
         Test cs property
         """
-        test_value = 'cjpewmuwlmvcstikwpzr'
+        test_value = 'btptirnfjirjakfqzjbx'
         self.instance.cs = test_value
         self.assertEqual(self.instance.cs, test_value)
     
@@ -124,7 +124,7 @@ class Test_Record(unittest.TestCase):
         """
         Test sq property
         """
-        test_value = 'mvcydrjljfyovknerwwg'
+        test_value = 'bzlrjdpqljinxdktzolf'
         self.instance.sq = test_value
         self.assertEqual(self.instance.sq, test_value)
     
@@ -132,7 +132,7 @@ class Test_Record(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(40.59004914089422)
+        test_value = float(97.55697156873465)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -140,7 +140,7 @@ class Test_Record(unittest.TestCase):
         """
         Test lon property
         """
-        test_value = float(48.31838831201435)
+        test_value = float(54.62488383586229)
         self.instance.lon = test_value
         self.assertEqual(self.instance.lon, test_value)
     
@@ -148,7 +148,7 @@ class Test_Record(unittest.TestCase):
         """
         Test spd property
         """
-        test_value = float(3.580064889619061)
+        test_value = float(48.79649818556659)
         self.instance.spd = test_value
         self.assertEqual(self.instance.spd, test_value)
     
@@ -156,7 +156,7 @@ class Test_Record(unittest.TestCase):
         """
         Test ang property
         """
-        test_value = float(29.132896977906064)
+        test_value = float(27.051708758911996)
         self.instance.ang = test_value
         self.assertEqual(self.instance.ang, test_value)
     
@@ -164,7 +164,7 @@ class Test_Record(unittest.TestCase):
         """
         Test vr property
         """
-        test_value = int(57)
+        test_value = int(27)
         self.instance.vr = test_value
         self.assertEqual(self.instance.vr, test_value)
     
@@ -172,7 +172,7 @@ class Test_Record(unittest.TestCase):
         """
         Test rssi property
         """
-        test_value = float(90.48835667497752)
+        test_value = float(3.971138007186592)
         self.instance.rssi = test_value
         self.assertEqual(self.instance.rssi, test_value)
     

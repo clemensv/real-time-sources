@@ -161,9 +161,9 @@ class RouteConfig:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='dvrgwrbssscpsacqioog',
-            route_tag='ctnyprsillgqlpkhuynb',
-            stop_or_vehicle_id='dnpduauosuhhmrclnpgd',
-            event_type='uybqvtrxttybkhfnmcju',
-            route_config='crjdkclzjroliwlauiod'
+            agency_id='tbtegtdajszfvowubvju',
+            route_tag='fgnkjkteycxxmjvqvkfi',
+            stop_or_vehicle_id='saqwyahhmpbojkqiiwnq',
+            event_type='nvzlperihbjuhfvyjzsu',
+            route_config='krmwoxbiqvooihglukbv'
         )

@@ -167,11 +167,11 @@ class TidewaterPrediction:
             An instance of the dataclass.
         """
         return cls(
-            prediction_id='nwiwkoodmkqcznooivto',
-            station_id='mvvwgkihdjezbvasvoiw',
-            prediction_type='oexzrhxluawkymblztlv',
+            prediction_id='duxsmnsbpdffzebnvdaf',
+            station_id='guipjwsjqbhixoyehlxx',
+            prediction_type='vvrmdrmoqnldbmatfjpq',
             prediction_time=datetime.datetime.now(datetime.timezone.utc),
-            value=float(59.676097127409896),
-            latitude=float(15.784246603413976),
-            longitude=float(6.5329988926361215)
+            value=float(26.302475166467897),
+            latitude=float(39.12063395380171),
+            longitude=float(96.20750435213652)
         )

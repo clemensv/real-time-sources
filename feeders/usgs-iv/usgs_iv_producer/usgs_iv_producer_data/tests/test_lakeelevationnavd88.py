@@ -28,13 +28,13 @@ class Test_LakeElevationNAVD88(unittest.TestCase):
         Create instance of LakeElevationNAVD88 for testing
         """
         instance = LakeElevationNAVD88(
-            site_no='oqsgxmfhyqrqmpthbtwe',
-            datetime='qhtncuwngihsrmhdgasv',
-            value=float(11.92007049538092),
-            exception='xznxdpjumqsyburqctkl',
-            qualifiers=['ptdanblpgjuliihqcqfl', 'tqpixlvtvvgtwwhfcspz', 'urmnuoxcrysoelvqydnn'],
-            parameter_cd='kbmeirqwpzajuihpkwcx',
-            timeseries_cd='bezwyhujuynorbwjkdqw'
+            site_no='xozlvjfnsglfazjmcbgx',
+            datetime='uryvuaryhybntqndjvtd',
+            value=float(36.04670158023111),
+            exception='memlowzrmdtcnhabhpnv',
+            qualifiers=['hljlfnirlgdeohpvcvac', 'qvnentuodpttwsegzgan', 'qmuycbsftkmgdgrdyhso', 'kftgauomziudnaabezve'],
+            parameter_cd='ybmmqwxpyunbfhanrmbv',
+            timeseries_cd='gitsoiihgehghtgcnxsa'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_LakeElevationNAVD88(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'oqsgxmfhyqrqmpthbtwe'
+        test_value = 'xozlvjfnsglfazjmcbgx'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_LakeElevationNAVD88(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'qhtncuwngihsrmhdgasv'
+        test_value = 'uryvuaryhybntqndjvtd'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_LakeElevationNAVD88(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(11.92007049538092)
+        test_value = float(36.04670158023111)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_LakeElevationNAVD88(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'xznxdpjumqsyburqctkl'
+        test_value = 'memlowzrmdtcnhabhpnv'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_LakeElevationNAVD88(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['ptdanblpgjuliihqcqfl', 'tqpixlvtvvgtwwhfcspz', 'urmnuoxcrysoelvqydnn']
+        test_value = ['hljlfnirlgdeohpvcvac', 'qvnentuodpttwsegzgan', 'qmuycbsftkmgdgrdyhso', 'kftgauomziudnaabezve']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_LakeElevationNAVD88(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'kbmeirqwpzajuihpkwcx'
+        test_value = 'ybmmqwxpyunbfhanrmbv'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_LakeElevationNAVD88(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'bezwyhujuynorbwjkdqw'
+        test_value = 'gitsoiihgehghtgcnxsa'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

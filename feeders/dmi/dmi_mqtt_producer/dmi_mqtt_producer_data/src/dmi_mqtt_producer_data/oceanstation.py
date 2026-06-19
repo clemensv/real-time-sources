@@ -184,15 +184,15 @@ class OceanStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='erhbkndxhvdyhqdrpocm',
-            name='ulxhjgviarebpgqxlsta',
+            station_id='kchqdvniuobecmdsfike',
+            name='yqwdiaugverecjossycn',
             country=CountryEnum.DNK,
-            owner='roqrbeyqvqfnflipmmfb',
-            type='odfkgnpnmksmtckftjdr',
-            status='mcyvxlnshujquikdwary',
-            parameter_id=['uqjfvinnughjgvegmrse', 'xxweukkbwkdmhwhgxnxi', 'wonrekrxpophkdxwuqdl'],
-            latitude=float(67.82911552273117),
-            longitude=float(66.74441901116428),
+            owner='vmbofkllzrnmtsjhoszy',
+            type='zohjcgnbroxfgaqsbikt',
+            status='vxooisnfuivdojgbibqm',
+            parameter_id=['wvyuglbgqwkehhfjllhh', 'nttaatzwhpuqmkygojeh', 'pxtfanqcesgwmnmujjkr', 'stbeczrnjnbwiopqhcvm'],
+            latitude=float(96.93412775187868),
+            longitude=float(35.97874518539553),
             valid_from=datetime.datetime.now(datetime.timezone.utc),
             valid_to=datetime.datetime.now(datetime.timezone.utc),
             operation_from=datetime.datetime.now(datetime.timezone.utc),

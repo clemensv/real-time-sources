@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import siri_mqtt_producer_data
 from siri_mqtt_producer_data import VehiclePosition
-from test_siri_mqtt_producer_data_vehicleposition import Test_VehiclePosition
+from test_vehicleposition import Test_VehiclePosition
 from siri_mqtt_producer_data import Operator
-from test_siri_mqtt_producer_data_operator import Test_Operator
+from test_operator import Test_Operator
 from siri_mqtt_producer_mqtt_client import OrgSiriMqttMqttClient
 
 @pytest_asyncio.fixture

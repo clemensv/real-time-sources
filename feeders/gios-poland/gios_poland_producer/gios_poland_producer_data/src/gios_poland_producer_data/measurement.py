@@ -163,9 +163,9 @@ class Measurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(99),
-            sensor_id=int(29),
-            sensor_code='esfyhkgxmnvjsgwpnjee',
+            station_id=int(29),
+            sensor_id=int(70),
+            sensor_code='bhtidqrlbxnkcwiekwpw',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(21.653108951630706)
+            value=float(55.300109503244485)
         )

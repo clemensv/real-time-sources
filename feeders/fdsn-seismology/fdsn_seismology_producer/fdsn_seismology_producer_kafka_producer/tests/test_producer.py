@@ -95,7 +95,7 @@ def test_org_fdsn_event_kafka_orgfdsneventkafkaearthquake(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.fdsn.event.kafka.Earthquake":
+            if cloudevent['type'] == "org.fdsn.event.Earthquake":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -159,7 +159,7 @@ def test_org_fdsn_event_kafka_orgfdsneventkafkanode(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "org.fdsn.event.kafka.Node":
+            if cloudevent['type'] == "org.fdsn.event.Node":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

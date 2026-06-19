@@ -28,26 +28,26 @@ class Test_Event(unittest.TestCase):
         Create instance of Event for testing
         """
         instance = Event(
-            event_id=int(54),
-            title='brovnwjwjolywirwrans',
-            description='rbapvtnfprfsbinvbxav',
-            startdate='zxvnnxmixglifhclhmra',
-            enddate='snqhpaatsovurqekrucf',
-            url='qusmextkyxgamgdvzqsg',
-            image_link='gwtdpedkxarmxrdxnaki',
-            status='dvibwieqzvvvqkegxaga',
-            location_city='anxlfhyvyjmhabldvyks',
-            location_name='lckcdnrvwxyigmqszamc',
-            location_address='blixzirxwyliwzctlvyf',
-            location_zip_code='siipmcdfginwufhodtvo',
-            location_country_code='uoknjoqwxhetanfxeamq',
-            location_latitude=float(66.8327725690012),
-            location_longitude=float(30.491883198401226),
-            organiser_id=int(74),
-            organiser_name='esrjeuwyrjlojoclkstl',
-            minimum_price_amount_in_cents=int(83),
-            minimum_price_currency='wptxlgxddkxmyymvkqab',
-            availability='vpknslivdjjuukmwwgtk'
+            event_id=int(4),
+            title='jrfcqomlkpikckefnxkk',
+            description='ptgttkgfdbymjrjcbvze',
+            startdate='byhlupwdsqbinmmihxmm',
+            enddate='agjbjjkecdyyukftegxm',
+            url='twxvfmjipgzfzewdnlcr',
+            image_link='cnpewrjvaoufkoaqlgrs',
+            status='zwltmmkcfevomdhpmdwe',
+            location_city='ztnhaontsmdijlmxqinr',
+            location_name='wzvbyejdyeyajyzfhlnz',
+            location_address='cmkcucjnfjvlxlpaabho',
+            location_zip_code='kdjyehqoifznxegdwvqz',
+            location_country_code='xhpbwohgwdzclylicgbp',
+            location_latitude=float(49.674177333260374),
+            location_longitude=float(61.53184306072546),
+            organiser_id=int(64),
+            organiser_name='hskcntmlhyurrvevtmle',
+            minimum_price_amount_in_cents=int(29),
+            minimum_price_currency='abmpvirgxmklmtcahhzq',
+            availability='qliljzljpstnawgmbbyz'
         )
         return instance
 
@@ -56,7 +56,7 @@ class Test_Event(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = int(54)
+        test_value = int(4)
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -64,7 +64,7 @@ class Test_Event(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'brovnwjwjolywirwrans'
+        test_value = 'jrfcqomlkpikckefnxkk'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -72,7 +72,7 @@ class Test_Event(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'rbapvtnfprfsbinvbxav'
+        test_value = 'ptgttkgfdbymjrjcbvze'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -80,7 +80,7 @@ class Test_Event(unittest.TestCase):
         """
         Test startdate property
         """
-        test_value = 'zxvnnxmixglifhclhmra'
+        test_value = 'byhlupwdsqbinmmihxmm'
         self.instance.startdate = test_value
         self.assertEqual(self.instance.startdate, test_value)
     
@@ -88,7 +88,7 @@ class Test_Event(unittest.TestCase):
         """
         Test enddate property
         """
-        test_value = 'snqhpaatsovurqekrucf'
+        test_value = 'agjbjjkecdyyukftegxm'
         self.instance.enddate = test_value
         self.assertEqual(self.instance.enddate, test_value)
     
@@ -96,7 +96,7 @@ class Test_Event(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'qusmextkyxgamgdvzqsg'
+        test_value = 'twxvfmjipgzfzewdnlcr'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
@@ -104,7 +104,7 @@ class Test_Event(unittest.TestCase):
         """
         Test image_link property
         """
-        test_value = 'gwtdpedkxarmxrdxnaki'
+        test_value = 'cnpewrjvaoufkoaqlgrs'
         self.instance.image_link = test_value
         self.assertEqual(self.instance.image_link, test_value)
     
@@ -112,7 +112,7 @@ class Test_Event(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'dvibwieqzvvvqkegxaga'
+        test_value = 'zwltmmkcfevomdhpmdwe'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     
@@ -120,7 +120,7 @@ class Test_Event(unittest.TestCase):
         """
         Test location_city property
         """
-        test_value = 'anxlfhyvyjmhabldvyks'
+        test_value = 'ztnhaontsmdijlmxqinr'
         self.instance.location_city = test_value
         self.assertEqual(self.instance.location_city, test_value)
     
@@ -128,7 +128,7 @@ class Test_Event(unittest.TestCase):
         """
         Test location_name property
         """
-        test_value = 'lckcdnrvwxyigmqszamc'
+        test_value = 'wzvbyejdyeyajyzfhlnz'
         self.instance.location_name = test_value
         self.assertEqual(self.instance.location_name, test_value)
     
@@ -136,7 +136,7 @@ class Test_Event(unittest.TestCase):
         """
         Test location_address property
         """
-        test_value = 'blixzirxwyliwzctlvyf'
+        test_value = 'cmkcucjnfjvlxlpaabho'
         self.instance.location_address = test_value
         self.assertEqual(self.instance.location_address, test_value)
     
@@ -144,7 +144,7 @@ class Test_Event(unittest.TestCase):
         """
         Test location_zip_code property
         """
-        test_value = 'siipmcdfginwufhodtvo'
+        test_value = 'kdjyehqoifznxegdwvqz'
         self.instance.location_zip_code = test_value
         self.assertEqual(self.instance.location_zip_code, test_value)
     
@@ -152,7 +152,7 @@ class Test_Event(unittest.TestCase):
         """
         Test location_country_code property
         """
-        test_value = 'uoknjoqwxhetanfxeamq'
+        test_value = 'xhpbwohgwdzclylicgbp'
         self.instance.location_country_code = test_value
         self.assertEqual(self.instance.location_country_code, test_value)
     
@@ -160,7 +160,7 @@ class Test_Event(unittest.TestCase):
         """
         Test location_latitude property
         """
-        test_value = float(66.8327725690012)
+        test_value = float(49.674177333260374)
         self.instance.location_latitude = test_value
         self.assertEqual(self.instance.location_latitude, test_value)
     
@@ -168,7 +168,7 @@ class Test_Event(unittest.TestCase):
         """
         Test location_longitude property
         """
-        test_value = float(30.491883198401226)
+        test_value = float(61.53184306072546)
         self.instance.location_longitude = test_value
         self.assertEqual(self.instance.location_longitude, test_value)
     
@@ -176,7 +176,7 @@ class Test_Event(unittest.TestCase):
         """
         Test organiser_id property
         """
-        test_value = int(74)
+        test_value = int(64)
         self.instance.organiser_id = test_value
         self.assertEqual(self.instance.organiser_id, test_value)
     
@@ -184,7 +184,7 @@ class Test_Event(unittest.TestCase):
         """
         Test organiser_name property
         """
-        test_value = 'esrjeuwyrjlojoclkstl'
+        test_value = 'hskcntmlhyurrvevtmle'
         self.instance.organiser_name = test_value
         self.assertEqual(self.instance.organiser_name, test_value)
     
@@ -192,7 +192,7 @@ class Test_Event(unittest.TestCase):
         """
         Test minimum_price_amount_in_cents property
         """
-        test_value = int(83)
+        test_value = int(29)
         self.instance.minimum_price_amount_in_cents = test_value
         self.assertEqual(self.instance.minimum_price_amount_in_cents, test_value)
     
@@ -200,7 +200,7 @@ class Test_Event(unittest.TestCase):
         """
         Test minimum_price_currency property
         """
-        test_value = 'wptxlgxddkxmyymvkqab'
+        test_value = 'abmpvirgxmklmtcahhzq'
         self.instance.minimum_price_currency = test_value
         self.assertEqual(self.instance.minimum_price_currency, test_value)
     
@@ -208,7 +208,7 @@ class Test_Event(unittest.TestCase):
         """
         Test availability property
         """
-        test_value = 'vpknslivdjjuukmwwgtk'
+        test_value = 'qliljzljpstnawgmbbyz'
         self.instance.availability = test_value
         self.assertEqual(self.instance.availability, test_value)
     

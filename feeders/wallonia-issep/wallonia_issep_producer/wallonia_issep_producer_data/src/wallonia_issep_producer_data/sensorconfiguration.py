@@ -155,6 +155,6 @@ class SensorConfiguration:
             An instance of the dataclass.
         """
         return cls(
-            configuration_id='pewkqniydwhnrbjzueoa',
-            province='rgccvxpoibopoerceohu'
+            configuration_id='zkxjzckvwzwcdsqwukaq',
+            province='kbkgnpinmeaawqopnfaa'
         )

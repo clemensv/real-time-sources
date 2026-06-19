@@ -168,11 +168,11 @@ class OceanObservation:
             An instance of the dataclass.
         """
         return cls(
-            observation_id='kihfmgpojmswyflluymg',
-            station_id='sdzcpddqyqyrzdyuflxb',
+            observation_id='munlhusxjzmywujmkpjk',
+            station_id='ufpogtmwbhdydglgzfud',
             parameter_id=ParameterIdenum.sealev_dvr,
             observed=datetime.datetime.now(datetime.timezone.utc),
-            value=float(51.02246953466697),
-            latitude=float(96.0463089413934),
-            longitude=float(96.48316832159519)
+            value=float(59.20659487054842),
+            latitude=float(93.80099762867839),
+            longitude=float(74.37689057705373)
         )

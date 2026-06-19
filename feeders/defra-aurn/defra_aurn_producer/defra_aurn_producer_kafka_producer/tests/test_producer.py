@@ -294,7 +294,7 @@ def test_uk_gov_defra_aurn_stations_mqtt_ukgovdefraaurnstationsmqttstation(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.defra.aurn.Stations.mqtt.Station":
+            if cloudevent['type'] == "uk.gov.defra.aurn.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -356,7 +356,7 @@ def test_uk_gov_defra_aurn_stations_amqp_ukgovdefraaurnstationsamqpstation(kafka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.defra.aurn.Stations.amqp.Station":
+            if cloudevent['type'] == "uk.gov.defra.aurn.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -418,7 +418,7 @@ def test_uk_gov_defra_aurn_timeseries_mqtt_ukgovdefraaurntimeseriesmqtttimeserie
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.defra.aurn.Timeseries.mqtt.Timeseries":
+            if cloudevent['type'] == "uk.gov.defra.aurn.Timeseries":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -480,7 +480,7 @@ def test_uk_gov_defra_aurn_timeseries_mqtt_ukgovdefraaurntimeseriesmqttobservati
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.defra.aurn.Timeseries.mqtt.Observation":
+            if cloudevent['type'] == "uk.gov.defra.aurn.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -542,7 +542,7 @@ def test_uk_gov_defra_aurn_timeseries_amqp_ukgovdefraaurntimeseriesamqptimeserie
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.defra.aurn.Timeseries.amqp.Timeseries":
+            if cloudevent['type'] == "uk.gov.defra.aurn.Timeseries":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -604,7 +604,7 @@ def test_uk_gov_defra_aurn_timeseries_amqp_ukgovdefraaurntimeseriesamqpobservati
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.defra.aurn.Timeseries.amqp.Observation":
+            if cloudevent['type'] == "uk.gov.defra.aurn.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

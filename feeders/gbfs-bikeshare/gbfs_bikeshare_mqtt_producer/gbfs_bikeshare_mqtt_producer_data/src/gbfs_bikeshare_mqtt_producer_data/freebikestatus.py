@@ -169,13 +169,13 @@ class FreeBikeStatus:
             An instance of the dataclass.
         """
         return cls(
-            system_id='pmsisbldrfqvulvjvgta',
-            bike_id='njbocygnjuwfssalkylu',
-            lat=float(0.6589233633909508),
-            lon=float(86.2367072288029),
+            system_id='robqwimpkgvxdqmaxswf',
+            bike_id='icnxrefsfnxmjhasxeex',
+            lat=float(82.67130310327242),
+            lon=float(68.75731438801421),
             is_reserved=True,
             is_disabled=True,
-            vehicle_type_id='cbzqmhizchqygzayzmzj',
-            current_range_meters=float(17.90578880322323),
-            last_reported=int(87)
+            vehicle_type_id='frbnymsczbsssbqrocus',
+            current_range_meters=float(8.259809293773234),
+            last_reported=int(99)
         )

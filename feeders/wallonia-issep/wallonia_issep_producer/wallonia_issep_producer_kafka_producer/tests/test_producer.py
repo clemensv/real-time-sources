@@ -225,7 +225,7 @@ def test_be_issep_airquality_sensors_mqtt_beissepairqualitysensorsmqttsensorconf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.issep.airquality.Sensors.mqtt.SensorConfiguration":
+            if cloudevent['type'] == "be.issep.airquality.SensorConfiguration":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_be_issep_airquality_sensors_mqtt_beissepairqualitysensorsmqttobservatio
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.issep.airquality.Sensors.mqtt.Observation":
+            if cloudevent['type'] == "be.issep.airquality.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_be_issep_airquality_sensors_amqp_beissepairqualitysensorsamqpsensorconf
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.issep.airquality.Sensors.amqp.SensorConfiguration":
+            if cloudevent['type'] == "be.issep.airquality.SensorConfiguration":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_be_issep_airquality_sensors_amqp_beissepairqualitysensorsamqpobservatio
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.issep.airquality.Sensors.amqp.Observation":
+            if cloudevent['type'] == "be.issep.airquality.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

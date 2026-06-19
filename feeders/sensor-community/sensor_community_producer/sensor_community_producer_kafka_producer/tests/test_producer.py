@@ -225,7 +225,7 @@ def test_io_sensor_community_mqtt_iosensorcommunitymqttsensorinfo(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "io.sensor.community.mqtt.SensorInfo":
+            if cloudevent['type'] == "io.sensor.community.SensorInfo":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_io_sensor_community_mqtt_iosensorcommunitymqttsensorreading(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "io.sensor.community.mqtt.SensorReading":
+            if cloudevent['type'] == "io.sensor.community.SensorReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_io_sensor_community_amqp_iosensorcommunityamqpsensorinfo(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "io.sensor.community.amqp.SensorInfo":
+            if cloudevent['type'] == "io.sensor.community.SensorInfo":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_io_sensor_community_amqp_iosensorcommunityamqpsensorreading(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "io.sensor.community.amqp.SensorReading":
+            if cloudevent['type'] == "io.sensor.community.SensorReading":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

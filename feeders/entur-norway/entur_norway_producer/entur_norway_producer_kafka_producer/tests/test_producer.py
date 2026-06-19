@@ -358,7 +358,7 @@ def test_no_entur_mqtt_noenturmqttestimatedvehiclejourney(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "no.entur.mqtt.EstimatedVehicleJourney":
+            if cloudevent['type'] == "no.entur.EstimatedVehicleJourney":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -420,7 +420,7 @@ def test_no_entur_mqtt_noenturmqttmonitoredvehiclejourney(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "no.entur.mqtt.MonitoredVehicleJourney":
+            if cloudevent['type'] == "no.entur.MonitoredVehicleJourney":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -482,7 +482,7 @@ def test_no_entur_mqtt_noenturmqttptsituationelement(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "no.entur.mqtt.PtSituationElement":
+            if cloudevent['type'] == "no.entur.PtSituationElement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -544,7 +544,7 @@ def test_no_entur_amqp_noenturamqpestimatedvehiclejourney(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "no.entur.amqp.EstimatedVehicleJourney":
+            if cloudevent['type'] == "no.entur.EstimatedVehicleJourney":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -606,7 +606,7 @@ def test_no_entur_amqp_noenturamqpmonitoredvehiclejourney(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "no.entur.amqp.MonitoredVehicleJourney":
+            if cloudevent['type'] == "no.entur.MonitoredVehicleJourney":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -668,7 +668,7 @@ def test_no_entur_amqp_noenturamqpptsituationelement(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "no.entur.amqp.PtSituationElement":
+            if cloudevent['type'] == "no.entur.PtSituationElement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

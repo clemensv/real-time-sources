@@ -29,10 +29,10 @@ class Test_BuoyHourlyRainMeasurement(unittest.TestCase):
         Create instance of BuoyHourlyRainMeasurement for testing
         """
         instance = BuoyHourlyRainMeasurement(
-            station_id='btjsttxgkgmfkqnvxajw',
+            station_id='mcctrgbkovcpbaiyniyu',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            accumulation=float(53.69618735624705),
-            region='piyplmoyintzflxbopxd'
+            accumulation=float(71.61168784513079),
+            region='eavitzewozadvxqscdxr'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_BuoyHourlyRainMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'btjsttxgkgmfkqnvxajw'
+        test_value = 'mcctrgbkovcpbaiyniyu'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_BuoyHourlyRainMeasurement(unittest.TestCase):
         """
         Test accumulation property
         """
-        test_value = float(53.69618735624705)
+        test_value = float(71.61168784513079)
         self.instance.accumulation = test_value
         self.assertEqual(self.instance.accumulation, test_value)
     
@@ -65,7 +65,7 @@ class Test_BuoyHourlyRainMeasurement(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'piyplmoyintzflxbopxd'
+        test_value = 'eavitzewozadvxqscdxr'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

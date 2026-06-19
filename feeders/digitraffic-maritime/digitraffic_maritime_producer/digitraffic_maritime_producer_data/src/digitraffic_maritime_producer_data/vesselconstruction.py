@@ -172,12 +172,12 @@ class VesselConstruction:
         """
         return cls(
             vessel_type_code=int(51),
-            vessel_type_name='lcwbnfjkkgluiundibec',
-            ice_class_code='zgolmcvlfleilyapundb',
+            vessel_type_name='axrsiwgfnghbpkhuxtbu',
+            ice_class_code='yvfdnmjjjwntyepcyeab',
             ice_class_issue_date=datetime.datetime.now(datetime.timezone.utc),
-            ice_class_issue_place='cccdyqzwjyujmbhlfyts',
+            ice_class_issue_place='adzugbndzzkhpiqfixwi',
             ice_class_end_date=datetime.datetime.now(datetime.timezone.utc),
-            double_bottom=False,
+            double_bottom=True,
             inert_gas_system=True,
-            ballast_tank=False
+            ballast_tank=True
         )

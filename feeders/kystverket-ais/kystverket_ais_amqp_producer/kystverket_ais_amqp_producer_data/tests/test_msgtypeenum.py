@@ -16,19 +16,19 @@ class Test_MsgTypeenum(unittest.TestCase):
         """
         Setup test
         """
-        self.instance = MsgTypeenum.position_report
+        self.instance = MsgTypeenum.position_MINUSreport
 
     @staticmethod
     def create_instance():
         """
         Create instance of MsgTypeenum
         """
-        return MsgTypeenum.position_report
+        return MsgTypeenum.position_MINUSreport
 
     def test_enum_values(self):
         """
         Test that all enum values are defined
         """
-        self.assertEqual(MsgTypeenum.position_report.value, 'position-report')
+        self.assertEqual(MsgTypeenum.position_MINUSreport.value, 'position-report')
         self.assertEqual(MsgTypeenum.static.value, 'static')
-        self.assertEqual(MsgTypeenum.aid_to_navigation.value, 'aid-to-navigation')
+        self.assertEqual(MsgTypeenum.aid_MINUSto_MINUSnavigation.value, 'aid-to-navigation')

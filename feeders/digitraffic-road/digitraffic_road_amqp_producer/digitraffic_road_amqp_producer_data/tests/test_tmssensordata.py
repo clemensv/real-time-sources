@@ -28,12 +28,12 @@ class Test_TmsSensorData(unittest.TestCase):
         Create instance of TmsSensorData for testing
         """
         instance = TmsSensorData(
-            station_id=int(16),
-            sensor_id=int(39),
-            value=float(54.79023359709794),
-            time=int(92),
-            start=int(14),
-            end=int(23)
+            station_id=int(92),
+            sensor_id=int(58),
+            value=float(98.72795368557536),
+            time=int(97),
+            start=int(61),
+            end=int(95)
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_TmsSensorData(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(16)
+        test_value = int(92)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -50,7 +50,7 @@ class Test_TmsSensorData(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = int(39)
+        test_value = int(58)
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_TmsSensorData(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(54.79023359709794)
+        test_value = float(98.72795368557536)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -66,7 +66,7 @@ class Test_TmsSensorData(unittest.TestCase):
         """
         Test time property
         """
-        test_value = int(92)
+        test_value = int(97)
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     
@@ -74,7 +74,7 @@ class Test_TmsSensorData(unittest.TestCase):
         """
         Test start property
         """
-        test_value = int(14)
+        test_value = int(61)
         self.instance.start = test_value
         self.assertEqual(self.instance.start, test_value)
     
@@ -82,7 +82,7 @@ class Test_TmsSensorData(unittest.TestCase):
         """
         Test end property
         """
-        test_value = int(23)
+        test_value = int(95)
         self.instance.end = test_value
         self.assertEqual(self.instance.end, test_value)
     

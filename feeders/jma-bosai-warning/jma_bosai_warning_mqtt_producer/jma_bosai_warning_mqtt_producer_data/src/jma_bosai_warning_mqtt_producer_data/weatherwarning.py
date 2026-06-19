@@ -178,15 +178,15 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            prefecture='nvdnaqiicwaytajhodsz',
-            severity=SeverityEnum.advisory,
-            office_code='xetodkagmagzyoqfhuwi',
-            area_code='bdypdzfbatdwficvjsta',
+            prefecture='ihdtnuuqpswfhdzpnklq',
+            severity=SeverityEnum.info,
+            office_code='nwijzqdttmjejnrmcnln',
+            area_code='dtprfacbnigugofnqqtb',
             event=EventEnum.info,
-            area_name='awkhtvwalvfzmikpuuvs',
+            area_name='uscrsiebbcqxehjcufsp',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            headline_text='fyolhvmrywdfqaxzzjbb',
-            warnings=[None, None, None],
+            headline_text='uerbcecosedpzlyovjfy',
+            warnings=[None, None],
             time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )

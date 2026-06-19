@@ -161,7 +161,7 @@ class FeedItemEnclosure:
             An instance of the dataclass.
         """
         return cls(
-            href='parpwpijsstrbgmxlimh',
-            length=int(32),
-            type='jshmgalowokihbqzbvkv'
+            href='ahenbcjwhanumoiqyqpj',
+            length=int(30),
+            type='rcijxfwvccvtotpoopsi'
         )

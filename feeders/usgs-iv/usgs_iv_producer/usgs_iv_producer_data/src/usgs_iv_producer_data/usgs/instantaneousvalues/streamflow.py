@@ -165,11 +165,11 @@ class Streamflow:
             An instance of the dataclass.
         """
         return cls(
-            site_no='mhqxgytvsuojyflpmber',
-            datetime='eruaulfekfvakfkjmcvf',
-            value=float(36.51327259229351),
-            exception='ghvoxsthiiovtyhtqeql',
-            qualifiers=['fkfrzmkpnhqunsvkjvrt', 'xhvyspmetxywmobfdbbp', 'jpqtuihopbrnjtqrxkgp', 'xdlcleltbpyvvzwhyyrj', 'cgpcympbdqhmeumavikd'],
-            parameter_cd='mhjfwyxsortmlbhwvliw',
-            timeseries_cd='wikltszaecxtcswajnxo'
+            site_no='dnesomiwwzjczjczhltb',
+            datetime='skfeqqbmvgvoiowiutgi',
+            value=float(5.050391335525017),
+            exception='rgjyfgrxcrpqtpzalqpb',
+            qualifiers=['khfuruxpetdflokcjbcc', 'dytapwizgoqtncujdvtl', 'trnjdaiawndagxphcjpg'],
+            parameter_cd='lpvnfkyhyeijunqghfkh',
+            timeseries_cd='pbhvlbiowlvwgbjrqsuf'
         )

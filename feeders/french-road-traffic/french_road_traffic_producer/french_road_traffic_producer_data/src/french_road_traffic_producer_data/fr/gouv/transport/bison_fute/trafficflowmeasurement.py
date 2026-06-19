@@ -163,10 +163,10 @@ class TrafficFlowMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            site_id='xrxgqacguvkqogthuter',
-            measurement_time='mbpuwsqcxkjvkdrvequk',
-            vehicle_flow_rate=int(69),
-            average_speed=float(93.94299568532594),
-            input_values_flow=int(11),
-            input_values_speed=int(3)
+            site_id='eaueapqplkcmfqgbihof',
+            measurement_time='xjgdbystsvpanrohnhnn',
+            vehicle_flow_rate=int(63),
+            average_speed=float(32.69966451999525),
+            input_values_flow=int(47),
+            input_values_speed=int(61)
         )

@@ -28,18 +28,18 @@ class Test_Venue(unittest.TestCase):
         Create instance of Venue for testing
         """
         instance = Venue(
-            entity_id='fzqtprhcparspspbnnxy',
-            name='vhokeveinrvcukzqbyzw',
-            url='vtuxhusxnggsrgahytfc',
-            locale='zjiayzlieyzmiugrniod',
-            timezone='iqvmykppldzfkbavpctp',
-            city='ftfcivwtivkrgwuoukeh',
-            state_code='oamxbpsmynxjebknljam',
-            country_code='dmnjgewhgouctvuvhxrm',
-            address='jddegyktvgjoyhuvfzdk',
-            postal_code='dgtyulwolcfpyonnhpst',
-            latitude=float(17.85521807765703),
-            longitude=float(10.939015713702528)
+            entity_id='uqhoaomwtizyizoavllg',
+            name='qtsbpxckwdtqkvwyfcgb',
+            url='cnqrpqypdijbgomrzusm',
+            locale='qgjxepjqvgvummnajrgj',
+            timezone='wllokplnzhxpmlbnhzap',
+            city='kyrvaxobzgalrxqpzedl',
+            state_code='hdcvihkjtkkxnexfszxu',
+            country_code='knmsipvkhoaliqdnaida',
+            address='bbhjtxgledmzxbmosrqy',
+            postal_code='hmzhgglhvcsncezzikio',
+            latitude=float(0.553577710609976),
+            longitude=float(16.389159009058208)
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test entity_id property
         """
-        test_value = 'fzqtprhcparspspbnnxy'
+        test_value = 'uqhoaomwtizyizoavllg'
         self.instance.entity_id = test_value
         self.assertEqual(self.instance.entity_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'vhokeveinrvcukzqbyzw'
+        test_value = 'qtsbpxckwdtqkvwyfcgb'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -64,7 +64,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'vtuxhusxnggsrgahytfc'
+        test_value = 'cnqrpqypdijbgomrzusm'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
@@ -72,7 +72,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test locale property
         """
-        test_value = 'zjiayzlieyzmiugrniod'
+        test_value = 'qgjxepjqvgvummnajrgj'
         self.instance.locale = test_value
         self.assertEqual(self.instance.locale, test_value)
     
@@ -80,7 +80,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test timezone property
         """
-        test_value = 'iqvmykppldzfkbavpctp'
+        test_value = 'wllokplnzhxpmlbnhzap'
         self.instance.timezone = test_value
         self.assertEqual(self.instance.timezone, test_value)
     
@@ -88,7 +88,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test city property
         """
-        test_value = 'ftfcivwtivkrgwuoukeh'
+        test_value = 'kyrvaxobzgalrxqpzedl'
         self.instance.city = test_value
         self.assertEqual(self.instance.city, test_value)
     
@@ -96,7 +96,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test state_code property
         """
-        test_value = 'oamxbpsmynxjebknljam'
+        test_value = 'hdcvihkjtkkxnexfszxu'
         self.instance.state_code = test_value
         self.assertEqual(self.instance.state_code, test_value)
     
@@ -104,7 +104,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test country_code property
         """
-        test_value = 'dmnjgewhgouctvuvhxrm'
+        test_value = 'knmsipvkhoaliqdnaida'
         self.instance.country_code = test_value
         self.assertEqual(self.instance.country_code, test_value)
     
@@ -112,7 +112,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test address property
         """
-        test_value = 'jddegyktvgjoyhuvfzdk'
+        test_value = 'bbhjtxgledmzxbmosrqy'
         self.instance.address = test_value
         self.assertEqual(self.instance.address, test_value)
     
@@ -120,7 +120,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test postal_code property
         """
-        test_value = 'dgtyulwolcfpyonnhpst'
+        test_value = 'hmzhgglhvcsncezzikio'
         self.instance.postal_code = test_value
         self.assertEqual(self.instance.postal_code, test_value)
     
@@ -128,7 +128,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(17.85521807765703)
+        test_value = float(0.553577710609976)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -136,7 +136,7 @@ class Test_Venue(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(10.939015713702528)
+        test_value = float(16.389159009058208)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

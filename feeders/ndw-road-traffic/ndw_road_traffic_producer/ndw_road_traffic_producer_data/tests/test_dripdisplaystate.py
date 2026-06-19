@@ -28,13 +28,13 @@ class Test_DripDisplayState(unittest.TestCase):
         Create instance of DripDisplayState for testing
         """
         instance = DripDisplayState(
-            vms_controller_id='srgajfdqtcfddyufoovf',
-            vms_index='cbxrscuaircumwdgrubp',
-            publication_time='cmzthhbigoebmjjilwdi',
+            vms_controller_id='rvkidtmfspykiwllogdi',
+            vms_index='gkfkybgsjkahprxwwsia',
+            publication_time='nxoshsbhwvqmhuhvsdfr',
             active=True,
-            vms_text='dtnxmscdblawlsexptlp',
-            pictogram_code='pfmpkekeboluhsfpeznh',
-            state='nsoljcmtiudujgxicssy'
+            vms_text='brruplgjqzftchqexxtl',
+            pictogram_code='dnyxznytspdmlftawlue',
+            state='favsduutrklixfhxxamc'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_DripDisplayState(unittest.TestCase):
         """
         Test vms_controller_id property
         """
-        test_value = 'srgajfdqtcfddyufoovf'
+        test_value = 'rvkidtmfspykiwllogdi'
         self.instance.vms_controller_id = test_value
         self.assertEqual(self.instance.vms_controller_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_DripDisplayState(unittest.TestCase):
         """
         Test vms_index property
         """
-        test_value = 'cbxrscuaircumwdgrubp'
+        test_value = 'gkfkybgsjkahprxwwsia'
         self.instance.vms_index = test_value
         self.assertEqual(self.instance.vms_index, test_value)
     
@@ -59,7 +59,7 @@ class Test_DripDisplayState(unittest.TestCase):
         """
         Test publication_time property
         """
-        test_value = 'cmzthhbigoebmjjilwdi'
+        test_value = 'nxoshsbhwvqmhuhvsdfr'
         self.instance.publication_time = test_value
         self.assertEqual(self.instance.publication_time, test_value)
     
@@ -75,7 +75,7 @@ class Test_DripDisplayState(unittest.TestCase):
         """
         Test vms_text property
         """
-        test_value = 'dtnxmscdblawlsexptlp'
+        test_value = 'brruplgjqzftchqexxtl'
         self.instance.vms_text = test_value
         self.assertEqual(self.instance.vms_text, test_value)
     
@@ -83,7 +83,7 @@ class Test_DripDisplayState(unittest.TestCase):
         """
         Test pictogram_code property
         """
-        test_value = 'pfmpkekeboluhsfpeznh'
+        test_value = 'dnyxznytspdmlftawlue'
         self.instance.pictogram_code = test_value
         self.assertEqual(self.instance.pictogram_code, test_value)
     
@@ -91,7 +91,7 @@ class Test_DripDisplayState(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'nsoljcmtiudujgxicssy'
+        test_value = 'favsduutrklixfhxxamc'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     

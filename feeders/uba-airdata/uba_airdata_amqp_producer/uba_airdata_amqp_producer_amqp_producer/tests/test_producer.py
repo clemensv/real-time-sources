@@ -328,7 +328,7 @@ class TestDeUbaAirdataAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "de.uba.airdata.amqp.Station"
+                    assert cloud_event_payload.get("type") == "de.uba.airdata.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -369,7 +369,7 @@ class TestDeUbaAirdataAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'de.uba.airdata.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'de.uba.airdata.Station'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('bundesland') == "{bundesland}".format(bundesland="value")
@@ -426,7 +426,7 @@ class TestDeUbaAirdataAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "de.uba.airdata.amqp.Measure"
+                    assert cloud_event_payload.get("type") == "de.uba.airdata.Measure"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -467,7 +467,7 @@ class TestDeUbaAirdataAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'de.uba.airdata.amqp.Measure'
+        assert properties.get('cloudEvents:type') == 'de.uba.airdata.Measure'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('bundesland') == "{bundesland}".format(bundesland="value")
@@ -584,7 +584,7 @@ class TestDeUbaAirdataComponentsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "de.uba.airdata.components.amqp.Component"
+                    assert cloud_event_payload.get("type") == "de.uba.airdata.components.Component"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -625,7 +625,7 @@ class TestDeUbaAirdataComponentsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'de.uba.airdata.components.amqp.Component'
+        assert properties.get('cloudEvents:type') == 'de.uba.airdata.components.Component'
         assert received.body is not None
         assert received.subject == "{component_id}".format(component_id="value")
         assert properties.get('bundesland') == "{bundesland}".format(bundesland="value")

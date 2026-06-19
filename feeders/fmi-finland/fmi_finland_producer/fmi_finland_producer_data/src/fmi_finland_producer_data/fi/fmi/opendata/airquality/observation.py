@@ -171,14 +171,14 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            fmisid='mzzcstpwjquqxyjkhvti',
-            station_name='girmgtpcamcbbwqxhods',
-            observation_time='mixfzypumdyyutdtmacz',
-            aqindex=float(37.00043804813382),
-            pm10_ug_m3=float(60.0883103182247),
-            pm2_5_ug_m3=float(17.08020543969836),
-            no2_ug_m3=float(79.87119802537384),
-            o3_ug_m3=float(66.05850936707016),
-            so2_ug_m3=float(36.44636763122011),
-            co_mg_m3=float(39.91477978911484)
+            fmisid='ltktlkcybtjvpoefrisk',
+            station_name='dgvwyumoygpknjtptlqn',
+            observation_time='camypisawwczirvkbihq',
+            aqindex=float(13.076808574299648),
+            pm10_ug_m3=float(63.2036574131445),
+            pm2_5_ug_m3=float(36.37953897759548),
+            no2_ug_m3=float(49.608795606787794),
+            o3_ug_m3=float(17.85612443692933),
+            so2_ug_m3=float(38.52339202648232),
+            co_mg_m3=float(29.734035563297777)
         )

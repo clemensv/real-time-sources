@@ -195,24 +195,24 @@ class Webcam:
             An instance of the dataclass.
         """
         return cls(
-            identifier='rxmvcayksycbzpxzapzx',
-            road='ggrcvsshooxfwcihjdvg',
-            road_ids=['fcgkjtwunggvkloggqcd', 'byykezbjpdkhvdaphcwt', 'thtgzmxsyejdywgyecbi', 'eiajahdtnjxdsvfcftwn'],
+            identifier='fitxnbzuqmbykawrzxjj',
+            road='crwilxqkzqjprdqtfikz',
+            road_ids=['qgekfcaxkbmfibmnyzrj', 'giruqktdmrcmksmhpruf', 'xshqdmikoqbovslukplr'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
             display_type=DisplayTypeenum.PARKING,
-            title='nxbcsksacxjjyfplxkhw',
-            subtitle='dwqwkmjyjchlytbkyprj',
+            title='pdxmnagugbflnvkxtlun',
+            subtitle='xfdwfsffusssvyjoecvq',
             description_lines=None,
             future=False,
             is_blocked=False,
-            icon='coewhhvyumjlppkpiqjs',
-            extent='isdzehjpdmbkqtavuunj',
-            point='naxlvvmlhdigpxiupuiu',
-            coordinate_lat=float(92.93127539044296),
-            coordinate_lon=float(77.83256186862575),
-            route_recommendation_json='izgdfzmbqovkizqiodip',
+            icon='qowvnfilppqziapapwyj',
+            extent='yuitblhgrjsghparfqch',
+            point='vuailgtahnceaazagxiy',
+            coordinate_lat=float(22.85528088820119),
+            coordinate_lon=float(19.162961710969352),
+            route_recommendation_json='uimgvaltvfecqibuigbc',
             footer_lines=None,
-            operator_name='hmkvbqflgiwummeoryvo',
-            image_url='aamhoqqusebdothvsdpr',
-            stream_url='sekynkmqcexizjwoayjg'
+            operator_name='icgamliklwcibinmskao',
+            image_url='eqqnszkjvunlpfgffnyn',
+            stream_url='zccomnkfmkrlyjzrzqao'
         )

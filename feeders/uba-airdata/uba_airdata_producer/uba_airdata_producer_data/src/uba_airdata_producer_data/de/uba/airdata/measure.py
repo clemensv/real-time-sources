@@ -165,11 +165,11 @@ class Measure:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(81),
-            component_id=int(100),
-            scope_id=int(53),
-            date_start='gnziojmvmxoldmluxhqj',
-            date_end='tjuwlaekofidmhpoxnso',
-            value=float(8.402250988119764),
-            quality_index='plduxghtqvomxjnqllqg'
+            station_id=int(71),
+            component_id=int(44),
+            scope_id=int(64),
+            date_start='vclnkocljteegfzryewy',
+            date_end='jdsglgrsrhcpxpfyiuiw',
+            value=float(32.094344401552945),
+            quality_index='gnpbjwdzkkhppsiikdat'
         )

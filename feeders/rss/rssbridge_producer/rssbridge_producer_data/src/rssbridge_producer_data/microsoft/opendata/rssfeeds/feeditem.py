@@ -13,10 +13,10 @@ from dataclasses_json import Undefined, dataclass_json
 import json
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemenclosure import FeedItemEnclosure
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditempublisher import FeedItemPublisher
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
-from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsource import FeedItemSource
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemauthor import FeedItemAuthor
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.link import Link
+from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemcontent import FeedItemContent
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemtitle import FeedItemTitle
 from rssbridge_producer_data.microsoft.opendata.rssfeeds.feeditemsummary import FeedItemSummary
 
@@ -211,22 +211,22 @@ class FeedItem:
             An instance of the dataclass.
         """
         return cls(
-            feed_slug='fimatrxdgqtrdmvqnoka',
-            item='vyhhlywjgjqzbwijzuay',
+            feed_slug='xlhorigvcdaclsdnjgvm',
+            item='lzwvaqhffnutejlmntvj',
             author=None,
             publisher=None,
             summary=None,
             title=None,
             source=None,
-            content=[None],
-            enclosures=[None],
-            published=int(58),
-            updated=int(38),
-            created=int(36),
-            expired=int(40),
-            id='brbbigpbwwrwgczwfngu',
-            license='rwknyrimflqohnpgyejy',
-            comments='ihopprqztixsnbtrqdlc',
-            contributors=[None, None, None, None, None],
-            links=[None, None]
+            content=[None, None, None],
+            enclosures=[None, None, None],
+            published=int(61),
+            updated=int(26),
+            created=int(49),
+            expired=int(67),
+            id='znivqskwmbzmmagzmdmh',
+            license='aiiplyhfvyejovwmqzzc',
+            comments='ztenujtlmehbutuvzbqo',
+            contributors=[None, None],
+            links=[None]
         )

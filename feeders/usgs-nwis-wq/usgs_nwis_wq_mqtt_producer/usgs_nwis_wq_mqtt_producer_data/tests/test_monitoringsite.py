@@ -28,17 +28,17 @@ class Test_MonitoringSite(unittest.TestCase):
         Create instance of MonitoringSite for testing
         """
         instance = MonitoringSite(
-            site_number='csmyvdbmbsrpzsdqobyu',
-            site_name='tfveajdpxxeakiaqljvn',
-            agency_code='qpdszypwygogxozybldb',
-            latitude=float(61.51777311569209),
-            longitude=float(81.46426543203663),
-            site_type='njmwmwqquxhbsaenjveo',
-            state_code='lzphkehhhnpgmtyjyeor',
-            county_code='cypncshimowmbuqvbfkw',
-            huc_code='goqfhpqljrkxgjclcwew',
-            state='ddvsdldjdafmuztvwcmn',
-            parameter_code='gyrxnclpdhdkgykloxwb'
+            site_number='kuqlzaslagpcgrxigdbn',
+            site_name='gxusqeyethkhmqgjoeic',
+            agency_code='igmbywblzdpiffcwfbpi',
+            latitude=float(13.15165976910797),
+            longitude=float(20.97027084456914),
+            site_type='etnrstseeyvyizisvkyu',
+            state_code='imtfvwiajatrrmfxclcn',
+            county_code='nerxexrnpiwcxbhgiuza',
+            huc_code='lmvnkwkjifytdyksatnc',
+            state='iqbrstfbmrenolmeprbb',
+            parameter_code='fjuixtcpfdykcjinbccf'
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test site_number property
         """
-        test_value = 'csmyvdbmbsrpzsdqobyu'
+        test_value = 'kuqlzaslagpcgrxigdbn'
         self.instance.site_number = test_value
         self.assertEqual(self.instance.site_number, test_value)
     
@@ -55,7 +55,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test site_name property
         """
-        test_value = 'tfveajdpxxeakiaqljvn'
+        test_value = 'gxusqeyethkhmqgjoeic'
         self.instance.site_name = test_value
         self.assertEqual(self.instance.site_name, test_value)
     
@@ -63,7 +63,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test agency_code property
         """
-        test_value = 'qpdszypwygogxozybldb'
+        test_value = 'igmbywblzdpiffcwfbpi'
         self.instance.agency_code = test_value
         self.assertEqual(self.instance.agency_code, test_value)
     
@@ -71,7 +71,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(61.51777311569209)
+        test_value = float(13.15165976910797)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -79,7 +79,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(81.46426543203663)
+        test_value = float(20.97027084456914)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -87,7 +87,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test site_type property
         """
-        test_value = 'njmwmwqquxhbsaenjveo'
+        test_value = 'etnrstseeyvyizisvkyu'
         self.instance.site_type = test_value
         self.assertEqual(self.instance.site_type, test_value)
     
@@ -95,7 +95,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test state_code property
         """
-        test_value = 'lzphkehhhnpgmtyjyeor'
+        test_value = 'imtfvwiajatrrmfxclcn'
         self.instance.state_code = test_value
         self.assertEqual(self.instance.state_code, test_value)
     
@@ -103,7 +103,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test county_code property
         """
-        test_value = 'cypncshimowmbuqvbfkw'
+        test_value = 'nerxexrnpiwcxbhgiuza'
         self.instance.county_code = test_value
         self.assertEqual(self.instance.county_code, test_value)
     
@@ -111,7 +111,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test huc_code property
         """
-        test_value = 'goqfhpqljrkxgjclcwew'
+        test_value = 'lmvnkwkjifytdyksatnc'
         self.instance.huc_code = test_value
         self.assertEqual(self.instance.huc_code, test_value)
     
@@ -119,7 +119,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'ddvsdldjdafmuztvwcmn'
+        test_value = 'iqbrstfbmrenolmeprbb'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     
@@ -127,7 +127,7 @@ class Test_MonitoringSite(unittest.TestCase):
         """
         Test parameter_code property
         """
-        test_value = 'gyrxnclpdhdkgykloxwb'
+        test_value = 'fjuixtcpfdykcjinbccf'
         self.instance.parameter_code = test_value
         self.assertEqual(self.instance.parameter_code, test_value)
     

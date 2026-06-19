@@ -165,11 +165,11 @@ class Community:
             An instance of the dataclass.
         """
         return cls(
-            province='rqirmnebwgolpbcundcn',
-            community_name='qyzqoopdktjjagywrcpj',
-            cgndb_code='cndqtlbtdqaqtjlijqjz',
-            latitude=float(48.48049117143367),
-            longitude=float(66.75763753072091),
-            observation_url='iclwafapqkqsgaiaymfn',
-            forecast_url='oymcabcvyfqlwwgdsuvd'
+            province='wykkysroroglgbspxgch',
+            community_name='ppvsrnjxxlshpnehspcv',
+            cgndb_code='ggpfwgfgvimieiokswub',
+            latitude=float(14.189259319358605),
+            longitude=float(30.506623781642105),
+            observation_url='hzwtmctzfhpvkipdwipb',
+            forecast_url='vbwdmivjiwdicbfsvvsb'
         )

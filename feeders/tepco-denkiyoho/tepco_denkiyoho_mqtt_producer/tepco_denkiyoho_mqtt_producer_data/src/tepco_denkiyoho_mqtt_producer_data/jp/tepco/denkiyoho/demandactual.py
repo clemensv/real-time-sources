@@ -180,16 +180,16 @@ class DemandActual:
         """
         return cls(
             date=datetime.date.today(),
-            time='mwonbennbltkrjgonboz',
+            time='vjckxjsjngpaictkzpft',
             datetime=datetime.datetime.now(datetime.timezone.utc),
             datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            actual_demand_mw=float(97.1198052185979),
-            actual_demand_jp_unit_value=int(73),
-            solar_generation_mw=float(8.505989595504781),
-            solar_generation_jp_unit_value=int(99),
-            solar_share_pct=float(74.12619179733855),
-            usage_pct=float(88.46064937047909),
-            supply_capacity_mw=float(24.039223269771803),
-            supply_capacity_jp_unit_value=int(2),
-            area_code='sefpsaiiooqktcakpgud'
+            actual_demand_mw=float(64.08423897870873),
+            actual_demand_jp_unit_value=int(89),
+            solar_generation_mw=float(82.98676640444357),
+            solar_generation_jp_unit_value=int(61),
+            solar_share_pct=float(64.43952631246805),
+            usage_pct=float(27.3003795183274),
+            supply_capacity_mw=float(59.078408107898696),
+            supply_capacity_jp_unit_value=int(50),
+            area_code='ajhcfmcvgwkgdbzbqloc'
         )

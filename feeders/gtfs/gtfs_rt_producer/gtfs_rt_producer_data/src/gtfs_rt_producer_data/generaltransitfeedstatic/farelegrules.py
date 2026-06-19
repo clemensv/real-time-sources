@@ -163,10 +163,10 @@ class FareLegRules:
             An instance of the dataclass.
         """
         return cls(
-            fareLegRuleId='toictgvhdkudvlzmsbgn',
-            fareProductId='cnmhzrfyprhpotbgqcns',
-            legGroupId='iswzbejmreefeebyurdr',
-            networkId='jwfkodzcatckzalixoia',
-            fromAreaId='meyharlqtbdvmcvqrvgi',
-            toAreaId='fzdmrjprooibexpuvzff'
+            fareLegRuleId='vkgqjwwctplffuzsevuf',
+            fareProductId='sovodkhppgedicddaihg',
+            legGroupId='jbikkqpkgmwwudsrdann',
+            networkId='cdsztsgjqlpdqvfqkqki',
+            fromAreaId='zshqzbtqljpxbvociyyt',
+            toAreaId='xdmnedhgbzzzywrosurj'
         )

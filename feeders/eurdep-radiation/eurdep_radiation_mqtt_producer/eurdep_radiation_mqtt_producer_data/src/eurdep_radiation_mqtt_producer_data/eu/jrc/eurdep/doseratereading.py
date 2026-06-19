@@ -171,14 +171,14 @@ class DoseRateReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='lfktriumjvqtbjgdehln',
-            name='moqpzjzlikjtxgduauek',
-            value=float(15.10762703997467),
-            unit='ivflvahgelpqwkutmhlz',
-            start_measure='vckcueumxbaqxgugsaei',
-            end_measure='njawhpodskgvqfratvzb',
-            nuclide='ttshuikpcrnatdnsftyg',
-            duration='oqjltoxcdjflgirjjdsu',
-            validated=int(43),
-            country='uvxxhxiqvkejngeyyajz'
+            station_id='fmeqfocpfbzvmsjpvvqc',
+            name='ocdzkzoynmaugaybpqrj',
+            value=float(24.120342653602822),
+            unit='wvdmaxwlnwtuhgxiyxlz',
+            start_measure='lzsqazgifebbuxjxunju',
+            end_measure='ddqesyhsfgmrpqqkhgsi',
+            nuclide='ryeeszytingfkesrsoae',
+            duration='ennrpknjefxvdyshqbav',
+            validated=int(77),
+            country='habxvutrulofhaqybcyp'
         )

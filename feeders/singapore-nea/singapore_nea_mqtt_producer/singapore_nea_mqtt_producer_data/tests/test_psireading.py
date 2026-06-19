@@ -29,21 +29,21 @@ class Test_PSIReading(unittest.TestCase):
         Create instance of PSIReading for testing
         """
         instance = PSIReading(
-            region='pivpnktpsrdvnkgkoige',
+            region='frjauutnkvfyvvmjctsm',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
             update_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            psi_twenty_four_hourly=int(49),
-            o3_sub_index=int(57),
-            pm10_sub_index=int(89),
-            pm10_twenty_four_hourly=int(95),
-            pm25_sub_index=int(22),
-            pm25_twenty_four_hourly=int(65),
-            co_sub_index=int(53),
-            co_eight_hour_max=int(46),
-            so2_sub_index=int(23),
-            so2_twenty_four_hourly=int(80),
-            no2_one_hour_max=int(30),
-            o3_eight_hour_max=int(64)
+            psi_twenty_four_hourly=int(89),
+            o3_sub_index=int(24),
+            pm10_sub_index=int(24),
+            pm10_twenty_four_hourly=int(48),
+            pm25_sub_index=int(59),
+            pm25_twenty_four_hourly=int(27),
+            co_sub_index=int(52),
+            co_eight_hour_max=int(14),
+            so2_sub_index=int(93),
+            so2_twenty_four_hourly=int(58),
+            no2_one_hour_max=int(71),
+            o3_eight_hour_max=int(32)
         )
         return instance
 
@@ -52,7 +52,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'pivpnktpsrdvnkgkoige'
+        test_value = 'frjauutnkvfyvvmjctsm'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -76,7 +76,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test psi_twenty_four_hourly property
         """
-        test_value = int(49)
+        test_value = int(89)
         self.instance.psi_twenty_four_hourly = test_value
         self.assertEqual(self.instance.psi_twenty_four_hourly, test_value)
     
@@ -84,7 +84,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test o3_sub_index property
         """
-        test_value = int(57)
+        test_value = int(24)
         self.instance.o3_sub_index = test_value
         self.assertEqual(self.instance.o3_sub_index, test_value)
     
@@ -92,7 +92,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test pm10_sub_index property
         """
-        test_value = int(89)
+        test_value = int(24)
         self.instance.pm10_sub_index = test_value
         self.assertEqual(self.instance.pm10_sub_index, test_value)
     
@@ -100,7 +100,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test pm10_twenty_four_hourly property
         """
-        test_value = int(95)
+        test_value = int(48)
         self.instance.pm10_twenty_four_hourly = test_value
         self.assertEqual(self.instance.pm10_twenty_four_hourly, test_value)
     
@@ -108,7 +108,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test pm25_sub_index property
         """
-        test_value = int(22)
+        test_value = int(59)
         self.instance.pm25_sub_index = test_value
         self.assertEqual(self.instance.pm25_sub_index, test_value)
     
@@ -116,7 +116,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test pm25_twenty_four_hourly property
         """
-        test_value = int(65)
+        test_value = int(27)
         self.instance.pm25_twenty_four_hourly = test_value
         self.assertEqual(self.instance.pm25_twenty_four_hourly, test_value)
     
@@ -124,7 +124,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test co_sub_index property
         """
-        test_value = int(53)
+        test_value = int(52)
         self.instance.co_sub_index = test_value
         self.assertEqual(self.instance.co_sub_index, test_value)
     
@@ -132,7 +132,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test co_eight_hour_max property
         """
-        test_value = int(46)
+        test_value = int(14)
         self.instance.co_eight_hour_max = test_value
         self.assertEqual(self.instance.co_eight_hour_max, test_value)
     
@@ -140,7 +140,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test so2_sub_index property
         """
-        test_value = int(23)
+        test_value = int(93)
         self.instance.so2_sub_index = test_value
         self.assertEqual(self.instance.so2_sub_index, test_value)
     
@@ -148,7 +148,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test so2_twenty_four_hourly property
         """
-        test_value = int(80)
+        test_value = int(58)
         self.instance.so2_twenty_four_hourly = test_value
         self.assertEqual(self.instance.so2_twenty_four_hourly, test_value)
     
@@ -156,7 +156,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test no2_one_hour_max property
         """
-        test_value = int(30)
+        test_value = int(71)
         self.instance.no2_one_hour_max = test_value
         self.assertEqual(self.instance.no2_one_hour_max, test_value)
     
@@ -164,7 +164,7 @@ class Test_PSIReading(unittest.TestCase):
         """
         Test o3_eight_hour_max property
         """
-        test_value = int(64)
+        test_value = int(32)
         self.instance.o3_eight_hour_max = test_value
         self.assertEqual(self.instance.o3_eight_hour_max, test_value)
     

@@ -29,17 +29,17 @@ class Test_WarningBulletin(unittest.TestCase):
         Create instance of WarningBulletin for testing
         """
         instance = WarningBulletin(
-            warning_id='ymsrgrdsbgxrightwrlb',
-            warning_url='edgezgcngsuykdgjfdcm',
-            feed_url='xmqfaqsixcdbmcnaydav',
-            feed_title='xslgktbgsjuxkhowoszk',
-            title='aanhtlmmirmtnxtbqvap',
+            warning_id='ifiyxoandzrwjyqrvsha',
+            warning_url='frdbcxjajoavezmuerbd',
+            feed_url='kvgwttoblrmxewpybxka',
+            feed_title='cufrmproyisambijvwhz',
+            title='phtcuyeasxcbfidgwvsm',
             published_at=datetime.datetime.now(datetime.timezone.utc),
-            issued_local_time_text='kfsuvrfpqwobjmwacqor',
-            warning_type='dauwqndqgooovfbbsjkj',
-            affected_area_text='jqfdhikzmayharkaskpu',
-            severity='twubipzsqtwamqhpxijo',
-            state='yvfromlavdeefxpywtdn'
+            issued_local_time_text='lzhnluoxtseoagtxvcky',
+            warning_type='iuksijixnbxhqtclxhvv',
+            affected_area_text='fgwjxqlthikmiajusphm',
+            severity='wtsfcvwwmwkfdyixqzij',
+            state='blvfxctoblojdkcpyzpb'
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_WarningBulletin(unittest.TestCase):
         """
         Test warning_id property
         """
-        test_value = 'ymsrgrdsbgxrightwrlb'
+        test_value = 'ifiyxoandzrwjyqrvsha'
         self.instance.warning_id = test_value
         self.assertEqual(self.instance.warning_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_WarningBulletin(unittest.TestCase):
         """
         Test warning_url property
         """
-        test_value = 'edgezgcngsuykdgjfdcm'
+        test_value = 'frdbcxjajoavezmuerbd'
         self.instance.warning_url = test_value
         self.assertEqual(self.instance.warning_url, test_value)
     
@@ -64,7 +64,7 @@ class Test_WarningBulletin(unittest.TestCase):
         """
         Test feed_url property
         """
-        test_value = 'xmqfaqsixcdbmcnaydav'
+        test_value = 'kvgwttoblrmxewpybxka'
         self.instance.feed_url = test_value
         self.assertEqual(self.instance.feed_url, test_value)
     
@@ -72,7 +72,7 @@ class Test_WarningBulletin(unittest.TestCase):
         """
         Test feed_title property
         """
-        test_value = 'xslgktbgsjuxkhowoszk'
+        test_value = 'cufrmproyisambijvwhz'
         self.instance.feed_title = test_value
         self.assertEqual(self.instance.feed_title, test_value)
     
@@ -80,7 +80,7 @@ class Test_WarningBulletin(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'aanhtlmmirmtnxtbqvap'
+        test_value = 'phtcuyeasxcbfidgwvsm'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -96,7 +96,7 @@ class Test_WarningBulletin(unittest.TestCase):
         """
         Test issued_local_time_text property
         """
-        test_value = 'kfsuvrfpqwobjmwacqor'
+        test_value = 'lzhnluoxtseoagtxvcky'
         self.instance.issued_local_time_text = test_value
         self.assertEqual(self.instance.issued_local_time_text, test_value)
     
@@ -104,7 +104,7 @@ class Test_WarningBulletin(unittest.TestCase):
         """
         Test warning_type property
         """
-        test_value = 'dauwqndqgooovfbbsjkj'
+        test_value = 'iuksijixnbxhqtclxhvv'
         self.instance.warning_type = test_value
         self.assertEqual(self.instance.warning_type, test_value)
     
@@ -112,7 +112,7 @@ class Test_WarningBulletin(unittest.TestCase):
         """
         Test affected_area_text property
         """
-        test_value = 'jqfdhikzmayharkaskpu'
+        test_value = 'fgwjxqlthikmiajusphm'
         self.instance.affected_area_text = test_value
         self.assertEqual(self.instance.affected_area_text, test_value)
     
@@ -120,7 +120,7 @@ class Test_WarningBulletin(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = 'twubipzsqtwamqhpxijo'
+        test_value = 'wtsfcvwwmwkfdyixqzij'
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     
@@ -128,7 +128,7 @@ class Test_WarningBulletin(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'yvfromlavdeefxpywtdn'
+        test_value = 'blvfxctoblojdkcpyzpb'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     

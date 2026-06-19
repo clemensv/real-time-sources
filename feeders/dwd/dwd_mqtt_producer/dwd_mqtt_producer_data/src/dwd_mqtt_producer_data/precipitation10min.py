@@ -163,10 +163,10 @@ class Precipitation10Min:
             An instance of the dataclass.
         """
         return cls(
-            station_id='tesigqdaobwnpzzmjibj',
-            timestamp='qilysrbuhfrsspapqmxc',
-            quality_level=int(89),
-            precipitation_height=float(41.70600127415655),
-            precipitation_indicator=int(58),
-            state='ynvnjbjninnnheggnmyv'
+            station_id='ypjngpxegjrhirqusxcc',
+            timestamp='rdubgixxhlaufkcozomv',
+            quality_level=int(2),
+            precipitation_height=float(91.75276427934868),
+            precipitation_indicator=int(11),
+            state='pdjcuouqoelrsclvqadd'
         )

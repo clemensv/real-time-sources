@@ -183,16 +183,16 @@ class GenerationMix:
         return cls(
             period_from=datetime.datetime.now(datetime.timezone.utc),
             period_to=datetime.datetime.now(datetime.timezone.utc),
-            biomass_pct=float(27.107913692341988),
-            coal_pct=float(17.6537602992333),
-            gas_pct=float(70.97706693297638),
-            hydro_pct=float(49.60321487198699),
-            imports_pct=float(88.04504391900362),
-            nuclear_pct=float(93.42021660500781),
-            oil_pct=float(24.289757009794798),
-            other_pct=float(33.17859342878202),
-            solar_pct=float(88.52396279749202),
-            wind_pct=float(55.17381887412874),
-            region='ebqhypjgparodfyxcrti',
-            ce_id='yivqliiwosenwmjdgeku'
+            biomass_pct=float(61.53788412632921),
+            coal_pct=float(92.69371340658019),
+            gas_pct=float(74.22323928958443),
+            hydro_pct=float(75.73849704330206),
+            imports_pct=float(56.16422256990571),
+            nuclear_pct=float(2.4864569559146066),
+            oil_pct=float(16.57388516762377),
+            other_pct=float(75.10856669417136),
+            solar_pct=float(3.3849867361888553),
+            wind_pct=float(84.63425470048817),
+            region='aobfhtzbqhnxokwwtung',
+            ce_id='nngvhqedrpwuabivrvkc'
         )

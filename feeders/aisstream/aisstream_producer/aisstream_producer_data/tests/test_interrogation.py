@@ -9,9 +9,9 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from aisstream_producer_data.interrogation import Interrogation
+from aisstream_producer_data.station2 import Station2
 from aisstream_producer_data.station1msg1 import Station1Msg1
 from aisstream_producer_data.station1msg2 import Station1Msg2
-from aisstream_producer_data.station2 import Station2
 
 
 class Test_Interrogation(unittest.TestCase):
@@ -31,11 +31,11 @@ class Test_Interrogation(unittest.TestCase):
         Create instance of Interrogation for testing
         """
         instance = Interrogation(
-            MessageID=int(11),
-            RepeatIndicator=int(45),
-            UserID=int(50),
-            Valid=True,
-            Spare=int(88),
+            MessageID=int(14),
+            RepeatIndicator=int(21),
+            UserID=int(68),
+            Valid=False,
+            Spare=int(49),
             Station1Msg1=None,
             Station1Msg2=None,
             Station2=None
@@ -47,7 +47,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(11)
+        test_value = int(14)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -55,7 +55,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(45)
+        test_value = int(21)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -63,7 +63,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(50)
+        test_value = int(68)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -71,7 +71,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = True
+        test_value = False
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -79,7 +79,7 @@ class Test_Interrogation(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(88)
+        test_value = int(49)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     

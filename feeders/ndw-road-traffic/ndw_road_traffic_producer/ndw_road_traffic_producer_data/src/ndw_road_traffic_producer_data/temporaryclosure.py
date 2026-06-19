@@ -169,13 +169,13 @@ class TemporaryClosure:
             An instance of the dataclass.
         """
         return cls(
-            situation_record_id='ursahgiebndtnkcncddp',
-            version_time='nbtouwprootwwqxcqmwv',
-            validity_status='ytkmjjdtomtjypnadgpa',
-            start_time='vubjdqckqbjycbawlwfr',
-            end_time='bdwdflxhouwcokaldpqk',
-            road_name='dwrqginhlaorfhvjhutg',
-            description='xsviywadiegpqvqrcheo',
-            location_description='ihmscxtovdpgwvjcunma',
-            severity='hbjzyvocvoqsrlrufmcs'
+            situation_record_id='ylhbpjufyubgykgttzam',
+            version_time='mjyjarwrywzqqighihfa',
+            validity_status='hoyamosnjsmifxlagjsa',
+            start_time='jkwbwznmdsdofxbkkcri',
+            end_time='fmxjtugfljawhiuzrqrq',
+            road_name='egkxsalmfncaxbszrrjk',
+            description='wagffffgsmkyohtacywn',
+            location_description='uninkyjwemhqweylpkup',
+            severity='ptspktqfjfmgcgcrdpgz'
         )

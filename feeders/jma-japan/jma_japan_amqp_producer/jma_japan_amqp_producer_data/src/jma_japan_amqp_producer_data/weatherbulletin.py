@@ -170,12 +170,12 @@ class WeatherBulletin:
             An instance of the dataclass.
         """
         return cls(
-            bulletin_id='istdzgmtlsxtyqptkeee',
-            title='chicxvovhopspimhqekb',
-            author='qvwwcgnyjxxjovxjvqlb',
+            bulletin_id='qwnivanefopjbsjuhtvk',
+            title='hwjcbqyyvsgtciyawajo',
+            author='ovfopmlvbtaclipyfbpu',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            link='ghhkmngcvqfihoatomif',
-            content='toueyxbgztnyogqvkgln',
+            link='aqwrxwplmueeetbiekjj',
+            content='gcdcrklpukbioyditwmg',
             feed_type=FeedTypeenum.regular,
-            office='nzkwtvvxcdoslrfhzoha'
+            office='pkpemmjfrvhmayhjwnsh'
         )

@@ -161,9 +161,9 @@ class Schedule:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='ghhpbmfvrknatezbfexv',
-            route_tag='novwyigjtizgnpogoyzx',
-            stop_or_vehicle_id='daofipndrgdybjqsxqes',
-            event_type='ltdobazcnvgyrhoslnvi',
-            schedule='rfgnjtqiimatmuuvfpmr'
+            agency_id='vpekxltgnhythglblcxu',
+            route_tag='ojilzroxcgchwcrihned',
+            stop_or_vehicle_id='ujpxosjwfqxxnaqdehaz',
+            event_type='ikmavqrfljqwtzrllhky',
+            schedule='xtlqskustoiyiykuzila'
         )

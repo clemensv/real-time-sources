@@ -28,10 +28,10 @@ class Test_SurfaceMeasurement(unittest.TestCase):
         Create instance of SurfaceMeasurement for testing
         """
         instance = SurfaceMeasurement(
-            sensor_id=int(74),
-            surface_temperature=float(88.49490063428989),
-            road_freezing_temperature=float(33.64565959823057),
-            road_surface_condition=int(23)
+            sensor_id=int(67),
+            surface_temperature=float(60.901525671123515),
+            road_freezing_temperature=float(25.79574894120924),
+            road_surface_condition=int(78)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_SurfaceMeasurement(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = int(74)
+        test_value = int(67)
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -48,7 +48,7 @@ class Test_SurfaceMeasurement(unittest.TestCase):
         """
         Test surface_temperature property
         """
-        test_value = float(88.49490063428989)
+        test_value = float(60.901525671123515)
         self.instance.surface_temperature = test_value
         self.assertEqual(self.instance.surface_temperature, test_value)
     
@@ -56,7 +56,7 @@ class Test_SurfaceMeasurement(unittest.TestCase):
         """
         Test road_freezing_temperature property
         """
-        test_value = float(33.64565959823057)
+        test_value = float(25.79574894120924)
         self.instance.road_freezing_temperature = test_value
         self.assertEqual(self.instance.road_freezing_temperature, test_value)
     
@@ -64,7 +64,7 @@ class Test_SurfaceMeasurement(unittest.TestCase):
         """
         Test road_surface_condition property
         """
-        test_value = int(23)
+        test_value = int(78)
         self.instance.road_surface_condition = test_value
         self.assertEqual(self.instance.road_surface_condition, test_value)
     

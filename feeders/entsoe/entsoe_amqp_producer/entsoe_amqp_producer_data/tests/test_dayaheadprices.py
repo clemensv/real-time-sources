@@ -28,12 +28,12 @@ class Test_DayAheadPrices(unittest.TestCase):
         Create instance of DayAheadPrices for testing
         """
         instance = DayAheadPrices(
-            inDomain='tvyuqybloyjwfxcqzxvo',
-            price=float(58.07083355318281),
-            currency='qfyblphklssihabmoqie',
-            unitName='zhghimsmrfmjjotaiakk',
-            resolution='xzxdbawofoyowvmoccai',
-            documentType='erpxwhawuekecjmfgbtt'
+            inDomain='bmuyuhzkfzppdcgixoic',
+            price=float(44.422030701312465),
+            currency='xmuyyvrswllfqbbkgkqt',
+            unitName='ihysllwhnwfqbcqplmsd',
+            resolution='hthvzjrurkpqlflciftl',
+            documentType='tyyzxstwqijjsvevnexl'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_DayAheadPrices(unittest.TestCase):
         """
         Test inDomain property
         """
-        test_value = 'tvyuqybloyjwfxcqzxvo'
+        test_value = 'bmuyuhzkfzppdcgixoic'
         self.instance.inDomain = test_value
         self.assertEqual(self.instance.inDomain, test_value)
     
@@ -50,7 +50,7 @@ class Test_DayAheadPrices(unittest.TestCase):
         """
         Test price property
         """
-        test_value = float(58.07083355318281)
+        test_value = float(44.422030701312465)
         self.instance.price = test_value
         self.assertEqual(self.instance.price, test_value)
     
@@ -58,7 +58,7 @@ class Test_DayAheadPrices(unittest.TestCase):
         """
         Test currency property
         """
-        test_value = 'qfyblphklssihabmoqie'
+        test_value = 'xmuyyvrswllfqbbkgkqt'
         self.instance.currency = test_value
         self.assertEqual(self.instance.currency, test_value)
     
@@ -66,7 +66,7 @@ class Test_DayAheadPrices(unittest.TestCase):
         """
         Test unitName property
         """
-        test_value = 'zhghimsmrfmjjotaiakk'
+        test_value = 'ihysllwhnwfqbcqplmsd'
         self.instance.unitName = test_value
         self.assertEqual(self.instance.unitName, test_value)
     
@@ -74,7 +74,7 @@ class Test_DayAheadPrices(unittest.TestCase):
         """
         Test resolution property
         """
-        test_value = 'xzxdbawofoyowvmoccai'
+        test_value = 'hthvzjrurkpqlflciftl'
         self.instance.resolution = test_value
         self.assertEqual(self.instance.resolution, test_value)
     
@@ -82,7 +82,7 @@ class Test_DayAheadPrices(unittest.TestCase):
         """
         Test documentType property
         """
-        test_value = 'erpxwhawuekecjmfgbtt'
+        test_value = 'tyyzxstwqijjsvevnexl'
         self.instance.documentType = test_value
         self.assertEqual(self.instance.documentType, test_value)
     

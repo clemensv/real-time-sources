@@ -161,8 +161,8 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            timeseries_id='rduaywoetyjxlqlpyxbn',
+            timeseries_id='otwawixvwtxqaskdndqr',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(38.50297782472241),
-            uom='bnidwacvbrawtfncsoug'
+            value=float(61.207638072614316),
+            uom='kztktcnxoafiwhqlphle'
         )

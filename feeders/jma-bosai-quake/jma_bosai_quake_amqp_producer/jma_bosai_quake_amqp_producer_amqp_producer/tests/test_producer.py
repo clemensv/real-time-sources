@@ -323,7 +323,7 @@ class TestJPJMAQuakeAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.JMA.Quake.amqp.EarthquakeReport"
+                    assert cloud_event_payload.get("type") == "JP.JMA.Quake.EarthquakeReport"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -361,7 +361,7 @@ class TestJPJMAQuakeAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.JMA.Quake.amqp.EarthquakeReport'
+        assert properties.get('cloudEvents:type') == 'JP.JMA.Quake.EarthquakeReport'
         assert received.body is not None
         assert received.subject == "jp.jma.quake/{event_id}/{serial}".format(event_id="value", serial="value")
 

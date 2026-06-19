@@ -28,13 +28,13 @@ class Test_ControllerPosition(unittest.TestCase):
         Create instance of ControllerPosition for testing
         """
         instance = ControllerPosition(
-            cid=int(71),
-            callsign='gbcjfrvueddtnpudbpse',
-            frequency='yavfdxrypyqpzxfasciu',
-            facility=int(40),
-            rating=int(18),
-            text_atis='ilodwsbwshrwuttidgrc',
-            last_updated='arkigkhjkytjkfdafywj'
+            cid=int(2),
+            callsign='rqfvxausaslzrbsrikyy',
+            frequency='zzdepwteiesyxxkhctjo',
+            facility=int(57),
+            rating=int(80),
+            text_atis='zzsmhujosxfeuugttnby',
+            last_updated='wzsyyddobifgztbxxrpw'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test cid property
         """
-        test_value = int(71)
+        test_value = int(2)
         self.instance.cid = test_value
         self.assertEqual(self.instance.cid, test_value)
     
@@ -51,7 +51,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test callsign property
         """
-        test_value = 'gbcjfrvueddtnpudbpse'
+        test_value = 'rqfvxausaslzrbsrikyy'
         self.instance.callsign = test_value
         self.assertEqual(self.instance.callsign, test_value)
     
@@ -59,7 +59,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test frequency property
         """
-        test_value = 'yavfdxrypyqpzxfasciu'
+        test_value = 'zzdepwteiesyxxkhctjo'
         self.instance.frequency = test_value
         self.assertEqual(self.instance.frequency, test_value)
     
@@ -67,7 +67,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test facility property
         """
-        test_value = int(40)
+        test_value = int(57)
         self.instance.facility = test_value
         self.assertEqual(self.instance.facility, test_value)
     
@@ -75,7 +75,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test rating property
         """
-        test_value = int(18)
+        test_value = int(80)
         self.instance.rating = test_value
         self.assertEqual(self.instance.rating, test_value)
     
@@ -83,7 +83,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test text_atis property
         """
-        test_value = 'ilodwsbwshrwuttidgrc'
+        test_value = 'zzsmhujosxfeuugttnby'
         self.instance.text_atis = test_value
         self.assertEqual(self.instance.text_atis, test_value)
     
@@ -91,7 +91,7 @@ class Test_ControllerPosition(unittest.TestCase):
         """
         Test last_updated property
         """
-        test_value = 'arkigkhjkytjkfdafywj'
+        test_value = 'wzsyyddobifgztbxxrpw'
         self.instance.last_updated = test_value
         self.assertEqual(self.instance.last_updated, test_value)
     

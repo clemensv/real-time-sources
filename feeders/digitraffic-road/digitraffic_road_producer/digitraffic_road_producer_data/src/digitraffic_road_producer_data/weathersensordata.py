@@ -159,8 +159,8 @@ class WeatherSensorData:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(79),
-            sensor_id=int(50),
-            value=float(56.459389309685015),
-            time=int(8)
+            station_id=int(45),
+            sensor_id=int(32),
+            value=float(42.33476729901262),
+            time=int(60)
         )

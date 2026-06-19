@@ -28,8 +28,8 @@ class Test_SubSurfaceMeasurement(unittest.TestCase):
         Create instance of SubSurfaceMeasurement for testing
         """
         instance = SubSurfaceMeasurement(
-            sensor_id=int(81),
-            sub_surface_temperature=float(10.872974041771366)
+            sensor_id=int(52),
+            sub_surface_temperature=float(89.63431370329651)
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_SubSurfaceMeasurement(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = int(81)
+        test_value = int(52)
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -46,7 +46,7 @@ class Test_SubSurfaceMeasurement(unittest.TestCase):
         """
         Test sub_surface_temperature property
         """
-        test_value = float(10.872974041771366)
+        test_value = float(89.63431370329651)
         self.instance.sub_surface_temperature = test_value
         self.assertEqual(self.instance.sub_surface_temperature, test_value)
     

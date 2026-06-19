@@ -95,9 +95,8 @@ async def test_eu_jrc_eurdep_mqtt_eu_jrc_eurdep_mqtt_station_py(mosquitto_broker
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            country="test_country",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -163,9 +162,8 @@ async def test_eu_jrc_eurdep_mqtt_eu_jrc_eurdep_mqtt_dose_rate_reading_py(mosqui
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            country="test_country",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

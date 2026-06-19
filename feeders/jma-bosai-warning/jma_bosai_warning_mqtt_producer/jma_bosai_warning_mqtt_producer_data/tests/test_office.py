@@ -31,14 +31,14 @@ class Test_Office(unittest.TestCase):
         Create instance of Office for testing
         """
         instance = Office(
-            office_code='kmcuaelpjhjxevrbmnjc',
-            area_code='sxammxvyxoczufiwqiag',
-            name_jp='jodxmikbjdlktdcektgv',
-            name_en='tmxptxzyhqwdpdaqghqj',
-            parent_office_code='asigsbknsmetbrdahxoz',
+            office_code='xnqjgaavhztkgdtzhkic',
+            area_code='vfjipppeutqdgysmboxo',
+            name_jp='rsduxpyqtelmdmbqqtdu',
+            name_en='sdohkefinxubgjzzlkss',
+            parent_office_code='lbmbzovtcazglpykzyqu',
             office_type=OfficeTypeenum.PREFECTURE,
-            prefecture='bqjmtldhxmcpkwbkhvqt',
-            severity=SeverityEnum.advisory,
+            prefecture='dcmpewvywbgawpfltysf',
+            severity=SeverityEnum.info,
             event=EventEnum.info
         )
         return instance
@@ -48,7 +48,7 @@ class Test_Office(unittest.TestCase):
         """
         Test office_code property
         """
-        test_value = 'kmcuaelpjhjxevrbmnjc'
+        test_value = 'xnqjgaavhztkgdtzhkic'
         self.instance.office_code = test_value
         self.assertEqual(self.instance.office_code, test_value)
     
@@ -56,7 +56,7 @@ class Test_Office(unittest.TestCase):
         """
         Test area_code property
         """
-        test_value = 'sxammxvyxoczufiwqiag'
+        test_value = 'vfjipppeutqdgysmboxo'
         self.instance.area_code = test_value
         self.assertEqual(self.instance.area_code, test_value)
     
@@ -64,7 +64,7 @@ class Test_Office(unittest.TestCase):
         """
         Test name_jp property
         """
-        test_value = 'jodxmikbjdlktdcektgv'
+        test_value = 'rsduxpyqtelmdmbqqtdu'
         self.instance.name_jp = test_value
         self.assertEqual(self.instance.name_jp, test_value)
     
@@ -72,7 +72,7 @@ class Test_Office(unittest.TestCase):
         """
         Test name_en property
         """
-        test_value = 'tmxptxzyhqwdpdaqghqj'
+        test_value = 'sdohkefinxubgjzzlkss'
         self.instance.name_en = test_value
         self.assertEqual(self.instance.name_en, test_value)
     
@@ -80,7 +80,7 @@ class Test_Office(unittest.TestCase):
         """
         Test parent_office_code property
         """
-        test_value = 'asigsbknsmetbrdahxoz'
+        test_value = 'lbmbzovtcazglpykzyqu'
         self.instance.parent_office_code = test_value
         self.assertEqual(self.instance.parent_office_code, test_value)
     
@@ -96,7 +96,7 @@ class Test_Office(unittest.TestCase):
         """
         Test prefecture property
         """
-        test_value = 'bqjmtldhxmcpkwbkhvqt'
+        test_value = 'dcmpewvywbgawpfltysf'
         self.instance.prefecture = test_value
         self.assertEqual(self.instance.prefecture, test_value)
     
@@ -104,7 +104,7 @@ class Test_Office(unittest.TestCase):
         """
         Test severity property
         """
-        test_value = SeverityEnum.advisory
+        test_value = SeverityEnum.info
         self.instance.severity = test_value
         self.assertEqual(self.instance.severity, test_value)
     

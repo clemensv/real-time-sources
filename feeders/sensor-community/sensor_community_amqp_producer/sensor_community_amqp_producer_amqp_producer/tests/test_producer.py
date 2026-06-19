@@ -326,7 +326,7 @@ class TestIoSensorCommunityAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "io.sensor.community.amqp.SensorInfo"
+                    assert cloud_event_payload.get("type") == "io.sensor.community.SensorInfo"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -367,7 +367,7 @@ class TestIoSensorCommunityAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'io.sensor.community.amqp.SensorInfo'
+        assert properties.get('cloudEvents:type') == 'io.sensor.community.SensorInfo'
         assert received.body is not None
         assert received.subject == "{sensor_id}".format(sensor_id="value")
         assert properties.get('country') == "{country}".format(country="value")
@@ -424,7 +424,7 @@ class TestIoSensorCommunityAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "io.sensor.community.amqp.SensorReading"
+                    assert cloud_event_payload.get("type") == "io.sensor.community.SensorReading"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -465,7 +465,7 @@ class TestIoSensorCommunityAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'io.sensor.community.amqp.SensorReading'
+        assert properties.get('cloudEvents:type') == 'io.sensor.community.SensorReading'
         assert received.body is not None
         assert received.subject == "{sensor_id}".format(sensor_id="value")
         assert properties.get('country') == "{country}".format(country="value")

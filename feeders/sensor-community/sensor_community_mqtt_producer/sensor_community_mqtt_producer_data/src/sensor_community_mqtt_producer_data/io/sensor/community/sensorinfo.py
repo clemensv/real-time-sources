@@ -173,15 +173,15 @@ class SensorInfo:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id=int(79),
-            sensor_type_id=int(73),
-            sensor_type_name='cswqbjjxoquaculgfizp',
-            sensor_type_manufacturer='ohvkkcsnyxdjjcwtnnqx',
-            pin='xtbfubczttgknvyasqxi',
-            location_id=int(50),
-            latitude=float(45.073433982934844),
-            longitude=float(44.83852851731227),
-            altitude=float(49.17860979036648),
-            country='wphbaupnpmgnnzevlour',
+            sensor_id=int(54),
+            sensor_type_id=int(89),
+            sensor_type_name='ciptxsmmafswgillcgrg',
+            sensor_type_manufacturer='wtpviodgjjpqflcismrd',
+            pin='cdxkakjjamzjpvmfobbz',
+            location_id=int(54),
+            latitude=float(71.94749506586868),
+            longitude=float(90.31533236378958),
+            altitude=float(24.521202969548185),
+            country='vbrzshgichgkyvsnrogr',
             indoor=True
         )

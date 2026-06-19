@@ -326,7 +326,7 @@ class TestJPJMAAmedasAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.JMA.Amedas.amqp.Station"
+                    assert cloud_event_payload.get("type") == "JP.JMA.Amedas.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -367,7 +367,7 @@ class TestJPJMAAmedasAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.JMA.Amedas.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'JP.JMA.Amedas.Station'
         assert received.body is not None
         assert received.subject == "jp.jma.amedas/{station_code}".format(station_code="value")
         assert properties.get('prefecture') == "{prefecture}".format(prefecture="value")
@@ -424,7 +424,7 @@ class TestJPJMAAmedasAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.JMA.Amedas.amqp.Observation"
+                    assert cloud_event_payload.get("type") == "JP.JMA.Amedas.Observation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -465,7 +465,7 @@ class TestJPJMAAmedasAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.JMA.Amedas.amqp.Observation'
+        assert properties.get('cloudEvents:type') == 'JP.JMA.Amedas.Observation'
         assert received.body is not None
         assert received.subject == "jp.jma.amedas/{station_code}".format(station_code="value")
         assert properties.get('prefecture') == "{prefecture}".format(prefecture="value")

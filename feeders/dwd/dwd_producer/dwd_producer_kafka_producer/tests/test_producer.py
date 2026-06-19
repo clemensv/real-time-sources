@@ -960,7 +960,7 @@ def test_de_dwd_cdc_mqtt_dedwdcdcmqttstationmetadata(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.mqtt.StationMetadata":
+            if cloudevent['type'] == "DE.DWD.CDC.StationMetadata":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1022,7 +1022,7 @@ def test_de_dwd_cdc_mqtt_dedwdcdcmqttairtemperature10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.mqtt.AirTemperature10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.AirTemperature10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1084,7 +1084,7 @@ def test_de_dwd_cdc_mqtt_dedwdcdcmqttprecipitation10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.mqtt.Precipitation10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.Precipitation10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1146,7 +1146,7 @@ def test_de_dwd_cdc_mqtt_dedwdcdcmqttwind10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.mqtt.Wind10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.Wind10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1208,7 +1208,7 @@ def test_de_dwd_cdc_mqtt_dedwdcdcmqttsolar10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.mqtt.Solar10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.Solar10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1270,7 +1270,7 @@ def test_de_dwd_cdc_mqtt_dedwdcdcmqtthourlyobservation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.mqtt.HourlyObservation":
+            if cloudevent['type'] == "DE.DWD.CDC.HourlyObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1332,7 +1332,7 @@ def test_de_dwd_cdc_mqtt_dedwdcdcmqttextremewind10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.mqtt.ExtremeWind10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.ExtremeWind10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1394,7 +1394,7 @@ def test_de_dwd_cdc_mqtt_dedwdcdcmqttextremetemperature10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.mqtt.ExtremeTemperature10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.ExtremeTemperature10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1456,7 +1456,7 @@ def test_de_dwd_cdc_amqp_dedwdcdcamqpstationmetadata(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.amqp.StationMetadata":
+            if cloudevent['type'] == "DE.DWD.CDC.StationMetadata":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1518,7 +1518,7 @@ def test_de_dwd_cdc_amqp_dedwdcdcamqpairtemperature10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.amqp.AirTemperature10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.AirTemperature10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1580,7 +1580,7 @@ def test_de_dwd_cdc_amqp_dedwdcdcamqpprecipitation10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.amqp.Precipitation10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.Precipitation10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1642,7 +1642,7 @@ def test_de_dwd_cdc_amqp_dedwdcdcamqpwind10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.amqp.Wind10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.Wind10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1704,7 +1704,7 @@ def test_de_dwd_cdc_amqp_dedwdcdcamqpsolar10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.amqp.Solar10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.Solar10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1766,7 +1766,7 @@ def test_de_dwd_cdc_amqp_dedwdcdcamqphourlyobservation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.amqp.HourlyObservation":
+            if cloudevent['type'] == "DE.DWD.CDC.HourlyObservation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1828,7 +1828,7 @@ def test_de_dwd_cdc_amqp_dedwdcdcamqpextremewind10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.amqp.ExtremeWind10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.ExtremeWind10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1890,7 +1890,7 @@ def test_de_dwd_cdc_amqp_dedwdcdcamqpextremetemperature10min(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.CDC.amqp.ExtremeTemperature10Min":
+            if cloudevent['type'] == "DE.DWD.CDC.ExtremeTemperature10Min":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -1952,7 +1952,7 @@ def test_de_dwd_weather_mqtt_dedwdweathermqttalert(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Weather.mqtt.Alert":
+            if cloudevent['type'] == "DE.DWD.Weather.Alert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2014,7 +2014,7 @@ def test_de_dwd_weather_amqp_dedwdweatheramqpalert(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Weather.amqp.Alert":
+            if cloudevent['type'] == "DE.DWD.Weather.Alert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2076,7 +2076,7 @@ def test_de_dwd_radar_mqtt_dedwdradarmqttradarproductcatalog(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Radar.mqtt.RadarProductCatalog":
+            if cloudevent['type'] == "DE.DWD.Radar.RadarProductCatalog":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2138,7 +2138,7 @@ def test_de_dwd_radar_mqtt_dedwdradarmqttradarfileproduct(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Radar.mqtt.RadarFileProduct":
+            if cloudevent['type'] == "DE.DWD.Radar.RadarFileProduct":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2200,7 +2200,7 @@ def test_de_dwd_radar_amqp_dedwdradaramqpradarproductcatalog(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Radar.amqp.RadarProductCatalog":
+            if cloudevent['type'] == "DE.DWD.Radar.RadarProductCatalog":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2262,7 +2262,7 @@ def test_de_dwd_radar_amqp_dedwdradaramqpradarfileproduct(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Radar.amqp.RadarFileProduct":
+            if cloudevent['type'] == "DE.DWD.Radar.RadarFileProduct":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2324,7 +2324,7 @@ def test_de_dwd_forecast_mqtt_dedwdforecastmqttforecastmodelcatalog(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Forecast.mqtt.ForecastModelCatalog":
+            if cloudevent['type'] == "DE.DWD.Forecast.ForecastModelCatalog":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2386,7 +2386,7 @@ def test_de_dwd_forecast_mqtt_dedwdforecastmqtticond2forecastfile(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Forecast.mqtt.IconD2ForecastFile":
+            if cloudevent['type'] == "DE.DWD.Forecast.IconD2ForecastFile":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2448,7 +2448,7 @@ def test_de_dwd_forecast_amqp_dedwdforecastamqpforecastmodelcatalog(kafka_emulat
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Forecast.amqp.ForecastModelCatalog":
+            if cloudevent['type'] == "DE.DWD.Forecast.ForecastModelCatalog":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -2510,7 +2510,7 @@ def test_de_dwd_forecast_amqp_dedwdforecastamqpicond2forecastfile(kafka_emulator
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "DE.DWD.Forecast.amqp.IconD2ForecastFile":
+            if cloudevent['type'] == "DE.DWD.Forecast.IconD2ForecastFile":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

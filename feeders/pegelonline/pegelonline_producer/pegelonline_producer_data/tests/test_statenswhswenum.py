@@ -33,4 +33,4 @@ class Test_StateNswHswEnum(unittest.TestCase):
         self.assertEqual(StateNswHswEnum.high.value, 'high')
         self.assertEqual(StateNswHswEnum.unknown.value, 'unknown')
         self.assertEqual(StateNswHswEnum.commented.value, 'commented')
-        self.assertEqual(StateNswHswEnum.out_dated.value, 'out-dated')
+        self.assertEqual(StateNswHswEnum.out_MINUSdated.value, 'out-dated')

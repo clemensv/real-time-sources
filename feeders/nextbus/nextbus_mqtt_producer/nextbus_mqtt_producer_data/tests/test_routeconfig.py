@@ -28,11 +28,11 @@ class Test_RouteConfig(unittest.TestCase):
         Create instance of RouteConfig for testing
         """
         instance = RouteConfig(
-            agency_id='ocrcjlzibquovohbcwwc',
-            route_tag='oczlcjttieyvbgjguplk',
-            stop_or_vehicle_id='pfghcztmorqjydhbomuj',
-            event_type='dgzhcgvccqngldfrgmaf',
-            route_config='jjuajntspuazgxujdtut'
+            agency_id='ezblhfgdkgwfgnsmtimb',
+            route_tag='dcocouvdxxfwrqscslmc',
+            stop_or_vehicle_id='jbebrsvinejlhzediwml',
+            event_type='atraayvqxzigesrbnxnl',
+            route_config='ruxwgvpkrxfbdakytrin'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_RouteConfig(unittest.TestCase):
         """
         Test agency_id property
         """
-        test_value = 'ocrcjlzibquovohbcwwc'
+        test_value = 'ezblhfgdkgwfgnsmtimb'
         self.instance.agency_id = test_value
         self.assertEqual(self.instance.agency_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_RouteConfig(unittest.TestCase):
         """
         Test route_tag property
         """
-        test_value = 'oczlcjttieyvbgjguplk'
+        test_value = 'dcocouvdxxfwrqscslmc'
         self.instance.route_tag = test_value
         self.assertEqual(self.instance.route_tag, test_value)
     
@@ -57,7 +57,7 @@ class Test_RouteConfig(unittest.TestCase):
         """
         Test stop_or_vehicle_id property
         """
-        test_value = 'pfghcztmorqjydhbomuj'
+        test_value = 'jbebrsvinejlhzediwml'
         self.instance.stop_or_vehicle_id = test_value
         self.assertEqual(self.instance.stop_or_vehicle_id, test_value)
     
@@ -65,7 +65,7 @@ class Test_RouteConfig(unittest.TestCase):
         """
         Test event_type property
         """
-        test_value = 'dgzhcgvccqngldfrgmaf'
+        test_value = 'atraayvqxzigesrbnxnl'
         self.instance.event_type = test_value
         self.assertEqual(self.instance.event_type, test_value)
     
@@ -73,7 +73,7 @@ class Test_RouteConfig(unittest.TestCase):
         """
         Test route_config property
         """
-        test_value = 'jjuajntspuazgxujdtut'
+        test_value = 'ruxwgvpkrxfbdakytrin'
         self.instance.route_config = test_value
         self.assertEqual(self.instance.route_config, test_value)
     

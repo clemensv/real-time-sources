@@ -1,3 +1,3 @@
-from .odl import Station, DoseRateMeasurement
+from .odl import DoseRateMeasurement, Station
 
-__all__ = ["Station", "DoseRateMeasurement"]
+__all__ = ["DoseRateMeasurement", "Station"]

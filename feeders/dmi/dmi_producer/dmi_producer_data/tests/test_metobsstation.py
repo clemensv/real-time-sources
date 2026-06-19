@@ -30,21 +30,21 @@ class Test_MetObsStation(unittest.TestCase):
         Create instance of MetObsStation for testing
         """
         instance = MetObsStation(
-            station_id='egbftrlauulflimvsfrv',
-            wmo_station_id='yzheikfhkgldnnmlzusq',
-            wmo_country_code='eyftmvrjeeyhccgvgsbe',
-            name='vmyoeqrfcgbavxyrmqgp',
+            station_id='igilevwuzrceyczymqxd',
+            wmo_station_id='bznjhjmlgupievzurwhm',
+            wmo_country_code='dgilofviiqtzklavlvxe',
+            name='pqdsyumfncehwovoarjc',
             country=CountryEnum.DNK,
-            owner='xqirwdoqjynffjxdnnfn',
-            region_id='rjapepjoleeauorccpen',
-            type='rwezjvgbnzaczxueafgp',
-            status='rpuhgjvyrpogcmjnzffo',
-            parameter_id=['kizwrodbkkwqvehuqrnk', 'oyjjsjmflumryzctoehe', 'tjapnasiwogjagsbpwwv'],
-            latitude=float(99.81328814350951),
-            longitude=float(10.873235835035933),
-            station_height=float(4.73046178446851),
-            barometer_height=float(99.44349808192698),
-            anemometer_height=float(42.214707513727554),
+            owner='twdtesbtlnbqsfmzhihw',
+            region_id='btuouwhkfqkvctkxdjnr',
+            type='rcsqfwaddgdfimhjxscs',
+            status='mrcemrziffhnzdutqilp',
+            parameter_id=['xlqoffgilgkiqgpcyanj', 'gqxdozjpdajtpflajgas'],
+            latitude=float(30.937223880199937),
+            longitude=float(38.85075279382243),
+            station_height=float(50.75146962629131),
+            barometer_height=float(23.85966053807367),
+            anemometer_height=float(81.18500918381996),
             valid_from=datetime.datetime.now(datetime.timezone.utc),
             valid_to=datetime.datetime.now(datetime.timezone.utc),
             operation_from=datetime.datetime.now(datetime.timezone.utc),
@@ -59,7 +59,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'egbftrlauulflimvsfrv'
+        test_value = 'igilevwuzrceyczymqxd'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -67,7 +67,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test wmo_station_id property
         """
-        test_value = 'yzheikfhkgldnnmlzusq'
+        test_value = 'bznjhjmlgupievzurwhm'
         self.instance.wmo_station_id = test_value
         self.assertEqual(self.instance.wmo_station_id, test_value)
     
@@ -75,7 +75,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test wmo_country_code property
         """
-        test_value = 'eyftmvrjeeyhccgvgsbe'
+        test_value = 'dgilofviiqtzklavlvxe'
         self.instance.wmo_country_code = test_value
         self.assertEqual(self.instance.wmo_country_code, test_value)
     
@@ -83,7 +83,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'vmyoeqrfcgbavxyrmqgp'
+        test_value = 'pqdsyumfncehwovoarjc'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -99,7 +99,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test owner property
         """
-        test_value = 'xqirwdoqjynffjxdnnfn'
+        test_value = 'twdtesbtlnbqsfmzhihw'
         self.instance.owner = test_value
         self.assertEqual(self.instance.owner, test_value)
     
@@ -107,7 +107,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = 'rjapepjoleeauorccpen'
+        test_value = 'btuouwhkfqkvctkxdjnr'
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -115,7 +115,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'rwezjvgbnzaczxueafgp'
+        test_value = 'rcsqfwaddgdfimhjxscs'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -123,7 +123,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'rpuhgjvyrpogcmjnzffo'
+        test_value = 'mrcemrziffhnzdutqilp'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     
@@ -131,7 +131,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test parameter_id property
         """
-        test_value = ['kizwrodbkkwqvehuqrnk', 'oyjjsjmflumryzctoehe', 'tjapnasiwogjagsbpwwv']
+        test_value = ['xlqoffgilgkiqgpcyanj', 'gqxdozjpdajtpflajgas']
         self.instance.parameter_id = test_value
         self.assertEqual(self.instance.parameter_id, test_value)
     
@@ -139,7 +139,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(99.81328814350951)
+        test_value = float(30.937223880199937)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -147,7 +147,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(10.873235835035933)
+        test_value = float(38.85075279382243)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -155,7 +155,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test station_height property
         """
-        test_value = float(4.73046178446851)
+        test_value = float(50.75146962629131)
         self.instance.station_height = test_value
         self.assertEqual(self.instance.station_height, test_value)
     
@@ -163,7 +163,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test barometer_height property
         """
-        test_value = float(99.44349808192698)
+        test_value = float(23.85966053807367)
         self.instance.barometer_height = test_value
         self.assertEqual(self.instance.barometer_height, test_value)
     
@@ -171,7 +171,7 @@ class Test_MetObsStation(unittest.TestCase):
         """
         Test anemometer_height property
         """
-        test_value = float(42.214707513727554)
+        test_value = float(81.18500918381996)
         self.instance.anemometer_height = test_value
         self.assertEqual(self.instance.anemometer_height, test_value)
     

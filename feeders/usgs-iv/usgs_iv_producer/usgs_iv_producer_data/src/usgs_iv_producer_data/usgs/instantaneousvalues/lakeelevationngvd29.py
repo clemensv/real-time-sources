@@ -165,11 +165,11 @@ class LakeElevationNGVD29:
             An instance of the dataclass.
         """
         return cls(
-            site_no='gnqlnvxdsjnneldivats',
-            datetime='adzbmysoezyaggpilqlo',
-            value=float(21.948426573948698),
-            exception='czsvpexlbxvtkqpcdqub',
-            qualifiers=['tcoaxxmgsummiwvlhhzg', 'sxlqnmxxsebuzeofmbzm', 'xzfwnjlzpumtnbfdjupy'],
-            parameter_cd='xvzrtkztlaanzxdhnpos',
-            timeseries_cd='sovmgiacjqewcmonqbaz'
+            site_no='wtwfhkzwusjheqhdtcaa',
+            datetime='jimngbodziqqydvmgqnc',
+            value=float(20.17891995180616),
+            exception='phppqgyhkpnukqdxvevx',
+            qualifiers=['vhvurbdkknwhzknmvoqx', 'lhwsdjuekfgywkpbgykk'],
+            parameter_cd='jtdezmlfvulkechoixaz',
+            timeseries_cd='igtmumidexrcnxcpbokx'
         )

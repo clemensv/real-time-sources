@@ -173,15 +173,15 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_id='ozeusycalyeqgxbkwfxb',
-            state='vtqllozayuyvzobbeggv',
-            station_code='wlzbolrpjouolggqnihd',
-            name='vfzwkuqxnullnbukqbjy',
-            postal_code='nghjtksqcvtpdtvngyyg',
-            site_status=int(46),
-            site_status_text='jjrgweugpkayabpxtsdc',
-            kid=int(9),
-            height_above_sea=float(37.63032699590817),
-            longitude=float(90.9909759974038),
-            latitude=float(0.8285905108129432)
+            station_id='flojbnvfhrpdwdayqkkr',
+            state='avptirsqijilqvdxievn',
+            station_code='qgasgzvpnwapkzcainpr',
+            name='firphvdncvbvuxtufflo',
+            postal_code='qxhsijzanwvsjjrdqadv',
+            site_status=int(61),
+            site_status_text='rhhuoaklywotizhanqyl',
+            kid=int(8),
+            height_above_sea=float(50.4153310225572),
+            longitude=float(99.30003334081627),
+            latitude=float(77.94949805595519)
         )

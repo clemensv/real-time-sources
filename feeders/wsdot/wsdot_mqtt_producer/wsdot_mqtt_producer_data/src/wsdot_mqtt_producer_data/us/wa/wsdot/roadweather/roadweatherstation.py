@@ -161,9 +161,9 @@ class RoadWeatherStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='rhiabwqdegkttcwzyesd',
-            station_name='yqznmvfbgmpieslxeqej',
-            latitude=float(47.77240406434537),
-            longitude=float(80.7324628794176),
-            elevation=int(12)
+            station_id='nfyqnjprwjjrwhvrjenk',
+            station_name='iwuoghvdatutjstktyjd',
+            latitude=float(37.6745518052655),
+            longitude=float(42.81998039138274),
+            elevation=int(26)
         )

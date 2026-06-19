@@ -1,3 +1,3 @@
-from .eu import GenerationForecast, WindSolarForecast, ActualGeneration, LoadForecastMargin, ActualTotalLoad, DayAheadPrices, ReservoirFillingInformation, ActualGenerationPerType, CrossBorderPhysicalFlows, InstalledGenerationCapacityPerType, WindSolarGeneration
+from .eu import DayAheadPrices, ActualGeneration, CrossBorderPhysicalFlows, ActualGenerationPerType, GenerationForecast, ReservoirFillingInformation, LoadForecastMargin, InstalledGenerationCapacityPerType, WindSolarGeneration, WindSolarForecast, ActualTotalLoad
 
-__all__ = ["GenerationForecast", "WindSolarForecast", "ActualGeneration", "LoadForecastMargin", "ActualTotalLoad", "DayAheadPrices", "ReservoirFillingInformation", "ActualGenerationPerType", "CrossBorderPhysicalFlows", "InstalledGenerationCapacityPerType", "WindSolarGeneration"]
+__all__ = ["DayAheadPrices", "ActualGeneration", "CrossBorderPhysicalFlows", "ActualGenerationPerType", "GenerationForecast", "ReservoirFillingInformation", "LoadForecastMargin", "InstalledGenerationCapacityPerType", "WindSolarGeneration", "WindSolarForecast", "ActualTotalLoad"]

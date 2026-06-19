@@ -326,7 +326,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "ca.gc.weather.aqhi.amqp.Community"
+                    assert cloud_event_payload.get("type") == "ca.gc.weather.aqhi.Community"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -365,7 +365,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'ca.gc.weather.aqhi.amqp.Community'
+        assert properties.get('cloudEvents:type') == 'ca.gc.weather.aqhi.Community'
         assert received.body is not None
         assert received.subject == "{province}/{community_name}".format(province="value", community_name="value")
         assert properties.get('province') == "{province}".format(province="value")
@@ -420,7 +420,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "ca.gc.weather.aqhi.amqp.Observation"
+                    assert cloud_event_payload.get("type") == "ca.gc.weather.aqhi.Observation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -459,7 +459,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'ca.gc.weather.aqhi.amqp.Observation'
+        assert properties.get('cloudEvents:type') == 'ca.gc.weather.aqhi.Observation'
         assert received.body is not None
         assert received.subject == "{province}/{community_name}".format(province="value", community_name="value")
         assert properties.get('province') == "{province}".format(province="value")
@@ -514,7 +514,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "ca.gc.weather.aqhi.amqp.Forecast"
+                    assert cloud_event_payload.get("type") == "ca.gc.weather.aqhi.Forecast"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -553,7 +553,7 @@ class TestCaGcWeatherAqhiAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'ca.gc.weather.aqhi.amqp.Forecast'
+        assert properties.get('cloudEvents:type') == 'ca.gc.weather.aqhi.Forecast'
         assert received.body is not None
         assert received.subject == "{province}/{community_name}".format(province="value", community_name="value")
         assert properties.get('province') == "{province}".format(province="value")

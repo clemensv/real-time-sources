@@ -327,7 +327,7 @@ class TestUkGovDefraAurnStationsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.defra.aurn.Stations.amqp.Station"
+                    assert cloud_event_payload.get("type") == "uk.gov.defra.aurn.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -367,7 +367,7 @@ class TestUkGovDefraAurnStationsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.defra.aurn.Stations.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'uk.gov.defra.aurn.Station'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('region') == "{region}".format(region="value")
@@ -484,7 +484,7 @@ class TestUkGovDefraAurnTimeseriesAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.defra.aurn.Timeseries.amqp.Timeseries"
+                    assert cloud_event_payload.get("type") == "uk.gov.defra.aurn.Timeseries"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -526,7 +526,7 @@ class TestUkGovDefraAurnTimeseriesAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.defra.aurn.Timeseries.amqp.Timeseries'
+        assert properties.get('cloudEvents:type') == 'uk.gov.defra.aurn.Timeseries'
         assert received.body is not None
         assert received.subject == "{timeseries_id}".format(timeseries_id="value")
         assert properties.get('region') == "{region}".format(region="value")
@@ -584,7 +584,7 @@ class TestUkGovDefraAurnTimeseriesAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.defra.aurn.Timeseries.amqp.Observation"
+                    assert cloud_event_payload.get("type") == "uk.gov.defra.aurn.Observation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -626,7 +626,7 @@ class TestUkGovDefraAurnTimeseriesAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.defra.aurn.Timeseries.amqp.Observation'
+        assert properties.get('cloudEvents:type') == 'uk.gov.defra.aurn.Observation'
         assert received.body is not None
         assert received.subject == "{timeseries_id}".format(timeseries_id="value")
         assert properties.get('region') == "{region}".format(region="value")

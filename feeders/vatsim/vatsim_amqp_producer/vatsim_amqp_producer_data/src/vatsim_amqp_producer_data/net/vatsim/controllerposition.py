@@ -165,11 +165,11 @@ class ControllerPosition:
             An instance of the dataclass.
         """
         return cls(
-            cid=int(81),
-            callsign='qkivxwfcpgxdkvfiamyz',
-            frequency='mbgrcbwbftdcvgdpghnv',
-            facility=int(24),
-            rating=int(64),
-            text_atis='npwiapuhwieravfmmcki',
-            last_updated='whoxxqijefgulwurvess'
+            cid=int(50),
+            callsign='kquinouaerfhhdvivwpe',
+            frequency='vqtxbqhrmdkioscvhtjm',
+            facility=int(48),
+            rating=int(39),
+            text_atis='fzjueowrxufvrinxunhn',
+            last_updated='dommeqoafyfhjojhjtlo'
         )

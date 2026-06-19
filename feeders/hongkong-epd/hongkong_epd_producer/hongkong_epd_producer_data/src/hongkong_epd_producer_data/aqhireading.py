@@ -167,11 +167,11 @@ class AQHIReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='mloolevwhfvadtdbkdlp',
-            station_name='tlmlppjmtsinqmtjtdje',
-            station_type='xqycmexalcgvmhtcdjmr',
-            district='opwczqmketfmguneagrg',
+            station_id='fltdtfoyjshjftuezgia',
+            station_name='gdbfvvqjkmljkngsqopr',
+            station_type='mqzfaweeuzkjqqdzzppo',
+            district='vfoendtxwxlgpahqgcho',
             reading_time=datetime.datetime.now(datetime.timezone.utc),
-            aqhi=int(90),
-            health_risk_category='amvvnfpzhkhzropohama'
+            aqhi=int(2),
+            health_risk_category='hwfvbfmkynzmctsqbtmb'
         )

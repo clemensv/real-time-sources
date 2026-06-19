@@ -157,7 +157,7 @@ class FeedItemPublisher:
             An instance of the dataclass.
         """
         return cls(
-            name='jxgaqumvucelgddolouo',
-            href='jxsfyttpxjjrxrneleqw',
-            email='aqfrygyfadbemumfplvq'
+            name='vhuelixbzdujtaqvqapu',
+            href='kxxznllksxbjxyxonuuf',
+            email='kgktrhzmmuodmygsvlvq'
         )

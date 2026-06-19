@@ -29,11 +29,11 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         Create instance of BuoyDartMeasurement for testing
         """
         instance = BuoyDartMeasurement(
-            station_id='kvyregntwpredijlxyiv',
+            station_id='hahmwxcbclaarvgybvqv',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            measurement_type_code=int(29),
-            water_column_height=float(53.97657093194687),
-            region='nzjeaabjhdlmxjczpkkd'
+            measurement_type_code=int(100),
+            water_column_height=float(27.229353030774806),
+            region='cxktxsarxmyvscutonii'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'kvyregntwpredijlxyiv'
+        test_value = 'hahmwxcbclaarvgybvqv'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -58,7 +58,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test measurement_type_code property
         """
-        test_value = int(29)
+        test_value = int(100)
         self.instance.measurement_type_code = test_value
         self.assertEqual(self.instance.measurement_type_code, test_value)
     
@@ -66,7 +66,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test water_column_height property
         """
-        test_value = float(53.97657093194687)
+        test_value = float(27.229353030774806)
         self.instance.water_column_height = test_value
         self.assertEqual(self.instance.water_column_height, test_value)
     
@@ -74,7 +74,7 @@ class Test_BuoyDartMeasurement(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'nzjeaabjhdlmxjczpkkd'
+        test_value = 'cxktxsarxmyvscutonii'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

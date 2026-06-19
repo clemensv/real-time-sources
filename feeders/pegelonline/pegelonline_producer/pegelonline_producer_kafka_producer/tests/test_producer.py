@@ -95,7 +95,7 @@ def test_de_wsv_pegelonline_kafka_dewsvpegelonlinekafkastation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "de.wsv.pegelonline.kafka.Station":
+            if cloudevent['type'] == "de.wsv.pegelonline.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -159,7 +159,7 @@ def test_de_wsv_pegelonline_kafka_dewsvpegelonlinekafkacurrentmeasurement(kafka_
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "de.wsv.pegelonline.kafka.CurrentMeasurement":
+            if cloudevent['type'] == "de.wsv.pegelonline.CurrentMeasurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

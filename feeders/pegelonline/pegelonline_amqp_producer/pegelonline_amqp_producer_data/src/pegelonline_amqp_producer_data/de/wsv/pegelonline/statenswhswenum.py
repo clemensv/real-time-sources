@@ -9,7 +9,7 @@ class StateNswHswEnum(Enum):
     high = 'high'
     unknown = 'unknown'
     commented = 'commented'
-    out_dated = 'out-dated'
+    out_MINUSdated = 'out-dated'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'StateNswHswEnum':

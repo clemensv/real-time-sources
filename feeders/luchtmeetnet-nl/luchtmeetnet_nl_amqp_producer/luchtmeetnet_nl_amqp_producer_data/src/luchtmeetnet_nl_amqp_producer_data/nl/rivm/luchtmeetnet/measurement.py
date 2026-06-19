@@ -159,8 +159,8 @@ class Measurement:
             An instance of the dataclass.
         """
         return cls(
-            station_number='irzuakshtbtbgtyohpwa',
-            formula='kavtermojxbssqihlqnb',
-            value=float(37.95063463601704),
-            timestamp_measured='yjlqqarvwzxrnfvrkibn'
+            station_number='xrrynwhtinwjmexrgtgg',
+            formula='wrrtwjcrjmciopdvkxoo',
+            value=float(53.76825496883166),
+            timestamp_measured='gzuhagltcpsyjrenvdmt'
         )

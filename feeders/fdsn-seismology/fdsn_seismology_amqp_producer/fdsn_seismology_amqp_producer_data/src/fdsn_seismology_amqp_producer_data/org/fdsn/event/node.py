@@ -161,9 +161,9 @@ class Node:
             An instance of the dataclass.
         """
         return cls(
-            node_id='dzgucdrodinzlthfpggp',
-            name='ojrpojqqcffkhxxktont',
-            base_url='wtqhymbwdleebwfptzdr',
-            coverage='ctvlngcmlmhxbguttfuq',
-            country='wooqxzfxbjngusqffpjy'
+            node_id='qvpitwfpakagwupwftrv',
+            name='ahegbeeoczbyklzjzdmi',
+            base_url='pbflqolwtzlnszarbhmy',
+            coverage='qfiwjdeuqjapymetxvbk',
+            country='ibaxoyriffftmemevseh'
         )

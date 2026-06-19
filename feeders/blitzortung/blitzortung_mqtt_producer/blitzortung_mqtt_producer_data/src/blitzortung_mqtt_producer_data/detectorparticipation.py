@@ -155,6 +155,6 @@ class DetectorParticipation:
             An instance of the dataclass.
         """
         return cls(
-            station_id=int(84),
-            status=int(61)
+            station_id=int(46),
+            status=int(59)
         )

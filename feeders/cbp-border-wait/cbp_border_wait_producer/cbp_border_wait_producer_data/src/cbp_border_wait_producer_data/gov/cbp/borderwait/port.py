@@ -170,13 +170,13 @@ class Port:
             An instance of the dataclass.
         """
         return cls(
-            port_number='qnzgqxibriqevmcmnuds',
-            port_name='qetdlzyarpxnmowfcnnx',
-            border='txpswedwuejlhzazfgas',
-            crossing_name='jpqkglgkbwvektpacjyh',
-            hours='wuscefkecmcddzwlbyvs',
-            passenger_vehicle_max_lanes=int(57),
-            commercial_vehicle_max_lanes=int(70),
+            port_number='qcfgtkgigyyqzgfvjvvr',
+            port_name='bsiqqqszxslcdhrhvzwm',
+            border='sfopqccedkbyxipsfmwq',
+            crossing_name='hnikdnnvsrmmaquxwurz',
+            hours='bnhbnfftxwoxdumkpmtv',
+            passenger_vehicle_max_lanes=int(86),
+            commercial_vehicle_max_lanes=int(98),
             pedestrian_max_lanes=int(55),
-            border_slug=BorderSlugenum.canadian_border
+            border_slug=BorderSlugenum.canadian_MINUSborder
         )

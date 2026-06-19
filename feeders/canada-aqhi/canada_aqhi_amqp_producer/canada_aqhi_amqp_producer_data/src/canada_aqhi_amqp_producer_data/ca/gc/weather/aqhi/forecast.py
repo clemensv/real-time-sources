@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
 from canada_aqhi_amqp_producer_data.ca.gc.weather.aqhi.forecastperiodenum import ForecastPeriodenum
-from canada_aqhi_amqp_producer_data.ca.gc.weather.aqhi.aqhicategoryenum import AqhiCategoryenum
 from canada_aqhi_amqp_producer_data.ca.gc.weather.aqhi.forecastperiodlabelenum import ForecastPeriodLabelenum
+from canada_aqhi_amqp_producer_data.ca.gc.weather.aqhi.aqhicategoryenum import AqhiCategoryenum
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -172,13 +172,13 @@ class Forecast:
             An instance of the dataclass.
         """
         return cls(
-            province='xwjfxozfphmwdiiuzlsq',
-            community_name='ifuebgaxwysqrwzcqkcb',
-            cgndb_code='otfiynyetftyzmdtjvwj',
-            publication_datetime='sdooiqccriyfqpalzjcv',
-            forecast_date='iaccqkomagjcddmluixl',
+            province='vjhahigognmbjcvesvnj',
+            community_name='ifprvxkqlperggmloqsl',
+            cgndb_code='cxbeebdygogzknpjkrnw',
+            publication_datetime='fefcmrtowxhfaptiionp',
+            forecast_date='ymsxxinslggsyjilnrox',
             forecast_period=ForecastPeriodenum.VALUE_1,
             forecast_period_label=ForecastPeriodLabelenum.Today,
-            aqhi=int(96),
+            aqhi=int(20),
             aqhi_category=AqhiCategoryenum.Low
         )

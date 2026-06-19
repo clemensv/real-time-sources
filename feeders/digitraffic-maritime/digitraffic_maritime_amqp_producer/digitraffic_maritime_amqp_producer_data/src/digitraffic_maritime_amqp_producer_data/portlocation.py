@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from digitraffic_maritime_amqp_producer_data.berth import Berth
 from digitraffic_maritime_amqp_producer_data.portarea import PortArea
+from digitraffic_maritime_amqp_producer_data.berth import Berth
 import datetime
 
 
@@ -171,12 +171,12 @@ class PortLocation:
             An instance of the dataclass.
         """
         return cls(
-            locode='tkhbxswsifuukghmbmou',
+            locode='ifkqvkdghvyiqjrbmwfc',
             data_updated_time=datetime.datetime.now(datetime.timezone.utc),
-            location_name='qpfspcccqravafmwcvgw',
-            country='duxwmeohzfpldcnortum',
-            longitude=float(8.58897701120439),
-            latitude=float(79.19495510851681),
-            port_areas=[None],
-            berths=[None, None]
+            location_name='dswbdxhjcrunkvbxluci',
+            country='ptdrprbkkotjoqytwsso',
+            longitude=float(95.30248085089256),
+            latitude=float(45.48283096897674),
+            port_areas=[None, None],
+            berths=[None, None, None]
         )

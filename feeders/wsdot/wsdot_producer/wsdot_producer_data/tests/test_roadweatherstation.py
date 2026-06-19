@@ -28,11 +28,11 @@ class Test_RoadWeatherStation(unittest.TestCase):
         Create instance of RoadWeatherStation for testing
         """
         instance = RoadWeatherStation(
-            station_id='wzepkitwavtkbiwsvops',
-            station_name='cufpfgxnmwnzlwzcfcsc',
-            latitude=float(58.74059806811955),
-            longitude=float(47.0688263042396),
-            elevation=int(28)
+            station_id='ezhsywtjilzxlnryrfeb',
+            station_name='dcusmaerbdeulsatnvhd',
+            latitude=float(99.8154274548259),
+            longitude=float(91.23714244410164),
+            elevation=int(32)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_RoadWeatherStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'wzepkitwavtkbiwsvops'
+        test_value = 'ezhsywtjilzxlnryrfeb'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -49,7 +49,7 @@ class Test_RoadWeatherStation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'cufpfgxnmwnzlwzcfcsc'
+        test_value = 'dcusmaerbdeulsatnvhd'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -57,7 +57,7 @@ class Test_RoadWeatherStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(58.74059806811955)
+        test_value = float(99.8154274548259)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -65,7 +65,7 @@ class Test_RoadWeatherStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(47.0688263042396)
+        test_value = float(91.23714244410164)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -73,7 +73,7 @@ class Test_RoadWeatherStation(unittest.TestCase):
         """
         Test elevation property
         """
-        test_value = int(28)
+        test_value = int(32)
         self.instance.elevation = test_value
         self.assertEqual(self.instance.elevation, test_value)
     

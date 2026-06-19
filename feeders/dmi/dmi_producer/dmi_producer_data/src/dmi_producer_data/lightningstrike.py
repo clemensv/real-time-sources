@@ -171,13 +171,13 @@ class LightningStrike:
             An instance of the dataclass.
         """
         return cls(
-            strike_id='eiaisyxeomchwwtxudcq',
+            strike_id='esrlttaivhdcfyxcutcq',
             observed=datetime.datetime.now(datetime.timezone.utc),
             created=datetime.datetime.now(datetime.timezone.utc),
-            type=int(25),
-            amp=float(75.76972140504753),
-            strokes=int(41),
-            sensors='cblghdzohinzkyqrzobr',
-            latitude=float(38.01812211455486),
-            longitude=float(35.77658526752832)
+            type=int(90),
+            amp=float(66.9102823931287),
+            strokes=int(30),
+            sensors='frsnjxnkfetmvkvdahff',
+            latitude=float(15.166328376345861),
+            longitude=float(17.152206413670832)
         )

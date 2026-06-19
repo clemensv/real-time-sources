@@ -28,11 +28,11 @@ class Test_EquipmentStatus(unittest.TestCase):
         Create instance of EquipmentStatus for testing
         """
         instance = EquipmentStatus(
-            site_no='wqnspkzfiddvbmohoiyr',
-            datetime='gacnqarhbvunfueafvko',
-            status='napswitgeswmtllupvub',
-            parameter_cd='lnpxmsjdobttnzkxsiwu',
-            timeseries_cd='fzlylghhgrpbsnkjvyvp'
+            site_no='jntmsksefcvwsjougtyu',
+            datetime='edxhqybmdtepnaetwiic',
+            status='pcnfswwgabdywytlvxxb',
+            parameter_cd='pjvjiepgxrvcbyjoftsl',
+            timeseries_cd='daumirjnqbiizapqwdsc'
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_EquipmentStatus(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'wqnspkzfiddvbmohoiyr'
+        test_value = 'jntmsksefcvwsjougtyu'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -49,7 +49,7 @@ class Test_EquipmentStatus(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'gacnqarhbvunfueafvko'
+        test_value = 'edxhqybmdtepnaetwiic'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -57,7 +57,7 @@ class Test_EquipmentStatus(unittest.TestCase):
         """
         Test status property
         """
-        test_value = 'napswitgeswmtllupvub'
+        test_value = 'pcnfswwgabdywytlvxxb'
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     
@@ -65,7 +65,7 @@ class Test_EquipmentStatus(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'lnpxmsjdobttnzkxsiwu'
+        test_value = 'pjvjiepgxrvcbyjoftsl'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -73,7 +73,7 @@ class Test_EquipmentStatus(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'fzlylghhgrpbsnkjvyvp'
+        test_value = 'daumirjnqbiizapqwdsc'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

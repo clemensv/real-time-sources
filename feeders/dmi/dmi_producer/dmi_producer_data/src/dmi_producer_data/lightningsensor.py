@@ -170,12 +170,12 @@ class LightningSensor:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id='wwvopsnmkrdlolykhklu',
-            name='hpqexlmbglarrvhqleac',
-            owner='wysbawwxfxwkhpjuyaci',
+            sensor_id='gvhkxdltzfdggrvbwyof',
+            name='fpsnqkgwnaapdcutxtnr',
+            owner='odmhbbmvrpjnewpweqpd',
             country=CountryEnum.DNK,
-            latitude=float(46.51001169417719),
-            longitude=float(78.86889340467323),
+            latitude=float(83.10598747640321),
+            longitude=float(53.04577734685818),
             active_from=datetime.datetime.now(datetime.timezone.utc),
             active_to=datetime.datetime.now(datetime.timezone.utc)
         )

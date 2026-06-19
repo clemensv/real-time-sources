@@ -325,7 +325,7 @@ class TestDeWsvPegelonlineAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "de.wsv.pegelonline.amqp.Station"
+                    assert cloud_event_payload.get("type") == "de.wsv.pegelonline.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -364,7 +364,7 @@ class TestDeWsvPegelonlineAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'de.wsv.pegelonline.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'de.wsv.pegelonline.Station'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('water_shortname') == "{water_shortname}".format(water_shortname="value")
@@ -419,7 +419,7 @@ class TestDeWsvPegelonlineAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "de.wsv.pegelonline.amqp.CurrentMeasurement"
+                    assert cloud_event_payload.get("type") == "de.wsv.pegelonline.CurrentMeasurement"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -458,7 +458,7 @@ class TestDeWsvPegelonlineAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'de.wsv.pegelonline.amqp.CurrentMeasurement'
+        assert properties.get('cloudEvents:type') == 'de.wsv.pegelonline.CurrentMeasurement'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('water_shortname') == "{water_shortname}".format(water_shortname="value")

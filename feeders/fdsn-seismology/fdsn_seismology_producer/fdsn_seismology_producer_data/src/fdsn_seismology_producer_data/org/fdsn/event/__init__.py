@@ -1,4 +1,4 @@
-from .earthquake import Earthquake
 from .node import Node
+from .earthquake import Earthquake
 
-__all__ = ["Earthquake", "Node"]
+__all__ = ["Node", "Earthquake"]

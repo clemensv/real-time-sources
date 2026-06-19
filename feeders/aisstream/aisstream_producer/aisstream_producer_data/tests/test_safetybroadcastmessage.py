@@ -28,12 +28,12 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         Create instance of SafetyBroadcastMessage for testing
         """
         instance = SafetyBroadcastMessage(
-            MessageID=int(54),
-            RepeatIndicator=int(77),
-            UserID=int(13),
-            Valid=True,
-            Spare=int(4),
-            Text='jhmwtfmkzuffqcwfaafy'
+            MessageID=int(92),
+            RepeatIndicator=int(75),
+            UserID=int(17),
+            Valid=False,
+            Spare=int(32),
+            Text='srroxnlgysicjqqhsbbj'
         )
         return instance
 
@@ -42,7 +42,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(54)
+        test_value = int(92)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -50,7 +50,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(77)
+        test_value = int(75)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -58,7 +58,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(13)
+        test_value = int(17)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -66,7 +66,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = True
+        test_value = False
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -74,7 +74,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(4)
+        test_value = int(32)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -82,7 +82,7 @@ class Test_SafetyBroadcastMessage(unittest.TestCase):
         """
         Test Text property
         """
-        test_value = 'jhmwtfmkzuffqcwfaafy'
+        test_value = 'srroxnlgysicjqqhsbbj'
         self.instance.Text = test_value
         self.assertEqual(self.instance.Text, test_value)
     

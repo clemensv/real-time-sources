@@ -28,16 +28,16 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_number='jdwujsmxczsepiidouwu',
-            location='onofhenwicivgyrpmdsm',
-            type='cpfqdqdpaofactmebxho',
-            organisation='dmyrdjxsezscqbbochnu',
-            municipality='hsbdspapkysdrinhsykl',
-            province='ihqszbcgelwskgwknlzk',
-            longitude=float(72.47389742264647),
-            latitude=float(91.22695044432618),
-            year_start='ackzsotckeubrompnwzm',
-            components=['bpxbhhllgvhugghbysyu']
+            station_number='plkjyxnjkkhlwkueotet',
+            location='osogbcvftylkqmhksjgv',
+            type='ajoehbdvzzxcpcyqcjtj',
+            organisation='dnerpyuortygmlcmoxao',
+            municipality='sskvdzvyxfkpkkovjiph',
+            province='anyhtthdaoyfedbwsvja',
+            longitude=float(17.173087745146496),
+            latitude=float(80.20113650921849),
+            year_start='bwvdsavhhirclplwbrux',
+            components=['fxveifdryztxweatlqcf', 'bjssfugphcovvknljfdo', 'rxggxxbjmptknzfgaizz', 'mqrvkkjnvwskgccsbgaa', 'thecughenffydjkecpzh']
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_number property
         """
-        test_value = 'jdwujsmxczsepiidouwu'
+        test_value = 'plkjyxnjkkhlwkueotet'
         self.instance.station_number = test_value
         self.assertEqual(self.instance.station_number, test_value)
     
@@ -54,7 +54,7 @@ class Test_Station(unittest.TestCase):
         """
         Test location property
         """
-        test_value = 'onofhenwicivgyrpmdsm'
+        test_value = 'osogbcvftylkqmhksjgv'
         self.instance.location = test_value
         self.assertEqual(self.instance.location, test_value)
     
@@ -62,7 +62,7 @@ class Test_Station(unittest.TestCase):
         """
         Test type property
         """
-        test_value = 'cpfqdqdpaofactmebxho'
+        test_value = 'ajoehbdvzzxcpcyqcjtj'
         self.instance.type = test_value
         self.assertEqual(self.instance.type, test_value)
     
@@ -70,7 +70,7 @@ class Test_Station(unittest.TestCase):
         """
         Test organisation property
         """
-        test_value = 'dmyrdjxsezscqbbochnu'
+        test_value = 'dnerpyuortygmlcmoxao'
         self.instance.organisation = test_value
         self.assertEqual(self.instance.organisation, test_value)
     
@@ -78,7 +78,7 @@ class Test_Station(unittest.TestCase):
         """
         Test municipality property
         """
-        test_value = 'hsbdspapkysdrinhsykl'
+        test_value = 'sskvdzvyxfkpkkovjiph'
         self.instance.municipality = test_value
         self.assertEqual(self.instance.municipality, test_value)
     
@@ -86,7 +86,7 @@ class Test_Station(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'ihqszbcgelwskgwknlzk'
+        test_value = 'anyhtthdaoyfedbwsvja'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     
@@ -94,7 +94,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(72.47389742264647)
+        test_value = float(17.173087745146496)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -102,7 +102,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(91.22695044432618)
+        test_value = float(80.20113650921849)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -110,7 +110,7 @@ class Test_Station(unittest.TestCase):
         """
         Test year_start property
         """
-        test_value = 'ackzsotckeubrompnwzm'
+        test_value = 'bwvdsavhhirclplwbrux'
         self.instance.year_start = test_value
         self.assertEqual(self.instance.year_start, test_value)
     
@@ -118,7 +118,7 @@ class Test_Station(unittest.TestCase):
         """
         Test components property
         """
-        test_value = ['bpxbhhllgvhugghbysyu']
+        test_value = ['fxveifdryztxweatlqcf', 'bjssfugphcovvknljfdo', 'rxggxxbjmptknzfgaizz', 'mqrvkkjnvwskgccsbgaa', 'thecughenffydjkecpzh']
         self.instance.components = test_value
         self.assertEqual(self.instance.components, test_value)
     

@@ -27,9 +27,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 from uk_bods_siri_amqp_producer_amqp_producer import *
 from uk_bods_siri_amqp_producer_data import VehiclePosition
-from test_uk_bods_siri_amqp_producer_data_vehicleposition import Test_VehiclePosition
+from test_vehicleposition import Test_VehiclePosition
 from uk_bods_siri_amqp_producer_data import Operator
-from test_uk_bods_siri_amqp_producer_data_operator import Test_Operator
+from test_operator import Test_Operator
 
 
 
@@ -325,7 +325,7 @@ class TestUkGovDftBodsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.dft.bods.amqp.VehiclePosition"
+                    assert cloud_event_payload.get("type") == "uk.gov.dft.bods.VehiclePosition"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -366,7 +366,7 @@ class TestUkGovDftBodsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.dft.bods.amqp.VehiclePosition'
+        assert properties.get('cloudEvents:type') == 'uk.gov.dft.bods.VehiclePosition'
         assert received.body is not None
         assert received.subject == "{operator_ref}/{vehicle_ref}".format(operator_ref="value", vehicle_ref="value")
         assert properties.get('operator_ref') == "{operator_ref}".format(operator_ref="value")
@@ -422,7 +422,7 @@ class TestUkGovDftBodsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.gov.dft.bods.amqp.Operator"
+                    assert cloud_event_payload.get("type") == "uk.gov.dft.bods.Operator"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -461,7 +461,7 @@ class TestUkGovDftBodsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.gov.dft.bods.amqp.Operator'
+        assert properties.get('cloudEvents:type') == 'uk.gov.dft.bods.Operator'
         assert received.body is not None
         assert received.subject == "{operator_ref}".format(operator_ref="value")
         assert properties.get('operator_ref') == "{operator_ref}".format(operator_ref="value")

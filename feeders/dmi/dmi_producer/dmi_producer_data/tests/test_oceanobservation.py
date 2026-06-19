@@ -30,13 +30,13 @@ class Test_OceanObservation(unittest.TestCase):
         Create instance of OceanObservation for testing
         """
         instance = OceanObservation(
-            observation_id='vkezvigjwhxtfzvyhysc',
-            station_id='ulbwerbxlqnbdybwiaww',
+            observation_id='xzeedexrpvarlmlamcau',
+            station_id='rzafgzjnippemdeqlhxb',
             parameter_id=ParameterIdenum.sealev_dvr,
             observed=datetime.datetime.now(datetime.timezone.utc),
-            value=float(90.57517576993871),
-            latitude=float(18.75687149498708),
-            longitude=float(43.011780335649384)
+            value=float(7.979850525077293),
+            latitude=float(63.44053033567925),
+            longitude=float(3.746757461217598)
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test observation_id property
         """
-        test_value = 'vkezvigjwhxtfzvyhysc'
+        test_value = 'xzeedexrpvarlmlamcau'
         self.instance.observation_id = test_value
         self.assertEqual(self.instance.observation_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'ulbwerbxlqnbdybwiaww'
+        test_value = 'rzafgzjnippemdeqlhxb'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -77,7 +77,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(90.57517576993871)
+        test_value = float(7.979850525077293)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -85,7 +85,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(18.75687149498708)
+        test_value = float(63.44053033567925)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -93,7 +93,7 @@ class Test_OceanObservation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(43.011780335649384)
+        test_value = float(3.746757461217598)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

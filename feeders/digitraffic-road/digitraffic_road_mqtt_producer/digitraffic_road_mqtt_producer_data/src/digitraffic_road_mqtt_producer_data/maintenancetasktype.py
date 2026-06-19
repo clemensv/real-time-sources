@@ -161,9 +161,9 @@ class MaintenanceTaskType:
             An instance of the dataclass.
         """
         return cls(
-            task_id='gprqlqvehhiziwoclqir',
-            name_fi='wjchyyezgfoiqxledxnm',
-            name_en='pofbrgxrexyfnmqndipm',
-            name_sv='jjtdewuwxvaepdrhvbqo',
-            data_updated_time='pqxithgwbxoohoreoeas'
+            task_id='abavtleqawwvuxwipjya',
+            name_fi='exglyuewjxyurcltisjh',
+            name_en='ruzabjlxtiiorljbigsi',
+            name_sv='jgsnexiojekaskomnhzi',
+            data_updated_time='qetgyopvsyubsluujowi'
         )

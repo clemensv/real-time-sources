@@ -329,7 +329,7 @@ class TestUkKclLaqnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.kcl.laqn.amqp.Site"
+                    assert cloud_event_payload.get("type") == "uk.kcl.laqn.Site"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -369,7 +369,7 @@ class TestUkKclLaqnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.amqp.Site'
+        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.Site'
         assert received.body is not None
         assert received.subject == "{site_code}".format(site_code="value")
         assert properties.get('borough') == "{borough}".format(borough="value")
@@ -425,7 +425,7 @@ class TestUkKclLaqnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.kcl.laqn.amqp.Measurement"
+                    assert cloud_event_payload.get("type") == "uk.kcl.laqn.Measurement"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -465,7 +465,7 @@ class TestUkKclLaqnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.amqp.Measurement'
+        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.Measurement'
         assert received.body is not None
         assert received.subject == "{site_code}".format(site_code="value")
         assert properties.get('borough') == "{borough}".format(borough="value")
@@ -521,7 +521,7 @@ class TestUkKclLaqnAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.kcl.laqn.amqp.DailyIndex"
+                    assert cloud_event_payload.get("type") == "uk.kcl.laqn.DailyIndex"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -561,7 +561,7 @@ class TestUkKclLaqnAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.amqp.DailyIndex'
+        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.DailyIndex'
         assert received.body is not None
         assert received.subject == "{site_code}".format(site_code="value")
         assert properties.get('borough') == "{borough}".format(borough="value")
@@ -677,7 +677,7 @@ class TestUkKclLaqnSpeciesAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "uk.kcl.laqn.species.amqp.Species"
+                    assert cloud_event_payload.get("type") == "uk.kcl.laqn.Species"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -717,7 +717,7 @@ class TestUkKclLaqnSpeciesAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.species.amqp.Species'
+        assert properties.get('cloudEvents:type') == 'uk.kcl.laqn.Species'
         assert received.body is not None
         assert received.subject == "{species_code}".format(species_code="value")
         assert properties.get('borough') == "{borough}".format(borough="value")

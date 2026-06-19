@@ -97,8 +97,9 @@ Deep-dive round 3 covered platforms that index, aggregate, or abstract over indi
 | 28 | [Transitland](transitland.md) | 🌍 Global | REST + GraphQL | **15/18** | `transitland.md` |
 | 29 | [Navitia](navitia.md) | 🌍 Global (France+) | REST/JSON (HAL hypermedia) | **14/18** | `navitia.md` |
 | 30 | [MobilityData Catalog](mobilitydata-catalog.md) | 🌍 Global | CSV catalog + API | **15/18** | `mobilitydata-catalog.md` |
+| 30a 🆕 | [TRAVIC / trajserv + pfaedle — GTFS extension](travic-pfaedle-gtfs-extension.md) | 🌍 Global | GTFS shape enrichment + feed discovery | **14/18** | `travic-pfaedle-gtfs-extension.md` |
 
-**Recommendation**: MobilityData's catalog and Transitland's Atlas are essential discovery tools — they tell us where every GTFS-RT feed is worldwide. Use them as configuration sources for automated GTFS-RT bridge deployment. Navitia's open-source engine and HAL hypermedia API are architecturally interesting.
+**Recommendation**: MobilityData's catalog and Transitland's Atlas are essential discovery tools — they tell us where every GTFS-RT feed is worldwide. Use them as configuration sources for automated GTFS-RT bridge deployment. Navitia's open-source engine and HAL hypermedia API are architecturally interesting. **pfaedle** (ad-freiburg) is a GTFS *extension* rather than a source: it map-matches GTFS trips onto OpenStreetMap to generate accurate `shapes.txt` geometry — an offline enrichment for the existing `gtfs/` bridge (precise route polylines for map/geospatial rendering). TRAVIC's `/trajserv/feeds` is a third worldwide GTFS/GTFS-RT directory alongside MobilityData and Transitland.
 
 ## Priority Order for Implementation
 

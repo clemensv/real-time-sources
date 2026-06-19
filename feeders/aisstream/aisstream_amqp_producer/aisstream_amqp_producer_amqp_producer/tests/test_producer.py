@@ -328,7 +328,7 @@ class TestIOAISstreamAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "IO.AISstream.amqp.PositionReport"
+                    assert cloud_event_payload.get("type") == "IO.AISstream.mqtt.PositionReport"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -370,7 +370,7 @@ class TestIOAISstreamAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'IO.AISstream.amqp.PositionReport'
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.mqtt.PositionReport'
         assert received.body is not None
         assert received.subject == "{mmsi}".format(mmsi="value")
         assert properties.get('flag') == "{flag}".format(flag="value")
@@ -428,7 +428,7 @@ class TestIOAISstreamAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "IO.AISstream.amqp.ShipStatic"
+                    assert cloud_event_payload.get("type") == "IO.AISstream.mqtt.ShipStatic"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -470,7 +470,7 @@ class TestIOAISstreamAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'IO.AISstream.amqp.ShipStatic'
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.mqtt.ShipStatic'
         assert received.body is not None
         assert received.subject == "{mmsi}".format(mmsi="value")
         assert properties.get('flag') == "{flag}".format(flag="value")
@@ -528,7 +528,7 @@ class TestIOAISstreamAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "IO.AISstream.amqp.AidToNavigation"
+                    assert cloud_event_payload.get("type") == "IO.AISstream.mqtt.AidToNavigation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -570,7 +570,7 @@ class TestIOAISstreamAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'IO.AISstream.amqp.AidToNavigation'
+        assert properties.get('cloudEvents:type') == 'IO.AISstream.mqtt.AidToNavigation'
         assert received.body is not None
         assert received.subject == "{mmsi}".format(mmsi="value")
         assert properties.get('flag') == "{flag}".format(flag="value")

@@ -165,11 +165,11 @@ class Salinity:
             An instance of the dataclass.
         """
         return cls(
-            site_no='ckmaearozgjzubzdahro',
-            datetime='xmsvtzdgryhtxouxkums',
-            value=float(11.57365868082534),
-            exception='jqwbmcjohzvbjlewnjti',
-            qualifiers=['muitwkwyyrvmtmeyoyyl', 'xtjlzkhnxllzcorclfyk', 'yxbtmszshprldxnnystm'],
-            parameter_cd='orpkovavqkictfyqmdnv',
-            timeseries_cd='nxjzljzrpxhnxbwnofgy'
+            site_no='eigrhstzxsrzzbaajpnj',
+            datetime='gvezhtmzzazhwnjlojqb',
+            value=float(96.37007846572234),
+            exception='jfhcgvxndkbppxocprmc',
+            qualifiers=['qgkmvdxglvfztukruviz', 'bewhojexuaxqknqwrrzu', 'coefkuhrhllscnirmelm'],
+            parameter_cd='zeyhlhehpayjyxzpvstk',
+            timeseries_cd='zpvnlmeisletrakwwfhq'
         )

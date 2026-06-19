@@ -169,13 +169,13 @@ class EventAdmission:
             An instance of the dataclass.
         """
         return cls(
-            event_id='eojriysrujqwsegtxhgo',
-            admission_id='coqgafhsqliimtjgxznb',
-            admission_type='dqrfqecdiggcnfnoeutk',
-            name='qgxgewfyklewbuojcuum',
+            event_id='lupchiznjatabmgphllw',
+            admission_id='qsrhtmspddduerqpdggw',
+            admission_type='scngqyzctbyrfspfylvx',
+            name='ogyconlazdgxzeiogipb',
             is_sold_out=True,
-            is_sales_closed=True,
-            price=float(84.67605463069468),
-            currency='jzouljcbqzjzxiplchra',
-            remaining=int(89)
+            is_sales_closed=False,
+            price=float(45.96501525396298),
+            currency='chuoskzfnskdcehrjwef',
+            remaining=int(29)
         )

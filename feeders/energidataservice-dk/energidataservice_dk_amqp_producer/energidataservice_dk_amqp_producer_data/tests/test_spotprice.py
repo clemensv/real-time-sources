@@ -28,11 +28,11 @@ class Test_SpotPrice(unittest.TestCase):
         Create instance of SpotPrice for testing
         """
         instance = SpotPrice(
-            hour_utc='ypyccpzqfdzkyaozhkbp',
-            hour_dk='nrjlioyndmntlbmlkhui',
-            price_area='zfpwsecxelzukigtjqvy',
-            spot_price_dkk=float(34.37904425150789),
-            spot_price_eur=float(49.37198562906988)
+            hour_utc='pilesksaypucukgjuyvp',
+            hour_dk='lgnvtqktcgxfmoxneswh',
+            price_area='zbeivlkzzkpffqrivgvy',
+            spot_price_dkk=float(37.201968487040816),
+            spot_price_eur=float(70.78827190033522)
         )
         return instance
 
@@ -41,7 +41,7 @@ class Test_SpotPrice(unittest.TestCase):
         """
         Test hour_utc property
         """
-        test_value = 'ypyccpzqfdzkyaozhkbp'
+        test_value = 'pilesksaypucukgjuyvp'
         self.instance.hour_utc = test_value
         self.assertEqual(self.instance.hour_utc, test_value)
     
@@ -49,7 +49,7 @@ class Test_SpotPrice(unittest.TestCase):
         """
         Test hour_dk property
         """
-        test_value = 'nrjlioyndmntlbmlkhui'
+        test_value = 'lgnvtqktcgxfmoxneswh'
         self.instance.hour_dk = test_value
         self.assertEqual(self.instance.hour_dk, test_value)
     
@@ -57,7 +57,7 @@ class Test_SpotPrice(unittest.TestCase):
         """
         Test price_area property
         """
-        test_value = 'zfpwsecxelzukigtjqvy'
+        test_value = 'zbeivlkzzkpffqrivgvy'
         self.instance.price_area = test_value
         self.assertEqual(self.instance.price_area, test_value)
     
@@ -65,7 +65,7 @@ class Test_SpotPrice(unittest.TestCase):
         """
         Test spot_price_dkk property
         """
-        test_value = float(34.37904425150789)
+        test_value = float(37.201968487040816)
         self.instance.spot_price_dkk = test_value
         self.assertEqual(self.instance.spot_price_dkk, test_value)
     
@@ -73,7 +73,7 @@ class Test_SpotPrice(unittest.TestCase):
         """
         Test spot_price_eur property
         """
-        test_value = float(49.37198562906988)
+        test_value = float(70.78827190033522)
         self.instance.spot_price_eur = test_value
         self.assertEqual(self.instance.spot_price_eur, test_value)
     

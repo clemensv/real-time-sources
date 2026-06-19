@@ -161,9 +161,9 @@ class TrafficObservation:
             An instance of the dataclass.
         """
         return cls(
-            measurement_site_id='hcxxzphmxrlklpdzjsdq',
-            measurement_time='bagkmrutbuepcgsjsbuk',
-            average_speed=float(66.71993556160821),
-            vehicle_flow_rate=int(59),
-            number_of_lanes_with_data=int(67)
+            measurement_site_id='ofrnskxppkpdooqcxymo',
+            measurement_time='cpsiiuoqenrtraaxibet',
+            average_speed=float(49.90746998613377),
+            vehicle_flow_rate=int(22),
+            number_of_lanes_with_data=int(42)
         )

@@ -28,9 +28,9 @@ class Test_UnnamedClass(unittest.TestCase):
         Create instance of UnnamedClass for testing
         """
         instance = UnnamedClass(
-            self_='plvczcatdoyhfsklisjq',
-            region='mmlnoyvcilxfekqjjudg',
-            station_id='nialtsqrbtiqunnuvgdn'
+            self_='qkpnncagdgdbloaaeerk',
+            region='xjnrzjftaeheoynmwxxy',
+            station_id='fbqaiupeujzbkwrsfffo'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'plvczcatdoyhfsklisjq'
+        test_value = 'qkpnncagdgdbloaaeerk'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     
@@ -47,7 +47,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'mmlnoyvcilxfekqjjudg'
+        test_value = 'xjnrzjftaeheoynmwxxy'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -55,7 +55,7 @@ class Test_UnnamedClass(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'nialtsqrbtiqunnuvgdn'
+        test_value = 'fbqaiupeujzbkwrsfffo'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     

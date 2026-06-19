@@ -161,9 +161,9 @@ class Component:
             An instance of the dataclass.
         """
         return cls(
-            component_id=int(68),
-            component_code='fnbrafmcxehzbkpfziiu',
-            symbol='ayegmoobcndfmpkbkufg',
-            unit='wrnbqdqmwlqsdylskisg',
-            name='piiaxkegtijsuaoyiroe'
+            component_id=int(16),
+            component_code='rdrlowsrxzzyujszkhol',
+            symbol='chpizdsarlgudvxmvnan',
+            unit='xjuxrfkecrgarfecamds',
+            name='vwxcwcgdizcnhzibtcvr'
         )

@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from jma_bosai_volcano_amqp_producer_data.volcanicwarning import VolcanicWarning
-from jma_bosai_volcano_amqp_producer_data.conditionenum import ConditionEnum
 from jma_bosai_volcano_amqp_producer_data.eventenum import EventEnum
+from jma_bosai_volcano_amqp_producer_data.conditionenum import ConditionEnum
 import datetime
 
 
@@ -31,18 +31,18 @@ class Test_VolcanicWarning(unittest.TestCase):
         Create instance of VolcanicWarning for testing
         """
         instance = VolcanicWarning(
-            volcano_code='njwbfhiitezeblxbzkmc',
-            event_id='btsijrejcjgjydfjqcwa',
+            volcano_code='hajinzntzsbrnvgnvbny',
+            event_id='ogoorhcdhznewdkruaxy',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            alert_level_code='oksodvqcuqmivgitirfg',
-            alert_level_name='nnsurdjpejesqzftynrb',
-            previous_level_code='bgwqxqhwaojdvjntzhdi',
+            alert_level_code='cpxbwodpkbpxgtzvrxjj',
+            alert_level_name='ssalitcbxzkxaiqrakjf',
+            previous_level_code='dzljzkbcfmamrhiuaevg',
             condition=ConditionEnum.ISSUED,
-            info_type_jp='bhucxeriunnczxpwtbdr',
-            area_codes=['cnhpeyfqxwqvdupmaauq', 'qxcvjcrsqkwmrkpraazb'],
-            prefecture='zzxmrrojmppxakpjswiu',
-            event=EventEnum.info
+            info_type_jp='yiczowvefkljxocyuwrb',
+            area_codes=['iljhbrbvtujaqkfdotcu'],
+            prefecture='npggtdcnmbdvvfwlxczb',
+            event=EventEnum.warning
         )
         return instance
 
@@ -51,7 +51,7 @@ class Test_VolcanicWarning(unittest.TestCase):
         """
         Test volcano_code property
         """
-        test_value = 'njwbfhiitezeblxbzkmc'
+        test_value = 'hajinzntzsbrnvgnvbny'
         self.instance.volcano_code = test_value
         self.assertEqual(self.instance.volcano_code, test_value)
     
@@ -59,7 +59,7 @@ class Test_VolcanicWarning(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'btsijrejcjgjydfjqcwa'
+        test_value = 'ogoorhcdhznewdkruaxy'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -83,7 +83,7 @@ class Test_VolcanicWarning(unittest.TestCase):
         """
         Test alert_level_code property
         """
-        test_value = 'oksodvqcuqmivgitirfg'
+        test_value = 'cpxbwodpkbpxgtzvrxjj'
         self.instance.alert_level_code = test_value
         self.assertEqual(self.instance.alert_level_code, test_value)
     
@@ -91,7 +91,7 @@ class Test_VolcanicWarning(unittest.TestCase):
         """
         Test alert_level_name property
         """
-        test_value = 'nnsurdjpejesqzftynrb'
+        test_value = 'ssalitcbxzkxaiqrakjf'
         self.instance.alert_level_name = test_value
         self.assertEqual(self.instance.alert_level_name, test_value)
     
@@ -99,7 +99,7 @@ class Test_VolcanicWarning(unittest.TestCase):
         """
         Test previous_level_code property
         """
-        test_value = 'bgwqxqhwaojdvjntzhdi'
+        test_value = 'dzljzkbcfmamrhiuaevg'
         self.instance.previous_level_code = test_value
         self.assertEqual(self.instance.previous_level_code, test_value)
     
@@ -115,7 +115,7 @@ class Test_VolcanicWarning(unittest.TestCase):
         """
         Test info_type_jp property
         """
-        test_value = 'bhucxeriunnczxpwtbdr'
+        test_value = 'yiczowvefkljxocyuwrb'
         self.instance.info_type_jp = test_value
         self.assertEqual(self.instance.info_type_jp, test_value)
     
@@ -123,7 +123,7 @@ class Test_VolcanicWarning(unittest.TestCase):
         """
         Test area_codes property
         """
-        test_value = ['cnhpeyfqxwqvdupmaauq', 'qxcvjcrsqkwmrkpraazb']
+        test_value = ['iljhbrbvtujaqkfdotcu']
         self.instance.area_codes = test_value
         self.assertEqual(self.instance.area_codes, test_value)
     
@@ -131,7 +131,7 @@ class Test_VolcanicWarning(unittest.TestCase):
         """
         Test prefecture property
         """
-        test_value = 'zzxmrrojmppxakpjswiu'
+        test_value = 'npggtdcnmbdvvfwlxczb'
         self.instance.prefecture = test_value
         self.assertEqual(self.instance.prefecture, test_value)
     
@@ -139,7 +139,7 @@ class Test_VolcanicWarning(unittest.TestCase):
         """
         Test event property
         """
-        test_value = EventEnum.info
+        test_value = EventEnum.warning
         self.instance.event = test_value
         self.assertEqual(self.instance.event, test_value)
     

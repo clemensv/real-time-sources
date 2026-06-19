@@ -1,3 +1,3 @@
-from .at import WeatherObservation, WeatherStation
+from .at import WeatherStation, WeatherObservation
 
-__all__ = ["WeatherObservation", "WeatherStation"]
+__all__ = ["WeatherStation", "WeatherObservation"]

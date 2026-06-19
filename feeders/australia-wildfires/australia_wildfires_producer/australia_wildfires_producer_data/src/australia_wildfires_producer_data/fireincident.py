@@ -179,17 +179,17 @@ class FireIncident:
             An instance of the dataclass.
         """
         return cls(
-            incident_id='awtrhkyeqwsagyoodbct',
-            state='fdedjzbtpnpdmgajurnf',
-            title='frhgbgpqgsxejzoytzhn',
-            alert_level='ogekmroocpgzlsxqbbnq',
-            status='ewtmjoqpzjzachptmryt',
-            location='zlavgcvhbvqrxcxqgggl',
-            latitude=float(42.0009714515957),
-            longitude=float(95.31833986740946),
-            size_hectares=float(44.83582253382856),
-            type='xitkokvzuzsjkydeeyzi',
-            responsible_agency='esavoijcbkqzfyrmegty',
+            incident_id='abvfgefbmztwxejpvzuj',
+            state='kynuldadyxjsyanqkzel',
+            title='gsgyvxegpwsumlyyrbdo',
+            alert_level='yxtwycjpmgxiqicadxyo',
+            status='lcxjarlbyochwaoszcne',
+            location='yfmuevxtrpkcziycqdav',
+            latitude=float(92.424044875087),
+            longitude=float(81.0131054910657),
+            size_hectares=float(98.86113634292185),
+            type='wgpqkcvvdpuwiaijpbvy',
+            responsible_agency='mqyfucgllkcthbauabtk',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            source_url='spvdzbwccyrjrsjylhay'
+            source_url='fdtfvqhnodocacdhtvdv'
         )

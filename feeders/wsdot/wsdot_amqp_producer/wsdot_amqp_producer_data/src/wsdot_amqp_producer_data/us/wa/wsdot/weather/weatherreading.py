@@ -181,19 +181,19 @@ class WeatherReading:
             An instance of the dataclass.
         """
         return cls(
-            station_id='qvxgdvjbakohdnihfqhf',
-            station_name='guwsnhrzcezrumddzvzm',
-            reading_time='ecgxfsxcjfjdcemjlntc',
-            temperature_in_fahrenheit=float(98.85307044426771),
-            precipitation_in_inches=float(6.998301826030417),
-            wind_speed_in_mph=float(70.63671135700409),
-            wind_gust_speed_in_mph=float(27.585033502151457),
-            wind_direction=int(35),
-            wind_direction_cardinal='cfinhmbnnjnybpzgtmmu',
-            barometric_pressure=float(88.43956674199408),
-            relative_humidity=int(97),
-            visibility=float(70.32515450873208),
-            sky_coverage='ywapgdazwridjpvkgtgm',
-            latitude=float(81.17974746149898),
-            longitude=float(86.02544765189597)
+            station_id='vizicsnqmlchtbzlexkw',
+            station_name='pmlfoscmljhwbezwrbzz',
+            reading_time='oflqernuperuyevjxgag',
+            temperature_in_fahrenheit=float(4.4136940731053675),
+            precipitation_in_inches=float(37.248044404585414),
+            wind_speed_in_mph=float(45.178873492892016),
+            wind_gust_speed_in_mph=float(69.52325366808047),
+            wind_direction=int(70),
+            wind_direction_cardinal='qeoowphrklrilcvtlslc',
+            barometric_pressure=float(29.949891056078883),
+            relative_humidity=int(35),
+            visibility=float(91.20896199067418),
+            sky_coverage='kegtdkfeqzsnnbxcnrtd',
+            latitude=float(19.853476553731532),
+            longitude=float(88.16787594124345)
         )

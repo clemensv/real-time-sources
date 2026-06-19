@@ -29,26 +29,26 @@ class Test_VehiclePosition(unittest.TestCase):
         Create instance of VehiclePosition for testing
         """
         instance = VehiclePosition(
-            operator_ref='csvyqgvahxaacuobwxpw',
-            vehicle_ref='tfwwdnppymtdjbmeuwfl',
-            line_ref='ydhcoujmccmcbdsayikc',
-            direction_ref='ximylbargumrfiojqppn',
-            published_line_name='imjjafezloccdveqgugv',
-            origin_ref='frafapmkeqywvibzynnr',
-            origin_name='yaicqmlzczvvxcwjyrgt',
-            destination_ref='nxsuorxrfupdhrfnkvfz',
-            destination_name='sktputuiczvunqzezjpg',
-            longitude=float(54.7931043617641),
-            latitude=float(34.7512253023429),
-            bearing=int(52),
+            operator_ref='naodvoucozzvuspflsbg',
+            vehicle_ref='yiadnrmeaazsfbntxhyr',
+            line_ref='sleegqdbarpuevcpliao',
+            direction_ref='seagiqynnizoitnnthzf',
+            published_line_name='swsdxqfeycxbftghkmtl',
+            origin_ref='nrtojbwdyojleycslpgv',
+            origin_name='jfelajmfhfalrtyuafcz',
+            destination_ref='zprxixxctcrvvutahnlz',
+            destination_name='yxftgwkjaagwcyxplobp',
+            longitude=float(83.79278082568985),
+            latitude=float(48.20366690708043),
+            bearing=int(5),
             recorded_at_time=datetime.datetime.now(datetime.timezone.utc),
             valid_until_time=datetime.datetime.now(datetime.timezone.utc),
-            block_ref='uqtgpmzqkphgstmylgdm',
-            vehicle_journey_ref='llzjmuxqxskqxyuvnebd',
+            block_ref='eomhhbdlenvonqxgwnxc',
+            vehicle_journey_ref='kamjpronnzlnelvglxoo',
             origin_aimed_departure_time=datetime.datetime.now(datetime.timezone.utc),
-            data_frame_ref='ejdzpcxypmqyzhxqdknt',
-            dated_vehicle_journey_ref='pzztbgwplahuiiftwqpa',
-            item_identifier='fpwjrovdwhtejhgskfyy'
+            data_frame_ref='uxoyypqjfnexkophsise',
+            dated_vehicle_journey_ref='hawldazbdzsifnveqxvc',
+            item_identifier='ewcuewqtqhremyqzlbby'
         )
         return instance
 
@@ -57,7 +57,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test operator_ref property
         """
-        test_value = 'csvyqgvahxaacuobwxpw'
+        test_value = 'naodvoucozzvuspflsbg'
         self.instance.operator_ref = test_value
         self.assertEqual(self.instance.operator_ref, test_value)
     
@@ -65,7 +65,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test vehicle_ref property
         """
-        test_value = 'tfwwdnppymtdjbmeuwfl'
+        test_value = 'yiadnrmeaazsfbntxhyr'
         self.instance.vehicle_ref = test_value
         self.assertEqual(self.instance.vehicle_ref, test_value)
     
@@ -73,7 +73,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test line_ref property
         """
-        test_value = 'ydhcoujmccmcbdsayikc'
+        test_value = 'sleegqdbarpuevcpliao'
         self.instance.line_ref = test_value
         self.assertEqual(self.instance.line_ref, test_value)
     
@@ -81,7 +81,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test direction_ref property
         """
-        test_value = 'ximylbargumrfiojqppn'
+        test_value = 'seagiqynnizoitnnthzf'
         self.instance.direction_ref = test_value
         self.assertEqual(self.instance.direction_ref, test_value)
     
@@ -89,7 +89,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test published_line_name property
         """
-        test_value = 'imjjafezloccdveqgugv'
+        test_value = 'swsdxqfeycxbftghkmtl'
         self.instance.published_line_name = test_value
         self.assertEqual(self.instance.published_line_name, test_value)
     
@@ -97,7 +97,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test origin_ref property
         """
-        test_value = 'frafapmkeqywvibzynnr'
+        test_value = 'nrtojbwdyojleycslpgv'
         self.instance.origin_ref = test_value
         self.assertEqual(self.instance.origin_ref, test_value)
     
@@ -105,7 +105,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test origin_name property
         """
-        test_value = 'yaicqmlzczvvxcwjyrgt'
+        test_value = 'jfelajmfhfalrtyuafcz'
         self.instance.origin_name = test_value
         self.assertEqual(self.instance.origin_name, test_value)
     
@@ -113,7 +113,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test destination_ref property
         """
-        test_value = 'nxsuorxrfupdhrfnkvfz'
+        test_value = 'zprxixxctcrvvutahnlz'
         self.instance.destination_ref = test_value
         self.assertEqual(self.instance.destination_ref, test_value)
     
@@ -121,7 +121,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test destination_name property
         """
-        test_value = 'sktputuiczvunqzezjpg'
+        test_value = 'yxftgwkjaagwcyxplobp'
         self.instance.destination_name = test_value
         self.assertEqual(self.instance.destination_name, test_value)
     
@@ -129,7 +129,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(54.7931043617641)
+        test_value = float(83.79278082568985)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -137,7 +137,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(34.7512253023429)
+        test_value = float(48.20366690708043)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -145,7 +145,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test bearing property
         """
-        test_value = int(52)
+        test_value = int(5)
         self.instance.bearing = test_value
         self.assertEqual(self.instance.bearing, test_value)
     
@@ -169,7 +169,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test block_ref property
         """
-        test_value = 'uqtgpmzqkphgstmylgdm'
+        test_value = 'eomhhbdlenvonqxgwnxc'
         self.instance.block_ref = test_value
         self.assertEqual(self.instance.block_ref, test_value)
     
@@ -177,7 +177,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test vehicle_journey_ref property
         """
-        test_value = 'llzjmuxqxskqxyuvnebd'
+        test_value = 'kamjpronnzlnelvglxoo'
         self.instance.vehicle_journey_ref = test_value
         self.assertEqual(self.instance.vehicle_journey_ref, test_value)
     
@@ -193,7 +193,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test data_frame_ref property
         """
-        test_value = 'ejdzpcxypmqyzhxqdknt'
+        test_value = 'uxoyypqjfnexkophsise'
         self.instance.data_frame_ref = test_value
         self.assertEqual(self.instance.data_frame_ref, test_value)
     
@@ -201,7 +201,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test dated_vehicle_journey_ref property
         """
-        test_value = 'pzztbgwplahuiiftwqpa'
+        test_value = 'hawldazbdzsifnveqxvc'
         self.instance.dated_vehicle_journey_ref = test_value
         self.assertEqual(self.instance.dated_vehicle_journey_ref, test_value)
     
@@ -209,7 +209,7 @@ class Test_VehiclePosition(unittest.TestCase):
         """
         Test item_identifier property
         """
-        test_value = 'fpwjrovdwhtejhgskfyy'
+        test_value = 'ewcuewqtqhremyqzlbby'
         self.instance.item_identifier = test_value
         self.assertEqual(self.instance.item_identifier, test_value)
     

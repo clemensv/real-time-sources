@@ -174,13 +174,13 @@ class PeakDemandForecast:
         """
         return cls(
             date=datetime.date.today(),
-            time='fizmxkkrwxqfteeypjas',
-            peak_demand_forecast_mw=float(56.01823761893429),
-            peak_demand_forecast_jp_unit_value=int(14),
-            peak_time_slot='lsingxabmrlflhagzrhw',
+            time='wevjifemlmplvwcifkgt',
+            peak_demand_forecast_mw=float(9.309643083794228),
+            peak_demand_forecast_jp_unit_value=int(25),
+            peak_time_slot='bzozfjbvcxeupleiyfjc',
             update_datetime=datetime.datetime.now(datetime.timezone.utc),
             update_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            area_code='orbcrhnoejsrwfjunpsr',
-            area_name_jp='knrtofnkseqigcjujmyf',
-            area_name_en='wuoxkoyhsxjjoubdohqh'
+            area_code='spxxnbrvxuqozblnbbjz',
+            area_name_jp='ydfugkcpuhucwiklvrjn',
+            area_name_en='micrjadzrmmuktinesox'
         )

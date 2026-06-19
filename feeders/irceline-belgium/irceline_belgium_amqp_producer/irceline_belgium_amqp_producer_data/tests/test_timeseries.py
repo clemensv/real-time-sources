@@ -29,17 +29,17 @@ class Test_Timeseries(unittest.TestCase):
         Create instance of Timeseries for testing
         """
         instance = Timeseries(
-            timeseries_id='oxtglgdhiuuxxkvgenyz',
-            label='bbtwgtzwqenqgddcrncq',
-            uom='vzbgdugajvgdffqznuob',
-            station_id='mfwozayzttpylzfddrkr',
-            station_label='vawzcnvxzjlddjfounew',
-            latitude=float(68.77589811719685),
-            longitude=float(19.26618049979708),
-            phenomenon_id='qvptrapqemwtmilyqcxn',
-            phenomenon_label='hcrhnyhxnvhqijptpbke',
-            category_id='qebndomxdzodqmvbgosp',
-            category_label='diuuyuurleksaxhxixuf',
+            timeseries_id='niiockhfoeaqaniynqbv',
+            label='lomrhiyhnfkedrawzmvf',
+            uom='jgpkalwngtvqrwpjjwkw',
+            station_id='tniacnwgpjzqnxdxvrpt',
+            station_label='igeyayocietlzfakvfow',
+            latitude=float(12.258283295273698),
+            longitude=float(33.55792744361574),
+            phenomenon_id='keiivxowprsmycjoqwub',
+            phenomenon_label='qdtpnhceppihgapmhkdc',
+            category_id='ubpimxmftdmglovayjhv',
+            category_label='hoajfjzvkokthpxtrkvz',
             status_intervals=None
         )
         return instance
@@ -49,7 +49,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test timeseries_id property
         """
-        test_value = 'oxtglgdhiuuxxkvgenyz'
+        test_value = 'niiockhfoeaqaniynqbv'
         self.instance.timeseries_id = test_value
         self.assertEqual(self.instance.timeseries_id, test_value)
     
@@ -57,7 +57,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test label property
         """
-        test_value = 'bbtwgtzwqenqgddcrncq'
+        test_value = 'lomrhiyhnfkedrawzmvf'
         self.instance.label = test_value
         self.assertEqual(self.instance.label, test_value)
     
@@ -65,7 +65,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test uom property
         """
-        test_value = 'vzbgdugajvgdffqznuob'
+        test_value = 'jgpkalwngtvqrwpjjwkw'
         self.instance.uom = test_value
         self.assertEqual(self.instance.uom, test_value)
     
@@ -73,7 +73,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'mfwozayzttpylzfddrkr'
+        test_value = 'tniacnwgpjzqnxdxvrpt'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -81,7 +81,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test station_label property
         """
-        test_value = 'vawzcnvxzjlddjfounew'
+        test_value = 'igeyayocietlzfakvfow'
         self.instance.station_label = test_value
         self.assertEqual(self.instance.station_label, test_value)
     
@@ -89,7 +89,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(68.77589811719685)
+        test_value = float(12.258283295273698)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -97,7 +97,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(19.26618049979708)
+        test_value = float(33.55792744361574)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -105,7 +105,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test phenomenon_id property
         """
-        test_value = 'qvptrapqemwtmilyqcxn'
+        test_value = 'keiivxowprsmycjoqwub'
         self.instance.phenomenon_id = test_value
         self.assertEqual(self.instance.phenomenon_id, test_value)
     
@@ -113,7 +113,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test phenomenon_label property
         """
-        test_value = 'hcrhnyhxnvhqijptpbke'
+        test_value = 'qdtpnhceppihgapmhkdc'
         self.instance.phenomenon_label = test_value
         self.assertEqual(self.instance.phenomenon_label, test_value)
     
@@ -121,7 +121,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test category_id property
         """
-        test_value = 'qebndomxdzodqmvbgosp'
+        test_value = 'ubpimxmftdmglovayjhv'
         self.instance.category_id = test_value
         self.assertEqual(self.instance.category_id, test_value)
     
@@ -129,7 +129,7 @@ class Test_Timeseries(unittest.TestCase):
         """
         Test category_label property
         """
-        test_value = 'diuuyuurleksaxhxixuf'
+        test_value = 'hoajfjzvkokthpxtrkvz'
         self.instance.category_label = test_value
         self.assertEqual(self.instance.category_label, test_value)
     

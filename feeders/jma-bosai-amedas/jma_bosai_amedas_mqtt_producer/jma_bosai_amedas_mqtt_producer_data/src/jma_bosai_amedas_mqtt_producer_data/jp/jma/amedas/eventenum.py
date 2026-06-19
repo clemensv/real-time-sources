@@ -3,9 +3,9 @@ from enum import Enum
 
 class EventEnum(Enum):
     """
-    Fixed topic event segment for Observation messages.
+    Fixed topic event segment for Station messages.
     """
-    observation = 'observation'
+    info = 'info'
 
     @classmethod
     def from_ordinal(cls, ordinal: int | str) -> 'EventEnum':

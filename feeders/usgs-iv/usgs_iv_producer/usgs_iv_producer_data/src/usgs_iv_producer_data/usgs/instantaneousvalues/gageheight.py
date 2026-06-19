@@ -165,11 +165,11 @@ class GageHeight:
             An instance of the dataclass.
         """
         return cls(
-            site_no='hnzckpumgcvurxibpoxt',
-            datetime='cmlcpbwqphursjbwpvxq',
-            value=float(6.967991270688412),
-            exception='ffugdislpausqjqqakff',
-            qualifiers=['cfzzxxhwrirldwjetbyy', 'njjvkmidqtbvdpcghgzu', 'ozozkuagzdxohitcmebk', 'fdvcduxzttgysjbmoxep'],
-            parameter_cd='skiazledbolzursqlflu',
-            timeseries_cd='peljfjymzvoqkrfvpthf'
+            site_no='idvokecgfnnrvvoikkai',
+            datetime='qbtmmbicfhyelcumyegg',
+            value=float(75.29659234307809),
+            exception='cpcxxdjjlabenvkipjbo',
+            qualifiers=['uzoeapnpnbybtwkowpfy', 'scbzndspujvupgcatgnq', 'fpyxhffxqhvzidmsbgps', 'gsuliwwubhhqniuqdaiz', 'wdikbydczrfsctwufcas'],
+            parameter_cd='anikmjagefqypgvzyhni',
+            timeseries_cd='zrrgeeslqiancxxyrgvi'
         )

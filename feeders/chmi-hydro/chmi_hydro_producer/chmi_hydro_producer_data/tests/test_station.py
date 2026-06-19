@@ -28,16 +28,16 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_id='kzmiqyjruseixqobqcfu',
-            dbc='ofqgyktdthymemttiimz',
-            station_name='xwendlwqwcbtcpbysnnb',
-            stream_name='phumxdlvcjeqwyyuwqis',
-            latitude=float(53.70280642267702),
-            longitude=float(64.77276795054891),
-            flood_level_1=float(69.16453677314682),
-            flood_level_2=float(83.94569792494092),
-            flood_level_3=float(38.23928321807695),
-            flood_level_4=float(34.001929309952864),
+            station_id='qlkmautxgzmtcrceexiv',
+            dbc='opbwcbgatqybjxmhzotc',
+            station_name='uuimdyjrknedigmmforj',
+            stream_name='icrntfghfxnxqyvkrmze',
+            latitude=float(54.226210378424966),
+            longitude=float(97.74483140054461),
+            flood_level_1=float(38.77138907308995),
+            flood_level_2=float(55.75476241978411),
+            flood_level_3=float(16.389944253124245),
+            flood_level_4=float(26.50738638382132),
             has_forecast=True
         )
         return instance
@@ -47,7 +47,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'kzmiqyjruseixqobqcfu'
+        test_value = 'qlkmautxgzmtcrceexiv'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -55,7 +55,7 @@ class Test_Station(unittest.TestCase):
         """
         Test dbc property
         """
-        test_value = 'ofqgyktdthymemttiimz'
+        test_value = 'opbwcbgatqybjxmhzotc'
         self.instance.dbc = test_value
         self.assertEqual(self.instance.dbc, test_value)
     
@@ -63,7 +63,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'xwendlwqwcbtcpbysnnb'
+        test_value = 'uuimdyjrknedigmmforj'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -71,7 +71,7 @@ class Test_Station(unittest.TestCase):
         """
         Test stream_name property
         """
-        test_value = 'phumxdlvcjeqwyyuwqis'
+        test_value = 'icrntfghfxnxqyvkrmze'
         self.instance.stream_name = test_value
         self.assertEqual(self.instance.stream_name, test_value)
     
@@ -79,7 +79,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(53.70280642267702)
+        test_value = float(54.226210378424966)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -87,7 +87,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(64.77276795054891)
+        test_value = float(97.74483140054461)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -95,7 +95,7 @@ class Test_Station(unittest.TestCase):
         """
         Test flood_level_1 property
         """
-        test_value = float(69.16453677314682)
+        test_value = float(38.77138907308995)
         self.instance.flood_level_1 = test_value
         self.assertEqual(self.instance.flood_level_1, test_value)
     
@@ -103,7 +103,7 @@ class Test_Station(unittest.TestCase):
         """
         Test flood_level_2 property
         """
-        test_value = float(83.94569792494092)
+        test_value = float(55.75476241978411)
         self.instance.flood_level_2 = test_value
         self.assertEqual(self.instance.flood_level_2, test_value)
     
@@ -111,7 +111,7 @@ class Test_Station(unittest.TestCase):
         """
         Test flood_level_3 property
         """
-        test_value = float(38.23928321807695)
+        test_value = float(16.389944253124245)
         self.instance.flood_level_3 = test_value
         self.assertEqual(self.instance.flood_level_3, test_value)
     
@@ -119,7 +119,7 @@ class Test_Station(unittest.TestCase):
         """
         Test flood_level_4 property
         """
-        test_value = float(34.001929309952864)
+        test_value = float(26.50738638382132)
         self.instance.flood_level_4 = test_value
         self.assertEqual(self.instance.flood_level_4, test_value)
     

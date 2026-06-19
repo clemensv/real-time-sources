@@ -161,9 +161,9 @@ class Species:
             An instance of the dataclass.
         """
         return cls(
-            species_code='imqtuylkximxdoncfypi',
-            species_name='ekdwjiyxheowwuqulsbl',
-            description='rkqnaprffqwjwvdmqqxm',
-            health_effect='bpkspbiczvnvfxwnvwla',
-            link='dwbqqpieiyaukbcjfewe'
+            species_code='lrumlvtuqfyfswjromhs',
+            species_name='mitrklftnrsanxqvntig',
+            description='opjwsdaifbjkvyqvnqnv',
+            health_effect='hhmuvkxdihiujlmoclak',
+            link='wxpfmvnzcczwtmbnjeca'
         )

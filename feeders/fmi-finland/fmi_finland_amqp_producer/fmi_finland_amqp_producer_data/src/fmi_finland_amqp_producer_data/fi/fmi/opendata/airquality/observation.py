@@ -17,7 +17,7 @@ import json
 @dataclass
 class Observation:
     """
-    Hourly FMI air quality observation aggregated per station and observation timestamp from the urban::observations::airquality::hourly::simple stored query. Each event combines all supported pollutant and index parameters published for the station and hour.
+    Hourly air quality observation aggregated per station and timestamp from FMI OGC WFS simple query results.
     
     Attributes:
         fmisid (str)
@@ -171,14 +171,14 @@ class Observation:
             An instance of the dataclass.
         """
         return cls(
-            fmisid='btzbsvlmdsslechoknto',
-            station_name='tfyjzahujvtjergyvncq',
-            observation_time='dqalwrgjeoowpydvwiih',
-            aqindex=float(12.756703332859098),
-            pm10_ug_m3=float(27.111537007381237),
-            pm2_5_ug_m3=float(24.2455430368423),
-            no2_ug_m3=float(24.109999249776635),
-            o3_ug_m3=float(69.47465662961406),
-            so2_ug_m3=float(22.045471382548033),
-            co_mg_m3=float(38.6569612774626)
+            fmisid='nqqvmswnqomtqyxpvhgo',
+            station_name='sgwmyljzapijeqarlhzd',
+            observation_time='vxkmhfwryjhdsruksenr',
+            aqindex=float(66.38236228576176),
+            pm10_ug_m3=float(47.651471147110115),
+            pm2_5_ug_m3=float(70.38624001126351),
+            no2_ug_m3=float(42.138881221202936),
+            o3_ug_m3=float(80.52881825123018),
+            so2_ug_m3=float(50.51056134155309),
+            co_mg_m3=float(40.33278325463138)
         )

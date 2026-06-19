@@ -28,9 +28,9 @@ class Test_Component(unittest.TestCase):
         Create instance of Component for testing
         """
         instance = Component(
-            formula='cvcnclmfhweontgrgtfs',
-            name_nl='xiwldbqiicfogihqzhhk',
-            name_en='rfbczclhwtcaqksixtnc'
+            formula='bdclmqfleebwvzmfugso',
+            name_nl='yphnioxldricuvapyjfx',
+            name_en='rdqnnidvkiqubkypclsz'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_Component(unittest.TestCase):
         """
         Test formula property
         """
-        test_value = 'cvcnclmfhweontgrgtfs'
+        test_value = 'bdclmqfleebwvzmfugso'
         self.instance.formula = test_value
         self.assertEqual(self.instance.formula, test_value)
     
@@ -47,7 +47,7 @@ class Test_Component(unittest.TestCase):
         """
         Test name_nl property
         """
-        test_value = 'xiwldbqiicfogihqzhhk'
+        test_value = 'yphnioxldricuvapyjfx'
         self.instance.name_nl = test_value
         self.assertEqual(self.instance.name_nl, test_value)
     
@@ -55,7 +55,7 @@ class Test_Component(unittest.TestCase):
         """
         Test name_en property
         """
-        test_value = 'rfbczclhwtcaqksixtnc'
+        test_value = 'rdqnnidvkiqubkypclsz'
         self.instance.name_en = test_value
         self.assertEqual(self.instance.name_en, test_value)
     

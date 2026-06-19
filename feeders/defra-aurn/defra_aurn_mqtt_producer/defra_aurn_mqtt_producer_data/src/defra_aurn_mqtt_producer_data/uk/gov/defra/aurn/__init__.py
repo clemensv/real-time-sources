@@ -1,5 +1,5 @@
-from .station import Station
 from .timeseries import Timeseries
+from .station import Station
 from .observation import Observation
 
-__all__ = ["Station", "Timeseries", "Observation"]
+__all__ = ["Timeseries", "Station", "Observation"]

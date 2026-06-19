@@ -165,11 +165,11 @@ class OtherParameter:
             An instance of the dataclass.
         """
         return cls(
-            site_no='lpxmwwudrkhugikbmljs',
-            datetime='jikrxqismmsjdnoydtdv',
-            value=float(89.31952101570576),
-            exception='vnoyfqwboxhgkljnzjhy',
-            qualifiers=['etxcclborabzmbhoimwm'],
-            parameter_cd='enxhgdroxxyvprcxebas',
-            timeseries_cd='wdjoueigehipzcbafnmv'
+            site_no='bcygupovblyrbpgiwppk',
+            datetime='ehkkhjetkehegmqjghcw',
+            value=float(38.737882677518954),
+            exception='snkqklyyunffrdbcxhvt',
+            qualifiers=['forsagwnptipaeqjckhh', 'vkirdswxfhbrmpzqriot'],
+            parameter_cd='eqqaocwohqmvptwxzqed',
+            timeseries_cd='srvqdfnzowgtxawyikck'
         )

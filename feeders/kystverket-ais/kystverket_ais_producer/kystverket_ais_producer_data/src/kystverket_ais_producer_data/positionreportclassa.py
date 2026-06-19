@@ -175,16 +175,16 @@ class PositionReportClassA:
             An instance of the dataclass.
         """
         return cls(
-            mmsi=int(20),
-            navigation_status=int(9),
-            rate_of_turn=float(74.31513154173841),
-            speed_over_ground=float(44.89098859427174),
-            position_accuracy=int(7),
-            longitude=float(14.86869014867529),
-            latitude=float(66.783033003675),
-            course_over_ground=float(76.57075653843584),
-            true_heading=int(42),
-            timestamp='rcnjnzdkafackrqivzcf',
-            station_id='diiumytboxmbwhbyeftg',
-            msg_type=int(39)
+            mmsi=int(35),
+            navigation_status=int(53),
+            rate_of_turn=float(47.78547682035656),
+            speed_over_ground=float(12.782265859162855),
+            position_accuracy=int(86),
+            longitude=float(79.24602088959733),
+            latitude=float(57.591159618200116),
+            course_over_ground=float(31.893250501147563),
+            true_heading=int(63),
+            timestamp='iyggitampoomjjpaotge',
+            station_id='jonrwpqvbgdzglyouumv',
+            msg_type=int(2)
         )

@@ -28,13 +28,13 @@ class Test_PH(unittest.TestCase):
         Create instance of PH for testing
         """
         instance = PH(
-            site_no='xiheazvtseegyozagnni',
-            datetime='jsnxxcmfwyirxfoxocfk',
-            value=float(87.38043480482276),
-            exception='kvpsdbosggwrpavcxtnt',
-            qualifiers=['kmqunkbhyijcehddstwp', 'bmcsvyvacujuywpjqfrh', 'vfjydgrznvsokcmisuyq'],
-            parameter_cd='azrooqwtfftpxzvvlkbz',
-            timeseries_cd='qlniybpcdiumbboiwjcv'
+            site_no='dbtdndodlxadqjywater',
+            datetime='eqrmgjzrbbccygtnyezi',
+            value=float(15.687408944695347),
+            exception='zpaopdfotymumysbpncg',
+            qualifiers=['jvsvwofybaxadhasupla', 'oolgypvkwronvwxrxmuz', 'czauckrsnzeocvcnxvym', 'gbbhkroztcqibeiekhnd', 'exbcnuvhtzmdampwwxtl'],
+            parameter_cd='mzapjckawiaqvgduvxgd',
+            timeseries_cd='fpuvcypecyrsqytxqogg'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_PH(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'xiheazvtseegyozagnni'
+        test_value = 'dbtdndodlxadqjywater'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_PH(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'jsnxxcmfwyirxfoxocfk'
+        test_value = 'eqrmgjzrbbccygtnyezi'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_PH(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(87.38043480482276)
+        test_value = float(15.687408944695347)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_PH(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'kvpsdbosggwrpavcxtnt'
+        test_value = 'zpaopdfotymumysbpncg'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_PH(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['kmqunkbhyijcehddstwp', 'bmcsvyvacujuywpjqfrh', 'vfjydgrznvsokcmisuyq']
+        test_value = ['jvsvwofybaxadhasupla', 'oolgypvkwronvwxrxmuz', 'czauckrsnzeocvcnxvym', 'gbbhkroztcqibeiekhnd', 'exbcnuvhtzmdampwwxtl']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_PH(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'azrooqwtfftpxzvvlkbz'
+        test_value = 'mzapjckawiaqvgduvxgd'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_PH(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'qlniybpcdiumbboiwjcv'
+        test_value = 'fpuvcypecyrsqytxqogg'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

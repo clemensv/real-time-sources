@@ -29,13 +29,13 @@ class Test_TidewaterPrediction(unittest.TestCase):
         Create instance of TidewaterPrediction for testing
         """
         instance = TidewaterPrediction(
-            prediction_id='nwiwkoodmkqcznooivto',
-            station_id='mvvwgkihdjezbvasvoiw',
-            prediction_type='oexzrhxluawkymblztlv',
+            prediction_id='duxsmnsbpdffzebnvdaf',
+            station_id='guipjwsjqbhixoyehlxx',
+            prediction_type='vvrmdrmoqnldbmatfjpq',
             prediction_time=datetime.datetime.now(datetime.timezone.utc),
-            value=float(59.676097127409896),
-            latitude=float(15.784246603413976),
-            longitude=float(6.5329988926361215)
+            value=float(26.302475166467897),
+            latitude=float(39.12063395380171),
+            longitude=float(96.20750435213652)
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_TidewaterPrediction(unittest.TestCase):
         """
         Test prediction_id property
         """
-        test_value = 'nwiwkoodmkqcznooivto'
+        test_value = 'duxsmnsbpdffzebnvdaf'
         self.instance.prediction_id = test_value
         self.assertEqual(self.instance.prediction_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_TidewaterPrediction(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'mvvwgkihdjezbvasvoiw'
+        test_value = 'guipjwsjqbhixoyehlxx'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -60,7 +60,7 @@ class Test_TidewaterPrediction(unittest.TestCase):
         """
         Test prediction_type property
         """
-        test_value = 'oexzrhxluawkymblztlv'
+        test_value = 'vvrmdrmoqnldbmatfjpq'
         self.instance.prediction_type = test_value
         self.assertEqual(self.instance.prediction_type, test_value)
     
@@ -76,7 +76,7 @@ class Test_TidewaterPrediction(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(59.676097127409896)
+        test_value = float(26.302475166467897)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -84,7 +84,7 @@ class Test_TidewaterPrediction(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(15.784246603413976)
+        test_value = float(39.12063395380171)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -92,7 +92,7 @@ class Test_TidewaterPrediction(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(6.5329988926361215)
+        test_value = float(96.20750435213652)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

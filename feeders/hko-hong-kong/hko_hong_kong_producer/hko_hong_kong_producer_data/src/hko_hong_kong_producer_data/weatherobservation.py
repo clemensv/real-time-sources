@@ -171,13 +171,13 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            place_id='tamyycwjgrwobmwtzpyn',
-            place_name='ogpsfiptbwptfkwwdukd',
+            place_id='xefjwnkmsecvzlyubufz',
+            place_name='giwenfdbczqwagwjygfx',
             observation_time=datetime.datetime.now(datetime.timezone.utc),
-            temperature=float(74.17649158436164),
-            rainfall_max=float(87.55620969191432),
-            humidity=int(1),
-            uv_index=float(99.51864162037077),
-            uv_description='hrtfjnqqexbanbunjuei',
-            district='smzmsokbvyaaivjheahz'
+            temperature=float(51.48563109279931),
+            rainfall_max=float(34.580259355818875),
+            humidity=int(54),
+            uv_index=float(51.183694515232034),
+            uv_description='kbeqkhlfhoepqrbwhrnl',
+            district='bqmcnoclkhjzebbsalwy'
         )

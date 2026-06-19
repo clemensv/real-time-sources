@@ -32,9 +32,9 @@ class Test_CurrentMeasurement(unittest.TestCase):
         Create instance of CurrentMeasurement for testing
         """
         instance = CurrentMeasurement(
-            station_id='vhgllqxdbdlvupnusfkr',
+            station_id='buyahhqmjokujgfrplaa',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(43.76213759361909),
+            value=float(45.70929071974293),
             stateMnwMhw=StateMnwMhwEnum.low,
             stateNswHsw=StateNswHswEnum.normal,
             trend=TrendEnum.VALUE_NEG_1
@@ -46,7 +46,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'vhgllqxdbdlvupnusfkr'
+        test_value = 'buyahhqmjokujgfrplaa'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -62,7 +62,7 @@ class Test_CurrentMeasurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(43.76213759361909)
+        test_value = float(45.70929071974293)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     

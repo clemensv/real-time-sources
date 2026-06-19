@@ -161,9 +161,9 @@ class SiteTimeseries:
             An instance of the dataclass.
         """
         return cls(
-            agency_cd='qfpckkqbhuecbjcckygm',
-            site_no='sqxhopxsvbjrxlfljbql',
-            parameter_cd='cbvgypjymiutecevjgme',
-            timeseries_cd='hrnjvqplopdvzftlgwhs',
-            description='xnfejvrgtaiyjdmtdxkg'
+            agency_cd='mfdkclzcigygyziyumzr',
+            site_no='gkovtghgzzpeiqyrqszb',
+            parameter_cd='ipgtauxufilxfpiobkzn',
+            timeseries_cd='yzddvupreerdtnbtyicg',
+            description='ydlinxonathwesekqfzu'
         )

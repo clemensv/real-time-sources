@@ -158,6 +158,6 @@ class ApplicationID:
         """
         return cls(
             Valid=True,
-            DesignatedAreaCode=int(77),
-            FunctionIdentifier=int(67)
+            DesignatedAreaCode=int(59),
+            FunctionIdentifier=int(50)
         )

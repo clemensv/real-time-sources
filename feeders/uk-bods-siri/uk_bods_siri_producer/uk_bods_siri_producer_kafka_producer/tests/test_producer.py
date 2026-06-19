@@ -20,9 +20,9 @@ from cloudevents.kafka import from_binary, from_structured, KafkaMessage
 from testcontainers.kafka import KafkaContainer
 from uk_bods_siri_producer_kafka_producer.producer import UkGovDftBodsKafkaEventProducer
 from uk_bods_siri_producer_data import VehiclePosition
-from test_uk_bods_siri_producer_data_vehicleposition import Test_VehiclePosition
+from test_vehicleposition import Test_VehiclePosition
 from uk_bods_siri_producer_data import Operator
-from test_uk_bods_siri_producer_data_operator import Test_Operator
+from test_operator import Test_Operator
 
 @pytest.fixture(scope="module")
 def kafka_emulator():
@@ -95,7 +95,7 @@ def test_uk_gov_dft_bods_kafka_ukgovdftbodskafkavehicleposition(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.dft.bods.kafka.VehiclePosition":
+            if cloudevent['type'] == "uk.gov.dft.bods.VehiclePosition":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -159,7 +159,7 @@ def test_uk_gov_dft_bods_kafka_ukgovdftbodskafkaoperator(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "uk.gov.dft.bods.kafka.Operator":
+            if cloudevent['type'] == "uk.gov.dft.bods.Operator":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

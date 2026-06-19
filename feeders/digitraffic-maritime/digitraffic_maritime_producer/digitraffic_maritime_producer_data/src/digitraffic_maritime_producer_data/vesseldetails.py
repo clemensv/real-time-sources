@@ -12,10 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from digitraffic_maritime_producer_data.vesselconstruction import VesselConstruction
-from digitraffic_maritime_producer_data.vesseldimensions import VesselDimensions
 from digitraffic_maritime_producer_data.vesselregistration import VesselRegistration
+from digitraffic_maritime_producer_data.vesselconstruction import VesselConstruction
 from digitraffic_maritime_producer_data.vesselsystem import VesselSystem
+from digitraffic_maritime_producer_data.vesseldimensions import VesselDimensions
 import datetime
 
 
@@ -183,15 +183,15 @@ class VesselDetails:
             An instance of the dataclass.
         """
         return cls(
-            vessel_id=int(55),
+            vessel_id=int(12),
             updated_at=datetime.datetime.now(datetime.timezone.utc),
-            mmsi=int(99),
-            name='mbdhzhqvwfvgwncifwfs',
-            name_prefix='mvrcgcsxcwntkcvpgdei',
-            imo_lloyds=int(69),
-            radio_call_sign='tpbosdnzkfuxjusgxjca',
-            radio_call_sign_type='wezjcwxdpeucvjjgmxhd',
-            data_source='jekstikrlkxjsbteyiwl',
+            mmsi=int(54),
+            name='nrkfeyapqicvtybeihmx',
+            name_prefix='jzilwieiliejmaebvkil',
+            imo_lloyds=int(15),
+            radio_call_sign='zpkgspfiazsmpcgyjaik',
+            radio_call_sign_type='yqhuembpnijthhivdtaz',
+            data_source='fqzhpmcynjgejwzadwyq',
             vessel_construction=None,
             vessel_dimensions=None,
             vessel_registration=None,

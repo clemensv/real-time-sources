@@ -161,9 +161,9 @@ class ReservoirFillingInformation:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='scqhxafsarurjpmxqqmb',
-            quantity=float(4.05162108337247),
-            resolution='hoghyeckuenzrplhpvjl',
-            documentType='fonlwnbcgpgefgbwawaj',
-            unitName='uzdcvohhvqjnojyrcidw'
+            inDomain='lnssqwbahoorsekabctk',
+            quantity=float(86.94351349938393),
+            resolution='wpjdvpgsrtepjceuxbak',
+            documentType='uvzyeqilyfvzehfkchaw',
+            unitName='dzxnvkdnudfwzvawjeas'
         )

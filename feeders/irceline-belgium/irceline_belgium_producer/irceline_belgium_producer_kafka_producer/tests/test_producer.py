@@ -294,7 +294,7 @@ def test_be_irceline_stations_mqtt_beircelinestationsmqttstation(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irceline.Stations.mqtt.Station":
+            if cloudevent['type'] == "be.irceline.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -356,7 +356,7 @@ def test_be_irceline_stations_amqp_beircelinestationsamqpstation(kafka_emulator)
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irceline.Stations.amqp.Station":
+            if cloudevent['type'] == "be.irceline.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -418,7 +418,7 @@ def test_be_irceline_timeseries_mqtt_beircelinetimeseriesmqtttimeseries(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irceline.Timeseries.mqtt.Timeseries":
+            if cloudevent['type'] == "be.irceline.Timeseries":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -480,7 +480,7 @@ def test_be_irceline_timeseries_mqtt_beircelinetimeseriesmqttobservation(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irceline.Timeseries.mqtt.Observation":
+            if cloudevent['type'] == "be.irceline.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -542,7 +542,7 @@ def test_be_irceline_timeseries_amqp_beircelinetimeseriesamqptimeseries(kafka_em
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irceline.Timeseries.amqp.Timeseries":
+            if cloudevent['type'] == "be.irceline.Timeseries":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -604,7 +604,7 @@ def test_be_irceline_timeseries_amqp_beircelinetimeseriesamqpobservation(kafka_e
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "be.irceline.Timeseries.amqp.Observation":
+            if cloudevent['type'] == "be.irceline.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

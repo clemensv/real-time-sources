@@ -28,10 +28,10 @@ class Test_Observation(unittest.TestCase):
         Create instance of Observation for testing
         """
         instance = Observation(
-            timeseries_id='sqqqdnghjfvuktabtems',
-            timestamp='pnfumeoknkdpgbrsjkfu',
-            value=float(8.357994375592847),
-            uom='ytbbygslwpaacqoqzvhr'
+            timeseries_id='bkgzbarnmtfzcmllgdxc',
+            timestamp='gzrtldbzuluyoxwcbqrh',
+            value=float(81.99705597585427),
+            uom='ihkhrtlexbctmqkyjcda'
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test timeseries_id property
         """
-        test_value = 'sqqqdnghjfvuktabtems'
+        test_value = 'bkgzbarnmtfzcmllgdxc'
         self.instance.timeseries_id = test_value
         self.assertEqual(self.instance.timeseries_id, test_value)
     
@@ -48,7 +48,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'pnfumeoknkdpgbrsjkfu'
+        test_value = 'gzrtldbzuluyoxwcbqrh'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -56,7 +56,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(8.357994375592847)
+        test_value = float(81.99705597585427)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -64,7 +64,7 @@ class Test_Observation(unittest.TestCase):
         """
         Test uom property
         """
-        test_value = 'ytbbygslwpaacqoqzvhr'
+        test_value = 'ihkhrtlexbctmqkyjcda'
         self.instance.uom = test_value
         self.assertEqual(self.instance.uom, test_value)
     

@@ -159,8 +159,8 @@ class Measurement:
             An instance of the dataclass.
         """
         return cls(
-            site_code='ljfaehxpfjllpfmejyvl',
-            species_code='jonfzrohkmejrxufllyt',
-            measurement_date_gmt='ykcnfbeigtbiuxnryemv',
-            value=float(16.02274633090043)
+            site_code='rpzhjfjxpbmwqqmcmosk',
+            species_code='srspqevnlrxtjntuuyyv',
+            measurement_date_gmt='otfopryodskioqvnxuad',
+            value=float(32.68833003836025)
         )

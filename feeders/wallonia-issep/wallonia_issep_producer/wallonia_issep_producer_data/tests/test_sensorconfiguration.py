@@ -28,8 +28,8 @@ class Test_SensorConfiguration(unittest.TestCase):
         Create instance of SensorConfiguration for testing
         """
         instance = SensorConfiguration(
-            configuration_id='pewkqniydwhnrbjzueoa',
-            province='rgccvxpoibopoerceohu'
+            configuration_id='zkxjzckvwzwcdsqwukaq',
+            province='kbkgnpinmeaawqopnfaa'
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_SensorConfiguration(unittest.TestCase):
         """
         Test configuration_id property
         """
-        test_value = 'pewkqniydwhnrbjzueoa'
+        test_value = 'zkxjzckvwzwcdsqwukaq'
         self.instance.configuration_id = test_value
         self.assertEqual(self.instance.configuration_id, test_value)
     
@@ -46,7 +46,7 @@ class Test_SensorConfiguration(unittest.TestCase):
         """
         Test province property
         """
-        test_value = 'rgccvxpoibopoerceohu'
+        test_value = 'kbkgnpinmeaawqopnfaa'
         self.instance.province = test_value
         self.assertEqual(self.instance.province, test_value)
     

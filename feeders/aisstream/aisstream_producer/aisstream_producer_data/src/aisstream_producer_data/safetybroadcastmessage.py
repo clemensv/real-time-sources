@@ -163,10 +163,10 @@ class SafetyBroadcastMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(54),
-            RepeatIndicator=int(77),
-            UserID=int(13),
-            Valid=True,
-            Spare=int(4),
-            Text='jhmwtfmkzuffqcwfaafy'
+            MessageID=int(92),
+            RepeatIndicator=int(75),
+            UserID=int(17),
+            Valid=False,
+            Spare=int(32),
+            Text='srroxnlgysicjqqhsbbj'
         )

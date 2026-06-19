@@ -328,7 +328,7 @@ class TestNOKystverketAISAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NO.Kystverket.AIS.amqp.PositionReport"
+                    assert cloud_event_payload.get("type") == "NO.Kystverket.AIS.PositionReport"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -370,7 +370,7 @@ class TestNOKystverketAISAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NO.Kystverket.AIS.amqp.PositionReport'
+        assert properties.get('cloudEvents:type') == 'NO.Kystverket.AIS.PositionReport'
         assert received.body is not None
         assert received.subject == "{mmsi}".format(mmsi="value")
         assert properties.get('flag') == "{flag}".format(flag="value")
@@ -428,7 +428,7 @@ class TestNOKystverketAISAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NO.Kystverket.AIS.amqp.ShipStatic"
+                    assert cloud_event_payload.get("type") == "NO.Kystverket.AIS.ShipStatic"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -470,7 +470,7 @@ class TestNOKystverketAISAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NO.Kystverket.AIS.amqp.ShipStatic'
+        assert properties.get('cloudEvents:type') == 'NO.Kystverket.AIS.ShipStatic'
         assert received.body is not None
         assert received.subject == "{mmsi}".format(mmsi="value")
         assert properties.get('flag') == "{flag}".format(flag="value")
@@ -528,7 +528,7 @@ class TestNOKystverketAISAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "NO.Kystverket.AIS.amqp.AidToNavigation"
+                    assert cloud_event_payload.get("type") == "NO.Kystverket.AIS.AidToNavigation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -570,7 +570,7 @@ class TestNOKystverketAISAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'NO.Kystverket.AIS.amqp.AidToNavigation'
+        assert properties.get('cloudEvents:type') == 'NO.Kystverket.AIS.AidToNavigation'
         assert received.body is not None
         assert received.subject == "{mmsi}".format(mmsi="value")
         assert properties.get('flag') == "{flag}".format(flag="value")

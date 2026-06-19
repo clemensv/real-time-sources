@@ -161,7 +161,7 @@ class UnnamedClass:
             An instance of the dataclass.
         """
         return cls(
-            self_='prahqewzfxmjwnfumibg',
-            region='kusjjlddvadufpvtyvsv',
-            station_id='bmmfokxcudhcbonzpder'
+            self_='upwgpvdtqgkbhsxzabui',
+            region='vjaijyzuncjimqhieowj',
+            station_id='skijwjtmvikivckralum'
         )

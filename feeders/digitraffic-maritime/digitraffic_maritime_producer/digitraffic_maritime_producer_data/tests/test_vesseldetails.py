@@ -9,10 +9,10 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from digitraffic_maritime_producer_data.vesseldetails import VesselDetails
-from digitraffic_maritime_producer_data.vesselconstruction import VesselConstruction
-from digitraffic_maritime_producer_data.vesseldimensions import VesselDimensions
 from digitraffic_maritime_producer_data.vesselregistration import VesselRegistration
+from digitraffic_maritime_producer_data.vesselconstruction import VesselConstruction
 from digitraffic_maritime_producer_data.vesselsystem import VesselSystem
+from digitraffic_maritime_producer_data.vesseldimensions import VesselDimensions
 import datetime
 
 
@@ -33,15 +33,15 @@ class Test_VesselDetails(unittest.TestCase):
         Create instance of VesselDetails for testing
         """
         instance = VesselDetails(
-            vessel_id=int(55),
+            vessel_id=int(12),
             updated_at=datetime.datetime.now(datetime.timezone.utc),
-            mmsi=int(99),
-            name='mbdhzhqvwfvgwncifwfs',
-            name_prefix='mvrcgcsxcwntkcvpgdei',
-            imo_lloyds=int(69),
-            radio_call_sign='tpbosdnzkfuxjusgxjca',
-            radio_call_sign_type='wezjcwxdpeucvjjgmxhd',
-            data_source='jekstikrlkxjsbteyiwl',
+            mmsi=int(54),
+            name='nrkfeyapqicvtybeihmx',
+            name_prefix='jzilwieiliejmaebvkil',
+            imo_lloyds=int(15),
+            radio_call_sign='zpkgspfiazsmpcgyjaik',
+            radio_call_sign_type='yqhuembpnijthhivdtaz',
+            data_source='fqzhpmcynjgejwzadwyq',
             vessel_construction=None,
             vessel_dimensions=None,
             vessel_registration=None,
@@ -54,7 +54,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test vessel_id property
         """
-        test_value = int(55)
+        test_value = int(12)
         self.instance.vessel_id = test_value
         self.assertEqual(self.instance.vessel_id, test_value)
     
@@ -70,7 +70,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(99)
+        test_value = int(54)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -78,7 +78,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'mbdhzhqvwfvgwncifwfs'
+        test_value = 'nrkfeyapqicvtybeihmx'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -86,7 +86,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test name_prefix property
         """
-        test_value = 'mvrcgcsxcwntkcvpgdei'
+        test_value = 'jzilwieiliejmaebvkil'
         self.instance.name_prefix = test_value
         self.assertEqual(self.instance.name_prefix, test_value)
     
@@ -94,7 +94,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test imo_lloyds property
         """
-        test_value = int(69)
+        test_value = int(15)
         self.instance.imo_lloyds = test_value
         self.assertEqual(self.instance.imo_lloyds, test_value)
     
@@ -102,7 +102,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test radio_call_sign property
         """
-        test_value = 'tpbosdnzkfuxjusgxjca'
+        test_value = 'zpkgspfiazsmpcgyjaik'
         self.instance.radio_call_sign = test_value
         self.assertEqual(self.instance.radio_call_sign, test_value)
     
@@ -110,7 +110,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test radio_call_sign_type property
         """
-        test_value = 'wezjcwxdpeucvjjgmxhd'
+        test_value = 'yqhuembpnijthhivdtaz'
         self.instance.radio_call_sign_type = test_value
         self.assertEqual(self.instance.radio_call_sign_type, test_value)
     
@@ -118,7 +118,7 @@ class Test_VesselDetails(unittest.TestCase):
         """
         Test data_source property
         """
-        test_value = 'jekstikrlkxjsbteyiwl'
+        test_value = 'fqzhpmcynjgejwzadwyq'
         self.instance.data_source = test_value
         self.assertEqual(self.instance.data_source, test_value)
     

@@ -22,27 +22,27 @@ class WeatherObservation:
     Attributes:
         station_id (str)
         observation_time (str)
-        temperature (typing.Optional[float])
-        humidity (typing.Optional[float])
-        precipitation (typing.Optional[float])
-        wind_direction (typing.Optional[float])
-        wind_speed (typing.Optional[float])
-        pressure (typing.Optional[float])
-        sunshine_duration (typing.Optional[float])
-        global_radiation (typing.Optional[float])
+        temperature (float)
+        humidity (float)
+        precipitation (float)
+        wind_direction (float)
+        wind_speed (float)
+        pressure (float)
+        sunshine_duration (float)
+        global_radiation (float)
     """
     
     
     station_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="station_id"))
     observation_time: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="observation_time"))
-    temperature: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="temperature"))
-    humidity: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="humidity"))
-    precipitation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation"))
-    wind_direction: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_direction"))
-    wind_speed: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed"))
-    pressure: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure"))
-    sunshine_duration: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunshine_duration"))
-    global_radiation: typing.Optional[float]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="global_radiation"))
+    temperature: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="temperature"))
+    humidity: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="humidity"))
+    precipitation: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="precipitation"))
+    wind_direction: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_direction"))
+    wind_speed: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="wind_speed"))
+    pressure: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure"))
+    sunshine_duration: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunshine_duration"))
+    global_radiation: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="global_radiation"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherObservation':
@@ -171,14 +171,14 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='uckcgugejbefkfxsnfaa',
-            observation_time='tutnvmeuvlnzgymeundk',
-            temperature=float(75.61413444408645),
-            humidity=float(15.484154858752442),
-            precipitation=float(93.36289450119799),
-            wind_direction=float(51.54213436609525),
-            wind_speed=float(31.51146526687031),
-            pressure=float(1.9385946682615507),
-            sunshine_duration=float(17.676005496802038),
-            global_radiation=float(63.266480585183075)
+            station_id='jdxcrupdbwhxseaizqde',
+            observation_time='oglzvielsmlmacloknbq',
+            temperature=float(77.87287338949852),
+            humidity=float(18.398600828157484),
+            precipitation=float(38.475544702522846),
+            wind_direction=float(57.07388559712609),
+            wind_speed=float(72.03203236455917),
+            pressure=float(74.32775309161472),
+            sunshine_duration=float(69.78102032811618),
+            global_radiation=float(85.52924533264174)
         )

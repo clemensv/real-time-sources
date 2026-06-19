@@ -169,13 +169,13 @@ class WaterQualityReading:
             An instance of the dataclass.
         """
         return cls(
-            site_number='ypzgwdonwouhzyqfoxfr',
-            site_name='zyjmmhlwspptpmpwrgfb',
-            parameter_code='oalsiyrbsrmipqyzjqug',
-            parameter_name='dorxtgvnldaetpxwhqtu',
-            value=float(77.33574437654134),
-            unit='vikrxopychjxgdqfrfjd',
-            qualifier='sjtdegqejdyuajmqwwlu',
-            date_time='tllcrkudjgwxmahwilsh',
-            state='ymxfqhwdmywiedbpnqjm'
+            site_number='dbdvfwpnhwnbfgguubcr',
+            site_name='eaduszcyixkqeucamlpk',
+            parameter_code='peworufoohujedeqrmlw',
+            parameter_name='sqiiliedlxzuyjwfsajm',
+            value=float(89.79406316350035),
+            unit='mrwfwammmldbmdvnqwnq',
+            qualifier='oadrugaxhidkxmvjbaxp',
+            date_time='sgvrolpdspzwmzucfyoo',
+            state='njsnwbomgtcwtlyjzfet'
         )

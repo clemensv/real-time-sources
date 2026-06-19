@@ -182,19 +182,19 @@ class Arrival:
             An instance of the dataclass.
         """
         return cls(
-            origin_station_id='xbslsifnzyhwypgojfyq',
-            origin_name='fpexafpwssgytknocnhu',
-            scheduled_time='zlsspotyekrnddrfbtkv',
-            delay_seconds=int(20),
+            origin_station_id='tntvicvsikvwsvoiaekf',
+            origin_name='qbyrxsaxkgzrkxkqhnhu',
+            scheduled_time='vmvfjdmwuhvxcawqxgma',
+            delay_seconds=int(42),
             is_canceled=True,
             has_arrived=True,
             is_extra_stop=True,
-            vehicle_id='surcataahtmeclboannp',
-            vehicle_short_name='ppdxwxnhaltfafabvmsy',
-            vehicle_type='ngghgpmlqwzhinfzyeqg',
-            vehicle_number='djfanhruzfjktqiztois',
-            platform='xsjmcazhryzsoizcdpcp',
-            is_normal_platform=True,
+            vehicle_id='bdfprbiznayuvpavopiy',
+            vehicle_short_name='flgbomyqgkzpwdbjnmzd',
+            vehicle_type='vjjpxfzkdmgulyleupmd',
+            vehicle_number='jwufnyygvekxcraykbzm',
+            platform='hsekzrnvvgyhmdlwtueg',
+            is_normal_platform=False,
             occupancy=OccupancyEnum.low,
-            connection_uri='vvlwkrvosualsmspixve'
+            connection_uri='vqbssebskmdbwrmirbrb'
         )

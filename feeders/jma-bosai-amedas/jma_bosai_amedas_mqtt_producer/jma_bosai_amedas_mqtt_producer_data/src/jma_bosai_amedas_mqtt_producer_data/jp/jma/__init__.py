@@ -1,3 +1,3 @@
-from .amedas import EventEnum, Observation, StationTypeenum, Station
+from .amedas import StationTypeenum, EventEnum, Station, Observation
 
-__all__ = ["EventEnum", "Observation", "StationTypeenum", "Station"]
+__all__ = ["StationTypeenum", "EventEnum", "Station", "Observation"]

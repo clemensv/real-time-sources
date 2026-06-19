@@ -28,10 +28,10 @@ class Test_WeatherSensorData(unittest.TestCase):
         Create instance of WeatherSensorData for testing
         """
         instance = WeatherSensorData(
-            station_id=int(79),
-            sensor_id=int(50),
-            value=float(56.459389309685015),
-            time=int(8)
+            station_id=int(45),
+            sensor_id=int(32),
+            value=float(42.33476729901262),
+            time=int(60)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_WeatherSensorData(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(79)
+        test_value = int(45)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -48,7 +48,7 @@ class Test_WeatherSensorData(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = int(50)
+        test_value = int(32)
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_WeatherSensorData(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(56.459389309685015)
+        test_value = float(42.33476729901262)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -64,7 +64,7 @@ class Test_WeatherSensorData(unittest.TestCase):
         """
         Test time property
         """
-        test_value = int(8)
+        test_value = int(60)
         self.instance.time = test_value
         self.assertEqual(self.instance.time, test_value)
     

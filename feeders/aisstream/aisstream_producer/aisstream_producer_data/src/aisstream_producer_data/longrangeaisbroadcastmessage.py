@@ -177,17 +177,17 @@ class LongRangeAisBroadcastMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(26),
-            RepeatIndicator=int(96),
-            UserID=int(54),
-            Valid=True,
-            PositionAccuracy=True,
-            Raim=True,
-            NavigationalStatus=int(1),
-            Longitude=float(3.080879488305832),
-            Latitude=float(30.62317752743273),
-            Sog=float(54.865892027791),
-            Cog=float(49.18449099655201),
+            MessageID=int(52),
+            RepeatIndicator=int(77),
+            UserID=int(0),
+            Valid=False,
+            PositionAccuracy=False,
+            Raim=False,
+            NavigationalStatus=int(72),
+            Longitude=float(86.19080357732967),
+            Latitude=float(29.881679406535987),
+            Sog=float(25.21115128867266),
+            Cog=float(31.800737255402154),
             PositionLatency=True,
             Spare=False
         )

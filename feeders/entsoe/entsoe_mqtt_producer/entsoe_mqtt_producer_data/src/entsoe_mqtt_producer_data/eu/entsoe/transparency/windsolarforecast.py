@@ -165,11 +165,11 @@ class WindSolarForecast:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='aceglxdibtsepqgxaqcx',
-            psrType='wypwiqkyvogzgcjgdlvu',
-            quantity=float(69.34123083483635),
-            resolution='xdpydgffebeslketyjsk',
-            businessType='qiytduylbifojkjtwpju',
-            documentType='qiyanhloybaidqllozzi',
-            unitName='zfqvcqbkbyopkdjbphgj'
+            inDomain='eqqctbbgvxedmdqnfueb',
+            psrType='extxgyrnfahdtmvqrien',
+            quantity=float(67.18541809285425),
+            resolution='fsscjpbqpmqymxeueipn',
+            businessType='dtqwylceljnjfsgmvajr',
+            documentType='sfvyxxtvwmnrpamnxitg',
+            unitName='byzmzaotzkeptwmhmfau'
         )

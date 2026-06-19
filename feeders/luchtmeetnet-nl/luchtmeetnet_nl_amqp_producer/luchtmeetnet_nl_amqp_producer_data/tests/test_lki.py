@@ -28,9 +28,9 @@ class Test_LKI(unittest.TestCase):
         Create instance of LKI for testing
         """
         instance = LKI(
-            station_number='fwbskhpoqyokbnrtrsne',
-            value=int(95),
-            timestamp_measured='jcrnloxjxzwuurijwvaa'
+            station_number='joctbhkrhscxgcygskrt',
+            value=int(38),
+            timestamp_measured='wohseytveugvxxjmvemr'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_LKI(unittest.TestCase):
         """
         Test station_number property
         """
-        test_value = 'fwbskhpoqyokbnrtrsne'
+        test_value = 'joctbhkrhscxgcygskrt'
         self.instance.station_number = test_value
         self.assertEqual(self.instance.station_number, test_value)
     
@@ -47,7 +47,7 @@ class Test_LKI(unittest.TestCase):
         """
         Test value property
         """
-        test_value = int(95)
+        test_value = int(38)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -55,7 +55,7 @@ class Test_LKI(unittest.TestCase):
         """
         Test timestamp_measured property
         """
-        test_value = 'jcrnloxjxzwuurijwvaa'
+        test_value = 'wohseytveugvxxjmvemr'
         self.instance.timestamp_measured = test_value
         self.assertEqual(self.instance.timestamp_measured, test_value)
     

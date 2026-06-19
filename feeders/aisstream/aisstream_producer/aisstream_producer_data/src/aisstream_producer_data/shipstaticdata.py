@@ -11,8 +11,8 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from aisstream_producer_data.dimension import Dimension
 from aisstream_producer_data.eta import Eta
+from aisstream_producer_data.dimension import Dimension
 
 
 @dataclass_json(undefined=Undefined.EXCLUDE)
@@ -185,20 +185,20 @@ class ShipStaticData:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(5),
-            RepeatIndicator=int(78),
-            UserID=int(78),
-            Valid=False,
-            AisVersion=int(62),
-            ImoNumber=int(36),
-            CallSign='wqtueiukgomojcfbjluq',
-            Name='tgpbrnbzawgtkarwamwi',
-            Type=int(75),
+            MessageID=int(91),
+            RepeatIndicator=int(44),
+            UserID=int(91),
+            Valid=True,
+            AisVersion=int(13),
+            ImoNumber=int(30),
+            CallSign='yyeyspszbqygsesavfkg',
+            Name='qokoqijgumhucxfcxrrq',
+            Type=int(77),
             Dimension=None,
-            FixType=int(85),
+            FixType=int(6),
             Eta=None,
-            MaximumStaticDraught=float(22.997019120804474),
-            Destination='fhwvlueccwnzgigpvous',
-            Dte=False,
+            MaximumStaticDraught=float(73.48297206076546),
+            Destination='mmlyrmjeynaclqmxbqku',
+            Dte=True,
             Spare=False
         )

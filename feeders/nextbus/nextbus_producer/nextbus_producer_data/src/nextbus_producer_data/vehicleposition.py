@@ -167,12 +167,12 @@ class VehiclePosition:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='retqxbjcflqcyivspnll',
-            route_tag='mtxjcsezdoijnkisviet',
-            vehicle_id='geastiwcovzgdmdhdhto',
-            stop_or_vehicle_id='vtgwkxbtclmcradnxifi',
-            event_type='nsbqzsovbzbjspsmymzz',
-            lat='uhwjkmokcbwdrwsnpmtm',
-            lon='vgvmnzzcaspzajzhpyrv',
-            timestamp=float(19.702369622802387)
+            agency_id='pagbtrhdcbxihxndgmpj',
+            route_tag='fgjlitqxkifpzslrotxk',
+            vehicle_id='jpspoyxplghizalcjkcm',
+            stop_or_vehicle_id='mdtzwkjdbpnhlwhegdoo',
+            event_type='lrswwfugkewrxpfajzxg',
+            lat='elagdkqqglurwayenvhv',
+            lon='grssygejojzvywkcyuwg',
+            timestamp=float(36.708977461457316)
         )

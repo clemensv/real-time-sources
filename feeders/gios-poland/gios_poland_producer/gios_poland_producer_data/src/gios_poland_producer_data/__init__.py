@@ -1,6 +1,6 @@
+from .sensor import Sensor
+from .station import Station
 from .measurement import Measurement
 from .airqualityindex import AirQualityIndex
-from .station import Station
-from .sensor import Sensor
 
-__all__ = ["Measurement", "AirQualityIndex", "Station", "Sensor"]
+__all__ = ["Sensor", "Station", "Measurement", "AirQualityIndex"]

@@ -28,15 +28,15 @@ class Test_Station(unittest.TestCase):
         Create instance of Station for testing
         """
         instance = Station(
-            station_id='axozjatergimtkwjqtbz',
-            name='siopeviiybnyvgtwndnc',
-            owner='cmrjwlkyagiijkzrnsby',
-            owner_category='sytlkuziilvdkobkkflr',
-            measuring_stations='boxfggsiorzsdwzswbox',
-            height=float(31.8280070334528),
-            latitude=float(26.45617300683024),
-            longitude=float(92.63424661955212),
-            lan='gboshjuuxyalkhvincbl'
+            station_id='dxxsptkveeiuwrhxapgh',
+            name='howmokognwayhyysksfc',
+            owner='xrmxgzddeuqumvmgiefi',
+            owner_category='lspsyeebryfbffhxklew',
+            measuring_stations='lzgfjeaojtbnpwvcsznh',
+            height=float(52.18607436643175),
+            latitude=float(9.125973768029205),
+            longitude=float(54.919637512316264),
+            lan='yiqwhdrzlklpkdzcpovf'
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_Station(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'axozjatergimtkwjqtbz'
+        test_value = 'dxxsptkveeiuwrhxapgh'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_Station(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'siopeviiybnyvgtwndnc'
+        test_value = 'howmokognwayhyysksfc'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -61,7 +61,7 @@ class Test_Station(unittest.TestCase):
         """
         Test owner property
         """
-        test_value = 'cmrjwlkyagiijkzrnsby'
+        test_value = 'xrmxgzddeuqumvmgiefi'
         self.instance.owner = test_value
         self.assertEqual(self.instance.owner, test_value)
     
@@ -69,7 +69,7 @@ class Test_Station(unittest.TestCase):
         """
         Test owner_category property
         """
-        test_value = 'sytlkuziilvdkobkkflr'
+        test_value = 'lspsyeebryfbffhxklew'
         self.instance.owner_category = test_value
         self.assertEqual(self.instance.owner_category, test_value)
     
@@ -77,7 +77,7 @@ class Test_Station(unittest.TestCase):
         """
         Test measuring_stations property
         """
-        test_value = 'boxfggsiorzsdwzswbox'
+        test_value = 'lzgfjeaojtbnpwvcsznh'
         self.instance.measuring_stations = test_value
         self.assertEqual(self.instance.measuring_stations, test_value)
     
@@ -85,7 +85,7 @@ class Test_Station(unittest.TestCase):
         """
         Test height property
         """
-        test_value = float(31.8280070334528)
+        test_value = float(52.18607436643175)
         self.instance.height = test_value
         self.assertEqual(self.instance.height, test_value)
     
@@ -93,7 +93,7 @@ class Test_Station(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(26.45617300683024)
+        test_value = float(9.125973768029205)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -101,7 +101,7 @@ class Test_Station(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(92.63424661955212)
+        test_value = float(54.919637512316264)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -109,7 +109,7 @@ class Test_Station(unittest.TestCase):
         """
         Test lan property
         """
-        test_value = 'gboshjuuxyalkhvincbl'
+        test_value = 'yiqwhdrzlklpkdzcpovf'
         self.instance.lan = test_value
         self.assertEqual(self.instance.lan, test_value)
     

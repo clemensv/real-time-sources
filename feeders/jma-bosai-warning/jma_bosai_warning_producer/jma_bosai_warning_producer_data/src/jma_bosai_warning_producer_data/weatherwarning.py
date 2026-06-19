@@ -12,8 +12,8 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from jma_bosai_warning_producer_data.eventenum import EventEnum
 from jma_bosai_warning_producer_data.warningitem import WarningItem
+from jma_bosai_warning_producer_data.eventenum import EventEnum
 from jma_bosai_warning_producer_data.severityenum import SeverityEnum
 import datetime
 
@@ -178,15 +178,15 @@ class WeatherWarning:
             An instance of the dataclass.
         """
         return cls(
-            prefecture='qtaqbbdizcjvvmwzdgcl',
-            severity=SeverityEnum.advisory,
-            office_code='qqfhpnzvynwtkuxtgudj',
-            area_code='osnrhxkkohpqdrtwellf',
-            event=EventEnum.info,
-            area_name='vlbxpzfgvjfhlqdklgak',
+            prefecture='awighpqqefzrghbgcqsa',
+            severity=SeverityEnum.info,
+            office_code='pucmdschdsbfjftmcsym',
+            area_code='luqjzipetldojblvrhgp',
+            event=EventEnum.warning,
+            area_name='yqlgngzclmjlnatxdmkv',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            headline_text='xazckxrnkwszsqctubbe',
-            warnings=[None],
-            time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
+            headline_text='qxplnrmszwgjqlkifitg',
+            warnings=[None, None, None],
+            time_defines=[datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc), datetime.datetime.now(datetime.timezone.utc)]
         )

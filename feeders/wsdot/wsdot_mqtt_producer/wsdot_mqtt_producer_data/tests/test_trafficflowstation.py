@@ -29,15 +29,15 @@ class Test_TrafficFlowStation(unittest.TestCase):
         Create instance of TrafficFlowStation for testing
         """
         instance = TrafficFlowStation(
-            flow_data_id='qbqawwubbxtwvhajyfgl',
-            station_name='iaecobuxensrkdhcuzba',
+            flow_data_id='hvzzmykyxlcftdazxken',
+            station_name='walwtdnfnijtunzzvxos',
             region=RegionEnum.Eastern,
-            description='hgdplgifryplbmuwuzjl',
-            road_name='jkybsmajrwowsjzijvow',
-            direction='esxpuwxoqoyfdmsujjpn',
-            milepost=float(14.59037506445382),
-            latitude=float(91.8155223840535),
-            longitude=float(15.845699153833692)
+            description='iwqnpkjydshohcmzpxsh',
+            road_name='udcpufquztqvsqbnuqrh',
+            direction='rcmepkfmmairnfokxjuc',
+            milepost=float(33.64541384144907),
+            latitude=float(10.014360766981511),
+            longitude=float(96.28965837930207)
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_TrafficFlowStation(unittest.TestCase):
         """
         Test flow_data_id property
         """
-        test_value = 'qbqawwubbxtwvhajyfgl'
+        test_value = 'hvzzmykyxlcftdazxken'
         self.instance.flow_data_id = test_value
         self.assertEqual(self.instance.flow_data_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_TrafficFlowStation(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'iaecobuxensrkdhcuzba'
+        test_value = 'walwtdnfnijtunzzvxos'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -70,7 +70,7 @@ class Test_TrafficFlowStation(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'hgdplgifryplbmuwuzjl'
+        test_value = 'iwqnpkjydshohcmzpxsh'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -78,7 +78,7 @@ class Test_TrafficFlowStation(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'jkybsmajrwowsjzijvow'
+        test_value = 'udcpufquztqvsqbnuqrh'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -86,7 +86,7 @@ class Test_TrafficFlowStation(unittest.TestCase):
         """
         Test direction property
         """
-        test_value = 'esxpuwxoqoyfdmsujjpn'
+        test_value = 'rcmepkfmmairnfokxjuc'
         self.instance.direction = test_value
         self.assertEqual(self.instance.direction, test_value)
     
@@ -94,7 +94,7 @@ class Test_TrafficFlowStation(unittest.TestCase):
         """
         Test milepost property
         """
-        test_value = float(14.59037506445382)
+        test_value = float(33.64541384144907)
         self.instance.milepost = test_value
         self.assertEqual(self.instance.milepost, test_value)
     
@@ -102,7 +102,7 @@ class Test_TrafficFlowStation(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(91.8155223840535)
+        test_value = float(10.014360766981511)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -110,7 +110,7 @@ class Test_TrafficFlowStation(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(15.845699153833692)
+        test_value = float(96.28965837930207)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

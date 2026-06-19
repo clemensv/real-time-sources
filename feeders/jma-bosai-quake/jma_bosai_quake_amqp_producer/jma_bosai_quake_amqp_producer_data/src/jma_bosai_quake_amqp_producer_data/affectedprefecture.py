@@ -156,6 +156,6 @@ class AffectedPrefecture:
             An instance of the dataclass.
         """
         return cls(
-            code='djpgqdhaygtwsarytmyq',
+            code='wkqnheaasupmrjackjsd',
             max_intensity=MaxIntensityenum.VALUE_1
         )

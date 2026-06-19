@@ -161,9 +161,9 @@ class ActualGeneration:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='tjdnlilhmzzqftcnlmkg',
-            quantity=float(68.38250406437308),
-            resolution='ydcxheokasdgpaexunmj',
-            documentType='ittvtjdqlnqbssxraklh',
-            unitName='sbaevvfbtlfaixwjfoio'
+            inDomain='xisztkhmuaibomvjysqv',
+            quantity=float(28.85137800990386),
+            resolution='mlklpssjxiwvzrswyjam',
+            documentType='zbdwzccurbcttutjrflw',
+            unitName='eyccsrpafwotvfnpkmev'
         )

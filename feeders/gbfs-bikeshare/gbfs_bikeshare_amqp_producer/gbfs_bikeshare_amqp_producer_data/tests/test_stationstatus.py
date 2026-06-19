@@ -28,15 +28,15 @@ class Test_StationStatus(unittest.TestCase):
         Create instance of StationStatus for testing
         """
         instance = StationStatus(
-            system_id='lmppyrcppvpocgxokafk',
-            station_id='xhoouflzkdkswnilrslv',
-            num_bikes_available=int(92),
-            num_docks_available=int(32),
-            num_ebikes_available=int(27),
+            system_id='tofhpfoozayadqkysvfj',
+            station_id='jsadqnghurgdvrwhieqx',
+            num_bikes_available=int(59),
+            num_docks_available=int(8),
+            num_ebikes_available=int(49),
             is_installed=False,
-            is_renting=False,
-            is_returning=True,
-            last_reported=int(64)
+            is_renting=True,
+            is_returning=False,
+            last_reported=int(48)
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_StationStatus(unittest.TestCase):
         """
         Test system_id property
         """
-        test_value = 'lmppyrcppvpocgxokafk'
+        test_value = 'tofhpfoozayadqkysvfj'
         self.instance.system_id = test_value
         self.assertEqual(self.instance.system_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_StationStatus(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'xhoouflzkdkswnilrslv'
+        test_value = 'jsadqnghurgdvrwhieqx'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -61,7 +61,7 @@ class Test_StationStatus(unittest.TestCase):
         """
         Test num_bikes_available property
         """
-        test_value = int(92)
+        test_value = int(59)
         self.instance.num_bikes_available = test_value
         self.assertEqual(self.instance.num_bikes_available, test_value)
     
@@ -69,7 +69,7 @@ class Test_StationStatus(unittest.TestCase):
         """
         Test num_docks_available property
         """
-        test_value = int(32)
+        test_value = int(8)
         self.instance.num_docks_available = test_value
         self.assertEqual(self.instance.num_docks_available, test_value)
     
@@ -77,7 +77,7 @@ class Test_StationStatus(unittest.TestCase):
         """
         Test num_ebikes_available property
         """
-        test_value = int(27)
+        test_value = int(49)
         self.instance.num_ebikes_available = test_value
         self.assertEqual(self.instance.num_ebikes_available, test_value)
     
@@ -93,7 +93,7 @@ class Test_StationStatus(unittest.TestCase):
         """
         Test is_renting property
         """
-        test_value = False
+        test_value = True
         self.instance.is_renting = test_value
         self.assertEqual(self.instance.is_renting, test_value)
     
@@ -101,7 +101,7 @@ class Test_StationStatus(unittest.TestCase):
         """
         Test is_returning property
         """
-        test_value = True
+        test_value = False
         self.instance.is_returning = test_value
         self.assertEqual(self.instance.is_returning, test_value)
     
@@ -109,7 +109,7 @@ class Test_StationStatus(unittest.TestCase):
         """
         Test last_reported property
         """
-        test_value = int(64)
+        test_value = int(48)
         self.instance.last_reported = test_value
         self.assertEqual(self.instance.last_reported, test_value)
     

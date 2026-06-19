@@ -292,7 +292,7 @@ def test_jp_jma_warning_mqtt_jpjmawarningmqttoffice(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.JMA.Warning.mqtt.Office":
+            if cloudevent['type'] == "JP.JMA.Warning.Office":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -354,7 +354,7 @@ def test_jp_jma_warning_mqtt_jpjmawarningmqttweatherwarning(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.JMA.Warning.mqtt.WeatherWarning":
+            if cloudevent['type'] == "JP.JMA.Warning.WeatherWarning":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -416,7 +416,7 @@ def test_jp_jma_warning_mqtt_jpjmawarningmqtttsunamialert(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.JMA.Warning.mqtt.TsunamiAlert":
+            if cloudevent['type'] == "JP.JMA.Tsunami.TsunamiAlert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -478,7 +478,7 @@ def test_jp_jma_warning_amqp_jpjmawarningamqpoffice(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.JMA.Warning.amqp.Office":
+            if cloudevent['type'] == "JP.JMA.Warning.Office":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -540,7 +540,7 @@ def test_jp_jma_warning_amqp_jpjmawarningamqpweatherwarning(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.JMA.Warning.amqp.WeatherWarning":
+            if cloudevent['type'] == "JP.JMA.Warning.WeatherWarning":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -602,7 +602,7 @@ def test_jp_jma_warning_amqp_jpjmawarningamqptsunamialert(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "JP.JMA.Warning.amqp.TsunamiAlert":
+            if cloudevent['type'] == "JP.JMA.Tsunami.TsunamiAlert":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

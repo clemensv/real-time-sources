@@ -165,11 +165,11 @@ class AirPressure:
             An instance of the dataclass.
         """
         return cls(
-            station_id='qmmfdnxvyygnlnbeerct',
-            timestamp='krvhwyvpadbaenrtgskf',
-            value=float(27.642473452586035),
+            station_id='saproayzzhofjpmgolbg',
+            timestamp='abjmjjywwgyluuwollwl',
+            value=float(79.52129132429253),
             max_pressure_exceeded=True,
             min_pressure_exceeded=False,
             rate_of_change_exceeded=True,
-            region='ermuvkwcmmbcuhhxrqtc'
+            region='eltataogrzyoaizabqoq'
         )

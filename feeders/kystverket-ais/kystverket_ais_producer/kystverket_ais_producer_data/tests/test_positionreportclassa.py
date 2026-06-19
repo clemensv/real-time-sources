@@ -28,18 +28,18 @@ class Test_PositionReportClassA(unittest.TestCase):
         Create instance of PositionReportClassA for testing
         """
         instance = PositionReportClassA(
-            mmsi=int(20),
-            navigation_status=int(9),
-            rate_of_turn=float(74.31513154173841),
-            speed_over_ground=float(44.89098859427174),
-            position_accuracy=int(7),
-            longitude=float(14.86869014867529),
-            latitude=float(66.783033003675),
-            course_over_ground=float(76.57075653843584),
-            true_heading=int(42),
-            timestamp='rcnjnzdkafackrqivzcf',
-            station_id='diiumytboxmbwhbyeftg',
-            msg_type=int(39)
+            mmsi=int(35),
+            navigation_status=int(53),
+            rate_of_turn=float(47.78547682035656),
+            speed_over_ground=float(12.782265859162855),
+            position_accuracy=int(86),
+            longitude=float(79.24602088959733),
+            latitude=float(57.591159618200116),
+            course_over_ground=float(31.893250501147563),
+            true_heading=int(63),
+            timestamp='iyggitampoomjjpaotge',
+            station_id='jonrwpqvbgdzglyouumv',
+            msg_type=int(2)
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = int(20)
+        test_value = int(35)
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -56,7 +56,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test navigation_status property
         """
-        test_value = int(9)
+        test_value = int(53)
         self.instance.navigation_status = test_value
         self.assertEqual(self.instance.navigation_status, test_value)
     
@@ -64,7 +64,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test rate_of_turn property
         """
-        test_value = float(74.31513154173841)
+        test_value = float(47.78547682035656)
         self.instance.rate_of_turn = test_value
         self.assertEqual(self.instance.rate_of_turn, test_value)
     
@@ -72,7 +72,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test speed_over_ground property
         """
-        test_value = float(44.89098859427174)
+        test_value = float(12.782265859162855)
         self.instance.speed_over_ground = test_value
         self.assertEqual(self.instance.speed_over_ground, test_value)
     
@@ -80,7 +80,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test position_accuracy property
         """
-        test_value = int(7)
+        test_value = int(86)
         self.instance.position_accuracy = test_value
         self.assertEqual(self.instance.position_accuracy, test_value)
     
@@ -88,7 +88,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(14.86869014867529)
+        test_value = float(79.24602088959733)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -96,7 +96,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(66.783033003675)
+        test_value = float(57.591159618200116)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -104,7 +104,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test course_over_ground property
         """
-        test_value = float(76.57075653843584)
+        test_value = float(31.893250501147563)
         self.instance.course_over_ground = test_value
         self.assertEqual(self.instance.course_over_ground, test_value)
     
@@ -112,7 +112,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test true_heading property
         """
-        test_value = int(42)
+        test_value = int(63)
         self.instance.true_heading = test_value
         self.assertEqual(self.instance.true_heading, test_value)
     
@@ -120,7 +120,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'rcnjnzdkafackrqivzcf'
+        test_value = 'iyggitampoomjjpaotge'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -128,7 +128,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'diiumytboxmbwhbyeftg'
+        test_value = 'jonrwpqvbgdzglyouumv'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -136,7 +136,7 @@ class Test_PositionReportClassA(unittest.TestCase):
         """
         Test msg_type property
         """
-        test_value = int(39)
+        test_value = int(2)
         self.instance.msg_type = test_value
         self.assertEqual(self.instance.msg_type, test_value)
     

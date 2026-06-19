@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from wsdot_producer_data.us.wa.wsdot.traffic.trafficflowreading import TrafficFlowReading
-from wsdot_producer_data.us.wa.wsdot.traffic.regionenum import RegionEnum
 from wsdot_producer_data.us.wa.wsdot.traffic.flowreadingenum import FlowReadingenum
+from wsdot_producer_data.us.wa.wsdot.traffic.regionenum import RegionEnum
 
 
 class Test_TrafficFlowReading(unittest.TestCase):
@@ -30,11 +30,11 @@ class Test_TrafficFlowReading(unittest.TestCase):
         Create instance of TrafficFlowReading for testing
         """
         instance = TrafficFlowReading(
-            flow_data_id='embsxjstwgrvkjcyijlm',
-            station_name='dhwfbiuwttsjztzlwfjh',
+            flow_data_id='tgxamoeqqybmspzllxqc',
+            station_name='fwdbmcwlbfbzhclsqjyy',
             region=RegionEnum.Eastern,
             flow_reading=FlowReadingenum.Unknown,
-            reading_time='fcgtxmnxofhkcuiaejok'
+            reading_time='dpbfsyslivewwgygsvgi'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_TrafficFlowReading(unittest.TestCase):
         """
         Test flow_data_id property
         """
-        test_value = 'embsxjstwgrvkjcyijlm'
+        test_value = 'tgxamoeqqybmspzllxqc'
         self.instance.flow_data_id = test_value
         self.assertEqual(self.instance.flow_data_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_TrafficFlowReading(unittest.TestCase):
         """
         Test station_name property
         """
-        test_value = 'dhwfbiuwttsjztzlwfjh'
+        test_value = 'fwdbmcwlbfbzhclsqjyy'
         self.instance.station_name = test_value
         self.assertEqual(self.instance.station_name, test_value)
     
@@ -75,7 +75,7 @@ class Test_TrafficFlowReading(unittest.TestCase):
         """
         Test reading_time property
         """
-        test_value = 'fcgtxmnxofhkcuiaejok'
+        test_value = 'dpbfsyslivewwgygsvgi'
         self.instance.reading_time = test_value
         self.assertEqual(self.instance.reading_time, test_value)
     

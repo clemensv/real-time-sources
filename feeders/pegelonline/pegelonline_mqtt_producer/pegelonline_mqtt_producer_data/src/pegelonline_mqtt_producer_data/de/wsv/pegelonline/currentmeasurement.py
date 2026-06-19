@@ -168,9 +168,9 @@ class CurrentMeasurement:
             An instance of the dataclass.
         """
         return cls(
-            station_id='vhgllqxdbdlvupnusfkr',
+            station_id='buyahhqmjokujgfrplaa',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(43.76213759361909),
+            value=float(45.70929071974293),
             stateMnwMhw=StateMnwMhwEnum.low,
             stateNswHsw=StateNswHswEnum.normal,
             trend=TrendEnum.VALUE_NEG_1

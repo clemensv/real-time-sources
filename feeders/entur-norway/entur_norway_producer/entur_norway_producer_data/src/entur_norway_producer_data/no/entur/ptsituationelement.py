@@ -180,17 +180,17 @@ class PtSituationElement:
             An instance of the dataclass.
         """
         return cls(
-            situation_number='wysmzfvbvnxzzpltuoqm',
-            version='jssltfnzxzwfijjhhhkg',
+            situation_number='ftsdpctdegqajplxffuq',
+            version='mjuszpxyszmcuoaxjdev',
             creation_time=datetime.datetime.now(datetime.timezone.utc),
-            source_type='kwohqjjyhtjibuenirwi',
-            source_name='clsjuvcqggnrmnfxdbsz',
-            progress='pryrhyvnfyomvdtpbfzn',
-            severity='axdzeycdndejbkahngaz',
-            keywords='dgnzdciwtnknoncgfxop',
-            summary='lfbztrwqebaklwdfxmsf',
-            description='glvptjvbnlyvxmhmpsgo',
-            affects_line_refs=['cmwgtrzzhwqdivqfpcta'],
-            affects_stop_point_refs=['vqhwbrihpdavvsiwrovq'],
-            validity_periods=[None]
+            source_type='qomwumieiijkydvwcbhq',
+            source_name='ulaiizfposwwgddqabyw',
+            progress='fcxbriyqaemwtcuusmuz',
+            severity='vhkistpqdpeaymtoxcgt',
+            keywords='oqurmppnjowopebaaezd',
+            summary='bslunbpdkdueyyztkgmh',
+            description='itpyknmkhnqdhczybefu',
+            affects_line_refs=['bvkglvmyjiojqrnszhae', 'rzfsbgdafrtdkoundtjz', 'wxdseioqidoyfqnlmcux', 'cdejbciangutssojmnef'],
+            affects_stop_point_refs=['qeshldqueakbsenkcjmu', 'mxdffjyicrtjwcprmmbe', 'gkvfcaffqyhehdnxvclq', 'weyrzahypkszleybvnqx'],
+            validity_periods=[None, None]
         )

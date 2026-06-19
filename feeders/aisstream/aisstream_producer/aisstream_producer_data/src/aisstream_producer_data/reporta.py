@@ -155,6 +155,6 @@ class ReportA:
             An instance of the dataclass.
         """
         return cls(
-            Valid=False,
-            Name='aqyifnereilxpojqmneq'
+            Valid=True,
+            Name='qmxqeqorfpuwbbxqkjfr'
         )

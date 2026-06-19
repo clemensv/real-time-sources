@@ -173,15 +173,15 @@ class Timeseries:
             An instance of the dataclass.
         """
         return cls(
-            timeseries_id='xruacwaiqkkcidqqgrqa',
-            label='atwchlbpgvpcgvqvkwmr',
-            uom='gxrlqvmlggqpkionmhcb',
-            station_id='nyrguhzduwstdrvchfyi',
-            station_label='odinqepucishdpheyepy',
-            latitude=float(83.98933831128721),
-            longitude=float(61.06739444709547),
-            phenomenon_id='rudghbnsbzjwounxixso',
-            phenomenon_label='srdxtxxrevfaiecjbhrp',
-            category_id='nbhthznhfofpodjpbrxk',
-            category_label='xusngyonwwgswdyagzbv'
+            timeseries_id='lejaffglcgrimhzpshyr',
+            label='piyzneflzphpgodxrtyl',
+            uom='yjtipdnvwxegvihgzuvo',
+            station_id='edcpowsuhpkozkgqelzs',
+            station_label='vikpcreueahwbpeujfmd',
+            latitude=float(56.17468761144767),
+            longitude=float(68.03798508428481),
+            phenomenon_id='inovwtpaulxoagczyimj',
+            phenomenon_label='gqymxyivwiblczftahnf',
+            category_id='pclxwcjkzpliqovndcro',
+            category_label='yfwaemltdjvfosqqthzb'
         )

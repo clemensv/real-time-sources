@@ -12,14 +12,14 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
+from nina_bbk_amqp_producer_data.providerenum import ProviderEnum
+from nina_bbk_amqp_producer_data.categoryenum import CategoryEnum
+from nina_bbk_amqp_producer_data.certaintyenum import CertaintyEnum
+from nina_bbk_amqp_producer_data.statusenum import StatusEnum
 from nina_bbk_amqp_producer_data.urgencyenum import UrgencyEnum
-from nina_bbk_amqp_producer_data.scopeenum import ScopeEnum
 from nina_bbk_amqp_producer_data.severityenum import SeverityEnum
 from nina_bbk_amqp_producer_data.msgtypeenum import MsgTypeenum
-from nina_bbk_amqp_producer_data.providerenum import ProviderEnum
-from nina_bbk_amqp_producer_data.statusenum import StatusEnum
-from nina_bbk_amqp_producer_data.certaintyenum import CertaintyEnum
-from nina_bbk_amqp_producer_data.categoryenum import CategoryEnum
+from nina_bbk_amqp_producer_data.scopeenum import ScopeEnum
 import datetime
 
 
@@ -211,29 +211,29 @@ class CivilWarning:
             An instance of the dataclass.
         """
         return cls(
-            warning_id='yovporikxcqqetfgabuh',
+            warning_id='etisjgafgpagijsrwsny',
             provider=ProviderEnum.mowas,
-            version=int(53),
-            sender='ssylvfrvjmmslnxfcxbz',
-            sender_name='zyiveabstneacveuerfs',
+            version=int(36),
+            sender='xyrgjhkwfgvewjtafobc',
+            sender_name='jfemeevofzfwuywfboza',
             sent=datetime.datetime.now(datetime.timezone.utc),
             status=StatusEnum.Actual,
             msg_type=MsgTypeenum.Alert,
             scope=ScopeEnum.Public,
-            references='bfqhrmlwosjugribxouh',
-            event='qaqfnrhoyuwadgxejnvi',
-            event_code='xmajksgptbxtfaglcles',
+            references='armipntqzlwarlryvamg',
+            event='wjngobtkrrbvksmeyarj',
+            event_code='xjjyzkcpztbjlmlnssnf',
             category=CategoryEnum.Met,
             severity=SeverityEnum.Extreme,
             urgency=UrgencyEnum.Immediate,
             certainty=CertaintyEnum.Observed,
-            headline='qlnuagldwqueirgztzcv',
-            description='gqcdmnkrcxsetoebyaqg',
-            instruction='urdnjesucanpkzxiawfp',
-            web='dufoytvcbviumqzrsjic',
-            contact='ynemeptifncdxxevvmzt',
-            area_desc='piyvwddsmkcntsxpiosd',
-            verwaltungsbereiche='wdrocrkdqedxflydlbyk',
-            language='yrqomrybwahbdluqjgve',
-            state='tawdtgrudesdddgxdvka'
+            headline='osbirujvquihhbcxaheh',
+            description='bmsvkerlbcojapgitqkj',
+            instruction='bzonohxbeyurhcahjnln',
+            web='dljpycsqvbbjljbpmrwe',
+            contact='rgnlognlwriesjbhnkrq',
+            area_desc='cyvwpmtvjlqcwzwytzic',
+            verwaltungsbereiche='ygsxkqowmkxzqwepsctu',
+            language='egsoofhlfckdpmivyzby',
+            state='txwhujwrhrxbguukxzov'
         )

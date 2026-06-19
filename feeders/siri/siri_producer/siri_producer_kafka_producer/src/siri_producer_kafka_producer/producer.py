@@ -1,5 +1,6 @@
 # pylint: disable=unused-import, line-too-long, missing-module-docstring, missing-function-docstring, missing-class-docstring, consider-using-f-string, trailing-whitespace, trailing-newlines
 import sys
+import time
 import json
 import re
 import uuid
@@ -87,6 +88,14 @@ class OrgSiriKafkaEventProducer:
             return default_key
         return f"{x['type']}:{x['source']}-{x.get('subject', '')}"
 
+    @staticmethod
+    def __binary_data_marshaller(data: typing.Any) -> bytes:
+        """Serialize dataclass payloads to bytes for Kafka binary mode."""
+        payload = data.to_byte_array("application/json")
+        if isinstance(payload, str):
+            payload = payload.encode('utf-8')
+        return payload
+
     def send_org_siri_kafka_vehicle_position(self,_feedurl : str, _operator_ref : str, _vehicle_ref : str, data: VehiclePosition, content_type: str = "application/json", _time: typing.Optional[typing.Union[str, datetime]] = None, flush_producer=True, key_mapper: typing.Callable[[CloudEvent, VehiclePosition], str]=None) -> None:
         """
         Sends the 'org.siri.kafka.VehiclePosition' event to the Kafka topic
@@ -117,7 +126,7 @@ class OrgSiriKafkaEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
@@ -152,11 +161,40 @@ class OrgSiriKafkaEventProducer:
         else:
             # For binary mode, datacontenttype is already set in attributes above
             # The to_binary() function will create the ce_datacontenttype header
-            message = to_binary(event, data_marshaller=lambda x: x.to_byte_array("application/json"), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
+            message = to_binary(event, data_marshaller=lambda x: self.__binary_data_marshaller(x), key_mapper=lambda x: self.__key_mapper(x, data, key_mapper, kafka_key))
         self.producer.produce(self.topic, key=message.key, value=message.value, headers=message.headers)
         if flush_producer:
             self.producer.flush()
 
+
+    def flush(self, timeout: float = 30, retries: int = 3, backoff_factor: float = 2.0) -> None:
+        """Flush pending messages with retry and exponential backoff.
+
+        Brokers that drop idle connections (e.g. Azure Event Hubs, Confluent
+        Cloud) can make a single ``flush()`` fail right after a reconnect, so a
+        bare ``flush(timeout)`` is not resilient on its own. This retries the
+        flush, sleeping ``backoff_factor ** attempt`` seconds between attempts,
+        and raises ``RuntimeError`` if any messages remain unsent after all
+        attempts.
+
+        Args:
+            timeout (float): Seconds to wait for each underlying flush attempt.
+            retries (int): Maximum number of flush attempts.
+            backoff_factor (float): Base of the exponential backoff between attempts.
+
+        Raises:
+            RuntimeError: If messages remain unsent after all retries.
+        """
+        for attempt in range(1, retries + 1):
+            remaining = self.producer.flush(timeout)
+            if remaining == 0:
+                return
+            if attempt < retries:
+                time.sleep(backoff_factor ** attempt)
+            else:
+                raise RuntimeError(
+                    f"Kafka flush left {remaining} message(s) unsent after {retries} attempt(s)."
+                )
 
     @classmethod
     def parse_connection_string(cls, connection_string: str) -> typing.Tuple[typing.Dict[str, str], str]:

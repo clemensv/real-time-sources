@@ -12,10 +12,10 @@ import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 from marshmallow import fields
 import json
-from ptwc_tsunami_producer_data.basinenum import BasinEnum
 from ptwc_tsunami_producer_data.categoryenum import CategoryEnum
-from ptwc_tsunami_producer_data.ptwclevelenum import PtwcLevelenum
 from ptwc_tsunami_producer_data.feedenum import FeedEnum
+from ptwc_tsunami_producer_data.ptwclevelenum import PtwcLevelenum
+from ptwc_tsunami_producer_data.basinenum import BasinEnum
 import datetime
 
 
@@ -187,19 +187,19 @@ class TsunamiBulletin:
             An instance of the dataclass.
         """
         return cls(
-            bulletin_id='dakxxphercwnokjvagao',
+            bulletin_id='ajbufwtagkzefsgjzvul',
             feed=FeedEnum.PAAQ,
-            center='zxheisjyxsglnwzpfvey',
-            title='oxqrtrrpyrdcqoljwwzt',
+            center='muwbzkifwkopofixibld',
+            title='amtnkvcfdprgpyhsqojn',
             updated=datetime.datetime.now(datetime.timezone.utc),
-            latitude=float(60.30279892098464),
-            longitude=float(85.42750131086711),
+            latitude=float(38.000316654482305),
+            longitude=float(1.5683699066325163),
             category=CategoryEnum.Warning,
-            magnitude='dgzxxkzakeywrwzfvubi',
-            affected_region='inemgrazyvcnvhvzlvpc',
-            note='jlddahxdixzwgnsuzmrm',
-            bulletin_url='hogezkwsahazeiivsplh',
-            cap_url='qzfwhmrbwfueueywjtdd',
+            magnitude='hwrkqyuzbipxpqexqiit',
+            affected_region='pqmdibwrhicskhtqmtqz',
+            note='edhtdagoincxffyauehs',
+            bulletin_url='hsvnppaechbzqmoamhhi',
+            cap_url='jldfgdyeyvfenadllroa',
             basin=BasinEnum.pacific,
             ptwc_level=PtwcLevelenum.warning
         )

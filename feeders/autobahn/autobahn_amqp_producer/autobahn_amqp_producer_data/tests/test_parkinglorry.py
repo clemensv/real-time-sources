@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from autobahn_amqp_producer_data.parkinglorry import ParkingLorry
-from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 from typing import Any
+from autobahn_amqp_producer_data.displaytypeenum import DisplayTypeenum
 import datetime
 
 
@@ -31,27 +31,27 @@ class Test_ParkingLorry(unittest.TestCase):
         Create instance of ParkingLorry for testing
         """
         instance = ParkingLorry(
-            identifier='usaneuehoklttjhutnuj',
-            road='fzpvpvcrivlmvgltzich',
-            road_ids=['wzbhctouabxxlsglfglf', 'hcfqbxhgilnztofvnfby'],
+            identifier='fnlgofvjmawozhlatdvr',
+            road='pcnlofkvlcxjzohrgaui',
+            road_ids=['yayvlxuhtaftokfctwsk', 'jcqcxjssjxdoiwycvdnn', 'jszwzgubdhmigxfflgnv'],
             event_time=datetime.datetime.now(datetime.timezone.utc),
             display_type=DisplayTypeenum.ROADWORKS,
-            title='inkkwkqcuznaxrlpafbl',
-            subtitle='pqjzqomhnymvqbyjaswn',
+            title='cjlecmcerfwubfzqidpq',
+            subtitle='gkkckqjzmldugjxaopqj',
             description_lines=None,
             future=False,
-            is_blocked=False,
-            icon='huuckumvuqmmposwmwej',
-            start_lc_position=int(92),
-            extent='acqtgkorklwyehifqpta',
-            point='lserieatgotxvgyydrlp',
-            coordinate_lat=float(23.50150093330522),
-            coordinate_lon=float(25.01757056309796),
-            route_recommendation_json='einsqdsgqbprzaeflnad',
+            is_blocked=True,
+            icon='iljfnzwnakmjhlqxotvk',
+            start_lc_position=int(56),
+            extent='iczlkatmutelqkwgatzn',
+            point='rloytnsoveattudeuyzu',
+            coordinate_lat=float(9.474335264746259),
+            coordinate_lon=float(20.453171744195487),
+            route_recommendation_json='grmxplrpyvgyqruypopr',
             footer_lines=None,
             amenity_descriptions=None,
-            car_space_count=int(20),
-            lorry_space_count=int(63)
+            car_space_count=int(1),
+            lorry_space_count=int(27)
         )
         return instance
 
@@ -60,7 +60,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test identifier property
         """
-        test_value = 'usaneuehoklttjhutnuj'
+        test_value = 'fnlgofvjmawozhlatdvr'
         self.instance.identifier = test_value
         self.assertEqual(self.instance.identifier, test_value)
     
@@ -68,7 +68,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test road property
         """
-        test_value = 'fzpvpvcrivlmvgltzich'
+        test_value = 'pcnlofkvlcxjzohrgaui'
         self.instance.road = test_value
         self.assertEqual(self.instance.road, test_value)
     
@@ -76,7 +76,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test road_ids property
         """
-        test_value = ['wzbhctouabxxlsglfglf', 'hcfqbxhgilnztofvnfby']
+        test_value = ['yayvlxuhtaftokfctwsk', 'jcqcxjssjxdoiwycvdnn', 'jszwzgubdhmigxfflgnv']
         self.instance.road_ids = test_value
         self.assertEqual(self.instance.road_ids, test_value)
     
@@ -100,7 +100,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test title property
         """
-        test_value = 'inkkwkqcuznaxrlpafbl'
+        test_value = 'cjlecmcerfwubfzqidpq'
         self.instance.title = test_value
         self.assertEqual(self.instance.title, test_value)
     
@@ -108,7 +108,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test subtitle property
         """
-        test_value = 'pqjzqomhnymvqbyjaswn'
+        test_value = 'gkkckqjzmldugjxaopqj'
         self.instance.subtitle = test_value
         self.assertEqual(self.instance.subtitle, test_value)
     
@@ -132,7 +132,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test is_blocked property
         """
-        test_value = False
+        test_value = True
         self.instance.is_blocked = test_value
         self.assertEqual(self.instance.is_blocked, test_value)
     
@@ -140,7 +140,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test icon property
         """
-        test_value = 'huuckumvuqmmposwmwej'
+        test_value = 'iljfnzwnakmjhlqxotvk'
         self.instance.icon = test_value
         self.assertEqual(self.instance.icon, test_value)
     
@@ -148,7 +148,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test start_lc_position property
         """
-        test_value = int(92)
+        test_value = int(56)
         self.instance.start_lc_position = test_value
         self.assertEqual(self.instance.start_lc_position, test_value)
     
@@ -156,7 +156,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test extent property
         """
-        test_value = 'acqtgkorklwyehifqpta'
+        test_value = 'iczlkatmutelqkwgatzn'
         self.instance.extent = test_value
         self.assertEqual(self.instance.extent, test_value)
     
@@ -164,7 +164,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test point property
         """
-        test_value = 'lserieatgotxvgyydrlp'
+        test_value = 'rloytnsoveattudeuyzu'
         self.instance.point = test_value
         self.assertEqual(self.instance.point, test_value)
     
@@ -172,7 +172,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test coordinate_lat property
         """
-        test_value = float(23.50150093330522)
+        test_value = float(9.474335264746259)
         self.instance.coordinate_lat = test_value
         self.assertEqual(self.instance.coordinate_lat, test_value)
     
@@ -180,7 +180,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test coordinate_lon property
         """
-        test_value = float(25.01757056309796)
+        test_value = float(20.453171744195487)
         self.instance.coordinate_lon = test_value
         self.assertEqual(self.instance.coordinate_lon, test_value)
     
@@ -188,7 +188,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test route_recommendation_json property
         """
-        test_value = 'einsqdsgqbprzaeflnad'
+        test_value = 'grmxplrpyvgyqruypopr'
         self.instance.route_recommendation_json = test_value
         self.assertEqual(self.instance.route_recommendation_json, test_value)
     
@@ -212,7 +212,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test car_space_count property
         """
-        test_value = int(20)
+        test_value = int(1)
         self.instance.car_space_count = test_value
         self.assertEqual(self.instance.car_space_count, test_value)
     
@@ -220,7 +220,7 @@ class Test_ParkingLorry(unittest.TestCase):
         """
         Test lorry_space_count property
         """
-        test_value = int(63)
+        test_value = int(27)
         self.instance.lorry_space_count = test_value
         self.assertEqual(self.instance.lorry_space_count, test_value)
     

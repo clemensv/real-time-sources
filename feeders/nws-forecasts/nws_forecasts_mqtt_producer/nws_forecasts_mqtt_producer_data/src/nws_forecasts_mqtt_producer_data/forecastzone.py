@@ -182,18 +182,18 @@ class ForecastZone:
             An instance of the dataclass.
         """
         return cls(
-            zone_id='fpnzfbremlaittpaqnhd',
+            zone_id='jnyxlmqhaibduzthdcsk',
             zone_type=ZoneTypeenum.public,
-            name='dqavxguigxftquknnvqp',
-            state='sidvtvdhoketmjsvalcm',
-            forecast_office_url='eurbznxkpzgctwomdqwg',
-            grid_identifier='edcqoodoinzuafcrdoje',
-            awips_location_identifier='nhftdpgexkqvgoifmsft',
-            cwa_ids=['pjqjvdheqyejzpdagcbg'],
-            forecast_office_urls=['ydvualnygsrsbxvrtvtt', 'rfoiidvaeoevjpvsngxm', 'qxghnlxtjeqmufezrkvq'],
-            time_zones=['aijgqyssmijapmuljqtm', 'guynakviydhnwlglyfrk', 'vstrespypporpcxcvqyr'],
-            observation_station_ids=['unbtvnwzmqufglgfgwsn', 'xndhhxhkmxuslloqgqir', 'erpxoyngrfwcmszcrotj', 'dqqgvgwlgndzngbalxxm', 'wygfsgodvpicrzigiyyw'],
-            radar_station='xheyeditkmyfwjafucpe',
+            name='ksenwoclcxpxrnepceuu',
+            state='qjfrneuhilenrpxondmy',
+            forecast_office_url='kizfaokajuxbxninlmuk',
+            grid_identifier='aosdzhmlvbiexpovrpzb',
+            awips_location_identifier='bxiqhrixynjegolatsfp',
+            cwa_ids=['yjhbteppdrmshwsdhfeq', 'qpywswmlpddvkdvrpeps', 'ylcdhajfrpwxpcpabtya'],
+            forecast_office_urls=['wmlatoyaixfsiqydikix', 'nhsfptkfetudyfdbozmn', 'ryqstujtagqujmwqgdak'],
+            time_zones=['jnoizudubtkwkwenhctr', 'quknjfulspmeftdgtwle', 'oxspkxbpkcduaducvryr'],
+            observation_station_ids=['dcvlwozvwhbhlwyhvndp', 'qkhjwacpksoqrtytnhig', 'yxxtsmxxxxbsasoxwnfl'],
+            radar_station='wuwxqcjvybaexsofiwpo',
             effective_date=datetime.datetime.now(datetime.timezone.utc),
             expiration_date=datetime.datetime.now(datetime.timezone.utc)
         )

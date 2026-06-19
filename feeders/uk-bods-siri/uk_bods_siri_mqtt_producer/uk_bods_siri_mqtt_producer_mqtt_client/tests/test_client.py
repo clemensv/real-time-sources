@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 
 import uk_bods_siri_mqtt_producer_data
 from uk_bods_siri_mqtt_producer_data import VehiclePosition
-from test_uk_bods_siri_mqtt_producer_data_vehicleposition import Test_VehiclePosition
+from test_vehicleposition import Test_VehiclePosition
 from uk_bods_siri_mqtt_producer_data import Operator
-from test_uk_bods_siri_mqtt_producer_data_operator import Test_Operator
+from test_operator import Test_Operator
 from uk_bods_siri_mqtt_producer_mqtt_client import UkGovDftBodsMqttMqttClient
 
 @pytest_asyncio.fixture

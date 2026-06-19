@@ -157,5 +157,5 @@ class Datums:
             An instance of the dataclass.
         """
         return cls(
-            self_='hkqmvgcazvbgdztssyua'
+            self_='fnoqcqvgvvgdpzxuaavx'
         )

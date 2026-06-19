@@ -9,8 +9,8 @@ import unittest
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
 from laqn_london_producer_data.uk.kcl.laqn.dailyindex import DailyIndex
-from laqn_london_producer_data.uk.kcl.laqn.airqualitybandenum import AirQualityBandenum
 from laqn_london_producer_data.uk.kcl.laqn.indexsourceenum import IndexSourceenum
+from laqn_london_producer_data.uk.kcl.laqn.airqualitybandenum import AirQualityBandenum
 
 
 class Test_DailyIndex(unittest.TestCase):
@@ -30,10 +30,10 @@ class Test_DailyIndex(unittest.TestCase):
         Create instance of DailyIndex for testing
         """
         instance = DailyIndex(
-            site_code='okqvuhsloxikgxuuqgaq',
-            bulletin_date='hjzbmmgbplfadjccpnnk',
-            species_code='fwzjbwqlkavvvlyzrfzk',
-            air_quality_index=int(88),
+            site_code='imkkbgfuqonjughrxtit',
+            bulletin_date='bgeuvyigyqmtlloixzsc',
+            species_code='cwwmpxdolpedvzwgrcjh',
+            air_quality_index=int(23),
             air_quality_band=AirQualityBandenum.Low,
             index_source=IndexSourceenum.Measurement
         )
@@ -44,7 +44,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test site_code property
         """
-        test_value = 'okqvuhsloxikgxuuqgaq'
+        test_value = 'imkkbgfuqonjughrxtit'
         self.instance.site_code = test_value
         self.assertEqual(self.instance.site_code, test_value)
     
@@ -52,7 +52,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test bulletin_date property
         """
-        test_value = 'hjzbmmgbplfadjccpnnk'
+        test_value = 'bgeuvyigyqmtlloixzsc'
         self.instance.bulletin_date = test_value
         self.assertEqual(self.instance.bulletin_date, test_value)
     
@@ -60,7 +60,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test species_code property
         """
-        test_value = 'fwzjbwqlkavvvlyzrfzk'
+        test_value = 'cwwmpxdolpedvzwgrcjh'
         self.instance.species_code = test_value
         self.assertEqual(self.instance.species_code, test_value)
     
@@ -68,7 +68,7 @@ class Test_DailyIndex(unittest.TestCase):
         """
         Test air_quality_index property
         """
-        test_value = int(88)
+        test_value = int(23)
         self.instance.air_quality_index = test_value
         self.assertEqual(self.instance.air_quality_index, test_value)
     

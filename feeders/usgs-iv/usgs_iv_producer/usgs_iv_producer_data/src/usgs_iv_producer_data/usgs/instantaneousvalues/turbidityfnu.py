@@ -165,11 +165,11 @@ class TurbidityFNU:
             An instance of the dataclass.
         """
         return cls(
-            site_no='rjjlzkiawklwowrogvan',
-            datetime='sllvjkpfjyekxnsdkdxt',
-            value=float(74.53988916243203),
-            exception='ejxqhnesqklwkrpvgziq',
-            qualifiers=['uuvrayouthlytbzljzau', 'frdcdihajucususholxe', 'xwpvnqhdisnbimprynck', 'uqjzxhyachqqwdmkurte', 'etmwceylbznsuneuijzc'],
-            parameter_cd='ltefckxccrxfsskjejjp',
-            timeseries_cd='cennukqqlphvfmoeoukf'
+            site_no='nhoonkxgjshdjrsfhznb',
+            datetime='dpjwrofyxznjxefgbhqa',
+            value=float(5.0581603253396885),
+            exception='orfawomduvcsmhadaxor',
+            qualifiers=['kwcydbjtvztrmnhrtkiw', 'ksptydpmputqlkhhuxck', 'njzkrretibujoqtjtjdf', 'balqtvymdntwjhwvqezf', 'zmeologdlsfbybllxsml'],
+            parameter_cd='tqwdkuhtexqvcazpoglm',
+            timeseries_cd='ouvgbalkmiapubnqhryr'
         )

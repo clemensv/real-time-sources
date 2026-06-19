@@ -165,11 +165,11 @@ class WeatherStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='lzymiwdseooxxbcmwpab',
-            station_name='gwrplpqeodpbzlnifnfp',
-            latitude=float(73.56730321344865),
-            longitude=float(7.983525949604154),
-            altitude=float(28.124466765654933),
-            state='fmjrunjbyiuhdudvzlpo',
-            bundesland='qdsasgwortrultkxkoqf'
+            station_id='lejoghmldjnowpsvvxjo',
+            station_name='lrmbovwuntprlzhtluui',
+            latitude=float(18.926017373428095),
+            longitude=float(36.10791859423489),
+            altitude=float(43.315679023642126),
+            state='meqektkzyjymoxqovwob',
+            bundesland='kzsyxzcpqbunifdlwert'
         )

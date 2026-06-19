@@ -28,13 +28,13 @@ class Test_HourlyObservation(unittest.TestCase):
         Create instance of HourlyObservation for testing
         """
         instance = HourlyObservation(
-            station_id='nxhhtiljelqtmawnumjg',
-            timestamp='ygvtpydcqbvhhptdkhor',
-            quality_level=int(13),
-            parameter='wvkkahkbbbgwgzhcbegq',
-            value=float(90.3705410520579),
-            unit='yhtmrtknnpoyxsdeprhp',
-            state='tsmzcufhfxuqhwbbnhei'
+            station_id='edvxxpndqirwpxlkmzlc',
+            timestamp='tlwjbcgdibpfzczfwhso',
+            quality_level=int(58),
+            parameter='adhsbcaygdmlpxeskwna',
+            value=float(94.27976390927886),
+            unit='zselxcnskvfxnkpgbaoz',
+            state='azhecaqeweckidwceokg'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'nxhhtiljelqtmawnumjg'
+        test_value = 'edvxxpndqirwpxlkmzlc'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'ygvtpydcqbvhhptdkhor'
+        test_value = 'tlwjbcgdibpfzczfwhso'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test quality_level property
         """
-        test_value = int(13)
+        test_value = int(58)
         self.instance.quality_level = test_value
         self.assertEqual(self.instance.quality_level, test_value)
     
@@ -67,7 +67,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test parameter property
         """
-        test_value = 'wvkkahkbbbgwgzhcbegq'
+        test_value = 'adhsbcaygdmlpxeskwna'
         self.instance.parameter = test_value
         self.assertEqual(self.instance.parameter, test_value)
     
@@ -75,7 +75,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(90.3705410520579)
+        test_value = float(94.27976390927886)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -83,7 +83,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test unit property
         """
-        test_value = 'yhtmrtknnpoyxsdeprhp'
+        test_value = 'zselxcnskvfxnkpgbaoz'
         self.instance.unit = test_value
         self.assertEqual(self.instance.unit, test_value)
     
@@ -91,7 +91,7 @@ class Test_HourlyObservation(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'tsmzcufhfxuqhwbbnhei'
+        test_value = 'azhecaqeweckidwceokg'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     

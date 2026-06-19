@@ -159,7 +159,7 @@ def test_au_gov_emergency_wildfires_mqtt_augovemergencywildfiresmqttfireincident
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "AU.Gov.Emergency.Wildfires.mqtt.FireIncident":
+            if cloudevent['type'] == "AU.Gov.Emergency.Wildfires.FireIncident":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_au_gov_emergency_wildfires_amqp_augovemergencywildfiresamqpfireincident
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "AU.Gov.Emergency.Wildfires.amqp.FireIncident":
+            if cloudevent['type'] == "AU.Gov.Emergency.Wildfires.FireIncident":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

@@ -99,7 +99,7 @@ def test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkastation(kafka_emul
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.kafka.Station":
+            if cloudevent['type'] == "pl.gov.gios.airquality.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -163,7 +163,7 @@ def test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkaairqualityindex(ka
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.kafka.AirQualityIndex":
+            if cloudevent['type'] == "pl.gov.gios.airquality.AirQualityIndex":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -227,7 +227,7 @@ def test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkasensor(kafka_emula
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.kafka.Sensor":
+            if cloudevent['type'] == "pl.gov.gios.airquality.Sensor":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -291,7 +291,7 @@ def test_pl_gov_gios_airquality_kafka_plgovgiosairqualitykafkameasurement(kafka_
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "pl.gov.gios.airquality.kafka.Measurement":
+            if cloudevent['type'] == "pl.gov.gios.airquality.Measurement":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

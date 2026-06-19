@@ -177,16 +177,16 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            station_code='wozqidzwtakuyidkvdoc',
-            kj_name='ctjqbojfoeknvwbwcmfg',
-            kana='kpfzitwiggvltiwaaukz',
-            en_name='sjcdslqoxvasqhgjawgf',
-            latitude=float(23.14527835509459),
-            longitude=float(20.268143324087763),
-            altitude_m=float(47.885556589920775),
+            station_code='dcyqztuhkdeycsxrgwpv',
+            kj_name='ejjjrnrmsiczglehckta',
+            kana='crkmgwpzytdetqthmzoh',
+            en_name='kiozqpxgmnqnzhikbcay',
+            latitude=float(82.69727195439002),
+            longitude=float(77.54832701802569),
+            altitude_m=float(16.449210712686057),
             station_type=StationTypeenum.A,
-            elems_bitmask='tkawcxmwbguuehqebcli',
-            enabled_measurements=['odtpsrcwhyajjvsuyhhg', 'giprbpzdjdlzcsavfyqu'],
-            prefecture='fbockgutvzqterwwbuog',
-            event=EventEnum.observation
+            elems_bitmask='nlgohofuecdbyrqqfogy',
+            enabled_measurements=['sqrxhiioilzgnlpmitaf'],
+            prefecture='mwwcozogbiqkakahxncr',
+            event=EventEnum.info
         )

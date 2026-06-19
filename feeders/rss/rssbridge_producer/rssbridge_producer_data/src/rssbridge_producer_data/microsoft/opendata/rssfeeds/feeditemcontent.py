@@ -159,8 +159,8 @@ class FeedItemContent:
             An instance of the dataclass.
         """
         return cls(
-            value='jmpyyvpyihotnipxxyjp',
-            type='cbbetkfcceajgnqonwix',
-            language='bdotmyxiyrrkocjqigvv',
-            base='ezxxsvnlixzumwkgfzim'
+            value='ilsbdnbahkkivnlaeqdu',
+            type='tnpweqymxbuwleoxlybe',
+            language='rhqqiseiheihhycicwda',
+            base='sypxynnxeyzzudcuiwxp'
         )

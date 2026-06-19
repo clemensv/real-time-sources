@@ -28,18 +28,18 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         Create instance of SpaceForArrivalTerminal for testing
         """
         instance = SpaceForArrivalTerminal(
-            terminal_id=int(4),
-            terminal_name='pokcgmgyqkffzamqnjcb',
-            vessel_id=int(17),
-            vessel_name='uwggjfbgfgcpurgrvffx',
-            display_reservable_space=True,
-            reservable_space_count=int(54),
-            reservable_space_hex_color='ejpxjjnatsmjpuvvsips',
-            display_drive_up_space=False,
-            drive_up_space_count=int(49),
-            drive_up_space_hex_color='eswlwuishjknutkhmkow',
-            max_space_count=int(6),
-            arrival_terminal_ids=[int(83), int(87)]
+            terminal_id=int(94),
+            terminal_name='fkwnnrsguxxtyxpjtjir',
+            vessel_id=int(24),
+            vessel_name='sahkalqumfmfjiqedlta',
+            display_reservable_space=False,
+            reservable_space_count=int(25),
+            reservable_space_hex_color='gymryuodqdaonvvmtfcy',
+            display_drive_up_space=True,
+            drive_up_space_count=int(20),
+            drive_up_space_hex_color='mjjosyebqpomktzneepc',
+            max_space_count=int(59),
+            arrival_terminal_ids=[int(16), int(69), int(33)]
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test terminal_id property
         """
-        test_value = int(4)
+        test_value = int(94)
         self.instance.terminal_id = test_value
         self.assertEqual(self.instance.terminal_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test terminal_name property
         """
-        test_value = 'pokcgmgyqkffzamqnjcb'
+        test_value = 'fkwnnrsguxxtyxpjtjir'
         self.instance.terminal_name = test_value
         self.assertEqual(self.instance.terminal_name, test_value)
     
@@ -64,7 +64,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test vessel_id property
         """
-        test_value = int(17)
+        test_value = int(24)
         self.instance.vessel_id = test_value
         self.assertEqual(self.instance.vessel_id, test_value)
     
@@ -72,7 +72,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test vessel_name property
         """
-        test_value = 'uwggjfbgfgcpurgrvffx'
+        test_value = 'sahkalqumfmfjiqedlta'
         self.instance.vessel_name = test_value
         self.assertEqual(self.instance.vessel_name, test_value)
     
@@ -80,7 +80,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test display_reservable_space property
         """
-        test_value = True
+        test_value = False
         self.instance.display_reservable_space = test_value
         self.assertEqual(self.instance.display_reservable_space, test_value)
     
@@ -88,7 +88,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test reservable_space_count property
         """
-        test_value = int(54)
+        test_value = int(25)
         self.instance.reservable_space_count = test_value
         self.assertEqual(self.instance.reservable_space_count, test_value)
     
@@ -96,7 +96,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test reservable_space_hex_color property
         """
-        test_value = 'ejpxjjnatsmjpuvvsips'
+        test_value = 'gymryuodqdaonvvmtfcy'
         self.instance.reservable_space_hex_color = test_value
         self.assertEqual(self.instance.reservable_space_hex_color, test_value)
     
@@ -104,7 +104,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test display_drive_up_space property
         """
-        test_value = False
+        test_value = True
         self.instance.display_drive_up_space = test_value
         self.assertEqual(self.instance.display_drive_up_space, test_value)
     
@@ -112,7 +112,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test drive_up_space_count property
         """
-        test_value = int(49)
+        test_value = int(20)
         self.instance.drive_up_space_count = test_value
         self.assertEqual(self.instance.drive_up_space_count, test_value)
     
@@ -120,7 +120,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test drive_up_space_hex_color property
         """
-        test_value = 'eswlwuishjknutkhmkow'
+        test_value = 'mjjosyebqpomktzneepc'
         self.instance.drive_up_space_hex_color = test_value
         self.assertEqual(self.instance.drive_up_space_hex_color, test_value)
     
@@ -128,7 +128,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test max_space_count property
         """
-        test_value = int(6)
+        test_value = int(59)
         self.instance.max_space_count = test_value
         self.assertEqual(self.instance.max_space_count, test_value)
     
@@ -136,7 +136,7 @@ class Test_SpaceForArrivalTerminal(unittest.TestCase):
         """
         Test arrival_terminal_ids property
         """
-        test_value = [int(83), int(87)]
+        test_value = [int(16), int(69), int(33)]
         self.instance.arrival_terminal_ids = test_value
         self.assertEqual(self.instance.arrival_terminal_ids, test_value)
     

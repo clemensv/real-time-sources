@@ -161,7 +161,7 @@ class Details:
             An instance of the dataclass.
         """
         return cls(
-            self_='wwrbbwanyjlejwmollrn',
-            region='ycsrgyifvnvnhawfwtlp',
-            station_id='iwozuocptqfxappxzaoc'
+            self_='gbzstzlcryunqlxbkiwo',
+            region='jcriwrljosxclwcbquok',
+            station_id='fdoyzfshdxjjqliiynth'
         )

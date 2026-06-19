@@ -161,9 +161,9 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            fmisid='lavfhvxknrpmqbesuhjv',
-            station_name='uqgjwxibtvlybkefwsdn',
-            latitude=float(96.02670675687915),
-            longitude=float(55.11898066778882),
-            municipality='zcsbqvwfpzeoxmontdwy'
+            fmisid='tgefxutebzockknarevu',
+            station_name='xfshqyrdepbbcthhbjaz',
+            latitude=float(40.68267000203837),
+            longitude=float(92.2880346838074),
+            municipality='ifmxsowygiokkialduoy'
         )

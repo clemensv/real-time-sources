@@ -17,7 +17,7 @@ import json
 @dataclass
 class WeatherObservation:
     """
-    10-minute weather observation from a GeoSphere Austria TAWES station. Each event contains the latest observation for a single station with all requested meteorological parameters. Values are null when the station does not report a parameter or the measurement is missing for the current interval.
+    10-minute weather observation from a GeoSphere Austria TAWES station, including temperature, humidity, precipitation, wind, pressure, sunshine duration, and global radiation.
     
     Attributes:
         station_id (str)
@@ -30,6 +30,7 @@ class WeatherObservation:
         pressure (float)
         sunshine_duration (float)
         global_radiation (float)
+        bundesland (typing.Optional[str])
     """
     
     
@@ -43,6 +44,7 @@ class WeatherObservation:
     pressure: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="pressure"))
     sunshine_duration: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sunshine_duration"))
     global_radiation: float=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="global_radiation"))
+    bundesland: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="bundesland"))
 
     @classmethod
     def from_serializer_dict(cls, data: dict) -> 'WeatherObservation':
@@ -171,14 +173,15 @@ class WeatherObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='tfqfdzebinfidhadapea',
-            observation_time='mkgsmmrjphicmergesgj',
-            temperature=float(30.494153051216742),
-            humidity=float(71.50187255628138),
-            precipitation=float(12.081152332642532),
-            wind_direction=float(48.59027148265551),
-            wind_speed=float(39.42855768928882),
-            pressure=float(12.016477288619543),
-            sunshine_duration=float(10.076121220387769),
-            global_radiation=float(28.950390185189733)
+            station_id='tpolufayxnqrsbxqzvce',
+            observation_time='xjaqcmoxyeqrfvecmfes',
+            temperature=float(90.98986043351833),
+            humidity=float(78.51848111800264),
+            precipitation=float(62.94558869053844),
+            wind_direction=float(5.675938783329171),
+            wind_speed=float(93.19012769476464),
+            pressure=float(71.1707440732955),
+            sunshine_duration=float(46.56444994894395),
+            global_radiation=float(45.73374488414008),
+            bundesland='xafizjybbppzrnubhoen'
         )

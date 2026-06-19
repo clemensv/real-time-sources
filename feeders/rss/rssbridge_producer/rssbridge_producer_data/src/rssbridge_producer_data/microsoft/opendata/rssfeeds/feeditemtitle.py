@@ -159,8 +159,8 @@ class FeedItemTitle:
             An instance of the dataclass.
         """
         return cls(
-            value='xokswzuxhrcsarmtmonx',
-            type='azbmvlivonvvpljffuze',
-            language='figuwtfepeuiygjueuiq',
-            base='pawghpzhoketfyegumen'
+            value='ljzjtueofdongeyzjrce',
+            type='balzxrcpkpvuzuhkdjyl',
+            language='zjrntxqwuuacydeztusj',
+            base='ddsfnvthwthbscuenfpq'
         )

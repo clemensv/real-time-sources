@@ -328,7 +328,7 @@ class TestJPJMAVolcanoAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.JMA.Volcano.amqp.Volcano"
+                    assert cloud_event_payload.get("type") == "JP.JMA.Volcano.Volcano"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -369,7 +369,7 @@ class TestJPJMAVolcanoAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.JMA.Volcano.amqp.Volcano'
+        assert properties.get('cloudEvents:type') == 'JP.JMA.Volcano.Volcano'
         assert received.body is not None
         assert received.subject == "jp.jma.volcano/{volcano_code}".format(volcano_code="value")
         assert properties.get('prefecture') == "{prefecture}".format(prefecture="value")
@@ -426,7 +426,7 @@ class TestJPJMAVolcanoAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.JMA.Volcano.amqp.VolcanicWarning"
+                    assert cloud_event_payload.get("type") == "JP.JMA.Volcano.VolcanicWarning"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -467,7 +467,7 @@ class TestJPJMAVolcanoAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.JMA.Volcano.amqp.VolcanicWarning'
+        assert properties.get('cloudEvents:type') == 'JP.JMA.Volcano.VolcanicWarning'
         assert received.body is not None
         assert received.subject == "jp.jma.volcano/{volcano_code}".format(volcano_code="value")
         assert properties.get('prefecture') == "{prefecture}".format(prefecture="value")
@@ -524,7 +524,7 @@ class TestJPJMAVolcanoAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "JP.JMA.Volcano.amqp.VolcanicEruption"
+                    assert cloud_event_payload.get("type") == "JP.JMA.Volcano.VolcanicEruption"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -565,7 +565,7 @@ class TestJPJMAVolcanoAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'JP.JMA.Volcano.amqp.VolcanicEruption'
+        assert properties.get('cloudEvents:type') == 'JP.JMA.Volcano.VolcanicEruption'
         assert received.body is not None
         assert received.subject == "jp.jma.volcano/{volcano_code}".format(volcano_code="value")
         assert properties.get('prefecture') == "{prefecture}".format(prefecture="value")

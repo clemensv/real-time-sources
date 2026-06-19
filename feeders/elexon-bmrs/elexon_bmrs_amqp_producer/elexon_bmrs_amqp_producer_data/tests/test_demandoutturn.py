@@ -29,12 +29,12 @@ class Test_DemandOutturn(unittest.TestCase):
         Create instance of DemandOutturn for testing
         """
         instance = DemandOutturn(
-            settlement_period=int(64),
-            settlement_date='ncydacpkuohtccgjlcuk',
+            settlement_period=int(26),
+            settlement_date='ybzfmjctozsyjagjcgsu',
             start_time=datetime.datetime.now(datetime.timezone.utc),
             publish_time=datetime.datetime.now(datetime.timezone.utc),
-            initial_demand_outturn_mw=float(80.26665014394574),
-            initial_transmission_system_demand_outturn_mw=float(6.83756213416874)
+            initial_demand_outturn_mw=float(44.53310365925282),
+            initial_transmission_system_demand_outturn_mw=float(90.62071523028862)
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_DemandOutturn(unittest.TestCase):
         """
         Test settlement_period property
         """
-        test_value = int(64)
+        test_value = int(26)
         self.instance.settlement_period = test_value
         self.assertEqual(self.instance.settlement_period, test_value)
     
@@ -51,7 +51,7 @@ class Test_DemandOutturn(unittest.TestCase):
         """
         Test settlement_date property
         """
-        test_value = 'ncydacpkuohtccgjlcuk'
+        test_value = 'ybzfmjctozsyjagjcgsu'
         self.instance.settlement_date = test_value
         self.assertEqual(self.instance.settlement_date, test_value)
     
@@ -75,7 +75,7 @@ class Test_DemandOutturn(unittest.TestCase):
         """
         Test initial_demand_outturn_mw property
         """
-        test_value = float(80.26665014394574)
+        test_value = float(44.53310365925282)
         self.instance.initial_demand_outturn_mw = test_value
         self.assertEqual(self.instance.initial_demand_outturn_mw, test_value)
     
@@ -83,7 +83,7 @@ class Test_DemandOutturn(unittest.TestCase):
         """
         Test initial_transmission_system_demand_outturn_mw property
         """
-        test_value = float(6.83756213416874)
+        test_value = float(90.62071523028862)
         self.instance.initial_transmission_system_demand_outturn_mw = test_value
         self.assertEqual(self.instance.initial_transmission_system_demand_outturn_mw, test_value)
     

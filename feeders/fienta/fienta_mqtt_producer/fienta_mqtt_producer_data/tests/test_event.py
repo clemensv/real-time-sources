@@ -28,30 +28,30 @@ class Test_Event(unittest.TestCase):
         Create instance of Event for testing
         """
         instance = Event(
-            event_id='tyfbhkfwrmhvsnmwwrod',
-            name='ykclfhbneyfwmlqaofae',
-            start='zeersudosqhtvzanpjse',
-            end='lzruclczfiitofzxvpdl',
-            duration_text='nqxwsupdgknkdfxjamev',
-            time_notes='biaitfbtqcvwfnttvrcm',
-            event_status='cjtagboxrihustdojwhc',
-            sale_status='muerhnkemjeucmsooqnm',
-            attendance_mode='ixtbrohbgxksflzaumdx',
-            venue_name='bqqtxqlihvmznxjsdgtg',
-            venue_id='siobolfvvelvpuzaliqg',
-            address='vlatsfbawujjnjnvnpek',
-            postal_code='hwxbbkiveflmvalhiutf',
-            description='dhslvpxpnfgpztpogkil',
-            url='krwlxsuvbygkqwlepxpa',
-            buy_tickets_url='pqjyxtjkjhftnrplmyaf',
-            image_url='ilmrtheotqibfxnhegue',
-            image_small_url='eoswkypcssijfmwjhvby',
-            series_id='buychtirgqdtuprmcdbi',
-            organizer_name='netnosbidcbyfoskgqis',
-            organizer_phone='hsbqlnffhjicsawigvbo',
-            organizer_email='wtnbwbjlpxkfkuoxiejm',
-            organizer_id=int(60),
-            categories=['yuaaxrtnluelunzobvbb', 'tefzfewjvtyuhodbwlof', 'rmvdbycvbdqoywxlvvat', 'yodvbluatensaofwrqkv']
+            event_id='sdlhbjpatqptfjwpfiih',
+            name='poxhseisxdvqyeqmacff',
+            start='xfdtgjadvmxsbbztbuaw',
+            end='irqvbnivjgvdddrdmyiq',
+            duration_text='smbjsuaewrcjsoxhqper',
+            time_notes='zopnbdwumynvijrsshyc',
+            event_status='hwdyykjudmswfgrednke',
+            sale_status='feusblugktzowhtyutdc',
+            attendance_mode='skobeyfmxrtecqfabkom',
+            venue_name='diadaknipxrnvawijgtv',
+            venue_id='gcinaetutsdblledlyda',
+            address='mqukhdylcypqrmrhnbrg',
+            postal_code='fnyzfbywniojromjqoku',
+            description='zdweianqurxashcoincw',
+            url='yrtokkiwubglleftbagk',
+            buy_tickets_url='qewnfofolwpjevdbzvsk',
+            image_url='itvsfrsnqzabluezssql',
+            image_small_url='ptnldqnqljmumgdcgvnn',
+            series_id='niqsxaokkifxitzowpeb',
+            organizer_name='rndljxuppabttaxfcbes',
+            organizer_phone='zmyilxdhcdujczdtnrcf',
+            organizer_email='gwzlrdjxtiewrhzlwptt',
+            organizer_id=int(36),
+            categories=['dgmhhjnphkxutflvknlu', 'muzvejwehleodvuhcjpz', 'mjoefljfhvzrjqezdluf', 'amukopmlspbvakduklpb', 'ahsbivhbtjaxspbvalpa']
         )
         return instance
 
@@ -60,7 +60,7 @@ class Test_Event(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'tyfbhkfwrmhvsnmwwrod'
+        test_value = 'sdlhbjpatqptfjwpfiih'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -68,7 +68,7 @@ class Test_Event(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'ykclfhbneyfwmlqaofae'
+        test_value = 'poxhseisxdvqyeqmacff'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -76,7 +76,7 @@ class Test_Event(unittest.TestCase):
         """
         Test start property
         """
-        test_value = 'zeersudosqhtvzanpjse'
+        test_value = 'xfdtgjadvmxsbbztbuaw'
         self.instance.start = test_value
         self.assertEqual(self.instance.start, test_value)
     
@@ -84,7 +84,7 @@ class Test_Event(unittest.TestCase):
         """
         Test end property
         """
-        test_value = 'lzruclczfiitofzxvpdl'
+        test_value = 'irqvbnivjgvdddrdmyiq'
         self.instance.end = test_value
         self.assertEqual(self.instance.end, test_value)
     
@@ -92,7 +92,7 @@ class Test_Event(unittest.TestCase):
         """
         Test duration_text property
         """
-        test_value = 'nqxwsupdgknkdfxjamev'
+        test_value = 'smbjsuaewrcjsoxhqper'
         self.instance.duration_text = test_value
         self.assertEqual(self.instance.duration_text, test_value)
     
@@ -100,7 +100,7 @@ class Test_Event(unittest.TestCase):
         """
         Test time_notes property
         """
-        test_value = 'biaitfbtqcvwfnttvrcm'
+        test_value = 'zopnbdwumynvijrsshyc'
         self.instance.time_notes = test_value
         self.assertEqual(self.instance.time_notes, test_value)
     
@@ -108,7 +108,7 @@ class Test_Event(unittest.TestCase):
         """
         Test event_status property
         """
-        test_value = 'cjtagboxrihustdojwhc'
+        test_value = 'hwdyykjudmswfgrednke'
         self.instance.event_status = test_value
         self.assertEqual(self.instance.event_status, test_value)
     
@@ -116,7 +116,7 @@ class Test_Event(unittest.TestCase):
         """
         Test sale_status property
         """
-        test_value = 'muerhnkemjeucmsooqnm'
+        test_value = 'feusblugktzowhtyutdc'
         self.instance.sale_status = test_value
         self.assertEqual(self.instance.sale_status, test_value)
     
@@ -124,7 +124,7 @@ class Test_Event(unittest.TestCase):
         """
         Test attendance_mode property
         """
-        test_value = 'ixtbrohbgxksflzaumdx'
+        test_value = 'skobeyfmxrtecqfabkom'
         self.instance.attendance_mode = test_value
         self.assertEqual(self.instance.attendance_mode, test_value)
     
@@ -132,7 +132,7 @@ class Test_Event(unittest.TestCase):
         """
         Test venue_name property
         """
-        test_value = 'bqqtxqlihvmznxjsdgtg'
+        test_value = 'diadaknipxrnvawijgtv'
         self.instance.venue_name = test_value
         self.assertEqual(self.instance.venue_name, test_value)
     
@@ -140,7 +140,7 @@ class Test_Event(unittest.TestCase):
         """
         Test venue_id property
         """
-        test_value = 'siobolfvvelvpuzaliqg'
+        test_value = 'gcinaetutsdblledlyda'
         self.instance.venue_id = test_value
         self.assertEqual(self.instance.venue_id, test_value)
     
@@ -148,7 +148,7 @@ class Test_Event(unittest.TestCase):
         """
         Test address property
         """
-        test_value = 'vlatsfbawujjnjnvnpek'
+        test_value = 'mqukhdylcypqrmrhnbrg'
         self.instance.address = test_value
         self.assertEqual(self.instance.address, test_value)
     
@@ -156,7 +156,7 @@ class Test_Event(unittest.TestCase):
         """
         Test postal_code property
         """
-        test_value = 'hwxbbkiveflmvalhiutf'
+        test_value = 'fnyzfbywniojromjqoku'
         self.instance.postal_code = test_value
         self.assertEqual(self.instance.postal_code, test_value)
     
@@ -164,7 +164,7 @@ class Test_Event(unittest.TestCase):
         """
         Test description property
         """
-        test_value = 'dhslvpxpnfgpztpogkil'
+        test_value = 'zdweianqurxashcoincw'
         self.instance.description = test_value
         self.assertEqual(self.instance.description, test_value)
     
@@ -172,7 +172,7 @@ class Test_Event(unittest.TestCase):
         """
         Test url property
         """
-        test_value = 'krwlxsuvbygkqwlepxpa'
+        test_value = 'yrtokkiwubglleftbagk'
         self.instance.url = test_value
         self.assertEqual(self.instance.url, test_value)
     
@@ -180,7 +180,7 @@ class Test_Event(unittest.TestCase):
         """
         Test buy_tickets_url property
         """
-        test_value = 'pqjyxtjkjhftnrplmyaf'
+        test_value = 'qewnfofolwpjevdbzvsk'
         self.instance.buy_tickets_url = test_value
         self.assertEqual(self.instance.buy_tickets_url, test_value)
     
@@ -188,7 +188,7 @@ class Test_Event(unittest.TestCase):
         """
         Test image_url property
         """
-        test_value = 'ilmrtheotqibfxnhegue'
+        test_value = 'itvsfrsnqzabluezssql'
         self.instance.image_url = test_value
         self.assertEqual(self.instance.image_url, test_value)
     
@@ -196,7 +196,7 @@ class Test_Event(unittest.TestCase):
         """
         Test image_small_url property
         """
-        test_value = 'eoswkypcssijfmwjhvby'
+        test_value = 'ptnldqnqljmumgdcgvnn'
         self.instance.image_small_url = test_value
         self.assertEqual(self.instance.image_small_url, test_value)
     
@@ -204,7 +204,7 @@ class Test_Event(unittest.TestCase):
         """
         Test series_id property
         """
-        test_value = 'buychtirgqdtuprmcdbi'
+        test_value = 'niqsxaokkifxitzowpeb'
         self.instance.series_id = test_value
         self.assertEqual(self.instance.series_id, test_value)
     
@@ -212,7 +212,7 @@ class Test_Event(unittest.TestCase):
         """
         Test organizer_name property
         """
-        test_value = 'netnosbidcbyfoskgqis'
+        test_value = 'rndljxuppabttaxfcbes'
         self.instance.organizer_name = test_value
         self.assertEqual(self.instance.organizer_name, test_value)
     
@@ -220,7 +220,7 @@ class Test_Event(unittest.TestCase):
         """
         Test organizer_phone property
         """
-        test_value = 'hsbqlnffhjicsawigvbo'
+        test_value = 'zmyilxdhcdujczdtnrcf'
         self.instance.organizer_phone = test_value
         self.assertEqual(self.instance.organizer_phone, test_value)
     
@@ -228,7 +228,7 @@ class Test_Event(unittest.TestCase):
         """
         Test organizer_email property
         """
-        test_value = 'wtnbwbjlpxkfkuoxiejm'
+        test_value = 'gwzlrdjxtiewrhzlwptt'
         self.instance.organizer_email = test_value
         self.assertEqual(self.instance.organizer_email, test_value)
     
@@ -236,7 +236,7 @@ class Test_Event(unittest.TestCase):
         """
         Test organizer_id property
         """
-        test_value = int(60)
+        test_value = int(36)
         self.instance.organizer_id = test_value
         self.assertEqual(self.instance.organizer_id, test_value)
     
@@ -244,7 +244,7 @@ class Test_Event(unittest.TestCase):
         """
         Test categories property
         """
-        test_value = ['yuaaxrtnluelunzobvbb', 'tefzfewjvtyuhodbwlof', 'rmvdbycvbdqoywxlvvat', 'yodvbluatensaofwrqkv']
+        test_value = ['dgmhhjnphkxutflvknlu', 'muzvejwehleodvuhcjpz', 'mjoefljfhvzrjqezdluf', 'amukopmlspbvakduklpb', 'ahsbivhbtjaxspbvalpa']
         self.instance.categories = test_value
         self.assertEqual(self.instance.categories, test_value)
     

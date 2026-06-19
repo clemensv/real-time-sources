@@ -98,10 +98,8 @@ async def test_de_uba_airdata_mqtt_de_uba_airdata_mqtt_station_py(mosquitto_brok
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            bundesland="test_bundesland",
-            component_id="test_component_id",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -167,10 +165,8 @@ async def test_de_uba_airdata_mqtt_de_uba_airdata_mqtt_measure_py(mosquitto_brok
             station_id=f"test_station_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            bundesland="test_bundesland",
-            component_id="test_component_id",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -239,10 +235,8 @@ async def test_de_uba_airdata_components_mqtt_de_uba_airdata_components_mqtt_com
             component_id=f"test_component_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            bundesland="test_bundesland",
-            station_id="test_station_id",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

@@ -165,11 +165,11 @@ class WindSolarGeneration:
             An instance of the dataclass.
         """
         return cls(
-            inDomain='hzauyrmktdeiluffdcwo',
-            psrType='zphsrufjjcjihfcxlshc',
-            quantity=float(40.00039390273382),
-            resolution='zdwvtekhomkqmgbacbuo',
-            businessType='vvehoaxbobebkqervxch',
-            documentType='qqnxldcpxyniodeaipxk',
-            unitName='szedxrkzxmrwbyqhguis'
+            inDomain='hjwriwvkpfxcnhwwzlad',
+            psrType='hsrchyimmnugjkryujtf',
+            quantity=float(80.63429750641356),
+            resolution='tiymlsnqtzxcoiqlttxs',
+            businessType='fkyfcotpsrvfcpztulav',
+            documentType='kmikgzhsyqzhlxqinfzm',
+            unitName='wifpbjjyosnmomhzkxfg'
         )

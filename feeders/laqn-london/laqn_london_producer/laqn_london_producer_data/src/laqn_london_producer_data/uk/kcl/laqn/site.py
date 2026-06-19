@@ -174,15 +174,15 @@ class Site:
             An instance of the dataclass.
         """
         return cls(
-            site_code='gbkelcopwexovdmbxcbl',
-            site_name='ezcofhbvqxubflzxxqsk',
+            site_code='dvpnvxhgyxddjakvlsml',
+            site_name='qacmhqparbiwwdsklais',
             site_type=SiteTypeenum.Suburban,
-            local_authority_code='libaounankhymgybyavw',
-            local_authority_name='hiutiacrrbjvomqdrhmk',
-            latitude=float(51.500694040285374),
-            longitude=float(34.930113220184836),
-            date_opened='jeezwdcurujsllzdzzht',
-            date_closed='nyqzdnomackqwgguhuap',
-            data_owner='jbtruaandxnbjcnhntut',
-            data_manager='emjirjvnkyxuerlrpazy'
+            local_authority_code='scbschnnkuqmltqjfylm',
+            local_authority_name='mahrfitdmfzzxbrgulbj',
+            latitude=float(93.68574384896087),
+            longitude=float(59.963431764251986),
+            date_opened='hvbwkciicqhpvjtelabw',
+            date_closed='zhwxppauxoztfunvqdqx',
+            data_owner='psembnbpyrudghecemra',
+            data_manager='adqdczzdzzxedztclkso'
         )

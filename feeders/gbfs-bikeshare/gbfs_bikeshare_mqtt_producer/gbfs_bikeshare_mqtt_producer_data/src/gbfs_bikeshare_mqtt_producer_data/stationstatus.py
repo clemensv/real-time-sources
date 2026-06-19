@@ -169,13 +169,13 @@ class StationStatus:
             An instance of the dataclass.
         """
         return cls(
-            system_id='rcalkrvneyhtdhckhgmf',
-            station_id='ldrbygbsqowyqzwtexkq',
-            num_bikes_available=int(65),
-            num_docks_available=int(57),
-            num_ebikes_available=int(52),
-            is_installed=True,
+            system_id='wnekmzvilrqjkhvkznxr',
+            station_id='caefborxgviasoglextx',
+            num_bikes_available=int(46),
+            num_docks_available=int(91),
+            num_ebikes_available=int(20),
+            is_installed=False,
             is_renting=False,
-            is_returning=False,
-            last_reported=int(49)
+            is_returning=True,
+            last_reported=int(100)
         )

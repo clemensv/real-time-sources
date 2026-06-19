@@ -162,9 +162,9 @@ class EntitySelector:
             An instance of the dataclass.
         """
         return cls(
-            agency_id='zmcmaigsspqyoaktuucq',
-            route_id='gdglzxtqkwvzjiwsfjiz',
-            route_type=int(47),
+            agency_id='rhkqiycdjwfpypvatbui',
+            route_id='nncdfnzkhmxnoyuooapt',
+            route_type=int(73),
             trip=None,
-            stop_id='uxyxhvlxwjkpquchcahk'
+            stop_id='pxjmmtgfcurxrjrzjkoo'
         )

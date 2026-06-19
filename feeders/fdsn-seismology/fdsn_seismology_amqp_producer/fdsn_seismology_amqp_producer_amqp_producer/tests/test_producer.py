@@ -325,7 +325,7 @@ class TestOrgFdsnEventAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "org.fdsn.event.amqp.Earthquake"
+                    assert cloud_event_payload.get("type") == "org.fdsn.event.Earthquake"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -364,7 +364,7 @@ class TestOrgFdsnEventAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'org.fdsn.event.amqp.Earthquake'
+        assert properties.get('cloudEvents:type') == 'org.fdsn.event.Earthquake'
         assert received.body is not None
         assert received.subject == "{contributor}/{event_id}".format(contributor="value", event_id="value")
         assert properties.get('contributor') == "{contributor}".format(contributor="value")
@@ -418,7 +418,7 @@ class TestOrgFdsnEventAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "org.fdsn.event.amqp.Node"
+                    assert cloud_event_payload.get("type") == "org.fdsn.event.Node"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -456,7 +456,7 @@ class TestOrgFdsnEventAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'org.fdsn.event.amqp.Node'
+        assert properties.get('cloudEvents:type') == 'org.fdsn.event.Node'
         assert received.body is not None
         assert received.subject == "{node_id}".format(node_id="value")
         assert properties.get('node_id') == "{node_id}".format(node_id="value")

@@ -17,7 +17,7 @@ import json
 @dataclass
 class Station:
     """
-    Reference data for a Finnish Meteorological Institute air quality monitoring station.
+    Reference data for an FMI air quality monitoring station. The station identifier is the FMI station identifier (fmisid). Municipality is taken from the WFS station metadata region name, and coordinates are the representative point published by FMI.
     
     Attributes:
         fmisid (str)
@@ -161,9 +161,9 @@ class Station:
             An instance of the dataclass.
         """
         return cls(
-            fmisid='ttasucybatguymsvpvrh',
-            station_name='mceliojaahxdaqgnumnk',
-            latitude=float(56.55960697474259),
-            longitude=float(64.05136261585757),
-            municipality='zjbnchjgnqlmnyuanzfz'
+            fmisid='uulcrjupuosegnekykzf',
+            station_name='jpmnunxvdazzapqsdsok',
+            latitude=float(62.8324838947518),
+            longitude=float(0.5524927303957594),
+            municipality='okdeeysrbagdbbnnzpqo'
         )

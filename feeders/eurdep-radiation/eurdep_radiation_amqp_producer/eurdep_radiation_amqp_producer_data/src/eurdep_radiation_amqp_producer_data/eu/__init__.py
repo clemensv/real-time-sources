@@ -1,3 +1,3 @@
-from .jrc import DoseRateReading, Station
+from .jrc import Station, DoseRateReading
 
-__all__ = ["DoseRateReading", "Station"]
+__all__ = ["Station", "DoseRateReading"]

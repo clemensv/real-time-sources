@@ -29,23 +29,23 @@ class Test_PositionReport(unittest.TestCase):
         Create instance of PositionReport for testing
         """
         instance = PositionReport(
-            mmsi='mzxfdphxhbqckndpjgoj',
-            flag='rculvnjaxikjcplfxmhy',
-            ship_type='kzrfhghfamionqqiahxv',
-            geohash5='wktzwpylmigdscwidnqu',
-            msg_type=MsgTypeenum.position_report,
-            user_id=int(74),
-            latitude=float(59.324212227390696),
-            longitude=float(28.09201692273121),
-            sog=float(14.711414441801839),
-            cog=float(84.53478206323473),
-            true_heading=int(4),
-            navigational_status=int(74),
-            rate_of_turn=int(70),
+            mmsi='jcstiqdnjiuaaopomaxh',
+            flag='svnookznzawetiqtubfw',
+            ship_type='gntkrujsbmrbftwgmphz',
+            geohash5='nnkkhydpoqidskxjtiqm',
+            msg_type=MsgTypeenum.position_MINUSreport,
+            user_id=int(89),
+            latitude=float(47.18348052113552),
+            longitude=float(84.14852793393463),
+            sog=float(16.789186644681664),
+            cog=float(52.57080686354586),
+            true_heading=int(55),
+            navigational_status=int(46),
+            rate_of_turn=int(63),
             position_accuracy=False,
-            timestamp=int(74),
-            raim=False,
-            message_id=int(31)
+            timestamp=int(28),
+            raim=True,
+            message_id=int(2)
         )
         return instance
 
@@ -54,7 +54,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test mmsi property
         """
-        test_value = 'mzxfdphxhbqckndpjgoj'
+        test_value = 'jcstiqdnjiuaaopomaxh'
         self.instance.mmsi = test_value
         self.assertEqual(self.instance.mmsi, test_value)
     
@@ -62,7 +62,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test flag property
         """
-        test_value = 'rculvnjaxikjcplfxmhy'
+        test_value = 'svnookznzawetiqtubfw'
         self.instance.flag = test_value
         self.assertEqual(self.instance.flag, test_value)
     
@@ -70,7 +70,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test ship_type property
         """
-        test_value = 'kzrfhghfamionqqiahxv'
+        test_value = 'gntkrujsbmrbftwgmphz'
         self.instance.ship_type = test_value
         self.assertEqual(self.instance.ship_type, test_value)
     
@@ -78,7 +78,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test geohash5 property
         """
-        test_value = 'wktzwpylmigdscwidnqu'
+        test_value = 'nnkkhydpoqidskxjtiqm'
         self.instance.geohash5 = test_value
         self.assertEqual(self.instance.geohash5, test_value)
     
@@ -86,7 +86,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test msg_type property
         """
-        test_value = MsgTypeenum.position_report
+        test_value = MsgTypeenum.position_MINUSreport
         self.instance.msg_type = test_value
         self.assertEqual(self.instance.msg_type, test_value)
     
@@ -94,7 +94,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test user_id property
         """
-        test_value = int(74)
+        test_value = int(89)
         self.instance.user_id = test_value
         self.assertEqual(self.instance.user_id, test_value)
     
@@ -102,7 +102,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(59.324212227390696)
+        test_value = float(47.18348052113552)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -110,7 +110,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(28.09201692273121)
+        test_value = float(84.14852793393463)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -118,7 +118,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test sog property
         """
-        test_value = float(14.711414441801839)
+        test_value = float(16.789186644681664)
         self.instance.sog = test_value
         self.assertEqual(self.instance.sog, test_value)
     
@@ -126,7 +126,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test cog property
         """
-        test_value = float(84.53478206323473)
+        test_value = float(52.57080686354586)
         self.instance.cog = test_value
         self.assertEqual(self.instance.cog, test_value)
     
@@ -134,7 +134,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test true_heading property
         """
-        test_value = int(4)
+        test_value = int(55)
         self.instance.true_heading = test_value
         self.assertEqual(self.instance.true_heading, test_value)
     
@@ -142,7 +142,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test navigational_status property
         """
-        test_value = int(74)
+        test_value = int(46)
         self.instance.navigational_status = test_value
         self.assertEqual(self.instance.navigational_status, test_value)
     
@@ -150,7 +150,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test rate_of_turn property
         """
-        test_value = int(70)
+        test_value = int(63)
         self.instance.rate_of_turn = test_value
         self.assertEqual(self.instance.rate_of_turn, test_value)
     
@@ -166,7 +166,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = int(74)
+        test_value = int(28)
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -174,7 +174,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test raim property
         """
-        test_value = False
+        test_value = True
         self.instance.raim = test_value
         self.assertEqual(self.instance.raim, test_value)
     
@@ -182,7 +182,7 @@ class Test_PositionReport(unittest.TestCase):
         """
         Test message_id property
         """
-        test_value = int(31)
+        test_value = int(2)
         self.instance.message_id = test_value
         self.assertEqual(self.instance.message_id, test_value)
     

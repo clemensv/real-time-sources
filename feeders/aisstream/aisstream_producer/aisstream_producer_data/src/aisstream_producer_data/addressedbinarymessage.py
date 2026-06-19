@@ -172,14 +172,14 @@ class AddressedBinaryMessage:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(33),
-            RepeatIndicator=int(80),
-            UserID=int(16),
+            MessageID=int(97),
+            RepeatIndicator=int(45),
+            UserID=int(54),
             Valid=False,
-            Sequenceinteger=int(52),
-            DestinationID=int(37),
-            Retransmission=False,
+            Sequenceinteger=int(92),
+            DestinationID=int(63),
+            Retransmission=True,
             Spare=True,
             ApplicationID=None,
-            BinaryData='vexyonszhgoktzgxybjf'
+            BinaryData='yjzglvjajviaugwvdaqt'
         )

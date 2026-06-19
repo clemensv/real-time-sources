@@ -169,13 +169,13 @@ class Wind:
             An instance of the dataclass.
         """
         return cls(
-            station_id='hkezeebdxmnjemjvvjjc',
-            timestamp='iqwpzsagaucsllcqmzyd',
-            speed=float(66.06150860783949),
-            direction_degrees='birxozcalxxuyfgihbwq',
-            direction_text='hrjinphszshvbtrvcvsq',
-            gusts=float(12.658815590199568),
+            station_id='dscmvefactflrlcahdhj',
+            timestamp='phmxlkzpegndmfslgcon',
+            speed=float(88.53003216023765),
+            direction_degrees='idkjcscjvppnozyldcik',
+            direction_text='mctxjocbntlazzkxdjxw',
+            gusts=float(35.4320263970332),
             max_wind_speed_exceeded=False,
-            rate_of_change_exceeded=True,
-            region='gtbdhoaovcqcdnodywte'
+            rate_of_change_exceeded=False,
+            region='fxdagiosumttqerejfzw'
         )

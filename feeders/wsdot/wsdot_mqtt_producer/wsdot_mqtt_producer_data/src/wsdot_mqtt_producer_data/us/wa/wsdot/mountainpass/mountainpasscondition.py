@@ -179,18 +179,18 @@ class MountainPassCondition:
             An instance of the dataclass.
         """
         return cls(
-            mountain_pass_id='hhkrdbpqrlpdxluxnzqr',
-            mountain_pass_name='dyyvenrebvlqxfoaoxhf',
-            elevation_in_feet=int(64),
-            latitude=float(81.03264300599452),
-            longitude=float(4.033269777396531),
-            temperature_in_fahrenheit=int(81),
-            weather_condition='cawsbwdezjoehqvbfxeo',
-            road_condition='wotzrbuvzieqwlvbktqd',
+            mountain_pass_id='zgbbgifgksoircmpcncd',
+            mountain_pass_name='xbdezxuqdsgqhlsoshim',
+            elevation_in_feet=int(19),
+            latitude=float(72.41767985144189),
+            longitude=float(83.28252487321161),
+            temperature_in_fahrenheit=int(43),
+            weather_condition='kagafidgasqgagvrsolb',
+            road_condition='shyamolxtitbfjdoljsw',
             travel_advisory_active=True,
-            restriction_one_direction='hevdxdrhovufxyuzvcjf',
-            restriction_one_text='wqeadkkqyuksaeflccan',
-            restriction_two_direction='nwljsfybgtpeunvolfkl',
-            restriction_two_text='cdnhqjofqashldvlakbi',
-            date_updated='zlxbrfeacfqibdbucofz'
+            restriction_one_direction='lsbkurgfuqozulvgelws',
+            restriction_one_text='scxtkntnegncvxhzfjio',
+            restriction_two_direction='hbfnvvlfqordzuhhbryy',
+            restriction_two_text='yydpblumolpmhajtgbfg',
+            date_updated='sdmglgtwgogbqaszouls'
         )

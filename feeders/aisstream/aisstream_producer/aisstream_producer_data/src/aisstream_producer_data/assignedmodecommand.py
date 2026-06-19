@@ -163,10 +163,10 @@ class AssignedModeCommand:
             An instance of the dataclass.
         """
         return cls(
-            MessageID=int(37),
-            RepeatIndicator=int(67),
-            UserID=int(50),
+            MessageID=int(51),
+            RepeatIndicator=int(94),
+            UserID=int(54),
             Valid=True,
-            Spare=int(15),
-            Commands={'lregbasfacuprbopmdze': 'hjukriuuvftchekyhfbn'}
+            Spare=int(12),
+            Commands={'tqpqvvmicmkgpbxjrrwv': 'qtorpsvixjxpqgznmciq', 'kefagkbthdegwnwmqwzj': 'ycggekjzcwokbhhfsrum', 'iuctpcnfoovauugudvpy': 'nnbyyhcgisrckchfasfw', 'ewkirhvcxaosgtlabfwl': 'owooeodjwxexujpueqmi', 'apbbpzopyftadyvhcdnp': 'vmjnofoibsbnnsslvncw'}
         )

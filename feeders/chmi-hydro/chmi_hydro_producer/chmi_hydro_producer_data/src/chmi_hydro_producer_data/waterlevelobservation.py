@@ -171,13 +171,13 @@ class WaterLevelObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='thybvezhfncymytxnszo',
-            station_name='rimrioxlemkqijnleses',
-            stream_name='cqbcaeicbnwjugkflpdq',
-            water_level=float(69.9908788596211),
+            station_id='xpfqczwzqiuppfmtjtij',
+            station_name='xeibromdzcsbinkdsayl',
+            stream_name='suwtqgmtbntnnrjgjlpn',
+            water_level=float(62.23000003802917),
             water_level_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            discharge=float(92.08026568590307),
+            discharge=float(69.4468830715113),
             discharge_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            water_temperature=float(91.64075373039539),
+            water_temperature=float(19.196130561816904),
             water_temperature_timestamp=datetime.datetime.now(datetime.timezone.utc)
         )

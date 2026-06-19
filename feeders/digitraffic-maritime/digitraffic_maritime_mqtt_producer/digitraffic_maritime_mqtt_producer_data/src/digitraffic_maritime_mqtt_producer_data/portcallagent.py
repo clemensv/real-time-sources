@@ -157,7 +157,7 @@ class PortCallAgent:
             An instance of the dataclass.
         """
         return cls(
-            name='sztejzblrmrelgggetcr',
-            port_call_direction='tivyowkasmkztwgbydqf',
-            role=int(39)
+            name='tecgbdlmtksywtaamvab',
+            port_call_direction='ewvpbimpigbjninpobnb',
+            role=int(15)
         )

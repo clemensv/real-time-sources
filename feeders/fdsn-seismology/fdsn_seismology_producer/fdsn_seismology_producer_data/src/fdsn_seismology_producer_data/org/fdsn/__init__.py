@@ -1,3 +1,3 @@
-from .event import Earthquake, Node
+from .event import Node, Earthquake
 
-__all__ = ["Earthquake", "Node"]
+__all__ = ["Node", "Earthquake"]

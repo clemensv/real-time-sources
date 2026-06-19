@@ -159,7 +159,7 @@ def test_microsoft_opendata_rssfeeds_mqtt_microsoftopendatarssfeedsmqttfeeditem(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.RssFeeds.mqtt.FeedItem":
+            if cloudevent['type'] == "Microsoft.OpenData.RssFeeds.FeedItem":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -221,7 +221,7 @@ def test_microsoft_opendata_rssfeeds_amqp_microsoftopendatarssfeedsamqpfeeditem(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "Microsoft.OpenData.RssFeeds.amqp.FeedItem":
+            if cloudevent['type'] == "Microsoft.OpenData.RssFeeds.FeedItem":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

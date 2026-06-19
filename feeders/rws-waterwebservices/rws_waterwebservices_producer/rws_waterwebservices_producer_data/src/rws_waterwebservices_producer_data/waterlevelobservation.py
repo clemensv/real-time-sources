@@ -171,13 +171,13 @@ class WaterLevelObservation:
             An instance of the dataclass.
         """
         return cls(
-            station_code='mpabbfvtndpwxkmyckvx',
-            location_name='qmfaygqinzyuifipbyif',
+            station_code='ukanisjcxhucyyenctxy',
+            location_name='fblevklfwqaevcqnmbiy',
             timestamp=datetime.datetime.now(datetime.timezone.utc),
-            value=float(47.46645178880776),
-            unit='ecsoyxbizotatbpczvqf',
-            quality_code='nxhyceaffchmvzzwnqxf',
-            status='zdqhdbslodrrpyonnxox',
-            compartment='aqwvdsrdiedhrouvnvjr',
-            parameter='xizhhvpsriupimfoxfkr'
+            value=float(98.71898041225643),
+            unit='qwbenhnuqjgizloayfpw',
+            quality_code='kqkzfdtdnsemweorzpva',
+            status='acvihjqkqspfjntlbiur',
+            compartment='cvbxtvoyejvfddfigzxo',
+            parameter='zhhlfndlgfvdlalfqkeh'
         )

@@ -95,10 +95,8 @@ async def test_io_sensor_community_mqtt_io_sensor_community_mqtt_sensor_info_py(
             sensor_id=f"test_sensor_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            country="test_country",
-            geohash5="test_geohash5",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:
@@ -164,10 +162,8 @@ async def test_io_sensor_community_mqtt_io_sensor_community_mqtt_sensor_reading_
             sensor_id=f"test_sensor_id_{i}",
             _time=datetime.datetime.now(datetime.timezone.utc).isoformat(),
             data=test_data,
-            content_type="application/json",
-            country="test_country",
-            geohash5="test_geohash5",
-)
+            content_type="application/json"
+        )
     
     # Wait for all 5 messages to be received (with timeout)
     try:

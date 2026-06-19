@@ -30,29 +30,29 @@ class Test_HighwayAlert(unittest.TestCase):
         Create instance of HighwayAlert for testing
         """
         instance = HighwayAlert(
-            alert_id='ackolqrvpszcpnvjijhi',
-            county='fagxfuuutczuwfluvuuh',
-            region='tyqdgvfxplxmczauqdxm',
+            alert_id='rzvcohtohmlesjowgpqc',
+            county='ncdqexxccoeqpdxznmcw',
+            region='jvleidtbvciqkhynzleu',
             priority=PriorityEnum.Highest,
-            event_category='etmagvgxnsyheindracm',
+            event_category='vbwrxupjcejxzlpfcvsx',
             event_status=EventStatusenum.Open,
-            headline_description='vrouabjvpwvcdmtixvkg',
-            extended_description='csheiltyliqddoyqddne',
-            start_time='vduzptzmivnstagpuaqh',
-            end_time='qyiogbcaukweclobosnb',
-            last_updated_time='ptxsfnlkkybiqwdsjifd',
-            start_description='surizzthynzzfclmquqt',
-            start_direction='dfjompvqchybicktivmf',
-            start_road_name='acuvunxsginuiakyujfg',
-            start_milepost=float(20.662227210034047),
-            start_latitude=float(17.32566282443563),
-            start_longitude=float(2.864518030580332),
-            end_description='tihqgpqoitfmossmfakk',
-            end_direction='raxdcddwgbmvwdpmrmuc',
-            end_road_name='lwanoistyjufgifdwdad',
-            end_milepost=float(74.17495563106307),
-            end_latitude=float(77.16812255575555),
-            end_longitude=float(53.835407251330444)
+            headline_description='gumxtrezfjeutbhwqtpo',
+            extended_description='sykafdnnkeysveldkpqt',
+            start_time='htsffzgeifldhizmhgav',
+            end_time='hlfblspeqzgvqxjtiyua',
+            last_updated_time='sdwafcaiiagvjaqsiaqt',
+            start_description='hbfqkdwkyzldbxdxqdaj',
+            start_direction='pqqpenkbidigyxjcqeqe',
+            start_road_name='moomownkcrcmiljawfup',
+            start_milepost=float(74.98503586219711),
+            start_latitude=float(71.66848224308673),
+            start_longitude=float(9.87681951722097),
+            end_description='resctgaprpxrvdilzvpa',
+            end_direction='sjuvxsyqukochecbfgqh',
+            end_road_name='nistwtrsfazzzizcegcm',
+            end_milepost=float(77.81441752123345),
+            end_latitude=float(81.70556381839592),
+            end_longitude=float(14.627384703277924)
         )
         return instance
 
@@ -61,7 +61,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test alert_id property
         """
-        test_value = 'ackolqrvpszcpnvjijhi'
+        test_value = 'rzvcohtohmlesjowgpqc'
         self.instance.alert_id = test_value
         self.assertEqual(self.instance.alert_id, test_value)
     
@@ -69,7 +69,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test county property
         """
-        test_value = 'fagxfuuutczuwfluvuuh'
+        test_value = 'ncdqexxccoeqpdxznmcw'
         self.instance.county = test_value
         self.assertEqual(self.instance.county, test_value)
     
@@ -77,7 +77,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'tyqdgvfxplxmczauqdxm'
+        test_value = 'jvleidtbvciqkhynzleu'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     
@@ -93,7 +93,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test event_category property
         """
-        test_value = 'etmagvgxnsyheindracm'
+        test_value = 'vbwrxupjcejxzlpfcvsx'
         self.instance.event_category = test_value
         self.assertEqual(self.instance.event_category, test_value)
     
@@ -109,7 +109,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test headline_description property
         """
-        test_value = 'vrouabjvpwvcdmtixvkg'
+        test_value = 'gumxtrezfjeutbhwqtpo'
         self.instance.headline_description = test_value
         self.assertEqual(self.instance.headline_description, test_value)
     
@@ -117,7 +117,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test extended_description property
         """
-        test_value = 'csheiltyliqddoyqddne'
+        test_value = 'sykafdnnkeysveldkpqt'
         self.instance.extended_description = test_value
         self.assertEqual(self.instance.extended_description, test_value)
     
@@ -125,7 +125,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test start_time property
         """
-        test_value = 'vduzptzmivnstagpuaqh'
+        test_value = 'htsffzgeifldhizmhgav'
         self.instance.start_time = test_value
         self.assertEqual(self.instance.start_time, test_value)
     
@@ -133,7 +133,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test end_time property
         """
-        test_value = 'qyiogbcaukweclobosnb'
+        test_value = 'hlfblspeqzgvqxjtiyua'
         self.instance.end_time = test_value
         self.assertEqual(self.instance.end_time, test_value)
     
@@ -141,7 +141,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test last_updated_time property
         """
-        test_value = 'ptxsfnlkkybiqwdsjifd'
+        test_value = 'sdwafcaiiagvjaqsiaqt'
         self.instance.last_updated_time = test_value
         self.assertEqual(self.instance.last_updated_time, test_value)
     
@@ -149,7 +149,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test start_description property
         """
-        test_value = 'surizzthynzzfclmquqt'
+        test_value = 'hbfqkdwkyzldbxdxqdaj'
         self.instance.start_description = test_value
         self.assertEqual(self.instance.start_description, test_value)
     
@@ -157,7 +157,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test start_direction property
         """
-        test_value = 'dfjompvqchybicktivmf'
+        test_value = 'pqqpenkbidigyxjcqeqe'
         self.instance.start_direction = test_value
         self.assertEqual(self.instance.start_direction, test_value)
     
@@ -165,7 +165,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test start_road_name property
         """
-        test_value = 'acuvunxsginuiakyujfg'
+        test_value = 'moomownkcrcmiljawfup'
         self.instance.start_road_name = test_value
         self.assertEqual(self.instance.start_road_name, test_value)
     
@@ -173,7 +173,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test start_milepost property
         """
-        test_value = float(20.662227210034047)
+        test_value = float(74.98503586219711)
         self.instance.start_milepost = test_value
         self.assertEqual(self.instance.start_milepost, test_value)
     
@@ -181,7 +181,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test start_latitude property
         """
-        test_value = float(17.32566282443563)
+        test_value = float(71.66848224308673)
         self.instance.start_latitude = test_value
         self.assertEqual(self.instance.start_latitude, test_value)
     
@@ -189,7 +189,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test start_longitude property
         """
-        test_value = float(2.864518030580332)
+        test_value = float(9.87681951722097)
         self.instance.start_longitude = test_value
         self.assertEqual(self.instance.start_longitude, test_value)
     
@@ -197,7 +197,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test end_description property
         """
-        test_value = 'tihqgpqoitfmossmfakk'
+        test_value = 'resctgaprpxrvdilzvpa'
         self.instance.end_description = test_value
         self.assertEqual(self.instance.end_description, test_value)
     
@@ -205,7 +205,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test end_direction property
         """
-        test_value = 'raxdcddwgbmvwdpmrmuc'
+        test_value = 'sjuvxsyqukochecbfgqh'
         self.instance.end_direction = test_value
         self.assertEqual(self.instance.end_direction, test_value)
     
@@ -213,7 +213,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test end_road_name property
         """
-        test_value = 'lwanoistyjufgifdwdad'
+        test_value = 'nistwtrsfazzzizcegcm'
         self.instance.end_road_name = test_value
         self.assertEqual(self.instance.end_road_name, test_value)
     
@@ -221,7 +221,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test end_milepost property
         """
-        test_value = float(74.17495563106307)
+        test_value = float(77.81441752123345)
         self.instance.end_milepost = test_value
         self.assertEqual(self.instance.end_milepost, test_value)
     
@@ -229,7 +229,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test end_latitude property
         """
-        test_value = float(77.16812255575555)
+        test_value = float(81.70556381839592)
         self.instance.end_latitude = test_value
         self.assertEqual(self.instance.end_latitude, test_value)
     
@@ -237,7 +237,7 @@ class Test_HighwayAlert(unittest.TestCase):
         """
         Test end_longitude property
         """
-        test_value = float(53.835407251330444)
+        test_value = float(14.627384703277924)
         self.instance.end_longitude = test_value
         self.assertEqual(self.instance.end_longitude, test_value)
     

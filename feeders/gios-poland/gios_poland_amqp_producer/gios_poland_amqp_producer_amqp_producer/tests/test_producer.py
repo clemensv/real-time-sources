@@ -329,7 +329,7 @@ class TestPlGovGiosAirqualityAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "pl.gov.gios.airquality.amqp.Station"
+                    assert cloud_event_payload.get("type") == "pl.gov.gios.airquality.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -369,7 +369,7 @@ class TestPlGovGiosAirqualityAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'pl.gov.gios.airquality.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'pl.gov.gios.airquality.Station'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('voivodeship') == "{voivodeship}".format(voivodeship="value")
@@ -426,7 +426,7 @@ class TestPlGovGiosAirqualityAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "pl.gov.gios.airquality.amqp.Sensor"
+                    assert cloud_event_payload.get("type") == "pl.gov.gios.airquality.Sensor"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -468,7 +468,7 @@ class TestPlGovGiosAirqualityAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'pl.gov.gios.airquality.amqp.Sensor'
+        assert properties.get('cloudEvents:type') == 'pl.gov.gios.airquality.Sensor'
         assert received.body is not None
         assert received.subject == "{station_id}/{sensor_id}".format(station_id="value", sensor_id="value")
         assert properties.get('voivodeship') == "{voivodeship}".format(voivodeship="value")
@@ -526,7 +526,7 @@ class TestPlGovGiosAirqualityAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "pl.gov.gios.airquality.amqp.Measurement"
+                    assert cloud_event_payload.get("type") == "pl.gov.gios.airquality.Measurement"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -568,7 +568,7 @@ class TestPlGovGiosAirqualityAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'pl.gov.gios.airquality.amqp.Measurement'
+        assert properties.get('cloudEvents:type') == 'pl.gov.gios.airquality.Measurement'
         assert received.body is not None
         assert received.subject == "{station_id}/{sensor_id}".format(station_id="value", sensor_id="value")
         assert properties.get('voivodeship') == "{voivodeship}".format(voivodeship="value")
@@ -625,7 +625,7 @@ class TestPlGovGiosAirqualityAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "pl.gov.gios.airquality.amqp.AirQualityIndex"
+                    assert cloud_event_payload.get("type") == "pl.gov.gios.airquality.AirQualityIndex"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -665,7 +665,7 @@ class TestPlGovGiosAirqualityAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'pl.gov.gios.airquality.amqp.AirQualityIndex'
+        assert properties.get('cloudEvents:type') == 'pl.gov.gios.airquality.AirQualityIndex'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
         assert properties.get('voivodeship') == "{voivodeship}".format(voivodeship="value")

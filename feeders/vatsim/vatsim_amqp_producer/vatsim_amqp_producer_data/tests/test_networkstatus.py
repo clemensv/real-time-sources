@@ -28,13 +28,13 @@ class Test_NetworkStatus(unittest.TestCase):
         Create instance of NetworkStatus for testing
         """
         instance = NetworkStatus(
-            callsign='hkosnpjwepwmyiudfnuu',
-            update_timestamp='uuwzwrntlugywmkhcjka',
-            connected_clients=int(20),
-            unique_users=int(68),
-            pilot_count=int(81),
-            controller_count=int(32),
-            facility='uiebvmotzhcugnbsbccv'
+            callsign='dbsbdznhaqzocrffglxy',
+            update_timestamp='cvjkuyeeothbjtkvdvgq',
+            connected_clients=int(39),
+            unique_users=int(70),
+            pilot_count=int(37),
+            controller_count=int(14),
+            facility='vwoognhshouznnqqdjqg'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test callsign property
         """
-        test_value = 'hkosnpjwepwmyiudfnuu'
+        test_value = 'dbsbdznhaqzocrffglxy'
         self.instance.callsign = test_value
         self.assertEqual(self.instance.callsign, test_value)
     
@@ -51,7 +51,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test update_timestamp property
         """
-        test_value = 'uuwzwrntlugywmkhcjka'
+        test_value = 'cvjkuyeeothbjtkvdvgq'
         self.instance.update_timestamp = test_value
         self.assertEqual(self.instance.update_timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test connected_clients property
         """
-        test_value = int(20)
+        test_value = int(39)
         self.instance.connected_clients = test_value
         self.assertEqual(self.instance.connected_clients, test_value)
     
@@ -67,7 +67,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test unique_users property
         """
-        test_value = int(68)
+        test_value = int(70)
         self.instance.unique_users = test_value
         self.assertEqual(self.instance.unique_users, test_value)
     
@@ -75,7 +75,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test pilot_count property
         """
-        test_value = int(81)
+        test_value = int(37)
         self.instance.pilot_count = test_value
         self.assertEqual(self.instance.pilot_count, test_value)
     
@@ -83,7 +83,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test controller_count property
         """
-        test_value = int(32)
+        test_value = int(14)
         self.instance.controller_count = test_value
         self.assertEqual(self.instance.controller_count, test_value)
     
@@ -91,7 +91,7 @@ class Test_NetworkStatus(unittest.TestCase):
         """
         Test facility property
         """
-        test_value = 'uiebvmotzhcugnbsbccv'
+        test_value = 'vwoognhshouznnqqdjqg'
         self.instance.facility = test_value
         self.assertEqual(self.instance.facility, test_value)
     

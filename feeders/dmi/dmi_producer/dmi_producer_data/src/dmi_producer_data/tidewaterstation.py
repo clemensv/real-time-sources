@@ -170,12 +170,12 @@ class TidewaterStation:
             An instance of the dataclass.
         """
         return cls(
-            station_id='xdrhuxlmghtsabeffhzs',
-            name='nooyqsyrizojgecpbjua',
+            station_id='livbpcitgdewbmlwvibw',
+            name='mrxczjoooajxbkxypxow',
             country=CountryEnum.DNK,
-            owner='blskvprjxinluiuaydvk',
-            latitude=float(17.74410487735644),
-            longitude=float(8.284839051861248),
+            owner='qypjijeexqdgywshgkgh',
+            latitude=float(21.013802396130966),
+            longitude=float(90.53251970962629),
             valid_from=datetime.datetime.now(datetime.timezone.utc),
             valid_to=datetime.datetime.now(datetime.timezone.utc)
         )

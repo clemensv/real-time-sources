@@ -1,3 +1,3 @@
-from .geosphere import WeatherStation, WeatherObservation
+from .geosphere import WeatherObservation, WeatherStation
 
-__all__ = ["WeatherStation", "WeatherObservation"]
+__all__ = ["WeatherObservation", "WeatherStation"]

@@ -93,7 +93,7 @@ def test_gov_noaa_swpc_l1_kafka_govnoaaswpcl1kafkapropagatedsolarwind(kafka_emul
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "gov.noaa.swpc.l1.kafka.PropagatedSolarWind":
+            if cloudevent['type'] == "gov.noaa.swpc.l1.PropagatedSolarWind":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

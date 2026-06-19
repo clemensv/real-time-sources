@@ -179,18 +179,18 @@ class SensorReading:
             An instance of the dataclass.
         """
         return cls(
-            sensor_id=int(12),
-            timestamp='nlpignkmpjhoqikpujpf',
-            sensor_type_name='ixusntgwaijjexslmgos',
-            pm10_ug_m3=float(52.99270954678435),
-            pm2_5_ug_m3=float(60.11259739652321),
-            pm1_0_ug_m3=float(35.571418406686576),
-            pm4_0_ug_m3=float(71.3999194363422),
-            temperature_celsius=float(56.595226952495956),
-            humidity_percent=float(51.04699028687206),
-            pressure_pa=float(84.52506560176158),
-            pressure_sealevel_pa=float(42.44491680116246),
-            noise_laeq_db=float(17.91672926222284),
-            noise_la_min_db=float(0.316112963550097),
-            noise_la_max_db=float(84.38385808634455)
+            sensor_id=int(43),
+            timestamp='qnlgcbpdmlbgrxmtxrin',
+            sensor_type_name='qaibofsztqbqzlswtqmv',
+            pm10_ug_m3=float(71.89255539666503),
+            pm2_5_ug_m3=float(16.064059133929586),
+            pm1_0_ug_m3=float(93.22051626975733),
+            pm4_0_ug_m3=float(61.65731041958755),
+            temperature_celsius=float(38.49047385650392),
+            humidity_percent=float(63.825629060379704),
+            pressure_pa=float(1.2782010788209175),
+            pressure_sealevel_pa=float(71.79197887515704),
+            noise_laeq_db=float(36.88434939324116),
+            noise_la_min_db=float(59.842027016401204),
+            noise_la_max_db=float(81.71053255352405)
         )

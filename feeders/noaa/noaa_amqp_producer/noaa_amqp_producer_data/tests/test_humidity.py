@@ -28,13 +28,13 @@ class Test_Humidity(unittest.TestCase):
         Create instance of Humidity for testing
         """
         instance = Humidity(
-            station_id='zwnhtzcbyxhfavcpzzxw',
-            timestamp='txxwdeerjlhmotzlehiy',
-            value=float(78.24745019622847),
-            max_humidity_exceeded=False,
-            min_humidity_exceeded=False,
+            station_id='uknizqstdbrehrieszeu',
+            timestamp='zdkkwinovdrkefwmqhav',
+            value=float(70.89696493524035),
+            max_humidity_exceeded=True,
+            min_humidity_exceeded=True,
             rate_of_change_exceeded=False,
-            region='ofiylbvifsjfifbgfttj'
+            region='vcrfpwfxzgixqirxndzj'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'zwnhtzcbyxhfavcpzzxw'
+        test_value = 'uknizqstdbrehrieszeu'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'txxwdeerjlhmotzlehiy'
+        test_value = 'zdkkwinovdrkefwmqhav'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(78.24745019622847)
+        test_value = float(70.89696493524035)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test max_humidity_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.max_humidity_exceeded = test_value
         self.assertEqual(self.instance.max_humidity_exceeded, test_value)
     
@@ -75,7 +75,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test min_humidity_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.min_humidity_exceeded = test_value
         self.assertEqual(self.instance.min_humidity_exceeded, test_value)
     
@@ -91,7 +91,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'ofiylbvifsjfifbgfttj'
+        test_value = 'vcrfpwfxzgixqirxndzj'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

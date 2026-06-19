@@ -179,16 +179,16 @@ class VolcanicWarning:
             An instance of the dataclass.
         """
         return cls(
-            volcano_code='gspuozepzqaoxqqifnwk',
-            event_id='veqgnnsxrwhfbzjszdlj',
+            volcano_code='odrwiiecbeoncuycyxpe',
+            event_id='vnjhsoiqashzmyjzkral',
             report_datetime=datetime.datetime.now(datetime.timezone.utc),
             report_datetime_local=datetime.datetime.now(datetime.timezone.utc),
-            alert_level_code='ibilvahrlxwnwrxaoyiu',
-            alert_level_name='lcpuabzkkharrugtvktd',
-            previous_level_code='wswltyyztuqmwkkrzgcm',
+            alert_level_code='pvwsfuilefbuujfxzgds',
+            alert_level_name='liahglddsoxaljmqztux',
+            previous_level_code='ctjjiyxyavsphewnhbzh',
             condition=ConditionEnum.ISSUED,
-            info_type_jp='voymmowjzoocamqkjgth',
-            area_codes=['dekubcvqwfoajceidvyx', 'flbcssxihyohmhgvekdy', 'llengcvfuawrlglzpwcz', 'mymcvpgwpdowktadxkdr'],
-            prefecture='ettycegtggrktgzzdqyz',
-            event=EventEnum.warning
+            info_type_jp='vbbjalrmirajuquqtvor',
+            area_codes=['yhjwaqtjhtsfstnblxbw', 'zzpxvmakouekxltskbrz', 'cxuchekryxaqlomyxmhs'],
+            prefecture='jigkfvfiitmjldnuszey',
+            event=EventEnum.info
         )

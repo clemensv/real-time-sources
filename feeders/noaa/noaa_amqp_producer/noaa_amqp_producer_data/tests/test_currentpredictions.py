@@ -28,14 +28,14 @@ class Test_CurrentPredictions(unittest.TestCase):
         Create instance of CurrentPredictions for testing
         """
         instance = CurrentPredictions(
-            station_id='piycnfjaczmclsbnrsgn',
-            timestamp='tooppiwkykuootmqflsw',
-            velocity_major=float(91.62740737063938),
-            mean_flood_dir=float(79.36897173176712),
-            mean_ebb_dir=float(6.2493775323744005),
-            depth=float(29.060873475365856),
-            bin='cnkbxdmfkjfjshkelcce',
-            region='jgoxiyvbywhnlihqqzmw'
+            station_id='fmshorfmrjbapixiidvs',
+            timestamp='qlhdoenubkusplswwifc',
+            velocity_major=float(87.66839482638673),
+            mean_flood_dir=float(71.44658652570902),
+            mean_ebb_dir=float(2.731676771425584),
+            depth=float(96.3658361304908),
+            bin='cvxqekgbzwckcivphrae',
+            region='qbnduijefbrrjfhrlzod'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'piycnfjaczmclsbnrsgn'
+        test_value = 'fmshorfmrjbapixiidvs'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -52,7 +52,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'tooppiwkykuootmqflsw'
+        test_value = 'qlhdoenubkusplswwifc'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -60,7 +60,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test velocity_major property
         """
-        test_value = float(91.62740737063938)
+        test_value = float(87.66839482638673)
         self.instance.velocity_major = test_value
         self.assertEqual(self.instance.velocity_major, test_value)
     
@@ -68,7 +68,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test mean_flood_dir property
         """
-        test_value = float(79.36897173176712)
+        test_value = float(71.44658652570902)
         self.instance.mean_flood_dir = test_value
         self.assertEqual(self.instance.mean_flood_dir, test_value)
     
@@ -76,7 +76,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test mean_ebb_dir property
         """
-        test_value = float(6.2493775323744005)
+        test_value = float(2.731676771425584)
         self.instance.mean_ebb_dir = test_value
         self.assertEqual(self.instance.mean_ebb_dir, test_value)
     
@@ -84,7 +84,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test depth property
         """
-        test_value = float(29.060873475365856)
+        test_value = float(96.3658361304908)
         self.instance.depth = test_value
         self.assertEqual(self.instance.depth, test_value)
     
@@ -92,7 +92,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test bin property
         """
-        test_value = 'cnkbxdmfkjfjshkelcce'
+        test_value = 'cvxqekgbzwckcivphrae'
         self.instance.bin = test_value
         self.assertEqual(self.instance.bin, test_value)
     
@@ -100,7 +100,7 @@ class Test_CurrentPredictions(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'jgoxiyvbywhnlihqqzmw'
+        test_value = 'qbnduijefbrrjfhrlzod'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

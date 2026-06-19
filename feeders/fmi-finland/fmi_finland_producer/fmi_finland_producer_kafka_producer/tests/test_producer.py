@@ -225,7 +225,7 @@ def test_fi_fmi_opendata_airquality_mqtt_fifmiopendataairqualitymqttstation(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.fmi.opendata.airquality.mqtt.Station":
+            if cloudevent['type'] == "fi.fmi.opendata.airquality.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -287,7 +287,7 @@ def test_fi_fmi_opendata_airquality_mqtt_fifmiopendataairqualitymqttobservation(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.fmi.opendata.airquality.mqtt.Observation":
+            if cloudevent['type'] == "fi.fmi.opendata.airquality.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -349,7 +349,7 @@ def test_fi_fmi_opendata_airquality_amqp_fifmiopendataairqualityamqpstation(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.fmi.opendata.airquality.amqp.Station":
+            if cloudevent['type'] == "fi.fmi.opendata.airquality.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -411,7 +411,7 @@ def test_fi_fmi_opendata_airquality_amqp_fifmiopendataairqualityamqpobservation(
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "fi.fmi.opendata.airquality.amqp.Observation":
+            if cloudevent['type'] == "fi.fmi.opendata.airquality.Observation":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

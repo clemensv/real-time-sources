@@ -11,9 +11,9 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
-from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
-from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
 from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
+from gtfs_rt_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
 from typing import Any
 
 
@@ -170,7 +170,7 @@ class Alert:
         """
         return cls(
             active_period=[None, None, None],
-            informed_entity=[None],
+            informed_entity=[None, None, None, None, None],
             cause=None,
             effect=None,
             url=None,

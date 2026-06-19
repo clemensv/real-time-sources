@@ -1,3 +1,3 @@
-from .org import Earthquake, Node
+from .org import Node, Earthquake
 
-__all__ = ["Earthquake", "Node"]
+__all__ = ["Node", "Earthquake"]

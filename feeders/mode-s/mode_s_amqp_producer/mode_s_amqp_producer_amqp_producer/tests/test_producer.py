@@ -324,7 +324,7 @@ class TestModeSAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Mode_S.amqp.ADSB"
+                    assert cloud_event_payload.get("type") == "Mode_S.ADSB"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -364,7 +364,7 @@ class TestModeSAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Mode_S.amqp.ADSB'
+        assert properties.get('cloudEvents:type') == 'Mode_S.ADSB'
         assert received.body is not None
         assert received.subject == "{icao24}/{receiver_id}".format(icao24="value", receiver_id="value")
         assert properties.get('msg_type') == "{msg_type}".format(msg_type="value")
@@ -420,7 +420,7 @@ class TestModeSAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Mode_S.amqp.AltitudeReply"
+                    assert cloud_event_payload.get("type") == "Mode_S.AltitudeReply"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -460,7 +460,7 @@ class TestModeSAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Mode_S.amqp.AltitudeReply'
+        assert properties.get('cloudEvents:type') == 'Mode_S.AltitudeReply'
         assert received.body is not None
         assert received.subject == "{icao24}/{receiver_id}".format(icao24="value", receiver_id="value")
         assert properties.get('msg_type') == "{msg_type}".format(msg_type="value")
@@ -516,7 +516,7 @@ class TestModeSAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Mode_S.amqp.IdentityReply"
+                    assert cloud_event_payload.get("type") == "Mode_S.IdentityReply"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -556,7 +556,7 @@ class TestModeSAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Mode_S.amqp.IdentityReply'
+        assert properties.get('cloudEvents:type') == 'Mode_S.IdentityReply'
         assert received.body is not None
         assert received.subject == "{icao24}/{receiver_id}".format(icao24="value", receiver_id="value")
         assert properties.get('msg_type') == "{msg_type}".format(msg_type="value")
@@ -612,7 +612,7 @@ class TestModeSAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Mode_S.amqp.AcquisitionReply"
+                    assert cloud_event_payload.get("type") == "Mode_S.AcquisitionReply"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -652,7 +652,7 @@ class TestModeSAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Mode_S.amqp.AcquisitionReply'
+        assert properties.get('cloudEvents:type') == 'Mode_S.AcquisitionReply'
         assert received.body is not None
         assert received.subject == "{icao24}/{receiver_id}".format(icao24="value", receiver_id="value")
         assert properties.get('msg_type') == "{msg_type}".format(msg_type="value")
@@ -708,7 +708,7 @@ class TestModeSAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Mode_S.amqp.CommBAltitude"
+                    assert cloud_event_payload.get("type") == "Mode_S.CommBAltitude"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -748,7 +748,7 @@ class TestModeSAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Mode_S.amqp.CommBAltitude'
+        assert properties.get('cloudEvents:type') == 'Mode_S.CommBAltitude'
         assert received.body is not None
         assert received.subject == "{icao24}/{receiver_id}".format(icao24="value", receiver_id="value")
         assert properties.get('msg_type') == "{msg_type}".format(msg_type="value")
@@ -804,7 +804,7 @@ class TestModeSAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "Mode_S.amqp.CommBIdentity"
+                    assert cloud_event_payload.get("type") == "Mode_S.CommBIdentity"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -844,7 +844,7 @@ class TestModeSAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'Mode_S.amqp.CommBIdentity'
+        assert properties.get('cloudEvents:type') == 'Mode_S.CommBIdentity'
         assert received.body is not None
         assert received.subject == "{icao24}/{receiver_id}".format(icao24="value", receiver_id="value")
         assert properties.get('msg_type') == "{msg_type}".format(msg_type="value")

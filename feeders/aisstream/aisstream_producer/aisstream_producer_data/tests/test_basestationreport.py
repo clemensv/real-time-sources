@@ -28,24 +28,24 @@ class Test_BaseStationReport(unittest.TestCase):
         Create instance of BaseStationReport for testing
         """
         instance = BaseStationReport(
-            MessageID=int(78),
-            RepeatIndicator=int(88),
-            UserID=int(64),
-            Valid=False,
-            UtcYear=int(29),
-            UtcMonth=int(51),
-            UtcDay=int(34),
-            UtcHour=int(15),
-            UtcMinute=int(39),
-            UtcSecond=int(34),
-            PositionAccuracy=True,
-            Longitude=float(89.01789523857141),
-            Latitude=float(79.1065215442521),
-            FixType=int(96),
-            LongRangeEnable=False,
-            Spare=int(76),
-            Raim=False,
-            CommunicationState=int(45)
+            MessageID=int(34),
+            RepeatIndicator=int(30),
+            UserID=int(82),
+            Valid=True,
+            UtcYear=int(64),
+            UtcMonth=int(90),
+            UtcDay=int(66),
+            UtcHour=int(4),
+            UtcMinute=int(43),
+            UtcSecond=int(69),
+            PositionAccuracy=False,
+            Longitude=float(26.72747528598619),
+            Latitude=float(12.938111343577008),
+            FixType=int(62),
+            LongRangeEnable=True,
+            Spare=int(86),
+            Raim=True,
+            CommunicationState=int(65)
         )
         return instance
 
@@ -54,7 +54,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(78)
+        test_value = int(34)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -62,7 +62,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(88)
+        test_value = int(30)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -70,7 +70,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(64)
+        test_value = int(82)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -78,7 +78,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = False
+        test_value = True
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -86,7 +86,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test UtcYear property
         """
-        test_value = int(29)
+        test_value = int(64)
         self.instance.UtcYear = test_value
         self.assertEqual(self.instance.UtcYear, test_value)
     
@@ -94,7 +94,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test UtcMonth property
         """
-        test_value = int(51)
+        test_value = int(90)
         self.instance.UtcMonth = test_value
         self.assertEqual(self.instance.UtcMonth, test_value)
     
@@ -102,7 +102,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test UtcDay property
         """
-        test_value = int(34)
+        test_value = int(66)
         self.instance.UtcDay = test_value
         self.assertEqual(self.instance.UtcDay, test_value)
     
@@ -110,7 +110,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test UtcHour property
         """
-        test_value = int(15)
+        test_value = int(4)
         self.instance.UtcHour = test_value
         self.assertEqual(self.instance.UtcHour, test_value)
     
@@ -118,7 +118,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test UtcMinute property
         """
-        test_value = int(39)
+        test_value = int(43)
         self.instance.UtcMinute = test_value
         self.assertEqual(self.instance.UtcMinute, test_value)
     
@@ -126,7 +126,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test UtcSecond property
         """
-        test_value = int(34)
+        test_value = int(69)
         self.instance.UtcSecond = test_value
         self.assertEqual(self.instance.UtcSecond, test_value)
     
@@ -134,7 +134,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test PositionAccuracy property
         """
-        test_value = True
+        test_value = False
         self.instance.PositionAccuracy = test_value
         self.assertEqual(self.instance.PositionAccuracy, test_value)
     
@@ -142,7 +142,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test Longitude property
         """
-        test_value = float(89.01789523857141)
+        test_value = float(26.72747528598619)
         self.instance.Longitude = test_value
         self.assertEqual(self.instance.Longitude, test_value)
     
@@ -150,7 +150,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test Latitude property
         """
-        test_value = float(79.1065215442521)
+        test_value = float(12.938111343577008)
         self.instance.Latitude = test_value
         self.assertEqual(self.instance.Latitude, test_value)
     
@@ -158,7 +158,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test FixType property
         """
-        test_value = int(96)
+        test_value = int(62)
         self.instance.FixType = test_value
         self.assertEqual(self.instance.FixType, test_value)
     
@@ -166,7 +166,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test LongRangeEnable property
         """
-        test_value = False
+        test_value = True
         self.instance.LongRangeEnable = test_value
         self.assertEqual(self.instance.LongRangeEnable, test_value)
     
@@ -174,7 +174,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test Spare property
         """
-        test_value = int(76)
+        test_value = int(86)
         self.instance.Spare = test_value
         self.assertEqual(self.instance.Spare, test_value)
     
@@ -182,7 +182,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test Raim property
         """
-        test_value = False
+        test_value = True
         self.instance.Raim = test_value
         self.assertEqual(self.instance.Raim, test_value)
     
@@ -190,7 +190,7 @@ class Test_BaseStationReport(unittest.TestCase):
         """
         Test CommunicationState property
         """
-        test_value = int(45)
+        test_value = int(65)
         self.instance.CommunicationState = test_value
         self.assertEqual(self.instance.CommunicationState, test_value)
     

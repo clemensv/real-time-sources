@@ -322,7 +322,7 @@ class TestGovNoaaSwpcL1AmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "gov.noaa.swpc.l1.amqp.PropagatedSolarWind"
+                    assert cloud_event_payload.get("type") == "gov.noaa.swpc.l1.PropagatedSolarWind"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -360,7 +360,7 @@ class TestGovNoaaSwpcL1AmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'gov.noaa.swpc.l1.amqp.PropagatedSolarWind'
+        assert properties.get('cloudEvents:type') == 'gov.noaa.swpc.l1.PropagatedSolarWind'
         assert received.body is not None
         assert received.subject == "{spacecraft}".format(spacecraft="value")
         assert annotations.get(symbol('x-opt-partition-key')) == str("{spacecraft}".format(spacecraft="value"))[:128]

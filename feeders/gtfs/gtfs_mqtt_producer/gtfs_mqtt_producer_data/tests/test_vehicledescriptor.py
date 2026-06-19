@@ -8,7 +8,7 @@ import unittest
 
 sys.path.append(os.path.realpath(os.path.join(os.path.dirname(__file__), '../src'.replace('/', os.sep))))
 
-from gtfs_mqtt_producer_data.generaltransitfeedrealtime.vehicle.vehicledescriptor import VehicleDescriptor
+from gtfs_mqtt_producer_data.generaltransitfeedrealtime.trip.vehicledescriptor import VehicleDescriptor
 
 
 class Test_VehicleDescriptor(unittest.TestCase):
@@ -28,9 +28,9 @@ class Test_VehicleDescriptor(unittest.TestCase):
         Create instance of VehicleDescriptor for testing
         """
         instance = VehicleDescriptor(
-            id='isjfcuzxvvmcrpjvkjue',
-            label='yaqwcekbaljlibcyookj',
-            license_plate='qeusgapbcmpcytslkoxn'
+            id='pctmitjiamvjjkgfdnwn',
+            label='abkuboozavipjvtlfwtt',
+            license_plate='xibzhinacucpexqkhcoe'
         )
         return instance
 
@@ -39,7 +39,7 @@ class Test_VehicleDescriptor(unittest.TestCase):
         """
         Test id property
         """
-        test_value = 'isjfcuzxvvmcrpjvkjue'
+        test_value = 'pctmitjiamvjjkgfdnwn'
         self.instance.id = test_value
         self.assertEqual(self.instance.id, test_value)
     
@@ -47,7 +47,7 @@ class Test_VehicleDescriptor(unittest.TestCase):
         """
         Test label property
         """
-        test_value = 'yaqwcekbaljlibcyookj'
+        test_value = 'abkuboozavipjvtlfwtt'
         self.instance.label = test_value
         self.assertEqual(self.instance.label, test_value)
     
@@ -55,7 +55,7 @@ class Test_VehicleDescriptor(unittest.TestCase):
         """
         Test license_plate property
         """
-        test_value = 'qeusgapbcmpcytslkoxn'
+        test_value = 'xibzhinacucpexqkhcoe'
         self.instance.license_plate = test_value
         self.assertEqual(self.instance.license_plate, test_value)
     

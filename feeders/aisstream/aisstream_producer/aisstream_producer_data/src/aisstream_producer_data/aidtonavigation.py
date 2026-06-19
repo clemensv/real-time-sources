@@ -178,17 +178,17 @@ class AidToNavigation:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='asvdqdsriggfytvoctlf',
-            flag='lhyhxttubjokjwxuhivz',
-            ship_type='vtonwtmzrtyaxbzpfueq',
-            geohash5='ftbkwrxllyphtmhifrkd',
+            mmsi='bhnlsycubgqluvkzastl',
+            flag='bercsomrkncgrfvpqshw',
+            ship_type='nxgknimmtphurvjrabxs',
+            geohash5='kglwarizfmcljrbcwwao',
             msg_type=MsgTypeenum.position_MINUSreport,
-            user_id=int(79),
-            name='jbtvhkumgapkhtdompcl',
-            type=int(85),
-            latitude=float(81.34505560143803),
-            longitude=float(14.259890561055377),
+            user_id=int(32),
+            name='dfiqjqmcfzmwfslcpweu',
+            type=int(3),
+            latitude=float(74.98150123670153),
+            longitude=float(34.42956277383908),
             off_position=True,
-            virtual_atoN=False,
-            message_id=int(26)
+            virtual_atoN=True,
+            message_id=int(92)
         )

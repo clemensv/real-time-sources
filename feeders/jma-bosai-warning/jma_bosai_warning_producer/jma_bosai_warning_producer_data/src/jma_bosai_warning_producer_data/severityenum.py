@@ -3,8 +3,9 @@ from enum import Enum
 
 class SeverityEnum(Enum):
     """
-    Japan-native tsunami warning severity axis: advisory, warning, or emergency.
+    Japan-native severity axis for JMA warning MQTT topics: info for office reference records, advisory for 注意報-level notices and cancellations, warning for 警報-level warnings, and emergency for 特別警報/special-warning category codes.
     """
+    info = 'info'
     advisory = 'advisory'
     warning = 'warning'
     emergency = 'emergency'

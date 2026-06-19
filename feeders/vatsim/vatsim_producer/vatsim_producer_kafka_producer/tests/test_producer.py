@@ -293,7 +293,7 @@ def test_net_vatsim_mqtt_netvatsimmqttpilotposition(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "net.vatsim.mqtt.PilotPosition":
+            if cloudevent['type'] == "net.vatsim.PilotPosition":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -355,7 +355,7 @@ def test_net_vatsim_mqtt_netvatsimmqttcontrollerposition(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "net.vatsim.mqtt.ControllerPosition":
+            if cloudevent['type'] == "net.vatsim.ControllerPosition":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -417,7 +417,7 @@ def test_net_vatsim_mqtt_netvatsimmqttfacilitystatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "net.vatsim.mqtt.FacilityStatus":
+            if cloudevent['type'] == "net.vatsim.NetworkStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -479,7 +479,7 @@ def test_net_vatsim_amqp_netvatsimamqppilotposition(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "net.vatsim.amqp.PilotPosition":
+            if cloudevent['type'] == "net.vatsim.PilotPosition":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -541,7 +541,7 @@ def test_net_vatsim_amqp_netvatsimamqpcontrollerposition(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "net.vatsim.amqp.ControllerPosition":
+            if cloudevent['type'] == "net.vatsim.ControllerPosition":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -603,7 +603,7 @@ def test_net_vatsim_amqp_netvatsimamqpfacilitystatus(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "net.vatsim.amqp.FacilityStatus":
+            if cloudevent['type'] == "net.vatsim.NetworkStatus":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

@@ -28,13 +28,13 @@ class Test_Humidity(unittest.TestCase):
         Create instance of Humidity for testing
         """
         instance = Humidity(
-            station_id='icylcxbaimuatizksogw',
-            timestamp='pzvmrtjwtjerlzlzorqk',
-            value=float(69.13763022711173),
+            station_id='mveezsjrkaynmbiwqcgz',
+            timestamp='qtzgpsqydwmezsegjbdk',
+            value=float(46.44900549113695),
             max_humidity_exceeded=True,
             min_humidity_exceeded=False,
-            rate_of_change_exceeded=False,
-            region='gvlddzmzjyolfhbuytbq'
+            rate_of_change_exceeded=True,
+            region='erepxmiciahfnnscfkhy'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'icylcxbaimuatizksogw'
+        test_value = 'mveezsjrkaynmbiwqcgz'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'pzvmrtjwtjerlzlzorqk'
+        test_value = 'qtzgpsqydwmezsegjbdk'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(69.13763022711173)
+        test_value = float(46.44900549113695)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -83,7 +83,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test rate_of_change_exceeded property
         """
-        test_value = False
+        test_value = True
         self.instance.rate_of_change_exceeded = test_value
         self.assertEqual(self.instance.rate_of_change_exceeded, test_value)
     
@@ -91,7 +91,7 @@ class Test_Humidity(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'gvlddzmzjyolfhbuytbq'
+        test_value = 'erepxmiciahfnnscfkhy'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

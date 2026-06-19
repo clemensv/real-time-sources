@@ -294,7 +294,7 @@ def test_de_uba_airdata_mqtt_deubaairdatamqttstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "de.uba.airdata.mqtt.Station":
+            if cloudevent['type'] == "de.uba.airdata.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -356,7 +356,7 @@ def test_de_uba_airdata_mqtt_deubaairdatamqttmeasure(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "de.uba.airdata.mqtt.Measure":
+            if cloudevent['type'] == "de.uba.airdata.Measure":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -418,7 +418,7 @@ def test_de_uba_airdata_amqp_deubaairdataamqpstation(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "de.uba.airdata.amqp.Station":
+            if cloudevent['type'] == "de.uba.airdata.Station":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -480,7 +480,7 @@ def test_de_uba_airdata_amqp_deubaairdataamqpmeasure(kafka_emulator):
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "de.uba.airdata.amqp.Measure":
+            if cloudevent['type'] == "de.uba.airdata.Measure":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -542,7 +542,7 @@ def test_de_uba_airdata_components_mqtt_deubaairdatacomponentsmqttcomponent(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "de.uba.airdata.components.mqtt.Component":
+            if cloudevent['type'] == "de.uba.airdata.components.Component":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})
@@ -604,7 +604,7 @@ def test_de_uba_airdata_components_amqp_deubaairdatacomponentsamqpcomponent(kafk
             if msg.error():
                 continue
             cloudevent = parse_cloudevent(msg)
-            if cloudevent['type'] == "de.uba.airdata.components.amqp.Component":
+            if cloudevent['type'] == "de.uba.airdata.components.Component":
                 return msg.key().decode('utf-8') if msg.key() else None
 
     kafka_producer = Producer({'bootstrap.servers': bootstrap_servers})

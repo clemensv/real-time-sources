@@ -165,11 +165,11 @@ class BarometricPressure:
             An instance of the dataclass.
         """
         return cls(
-            site_no='mtsreeuetmxextvgrcdg',
-            datetime='isurdnilkwscchnjymaf',
-            value=float(8.737651167543847),
-            exception='dhlhdvcufosciywyxfxz',
-            qualifiers=['dgcnztnixzcqvfevydot', 'smrfjtbguyxraqffwdtt', 'nfhuibjiiqhcygmtcdyd'],
-            parameter_cd='brgsoqgrdzzvnflxiimr',
-            timeseries_cd='cbsrkzrifposocgdjgur'
+            site_no='vvczhiccfpjfpmxufmtn',
+            datetime='tnfgiysmsfaqorkguwqs',
+            value=float(35.68280489479109),
+            exception='uywoozpapipevyyenpke',
+            qualifiers=['dfztatxuuluynfdghfib', 'tkcrjpwfqtcsxyucoynv', 'lzddldgrrdwsilutsshp'],
+            parameter_cd='zurpgowusxmrrrfxaapb',
+            timeseries_cd='mmsujtycxurqneiwxasf'
         )

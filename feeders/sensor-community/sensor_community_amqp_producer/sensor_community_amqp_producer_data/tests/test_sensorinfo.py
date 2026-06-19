@@ -28,17 +28,17 @@ class Test_SensorInfo(unittest.TestCase):
         Create instance of SensorInfo for testing
         """
         instance = SensorInfo(
-            sensor_id=int(14),
-            sensor_type_id=int(78),
-            sensor_type_name='krkucwleohvaxxbgvkmg',
-            sensor_type_manufacturer='flebjgovwrsmaorknbyo',
-            pin='bvrrhtusibtmdafeevzj',
-            location_id=int(92),
-            latitude=float(89.22956987227832),
-            longitude=float(57.14202274955073),
-            altitude=float(5.675921885374258),
-            country='mrgtmslararwmwpotcwb',
-            indoor=True
+            sensor_id=int(89),
+            sensor_type_id=int(52),
+            sensor_type_name='xnijxeayeyfnulfqldxm',
+            sensor_type_manufacturer='dsfwbdndkkjkbymexyzr',
+            pin='tmtneonzpamyvmqgthub',
+            location_id=int(31),
+            latitude=float(64.14807743696043),
+            longitude=float(59.4092624816413),
+            altitude=float(94.42432611362406),
+            country='wzhirxabgakdqivaeqzs',
+            indoor=False
         )
         return instance
 
@@ -47,7 +47,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = int(14)
+        test_value = int(89)
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -55,7 +55,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test sensor_type_id property
         """
-        test_value = int(78)
+        test_value = int(52)
         self.instance.sensor_type_id = test_value
         self.assertEqual(self.instance.sensor_type_id, test_value)
     
@@ -63,7 +63,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test sensor_type_name property
         """
-        test_value = 'krkucwleohvaxxbgvkmg'
+        test_value = 'xnijxeayeyfnulfqldxm'
         self.instance.sensor_type_name = test_value
         self.assertEqual(self.instance.sensor_type_name, test_value)
     
@@ -71,7 +71,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test sensor_type_manufacturer property
         """
-        test_value = 'flebjgovwrsmaorknbyo'
+        test_value = 'dsfwbdndkkjkbymexyzr'
         self.instance.sensor_type_manufacturer = test_value
         self.assertEqual(self.instance.sensor_type_manufacturer, test_value)
     
@@ -79,7 +79,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test pin property
         """
-        test_value = 'bvrrhtusibtmdafeevzj'
+        test_value = 'tmtneonzpamyvmqgthub'
         self.instance.pin = test_value
         self.assertEqual(self.instance.pin, test_value)
     
@@ -87,7 +87,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test location_id property
         """
-        test_value = int(92)
+        test_value = int(31)
         self.instance.location_id = test_value
         self.assertEqual(self.instance.location_id, test_value)
     
@@ -95,7 +95,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(89.22956987227832)
+        test_value = float(64.14807743696043)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -103,7 +103,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(57.14202274955073)
+        test_value = float(59.4092624816413)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     
@@ -111,7 +111,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test altitude property
         """
-        test_value = float(5.675921885374258)
+        test_value = float(94.42432611362406)
         self.instance.altitude = test_value
         self.assertEqual(self.instance.altitude, test_value)
     
@@ -119,7 +119,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test country property
         """
-        test_value = 'mrgtmslararwmwpotcwb'
+        test_value = 'wzhirxabgakdqivaeqzs'
         self.instance.country = test_value
         self.assertEqual(self.instance.country, test_value)
     
@@ -127,7 +127,7 @@ class Test_SensorInfo(unittest.TestCase):
         """
         Test indoor property
         """
-        test_value = True
+        test_value = False
         self.instance.indoor = test_value
         self.assertEqual(self.instance.indoor, test_value)
     

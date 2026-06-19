@@ -28,13 +28,13 @@ class Test_AirPressure(unittest.TestCase):
         Create instance of AirPressure for testing
         """
         instance = AirPressure(
-            station_id='qmmfdnxvyygnlnbeerct',
-            timestamp='krvhwyvpadbaenrtgskf',
-            value=float(27.642473452586035),
+            station_id='saproayzzhofjpmgolbg',
+            timestamp='abjmjjywwgyluuwollwl',
+            value=float(79.52129132429253),
             max_pressure_exceeded=True,
             min_pressure_exceeded=False,
             rate_of_change_exceeded=True,
-            region='ermuvkwcmmbcuhhxrqtc'
+            region='eltataogrzyoaizabqoq'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_AirPressure(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'qmmfdnxvyygnlnbeerct'
+        test_value = 'saproayzzhofjpmgolbg'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -51,7 +51,7 @@ class Test_AirPressure(unittest.TestCase):
         """
         Test timestamp property
         """
-        test_value = 'krvhwyvpadbaenrtgskf'
+        test_value = 'abjmjjywwgyluuwollwl'
         self.instance.timestamp = test_value
         self.assertEqual(self.instance.timestamp, test_value)
     
@@ -59,7 +59,7 @@ class Test_AirPressure(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(27.642473452586035)
+        test_value = float(79.52129132429253)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -91,7 +91,7 @@ class Test_AirPressure(unittest.TestCase):
         """
         Test region property
         """
-        test_value = 'ermuvkwcmmbcuhhxrqtc'
+        test_value = 'eltataogrzyoaizabqoq'
         self.instance.region = test_value
         self.assertEqual(self.instance.region, test_value)
     

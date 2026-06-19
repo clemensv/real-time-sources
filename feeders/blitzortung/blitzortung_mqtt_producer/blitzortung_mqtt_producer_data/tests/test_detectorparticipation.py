@@ -28,8 +28,8 @@ class Test_DetectorParticipation(unittest.TestCase):
         Create instance of DetectorParticipation for testing
         """
         instance = DetectorParticipation(
-            station_id=int(84),
-            status=int(61)
+            station_id=int(46),
+            status=int(59)
         )
         return instance
 
@@ -38,7 +38,7 @@ class Test_DetectorParticipation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(84)
+        test_value = int(46)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -46,7 +46,7 @@ class Test_DetectorParticipation(unittest.TestCase):
         """
         Test status property
         """
-        test_value = int(61)
+        test_value = int(59)
         self.instance.status = test_value
         self.assertEqual(self.instance.status, test_value)
     

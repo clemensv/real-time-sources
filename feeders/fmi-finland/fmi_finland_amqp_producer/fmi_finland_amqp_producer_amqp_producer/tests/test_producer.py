@@ -324,7 +324,7 @@ class TestFiFmiOpendataAirqualityAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.fmi.opendata.airquality.amqp.Station"
+                    assert cloud_event_payload.get("type") == "fi.fmi.opendata.airquality.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -362,7 +362,7 @@ class TestFiFmiOpendataAirqualityAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.fmi.opendata.airquality.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'fi.fmi.opendata.airquality.Station'
         assert received.body is not None
         assert received.subject == "{fmisid}".format(fmisid="value")
         assert properties.get('region') == "{region}".format(region="value")
@@ -416,7 +416,7 @@ class TestFiFmiOpendataAirqualityAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "fi.fmi.opendata.airquality.amqp.Observation"
+                    assert cloud_event_payload.get("type") == "fi.fmi.opendata.airquality.Observation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -454,7 +454,7 @@ class TestFiFmiOpendataAirqualityAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'fi.fmi.opendata.airquality.amqp.Observation'
+        assert properties.get('cloudEvents:type') == 'fi.fmi.opendata.airquality.Observation'
         assert received.body is not None
         assert received.subject == "{fmisid}".format(fmisid="value")
         assert properties.get('region') == "{region}".format(region="value")

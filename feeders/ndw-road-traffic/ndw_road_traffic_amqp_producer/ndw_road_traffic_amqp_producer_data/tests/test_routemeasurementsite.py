@@ -28,16 +28,16 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         Create instance of RouteMeasurementSite for testing
         """
         instance = RouteMeasurementSite(
-            measurement_site_id='sjycxdbciijztiaqtkjg',
-            name='gajpttjickxqodnlxeht',
-            measurement_site_type='cfyprzcpvpaxoiovtjdm',
-            period=int(34),
-            start_latitude=float(94.61407880541255),
-            start_longitude=float(36.103001920983644),
-            end_latitude=float(93.85762156451479),
-            end_longitude=float(94.1690447694132),
-            road_name='qrddllvjgqnpqpbfztdg',
-            length_metres=float(76.24718780105056)
+            measurement_site_id='oszshhvcprohiyqlhnua',
+            name='nbfkeqwhmbifvltzscls',
+            measurement_site_type='oslhubhchrjvkxwpftwp',
+            period=int(6),
+            start_latitude=float(29.279577485045216),
+            start_longitude=float(73.9780863148341),
+            end_latitude=float(46.26006996361725),
+            end_longitude=float(84.06011093814232),
+            road_name='mbqfrmysnnbsdzqohzxa',
+            length_metres=float(94.71699857572129)
         )
         return instance
 
@@ -46,7 +46,7 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         """
         Test measurement_site_id property
         """
-        test_value = 'sjycxdbciijztiaqtkjg'
+        test_value = 'oszshhvcprohiyqlhnua'
         self.instance.measurement_site_id = test_value
         self.assertEqual(self.instance.measurement_site_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'gajpttjickxqodnlxeht'
+        test_value = 'nbfkeqwhmbifvltzscls'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -62,7 +62,7 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         """
         Test measurement_site_type property
         """
-        test_value = 'cfyprzcpvpaxoiovtjdm'
+        test_value = 'oslhubhchrjvkxwpftwp'
         self.instance.measurement_site_type = test_value
         self.assertEqual(self.instance.measurement_site_type, test_value)
     
@@ -70,7 +70,7 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         """
         Test period property
         """
-        test_value = int(34)
+        test_value = int(6)
         self.instance.period = test_value
         self.assertEqual(self.instance.period, test_value)
     
@@ -78,7 +78,7 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         """
         Test start_latitude property
         """
-        test_value = float(94.61407880541255)
+        test_value = float(29.279577485045216)
         self.instance.start_latitude = test_value
         self.assertEqual(self.instance.start_latitude, test_value)
     
@@ -86,7 +86,7 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         """
         Test start_longitude property
         """
-        test_value = float(36.103001920983644)
+        test_value = float(73.9780863148341)
         self.instance.start_longitude = test_value
         self.assertEqual(self.instance.start_longitude, test_value)
     
@@ -94,7 +94,7 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         """
         Test end_latitude property
         """
-        test_value = float(93.85762156451479)
+        test_value = float(46.26006996361725)
         self.instance.end_latitude = test_value
         self.assertEqual(self.instance.end_latitude, test_value)
     
@@ -102,7 +102,7 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         """
         Test end_longitude property
         """
-        test_value = float(94.1690447694132)
+        test_value = float(84.06011093814232)
         self.instance.end_longitude = test_value
         self.assertEqual(self.instance.end_longitude, test_value)
     
@@ -110,7 +110,7 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         """
         Test road_name property
         """
-        test_value = 'qrddllvjgqnpqpbfztdg'
+        test_value = 'mbqfrmysnnbsdzqohzxa'
         self.instance.road_name = test_value
         self.assertEqual(self.instance.road_name, test_value)
     
@@ -118,7 +118,7 @@ class Test_RouteMeasurementSite(unittest.TestCase):
         """
         Test length_metres property
         """
-        test_value = float(76.24718780105056)
+        test_value = float(94.71699857572129)
         self.instance.length_metres = test_value
         self.assertEqual(self.instance.length_metres, test_value)
     

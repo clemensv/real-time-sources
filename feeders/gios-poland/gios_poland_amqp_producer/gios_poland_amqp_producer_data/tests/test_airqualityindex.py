@@ -29,33 +29,33 @@ class Test_AirQualityIndex(unittest.TestCase):
         Create instance of AirQualityIndex for testing
         """
         instance = AirQualityIndex(
-            station_id=int(14),
+            station_id=int(74),
             calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            index_value=int(54),
-            index_category='lfxivlrixltuljaxhmrh',
+            index_value=int(29),
+            index_category='ctwktzqtbaiystolcxpu',
             source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             so2_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            so2_index_value=int(52),
-            so2_index_category='prlqprzlpivvetsjqyzz',
+            so2_index_value=int(81),
+            so2_index_category='acbmtxarwtwikqfszgqh',
             so2_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             no2_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            no2_index_value=int(19),
-            no2_index_category='afaqbjjqmtmvpmochfrj',
+            no2_index_value=int(14),
+            no2_index_category='ciahvbmdazlsuhuissjy',
             no2_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             pm10_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            pm10_index_value=int(73),
-            pm10_index_category='ynrtnkxzicuikuefrodk',
+            pm10_index_value=int(60),
+            pm10_index_category='nnxzadpwivnxflxkfncn',
             pm10_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             pm25_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            pm25_index_value=int(22),
-            pm25_index_category='kbgaavracwufvbzskkqk',
+            pm25_index_value=int(62),
+            pm25_index_category='slmdljefbzcqnpwtcfbf',
             pm25_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             o3_calculation_timestamp=datetime.datetime.now(datetime.timezone.utc),
-            o3_index_value=int(48),
-            o3_index_category='ocwwonycejxanyghtctv',
+            o3_index_value=int(39),
+            o3_index_category='wudmxwlaqztpvhjbhjvr',
             o3_source_data_timestamp=datetime.datetime.now(datetime.timezone.utc),
             overall_status=False,
-            critical_pollutant_code='fozpjgkkeowjmrrfzgsx'
+            critical_pollutant_code='jdcwmujkzhsztmudqtnl'
         )
         return instance
 
@@ -64,7 +64,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = int(14)
+        test_value = int(74)
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -80,7 +80,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test index_value property
         """
-        test_value = int(54)
+        test_value = int(29)
         self.instance.index_value = test_value
         self.assertEqual(self.instance.index_value, test_value)
     
@@ -88,7 +88,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test index_category property
         """
-        test_value = 'lfxivlrixltuljaxhmrh'
+        test_value = 'ctwktzqtbaiystolcxpu'
         self.instance.index_category = test_value
         self.assertEqual(self.instance.index_category, test_value)
     
@@ -112,7 +112,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test so2_index_value property
         """
-        test_value = int(52)
+        test_value = int(81)
         self.instance.so2_index_value = test_value
         self.assertEqual(self.instance.so2_index_value, test_value)
     
@@ -120,7 +120,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test so2_index_category property
         """
-        test_value = 'prlqprzlpivvetsjqyzz'
+        test_value = 'acbmtxarwtwikqfszgqh'
         self.instance.so2_index_category = test_value
         self.assertEqual(self.instance.so2_index_category, test_value)
     
@@ -144,7 +144,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test no2_index_value property
         """
-        test_value = int(19)
+        test_value = int(14)
         self.instance.no2_index_value = test_value
         self.assertEqual(self.instance.no2_index_value, test_value)
     
@@ -152,7 +152,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test no2_index_category property
         """
-        test_value = 'afaqbjjqmtmvpmochfrj'
+        test_value = 'ciahvbmdazlsuhuissjy'
         self.instance.no2_index_category = test_value
         self.assertEqual(self.instance.no2_index_category, test_value)
     
@@ -176,7 +176,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test pm10_index_value property
         """
-        test_value = int(73)
+        test_value = int(60)
         self.instance.pm10_index_value = test_value
         self.assertEqual(self.instance.pm10_index_value, test_value)
     
@@ -184,7 +184,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test pm10_index_category property
         """
-        test_value = 'ynrtnkxzicuikuefrodk'
+        test_value = 'nnxzadpwivnxflxkfncn'
         self.instance.pm10_index_category = test_value
         self.assertEqual(self.instance.pm10_index_category, test_value)
     
@@ -208,7 +208,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test pm25_index_value property
         """
-        test_value = int(22)
+        test_value = int(62)
         self.instance.pm25_index_value = test_value
         self.assertEqual(self.instance.pm25_index_value, test_value)
     
@@ -216,7 +216,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test pm25_index_category property
         """
-        test_value = 'kbgaavracwufvbzskkqk'
+        test_value = 'slmdljefbzcqnpwtcfbf'
         self.instance.pm25_index_category = test_value
         self.assertEqual(self.instance.pm25_index_category, test_value)
     
@@ -240,7 +240,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test o3_index_value property
         """
-        test_value = int(48)
+        test_value = int(39)
         self.instance.o3_index_value = test_value
         self.assertEqual(self.instance.o3_index_value, test_value)
     
@@ -248,7 +248,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test o3_index_category property
         """
-        test_value = 'ocwwonycejxanyghtctv'
+        test_value = 'wudmxwlaqztpvhjbhjvr'
         self.instance.o3_index_category = test_value
         self.assertEqual(self.instance.o3_index_category, test_value)
     
@@ -272,7 +272,7 @@ class Test_AirQualityIndex(unittest.TestCase):
         """
         Test critical_pollutant_code property
         """
-        test_value = 'fozpjgkkeowjmrrfzgsx'
+        test_value = 'jdcwmujkzhsztmudqtnl'
         self.instance.critical_pollutant_code = test_value
         self.assertEqual(self.instance.critical_pollutant_code, test_value)
     

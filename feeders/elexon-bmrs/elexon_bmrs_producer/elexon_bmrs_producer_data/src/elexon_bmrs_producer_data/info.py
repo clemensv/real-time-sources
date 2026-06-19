@@ -177,17 +177,17 @@ class Info:
             An instance of the dataclass.
         """
         return cls(
-            info_id='qpoirmbwwktricrnlhvj',
-            name='nphcijcipvirsicjjscu',
-            country='gszhgvhfopizavrbxjbc',
-            city='xstgpwjjaunhpqkgbuot',
-            category='avudebeqkmwuwmyolwoi',
-            price_area='wjlmoihmcyozfqgmyrka',
-            settlement_date='ndjxsqsscoryecokvsyg',
-            settlement_period=int(21),
-            area_code='dnsnduwvcubqdgkeelnk',
-            segment='tltgtkfwutxmeaxpdgye',
-            entity_id='jchuswwrjbqrijtrdmcg',
-            event_id='kupglcawvhocvfkaifrr',
-            venue_id='rurhlythqwilldbgqcpo'
+            info_id='tbvhyvacofbcdlydnvtx',
+            name='fgoeiqjuqeyiyjfutwdb',
+            country='ljmpjvamciyntmxskdmd',
+            city='fjnrjfizafsivbsxctyv',
+            category='punfmphlcyjnytsbqmhf',
+            price_area='nbylwxrdtqwoberczmdj',
+            settlement_date='pbaqjsqydnpknrgyoafz',
+            settlement_period=int(23),
+            area_code='kjsfsweznvfaphyndjgn',
+            segment='czxzlgusxnicbqifbwpx',
+            entity_id='bgpgxlqpbsyqyznvhjgg',
+            event_id='szgoedyehdzzobkjauns',
+            venue_id='bpobgodlqqgqvscnvkhz'
         )

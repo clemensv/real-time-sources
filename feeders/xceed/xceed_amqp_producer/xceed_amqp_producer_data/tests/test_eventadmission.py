@@ -28,15 +28,15 @@ class Test_EventAdmission(unittest.TestCase):
         Create instance of EventAdmission for testing
         """
         instance = EventAdmission(
-            event_id='eojriysrujqwsegtxhgo',
-            admission_id='coqgafhsqliimtjgxznb',
-            admission_type='dqrfqecdiggcnfnoeutk',
-            name='qgxgewfyklewbuojcuum',
+            event_id='lupchiznjatabmgphllw',
+            admission_id='qsrhtmspddduerqpdggw',
+            admission_type='scngqyzctbyrfspfylvx',
+            name='ogyconlazdgxzeiogipb',
             is_sold_out=True,
-            is_sales_closed=True,
-            price=float(84.67605463069468),
-            currency='jzouljcbqzjzxiplchra',
-            remaining=int(89)
+            is_sales_closed=False,
+            price=float(45.96501525396298),
+            currency='chuoskzfnskdcehrjwef',
+            remaining=int(29)
         )
         return instance
 
@@ -45,7 +45,7 @@ class Test_EventAdmission(unittest.TestCase):
         """
         Test event_id property
         """
-        test_value = 'eojriysrujqwsegtxhgo'
+        test_value = 'lupchiznjatabmgphllw'
         self.instance.event_id = test_value
         self.assertEqual(self.instance.event_id, test_value)
     
@@ -53,7 +53,7 @@ class Test_EventAdmission(unittest.TestCase):
         """
         Test admission_id property
         """
-        test_value = 'coqgafhsqliimtjgxznb'
+        test_value = 'qsrhtmspddduerqpdggw'
         self.instance.admission_id = test_value
         self.assertEqual(self.instance.admission_id, test_value)
     
@@ -61,7 +61,7 @@ class Test_EventAdmission(unittest.TestCase):
         """
         Test admission_type property
         """
-        test_value = 'dqrfqecdiggcnfnoeutk'
+        test_value = 'scngqyzctbyrfspfylvx'
         self.instance.admission_type = test_value
         self.assertEqual(self.instance.admission_type, test_value)
     
@@ -69,7 +69,7 @@ class Test_EventAdmission(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'qgxgewfyklewbuojcuum'
+        test_value = 'ogyconlazdgxzeiogipb'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -85,7 +85,7 @@ class Test_EventAdmission(unittest.TestCase):
         """
         Test is_sales_closed property
         """
-        test_value = True
+        test_value = False
         self.instance.is_sales_closed = test_value
         self.assertEqual(self.instance.is_sales_closed, test_value)
     
@@ -93,7 +93,7 @@ class Test_EventAdmission(unittest.TestCase):
         """
         Test price property
         """
-        test_value = float(84.67605463069468)
+        test_value = float(45.96501525396298)
         self.instance.price = test_value
         self.assertEqual(self.instance.price, test_value)
     
@@ -101,7 +101,7 @@ class Test_EventAdmission(unittest.TestCase):
         """
         Test currency property
         """
-        test_value = 'jzouljcbqzjzxiplchra'
+        test_value = 'chuoskzfnskdcehrjwef'
         self.instance.currency = test_value
         self.assertEqual(self.instance.currency, test_value)
     
@@ -109,7 +109,7 @@ class Test_EventAdmission(unittest.TestCase):
         """
         Test remaining property
         """
-        test_value = int(89)
+        test_value = int(29)
         self.instance.remaining = test_value
         self.assertEqual(self.instance.remaining, test_value)
     

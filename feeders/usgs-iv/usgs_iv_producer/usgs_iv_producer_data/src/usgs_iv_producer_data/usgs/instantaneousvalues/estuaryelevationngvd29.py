@@ -165,11 +165,11 @@ class EstuaryElevationNGVD29:
             An instance of the dataclass.
         """
         return cls(
-            site_no='rkthnstpmhnrlegszdko',
-            datetime='fzaoamkakfckkfaagcle',
-            value=float(77.1019828220584),
-            exception='kuxezvespfvlqmwdrwep',
-            qualifiers=['nbpqodslsgxvbmriebkh', 'pzuqfaafrooepmzdukyf', 'ybmebbbyrunimgutebnf'],
-            parameter_cd='nhwfyoaemusbvczdthnr',
-            timeseries_cd='nsmlwufacfhxmoencrdq'
+            site_no='hsgysuirgvksnezztcgy',
+            datetime='gdcjfacdndokxwgskqzv',
+            value=float(70.26702972408754),
+            exception='avrgfigqrmnavapsgauf',
+            qualifiers=['odyqlbctlkjdecnqzxxj', 'nyxxmjotvzeqhdjkdbnj', 'ydggfbzpwinnjqtiscsw'],
+            parameter_cd='mxsjqdzvxztzjhmdtabc',
+            timeseries_cd='ebbklzftsxbgmrjwhjcf'
         )

@@ -155,6 +155,6 @@ class Water:
             An instance of the dataclass.
         """
         return cls(
-            shortname='cakdevowxmukhelbethi',
-            longname='kwisxihibalpzsvbmtqq'
+            shortname='jpdlywajydlqvzouzzhw',
+            longname='labydrjtzavckxpqjkuk'
         )

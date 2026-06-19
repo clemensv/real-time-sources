@@ -28,10 +28,10 @@ class Test_Measurement(unittest.TestCase):
         Create instance of Measurement for testing
         """
         instance = Measurement(
-            site_code='fsnwhnsvkyxglodaanpw',
-            species_code='riaowqnupjxdwtadaosj',
-            measurement_date_gmt='rejqqjmqrkcjmqmynreu',
-            value=float(25.844156063041158)
+            site_code='dzvgnbsjifjgfevlpedl',
+            species_code='uvbxjdunofrfabsrmfvc',
+            measurement_date_gmt='hjtsohrewminibqapxam',
+            value=float(98.57147101953458)
         )
         return instance
 
@@ -40,7 +40,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test site_code property
         """
-        test_value = 'fsnwhnsvkyxglodaanpw'
+        test_value = 'dzvgnbsjifjgfevlpedl'
         self.instance.site_code = test_value
         self.assertEqual(self.instance.site_code, test_value)
     
@@ -48,7 +48,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test species_code property
         """
-        test_value = 'riaowqnupjxdwtadaosj'
+        test_value = 'uvbxjdunofrfabsrmfvc'
         self.instance.species_code = test_value
         self.assertEqual(self.instance.species_code, test_value)
     
@@ -56,7 +56,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test measurement_date_gmt property
         """
-        test_value = 'rejqqjmqrkcjmqmynreu'
+        test_value = 'hjtsohrewminibqapxam'
         self.instance.measurement_date_gmt = test_value
         self.assertEqual(self.instance.measurement_date_gmt, test_value)
     
@@ -64,7 +64,7 @@ class Test_Measurement(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(25.844156063041158)
+        test_value = float(98.57147101953458)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     

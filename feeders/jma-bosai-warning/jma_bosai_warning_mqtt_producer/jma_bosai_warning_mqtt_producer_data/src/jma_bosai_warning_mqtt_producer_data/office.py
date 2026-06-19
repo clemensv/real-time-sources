@@ -172,13 +172,13 @@ class Office:
             An instance of the dataclass.
         """
         return cls(
-            office_code='kmcuaelpjhjxevrbmnjc',
-            area_code='sxammxvyxoczufiwqiag',
-            name_jp='jodxmikbjdlktdcektgv',
-            name_en='tmxptxzyhqwdpdaqghqj',
-            parent_office_code='asigsbknsmetbrdahxoz',
+            office_code='xnqjgaavhztkgdtzhkic',
+            area_code='vfjipppeutqdgysmboxo',
+            name_jp='rsduxpyqtelmdmbqqtdu',
+            name_en='sdohkefinxubgjzzlkss',
+            parent_office_code='lbmbzovtcazglpykzyqu',
             office_type=OfficeTypeenum.PREFECTURE,
-            prefecture='bqjmtldhxmcpkwbkhvqt',
-            severity=SeverityEnum.advisory,
+            prefecture='dcmpewvywbgawpfltysf',
+            severity=SeverityEnum.info,
             event=EventEnum.info
         )

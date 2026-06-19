@@ -180,16 +180,16 @@ class LightningStroke:
             An instance of the dataclass.
         """
         return cls(
-            source_id=int(8),
-            stroke_id='qjjzashzbvacfobwnxib',
-            event_time='hwnqqmymncsxcapcodzl',
-            event_timestamp_ms=int(91),
-            latitude=float(58.0714991046861),
-            longitude=float(62.37111900996748),
-            server_id=int(87),
-            server_delay_ms=int(39),
-            accuracy_diameter_m=float(90.11744185630769),
-            detector_participations=[None, None, None, None, None],
-            geohash5='vekltfgmbzkozyraxtsh',
-            geohash7='jmcdcvgdenhpmllbnsxf'
+            source_id=int(27),
+            stroke_id='vhfjvidnimsbrrguuyvs',
+            event_time='ymqkwvtnrxcwlfuqcccd',
+            event_timestamp_ms=int(9),
+            latitude=float(9.912793444762368),
+            longitude=float(43.41599524095412),
+            server_id=int(75),
+            server_delay_ms=int(52),
+            accuracy_diameter_m=float(10.452119853694498),
+            detector_participations=[None, None],
+            geohash5='ixhjrywythgzsvnhotqx',
+            geohash7='ilmxlppadtyqpsseaaxv'
         )

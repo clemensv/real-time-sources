@@ -165,11 +165,11 @@ class LakeElevationNAVD88:
             An instance of the dataclass.
         """
         return cls(
-            site_no='oqsgxmfhyqrqmpthbtwe',
-            datetime='qhtncuwngihsrmhdgasv',
-            value=float(11.92007049538092),
-            exception='xznxdpjumqsyburqctkl',
-            qualifiers=['ptdanblpgjuliihqcqfl', 'tqpixlvtvvgtwwhfcspz', 'urmnuoxcrysoelvqydnn'],
-            parameter_cd='kbmeirqwpzajuihpkwcx',
-            timeseries_cd='bezwyhujuynorbwjkdqw'
+            site_no='xozlvjfnsglfazjmcbgx',
+            datetime='uryvuaryhybntqndjvtd',
+            value=float(36.04670158023111),
+            exception='memlowzrmdtcnhabhpnv',
+            qualifiers=['hljlfnirlgdeohpvcvac', 'qvnentuodpttwsegzgan', 'qmuycbsftkmgdgrdyhso', 'kftgauomziudnaabezve'],
+            parameter_cd='ybmmqwxpyunbfhanrmbv',
+            timeseries_cd='gitsoiihgehghtgcnxsa'
         )

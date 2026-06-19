@@ -11,9 +11,9 @@ from dataclasses import dataclass
 import dataclasses_json
 from dataclasses_json import Undefined, dataclass_json
 import json
+from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
 from typing import Any
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.entityselector import EntitySelector
-from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.timerange import TimeRange
 from gtfs_amqp_producer_data.generaltransitfeedrealtime.alert.translatedstring import TranslatedString
 
 
@@ -169,8 +169,8 @@ class Alert:
             An instance of the dataclass.
         """
         return cls(
-            active_period=[None, None, None],
-            informed_entity=[None, None, None],
+            active_period=[None, None],
+            informed_entity=[None, None, None, None],
             cause=None,
             effect=None,
             url=None,

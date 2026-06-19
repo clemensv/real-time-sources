@@ -28,13 +28,13 @@ class Test_WaterVelocity(unittest.TestCase):
         Create instance of WaterVelocity for testing
         """
         instance = WaterVelocity(
-            site_no='jsogqstgobtczpgxamed',
-            datetime='wljkjaoyhrdebffiuiyf',
-            value=float(41.1757415087098),
-            exception='fxehxnurxcllbhtbbiql',
-            qualifiers=['uakkvcwtekjizwflumeg', 'bnfntgnmelypivsfrmkh'],
-            parameter_cd='dcviconqyullypvnhlbj',
-            timeseries_cd='qxxuvycseluxsiotxuoo'
+            site_no='kencmftoebgkneeiaesk',
+            datetime='hihdotyhquegbmrenszs',
+            value=float(64.21697533624032),
+            exception='vsxlooqrrlijoiazxtcb',
+            qualifiers=['nypeaarigokoyzuhozvm', 'ubwqqmqxqlkatkpnloda', 'kkgtqcnswplvbmglcuyo', 'nuqbvpipxyghuzjsmduy'],
+            parameter_cd='ibqyxcmpudjcnfgggzzi',
+            timeseries_cd='ydysjuennflknuaipsmm'
         )
         return instance
 
@@ -43,7 +43,7 @@ class Test_WaterVelocity(unittest.TestCase):
         """
         Test site_no property
         """
-        test_value = 'jsogqstgobtczpgxamed'
+        test_value = 'kencmftoebgkneeiaesk'
         self.instance.site_no = test_value
         self.assertEqual(self.instance.site_no, test_value)
     
@@ -51,7 +51,7 @@ class Test_WaterVelocity(unittest.TestCase):
         """
         Test datetime property
         """
-        test_value = 'wljkjaoyhrdebffiuiyf'
+        test_value = 'hihdotyhquegbmrenszs'
         self.instance.datetime = test_value
         self.assertEqual(self.instance.datetime, test_value)
     
@@ -59,7 +59,7 @@ class Test_WaterVelocity(unittest.TestCase):
         """
         Test value property
         """
-        test_value = float(41.1757415087098)
+        test_value = float(64.21697533624032)
         self.instance.value = test_value
         self.assertEqual(self.instance.value, test_value)
     
@@ -67,7 +67,7 @@ class Test_WaterVelocity(unittest.TestCase):
         """
         Test exception property
         """
-        test_value = 'fxehxnurxcllbhtbbiql'
+        test_value = 'vsxlooqrrlijoiazxtcb'
         self.instance.exception = test_value
         self.assertEqual(self.instance.exception, test_value)
     
@@ -75,7 +75,7 @@ class Test_WaterVelocity(unittest.TestCase):
         """
         Test qualifiers property
         """
-        test_value = ['uakkvcwtekjizwflumeg', 'bnfntgnmelypivsfrmkh']
+        test_value = ['nypeaarigokoyzuhozvm', 'ubwqqmqxqlkatkpnloda', 'kkgtqcnswplvbmglcuyo', 'nuqbvpipxyghuzjsmduy']
         self.instance.qualifiers = test_value
         self.assertEqual(self.instance.qualifiers, test_value)
     
@@ -83,7 +83,7 @@ class Test_WaterVelocity(unittest.TestCase):
         """
         Test parameter_cd property
         """
-        test_value = 'dcviconqyullypvnhlbj'
+        test_value = 'ibqyxcmpudjcnfgggzzi'
         self.instance.parameter_cd = test_value
         self.assertEqual(self.instance.parameter_cd, test_value)
     
@@ -91,7 +91,7 @@ class Test_WaterVelocity(unittest.TestCase):
         """
         Test timeseries_cd property
         """
-        test_value = 'qxxuvycseluxsiotxuoo'
+        test_value = 'ydysjuennflknuaipsmm'
         self.instance.timeseries_cd = test_value
         self.assertEqual(self.instance.timeseries_cd, test_value)
     

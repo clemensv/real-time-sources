@@ -336,7 +336,7 @@ class TestDkDmiMetObsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.dmi.metObs.amqp.Station"
+                    assert cloud_event_payload.get("type") == "dk.dmi.metObs.MetObsStation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -373,7 +373,7 @@ class TestDkDmiMetObsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.dmi.metObs.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'dk.dmi.metObs.MetObsStation'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
     
@@ -427,7 +427,7 @@ class TestDkDmiMetObsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.dmi.metObs.amqp.Observation"
+                    assert cloud_event_payload.get("type") == "dk.dmi.metObs.MetObsObservation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -465,7 +465,7 @@ class TestDkDmiMetObsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.dmi.metObs.amqp.Observation'
+        assert properties.get('cloudEvents:type') == 'dk.dmi.metObs.MetObsObservation'
         assert received.body is not None
         assert received.subject == "{station_id}/{parameter_id}".format(station_id="value", parameter_id="value")
 
@@ -578,7 +578,7 @@ class TestDkDmiOceanObsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.dmi.oceanObs.amqp.Station"
+                    assert cloud_event_payload.get("type") == "dk.dmi.oceanObs.OceanStation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -615,7 +615,7 @@ class TestDkDmiOceanObsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.dmi.oceanObs.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'dk.dmi.oceanObs.OceanStation'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
     
@@ -668,7 +668,7 @@ class TestDkDmiOceanObsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.dmi.oceanObs.amqp.TidewaterStation"
+                    assert cloud_event_payload.get("type") == "dk.dmi.oceanObs.TidewaterStation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -705,7 +705,7 @@ class TestDkDmiOceanObsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.dmi.oceanObs.amqp.TidewaterStation'
+        assert properties.get('cloudEvents:type') == 'dk.dmi.oceanObs.TidewaterStation'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
     
@@ -759,7 +759,7 @@ class TestDkDmiOceanObsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.dmi.oceanObs.amqp.Observation"
+                    assert cloud_event_payload.get("type") == "dk.dmi.oceanObs.OceanObservation"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -797,7 +797,7 @@ class TestDkDmiOceanObsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.dmi.oceanObs.amqp.Observation'
+        assert properties.get('cloudEvents:type') == 'dk.dmi.oceanObs.OceanObservation'
         assert received.body is not None
         assert received.subject == "{station_id}/{parameter_id}".format(station_id="value", parameter_id="value")
     
@@ -850,7 +850,7 @@ class TestDkDmiOceanObsAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.dmi.oceanObs.amqp.TidewaterPrediction"
+                    assert cloud_event_payload.get("type") == "dk.dmi.oceanObs.TidewaterPrediction"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -887,7 +887,7 @@ class TestDkDmiOceanObsAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.dmi.oceanObs.amqp.TidewaterPrediction'
+        assert properties.get('cloudEvents:type') == 'dk.dmi.oceanObs.TidewaterPrediction'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
 
@@ -1000,7 +1000,7 @@ class TestDkDmiLightningAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.dmi.lightning.amqp.Sensor"
+                    assert cloud_event_payload.get("type") == "dk.dmi.lightning.LightningSensor"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1037,7 +1037,7 @@ class TestDkDmiLightningAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.dmi.lightning.amqp.Sensor'
+        assert properties.get('cloudEvents:type') == 'dk.dmi.lightning.LightningSensor'
         assert received.body is not None
         assert received.subject == "{sensor_id}".format(sensor_id="value")
     
@@ -1090,7 +1090,7 @@ class TestDkDmiLightningAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "dk.dmi.lightning.amqp.Strike"
+                    assert cloud_event_payload.get("type") == "dk.dmi.lightning.LightningStrike"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -1127,7 +1127,7 @@ class TestDkDmiLightningAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'dk.dmi.lightning.amqp.Strike'
+        assert properties.get('cloudEvents:type') == 'dk.dmi.lightning.LightningStrike'
         assert received.body is not None
         assert received.subject == "{strike_id}".format(strike_id="value")
 

@@ -28,18 +28,18 @@ class Test_BikeshareStation(unittest.TestCase):
         Create instance of BikeshareStation for testing
         """
         instance = BikeshareStation(
-            system_id='slfwmziwwekwbrhcuqib',
-            station_id='jkhirnokuuwbulkfivcd',
-            name='naktuupgiozpxdhoffyr',
-            short_name='qnuwzupzijrbgszdzqgo',
-            lat=float(46.4018503814292),
-            lon=float(64.7156966114207),
-            address='jioctmemwdjhlxqbaqao',
-            cross_street='qzgombnnidxmppdayipy',
-            region_id='wlzybyegpozsbvggltcc',
-            post_code='rabumhaygnhqmomnccvu',
-            capacity=int(85),
-            is_virtual_station=True
+            system_id='eoghzenbvigyvoixsdhl',
+            station_id='obcsekyelrbjzsxpotgi',
+            name='khjofzquddlhdtduhzmf',
+            short_name='ynunjcsadlglsdysjoet',
+            lat=float(17.80539614194614),
+            lon=float(10.059098283613888),
+            address='rcwztecjrqmvrylkhhdb',
+            cross_street='bkkkhpokhdvizbkcgnty',
+            region_id='sjiyaatxravgslwnhkmx',
+            post_code='tlqscfpcpvarvgrdhwpv',
+            capacity=int(91),
+            is_virtual_station=False
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test system_id property
         """
-        test_value = 'slfwmziwwekwbrhcuqib'
+        test_value = 'eoghzenbvigyvoixsdhl'
         self.instance.system_id = test_value
         self.assertEqual(self.instance.system_id, test_value)
     
@@ -56,7 +56,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test station_id property
         """
-        test_value = 'jkhirnokuuwbulkfivcd'
+        test_value = 'obcsekyelrbjzsxpotgi'
         self.instance.station_id = test_value
         self.assertEqual(self.instance.station_id, test_value)
     
@@ -64,7 +64,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'naktuupgiozpxdhoffyr'
+        test_value = 'khjofzquddlhdtduhzmf'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -72,7 +72,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test short_name property
         """
-        test_value = 'qnuwzupzijrbgszdzqgo'
+        test_value = 'ynunjcsadlglsdysjoet'
         self.instance.short_name = test_value
         self.assertEqual(self.instance.short_name, test_value)
     
@@ -80,7 +80,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test lat property
         """
-        test_value = float(46.4018503814292)
+        test_value = float(17.80539614194614)
         self.instance.lat = test_value
         self.assertEqual(self.instance.lat, test_value)
     
@@ -88,7 +88,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test lon property
         """
-        test_value = float(64.7156966114207)
+        test_value = float(10.059098283613888)
         self.instance.lon = test_value
         self.assertEqual(self.instance.lon, test_value)
     
@@ -96,7 +96,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test address property
         """
-        test_value = 'jioctmemwdjhlxqbaqao'
+        test_value = 'rcwztecjrqmvrylkhhdb'
         self.instance.address = test_value
         self.assertEqual(self.instance.address, test_value)
     
@@ -104,7 +104,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test cross_street property
         """
-        test_value = 'qzgombnnidxmppdayipy'
+        test_value = 'bkkkhpokhdvizbkcgnty'
         self.instance.cross_street = test_value
         self.assertEqual(self.instance.cross_street, test_value)
     
@@ -112,7 +112,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test region_id property
         """
-        test_value = 'wlzybyegpozsbvggltcc'
+        test_value = 'sjiyaatxravgslwnhkmx'
         self.instance.region_id = test_value
         self.assertEqual(self.instance.region_id, test_value)
     
@@ -120,7 +120,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test post_code property
         """
-        test_value = 'rabumhaygnhqmomnccvu'
+        test_value = 'tlqscfpcpvarvgrdhwpv'
         self.instance.post_code = test_value
         self.assertEqual(self.instance.post_code, test_value)
     
@@ -128,7 +128,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test capacity property
         """
-        test_value = int(85)
+        test_value = int(91)
         self.instance.capacity = test_value
         self.assertEqual(self.instance.capacity, test_value)
     
@@ -136,7 +136,7 @@ class Test_BikeshareStation(unittest.TestCase):
         """
         Test is_virtual_station property
         """
-        test_value = True
+        test_value = False
         self.instance.is_virtual_station = test_value
         self.assertEqual(self.instance.is_virtual_station, test_value)
     

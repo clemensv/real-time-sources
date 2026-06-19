@@ -28,18 +28,18 @@ class Test_Pathways(unittest.TestCase):
         Create instance of Pathways for testing
         """
         instance = Pathways(
-            pathwayId='iqgvvdbkfwuyggyiqesr',
-            fromStopId='wgdjwysvkrneuwnuikyw',
-            toStopId='xcyynshwwbgoefnzcluk',
-            pathwayMode=int(54),
-            isBidirectional=int(35),
-            length=float(7.1856935657297445),
-            traversalTime=int(4),
-            stairCount=int(26),
-            maxSlope=float(19.76574409507814),
-            minWidth=float(7.291377597884452),
-            signpostedAs='opwslyzagrwlcpetfsev',
-            reversedSignpostedAs='lbzvqrtqzelfpankhiye'
+            pathwayId='fqcfuutjlumncbvblgat',
+            fromStopId='wucwwtocfwbbmmdxbfiy',
+            toStopId='vlkzjwtolaceshpvnsfz',
+            pathwayMode=int(59),
+            isBidirectional=int(0),
+            length=float(67.12105728511723),
+            traversalTime=int(92),
+            stairCount=int(57),
+            maxSlope=float(2.9157075424724233),
+            minWidth=float(21.44471078520318),
+            signpostedAs='jqmbmxnhmjkrcnsepmyw',
+            reversedSignpostedAs='muadhrgmnimysascsswp'
         )
         return instance
 
@@ -48,7 +48,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test pathwayId property
         """
-        test_value = 'iqgvvdbkfwuyggyiqesr'
+        test_value = 'fqcfuutjlumncbvblgat'
         self.instance.pathwayId = test_value
         self.assertEqual(self.instance.pathwayId, test_value)
     
@@ -56,7 +56,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test fromStopId property
         """
-        test_value = 'wgdjwysvkrneuwnuikyw'
+        test_value = 'wucwwtocfwbbmmdxbfiy'
         self.instance.fromStopId = test_value
         self.assertEqual(self.instance.fromStopId, test_value)
     
@@ -64,7 +64,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test toStopId property
         """
-        test_value = 'xcyynshwwbgoefnzcluk'
+        test_value = 'vlkzjwtolaceshpvnsfz'
         self.instance.toStopId = test_value
         self.assertEqual(self.instance.toStopId, test_value)
     
@@ -72,7 +72,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test pathwayMode property
         """
-        test_value = int(54)
+        test_value = int(59)
         self.instance.pathwayMode = test_value
         self.assertEqual(self.instance.pathwayMode, test_value)
     
@@ -80,7 +80,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test isBidirectional property
         """
-        test_value = int(35)
+        test_value = int(0)
         self.instance.isBidirectional = test_value
         self.assertEqual(self.instance.isBidirectional, test_value)
     
@@ -88,7 +88,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test length property
         """
-        test_value = float(7.1856935657297445)
+        test_value = float(67.12105728511723)
         self.instance.length = test_value
         self.assertEqual(self.instance.length, test_value)
     
@@ -96,7 +96,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test traversalTime property
         """
-        test_value = int(4)
+        test_value = int(92)
         self.instance.traversalTime = test_value
         self.assertEqual(self.instance.traversalTime, test_value)
     
@@ -104,7 +104,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test stairCount property
         """
-        test_value = int(26)
+        test_value = int(57)
         self.instance.stairCount = test_value
         self.assertEqual(self.instance.stairCount, test_value)
     
@@ -112,7 +112,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test maxSlope property
         """
-        test_value = float(19.76574409507814)
+        test_value = float(2.9157075424724233)
         self.instance.maxSlope = test_value
         self.assertEqual(self.instance.maxSlope, test_value)
     
@@ -120,7 +120,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test minWidth property
         """
-        test_value = float(7.291377597884452)
+        test_value = float(21.44471078520318)
         self.instance.minWidth = test_value
         self.assertEqual(self.instance.minWidth, test_value)
     
@@ -128,7 +128,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test signpostedAs property
         """
-        test_value = 'opwslyzagrwlcpetfsev'
+        test_value = 'jqmbmxnhmjkrcnsepmyw'
         self.instance.signpostedAs = test_value
         self.assertEqual(self.instance.signpostedAs, test_value)
     
@@ -136,7 +136,7 @@ class Test_Pathways(unittest.TestCase):
         """
         Test reversedSignpostedAs property
         """
-        test_value = 'lbzvqrtqzelfpankhiye'
+        test_value = 'muadhrgmnimysascsswp'
         self.instance.reversedSignpostedAs = test_value
         self.assertEqual(self.instance.reversedSignpostedAs, test_value)
     

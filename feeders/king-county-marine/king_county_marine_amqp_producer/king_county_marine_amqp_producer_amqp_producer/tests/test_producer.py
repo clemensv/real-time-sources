@@ -323,7 +323,7 @@ class TestUSWAKingCountyMarineAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "US.WA.KingCounty.Marine.amqp.Station"
+                    assert cloud_event_payload.get("type") == "US.WA.KingCounty.Marine.Station"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -359,7 +359,7 @@ class TestUSWAKingCountyMarineAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'US.WA.KingCounty.Marine.amqp.Station'
+        assert properties.get('cloudEvents:type') == 'US.WA.KingCounty.Marine.Station'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
     
@@ -411,7 +411,7 @@ class TestUSWAKingCountyMarineAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "US.WA.KingCounty.Marine.amqp.WaterQualityReading"
+                    assert cloud_event_payload.get("type") == "US.WA.KingCounty.Marine.WaterQualityReading"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -447,7 +447,7 @@ class TestUSWAKingCountyMarineAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'US.WA.KingCounty.Marine.amqp.WaterQualityReading'
+        assert properties.get('cloudEvents:type') == 'US.WA.KingCounty.Marine.WaterQualityReading'
         assert received.body is not None
         assert received.subject == "{station_id}".format(station_id="value")
 

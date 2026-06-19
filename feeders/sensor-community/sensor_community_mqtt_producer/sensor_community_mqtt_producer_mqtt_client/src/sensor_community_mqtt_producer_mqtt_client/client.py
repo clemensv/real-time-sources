@@ -284,6 +284,8 @@ class IoSensorCommunityMqttMqttClient(_ClientBase):
         self.loop = loop
         self._topic_mappings = topic_mappings or get_default_topic_mappings_io_sensor_community_mqtt()
         self._topic_patterns = {k: _build_topic_regex(v) for k, v in self._topic_mappings.items()}
+        self._connect_waiter: Optional[asyncio.Future[None]] = None
+        self._connected = False
         
         # Message handler callbacks (Dispatcher pattern)
         
@@ -294,6 +296,72 @@ class IoSensorCommunityMqttMqttClient(_ClientBase):
         
         # Attach message callback
         self.client.on_message = self._on_message
+        self.client.on_connect = self._on_connect
+        self.client.on_disconnect = self._on_disconnect
+
+    @staticmethod
+    def _mqtt_reason_code_value(reason_code) -> Optional[int]:
+        """Best-effort numeric MQTT reason-code extraction across paho callback APIs."""
+        if reason_code is None:
+            return 0
+        value = getattr(reason_code, "value", reason_code)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+
+    @staticmethod
+    def _mqtt_reason_code_text(reason_code) -> str:
+        """Best-effort textual MQTT reason-code rendering across paho callback APIs."""
+        if reason_code is None:
+            return "unknown"
+        text = str(reason_code).strip()
+        if text:
+            return text
+        code = _ClientBase._mqtt_reason_code_value(reason_code)
+        return str(code) if code is not None else "unknown"
+
+    def _resolve_connect_waiter(self, exc: Optional[BaseException] = None):
+        waiter = self._connect_waiter
+        self._connect_waiter = None
+        if waiter is None or waiter.done():
+            return
+        if exc is None:
+            self._connected = True
+            waiter.set_result(None)
+            return
+        self._connected = False
+        waiter.set_exception(exc)
+
+    def _notify_connect_waiter(self, exc: Optional[BaseException] = None):
+        if self.loop is None:
+            return
+        self.loop.call_soon_threadsafe(self._resolve_connect_waiter, exc)
+
+    def _on_connect(self, client, userdata, flags, reason_code=0, properties=None):
+        """Resolve a pending async connect once the broker replies."""
+        if self._mqtt_reason_code_value(reason_code) == 0:
+            self._notify_connect_waiter()
+            return
+        detail = self._mqtt_reason_code_text(reason_code)
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
+
+    def _on_disconnect(self, client, userdata, *args):
+        """Fail a pending async connect when the broker disconnects before success."""
+        self._connected = False
+        if self._connect_waiter is None:
+            return
+        reason_code = None
+        if len(args) == 1:
+            reason_code = args[0]
+        elif len(args) == 2:
+            reason_code = args[0]
+        elif len(args) >= 3:
+            reason_code = args[1]
+        detail = self._mqtt_reason_code_text(reason_code)
+        if self._mqtt_reason_code_value(reason_code) in (None, 0):
+            detail = "connection closed before authentication completed"
+        self._notify_connect_waiter(ConnectionError(f"MQTT connect failed: {detail}"))
 
     @property
     def topic_mappings(self) -> Dict[str, str]:
@@ -382,21 +450,94 @@ class IoSensorCommunityMqttMqttClient(_ClientBase):
         """
         for topic in topics:
             self.client.unsubscribe(topic)
-    
-    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60):
+
+    @staticmethod
+    def _build_enhanced_auth_properties(token, authentication_method: str = "OAUTH2-JWT", base=None):
+        """Build MQTT v5 CONNECT properties carrying an OAuth2/Entra JWT via
+        MQTT v5 Enhanced Authentication.
+
+        Azure Event Grid Namespaces (and other Entra-secured MQTT v5 brokers)
+        require the bearer token to be presented through the CONNECT
+        ``Authentication Method`` / ``Authentication Data`` properties, NOT the
+        username/password fields. Username/password silently fails CONNACK and
+        ``publish()`` then queues messages locally without ever reaching the
+        broker. See
+        https://learn.microsoft.com/azure/event-grid/mqtt-client-microsoft-entra-token-and-rbac
+
+        The paho client passed to this class MUST be created with
+        ``protocol=mqtt.MQTTv5`` for these properties to be honored.
         """
-        Connect to MQTT broker.
+        if not _MQTT5_AVAILABLE:
+            raise RuntimeError(
+                "MQTT v5 Enhanced Authentication (OAUTH2-JWT) requires "
+                "paho-mqtt >= 2.0; install a newer paho-mqtt to use "
+                "token-based auth."
+            )
+        connect_properties = base if base is not None else _MqttProperties(_MqttPacketTypes.CONNECT)
+        connect_properties.AuthenticationMethod = authentication_method
+        connect_properties.AuthenticationData = (
+            token.encode("utf-8") if isinstance(token, str) else token
+        )
+        return connect_properties
+
+    async def connect(self, broker: str, port: int = 1883, keepalive: int = 60,
+                      token: Optional[str] = None,
+                      authentication_method: str = "OAUTH2-JWT",
+                      properties: Optional["_MqttProperties"] = None):
+        """
+        Connect to MQTT broker and wait for authentication to complete.
 
         Args:
             broker: Broker hostname or IP
             port: Broker port
             keepalive: Keepalive interval in seconds
+            token: Optional OAuth2/Entra bearer token (JWT). When provided, it is
+                presented via MQTT v5 Enhanced Authentication
+                (Authentication Method ``OAUTH2-JWT`` + Authentication Data) as
+                required by Azure Event Grid Namespaces -- NOT as a password.
+                Requires a paho client created with ``protocol=mqtt.MQTTv5``.
+            authentication_method: MQTT v5 Authentication Method to advertise
+                when ``token`` is supplied (default ``OAUTH2-JWT``).
+            properties: Optional MQTT v5 CONNECT ``Properties`` to send. When
+                ``token`` is also supplied, the enhanced-auth fields are set on
+                these properties.
+
+        Raises:
+            ConnectionError: If the broker rejects the connection or disconnects before success
+            TimeoutError: If the broker does not acknowledge the connection in time
         """
-        self.client.connect(broker, port, keepalive)
-        self.client.loop_start()
+        if self._connect_waiter is not None and not self._connect_waiter.done():
+            raise RuntimeError("MQTT connect already in progress")
+        self.loop = asyncio.get_running_loop()
+        waiter = self.loop.create_future()
+        self._connect_waiter = waiter
+        self._connected = False
+        loop_started = False
+        try:
+            connect_properties = properties
+            if token is not None:
+                connect_properties = self._build_enhanced_auth_properties(
+                    token, authentication_method, base=properties
+                )
+            if connect_properties is not None:
+                self.client.connect(broker, port, keepalive, properties=connect_properties)
+            else:
+                self.client.connect(broker, port, keepalive)
+            self.client.loop_start()
+            loop_started = True
+            timeout = float(keepalive) if keepalive and keepalive > 0 else 60.0
+            await asyncio.wait_for(waiter, timeout=timeout)
+        except Exception:
+            if self._connect_waiter is waiter:
+                self._connect_waiter = None
+            self._connected = False
+            if loop_started:
+                await asyncio.to_thread(self.client.loop_stop)
+            raise
     
     async def disconnect(self):
         """Disconnect from MQTT broker."""
+        self._connected = False
         self.client.loop_stop()
         self.client.disconnect()
 

@@ -325,7 +325,7 @@ class TestNetVatsimAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "net.vatsim.amqp.PilotPosition"
+                    assert cloud_event_payload.get("type") == "net.vatsim.PilotPosition"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -361,7 +361,7 @@ class TestNetVatsimAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'net.vatsim.amqp.PilotPosition'
+        assert properties.get('cloudEvents:type') == 'net.vatsim.PilotPosition'
         assert received.body is not None
         assert received.subject == "{callsign}".format(callsign="value")
     
@@ -413,7 +413,7 @@ class TestNetVatsimAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "net.vatsim.amqp.ControllerPosition"
+                    assert cloud_event_payload.get("type") == "net.vatsim.ControllerPosition"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -449,7 +449,7 @@ class TestNetVatsimAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'net.vatsim.amqp.ControllerPosition'
+        assert properties.get('cloudEvents:type') == 'net.vatsim.ControllerPosition'
         assert received.body is not None
         assert received.subject == "{callsign}".format(callsign="value")
     
@@ -502,7 +502,7 @@ class TestNetVatsimAmqpProducer:
                     else:
                         body_text = str(body)
                     cloud_event_payload = json.loads(body_text)
-                    assert cloud_event_payload.get("type") == "net.vatsim.amqp.FacilityStatus"
+                    assert cloud_event_payload.get("type") == "net.vatsim.NetworkStatus"
                     # Verify data section exists (either as data or data_base64)
                     assert "data" in cloud_event_payload or "data_base64" in cloud_event_payload
                 else:
@@ -540,7 +540,7 @@ class TestNetVatsimAmqpProducer:
         received = _receive_single_message(artemis_container)
         properties = received.properties or {}
         annotations = received.annotations or {}
-        assert properties.get('cloudEvents:type') == 'net.vatsim.amqp.FacilityStatus'
+        assert properties.get('cloudEvents:type') == 'net.vatsim.NetworkStatus'
         assert received.body is not None
         assert received.subject == "{callsign}".format(callsign="value")
         assert properties.get('facility') == "{facility}".format(facility="value")

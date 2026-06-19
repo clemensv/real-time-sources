@@ -1,5 +1,5 @@
-from .warningbulletin import WarningBulletin
-from .station import Station
 from .weatherobservation import WeatherObservation
+from .station import Station
+from .warningbulletin import WarningBulletin
 
-__all__ = ["WarningBulletin", "Station", "WeatherObservation"]
+__all__ = ["WeatherObservation", "Station", "WarningBulletin"]

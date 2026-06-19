@@ -1,3 +1,3 @@
-from .uk import Timeseries, Station, Observation
+from .uk import Station, Timeseries, Observation
 
-__all__ = ["Timeseries", "Station", "Observation"]
+__all__ = ["Station", "Timeseries", "Observation"]

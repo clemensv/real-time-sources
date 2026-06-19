@@ -28,7 +28,7 @@ class Test_TidePredOffsets(unittest.TestCase):
         Create instance of TidePredOffsets for testing
         """
         instance = TidePredOffsets(
-            self_='vyryywkmexypjbwaguuq'
+            self_='uyoeocvhhvdrpbwcpolt'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_TidePredOffsets(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'vyryywkmexypjbwaguuq'
+        test_value = 'uyoeocvhhvdrpbwcpolt'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

@@ -1,4 +1,4 @@
-from .observatory import Observatory
 from .magneticfieldreading import MagneticFieldReading
+from .observatory import Observatory
 
-__all__ = ["Observatory", "MagneticFieldReading"]
+__all__ = ["MagneticFieldReading", "Observatory"]

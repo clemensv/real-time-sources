@@ -30,12 +30,12 @@ class Test_LightningSensor(unittest.TestCase):
         Create instance of LightningSensor for testing
         """
         instance = LightningSensor(
-            sensor_id='wwvopsnmkrdlolykhklu',
-            name='hpqexlmbglarrvhqleac',
-            owner='wysbawwxfxwkhpjuyaci',
+            sensor_id='gvhkxdltzfdggrvbwyof',
+            name='fpsnqkgwnaapdcutxtnr',
+            owner='odmhbbmvrpjnewpweqpd',
             country=CountryEnum.DNK,
-            latitude=float(46.51001169417719),
-            longitude=float(78.86889340467323),
+            latitude=float(83.10598747640321),
+            longitude=float(53.04577734685818),
             active_from=datetime.datetime.now(datetime.timezone.utc),
             active_to=datetime.datetime.now(datetime.timezone.utc)
         )
@@ -46,7 +46,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test sensor_id property
         """
-        test_value = 'wwvopsnmkrdlolykhklu'
+        test_value = 'gvhkxdltzfdggrvbwyof'
         self.instance.sensor_id = test_value
         self.assertEqual(self.instance.sensor_id, test_value)
     
@@ -54,7 +54,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test name property
         """
-        test_value = 'hpqexlmbglarrvhqleac'
+        test_value = 'fpsnqkgwnaapdcutxtnr'
         self.instance.name = test_value
         self.assertEqual(self.instance.name, test_value)
     
@@ -62,7 +62,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test owner property
         """
-        test_value = 'wysbawwxfxwkhpjuyaci'
+        test_value = 'odmhbbmvrpjnewpweqpd'
         self.instance.owner = test_value
         self.assertEqual(self.instance.owner, test_value)
     
@@ -78,7 +78,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test latitude property
         """
-        test_value = float(46.51001169417719)
+        test_value = float(83.10598747640321)
         self.instance.latitude = test_value
         self.assertEqual(self.instance.latitude, test_value)
     
@@ -86,7 +86,7 @@ class Test_LightningSensor(unittest.TestCase):
         """
         Test longitude property
         """
-        test_value = float(78.86889340467323)
+        test_value = float(53.04577734685818)
         self.instance.longitude = test_value
         self.assertEqual(self.instance.longitude, test_value)
     

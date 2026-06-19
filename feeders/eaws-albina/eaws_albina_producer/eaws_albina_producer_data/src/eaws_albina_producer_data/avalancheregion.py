@@ -161,8 +161,8 @@ class AvalancheRegion:
             An instance of the dataclass.
         """
         return cls(
-            region_id='obzbazotyngzwxxmbaii',
-            lang='dvvtppfymhsjpickqkfi',
+            region_id='ikxhrefmytiujbbcceei',
+            lang='gyjhvlvnhdpfwibshndc',
             configured_at=datetime.datetime.now(datetime.timezone.utc),
-            bulletin_base_url='ttvijbdzbvuvoszfsnvy'
+            bulletin_base_url='sdwnkzpberhoylcgbjkt'
         )

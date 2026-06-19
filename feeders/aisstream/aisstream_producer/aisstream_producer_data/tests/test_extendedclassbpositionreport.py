@@ -29,27 +29,27 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         Create instance of ExtendedClassBPositionReport for testing
         """
         instance = ExtendedClassBPositionReport(
-            MessageID=int(23),
-            RepeatIndicator=int(36),
-            UserID=int(59),
-            Valid=True,
-            Spare1=int(3),
-            Sog=float(4.396571011242489),
+            MessageID=int(87),
+            RepeatIndicator=int(15),
+            UserID=int(28),
+            Valid=False,
+            Spare1=int(33),
+            Sog=float(27.09997572324221),
             PositionAccuracy=False,
-            Longitude=float(5.777248577526894),
-            Latitude=float(32.770763036988136),
-            Cog=float(72.88082371152777),
-            TrueHeading=int(10),
-            Timestamp=int(37),
-            Spare2=int(90),
-            Name='vcequkiuekiekqdcxahj',
-            Type=int(20),
+            Longitude=float(70.33548292264962),
+            Latitude=float(2.3039251523765736),
+            Cog=float(6.576264660174102),
+            TrueHeading=int(32),
+            Timestamp=int(79),
+            Spare2=int(34),
+            Name='yvjdzkceadhiwawfvcww',
+            Type=int(55),
             Dimension=None,
-            FixType=int(27),
+            FixType=int(35),
             Raim=False,
             Dte=False,
             AssignedMode=False,
-            Spare3=int(46)
+            Spare3=int(40)
         )
         return instance
 
@@ -58,7 +58,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test MessageID property
         """
-        test_value = int(23)
+        test_value = int(87)
         self.instance.MessageID = test_value
         self.assertEqual(self.instance.MessageID, test_value)
     
@@ -66,7 +66,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test RepeatIndicator property
         """
-        test_value = int(36)
+        test_value = int(15)
         self.instance.RepeatIndicator = test_value
         self.assertEqual(self.instance.RepeatIndicator, test_value)
     
@@ -74,7 +74,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test UserID property
         """
-        test_value = int(59)
+        test_value = int(28)
         self.instance.UserID = test_value
         self.assertEqual(self.instance.UserID, test_value)
     
@@ -82,7 +82,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Valid property
         """
-        test_value = True
+        test_value = False
         self.instance.Valid = test_value
         self.assertEqual(self.instance.Valid, test_value)
     
@@ -90,7 +90,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Spare1 property
         """
-        test_value = int(3)
+        test_value = int(33)
         self.instance.Spare1 = test_value
         self.assertEqual(self.instance.Spare1, test_value)
     
@@ -98,7 +98,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Sog property
         """
-        test_value = float(4.396571011242489)
+        test_value = float(27.09997572324221)
         self.instance.Sog = test_value
         self.assertEqual(self.instance.Sog, test_value)
     
@@ -114,7 +114,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Longitude property
         """
-        test_value = float(5.777248577526894)
+        test_value = float(70.33548292264962)
         self.instance.Longitude = test_value
         self.assertEqual(self.instance.Longitude, test_value)
     
@@ -122,7 +122,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Latitude property
         """
-        test_value = float(32.770763036988136)
+        test_value = float(2.3039251523765736)
         self.instance.Latitude = test_value
         self.assertEqual(self.instance.Latitude, test_value)
     
@@ -130,7 +130,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Cog property
         """
-        test_value = float(72.88082371152777)
+        test_value = float(6.576264660174102)
         self.instance.Cog = test_value
         self.assertEqual(self.instance.Cog, test_value)
     
@@ -138,7 +138,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test TrueHeading property
         """
-        test_value = int(10)
+        test_value = int(32)
         self.instance.TrueHeading = test_value
         self.assertEqual(self.instance.TrueHeading, test_value)
     
@@ -146,7 +146,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Timestamp property
         """
-        test_value = int(37)
+        test_value = int(79)
         self.instance.Timestamp = test_value
         self.assertEqual(self.instance.Timestamp, test_value)
     
@@ -154,7 +154,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Spare2 property
         """
-        test_value = int(90)
+        test_value = int(34)
         self.instance.Spare2 = test_value
         self.assertEqual(self.instance.Spare2, test_value)
     
@@ -162,7 +162,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Name property
         """
-        test_value = 'vcequkiuekiekqdcxahj'
+        test_value = 'yvjdzkceadhiwawfvcww'
         self.instance.Name = test_value
         self.assertEqual(self.instance.Name, test_value)
     
@@ -170,7 +170,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Type property
         """
-        test_value = int(20)
+        test_value = int(55)
         self.instance.Type = test_value
         self.assertEqual(self.instance.Type, test_value)
     
@@ -186,7 +186,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test FixType property
         """
-        test_value = int(27)
+        test_value = int(35)
         self.instance.FixType = test_value
         self.assertEqual(self.instance.FixType, test_value)
     
@@ -218,7 +218,7 @@ class Test_ExtendedClassBPositionReport(unittest.TestCase):
         """
         Test Spare3 property
         """
-        test_value = int(46)
+        test_value = int(40)
         self.instance.Spare3 = test_value
         self.assertEqual(self.instance.Spare3, test_value)
     

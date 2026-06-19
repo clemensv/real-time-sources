@@ -1,3 +1,3 @@
-from .eu import DoseRateReading, Station
+from .eu import Station, DoseRateReading
 
-__all__ = ["DoseRateReading", "Station"]
+__all__ = ["Station", "DoseRateReading"]

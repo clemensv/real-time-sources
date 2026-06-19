@@ -28,7 +28,7 @@ class Test_HarmonicConstituents(unittest.TestCase):
         Create instance of HarmonicConstituents for testing
         """
         instance = HarmonicConstituents(
-            self_='bzvgjvshkbnzqnedabey'
+            self_='vnvbschrprlujcikapxm'
         )
         return instance
 
@@ -37,7 +37,7 @@ class Test_HarmonicConstituents(unittest.TestCase):
         """
         Test self_ property
         """
-        test_value = 'bzvgjvshkbnzqnedabey'
+        test_value = 'vnvbschrprlujcikapxm'
         self.instance.self_ = test_value
         self.assertEqual(self.instance.self_, test_value)
     

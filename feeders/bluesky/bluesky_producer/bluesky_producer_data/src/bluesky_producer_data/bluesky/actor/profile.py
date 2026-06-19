@@ -173,15 +173,15 @@ class Profile:
             An instance of the dataclass.
         """
         return cls(
-            did='knjakgylmbbyuphuewsn',
-            handle='zudejjbefrlgrnnhgowy',
-            display_name='aoopfrerhggnfodlebtt',
-            description='hsqmkcxkvkmmxdlyhajy',
-            avatar='ghwdeqrlqbgkfnhfzpwk',
-            banner='mfzwehsvlkandvizwnvp',
-            created_at='echtbuudlbckylmibcjm',
-            indexed_at='rfyqeqeslxgeyogxydse',
-            seq=int(90),
-            collection='bdjxzaxgoeopcefcdjaj',
-            lang='fzvdxfhmixakrzoncrdc'
+            did='bjzuxgvdibdgxwesseeh',
+            handle='rirwgmvpjuosmyfndusg',
+            display_name='ewutsglmphnnwsnwauso',
+            description='kgptrevidvmkueawmafv',
+            avatar='zqefqlhqrwwbhoajwrnw',
+            banner='creughuvlrxbcnovlkfr',
+            created_at='mmplzvskmrujgzguahuf',
+            indexed_at='fjchrzmfvbcwdncikqvf',
+            seq=int(36),
+            collection='cnifgndyruyejdbbcfni',
+            lang='vmmnmrfzrpcjxcxhasdf'
         )

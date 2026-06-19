@@ -29,13 +29,13 @@ class Test_SnowObservation(unittest.TestCase):
         Create instance of SnowObservation for testing
         """
         instance = SnowObservation(
-            station_triplet='mzekyouqzrsmrgbyugmo',
+            station_triplet='ahgtpmhekahnnrawjrjj',
             date_time=datetime.datetime.now(datetime.timezone.utc),
-            snow_water_equivalent=float(30.61719700914133),
-            snow_depth=float(36.38339346440973),
-            precipitation=float(68.22062084504698),
-            air_temperature=float(3.301500034852356),
-            state='fxusdgbmafxmqvpwluwi'
+            snow_water_equivalent=float(42.61862419897581),
+            snow_depth=float(66.61289055042157),
+            precipitation=float(71.76357840024818),
+            air_temperature=float(95.77231824972952),
+            state='zykcvgevutdgcodncrlo'
         )
         return instance
 
@@ -44,7 +44,7 @@ class Test_SnowObservation(unittest.TestCase):
         """
         Test station_triplet property
         """
-        test_value = 'mzekyouqzrsmrgbyugmo'
+        test_value = 'ahgtpmhekahnnrawjrjj'
         self.instance.station_triplet = test_value
         self.assertEqual(self.instance.station_triplet, test_value)
     
@@ -60,7 +60,7 @@ class Test_SnowObservation(unittest.TestCase):
         """
         Test snow_water_equivalent property
         """
-        test_value = float(30.61719700914133)
+        test_value = float(42.61862419897581)
         self.instance.snow_water_equivalent = test_value
         self.assertEqual(self.instance.snow_water_equivalent, test_value)
     
@@ -68,7 +68,7 @@ class Test_SnowObservation(unittest.TestCase):
         """
         Test snow_depth property
         """
-        test_value = float(36.38339346440973)
+        test_value = float(66.61289055042157)
         self.instance.snow_depth = test_value
         self.assertEqual(self.instance.snow_depth, test_value)
     
@@ -76,7 +76,7 @@ class Test_SnowObservation(unittest.TestCase):
         """
         Test precipitation property
         """
-        test_value = float(68.22062084504698)
+        test_value = float(71.76357840024818)
         self.instance.precipitation = test_value
         self.assertEqual(self.instance.precipitation, test_value)
     
@@ -84,7 +84,7 @@ class Test_SnowObservation(unittest.TestCase):
         """
         Test air_temperature property
         """
-        test_value = float(3.301500034852356)
+        test_value = float(95.77231824972952)
         self.instance.air_temperature = test_value
         self.assertEqual(self.instance.air_temperature, test_value)
     
@@ -92,7 +92,7 @@ class Test_SnowObservation(unittest.TestCase):
         """
         Test state property
         """
-        test_value = 'fxusdgbmafxmqvpwluwi'
+        test_value = 'zykcvgevutdgcodncrlo'
         self.instance.state = test_value
         self.assertEqual(self.instance.state, test_value)
     

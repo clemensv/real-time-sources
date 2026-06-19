@@ -184,20 +184,20 @@ class PositionReport:
             An instance of the dataclass.
         """
         return cls(
-            mmsi='joxibnvoityzjzkeshph',
-            flag='blkvvcraahrbqjklucgd',
-            ship_type='exoiimilpjzzejggzhgv',
-            geohash5='zoyekdfiozxfzvlydvsx',
+            mmsi='csgwsrqpsnqiloxztyap',
+            flag='utlrdhysstsyjtnpsnbl',
+            ship_type='owzikfftbzezohpkyrvp',
+            geohash5='cutyeddbknsotgyskxjb',
             msg_type=MsgTypeenum.position_MINUSreport,
-            latitude=float(48.167497167755904),
-            longitude=float(65.74085291593907),
-            speed_over_ground=float(25.399953755233827),
-            course_over_ground=float(15.054427283591487),
-            true_heading=int(21),
-            navigation_status=int(59),
-            rate_of_turn=float(38.056320592128365),
-            position_accuracy=int(65),
-            timestamp='cgqnkfrdggohwikxucgg',
-            station_id='rfihobnjmblxzabgdjwq',
-            ais_msg_type=int(19)
+            latitude=float(97.24875534548694),
+            longitude=float(17.378727588698272),
+            speed_over_ground=float(45.160717057894765),
+            course_over_ground=float(30.484886219250917),
+            true_heading=int(89),
+            navigation_status=int(67),
+            rate_of_turn=float(70.36921980256001),
+            position_accuracy=int(61),
+            timestamp='dkjkdzgsseyrshvhxilq',
+            station_id='mykogsvqtqjdfhsifjot',
+            ais_msg_type=int(100)
         )

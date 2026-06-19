@@ -165,11 +165,11 @@ class NetworkStatus:
             An instance of the dataclass.
         """
         return cls(
-            callsign='hkosnpjwepwmyiudfnuu',
-            update_timestamp='uuwzwrntlugywmkhcjka',
-            connected_clients=int(20),
-            unique_users=int(68),
-            pilot_count=int(81),
-            controller_count=int(32),
-            facility='uiebvmotzhcugnbsbccv'
+            callsign='dbsbdznhaqzocrffglxy',
+            update_timestamp='cvjkuyeeothbjtkvdvgq',
+            connected_clients=int(39),
+            unique_users=int(70),
+            pilot_count=int(37),
+            controller_count=int(14),
+            facility='vwoognhshouznnqqdjqg'
         )

@@ -1,3 +1,3 @@
-from .no import DatedServiceJourney, EstimatedCall, EstimatedVehicleJourney, MonitoredVehicleJourney, ValidityPeriod, PtSituationElement
+from .no import ValidityPeriod, PtSituationElement, MonitoredVehicleJourney, DatedServiceJourney, EstimatedCall, EstimatedVehicleJourney
 
-__all__ = ["DatedServiceJourney", "EstimatedCall", "EstimatedVehicleJourney", "MonitoredVehicleJourney", "ValidityPeriod", "PtSituationElement"]
+__all__ = ["ValidityPeriod", "PtSituationElement", "MonitoredVehicleJourney", "DatedServiceJourney", "EstimatedCall", "EstimatedVehicleJourney"]
