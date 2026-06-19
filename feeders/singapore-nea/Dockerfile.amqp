@@ -20,6 +20,7 @@ RUN set -eux; \
     rm -rf /var/lib/apt/lists/*
 COPY . /app
 RUN pip install --no-cache-dir ./singapore_nea_amqp_producer/singapore_nea_amqp_producer_data \ 
+ && pip install --no-cache-dir ./singapore_nea_mqtt \
  && pip install --no-cache-dir ./singapore_nea_amqp \ 
  && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \ 
  && rm -rf /root/.cache /var/lib/apt/lists/*
