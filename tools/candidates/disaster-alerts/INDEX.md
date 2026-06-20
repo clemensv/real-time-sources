@@ -53,10 +53,12 @@ Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/
 
 ## Round 2026-06 — Japan / Korea sweep (corrected)
 
-Japan's multi-hazard JMA feeds are **already implemented** as feeders. This sweep
-initially mis-promoted them as a gap because correlation was done against the
-**stale root `catalog.json`** (which omits all `jma-*`, `tepco-denkiyoho`, and
-`tokyo-docomo-bikeshare`) instead of the authoritative `feeders/` directory.
+Japan's multi-hazard JMA feeds are **already implemented** as feeders **and
+listed in `catalog.json`**. This sweep initially mis-promoted them as a gap due
+to a **faulty correlation grep** — a PowerShell `Select-String -SimpleMatch`
+call with a `jma|bosai|…` alternation silently matched nothing (`-SimpleMatch`
+disables regex, so it searched for the literal pipe-string). `catalog.json` and
+`feeders/` both list all five JMA feeds (verified: identical 109-id sets).
 Recorded here so they are not re-promoted:
 
 | JMA hazard feed | Implemented feeder |

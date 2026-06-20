@@ -5,18 +5,23 @@ Research conducted: 2026-06-20
 Follow-on to the SG/HK/TW sweep. Targeted verification of Japan and South Korea.
 
 > **Correction note.** This sweep initially mis-promoted JMA's disaster/seismic
-> feeds as an 18/18 "gap". They are in fact **already implemented** as feeders.
-> The error came from correlating against the **stale root `catalog.json`**
-> (which omits every `jma-*` source, plus `tepco-denkiyoho` and
-> `tokyo-docomo-bikeshare`) instead of the authoritative **`feeders/`**
-> directory. The withdrawn candidate note (`disaster-alerts/japan-jma-disaster.md`)
-> has been deleted; this note reflects reality.
+> feeds as an 18/18 "gap". They are in fact **already implemented** as feeders
+> **and listed in `catalog.json`**. The error was a **faulty correlation grep**,
+> not stale data: a PowerShell `Select-String -SimpleMatch` call with a
+> `jma|bosai|…` alternation pattern silently matched nothing, because
+> `-SimpleMatch` disables regex and searched for the literal string with pipes.
+> `catalog.json` actually lists every JMA source. The withdrawn candidate note
+> (`disaster-alerts/japan-jma-disaster.md`) has been deleted; this note reflects
+> reality.
 
 ## Authoritative correlation source
 
-`feeders/` is the source of truth for what is implemented. The root
-`catalog.json` (109 entries) is **stale/incomplete** and must not be used alone
-for gap analysis — it is missing all seven Japanese feeders below.
+Both `feeders/` and the root `catalog.json` are authoritative and **in sync** —
+verified: identical 109-id sets, including all seven Japanese feeders below. The
+earlier "stale catalog" conclusion was **wrong**; it came from a broken grep
+(`Select-String -SimpleMatch` over a `a|b|c` alternation), not missing data.
+Correlate by parsing `catalog.json` with `ConvertFrom-Json` (or listing
+`feeders/`) — never with `Select-String -SimpleMatch` on a pipe-alternation.
 
 ## Japan — already implemented (7 feeders)
 

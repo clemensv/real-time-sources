@@ -72,9 +72,10 @@ Peninsula. This pass closed the gap — and corrected a mis-promotion. **Japan
 (JMA)** earthquake data is **already implemented** as `feeders/jma-bosai-quake`
 (see the *Already Implemented* table above), with tsunami in
 `jma-bosai-warning` and volcano in `jma-bosai-volcano`. It was briefly
-promoted as an 18/18 "gap" during this sweep because correlation was run
-against the stale root `catalog.json` (which omits every `jma-*` feeder)
-rather than the authoritative `feeders/` tree — that candidate note has been
+promoted as an 18/18 "gap" during this sweep due to a **faulty correlation
+grep** (`Select-String -SimpleMatch` with a `jma|…` alternation matched nothing
+— `-SimpleMatch` disables regex); in fact both `catalog.json` and `feeders/`
+list it (identical 109-id sets). That candidate note has been
 withdrawn. Worth recording: unlike **US ShakeAlert** (dismissed above — "EEW
 not publicly accessible"), Japan's bosai data is keyless, which is why a bridge
 already exists. **Korea (KMA)** earthquake data is real-time but **key-gated**
