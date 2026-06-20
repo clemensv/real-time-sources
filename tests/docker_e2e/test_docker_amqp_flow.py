@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import socket
 import os
+import json
 import time
 import urllib.parse
 from contextlib import closing
@@ -12,7 +13,7 @@ from typing import Any, Dict, List
 import docker
 import pytest
 
-from .helpers import REPO_ROOT, build_image
+from .helpers import REPO_ROOT, build_image, _load_project_contract
 
 ARTEMIS_IMAGE = "apache/activemq-artemis:latest-alpine"
 ARTEMIS_USER = "admin"
@@ -60,6 +61,41 @@ def _extract_ce_attrs(msg: Any) -> Dict[str, Any]:
     return attrs
 
 
+def _message_body_as_dict(msg: Any) -> Dict[str, Any]:
+    body = getattr(msg, "body", None)
+    if isinstance(body, dict):
+        return body
+    if isinstance(body, memoryview):
+        body = body.tobytes()
+    if isinstance(body, (bytes, bytearray)):
+        body = body.decode("utf-8")
+    if isinstance(body, str):
+        parsed = json.loads(body)
+        if isinstance(parsed, str):
+            parsed = json.loads(parsed)
+        if isinstance(parsed, dict):
+            return parsed
+    raise AssertionError(f"AMQP body is not a JSON object: {body!r}")
+
+
+def _assert_amqp_contract_messages(project_dir: str, messages: List[Any]) -> None:
+    contracts = _load_project_contract(project_dir)
+    for msg in messages:
+        ce = _extract_ce_attrs(msg)
+        event_type = str(ce.get("type"))
+        contract = contracts.get(event_type)
+        assert contract is not None, f"No xreg contract found for AMQP event type {event_type!r} in {project_dir!r}"
+        content_type = getattr(msg, "content_type", None) or ce.get("datacontenttype")
+        assert content_type == "application/json", f"Unexpected AMQP content type for {event_type}: {content_type!r}"
+        payload = _message_body_as_dict(msg)
+        errors = contract["validator"].validate_instance(payload)
+        assert not errors, (
+            f"JsonStructure validation failed for AMQP {event_type!r}: "
+            f"{'; '.join(str(error) for error in errors[:5])}\n"
+            f"Data: {json.dumps(payload, ensure_ascii=True, sort_keys=True)[:2000]}"
+        )
+
+
 @pytest.mark.docker_e2e
 class AmqpDockerFlowBase:
     source_dir = ""
@@ -67,10 +103,16 @@ class AmqpDockerFlowBase:
     env: Dict[str, str] = {}
     expected_types: set[str] = set()
     expected_count = 3
+    contract_source_dir = ""
+    base_source_dir = ""
+    base_dockerfile = "Dockerfile.amqp"
+    base_tag = ""
 
     def test_emits_cloudevents_to_amqp_queue(self):
         client = docker.from_env()
         queue = self.source_dir
+        if self.base_source_dir and self.base_tag:
+            build_image(self.base_source_dir, dockerfile=self.base_dockerfile, tag=self.base_tag)
         image = build_image(self.source_dir, dockerfile="Dockerfile.amqp", tag=f"test-{self.image}")
         network = client.networks.create(f"{self.image}-e2e", driver="bridge")
         host_port = _find_free_port()
@@ -139,6 +181,8 @@ class AmqpDockerFlowBase:
                 ce = _extract_ce_attrs(msg)
                 for required in ("id", "source", "type", "subject", "specversion"):
                     assert required in ce, f"Missing CE {required}: {ce}"
+            if self.contract_source_dir:
+                _assert_amqp_contract_messages(self.contract_source_dir, messages)
         finally:
             if feeder is not None:
                 try:
@@ -729,9 +773,13 @@ class TestTFLRoadTrafficAmqpDockerFlow(AmqpDockerFlowBase):
 class TestTokyoDocomoBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "tokyo-docomo-bikeshare"
     image = "tokyo-docomo-bikeshare-amqp"
-    env = {"ONCE_MODE": "true"}
-    expected_types = {'JP.ODPT.DocomoBikeshare.BikeshareSystem', 'JP.ODPT.DocomoBikeshare.BikeshareStation', 'JP.ODPT.DocomoBikeshare.BikeshareStationStatus'}
+    env = {"GBFS_MOCK": "true", "ONCE_MODE": "true"}
+    expected_types = {'org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'}
     expected_count = 3
+    contract_source_dir = "gbfs-bikeshare"
+    base_source_dir = "gbfs-bikeshare"
+    base_dockerfile = "Dockerfile.amqp"
+    base_tag = "ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-amqp:latest"
 
 class TestGbfsBikeshareAmqpDockerFlow(AmqpDockerFlowBase):
     source_dir = "gbfs-bikeshare"

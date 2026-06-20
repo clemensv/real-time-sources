@@ -122,7 +122,8 @@ def tfl_road_traffic_image():
 
 @pytest.fixture(scope='module')
 def tokyo_docomo_bikeshare_image():
-    return build_image('tokyo-docomo-bikeshare')
+    build_image('gbfs-bikeshare', tag='ghcr.io/clemensv/real-time-sources-gbfs-bikeshare:latest')
+    return build_image('tokyo-docomo-bikeshare', tag='test-tokyo-docomo-bikeshare')
 
 @pytest.fixture(scope='module')
 def gbfs_bikeshare_image():
@@ -469,6 +470,7 @@ def _run_kafka_flow_test(
     required_types: Optional[List[str]] = None,
     required_exact_types: Optional[List[str]] = None,
     required_any_types: Optional[List[str]] = None,
+    fail_on_missing_types: bool = False,
     extra_env: Optional[Dict[str, str]] = None,
     command: Optional[str | List[str]] = None,
     min_messages: int = 5,
@@ -492,6 +494,7 @@ def _run_kafka_flow_test(
         required_exact_types: Exact CloudEvent types that must all appear in
             observed event types.
         required_any_types: Substrings where at least one must appear.
+        fail_on_missing_types: Raise instead of skipping when deterministic tests miss required types.
         extra_env: Additional environment variables for the container.
         command: Optional container command override.
         min_messages: Minimum total messages to consume.
@@ -614,7 +617,7 @@ def _run_kafka_flow_test(
                 if not any(pat in t for t in observed_types)
             ]
             if missing:
-                if _container_crashed(container):
+                if fail_on_missing_types or _container_crashed(container):
                     raise AssertionError(
                         f'Missing required event families {missing}. Observed types: '
                         f'{sorted(observed_types)}\n'
@@ -631,7 +634,7 @@ def _run_kafka_flow_test(
                 if exact_type not in observed_types
             ]
             if missing_exact:
-                if _container_crashed(container):
+                if fail_on_missing_types or _container_crashed(container):
                     raise AssertionError(
                         f'Missing exact event families {missing_exact}. Observed types: '
                         f'{sorted(observed_types)}\n'
@@ -647,7 +650,7 @@ def _run_kafka_flow_test(
                 any(pat in t for t in observed_types) for pat in required_any_types
             )
             if not has_any_required:
-                if _container_crashed(container):
+                if fail_on_missing_types or _container_crashed(container):
                     raise AssertionError(
                         f'Expected at least one event family from {required_any_types}, '
                         f'but observed types were {sorted(observed_types)}\n'
@@ -2458,12 +2461,15 @@ class TestTokyoDocomoBikeshareDockerFlow:
     def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, tokyo_docomo_bikeshare_image):
         _run_kafka_flow_test(
             kafka, tokyo_docomo_bikeshare_image, self.TOPIC,
-            reference_types=['BikeshareSystem', 'BikeshareStation'],
-            telemetry_types=['BikeshareStationStatus'],
-            required_types=['BikeshareSystem', 'BikeshareStation', 'BikeshareStationStatus'],
-            extra_env={'ONCE_MODE': 'true'},
+            project_dir='gbfs-bikeshare',
+            reference_types=['org.gbfs.SystemInformation', 'org.gbfs.StationInformation'],
+            telemetry_types=['org.gbfs.StationStatus'],
+            required_exact_types=['org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'],
+            fail_on_missing_types=True,
+            command=['python', '-m', 'gbfs_bikeshare', 'feed', '--mock'],
+            extra_env={'KAFKA_ENABLE_TLS': 'false'},
             min_messages=3,
-            timeout=300,
+            timeout=120,
         )
 
 
@@ -2476,6 +2482,7 @@ class TestGbfsBikeshareDockerFlow:
             reference_types=['org.gbfs.SystemInformation', 'org.gbfs.StationInformation'],
             telemetry_types=['org.gbfs.StationStatus'],
             required_exact_types=['org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'],
+            fail_on_missing_types=True,
             command=['python', '-m', 'gbfs_bikeshare', 'feed', '--mock'],
             extra_env={
                 'KAFKA_ENABLE_TLS': 'false',

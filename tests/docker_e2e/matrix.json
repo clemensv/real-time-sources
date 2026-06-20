@@ -1460,13 +1460,13 @@
       "dir": "feeders/tokyo-docomo-bikeshare",
       "image": "tokyo-docomo-bikeshare-mqtt",
       "file": "Dockerfile.mqtt",
-      "module": "tokyo_docomo_bikeshare_mqtt"
+      "module": "gbfs_bikeshare_mqtt.app"
     },
     {
       "dir": "feeders/tokyo-docomo-bikeshare",
       "image": "tokyo-docomo-bikeshare-amqp",
       "file": "Dockerfile.amqp",
-      "module": "tokyo_docomo_bikeshare_amqp"
+      "module": "gbfs_bikeshare_amqp.app"
     },
     {
       "dir": "feeders/gbfs-bikeshare",
@@ -1824,7 +1824,7 @@
       "dir": "feeders/tokyo-docomo-bikeshare",
       "image": "tokyo-docomo-bikeshare",
       "file": "Dockerfile",
-      "module": "tokyo_docomo_bikeshare"
+      "module": "gbfs_bikeshare"
     },
     {
       "dir": "feeders/usgs-nwis-wq",

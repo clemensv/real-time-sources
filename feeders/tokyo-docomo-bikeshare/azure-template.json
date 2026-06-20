@@ -2,33 +2,48 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the tokyo-docomo-bikeshare MQTT feeder as an Azure Container Instance against an existing MQTT 5 broker."
+    "description": "Deploys the Tokyo Docomo Bikeshare thin-wrapper Kafka bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics. Bring your own Kafka or Event Hubs connection string."
   },
   "parameters": {
-    "brokerUrl": {
-      "type": "string",
+    "connectionString": {
+      "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Broker URL, e.g. mqtt://host:1883 or mqtts://host:8883."
+        "description": "Event Hubs / Fabric Event Stream or plain BootstrapServer=...;EntityPath=... connection string."
       }
     },
-    "brokerUsername": {
+    "gbfsFeeds": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json",
       "metadata": {
-        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+        "description": "Tokyo Docomo GBFS autodiscovery URL served by ODPT."
       }
     },
-    "brokerPassword": {
-      "type": "securestring",
-      "defaultValue": "",
+    "gbfsSystemIds": {
+      "type": "string",
+      "defaultValue": "docomo-cycle-tokyo",
       "metadata": {
-        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+        "description": "Stable GBFS system id used in CloudEvents subjects and transport keys."
+      }
+    },
+    "gbfsApiKey": {
+      "type": "securestring",
+      "minLength": 1,
+      "metadata": {
+        "description": "ODPT consumer key supplied at runtime. The base image appends it as acl:consumerKey=."
+      }
+    },
+    "pollInterval": {
+      "type": "int",
+      "defaultValue": 60,
+      "minValue": 5,
+      "metadata": {
+        "description": "Polling interval in seconds."
       }
     },
     "containerGroupName": {
       "type": "string",
-      "defaultValue": "tokyo-docomo-bikeshare-mqtt",
+      "defaultValue": "tokyo-docomo-bikeshare",
       "metadata": {
         "description": "Name for the container group resource."
       },
@@ -41,78 +56,12 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
-    },
-    "imageName": {
-      "type": "string",
-      "defaultValue": "ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-mqtt:latest",
-      "metadata": {
-        "description": "Container image reference for the MQTT feeder."
-      }
-    },
-    "mqttClientId": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "MQTT client identifier (must be globally unique per broker)."
-      }
-    },
-    "gbfsFeeds": {
-      "type": "string",
-      "metadata": {
-        "description": "Tokyo Docomo GBFS autodiscovery URL served by ODPT."
-      },
-      "defaultValue": "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json"
-    },
-    "gbfsSystemIds": {
-      "type": "string",
-      "metadata": {
-        "description": "Stable GBFS system id used in CloudEvents subjects and transport keys."
-      },
-      "defaultValue": "docomo-cycle-tokyo"
-    },
-    "gbfsApiKey": {
-      "type": "securestring",
-      "metadata": {
-        "description": "ODPT consumer key supplied at runtime. The base image appends it as acl:consumerKey=."
-      }
-    },
-    "gbfsApiKeyParam": {
-      "type": "string",
-      "metadata": {
-        "description": "Query-string parameter name used with GBFS_API_KEY; keep the default for ODPT."
-      },
-      "defaultValue": "acl:consumerKey"
-    },
-    "pollInterval": {
-      "type": "string",
-      "metadata": {
-        "description": "Station-status polling interval in seconds."
-      },
-      "defaultValue": "60"
-    },
-    "referenceRefreshInterval": {
-      "type": "string",
-      "metadata": {
-        "description": "System and station reference refresh cadence in seconds."
-      },
-      "defaultValue": "3600"
-    },
-    "onceMode": {
-      "type": "string",
-      "metadata": {
-        "description": "Run one polling cycle and exit."
-      },
-      "defaultValue": "false"
-    },
-    "logLevel": {
-      "type": "string",
-      "metadata": {
-        "description": "Controls feeder log verbosity using standard Python logging levels such as DEBUG, INFO, WARNING, ERROR, or CRITICAL."
-      },
-      "defaultValue": "INFO"
     }
   },
   "variables": {
+    "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
+    "fileShareName": "bridge-state",
+    "imageName": "ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare:latest",
     "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
   },
   "resources": [
@@ -129,16 +78,51 @@
       }
     },
     {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-05-01",
+      "name": "[variables('storageAccountName')]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "Standard_LRS"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "accessTier": "Hot",
+        "minimumTlsVersion": "TLS1_2"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {}
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2023-05-01",
+      "name": "[concat(variables('storageAccountName'), '/default/', variables('fileShareName'))]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
+      ],
+      "properties": {
+        "shareQuota": 1
+      }
+    },
+    {
       "type": "Microsoft.ContainerInstance/containerGroups",
       "apiVersion": "2023-05-01",
       "name": "[parameters('containerGroupName')]",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]",
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices/shares', variables('storageAccountName'), 'default', variables('fileShareName'))]"
       ],
       "properties": {
         "osType": "Linux",
-        "restartPolicy": "OnFailure",
+        "restartPolicy": "Always",
         "diagnostics": {
           "logAnalytics": {
             "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
@@ -150,7 +134,7 @@
           {
             "name": "[parameters('containerGroupName')]",
             "properties": {
-              "image": "[parameters('imageName')]",
+              "image": "[variables('imageName')]",
               "resources": {
                 "requests": {
                   "cpu": 0.5,
@@ -159,20 +143,8 @@
               },
               "environmentVariables": [
                 {
-                  "name": "MQTT_BROKER_URL",
-                  "value": "[parameters('brokerUrl')]"
-                },
-                {
-                  "name": "MQTT_USERNAME",
-                  "value": "[parameters('brokerUsername')]"
-                },
-                {
-                  "name": "MQTT_PASSWORD",
-                  "secureValue": "[parameters('brokerPassword')]"
-                },
-                {
-                  "name": "MQTT_CLIENT_ID",
-                  "value": "[parameters('mqttClientId')]"
+                  "name": "CONNECTION_STRING",
+                  "secureValue": "[parameters('connectionString')]"
                 },
                 {
                   "name": "GBFS_FEEDS",
@@ -188,29 +160,41 @@
                 },
                 {
                   "name": "GBFS_API_KEY_PARAM",
-                  "value": "[parameters('gbfsApiKeyParam')]"
+                  "value": "acl:consumerKey"
                 },
                 {
                   "name": "POLL_INTERVAL",
-                  "value": "[parameters('pollInterval')]"
+                  "value": "[string(parameters('pollInterval'))]"
                 },
                 {
-                  "name": "REFERENCE_REFRESH_INTERVAL",
-                  "value": "[parameters('referenceRefreshInterval')]"
-                },
-                {
-                  "name": "ONCE_MODE",
-                  "value": "[parameters('onceMode')]"
+                  "name": "STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
                 },
                 {
                   "name": "LOG_LEVEL",
-                  "value": "[parameters('logLevel')]"
+                  "value": "INFO"
                 },
                 {
                   "name": "PYTHONUNBUFFERED",
                   "value": "1"
                 }
+              ],
+              "volumeMounts": [
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
               ]
+            }
+          }
+        ],
+        "volumes": [
+          {
+            "name": "bridge-state",
+            "azureFile": {
+              "shareName": "[variables('fileShareName')]",
+              "storageAccountName": "[variables('storageAccountName')]",
+              "storageAccountKey": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2023-05-01').keys[0].value]"
             }
           }
         ]

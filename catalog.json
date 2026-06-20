@@ -1036,8 +1036,9 @@
     "id": "tokyo-docomo-bikeshare",
     "name": "Tokyo Docomo Bikeshare",
     "cat": "Transport",
-    "key": false,
-    "desc": "Tokyo, Japan \u2014 1,794 stations, GBFS 2.3 via ODPT",
+    "key": true,
+    "desc": "Tokyo, Japan \u2014 Docomo Bikeshare GBFS via ODPT on gbfs-bikeshare",
+    "kafka": true,
     "kql": true,
     "mqtt": true,
     "amqp": true
