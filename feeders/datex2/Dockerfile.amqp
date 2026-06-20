@@ -1,0 +1,20 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/datex2" \
+      org.opencontainers.image.title="DATEX II -> AMQP 1.0 bridge" \
+      org.opencontainers.image.description="Publishes DATEX II traffic events as AMQP 1.0 binary CloudEvents." \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/datex2/CONTAINER.md" \
+      org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1 SETUPTOOLS_SCM_PRETEND_VERSION=0 DATEX2_MOCK="false" AMQP_ADDRESS="datex2"
+WORKDIR /app
+COPY . /app
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends gcc libc6-dev \
+ && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir ./datex2_amqp_producer/datex2_amqp_producer_data \
+ && pip install --no-cache-dir ./datex2_amqp_producer/datex2_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./datex2_core \
+ && pip install --no-cache-dir ./datex2_amqp
+CMD ["python", "-m", "datex2_amqp", "feed"]

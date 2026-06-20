@@ -100,6 +100,7 @@ const SOURCES = [
 
   // ── Road and Public Transport ──
   { id: "autobahn", name: "Autobahn", cat: "Transport", key: false, desc: "Germany — roadworks, warnings, closures, webcams", notebook: true, mqtt: true, amqp: true },
+  { id: "datex2", name: "DATEX II", cat: "Transport", key: false, desc: "Europe — generalized road traffic XML profiles", notebook: true, mqtt: true, amqp: true },
   { id: "digitraffic-road", name: "Digitraffic Road", cat: "Transport", key: false, desc: "Finland — TMS sensors, road weather, traffic messages", mqtt: true, amqp: true },
   { id: "french-road-traffic", name: "French Road Traffic", cat: "Transport", key: false, desc: "France — national road network, DATEX II", notebook: true, mqtt: true, amqp: true, amqpSb: false },
   { id: "gtfs", name: "GTFS Realtime", cat: "Transport", key: false, desc: "Global — 1,000+ transit agencies, vehicles, trips, alerts", mqtt: true, amqp: true, amqpSb: false },
@@ -899,4 +900,3 @@ async function selectFromHash() {
 }
 window.addEventListener("hashchange", selectFromHash);
 selectFromHash();
-

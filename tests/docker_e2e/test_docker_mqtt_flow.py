@@ -6387,3 +6387,47 @@ class TestSiriMqttDockerFlow:
             except docker.errors.APIError: pass
             try: network.remove()
             except docker.errors.APIError: pass
+
+@pytest.fixture(scope='module')
+def datex2_mqtt_image():
+    return build_image('datex2', dockerfile='Dockerfile.mqtt', tag='test-datex2-mqtt')
+
+
+class TestDatex2MqttDockerFlow:
+    def test_emits_binary_cloudevents(self, datex2_mqtt_image):
+        client = docker.from_env()
+        broker, network, host_port = _generic_mosquitto('datex2-mqtt-e2e', 'datex2-mqtt-e2e-broker')
+        try:
+            feeder = client.containers.run(
+                datex2_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={
+                    'DATEX2_MOCK': 'true',
+                    'ONCE_MODE': 'true',
+                    'MQTT_BROKER_URL': 'datex2-mqtt-e2e-broker:1883',
+                    'MQTT_ENABLE_TLS': 'false',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            try:
+                result = feeder.wait(timeout=300)
+                logs = feeder.logs().decode('utf-8', errors='replace')
+                assert result.get('StatusCode') == 0, logs
+            finally:
+                feeder.remove(force=True)
+            messages = _collect_messages_topic('127.0.0.1', host_port, 'traffic/eu/datex2/datex2/#', timeout=20.0)
+            assert messages, 'No MQTT messages received from datex2'
+            seen = {m['user_properties'].get('type') for m in messages}
+            assert {'org.datex2.measured.MeasurementSite', 'org.datex2.measured.TrafficMeasurement', 'org.datex2.situation.SituationRecord'} <= seen
+            _assert_mqtt_contract_messages('datex2', messages)
+        finally:
+            try:
+                broker.kill()
+            except docker.errors.APIError:
+                pass
+            try:
+                network.remove()
+            except docker.errors.APIError:
+                pass
