@@ -129,9 +129,21 @@ def detect_existing_families(repo: str):
 SKIP_VERDICT = re.compile(
     r"\*\*(?:Verdict|Recommendation|Decision)\*\*\s*[:\-]?\s*(.+)", re.I)
 
+# Curated commercial/paid vendors that slip past the **SKIP** verdict text but
+# are disqualified by the find-real-time-sources policy (paid commercial license
+# or per-query billing). Matched against the note TITLE only (not body, to avoid
+# false hits from comparison mentions) so they never surface as buildable
+# generalized-feeder cluster members. Finer per-source keep/drop still happens
+# during each source's upstream audit at build time.
+COMMERCIAL_SKIP = re.compile(
+    r"\bTomTom\b|\bHERE\s+(?:Traffic|Maps|Technologies|Location|Routing|API)\b",
+    re.I)
 
-def is_skip(text: str) -> bool:
+
+def is_skip(text: str, title: str = "") -> bool:
     if re.search(r"\*\*SKIP\*\*", text, re.I) or "\u23ed" in text:
+        return True
+    if title and COMMERCIAL_SKIP.search(title):
         return True
     m = SKIP_VERDICT.search(text)
     if m and re.search(r"\bskip\b|\bdefer\b|\breject\b|\u274c", m.group(1), re.I):
@@ -194,7 +206,7 @@ def parse_note(path: str):
         "score": score,
         "score_src": score_src,
         "kind": classify_kind(cat, slug, title, text, reuse_label),
-        "skip": is_skip(text),
+        "skip": is_skip(text, title),
         "region": field(FIELD_RX["region"], text),
         "protocol": field(FIELD_RX["protocol"], text),
         "freshness": field(FIELD_RX["freshness"], text),
