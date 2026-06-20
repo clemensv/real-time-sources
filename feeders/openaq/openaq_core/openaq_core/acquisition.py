@@ -8,6 +8,12 @@ from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
+# MeasurementRecord has a field literally named ``datetime`` (it mirrors the
+# generated producer field name and is splatted via ``**record.__dict__``), which
+# shadows the imported ``datetime`` type inside the class body. Alias the type so
+# later annotations in that class still resolve to the type, not the field.
+DateTime = datetime
+
 import requests
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
@@ -73,13 +79,13 @@ class MeasurementRecord:
     parameter_id: int
     parameter_name: str
     parameter_units: str
-    datetime: datetime
+    datetime: DateTime
     value: Optional[float]
     latitude: Optional[float]
     longitude: Optional[float]
     is_valid: Optional[bool]
     has_flags: Optional[bool]
-    poll_time: datetime
+    poll_time: DateTime
 
 
 def _make_session(api_key: Optional[str]) -> requests.Session:
