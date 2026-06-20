@@ -12,6 +12,7 @@ Real-time parking garage and lot occupancy data sources. Parking data is highly 
 | [ParkAPI (ParkenDD)](parkapi-germany.md) | **DE + EU (30+ cities)** | 16/18 | REST | Open-source aggregator; one API for 30+ cities |
 | [Ghent Parking](ghent-parking.md) | Belgium — Ghent | 16/18 | REST (Opendatasoft) | Clean real-time data; Opendatasoft pattern reusable |
 | [Swiss Parking (Basel + Zürich)](swiss-parking.md) | Switzerland | 16/18 | REST | Real-time garage occupancy; via ParkenDD + native portals |
+| [Italian City Parking (Firenze + Torino + Bologna)](italy-parking.md) | **Italy** | 15/18 | REST (GeoJSON) + 5T XML | Live occupancy in 3 major cities; **not** covered by ParkenDD |
 | [TfL Car Parks London](tfl-carparks-london.md) | UK — London | 15/18 | REST | Park & Ride at Tube/rail stations; same TfL API as bikeshare |
 | [RDW Parking Netherlands](rdw-parking-netherlands.md) | Netherlands | 15/18 | REST (Socrata) | Static reference data; complements NDW |
 | [Cologne Parking](cologne-parking.md) | Germany — Cologne | 13/18 | REST (Esri) | Direct city data; already in ParkAPI |
@@ -54,6 +55,7 @@ The following sources were researched but did not yield open real-time parking A
 - **Netherlands**: NDW (real-time truck parking) + RDW (static reference)
 - **Belgium**: Ghent (Opendatasoft — pattern reusable for other cities)
 - **Switzerland**: Basel + Zürich (via ParkAPI and native portals)
+- **Italy**: Firenze (per-garage GeoJSON), Torino (5T `traffic_data` XML), Bologna (Opendatasoft) — live occupancy, not in ParkenDD
 - **UK**: London (TfL car parks at Tube/rail stations)
 - **Australia**: Melbourne (3,309 individual bay sensors — unique dataset)
 - **Asia-Pacific**: Singapore (island-wide via LTA DataMall)
@@ -66,4 +68,14 @@ Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/
 | Candidate | File | Score | Verdict |
 |---|---|---|---|
 | UAE Smart Parking Systems (Dubai RTA Mawaqif, Abu Dhabi Darb) | [ae-uae-smart-parking.md](ae-uae-smart-parking.md) | ?/18 | — |
+
+## Round 2026-06 — data.europa.eu Round 3 sweep
+
+Added in June 2026 from the targeted [data.europa.eu Round 3 sweep](../_research-rounds/2026-06-eu-data-europa-round3.md), which mined the portal's `accrual_periodicity` + format fields for live feeds in native languages.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Italian City Parking (Firenze + Torino + Bologna) | [italy-parking.md](italy-parking.md) | 15/18 | **Build** — closes the Italy gap; Bologna is a drop-in Opendatasoft case |
+
+The same sweep confirmed **noise, reservoir/dam, and power-outage** live telemetry are **not** harvested into data.europa.eu (only static contour maps, dam classifications, and contingency datasets) — those domains must be sourced via direct national-agency APIs.
 
