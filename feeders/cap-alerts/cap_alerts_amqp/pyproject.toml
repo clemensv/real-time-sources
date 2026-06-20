@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cap_alerts_amqp"
+dynamic = ["version"]
+description = "CAP alerts AMQP feeder."
+requires-python = ">=3.10,<4.0"
+dependencies = ["requests>=2.32.3", "python-qpid-proton>=0.39.0", "cloudevents>=1.11.0,<2.0.0", "dataclasses_json>=0.6.7", "azure-identity>=1.17.0", "avro>=1.11.3", "cap_alerts_core", "cap_alerts_amqp_producer_data", "cap_alerts_amqp_producer_amqp_producer"]
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = ["cap_alerts_amqp"]

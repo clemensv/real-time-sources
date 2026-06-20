@@ -84,6 +84,7 @@ docker run --rm   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker>:5672/tok
 
 | Variable | Purpose |
 |---|---|
+| `GBFS_API_KEY` | ODPT access token required by the Tokyo Docomo Bikeshare GBFS feed. Read from the environment and passed only to upstream requests. |
 | `CONNECTION_STRING` | Core configuration for this image variant. |
 | `KAFKA_ENABLE_TLS` | Core configuration for this image variant. |
 

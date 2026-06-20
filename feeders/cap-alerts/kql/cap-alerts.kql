@@ -1,0 +1,285 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['org.oasis.cap.alerts.CapAlert'] (
+   [cap_source_id]: string,
+   [identifier]: string,
+   [sender]: string,
+   [sent]: datetime,
+   [status]: string,
+   [msg_type]: string,
+   [source]: string,
+   [scope]: string,
+   [restriction]: string,
+   [addresses]: dynamic,
+   [code]: dynamic,
+   [note]: string,
+   [references]: dynamic,
+   [incidents]: dynamic,
+   [info]: dynamic,
+   [provider_url]: string,
+   [raw_cap_xml]: string,
+   [area_desc]: string,
+   [same_codes]: dynamic,
+   [ugc_codes]: dynamic,
+   [vtec]: dynamic,
+   [awareness_level]: string,
+   [awareness_type]: string,
+   [event_type]: string,
+   [state]: string,
+   [affected_zones]: dynamic,
+   [raw_source_json]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.oasis.cap.alerts.CapAlert'] docstring @"{""description"": ""Generalized Common Alerting Protocol (CAP) 1.2 alert message. It preserves the full alert -> info[] -> area[]/resource[] CAP hierarchy plus standardized CAP extension arrays (eventCode, parameter, geocode) so national weather and emergency alert feeds can be represented losslessly. Convenience fields mirror typed fields emitted by existing DWD, MeteoAlarm, NOAA NWS, and NWS Alerts bespoke feeders while keeping the original CAP name/value pairs.""}";
+
+.alter table ['org.oasis.cap.alerts.CapAlert'] column-docstrings (
+   [cap_source_id]: @"{""description"": ""Configuration-assigned stable source identifier qualifying CAP alert identifiers across agencies. Examples: nws-us, meteoalarm-belgium, dwd-germany. This value is the first segment of the CloudEvent subject and Kafka key.""}",
+   [identifier]: @"{""description"": ""CAP identifier assigned by the sender to this alert message. Unique only within the sender/source, so the feeder qualifies it with cap_source_id for keys. Updates and cancellations use their own identifier; the CAP references field points to prior messages.""}",
+   [sender]: @"{""description"": ""CAP sender identifier for the originating alerting authority, such as w-nws.webmaster@noaa.gov or opendata@dwd.de.""}",
+   [sent]: @"{""description"": ""CAP sent timestamp when the message was issued by the sender, parsed as an ISO 8601 datetime.""}",
+   [status]: @"{""description"": ""CAP status for operational state of this message.""}",
+   [msg_type]: @"{""description"": ""CAP msgType indicating whether this message is an alert, update, cancellation, acknowledgement, or error.""}",
+   [source]: @"{""description"": ""CAP source: particular source of this alert message when supplied separately from sender. Null when omitted.""}",
+   [scope]: @"{""description"": ""CAP scope indicating intended distribution: Public, Restricted, or Private.""}",
+   [restriction]: @"{""description"": ""CAP restriction text describing distribution limits for Restricted scope messages. Null when not applicable.""}",
+   [addresses]: @"{""description"": ""CAP addresses list for Private messages, split into individual address tokens. Empty for Public and most Restricted alerts."", ""schema"": {""type"": ""array"", ""description"": ""CAP addresses list for Private messages, split into individual address tokens. Empty for Public and most Restricted alerts."", ""items"": {""type"": ""string""}}}",
+   [code]: @"{""description"": ""CAP code elements and code-like provider values preserved as name/value pairs. Used for source-specific routing or profile markers."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [note]: @"{""description"": ""CAP note: message note intended for alert handling, not necessarily public display. Null when omitted.""}",
+   [references]: @"{""description"": ""CAP references entries identifying related prior messages that this message updates or cancels. Preserved as strings; not used as the CloudEvent key."", ""schema"": {""type"": ""array"", ""description"": ""CAP references entries identifying related prior messages that this message updates or cancels. Preserved as strings; not used as the CloudEvent key."", ""items"": {""type"": ""string""}}}",
+   [incidents]: @"{""description"": ""CAP incidents identifiers listing incident(s) this alert message concerns. Empty when omitted."", ""schema"": {""type"": ""array"", ""description"": ""CAP incidents identifiers listing incident(s) this alert message concerns. Empty when omitted."", ""items"": {""type"": ""string""}}}",
+   [info]: @"{""description"": ""All CAP info blocks attached to the alert. Multiple blocks are common for multilingual or multi-instruction alerts and are preserved losslessly."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [provider_url]: @"{""description"": ""URL of the configured feed or detail resource from which this alert was acquired. Used as CloudEvent source template and for traceability.""}",
+   [raw_cap_xml]: @"{""description"": ""Original CAP XML document text when the source supplied XML. Null for JSON-only sources such as api.weather.gov active alerts unless a raw CAP detail URL was fetched.""}",
+   [area_desc]: @"{""description"": ""Convenience copy of the first info/area/areaDesc or NWS areaDesc used by existing bespoke feeders. The complete area list is still preserved under info[].area[].""}",
+   [same_codes]: @"{""description"": ""Convenience extraction of NWS SAME geocodes from CAP geocode/parameter pairs. The original values are also preserved in generic geocode[] or parameter[] arrays."", ""schema"": {""type"": ""array"", ""description"": ""Convenience extraction of NWS SAME geocodes from CAP geocode/parameter pairs. The original values are also preserved in generic geocode[] or parameter[] arrays."", ""items"": {""type"": ""string""}}}",
+   [ugc_codes]: @"{""description"": ""Convenience extraction of NWS UGC zone codes from CAP geocode/parameter pairs. The original values are also preserved in generic geocode[] or parameter[] arrays."", ""schema"": {""type"": ""array"", ""description"": ""Convenience extraction of NWS UGC zone codes from CAP geocode/parameter pairs. The original values are also preserved in generic geocode[] or parameter[] arrays."", ""items"": {""type"": ""string""}}}",
+   [vtec]: @"{""description"": ""Convenience extraction of NWS VTEC tracking strings from CAP parameters. The original VTEC values are also present in info[].parameter[]."", ""schema"": {""type"": ""array"", ""description"": ""Convenience extraction of NWS VTEC tracking strings from CAP parameters. The original VTEC values are also present in info[].parameter[]."", ""items"": {""type"": ""string""}}}",
+   [awareness_level]: @"{""description"": ""Convenience extraction of MeteoAlarm awareness_level CAP parameter. The original name/value pair is also preserved in info[].parameter[].""}",
+   [awareness_type]: @"{""description"": ""Convenience extraction of MeteoAlarm awareness_type CAP parameter. The original name/value pair is also preserved in info[].parameter[].""}",
+   [event_type]: @"{""description"": ""Normalized lower-case event or hazard token for routing and legacy feeder compatibility, derived from CAP info.event when available.""}",
+   [state]: @"{""description"": ""Provider-specific state, territory, country, or administrative routing token when present in the upstream feed. Null when not derivable.""}",
+   [affected_zones]: @"{""description"": ""NWS API affectedZones URI list and equivalent zone references from JSON CAP-equivalent sources. CAP XML feeds generally express the same information as area/geocode entries; this array preserves JSON-native zone URI references for lossless future folds."", ""schema"": {""type"": ""array"", ""description"": ""NWS API affectedZones URI list and equivalent zone references from JSON CAP-equivalent sources. CAP XML feeds generally express the same information as area/geocode entries; this array preserves JSON-native zone URI references for lossless future folds."", ""items"": {""type"": ""uri""}}}",
+   [raw_source_json]: @"{""description"": ""Raw upstream JSON object serialized as compact JSON when the source is a CAP-equivalent JSON API such as api.weather.gov. Null for native CAP XML feeds; retained as an escape hatch so future bespoke folds can prove no source-specific field was lost.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.oasis.cap.alerts.CapAlert'] ingestion json mapping "org.oasis.cap.alerts.CapAlert_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "cap_source_id", "path": "$.cap_source_id"},
+  {"column": "identifier", "path": "$.identifier"},
+  {"column": "sender", "path": "$.sender"},
+  {"column": "sent", "path": "$.sent"},
+  {"column": "status", "path": "$.status"},
+  {"column": "msg_type", "path": "$.msg_type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "scope", "path": "$.scope"},
+  {"column": "restriction", "path": "$.restriction"},
+  {"column": "addresses", "path": "$.addresses"},
+  {"column": "code", "path": "$.code"},
+  {"column": "note", "path": "$.note"},
+  {"column": "references", "path": "$.references"},
+  {"column": "incidents", "path": "$.incidents"},
+  {"column": "info", "path": "$.info"},
+  {"column": "provider_url", "path": "$.provider_url"},
+  {"column": "raw_cap_xml", "path": "$.raw_cap_xml"},
+  {"column": "area_desc", "path": "$.area_desc"},
+  {"column": "same_codes", "path": "$.same_codes"},
+  {"column": "ugc_codes", "path": "$.ugc_codes"},
+  {"column": "vtec", "path": "$.vtec"},
+  {"column": "awareness_level", "path": "$.awareness_level"},
+  {"column": "awareness_type", "path": "$.awareness_type"},
+  {"column": "event_type", "path": "$.event_type"},
+  {"column": "state", "path": "$.state"},
+  {"column": "affected_zones", "path": "$.affected_zones"},
+  {"column": "raw_source_json", "path": "$.raw_source_json"}
+]
+```
+
+.create-or-alter table ['org.oasis.cap.alerts.CapAlert'] ingestion json mapping "org.oasis.cap.alerts.CapAlert_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "cap_source_id", "path": "$.data.cap_source_id"},
+  {"column": "identifier", "path": "$.data.identifier"},
+  {"column": "sender", "path": "$.data.sender"},
+  {"column": "sent", "path": "$.data.sent"},
+  {"column": "status", "path": "$.data.status"},
+  {"column": "msg_type", "path": "$.data.msg_type"},
+  {"column": "source", "path": "$.data.source"},
+  {"column": "scope", "path": "$.data.scope"},
+  {"column": "restriction", "path": "$.data.restriction"},
+  {"column": "addresses", "path": "$.data.addresses"},
+  {"column": "code", "path": "$.data.code"},
+  {"column": "note", "path": "$.data.note"},
+  {"column": "references", "path": "$.data.references"},
+  {"column": "incidents", "path": "$.data.incidents"},
+  {"column": "info", "path": "$.data.info"},
+  {"column": "provider_url", "path": "$.data.provider_url"},
+  {"column": "raw_cap_xml", "path": "$.data.raw_cap_xml"},
+  {"column": "area_desc", "path": "$.data.area_desc"},
+  {"column": "same_codes", "path": "$.data.same_codes"},
+  {"column": "ugc_codes", "path": "$.data.ugc_codes"},
+  {"column": "vtec", "path": "$.data.vtec"},
+  {"column": "awareness_level", "path": "$.data.awareness_level"},
+  {"column": "awareness_type", "path": "$.data.awareness_type"},
+  {"column": "event_type", "path": "$.data.event_type"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "affected_zones", "path": "$.data.affected_zones"},
+  {"column": "raw_source_json", "path": "$.data.raw_source_json"}
+]
+```
+
+.drop materialized-view ['org.oasis.cap.alerts.CapAlertLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.oasis.cap.alerts.CapAlertLatest'] on table ['org.oasis.cap.alerts.CapAlert'] {
+    ['org.oasis.cap.alerts.CapAlert'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['org.oasis.cap.alerts.CapAlert'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.oasis.cap.alerts.CapAlert') | project['cap_source_id'] = tostring(data.['cap_source_id']),['identifier'] = tostring(data.['identifier']),['sender'] = tostring(data.['sender']),['sent'] = todatetime(data.['sent']),['status'] = tostring(data.['status']),['msg_type'] = tostring(data.['msg_type']),['source'] = tostring(data.['source']),['scope'] = tostring(data.['scope']),['restriction'] = tostring(data.['restriction']),['addresses'] = todynamic(data.['addresses']),['code'] = todynamic(data.['code']),['note'] = tostring(data.['note']),['references'] = todynamic(data.['references']),['incidents'] = todynamic(data.['incidents']),['info'] = todynamic(data.['info']),['provider_url'] = tostring(data.['provider_url']),['raw_cap_xml'] = tostring(data.['raw_cap_xml']),['area_desc'] = tostring(data.['area_desc']),['same_codes'] = todynamic(data.['same_codes']),['ugc_codes'] = todynamic(data.['ugc_codes']),['vtec'] = todynamic(data.['vtec']),['awareness_level'] = tostring(data.['awareness_level']),['awareness_type'] = tostring(data.['awareness_type']),['event_type'] = tostring(data.['event_type']),['state'] = tostring(data.['state']),['affected_zones'] = todynamic(data.['affected_zones']),['raw_source_json'] = tostring(data.['raw_source_json']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['org.oasis.cap.alerts.CapZone'] (
+   [cap_source_id]: string,
+   [zone_id]: string,
+   [name]: string,
+   [zone_type]: string,
+   [state]: string,
+   [forecast_office]: string,
+   [time_zones]: dynamic,
+   [geometry]: string,
+   [provider_url]: string,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.oasis.cap.alerts.CapZone'] docstring @"{""description"": ""Reference event for an alerting zone, forecast zone, MeteoAlarm region, or other area catalog entry exposed by a configured CAP source. The feeder emits zone reference data before alerts when the source exposes metadata such as api.weather.gov /zones, enabling consumers to interpret alert geocodes temporally.""}";
+
+.alter table ['org.oasis.cap.alerts.CapZone'] column-docstrings (
+   [cap_source_id]: @"{""description"": ""Configuration-assigned stable source identifier qualifying zone identifiers across agencies and used as the first subject/key segment.""}",
+   [zone_id]: @"{""description"": ""Stable upstream zone or region identifier, such as an NWS UGC zone code, county zone id, MeteoAlarm region code, or DWD area code.""}",
+   [name]: @"{""description"": ""Human-readable zone or region name supplied by the source metadata endpoint. Null when the source exposes only codes.""}",
+   [zone_type]: @"{""description"": ""Provider zone type or category, for example NWS public, marine, county, fire, forecast, or MeteoAlarm region class.""}",
+   [state]: @"{""description"": ""State, country, or regional routing token associated with the zone, if supplied by the metadata endpoint.""}",
+   [forecast_office]: @"{""description"": ""Responsible office or authority URL/code for this zone, such as an NWS Weather Forecast Office. Null when not supplied.""}",
+   [time_zones]: @"{""description"": ""IANA time-zone names associated with the zone when supplied by the metadata endpoint."", ""schema"": {""type"": ""array"", ""description"": ""IANA time-zone names associated with the zone when supplied by the metadata endpoint."", ""items"": {""type"": ""string""}}}",
+   [geometry]: @"{""description"": ""GeoJSON geometry serialized as compact JSON text when supplied by the metadata endpoint. Null when no geometry is published or when disabled for payload-size reasons.""}",
+   [provider_url]: @"{""description"": ""Metadata endpoint URL from which this zone reference was acquired. Used as CloudEvent source template and traceability link.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.oasis.cap.alerts.CapZone'] ingestion json mapping "org.oasis.cap.alerts.CapZone_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "cap_source_id", "path": "$.cap_source_id"},
+  {"column": "zone_id", "path": "$.zone_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "zone_type", "path": "$.zone_type"},
+  {"column": "state", "path": "$.state"},
+  {"column": "forecast_office", "path": "$.forecast_office"},
+  {"column": "time_zones", "path": "$.time_zones"},
+  {"column": "geometry", "path": "$.geometry"},
+  {"column": "provider_url", "path": "$.provider_url"}
+]
+```
+
+.create-or-alter table ['org.oasis.cap.alerts.CapZone'] ingestion json mapping "org.oasis.cap.alerts.CapZone_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "cap_source_id", "path": "$.data.cap_source_id"},
+  {"column": "zone_id", "path": "$.data.zone_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "zone_type", "path": "$.data.zone_type"},
+  {"column": "state", "path": "$.data.state"},
+  {"column": "forecast_office", "path": "$.data.forecast_office"},
+  {"column": "time_zones", "path": "$.data.time_zones"},
+  {"column": "geometry", "path": "$.data.geometry"},
+  {"column": "provider_url", "path": "$.data.provider_url"}
+]
+```
+
+.drop materialized-view ['org.oasis.cap.alerts.CapZoneLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.oasis.cap.alerts.CapZoneLatest'] on table ['org.oasis.cap.alerts.CapZone'] {
+    ['org.oasis.cap.alerts.CapZone'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['org.oasis.cap.alerts.CapZone'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.oasis.cap.alerts.CapZone') | project['cap_source_id'] = tostring(data.['cap_source_id']),['zone_id'] = tostring(data.['zone_id']),['name'] = tostring(data.['name']),['zone_type'] = tostring(data.['zone_type']),['state'] = tostring(data.['state']),['forecast_office'] = tostring(data.['forecast_office']),['time_zones'] = todynamic(data.['time_zones']),['geometry'] = tostring(data.['geometry']),['provider_url'] = tostring(data.['provider_url']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+

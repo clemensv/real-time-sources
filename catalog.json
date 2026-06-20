@@ -129,6 +129,17 @@
     "notebook": true
   },
   {
+    "id": "cap-alerts",
+    "name": "CAP Alerts",
+    "cat": "Weather",
+    "key": false,
+    "desc": "Global \u2014 configurable CAP 1.2 public alerts",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "carbon-intensity",
     "name": "Carbon Intensity UK",
     "cat": "Energy",

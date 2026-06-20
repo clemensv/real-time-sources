@@ -1,0 +1,36 @@
+[build-system]
+requires = [
+    "setuptools>=64",
+    "setuptools-scm>=8",
+]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cap-alerts-amqp-producer-data"
+dynamic = [
+    "version",
+]
+description = "A package for handling JSON Structure schema data"
+authors = [
+    { name = "Your Name" },
+]
+license = "MIT"
+requires-python = "<4.0,>=3.10"
+dependencies = [
+    "dataclasses-json>=0.6.7,<0.7.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pylint>=3.2.3,<4.0.0",
+]
+
+[tool.setuptools_scm]
+root = "../../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools.packages.find]
+where = [
+    "src",
+]
