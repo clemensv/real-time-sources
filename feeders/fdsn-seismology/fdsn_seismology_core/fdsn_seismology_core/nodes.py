@@ -52,6 +52,13 @@ NODE_CATALOG: dict[str, dict[str, str | None]] = {
         "coverage": "Romania + Vrancea",
         "country": "RO",
     },
+    "usgs": {
+        "node_id": "usgs",
+        "name": "U.S. Geological Survey Earthquake Hazards Program (USGS)",
+        "base_url": "https://earthquake.usgs.gov/fdsnws/event/1/",
+        "coverage": "Global earthquake catalog",
+        "country": "US",
+    },
 }
 
 

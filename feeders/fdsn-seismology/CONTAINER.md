@@ -8,7 +8,7 @@
 
 # FDSN Seismology
 
-<sub>7 federated FDSN nodes · Kafka · MQTT · AMQP · <a href="https://www.fdsn.org/webservices/">upstream</a> · <a href="https://geofon.gfz-potsdam.de/fdsnws/event/1/application.wadl">event WADL</a></sub>
+<sub>8 federated FDSN nodes · Kafka · MQTT · AMQP · <a href="https://www.fdsn.org/webservices/">upstream</a> · <a href="https://geofon.gfz-potsdam.de/fdsnws/event/1/application.wadl">event WADL</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -41,8 +41,8 @@ This document covers the published OCI images for **FDSN Seismology**, their env
 |---|---|---|
 | `POLL_INTERVAL` | `60` | Poll cadence in seconds. |
 | `MIN_MAGNITUDE` | `0` | Optional minimum magnitude filter applied to every node query. |
-| `NODES` | empty | Optional comma-separated allow-list of node ids (`emsc,gfz,...`). |
-| `EXCLUDE_NODES` | empty | Optional comma-separated deny-list of node ids. |
+| `NODES` / `FDSN_NODES` | empty | Optional comma-separated allow-list of node ids (`emsc,gfz,usgs,...`). |
+| `EXCLUDE_NODES` / `FDSN_EXCLUDE_NODES` | empty | Optional comma-separated deny-list of node ids. |
 | `STATE_FILE` | variant-specific user-home path | JSON file storing per-node poll cursors and dedupe state. Mount a volume if you want replay suppression across restarts. |
 | `ONCE_MODE` | `false` | Run exactly one cycle and exit. Required for Fabric notebook hosting. |
 | `FDSN_LIMIT` | `500` | Per-node maximum record count per query. |

@@ -2,7 +2,7 @@
   "$schema": "https://xregistry.io/schema/xregistry_messaging_catalog.json",
   "specversion": "1.0-rc1",
   "name": "FDSN Seismology",
-  "documentation": "Federated FDSN event-service bridge over seven pre-configured earthquake nodes (EMSC, GFZ, INGV, ETHZ/SED, RESIF, IPGP, NIEP). Upstream surface reviewed from the FDSN Event WADL plus live node probes: query (kept, telemetry), catalogs (dropped as duplicate index metadata), contributors (dropped as duplicate contributor listings), version (dropped as operational metadata), and application.wadl (dropped as static service description). The feeder emits node reference records and earthquake telemetry on a single topic family.",
+  "documentation": "Federated FDSN event-service bridge over eight pre-configured earthquake nodes (EMSC, GFZ, INGV, ETHZ/SED, RESIF, IPGP, NIEP, USGS). Upstream surface reviewed from the FDSN Event WADL plus live node probes: query (kept, telemetry), catalogs (dropped as duplicate index metadata), contributors (dropped as duplicate contributor listings), version (dropped as operational metadata), and application.wadl (dropped as static service description). The feeder emits node reference records and earthquake telemetry on a single topic family.",
   "endpoints": {
     "org.fdsn.event.Kafka": {
       "usage": ["producer"],
@@ -280,9 +280,7 @@
                               "description": "Hypocentral depth in kilometers below the Earth's surface; null if unconstrained.",
                               "altnames": {
                                 "json": ["Depth/km"]
-                              },
-                              "unit": "kilometer",
-                              "symbol": "km"
+                              }
                             },
                             "author": {
                               "type": ["string", "null"],
