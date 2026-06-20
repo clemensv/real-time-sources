@@ -10,7 +10,17 @@ from typing import Dict, Optional
 
 from confluent_kafka import Producer
 
-from siri_core import FeedConfig, SiriClient, build_kafka_config, load_state, parse_csv_tokens, parse_data_types, parse_kafka_connection_string, save_state
+from siri_core import (
+    SUPPORTED_PROVIDERS,
+    FeedConfig,
+    SiriClient,
+    build_kafka_config,
+    load_state,
+    parse_csv_tokens,
+    parse_data_types,
+    parse_kafka_connection_string,
+    save_state,
+)
 from siri_producer_data import Operator, VehiclePosition
 from siri_producer_kafka_producer.producer import OrgSiriKafkaEventProducer
 
@@ -137,9 +147,11 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command")
 
     feed_parser = subparsers.add_parser("feed", help="Feed operator metadata and vehicle positions as CloudEvents to Kafka")
-    feed_parser.add_argument("--provider", choices=["bods", "trafiklab", "custom"], default=os.getenv("SIRI_PROVIDER", "bods"))
+    feed_parser.add_argument("--provider", choices=SUPPORTED_PROVIDERS, default=os.getenv("SIRI_PROVIDER", "bods"))
     feed_parser.add_argument("--siri-url", type=str, default=os.getenv("SIRI_URL"))
     feed_parser.add_argument("--api-key", type=str, default=os.getenv("SIRI_API_KEY") or os.getenv("BODS_API_KEY"))
+    feed_parser.add_argument("--headers", type=str, default=os.getenv("SIRI_HEADERS"))
+    feed_parser.add_argument("--et-client-name", type=str, default=os.getenv("SIRI_ET_CLIENT_NAME"))
     feed_parser.add_argument("--operators", type=str, default=os.getenv("SIRI_OPERATORS") or os.getenv("OPERATORS"))
     feed_parser.add_argument("--data-types", type=str, default=os.getenv("SIRI_DATA_TYPES", "vm"))
     feed_parser.add_argument("--kafka-bootstrap-servers", type=str, default=os.getenv("KAFKA_BOOTSTRAP_SERVERS"))
@@ -171,6 +183,8 @@ def main(argv: Optional[list] = None) -> None:
         polling_interval=args.polling_interval,
         state_file=args.state_file,
         once=args.once,
+        request_headers=args.headers,
+        et_client_name=args.et_client_name,
     )
 
     if args.connection_string:
@@ -204,6 +218,7 @@ def main(argv: Optional[list] = None) -> None:
         api_key=config.api_key,
         operators=config.operators,
         data_types=config.data_types,
+        request_headers=config.request_headers,
     )
     asyncio.run(
         feed(

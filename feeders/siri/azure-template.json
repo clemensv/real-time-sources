@@ -9,15 +9,15 @@
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Azure Event Hubs / Fabric Event Stream\u2013style connection string. Supersedes KAFKA_BOOTSTRAP_SERVERS, SASL_USERNAME, SASL_PASSWORD."
+        "description": "Azure Event Hubs / Fabric Event Stream–style connection string. Supersedes KAFKA_BOOTSTRAP_SERVERS, SASL_USERNAME, SASL_PASSWORD."
       }
     },
     "siriApiKey": {
       "type": "securestring",
-      "minLength": 1,
       "metadata": {
-        "description": "API key used for the configured SIRI provider profile."
-      }
+        "description": "Optional API key used for provider profiles that require upstream authentication; leave empty for public BODS bulk archive or Entur."
+      },
+      "defaultValue": ""
     },
     "pollInterval": {
       "type": "int",
@@ -56,10 +56,32 @@
       "allowedValues": [
         "bods",
         "trafiklab",
+        "entur",
         "custom"
       ],
       "metadata": {
         "description": "SIRI provider profile to use."
+      }
+    },
+    "siriHeaders": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional semicolon-separated Name=Value request headers sent on every SIRI request; use for provider-specific client identification or custom upstream headers."
+      }
+    },
+    "siriEtClientName": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional Entur ET-Client-Name request header value. Leave empty to use the feeder's Entur default when SIRI_PROVIDER is entur."
+      }
+    },
+    "siriDataTypes": {
+      "type": "string",
+      "defaultValue": "vm",
+      "metadata": {
+        "description": "Comma-separated SIRI data types to fetch from provider URL templates, such as vm, et, or sx; VehicleMonitoring payloads emit the current contract."
       }
     },
     "siriUrl": {
@@ -169,6 +191,18 @@
                 {
                   "name": "SIRI_PROVIDER",
                   "value": "[parameters('siriProvider')]"
+                },
+                {
+                  "name": "SIRI_HEADERS",
+                  "secureValue": "[parameters('siriHeaders')]"
+                },
+                {
+                  "name": "SIRI_ET_CLIENT_NAME",
+                  "value": "[parameters('siriEtClientName')]"
+                },
+                {
+                  "name": "SIRI_DATA_TYPES",
+                  "value": "[parameters('siriDataTypes')]"
                 },
                 {
                   "name": "SIRI_URL",

@@ -1,5 +1,7 @@
 from .acquisition import (
     DEFAULT_BODS_URL,
+    DEFAULT_ENTUR_CLIENT_NAME,
+    DEFAULT_ENTUR_URL,
     DEFAULT_TRAFIKLAB_URL,
     FeedSnapshot,
     SiriClient,
@@ -14,11 +16,14 @@ from .config import (
     parse_csv_tokens,
     parse_data_types,
     parse_kafka_connection_string,
+    parse_request_headers,
 )
 from .state import load_state, save_state
 
 __all__ = [
     "DEFAULT_BODS_URL",
+    "DEFAULT_ENTUR_CLIENT_NAME",
+    "DEFAULT_ENTUR_URL",
     "DEFAULT_TRAFIKLAB_URL",
     "SUPPORTED_DATA_TYPES",
     "SUPPORTED_PROVIDERS",
@@ -32,5 +37,6 @@ __all__ = [
     "parse_csv_tokens",
     "parse_data_types",
     "parse_kafka_connection_string",
+    "parse_request_headers",
     "save_state",
 ]

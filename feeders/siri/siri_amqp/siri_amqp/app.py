@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 
 from siri_amqp_producer_amqp_producer import OrgSiriAmqpProducer
 from siri_amqp_producer_data import Operator, VehiclePosition
-from siri_core import FeedConfig, SiriClient, load_state, parse_csv_tokens, parse_data_types, save_state
+from siri_core import SUPPORTED_PROVIDERS, FeedConfig, SiriClient, load_state, parse_csv_tokens, parse_data_types, save_state
 
 DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
 DEFAULT_ENTRA_AUDIENCE_EVENTHUBS = "https://eventhubs.azure.net/.default"
@@ -183,9 +183,11 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command")
 
     feed_parser = subparsers.add_parser("feed", help="Feed operator metadata and vehicle positions as CloudEvents over AMQP 1.0")
-    feed_parser.add_argument("--provider", choices=["bods", "trafiklab", "custom"], default=os.getenv("SIRI_PROVIDER", "bods"))
+    feed_parser.add_argument("--provider", choices=SUPPORTED_PROVIDERS, default=os.getenv("SIRI_PROVIDER", "bods"))
     feed_parser.add_argument("--siri-url", type=str, default=os.getenv("SIRI_URL"))
     feed_parser.add_argument("--api-key", type=str, default=os.getenv("SIRI_API_KEY") or os.getenv("BODS_API_KEY"))
+    feed_parser.add_argument("--headers", type=str, default=os.getenv("SIRI_HEADERS"))
+    feed_parser.add_argument("--et-client-name", type=str, default=os.getenv("SIRI_ET_CLIENT_NAME"))
     feed_parser.add_argument("--operators", type=str, default=os.getenv("SIRI_OPERATORS") or os.getenv("OPERATORS"))
     feed_parser.add_argument("--data-types", type=str, default=os.getenv("SIRI_DATA_TYPES", "vm"))
     feed_parser.add_argument("--broker-url", type=str, default=os.getenv("AMQP_BROKER_URL"))
@@ -224,6 +226,8 @@ def main(argv: Optional[list] = None) -> None:
         polling_interval=args.polling_interval,
         state_file=args.state_file,
         once=args.once,
+        request_headers=args.headers,
+        et_client_name=args.et_client_name,
     )
 
     address = args.address
@@ -263,6 +267,7 @@ def main(argv: Optional[list] = None) -> None:
         api_key=config.api_key,
         operators=config.operators,
         data_types=config.data_types,
+        request_headers=config.request_headers,
     )
     feed(api, producer, config.polling_interval, state_file=config.state_file, once=config.once)
 

@@ -8,6 +8,7 @@ The `siri` feeder is a generic SIRI bridge that emits CloudEvents over **Kafka**
 
 - **`bods`** — UK Bus Open Data Service bulk ZIP download; API key sent as query parameter.
 - **`trafiklab`** — Sweden Trafiklab per-operator endpoints; API key sent as header and the URL template can expand `{operator}` and `{data_type}`.
+- **`entur`** — Norway Entur SIRI-Lite endpoints at `https://api.entur.io/realtime/v1/rest/{data_type}`; sends `ET-Client-Name`.
 - **`custom`** — direct SIRI endpoint URL supplied by the user; API key can be attached as headers and query parameters.
 
 ## What the feeder emits
@@ -34,9 +35,11 @@ Source configuration is shared across all three transports:
 
 | Setting | CLI | Environment | Notes |
 | --- | --- | --- | --- |
-| provider | `--provider` | `SIRI_PROVIDER` | `bods`, `trafiklab`, `custom` (default `bods`) |
+| provider | `--provider` | `SIRI_PROVIDER` | `bods`, `trafiklab`, `entur`, `custom` (default `bods`) |
 | source URL | `--siri-url` | `SIRI_URL` | Optional for `bods`; template/default for `trafiklab`; required for `custom` |
 | API key | `--api-key` | `SIRI_API_KEY` | Required for authenticated providers |
+| request headers | `--headers` | `SIRI_HEADERS` | Optional semicolon-separated `Name=Value` headers sent on every SIRI request |
+| Entur client name | `--et-client-name` | `SIRI_ET_CLIENT_NAME` | Convenience value for the `ET-Client-Name` header; defaults for provider `entur` |
 | operators | `--operators` | `SIRI_OPERATORS` | Optional comma-separated filter / URL-template expansion values |
 | data types | `--data-types` | `SIRI_DATA_TYPES` | Comma-separated `vm,et,sx`; default `vm` |
 | polling interval | `--polling-interval` | `POLLING_INTERVAL` | Default `30` seconds |
@@ -76,6 +79,17 @@ docker run --rm \
   -e SIRI_API_KEY="<api-key>" \
   -e AMQP_BROKER_URL="amqp://<user>:<password>@<broker-host>:5672/siri" \
   ghcr.io/clemensv/real-time-sources-siri-amqp:latest
+```
+
+### Entur
+
+```bash
+docker run --rm \
+  -e SIRI_PROVIDER=entur \
+  -e SIRI_DATA_TYPES=vm \
+  -e SIRI_ET_CLIENT_NAME="my-application-name" \
+  -e CONNECTION_STRING="<event-hubs-or-fabric-connection-string>" \
+  ghcr.io/clemensv/real-time-sources-siri-kafka:latest
 ```
 
 ## Fabric notebook hosting

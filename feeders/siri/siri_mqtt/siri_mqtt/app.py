@@ -14,7 +14,7 @@ from paho.mqtt.client import CallbackAPIVersion, MQTTv5
 from paho.mqtt.packettypes import PacketTypes
 from paho.mqtt.properties import Properties
 
-from siri_core import FeedConfig, SiriClient, load_state, parse_csv_tokens, parse_data_types, save_state
+from siri_core import SUPPORTED_PROVIDERS, FeedConfig, SiriClient, load_state, parse_csv_tokens, parse_data_types, save_state
 from siri_mqtt_producer_data import Operator, VehiclePosition
 from siri_mqtt_producer_mqtt_client.client import OrgSiriMqttMqttClient
 
@@ -119,13 +119,9 @@ async def feed(
     )
 
     refresh_task: Optional[asyncio.Task] = None
-    connect_properties: Optional[Properties] = None
     expires_at: Optional[datetime] = None
     if auth_mode == "entra":
         token, expires_at = _acquire_entra_token(entra_audience, entra_client_id)
-        connect_properties = Properties(PacketTypes.CONNECT)
-        connect_properties.AuthenticationMethod = ENTRA_MQTT_AUTH_METHOD
-        connect_properties.AuthenticationData = token.encode("utf-8")
     elif auth_mode == "userpass" and username:
         paho_client.username_pw_set(username, password or "")
 
@@ -136,8 +132,12 @@ async def feed(
     event_client = OrgSiriMqttMqttClient(client=paho_client, content_mode="binary", loop=loop)
 
     if auth_mode == "entra":
-        paho_client.connect(broker_host, broker_port, keepalive=60, clean_start=True, properties=connect_properties)
-        paho_client.loop_start()
+        await event_client.connect(
+            broker_host,
+            broker_port,
+            token=token,
+            authentication_method=ENTRA_MQTT_AUTH_METHOD,
+        )
         refresh_task = asyncio.create_task(
             _entra_token_refresh_loop(paho_client, broker_host, broker_port, 60, entra_audience, entra_client_id, expires_at)
         )
@@ -214,9 +214,11 @@ def _build_arg_parser() -> argparse.ArgumentParser:
     subparsers = parser.add_subparsers(dest="command")
 
     feed_parser = subparsers.add_parser("feed", help="Feed operator metadata and vehicle positions as CloudEvents over MQTT")
-    feed_parser.add_argument("--provider", choices=["bods", "trafiklab", "custom"], default=os.getenv("SIRI_PROVIDER", "bods"))
+    feed_parser.add_argument("--provider", choices=SUPPORTED_PROVIDERS, default=os.getenv("SIRI_PROVIDER", "bods"))
     feed_parser.add_argument("--siri-url", type=str, default=os.getenv("SIRI_URL"))
     feed_parser.add_argument("--api-key", type=str, default=os.getenv("SIRI_API_KEY") or os.getenv("BODS_API_KEY"))
+    feed_parser.add_argument("--headers", type=str, default=os.getenv("SIRI_HEADERS"))
+    feed_parser.add_argument("--et-client-name", type=str, default=os.getenv("SIRI_ET_CLIENT_NAME"))
     feed_parser.add_argument("--operators", type=str, default=os.getenv("SIRI_OPERATORS") or os.getenv("OPERATORS"))
     feed_parser.add_argument("--data-types", type=str, default=os.getenv("SIRI_DATA_TYPES", "vm"))
     feed_parser.add_argument("--broker-url", type=str, default=os.getenv("MQTT_BROKER_URL"))
@@ -253,6 +255,8 @@ def main(argv: Optional[list] = None) -> None:
         polling_interval=args.polling_interval,
         state_file=args.state_file,
         once=args.once,
+        request_headers=args.headers,
+        et_client_name=args.et_client_name,
     )
 
     if args.broker_url:
@@ -276,6 +280,7 @@ def main(argv: Optional[list] = None) -> None:
         api_key=config.api_key,
         operators=config.operators,
         data_types=config.data_types,
+        request_headers=config.request_headers,
     )
     asyncio.run(
         feed(

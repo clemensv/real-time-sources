@@ -1,13 +1,15 @@
 from __future__ import annotations
 
 import os
-from dataclasses import dataclass
-from typing import Dict, Iterable, Optional
+from dataclasses import dataclass, field
+from typing import Dict, Iterable, Mapping, Optional
 
-SUPPORTED_PROVIDERS = ("bods", "trafiklab", "custom")
+SUPPORTED_PROVIDERS = ("bods", "trafiklab", "entur", "custom")
 SUPPORTED_DATA_TYPES = ("vm", "et", "sx")
 DEFAULT_BODS_URL = "https://data.bus-data.dft.gov.uk/avl/download/bulk_archive"
 DEFAULT_TRAFIKLAB_URL = "https://api.trafiklab.se/siri2.x/{data_type}/{operator}"
+DEFAULT_ENTUR_URL = "https://api.entur.io/realtime/v1/rest/{data_type}"
+DEFAULT_ENTUR_CLIENT_NAME = "clemensv-realtimesources"
 
 
 def parse_csv_tokens(value: Optional[str]) -> Optional[tuple[str, ...]]:
@@ -31,6 +33,29 @@ def parse_data_types(value: Optional[str]) -> tuple[str, ...]:
     return tuple(normalized)
 
 
+def parse_request_headers(value: Optional[str]) -> dict[str, str]:
+    if not value:
+        return {}
+    headers: dict[str, str] = {}
+    for part in value.replace("\n", ";").split(";"):
+        part = part.strip()
+        if not part:
+            continue
+        if "=" not in part:
+            raise ValueError(f"Invalid SIRI header '{part}'. Expected NAME=VALUE.")
+        name, header_value = part.split("=", 1)
+        name = name.strip()
+        header_value = header_value.strip()
+        if not name:
+            raise ValueError("Invalid SIRI header with empty name.")
+        headers[name] = header_value
+    return headers
+
+
+def _has_header(headers: Mapping[str, str], name: str) -> bool:
+    return any(header_name.lower() == name.lower() for header_name in headers)
+
+
 @dataclass
 class FeedConfig:
     provider: str = "bods"
@@ -41,6 +66,7 @@ class FeedConfig:
     polling_interval: int = 30
     state_file: str = ""
     once: bool = False
+    request_headers: dict[str, str] = field(default_factory=dict)
 
     @classmethod
     def from_env(
@@ -54,6 +80,8 @@ class FeedConfig:
         polling_interval: Optional[int] = None,
         state_file: Optional[str] = None,
         once: Optional[bool] = None,
+        request_headers: Optional[Mapping[str, str] | str] = None,
+        et_client_name: Optional[str] = None,
     ) -> "FeedConfig":
         if provider is None:
             provider = os.getenv("SIRI_PROVIDER", "bods")
@@ -65,7 +93,12 @@ class FeedConfig:
             siri_url = os.getenv("SIRI_URL", "")
         siri_url = (siri_url or "").strip()
         if not siri_url:
-            siri_url = DEFAULT_BODS_URL if provider == "bods" else (DEFAULT_TRAFIKLAB_URL if provider == "trafiklab" else "")
+            if provider == "bods":
+                siri_url = DEFAULT_BODS_URL
+            elif provider == "trafiklab":
+                siri_url = DEFAULT_TRAFIKLAB_URL
+            elif provider == "entur":
+                siri_url = DEFAULT_ENTUR_URL
 
         if api_key is None:
             api_key = os.getenv("SIRI_API_KEY") or os.getenv("BODS_API_KEY", "")
@@ -88,6 +121,18 @@ class FeedConfig:
             state_file = os.getenv("STATE_FILE", os.path.expanduser("~/.siri_state.json"))
         if once is None:
             once = os.getenv("ONCE_MODE", "").lower() in ("1", "true", "yes")
+        if request_headers is None:
+            resolved_headers = parse_request_headers(os.getenv("SIRI_HEADERS"))
+        elif isinstance(request_headers, str):
+            resolved_headers = parse_request_headers(request_headers)
+        else:
+            resolved_headers = {str(key).strip(): str(value).strip() for key, value in request_headers.items() if str(key).strip()}
+        if et_client_name is None:
+            et_client_name = os.getenv("SIRI_ET_CLIENT_NAME", "").strip()
+        if et_client_name:
+            resolved_headers["ET-Client-Name"] = et_client_name
+        elif provider == "entur" and not _has_header(resolved_headers, "ET-Client-Name"):
+            resolved_headers["ET-Client-Name"] = DEFAULT_ENTUR_CLIENT_NAME
         return cls(
             provider=provider,
             siri_url=siri_url,
@@ -97,6 +142,7 @@ class FeedConfig:
             polling_interval=polling_interval,
             state_file=state_file,
             once=once,
+            request_headers=resolved_headers,
         )
 
 
