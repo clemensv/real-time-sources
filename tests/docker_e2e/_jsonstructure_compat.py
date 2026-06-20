@@ -23,7 +23,8 @@ spec-defensible:
 
 The permanent fix is a ~6-line change in the SDK's ``_check_units_keywords`` and
 ``_check_ucum_unit`` to use the full numeric set and accept a union whose
-non-``null`` members are all numeric. Until a fixed ``json-structure`` is
+non-``null`` members are all numeric. Filed upstream with a verified reproducer
+and the proposed fix as json-structure/sdk#175. Until a fixed ``json-structure`` is
 released and the pin in ``tests/docker_e2e/requirements.txt`` is bumped, this
 shim post-filters **only** those provably-spec-false-positive errors and leaves
 every other validation error untouched (``unit`` on a non-numeric type such as
@@ -31,7 +32,7 @@ every other validation error untouched (``unit`` on a non-numeric type such as
 ``test_helpers.py``).
 
 Remove this shim and import ``SchemaValidator`` directly from ``json_structure``
-once the upstream fix ships.
+once the upstream fix (json-structure/sdk#175) ships.
 """
 from __future__ import annotations
 
