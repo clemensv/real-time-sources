@@ -258,14 +258,21 @@ def run_feed(kafka_config: Dict[str, str], kafka_topic: str,
                     events = []
 
                 for ev in events:
-                    _emit_event(
-                        cdc_event_producer,
-                        weather_event_producer,
-                        radar_event_producer,
-                        forecast_event_producer,
-                        ev,
-                    )
+                    while True:
+                        try:
+                            _emit_event(
+                                cdc_event_producer,
+                                weather_event_producer,
+                                radar_event_producer,
+                                forecast_event_producer,
+                                ev,
+                            )
+                            break
+                        except BufferError:
+                            kafka_producer.flush(5)
                     total_events += 1
+                    if total_events % 500 == 0:
+                        kafka_producer.poll(0)
 
                 if events:
                     kafka_producer.flush()
