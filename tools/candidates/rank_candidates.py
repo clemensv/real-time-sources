@@ -18,11 +18,17 @@ Qualification bar (established earlier in this repo's candidate sweeps):
   * not carry an explicit SKIP / defer / reject verdict.
 
 Ranking key (descending priority), documented in the output header:
-  1. effort tier  -- config quick-wins (existing generic bridge) before new builds
+  1. effort tier  -- config quick-wins on an existing GENERALIZED feeder
+     (gtfs/siri, gbfs-bikeshare, fdsn-seismology) before new builds
   2. fitness score (N/18) descending
   3. pattern-reuse leverage  -- reuses a protocol family already in the repo
   4. domain (clusters related builds so they can be batched)
   5. title (alphabetical, for a deterministic order)
+
+Also emits a "Generalization strategy" section: which protocol families
+already have a config-driven feeder (new sources = config adds) and which
+candidate clusters justify generalizing one feeder instead of N bespoke
+builds -- the "generalize the feeder, don't fork it" rule.
 """
 from __future__ import annotations
 import os
@@ -37,16 +43,35 @@ MD_OUT = os.path.join(BASE, "IMPLEMENTATION-RANKING.md")
 TSV_OUT = os.path.join(BASE, "_implementation-ranking.tsv")
 
 # ----------------------------------------------------------------------------
-# effort classification: which notes are config quick-wins on an existing
-# generic bridge (GBFS bikeshare, GTFS/SIRI transit) vs a new-feeder build.
+# Effort classification. The repo already ships GENERALIZED, config-driven
+# feeders for a handful of standardized protocol families: adding a new source
+# in one of those families is a CONFIG entry (append a feed URL / node to a
+# list), NOT a new-feeder build. Verified by inspecting each feeder's core:
+#   gtfs / siri      -> multi-agency GTFS-RT & multi-endpoint SIRI transit
+#   gbfs-bikeshare   -> GBFS_FEEDS auto-discovery URL list (multi-system)
+#   fdsn-seismology  -> federated FDSN datacenter/node list (multi-network)
+# Keyed by the pattern-reuse family label (see REUSE_PATTERNS below). This is
+# the "generalize the feeder, don't fork it" rule: when sources differ only by
+# configuration, one config-driven feeder serves the whole family.
+GENERALIZED_FEEDER = {
+    "GTFS-RT/SIRI (transit)": ["gtfs", "siri"],
+    "GBFS (micromobility)": ["gbfs-bikeshare"],
+    "FDSN/QuakeML (seismology)": ["fdsn-seismology"],
+}
+GENERALIZED_DIRS = {d for ds in GENERALIZED_FEEDER.values() for d in ds}
 GENERIC_CONFIG_CAT = {"bikeshare-gbfs"}
 CONFIG_TRANSIT_HINTS = ["gtfs-rt", "gtfs", "siri", "mqtt vehicle"]
 
 
-def classify_kind(cat: str, slug: str, title: str, text: str) -> str:
-    t = (title + " " + slug + " " + text[:400]).lower()
+def classify_kind(cat: str, slug: str, title: str, text: str,
+                  reuse_label: str) -> str:
+    # A source whose protocol family already has a generalized feeder in the
+    # repo is a config add, not a build.
+    if reuse_label in GENERALIZED_FEEDER:
+        return "config"
     if cat in GENERIC_CONFIG_CAT:
         return "config"
+    t = (title + " " + slug + " " + text[:400]).lower()
     if cat in ("transit", "ferry") and any(k in t for k in CONFIG_TRANSIT_HINTS):
         return "config"
     return "new"
@@ -76,6 +101,28 @@ def reuse_leverage(text: str):
         if rx.search(text):
             return 1, label
     return 0, ""
+
+
+def detect_existing_families(repo: str):
+    """Map each pattern-reuse family -> sorted list of existing feeder dirs
+    whose README references that protocol. Reproducible companion to the
+    candidate reuse tags: used to surface generalization opportunities (many
+    bespoke feeders re-implementing one standardized protocol) and bespoke
+    feeders that duplicate an already-generalized feeder and should be folded
+    into it as a config."""
+    fam: dict[str, list[str]] = {}
+    fdir = os.path.join(repo, "feeders")
+    if not os.path.isdir(fdir):
+        return fam
+    for d in sorted(os.listdir(fdir)):
+        readme = os.path.join(fdir, d, "README.md")
+        if not os.path.isfile(readme):
+            continue
+        text = open(readme, encoding="utf-8", errors="replace").read()
+        for label, rx in REUSE_PATTERNS:
+            if rx.search(text):
+                fam.setdefault(label, []).append(d)
+    return fam
 
 
 # ----------------------------------------------------------------------------
@@ -146,7 +193,7 @@ def parse_note(path: str):
         "full_title": title,
         "score": score,
         "score_src": score_src,
-        "kind": classify_kind(cat, slug, title, text),
+        "kind": classify_kind(cat, slug, title, text, reuse_label),
         "skip": is_skip(text),
         "region": field(FIELD_RX["region"], text),
         "protocol": field(FIELD_RX["protocol"], text),
@@ -212,6 +259,24 @@ def main():
     from collections import Counter
     dom_counts = Counter(r["domain"] for r in qualified)
 
+    # generalization analysis: which protocol families already have a
+    # config-driven feeder (new sources = config adds) and which families have
+    # a candidate cluster / bespoke duplication big enough to justify building
+    # one generalized feeder instead of N bespoke ones.
+    existing_fam = detect_existing_families(REPO)
+    cand_fam = Counter(r["reuse_label"] for r in qualified if r["reuse_label"])
+    GENERALIZE_MIN_CAND = 6
+    GEOJSON_LABEL = "GeoJSON REST (poller)"  # a format, not a single-feeder protocol
+    gen_opps = []
+    for _label, _rx in REUSE_PATTERNS:
+        if _label in GENERALIZED_FEEDER or _label == GEOJSON_LABEL:
+            continue
+        _existing = existing_fam.get(_label, [])
+        _ncand = cand_fam.get(_label, 0)
+        if _ncand >= GENERALIZE_MIN_CAND or len(_existing) >= 2:
+            gen_opps.append((_label, _existing, _ncand))
+    gen_opps.sort(key=lambda o: (-(o[2] + len(o[1])), o[0]))
+
     today = datetime.date.today().isoformat()
 
     def row_line(r):
@@ -251,9 +316,11 @@ def main():
       "batch-cadence, and duplicate sources were already scored down or "
       "skip-flagged in the per-domain sweeps and are excluded here.\n")
     A("**Ranking key** (descending priority):\n")
-    A("1. **Effort tier** — *config quick-wins* (just add a feed entry to an "
-      "existing generic bridge: GBFS micromobility, GTFS-RT/SIRI transit) "
-      "rank above *new-feeder builds*, because they ship in hours not days.\n"
+    A("1. **Effort tier** — *config quick-wins* (just append a feed/node entry "
+      "to an existing **generalized** bridge: GTFS-RT/SIRI transit "
+      "(`gtfs`,`siri`), GBFS micromobility (`gbfs-bikeshare`), FDSN seismology "
+      "(`fdsn-seismology`)) rank above *new-feeder builds*, because they ship "
+      "in hours not days. See the **Generalization strategy** section below.\n"
       "2. **Fitness score** (`N/18`) descending — the per-note score already "
       "weighs freshness, openness, endpoint stability, payload structure, "
       "stable identifiers, volume and additivity.\n"
@@ -292,6 +359,44 @@ def main():
             A(f"| `{ld}` | {lc} |  |  |  |")
     A("")
 
+    # generalization strategy
+    A("## Generalization strategy — one config-driven feeder, not many\n")
+    A("Several protocol families are standardized enough that **one** "
+      "config-driven feeder serves every source in the family: you append a "
+      "feed URL or node to a list instead of building a new feeder. This is "
+      "the `gtfs` / `siri` / `gbfs-bikeshare` / `fdsn-seismology` model — "
+      "**generalize the feeder, don't fork it**. When sources differ only by "
+      "configuration, prefer extending a generalized feeder over a bespoke "
+      "build.\n")
+    A("**Already generalized — new sources in these families are Wave-0 "
+      "config adds, not builds:**\n")
+    A("| Family | Generalized feeder | Config candidates | Existing bespoke feeders to fold in |")
+    A("|---|---|---:|---|")
+    for _label, _feeders in GENERALIZED_FEEDER.items():
+        _ncand = cand_fam.get(_label, 0)
+        _bespoke = [f for f in existing_fam.get(_label, [])
+                    if f not in GENERALIZED_DIRS]
+        _bes = ", ".join("`" + b + "`" for b in _bespoke) if _bespoke else "—"
+        A(f"| {_label} | `{' / '.join(_feeders)}` | {_ncand} | {_bes} |")
+    A("")
+    if gen_opps:
+        A("**Generalization opportunities — build one config-driven feeder to "
+          "cover the whole cluster instead of N bespoke feeders:**\n")
+        A("| Family | Qualified candidates | Existing bespoke feeders | Action |")
+        A("|---|---:|---|---|")
+        for _label, _existing, _ncand in gen_opps:
+            _ex = ", ".join("`" + e + "`" for e in _existing
+                            if e not in GENERALIZED_DIRS) or "—"
+            _short = _label.split(" (")[0]
+            A(f"| {_label} | {_ncand} | {_ex} | Generalize one `{_short}` feeder, then config |")
+        A("")
+    _geojson_n = cand_fam.get(GEOJSON_LABEL, 0)
+    if _geojson_n:
+        A(f"> The {_geojson_n} `GeoJSON REST` candidates are **not** one feeder "
+          "— GeoJSON is a payload format, not a protocol — but they share a "
+          "*poll → parse FeatureCollection → key by feature id* skeleton; "
+          "reuse a common poller template rather than copying boilerplate.\n")
+
     def section(title, blurb, items):
         A(f"## {title}  ({len(items)})\n")
         if blurb:
@@ -301,8 +406,11 @@ def main():
         A("")
 
     section("Wave 0 — Quick-win configs",
-            "Existing generic bridges just need a feed/config entry. Highest "
-            "ROI; ship these first.", configs)
+            "Existing **generalized** feeders (`gtfs`/`siri` transit, "
+            "`gbfs-bikeshare`, `fdsn-seismology`) just need a feed/node entry "
+            "— no new code. Highest ROI; ship these first. See the "
+            "Generalization strategy table above for the family→feeder map.",
+            configs)
     section("Wave 1 — Flagship new builds (15–18/18)",
             "Strongest greenfield candidates. Clean open APIs, fresh data, "
             "stable identifiers.", w1)
