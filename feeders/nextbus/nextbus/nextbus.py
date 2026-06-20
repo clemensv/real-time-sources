@@ -425,7 +425,7 @@ def feed(feed_connection_string: str, feed_topic: str | None, reference_connecti
     """Poll vehicle locations and submit CloudEvents through the Kafka endpoint."""
     feed_producer_client = NextbusKafkaProducerClient.from_connection_string(feed_connection_string, topic=feed_topic)
     reference_producer_client = feed_producer_client
-    if reference_connection_string is not None:
+    if reference_connection_string:
         reference_producer_client = NextbusKafkaProducerClient.from_connection_string(reference_connection_string, topic=reference_topic)
 
     last_vehicle_location_time = time.time()

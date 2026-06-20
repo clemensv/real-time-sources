@@ -251,6 +251,7 @@ class NOAADataPoller:
                 if product not in saved_times:
                     saved_times[product] = {}
                 saved_times[product][station] = timestamp.isoformat()
+        os.makedirs(os.path.dirname(self.last_polled_file), exist_ok=True)
         with open(self.last_polled_file, 'w', encoding='utf-8') as file:
             json.dump(saved_times, file)
 
