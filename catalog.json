@@ -599,6 +599,17 @@
     "amqp": true
   },
   {
+    "id": "kiwis",
+    "name": "KiWIS",
+    "cat": "Hydrology",
+    "key": false,
+    "desc": "Global — configurable KISTERS KiWIS hydrology endpoints",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "king-county-marine",
     "name": "King County Marine",
     "cat": "Hydrology",

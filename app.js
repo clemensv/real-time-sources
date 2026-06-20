@@ -18,6 +18,7 @@ const SOURCES = [
   { id: "hubeau-hydrometrie", name: "Hub'Eau Hydrometrie", cat: "Hydrology", key: false, desc: "France — ~6,300 stations", notebook: true, mqtt: true, amqp: true },
   { id: "imgw-hydro", name: "IMGW Hydro", cat: "Hydrology", key: false, desc: "Poland — IMGW-PIB", notebook: true, mqtt: true, amqp: true },
   { id: "ireland-opw-waterlevel", name: "Ireland OPW Water Level", cat: "Hydrology", key: false, desc: "Ireland — ~500 OPW hydrometric stations", notebook: true, mqtt: true, amqp: true },
+  { id: "kiwis", name: "KiWIS", cat: "Hydrology", key: false, desc: "Global — configurable KISTERS KiWIS hydrology endpoints", notebook: true, mqtt: true, amqp: true },
   { id: "king-county-marine", name: "King County Marine", cat: "Hydrology", key: false, desc: "Washington State / Puget Sound — buoy and mooring telemetry", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "nepal-bipad-hydrology", name: "Nepal BIPAD Hydrology", cat: "Hydrology", key: false, desc: "Nepal — Himalayan river basins, BIPAD", notebook: true, mqtt: true, amqp: true },
   { id: "noaa-ndbc", name: "NOAA NDBC", cat: "Hydrology", key: false, desc: "United States — buoy observations", notebook: true, mqtt: true, amqp: true },
@@ -575,6 +576,7 @@ function renderWelcome() {
 
   // A few curated quick-starts (all key-free unless noted)
   const quickStarts = [
+    { id: "kiwis", note: "Global — configurable KISTERS KiWIS hydrology endpoints. Kafka + MQTT + AMQP with station and timeseries reference data.", mqtt: true, amqp: true },
     { id: "pegelonline", note: "Germany — 3,000 river gauges, every 15 min. Reference implementation for Kafka + MQTT + AMQP transport variants.", mqtt: true, amqp: true },
     { id: "aisstream",   note: "Global — live AIS vessel positions via WebSocket. Free API key, registers in seconds.", mqtt: true, amqp: true },
     { id: "bluesky",     note: "Global — the Bluesky firehose, normalized to CloudEvents.", mqtt: true, amqp: true },
