@@ -789,6 +789,121 @@ class TestUkBodsSiriMqttDockerFlow:
             try: network.remove()
             except docker.errors.APIError: pass
 
+
+@pytest.fixture(scope='module')
+def erddap_mqtt_image():
+    return build_image('erddap', dockerfile='Dockerfile.mqtt', tag='test-erddap-mqtt')
+
+
+@pytest.fixture()
+def erddap_mqtt_broker():
+    container, network, host_port = _generic_mosquitto('erddap-mqtt-e2e', 'erddap-mqtt-e2e-broker')
+    try:
+        yield {
+            'host_port': host_port,
+            'internal_host': 'erddap-mqtt-e2e-broker',
+            'internal_port': 1883,
+            'network': network.name,
+        }
+    finally:
+        try:
+            container.kill()
+        except docker.errors.APIError:
+            pass
+        try:
+            network.remove()
+        except docker.errors.APIError:
+            pass
+
+
+def _erddap_payload_to_dict(payload):
+    if isinstance(payload, dict):
+        return payload
+    if isinstance(payload, str):
+        try:
+            parsed = json.loads(payload)
+        except json.JSONDecodeError:
+            return None
+        return parsed if isinstance(parsed, dict) else None
+    return None
+
+
+class TestErddapMqttDockerFlow:
+    def test_emits_mock_reference_and_telemetry(self, erddap_mqtt_broker, erddap_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"{erddap_mqtt_broker['internal_host']}:{erddap_mqtt_broker['internal_port']}"
+        messages = []
+
+        def on_message(_client, _userdata, msg):
+            props = {}
+            if msg.properties is not None:
+                for key, value in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[key] = value
+                content_type = getattr(msg.properties, 'ContentType', None)
+                if content_type:
+                    props['_contenttype'] = content_type
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({
+                'topic': msg.topic,
+                'user_properties': props,
+                'payload': payload,
+            })
+
+        subscriber = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+        subscriber.on_message = on_message
+        subscriber.connect('127.0.0.1', erddap_mqtt_broker['host_port'], 30)
+        subscriber.subscribe('marine/global/erddap/#', qos=1)
+        subscriber.loop_start()
+        feeder = None
+        try:
+            feeder = client.containers.run(
+                erddap_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=erddap_mqtt_broker['network'],
+                environment={
+                    'MQTT_BROKER_URL': broker_url,
+                    'ERDDAP_MOCK': 'true',
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            deadline = time.time() + 10
+            while time.time() < deadline and len(messages) < 3:
+                time.sleep(0.5)
+        finally:
+            subscriber.loop_stop()
+            subscriber.disconnect()
+            try:
+                if feeder is not None:
+                    feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        assert len(messages) >= 3, messages
+        types = {m['user_properties'].get('type') for m in messages}
+        assert {
+            'org.erddap.DatasetMetadata',
+            'org.erddap.StationMetadata',
+            'org.erddap.Observation',
+        }.issubset(types)
+        topics = {m['topic'] for m in messages}
+        assert any(t.endswith('/dataset') for t in topics), topics
+        assert any(t.endswith('/station') for t in topics), topics
+        assert any(t.endswith('/observation') for t in topics), topics
+        for message in messages:
+            props = message['user_properties']
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in props, f"missing CE attribute {required} on {message['topic']}: {props}"
+            assert props.get('_contenttype') == 'application/json'
+            assert isinstance(_erddap_payload_to_dict(message['payload']), dict), message
+
 # ---- bfs-odl -----------------------------------------------------------
 
 

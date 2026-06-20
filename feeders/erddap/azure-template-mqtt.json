@@ -1,0 +1,213 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "description": "Deploys the erddap MQTT feeder as an Azure Container Instance against an existing MQTT 5 broker."
+  },
+  "parameters": {
+    "brokerUrl": {
+      "type": "string",
+      "minLength": 1,
+      "metadata": {
+        "description": "Broker URL, e.g. mqtt://host:1883 or mqtts://host:8883."
+      }
+    },
+    "brokerUsername": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "brokerPassword": {
+      "type": "securestring",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional credentials when MQTT_AUTH_MODE=password (default)."
+      }
+    },
+    "containerGroupName": {
+      "type": "string",
+      "defaultValue": "erddap-mqtt",
+      "metadata": {
+        "description": "Name for the container group resource."
+      },
+      "maxLength": 63,
+      "minLength": 1
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Azure region for all resources."
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-erddap-mqtt:latest",
+      "metadata": {
+        "description": "Container image reference for the MQTT feeder."
+      }
+    },
+    "mqttClientId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "MQTT client identifier (must be globally unique per broker)."
+      }
+    },
+    "erddapSources": {
+      "type": "string",
+      "metadata": {
+        "description": "Semicolon list, JSON array, @file, or path describing configured ERDDAP datasets."
+      },
+      "defaultValue": "ioos-sensors|https://erddap.sensors.ioos.us/erddap|org_cormp_sun2|sea_water_temperature,sea_water_practical_salinity|station|time>=max(time)-1day"
+    },
+    "erddapMock": {
+      "type": "string",
+      "metadata": {
+        "description": "Use the checked-in offline tabledap fixture and exit after one cycle."
+      },
+      "defaultValue": "false"
+    },
+    "pollingInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between tabledap polling cycles."
+      },
+      "defaultValue": "300"
+    },
+    "referenceRefreshInterval": {
+      "type": "string",
+      "metadata": {
+        "description": "Seconds between dataset/station reference refreshes."
+      },
+      "defaultValue": "21600"
+    },
+    "stateFile": {
+      "type": "string",
+      "metadata": {
+        "description": "Dedupe state file; mount a volume in containers."
+      },
+      "defaultValue": "/state/erddap_state.json"
+    },
+    "onceMode": {
+      "type": "string",
+      "metadata": {
+        "description": "Exit after one poll cycle; used by tests and Fabric Notebook hosting."
+      },
+      "defaultValue": "false"
+    }
+  },
+  "variables": {
+    "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces",
+      "apiVersion": "2022-10-01",
+      "name": "[variables('logAnalyticsWorkspaceName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "sku": {
+          "name": "PerGB2018"
+        },
+        "retentionInDays": 30
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2023-05-01",
+      "name": "[parameters('containerGroupName')]",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName'))]"
+      ],
+      "properties": {
+        "osType": "Linux",
+        "restartPolicy": "OnFailure",
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]",
+            "workspaceKey": "[listKeys(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').primarySharedKey]",
+            "logType": "ContainerInstanceLogs"
+          }
+        },
+        "containers": [
+          {
+            "name": "[parameters('containerGroupName')]",
+            "properties": {
+              "image": "[parameters('imageName')]",
+              "resources": {
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
+              },
+              "environmentVariables": [
+                {
+                  "name": "MQTT_BROKER_URL",
+                  "value": "[parameters('brokerUrl')]"
+                },
+                {
+                  "name": "MQTT_USERNAME",
+                  "value": "[parameters('brokerUsername')]"
+                },
+                {
+                  "name": "MQTT_PASSWORD",
+                  "secureValue": "[parameters('brokerPassword')]"
+                },
+                {
+                  "name": "MQTT_CLIENT_ID",
+                  "value": "[parameters('mqttClientId')]"
+                },
+                {
+                  "name": "ERDDAP_SOURCES",
+                  "value": "[parameters('erddapSources')]"
+                },
+                {
+                  "name": "ERDDAP_MOCK",
+                  "value": "[parameters('erddapMock')]"
+                },
+                {
+                  "name": "POLLING_INTERVAL",
+                  "value": "[parameters('pollingInterval')]"
+                },
+                {
+                  "name": "REFERENCE_REFRESH_INTERVAL",
+                  "value": "[parameters('referenceRefreshInterval')]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "[parameters('stateFile')]"
+                },
+                {
+                  "name": "ONCE_MODE",
+                  "value": "[parameters('onceMode')]"
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "outputs": {
+    "containerGroupId": {
+      "type": "string",
+      "value": "[resourceId('Microsoft.ContainerInstance/containerGroups', parameters('containerGroupName'))]"
+    },
+    "logAnalyticsWorkspaceId": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsWorkspaceName')), '2022-10-01').customerId]"
+    }
+  }
+}

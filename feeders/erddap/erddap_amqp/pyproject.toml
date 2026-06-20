@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools-scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "erddap_amqp"
+dynamic = ["version"]
+description = "ERDDAP feeder package"
+authors = [{ name = "Clemens Vasters", email = "clemensv@microsoft.com" }]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "avro>=1.11.3",
+    "cloudevents>=1.11.0,<2.0.0",
+    "dataclasses_json>=0.6.7",
+    "python-qpid-proton>=0.39.0",
+    "azure-identity>=1.17.0",
+]
+
+[project.scripts]
+erddap-amqp = "erddap_amqp.app:main"
+
+[tool.setuptools_scm]
+root = "../../.."
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+
+[tool.setuptools]
+packages = [
+    "erddap_amqp",
+]
