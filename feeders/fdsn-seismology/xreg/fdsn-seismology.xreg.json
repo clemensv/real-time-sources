@@ -280,7 +280,9 @@
                               "description": "Hypocentral depth in kilometers below the Earth's surface; null if unconstrained.",
                               "altnames": {
                                 "json": ["Depth/km"]
-                              }
+                              },
+                              "unit": "kilometer",
+                              "symbol": "km"
                             },
                             "author": {
                               "type": ["string", "null"],
