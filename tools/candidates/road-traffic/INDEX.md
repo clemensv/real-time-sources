@@ -9,6 +9,7 @@ Real-time road traffic data sources covering speed, flow, incidents, roadworks, 
 | [Trafikverket Sweden](trafikverket-sweden.md) | Sweden | **18/18** | REST (custom query) + DATEX II | Comprehensive traffic data; CC0 license; delta change tracking |
 | [Luxembourg CITA DATEX](luxembourg-cita-datex.md) | Luxembourg | **17/18** | DATEX II | Live motorway traffic status feeds; compact DATEX validation target |
 | [Singapore LTA Traffic](singapore-lta-traffic.md) | **Singapore** | 17/18 | REST (OData) | Speed bands, incidents, images, travel times; comprehensive platform |
+| [Hong Kong TD Traffic](hong-kong-td-traffic.md) | **Hong Kong** | 16/18 | REST (XML) | TD detector speed/volume/occupancy at **30-second** cadence; keyless |
 | [Statens vegvesen Norway](vegvesen-norway.md) | Norway | 16/18 | GraphQL + REST | Traffic volumes via GraphQL; NVDB road database |
 | [National Highways England](national-highways-england.md) | UK — England | 16/18 | REST | WebTRIS traffic counts and speeds; strategic road network |
 | [511 SF Bay Area](511-sf-bay-area.md) | US — Bay Area | 16/18 | REST | Traffic events, work zones (WZDx), tolls; representative US 511 system |
@@ -84,4 +85,14 @@ Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/
 |---|---|---|---|
 | RTA Dubai - Real-Time Traffic and Transport Data | [ae-rta-dubai-traffic.md](ae-rta-dubai-traffic.md) | ?/18 | — |
 | Kuwait Roads and Traffic Management | [kw-kuwait-roads-traffic.md](kw-kuwait-roads-traffic.md) | ?/18 | ❌ |
+
+## Round 2026-06 — Asia (SG / HK / TW) real-time sweep
+
+Targeted verification of the three most mature Asian real-time ecosystems. SG and TW road traffic are already covered (Singapore LTA Traffic 17/18; Taiwan's road data sits in the TDX/transit notes), so the one **new** road-traffic gap surfaced was Hong Kong.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| Hong Kong TD Traffic (detector speed/volume/occupancy) | [hong-kong-td-traffic.md](hong-kong-td-traffic.md) | 16/18 | **Build** — confirmed live at 30s, keyless; HK had weather/AQHI/transit but no road traffic |
+
+Full sweep (implemented vs. noted vs. gaps across SG/HK/TW) recorded in [`_research-rounds/2026-06-asia-sg-hk-tw-realtime-sweep.md`](../_research-rounds/2026-06-asia-sg-hk-tw-realtime-sweep.md).
 
