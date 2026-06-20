@@ -342,6 +342,28 @@ and paste the PASS lines into the PR body.
 
 - [ ] **Source entry exists in `catalog.json`** with all in-scope
       transport flags set (`mqtt: true`, `amqp: true`, etc.).
+- [ ] **`desc` is formatted `"<Region> — <detail>"` with a real
+      U+2014 em-dash** (`—`), not a hyphen and not mojibake.
+      `tools/docs/generate_root_catalog.py` `derive_region()` splits
+      `desc` on the literal `" — "` to pick the country flag and the
+      region label shown on the card. A hyphen, a missing dash, or a
+      CP1252-mangled em-dash (the tell-tale `Â`-prefixed multi-byte
+      sequence — e.g. the em-dash misencoded as `U+00E2 U+20AC U+201D`)
+      makes the split fail, so the flag falls back to the generic UN
+      icon and the region label renders as the whole garbled string.
+      The same trap applies to any other non-ASCII glyph in `desc`/
+      `name` (`–` en-dash, `₂` subscript, accented or Slavic letters
+      such as `Ś`). Beware editors/tools that silently re-encode on
+      paste. Verify with a quick scan that the only non-ASCII
+      codepoints in `catalog.json` strings are the intended glyphs
+      (`— – ₂` and legitimate letters), and confirm the rendered card
+      shows the correct flag after `update-ghpages-catalog` runs. To
+      repair an existing mess, prefer `ftfy.fix_text` per field applied
+      as targeted raw-text replacement of the exact `\uXXXX` escape
+      sequences (keeps a minimal 1:1 diff and preserves formatting)
+      over a `json.load`→`json.dump` round-trip; note `ftfy` is
+      conservative on short tokens (it left `GIOŚ` mis-encoded) so
+      eyeball the residual non-ASCII inventory afterwards.
 - [ ] **`notebook: true` is set** in BOTH `catalog.json` (main) AND
       `app.js` SOURCES (ghpages branch) whenever
       `feeders/<slug>/notebook/<slug>-feed.ipynb` exists. A missing
