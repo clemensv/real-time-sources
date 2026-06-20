@@ -1,90 +1,87 @@
-# Asia Real-Time Sweep — Japan & South Korea
+# Asia Real-Time Sweep — Japan & South Korea (corrected)
 
 Research conducted: 2026-06-20
 
-Follow-on to the SG/HK/TW sweep. Targeted verification of the two most
-instrumented real-time ecosystems in Northeast Asia: **Japan** and
-**South Korea**. As with SG/HK/TW, the method was direct live-probing of the
-known national real-time API families, reconciled against `catalog.json`
-(implemented) and existing candidate notes (already scouted).
+Follow-on to the SG/HK/TW sweep. Targeted verification of Japan and South Korea.
 
-Headline result: both countries are **already heavily scouted** (6 Japan
-notes, 8 Korea notes), but neither had its **flagship disaster/seismic feed**
-captured. The net-new finding is **Japan's JMA Disaster Prevention XML** — a
-keyless, best-in-class multi-hazard feed.
+> **Correction note.** This sweep initially mis-promoted JMA's disaster/seismic
+> feeds as an 18/18 "gap". They are in fact **already implemented** as feeders.
+> The error came from correlating against the **stale root `catalog.json`**
+> (which omits every `jma-*` source, plus `tepco-denkiyoho` and
+> `tokyo-docomo-bikeshare`) instead of the authoritative **`feeders/`**
+> directory. The withdrawn candidate note (`disaster-alerts/japan-jma-disaster.md`)
+> has been deleted; this note reflects reality.
 
-## Already implemented (catalog.json)
+## Authoritative correlation source
 
-None. No Japan or Korea source is implemented yet — both are entirely at the
-candidate-note stage.
+`feeders/` is the source of truth for what is implemented. The root
+`catalog.json` (109 entries) is **stale/incomplete** and must not be used alone
+for gap analysis — it is missing all seven Japanese feeders below.
 
-## Already scouted (existing candidate notes)
+## Japan — already implemented (7 feeders)
 
-**Japan (6):**
-| Note | Domain |
+| Feeder | Domain / coverage |
 |---|---|
-| `transit/odpt-japan.md` | ODPT public-transport open data (rail/bus real-time; free key) |
-| `tidal-sea-level/jma-tidal.md` | JMA tide-gauge observations |
-| `radiation/japan-nra.md` | NRA radiation monitoring network |
-| `air-quality/japan-soramame.md` | Soramame (そらまめ君) air quality |
-| `reservoir-dam/japan-mlit-dams.md` | MLIT dam / reservoir storage |
-| `energy/occto-japan.md` | OCCTO grid / electricity |
+| `feeders/jma-japan` | JMA weather bulletins, warnings, forecasts |
+| `feeders/jma-bosai-quake` | Earthquake bulletins — hypocenter, magnitude, JMA intensity |
+| `feeders/jma-bosai-warning` | Per-prefecture weather warnings **+ tsunami alerts** |
+| `feeders/jma-bosai-volcano` | 111 volcanoes — alert levels, eruption observations |
+| `feeders/jma-bosai-amedas` | ~1,300 AMeDAS stations, 10-min observations (Bosai JSON) |
+| `feeders/tepco-denkiyoho` | TEPCO electricity demand/forecast (電気予報) |
+| `feeders/tokyo-docomo-bikeshare` | Tokyo Docomo bikeshare station availability |
 
-**South Korea (8):**
-| Note | Domain |
-|---|---|
-| `weather/kma-south-korea.md` | KMA API Hub — weather + earthquake/volcano + typhoon (key) |
-| `air-quality/south-korea-airkorea.md` (+ `-context`) | AirKorea real-time AQI |
-| `hydrology/south-korea-kwater.md` | K-water river / reservoir |
-| `transit/seoul-topis.md` | Seoul TOPIS traffic/transit |
-| `bikeshare-gbfs/seoul-ddareungi.md` | Ddareungi (따릉이) bikeshare |
-| `radiation/kins-iernet-korea.md` | KINS IERNet radiation |
-| `ev-charging/korea-environment-corporation.md` | EV charging status |
+Japan's seismic / tsunami / volcano / weather-warning / weather-observation
+core is **done** — and pulls from exactly the keyless Bosai JSON endpoints
+probed during this sweep (`bosai/quake/data/list.json`, `bosai/.../area.json`,
+the `developer/xml/feed/*.xml` Atom feeds).
+
+## Japan — existing candidate notes still un-implemented (gaps)
+
+These were scouted previously and remain valid build candidates (no feeder
+exists for any of them):
+
+| Note | Domain | Status |
+|---|---|---|
+| `transit/odpt-japan.md` | ODPT rail/bus real-time | gap (free key) |
+| `tidal-sea-level/jma-tidal.md` | JMA tide-gauge observations | gap (distinct from tsunami warnings in `jma-bosai-warning`) |
+| `radiation/japan-nra.md` | NRA radiation monitoring | gap |
+| `air-quality/japan-soramame.md` | Soramame (そらまめ君) AQ | gap |
+| `reservoir-dam/japan-mlit-dams.md` | MLIT dam/reservoir storage | gap |
+| `energy/occto-japan.md` | OCCTO grid-wide electricity | gap (TEPCO-only is covered by `tepco-denkiyoho`) |
+
+No **net-new** Japan gap surfaced this round — the disaster core was already
+built, and the remaining domains were already noted.
+
+## South Korea — nothing implemented (the real opportunity)
+
+There is **no Korean feeder** in `feeders/`. All eight existing Korea candidate
+notes are valid, unbuilt build candidates:
+
+`weather/kma-south-korea.md` · `air-quality/south-korea-airkorea.md` (+ `-context`) ·
+`hydrology/south-korea-kwater.md` · `transit/seoul-topis.md` ·
+`bikeshare-gbfs/seoul-ddareungi.md` · `radiation/kins-iernet-korea.md` ·
+`ev-charging/korea-environment-corporation.md`
+
+Most are **key-gated but free** (KMA apihub returned 401 without a key);
+AirKorea and the Seoul feeds are the highest-value real-time targets.
 
 ## Live-probe results (2026-06-20)
 
-| Endpoint | Result |
-|---|---|
-| **JMA `developer/xml/feed/eqvol.xml`** (earthquake/volcano Atom) | **200 live** — `<updated>2026-06-20T14:01:03+09:00</updated>`, 19 KB |
-| **JMA `developer/xml/feed/extra.xml`** (warnings, as-needed) | **200 live** — `2026-06-20T16:05:03+09:00`, 208 KB |
-| **JMA `developer/xml/feed/regular.xml`** (scheduled) | **200 live** — 高頻度（定時）, 240 KB |
-| **JMA `developer/xml/feed/other.xml`** | **200 live** — 高頻度（その他）, 19 KB |
-| **JMA `bosai/quake/data/list.json`** | **200 live** — 157 KB; events keyed by `eid` (e.g. `20260620053914`), 震源・震度情報 |
-| **JMA `bosai/common/const/area.json`** | **200 live** — 262 KB area-code reference (centers/offices/regions) |
-| KMA `apihub.kma.go.kr/.../eqk_now.php` (earthquake, no key) | **401** — real-time but **key-gated** |
-
-## The one new gap → promoted
-
-| Candidate | Country | Why it's new |
+| Endpoint | Result | Meaning |
 |---|---|---|
-| **[JMA Disaster Prevention XML](../disaster-alerts/japan-jma-disaster.md) (18/18)** | Japan | Japan had tidal/radiation/dams/AQ/transit/energy noted — but **not** the JMA 防災情報XML. There was **no Japan entry in either the seismology or disaster-alerts index**. The feed is keyless (Atom + bosai JSON), multi-hazard (earthquake/EEW + tsunami + volcano + weather warnings), with EEW issued in seconds. Promoted to a full note + disaster-alerts and seismology INDEX rows. |
-
-This is a flagship — arguably one of the best open real-time disaster feeds in
-the world. Note the contrast the seismology index already records: **US
-ShakeAlert EEW is not publicly accessible**, whereas Japan's EEW is keyless.
-
-## Open threads (verify-next, not promoted)
-
-- **Korea KMA earthquake/tsunami** — real-time but **key-gated**
-  (`apihub.kma.go.kr` → 401). Already documented as a category inside
-  `weather/kma-south-korea.md`. Could be split into a dedicated seismology
-  note if/when a bridge is built, but it adds no keyless coverage.
-- **Japan MLIT river water levels** (川の防災情報) — the hydrology white-spot
-  lists "Japan (MLIT water info)"; `reservoir-dam/japan-mlit-dams.md` covers
-  dams, but real-time *river gauge* coverage may be a separate endpoint worth
-  dedicated discovery.
-- **Seoul real-time city data** (`data.seoul.go.kr` 도시데이터 / citydata) —
-  real-time population/road/parking per district, but key-gated; lower priority
-  given Seoul TOPIS + Ddareungi already noted.
+| JMA `developer/xml/feed/{eqvol,extra,regular,other}.xml` | 200 live, current to the minute | Already consumed by `jma-*` feeders |
+| JMA `bosai/quake/data/list.json` | 200 live, 157 KB, events keyed by `eid` | Already consumed by `jma-bosai-quake` |
+| JMA `bosai/common/const/area.json` | 200 live, 262 KB reference | Already consumed by JMA feeders |
+| KMA `apihub.kma.go.kr/.../eqk_now.php` | 401 | Real-time but key-gated; **not implemented** |
 
 ## Verdict
 
-Japan and Korea are **largely exhausted** as discovery targets — both are
-deeply instrumented and were already well scouted across weather, air quality,
-hydrology, transit, radiation, and energy. This pass added one top-tier source
-(**JMA Disaster XML, 18/18**) and left three narrow verify-next threads (KMA EQ
-key-gated, MLIT river, Seoul citydata). With SG/HK/TW and JP/KR now swept, the
-remaining higher-yield *unscouted* Asian targets are the road-traffic- and
-disaster-immature but transit-rich **Southeast Asian** portals — Malaysia
-(`data.gov.my`), Indonesia (BMKG beyond seismic; Jakarta), Thailand, Vietnam —
-and **India** beyond NDMA SACHET (IMD weather, CWC/WRIS hydrology).
+Japan is **deeply covered** — its flagship JMA disaster/seismic/volcano/weather
+stack plus TEPCO electricity and Tokyo bikeshare are already implemented; the
+only remaining Japan gaps (ODPT transit, JMA tide gauges, NRA radiation,
+Soramame AQ, MLIT dams, OCCTO grid) were already on the candidate list and are
+not net-new. **South Korea is the genuine unimplemented opportunity** in
+Northeast Asia — eight scouted candidates, none built, AirKorea + Seoul feeds
+the standouts. With SG/HK/TW and JP/KR now reconciled against `feeders/`, the
+next greenfield is **Southeast Asia** (Malaysia `data.gov.my`, Indonesia/BMKG,
+Thailand, Vietnam) and **India** beyond NDMA SACHET (IMD, CWC/WRIS).

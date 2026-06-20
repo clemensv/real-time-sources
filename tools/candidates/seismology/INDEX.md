@@ -7,6 +7,7 @@ Scouted: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — deep dive)
 | Source | Directory | Coverage | Notes |
 |--------|-----------|----------|-------|
 | USGS Earthquakes | `usgs-earthquakes/` | Global | GeoJSON feeds + FDSN; polled every minute; 20+ feed variants |
+| JMA Bosai Quake | `feeders/jma-bosai-quake/` | Japan | Earthquake bulletins — hypocenter, magnitude, JMA intensity; Bosai JSON; Kafka/MQTT/AMQP. (Tsunami → `jma-bosai-warning`; volcano → `jma-bosai-volcano`.) |
 
 ## Candidates Evaluated
 
@@ -64,22 +65,26 @@ Scouted: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — deep dive)
 | 21 | **PHIVOLCS Philippines** | [phivolcs-philippines.md](phivolcs-philippines.md) | **7/18** | Philippines | ⏭️ **Skip** — Connection timeout consistently; Ring of Fire gap |
 | 22 | **Iran IIEES (FDSN)** | [iran-iiees.md](iran-iiees.md) | **10/18** | Iran | ⚠️ **Maybe** — FDSN endpoint documented but unverified due to connectivity |
 
-### Round 2026-06 — Japan / Korea
+### Round 2026-06 — Japan / Korea (corrected)
 
 The survey covered 40+ countries but never the Japan arc or the Korean
-Peninsula. This pass closed that gap. **Japan (JMA)** earthquake/EEW data is
-real-time and keyless — but it ships as part of JMA's multi-hazard
-防災情報XML (earthquake + tsunami + volcano + weather warnings), so it is
-filed in disaster-alerts rather than as a pure-seismology FDSN node. Notably,
-unlike **US ShakeAlert** (dismissed above — "EEW not publicly accessible"),
-Japan's EEW *is* publicly available with no key. **Korea (KMA)** earthquake
-data is real-time but key-gated (`apihub.kma.go.kr` → 401) and is already
-documented within the KMA weather note.
+Peninsula. This pass closed the gap — and corrected a mis-promotion. **Japan
+(JMA)** earthquake data is **already implemented** as `feeders/jma-bosai-quake`
+(see the *Already Implemented* table above), with tsunami in
+`jma-bosai-warning` and volcano in `jma-bosai-volcano`. It was briefly
+promoted as an 18/18 "gap" during this sweep because correlation was run
+against the stale root `catalog.json` (which omits every `jma-*` feeder)
+rather than the authoritative `feeders/` tree — that candidate note has been
+withdrawn. Worth recording: unlike **US ShakeAlert** (dismissed above — "EEW
+not publicly accessible"), Japan's bosai data is keyless, which is why a bridge
+already exists. **Korea (KMA)** earthquake data is real-time but **key-gated**
+(`apihub.kma.go.kr` → 401) and **not yet implemented** — a genuine open
+candidate, documented within the KMA weather note.
 
 | # | Candidate | File | Score | Coverage | Verdict |
 |---|-----------|------|-------|----------|---------|
-| 23 | **JMA Disaster XML (Japan, EQ/EEW + tsunami + volcano)** | [../disaster-alerts/japan-jma-disaster.md](../disaster-alerts/japan-jma-disaster.md) | **18/18** | Japan | ✅ **Build** — keyless Atom + bosai JSON; EEW in seconds (filed under disaster-alerts) |
-| — | KMA Korea earthquake | [../weather/kma-south-korea.md](../weather/kma-south-korea.md) | — | South Korea | 🔑 Key-gated; covered within KMA weather note |
+| — | JMA Bosai Quake (Japan) | `feeders/jma-bosai-quake/` | — | Japan | ✅ **Already implemented** (mis-promotion withdrawn) |
+| — | KMA Korea earthquake | [../weather/kma-south-korea.md](../weather/kma-south-korea.md) | — | South Korea | 🔑 Key-gated; **not yet implemented** — build candidate |
 
 ## Architecture Notes
 
