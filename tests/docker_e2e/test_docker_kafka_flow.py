@@ -1070,8 +1070,13 @@ class TestBlueskyDockerFlow:
 
 
 @pytest.fixture(scope='module')
-def uk_bods_siri_image():
-    return build_image('uk-bods-siri', dockerfile='Dockerfile.kafka', tag='test-uk-bods-siri-kafka')
+def siri_kafka_base_image():
+    return build_image('siri', dockerfile='Dockerfile', tag='ghcr.io/clemensv/real-time-sources/siri:latest')
+
+
+@pytest.fixture(scope='module')
+def uk_bods_siri_image(siri_kafka_base_image):
+    return build_image('uk-bods-siri', dockerfile='Dockerfile', tag='test-uk-bods-siri')
 
 
 class TestUkBodsSiriKafkaDockerFlow:
@@ -1118,17 +1123,16 @@ class TestUkBodsSiriKafkaDockerFlow:
 
             decoded = [json.loads(record.value) for record in records]
             observed = {event['type'] for event in decoded}
-            assert {'uk.gov.dft.bods.Operator', 'uk.gov.dft.bods.VehiclePosition'} <= observed
+            assert {'org.siri.Operator', 'org.siri.VehiclePosition'} <= observed
 
-            telemetry_records = [record for record, event in zip(records, decoded) if event['type'] == 'uk.gov.dft.bods.VehiclePosition']
-            assert_kafka_contract('uk-bods-siri', telemetry_records)
+            assert_kafka_contract('siri', records, decoded)
 
-            operator_events = [event for event in decoded if event['type'] == 'uk.gov.dft.bods.Operator']
+            operator_events = [event for event in decoded if event['type'] == 'org.siri.Operator']
             assert operator_events, decoded
             for event in operator_events:
                 operator_ref = event['data']['operator_ref']
                 assert event['subject'] == operator_ref
-            operator_keys = {record.key.decode('utf-8') for record, event in zip(records, decoded) if event['type'] == 'uk.gov.dft.bods.Operator'}
+            operator_keys = {record.key.decode('utf-8') for record, event in zip(records, decoded) if event['type'] == 'org.siri.Operator'}
             assert operator_keys == {event['data']['operator_ref'] for event in operator_events}
         finally:
             try:

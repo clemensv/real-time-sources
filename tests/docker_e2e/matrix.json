@@ -1852,21 +1852,21 @@
     },
     {
       "dir": "feeders/uk-bods-siri",
-      "image": "uk-bods-siri-kafka",
-      "file": "Dockerfile.kafka",
-      "module": "uk_bods_siri_kafka"
+      "image": "uk-bods-siri",
+      "file": "Dockerfile",
+      "module": "siri_kafka"
     },
     {
       "dir": "feeders/uk-bods-siri",
       "image": "uk-bods-siri-mqtt",
       "file": "Dockerfile.mqtt",
-      "module": "uk_bods_siri_mqtt"
+      "module": "siri_mqtt"
     },
     {
       "dir": "feeders/uk-bods-siri",
       "image": "uk-bods-siri-amqp",
       "file": "Dockerfile.amqp",
-      "module": "uk_bods_siri_amqp"
+      "module": "siri_amqp"
     }
   ],
   "flow": [
@@ -4116,7 +4116,9 @@
     {
       "dir": "feeders/uk-bods-siri",
       "test_file": "test_docker_kafka_flow.py",
-      "test_class": "TestUkBodsSiriKafkaDockerFlow"
+      "test_class": "TestUkBodsSiriKafkaDockerFlow",
+      "image": "uk-bods-siri",
+      "file": "Dockerfile"
     },
     {
       "dir": "feeders/uk-bods-siri",

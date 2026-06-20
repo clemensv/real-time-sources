@@ -2,12 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the UK BODS SIRI MQTT/UNS bridge with a new Azure Event Grid namespace (MQTT broker enabled), a user-assigned managed identity authorized via Microsoft Entra JWT against the broker, a topic space rooted at hydro/de/wsv/uk-bods-siri/#, and an Azure Container Instance hosting the feeder. The feeder authenticates to the broker using MQTT v5 enhanced authentication (OAUTH2-JWT) with tokens minted by the managed identity for audience https://eventgrid.azure.net/."
+    "description": "Deploys the UK BODS BODS-backed SIRI MQTT/UNS bridge with a new Azure Event Grid namespace (MQTT broker enabled), a user-assigned managed identity authorized via Microsoft Entra JWT against the broker, a topic space rooted at hydro/de/wsv/siri/#, and an Azure Container Instance hosting the feeder. The feeder authenticates to the broker using MQTT v5 enhanced authentication (OAUTH2-JWT) with tokens minted by the managed identity for audience https://eventgrid.azure.net/."
   },
   "parameters": {
     "namePrefix": {
       "type": "string",
-      "defaultValue": "uk-bods-siri",
+      "defaultValue": "siri",
       "minLength": 3,
       "maxLength": 24,
       "metadata": {
@@ -24,7 +24,9 @@
     "eventGridSku": {
       "type": "string",
       "defaultValue": "Standard",
-      "allowedValues": ["Standard"],
+      "allowedValues": [
+        "Standard"
+      ],
       "metadata": {
         "description": "Event Grid namespace SKU."
       }
@@ -40,16 +42,16 @@
     },
     "topicRoot": {
       "type": "string",
-      "defaultValue": "transit/uk/dft/bods/#",
+      "defaultValue": "transit/siri/#",
       "metadata": {
-        "description": "Topic-space root for the MQTT/UNS publish surface. Defaults to transit/uk/dft/bods/# which covers all uk-bods-siri output (transit/uk/dft/bods/...)."
+        "description": "Topic-space root for the MQTT/UNS publish surface. Defaults to transit/siri/# which covers all siri output (transit/siri/...)."
       }
     },
-    "bodsApiKey": {
+    "siriApiKey": {
       "type": "securestring",
-      "minLength": 1,
+      "defaultValue": "",
       "metadata": {
-        "description": "Free BODS API key used to authenticate requests to the AVL bulk archive."
+        "description": "BODS API key passed to the generalized siri feeder as SIRI_API_KEY."
       }
     },
     "pollInterval": {
@@ -57,28 +59,55 @@
       "defaultValue": 30,
       "minValue": 5,
       "metadata": {
-        "description": "Polling interval in seconds for the BODS bulk AVL archive."
+        "description": "Polling interval in seconds for the SIRI bulk AVL archive."
       }
     },
-    "operators": {
+    "siriOperators": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional comma-separated operator/NOC filter. Leave empty to ingest every operator present in the archive."
+        "description": "Optional comma-separated BODS operator filter passed as SIRI_OPERATORS."
       }
-    },    "imageName": {
+    },
+    "imageName": {
       "type": "string",
-      "defaultValue": "ghcr.io/clemensv/real-time-sources-uk-bods-siri-mqtt:latest",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-siri-mqtt:latest",
       "metadata": {
         "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
+      }
+    },
+    "siriProvider": {
+      "type": "string",
+      "defaultValue": "bods",
+      "allowedValues": [
+        "bods",
+        "trafiklab",
+        "custom"
+      ],
+      "metadata": {
+        "description": "Baked UK BODS provider profile for this thin wrapper; leave as bods."
+      }
+    },
+    "siriUrl": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional BODS URL override. Leave empty to use the generalized siri DEFAULT_BODS_URL bulk archive."
+      }
+    },
+    "siriDataTypes": {
+      "type": "string",
+      "defaultValue": "vm",
+      "metadata": {
+        "description": "SIRI data types for this thin wrapper. Keep vm for BODS VehicleMonitoring."
       }
     }
   },
   "variables": {
     "namespaceName": "[concat(parameters('namePrefix'), '-egns')]",
-    "topicSpaceName": "uk-bods-siri",
-    "clientGroupName": "uk-bods-siri-publishers",
-    "permissionBindingName": "uk-bods-siri-publish",
+    "topicSpaceName": "siri",
+    "clientGroupName": "siri-publishers",
+    "permissionBindingName": "siri-publish",
     "userIdentityName": "[concat(parameters('namePrefix'), '-mi')]",
     "containerGroupName": "[parameters('namePrefix')]",
     "storageAccountName": "[take(concat(replace(replace(parameters('namePrefix'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
@@ -88,7 +117,8 @@
     "userIdentityResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', variables('userIdentityName'))]",
     "namespaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces', variables('namespaceName'))]",
     "topicSpaceResourceId": "[resourceId('Microsoft.EventGrid/namespaces/topicSpaces', variables('namespaceName'), variables('topicSpaceName'))]",
-    "roleAssignmentName": "[guid(variables('topicSpaceResourceId'), variables('userIdentityResourceId'), variables('publisherRoleId'))]"
+    "roleAssignmentName": "[guid(variables('topicSpaceResourceId'), variables('userIdentityResourceId'), variables('publisherRoleId'))]",
+    "imageName": "ghcr.io/clemensv/real-time-sources/siri-mqtt:latest"
   },
   "resources": [
     {
@@ -103,7 +133,9 @@
       "name": "[variables('logAnalyticsWorkspaceName')]",
       "location": "[parameters('location')]",
       "properties": {
-        "sku": { "name": "PerGB2018" },
+        "sku": {
+          "name": "PerGB2018"
+        },
         "retentionInDays": 30
       }
     },
@@ -112,7 +144,9 @@
       "apiVersion": "2023-05-01",
       "name": "[variables('storageAccountName')]",
       "location": "[parameters('location')]",
-      "sku": { "name": "Standard_LRS" },
+      "sku": {
+        "name": "Standard_LRS"
+      },
       "kind": "StorageV2",
       "properties": {
         "accessTier": "Hot",
@@ -135,7 +169,9 @@
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
       ],
-      "properties": { "shareQuota": 1 }
+      "properties": {
+        "shareQuota": 1
+      }
     },
     {
       "type": "Microsoft.EventGrid/namespaces",
@@ -216,15 +252,24 @@
             "properties": {
               "image": "[parameters('imageName')]",
               "resources": {
-                "requests": { "cpu": 0.5, "memoryInGB": 1.0 }
+                "requests": {
+                  "cpu": 0.5,
+                  "memoryInGB": 1.0
+                }
               },
               "environmentVariables": [
                 {
                   "name": "MQTT_BROKER_URL",
                   "value": "[concat('mqtts://', reference(variables('namespaceResourceId'), '2025-07-15-preview').topicSpacesConfiguration.hostname, ':8883')]"
                 },
-                { "name": "MQTT_AUTH_MODE", "value": "entra" },
-                { "name": "MQTT_ENTRA_AUDIENCE", "value": "https://eventgrid.azure.net/" },
+                {
+                  "name": "MQTT_AUTH_MODE",
+                  "value": "entra"
+                },
+                {
+                  "name": "MQTT_ENTRA_AUDIENCE",
+                  "value": "https://eventgrid.azure.net/"
+                },
                 {
                   "name": "MQTT_ENTRA_CLIENT_ID",
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').clientId]"
@@ -234,25 +279,47 @@
                   "value": "[reference(variables('userIdentityResourceId'), '2023-01-31').principalId]"
                 },
                 {
-                  "name": "BODS_API_KEY",
-                  "secureValue": "[parameters('bodsApiKey')]"
-                },
-                {
                   "name": "POLLING_INTERVAL",
                   "value": "[string(parameters('pollInterval'))]"
                 },
                 {
-                  "name": "OPERATORS",
-                  "value": "[parameters('operators')]"
-                },
-                {
                   "name": "STATE_FILE",
                   "value": "/mnt/bridge-state/state.json"
-                },                { "name": "LOG_LEVEL", "value": "INFO" },
-                { "name": "PYTHONUNBUFFERED", "value": "1" }
+                },
+                {
+                  "name": "LOG_LEVEL",
+                  "value": "INFO"
+                },
+                {
+                  "name": "PYTHONUNBUFFERED",
+                  "value": "1"
+                },
+                {
+                  "name": "SIRI_PROVIDER",
+                  "value": "[parameters('siriProvider')]"
+                },
+                {
+                  "name": "SIRI_DATA_TYPES",
+                  "value": "[parameters('siriDataTypes')]"
+                },
+                {
+                  "name": "SIRI_URL",
+                  "value": "[parameters('siriUrl')]"
+                },
+                {
+                  "name": "SIRI_OPERATORS",
+                  "value": "[parameters('siriOperators')]"
+                },
+                {
+                  "name": "SIRI_API_KEY",
+                  "secureValue": "[parameters('siriApiKey')]"
+                }
               ],
               "volumeMounts": [
-                { "name": "bridge-state", "mountPath": "/mnt/bridge-state" }
+                {
+                  "name": "bridge-state",
+                  "mountPath": "/mnt/bridge-state"
+                }
               ]
             }
           }
@@ -297,7 +364,3 @@
     }
   }
 }
-
-
-
-

@@ -657,7 +657,7 @@
     "name": "UK BODS SIRI",
     "cat": "Transport",
     "key": true,
-    "desc": "England — 28,000+ buses, BODS AVL (requires free API key)",
+    "desc": "England — BODS SIRI-VM via generalized siri feeder (requires free API key)",
     "kql": true,
     "notebook": true,
     "mqtt": true,
