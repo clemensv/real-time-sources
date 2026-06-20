@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1.6
-FROM ghcr.io/clemensv/real-time-sources/siri:latest
+FROM ghcr.io/clemensv/real-time-sources-siri:latest
 
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/uk-bods-siri"
 LABEL org.opencontainers.image.title="UK BODS SIRI thin wrapper → Apache Kafka"
