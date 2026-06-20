@@ -64,6 +64,23 @@ Scouted: 2026-04-06 (Round 1), 2026-04-06 (Round 2 — deep dive)
 | 21 | **PHIVOLCS Philippines** | [phivolcs-philippines.md](phivolcs-philippines.md) | **7/18** | Philippines | ⏭️ **Skip** — Connection timeout consistently; Ring of Fire gap |
 | 22 | **Iran IIEES (FDSN)** | [iran-iiees.md](iran-iiees.md) | **10/18** | Iran | ⚠️ **Maybe** — FDSN endpoint documented but unverified due to connectivity |
 
+### Round 2026-06 — Japan / Korea
+
+The survey covered 40+ countries but never the Japan arc or the Korean
+Peninsula. This pass closed that gap. **Japan (JMA)** earthquake/EEW data is
+real-time and keyless — but it ships as part of JMA's multi-hazard
+防災情報XML (earthquake + tsunami + volcano + weather warnings), so it is
+filed in disaster-alerts rather than as a pure-seismology FDSN node. Notably,
+unlike **US ShakeAlert** (dismissed above — "EEW not publicly accessible"),
+Japan's EEW *is* publicly available with no key. **Korea (KMA)** earthquake
+data is real-time but key-gated (`apihub.kma.go.kr` → 401) and is already
+documented within the KMA weather note.
+
+| # | Candidate | File | Score | Coverage | Verdict |
+|---|-----------|------|-------|----------|---------|
+| 23 | **JMA Disaster XML (Japan, EQ/EEW + tsunami + volcano)** | [../disaster-alerts/japan-jma-disaster.md](../disaster-alerts/japan-jma-disaster.md) | **18/18** | Japan | ✅ **Build** — keyless Atom + bosai JSON; EEW in seconds (filed under disaster-alerts) |
+| — | KMA Korea earthquake | [../weather/kma-south-korea.md](../weather/kma-south-korea.md) | — | South Korea | 🔑 Key-gated; covered within KMA weather note |
+
 ## Architecture Notes
 
 ### The FDSN Opportunity — Expanded

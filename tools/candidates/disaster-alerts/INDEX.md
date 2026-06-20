@@ -51,3 +51,13 @@ Added in May 2026 by the Gulf (KW/AE/OM/SA/BH/QA/IQ) and satellite-EO (NASA/ESA/
 | Civil Defense Directorate - Emergency Alerts and Flood Warnings | [sa-civil-defense-alerts.md](sa-civil-defense-alerts.md) | 10/18 | ⚠️ |
 | Maxar Open Data Program | [spaceother-maxar-open-data.md](spaceother-maxar-open-data.md) | 10/18 | — |
 
+## Round 2026-06 — Japan / Korea sweep
+
+Japan and Korea are heavily scouted across other domains (6 Japan notes, 8 Korea notes) but had **no disaster-alerts entry**. This pass surfaced Japan's flagship multi-hazard feed.
+
+| Candidate | File | Score | Verdict |
+|---|---|---|---|
+| JMA Disaster Prevention XML (earthquake/EEW + tsunami + volcano + weather warnings) | [japan-jma-disaster.md](japan-jma-disaster.md) | **18/18** | ✅ **Build** — keyless Atom + bosai JSON; EEW in seconds; confirmed live 2026-06-20; Japan's official 防災情報XML |
+
+Korea's earthquake/tsunami data is real-time but **key-gated** (`apihub.kma.go.kr` returned 401) and is already covered as a category within [`weather/kma-south-korea.md`](../weather/kma-south-korea.md), so no separate keyless Korea disaster note was promoted. Full reconciliation in [`_research-rounds/2026-06-japan-korea-realtime-sweep.md`](../_research-rounds/2026-06-japan-korea-realtime-sweep.md).
+
