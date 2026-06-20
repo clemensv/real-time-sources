@@ -137,7 +137,7 @@ def feed(args: argparse.Namespace) -> None:
         client, configured_feeds = build_offline_client_and_feeds()
         args.once = True
     else:
-        configured_feeds = parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids)
+        configured_feeds = parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids, args.gbfs_api_key, args.gbfs_api_key_param)
         client = GbfsSourceClient()
     sources = discover_sources(client, configured_feeds)
     if not sources:
@@ -197,6 +197,8 @@ def build_parser() -> argparse.ArgumentParser:
     feed_parser = subparsers.add_parser("feed", help="Poll GBFS feeds and publish CloudEvents to AMQP")
     feed_parser.add_argument("--gbfs-feeds", default=os.getenv("GBFS_FEEDS"))
     feed_parser.add_argument("--gbfs-system-ids", default=os.getenv("GBFS_SYSTEM_IDS"))
+    feed_parser.add_argument("--gbfs-api-key", default=os.getenv("GBFS_API_KEY"))
+    feed_parser.add_argument("--gbfs-api-key-param", default=os.getenv("GBFS_API_KEY_PARAM", "acl:consumerKey"))
     feed_parser.add_argument("--poll-interval", type=int, default=int(os.getenv("POLL_INTERVAL", "60")))
     feed_parser.add_argument("--reference-refresh-interval", type=int, default=int(os.getenv("REFERENCE_REFRESH_INTERVAL", "3600")))
     feed_parser.add_argument("--state-file", default=os.getenv("STATE_FILE", DEFAULT_STATE_FILE))

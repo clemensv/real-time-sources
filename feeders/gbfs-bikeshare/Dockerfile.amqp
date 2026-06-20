@@ -38,6 +38,8 @@ RUN pip install --no-cache-dir ./gbfs_bikeshare_amqp_producer/gbfs_bikeshare_amq
 ENV AMQP_BROKER_URL=""
 ENV AMQP_ADDRESS="gbfs-bikeshare"
 ENV GBFS_FEEDS=""
+ENV GBFS_API_KEY=""
+ENV GBFS_API_KEY_PARAM="acl:consumerKey"
 ENV POLL_INTERVAL="60"
 
 CMD ["python", "-m", "gbfs_bikeshare_amqp", "feed"]

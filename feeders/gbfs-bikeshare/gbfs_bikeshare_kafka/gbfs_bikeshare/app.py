@@ -89,7 +89,7 @@ def _build_free_bike_status(record: FreeBikeStatusRecord) -> FreeBikeStatus:
 def feed(args: argparse.Namespace) -> None:
     mock_mode = getattr(args, "mock", False)
     configured_feeds = (
-        [] if mock_mode else parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids)
+        [] if mock_mode else parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids, args.gbfs_api_key, args.gbfs_api_key_param)
     )
     if args.connection_string:
         cfg = parse_kafka_connection_string(args.connection_string)
@@ -206,6 +206,8 @@ def build_parser() -> argparse.ArgumentParser:
     feed_parser = subparsers.add_parser("feed", help="Poll GBFS feeds and publish CloudEvents to Kafka")
     feed_parser.add_argument("--gbfs-feeds", default=os.getenv("GBFS_FEEDS"), help="Comma-separated GBFS auto-discovery URLs, @file, or path to a file containing URLs")
     feed_parser.add_argument("--gbfs-system-ids", default=os.getenv("GBFS_SYSTEM_IDS"), help="Optional comma-separated system-id overrides aligned with GBFS_FEEDS")
+    feed_parser.add_argument("--gbfs-api-key", default=os.getenv("GBFS_API_KEY"), help="Optional upstream API key appended to configured GBFS auto-discovery URLs")
+    feed_parser.add_argument("--gbfs-api-key-param", default=os.getenv("GBFS_API_KEY_PARAM", "acl:consumerKey"), help="Query parameter name used with --gbfs-api-key")
     feed_parser.add_argument("--kafka-bootstrap-servers", default=os.getenv("KAFKA_BOOTSTRAP_SERVERS"), help="Kafka bootstrap servers")
     feed_parser.add_argument("--kafka-topic", default=os.getenv("KAFKA_TOPIC", "gbfs-bikeshare"), help="Kafka topic name")
     feed_parser.add_argument("--sasl-username", default=os.getenv("SASL_USERNAME"), help="SASL PLAIN username")
