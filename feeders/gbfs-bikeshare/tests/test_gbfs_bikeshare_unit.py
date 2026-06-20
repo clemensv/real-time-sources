@@ -165,6 +165,69 @@ def test_parse_feed_configuration_with_overrides():
 
 
 @pytest.mark.unit
+def test_parse_feed_configuration_appends_runtime_api_key():
+    configured = parse_feed_configuration(
+        "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json",
+        gbfs_api_key="secret-key",
+    )
+    assert configured[0].autodiscovery_url == "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json?acl:consumerKey=secret-key"
+
+
+@pytest.mark.unit
+def test_parse_feed_configuration_applies_per_feed_runtime_api_keys():
+    configured = parse_feed_configuration(
+        "https://a.example/gbfs.json,https://b.example/gbfs.json",
+        gbfs_api_key="key-a,key-b",
+    )
+    assert [item.autodiscovery_url for item in configured] == [
+        "https://a.example/gbfs.json?acl:consumerKey=key-a",
+        "https://b.example/gbfs.json?acl:consumerKey=key-b",
+    ]
+
+
+@pytest.mark.unit
+def test_parse_feed_configuration_templates_runtime_api_key_without_double_append():
+    configured = parse_feed_configuration(
+        "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json?acl:consumerKey={GBFS_API_KEY}",
+        gbfs_api_key="secret-key",
+    )
+    assert configured[0].autodiscovery_url == "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json?acl:consumerKey=secret-key"
+
+
+@pytest.mark.unit
+def test_parse_feed_configuration_expands_environment_url_templates(monkeypatch):
+    monkeypatch.setenv("GBFS_SYSTEM_SLUG", "docomo-cycle-tokyo")
+    configured = parse_feed_configuration(
+        "https://api-public.odpt.org/api/v4/gbfs/${GBFS_SYSTEM_SLUG}/gbfs.json",
+        gbfs_api_key="secret-key",
+    )
+    assert configured[0].autodiscovery_url == "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json?acl:consumerKey=secret-key"
+
+
+@pytest.mark.unit
+def test_parse_feed_configuration_rejects_mismatched_per_feed_runtime_api_keys():
+    with pytest.raises(ValueError, match="GBFS_API_KEY"):
+        parse_feed_configuration("https://a.example/gbfs.json,https://b.example/gbfs.json", gbfs_api_key="only-a,only-b,extra")
+
+
+@pytest.mark.unit
+def test_parse_feed_configuration_does_not_double_append_existing_api_key():
+    configured = parse_feed_configuration(
+        "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json?acl:consumerKey=existing",
+        gbfs_api_key="secret-key",
+    )
+    assert configured[0].autodiscovery_url == "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json?acl:consumerKey=existing"
+
+
+@pytest.mark.unit
+def test_parse_feed_configuration_without_api_key_leaves_url_unchanged():
+    configured = parse_feed_configuration(
+        "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json?system=docomo-cycle-tokyo"
+    )
+    assert configured[0].autodiscovery_url == "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json?system=docomo-cycle-tokyo"
+
+
+@pytest.mark.unit
 def test_discover_sources_uses_system_information_system_id():
     sources = discover_sources(_client(), [ConfiguredFeed(SAMPLE_DISCOVERY_URL)])
     assert len(sources) == 1

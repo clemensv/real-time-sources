@@ -139,7 +139,7 @@ async def feed(args: argparse.Namespace) -> None:
         client, configured_feeds = build_offline_client_and_feeds()
         args.once = True
     else:
-        configured_feeds = parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids)
+        configured_feeds = parse_feed_configuration(args.gbfs_feeds, args.gbfs_system_ids, args.gbfs_api_key, args.gbfs_api_key_param)
         client = GbfsSourceClient()
     sources = discover_sources(client, configured_feeds)
     if not sources:
@@ -159,6 +159,8 @@ async def feed(args: argparse.Namespace) -> None:
     system_client = OrgGbfsMqttSystemMqttClient(paho_client, content_mode="binary", loop=loop)
     stations_client = OrgGbfsMqttStationsMqttClient(paho_client, content_mode="binary", loop=loop)
     free_bikes_client = OrgGbfsMqttFreeBikesMqttClient(paho_client, content_mode="binary", loop=loop)
+    # Generated clients install callbacks on the shared Paho client; the last wrapper owns the connect waiter.
+    connection_client = free_bikes_client
 
     if auth_mode == "entra":
         token, expires_at = _acquire_entra_token(args.mqtt_entra_audience, args.mqtt_entra_client_id)
@@ -172,7 +174,7 @@ async def feed(args: argparse.Namespace) -> None:
         refresh_task = asyncio.create_task(_entra_token_refresh_loop(paho_client, host, port, args.mqtt_entra_audience, args.mqtt_entra_client_id, expires_at))
         logger.info("Using Entra ID MQTT auth (expires %s)", expires_at.isoformat())
     else:
-        await system_client.connect(host, port)
+        await connection_client.connect(host, port)
 
     last_reference_refresh = 0.0
     reference_refresh = max(300, args.reference_refresh_interval)
@@ -220,7 +222,7 @@ async def feed(args: argparse.Namespace) -> None:
         if refresh_task is not None:
             refresh_task.cancel()
         try:
-            await system_client.disconnect()
+            await connection_client.disconnect()
         except Exception:  # pragma: no cover
             pass
 
@@ -231,6 +233,8 @@ def build_parser() -> argparse.ArgumentParser:
     feed_parser = subparsers.add_parser("feed", help="Poll GBFS feeds and publish CloudEvents to MQTT")
     feed_parser.add_argument("--gbfs-feeds", default=os.getenv("GBFS_FEEDS"))
     feed_parser.add_argument("--gbfs-system-ids", default=os.getenv("GBFS_SYSTEM_IDS"))
+    feed_parser.add_argument("--gbfs-api-key", default=os.getenv("GBFS_API_KEY"))
+    feed_parser.add_argument("--gbfs-api-key-param", default=os.getenv("GBFS_API_KEY_PARAM", "acl:consumerKey"))
     feed_parser.add_argument("--poll-interval", type=int, default=int(os.getenv("POLL_INTERVAL", "60")))
     feed_parser.add_argument("--reference-refresh-interval", type=int, default=int(os.getenv("REFERENCE_REFRESH_INTERVAL", "3600")))
     feed_parser.add_argument("--state-file", default=os.getenv("STATE_FILE", DEFAULT_STATE_FILE))

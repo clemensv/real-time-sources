@@ -20,6 +20,8 @@ RUN pip install --no-cache-dir ./gbfs_bikeshare_producer/gbfs_bikeshare_producer
 
 ENV CONNECTION_STRING=""
 ENV GBFS_FEEDS=""
+ENV GBFS_API_KEY=""
+ENV GBFS_API_KEY_PARAM="acl:consumerKey"
 ENV POLL_INTERVAL="60"
 
 CMD ["python", "-m", "gbfs_bikeshare", "feed"]

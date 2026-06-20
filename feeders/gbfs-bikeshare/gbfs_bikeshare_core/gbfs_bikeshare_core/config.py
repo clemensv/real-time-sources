@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Dict, List, Optional
+from typing import Dict, List, Mapping, Optional, Set, Tuple
+from urllib.parse import parse_qsl, urlencode, urlsplit, urlunsplit
 
 
 @dataclass(frozen=True)
@@ -13,6 +16,8 @@ class ConfiguredFeed:
 
 TRUE_VALUES = {"1", "true", "yes", "on"}
 FALSE_VALUES = {"0", "false", "no", "off"}
+DEFAULT_API_KEY_PARAM = "acl:consumerKey"
+_ENV_TEMPLATE = re.compile(r"\$\{([A-Za-z_][A-Za-z0-9_]*)\}|\{([A-Za-z_][A-Za-z0-9_]*)\}")
 
 
 def parse_bool(value: object, default: bool = False) -> bool:
@@ -48,16 +53,68 @@ def _parse_feed_value(value: Optional[str]) -> List[str]:
     return [item.strip() for item in text.split(",") if item.strip()]
 
 
-def parse_feed_configuration(gbfs_feeds: Optional[str], gbfs_system_ids: Optional[str] = None) -> List[ConfiguredFeed]:
+def _expand_url_template(url: str, variables: Mapping[str, str]) -> Tuple[str, Set[str]]:
+    used: Set[str] = set()
+
+    def replace(match: re.Match[str]) -> str:
+        name = match.group(1) or match.group(2)
+        if name not in variables or variables[name] is None:
+            raise ValueError(f"GBFS feed URL template references unset environment variable {name}.")
+        used.add(name)
+        return str(variables[name])
+
+    return _ENV_TEMPLATE.sub(replace, url), used
+
+
+def _aligned_values(value: Optional[str], count: int, field_name: str) -> List[Optional[str]]:
+    values = _parse_feed_value(value)
+    if not values:
+        return [None] * count
+    if len(values) == 1:
+        return values * count
+    if len(values) != count:
+        raise ValueError(f"{field_name} must provide either one value or the same number of entries as GBFS_FEEDS.")
+    return values
+
+
+def _append_api_key(url: str, api_key: Optional[str], api_key_param: Optional[str]) -> str:
+    key = (api_key or "").strip()
+    param = (api_key_param or DEFAULT_API_KEY_PARAM).strip()
+    if not key or not param:
+        return url
+    parsed = urlsplit(url)
+    query_pairs = parse_qsl(parsed.query, keep_blank_values=True)
+    if any(name == param for name, _ in query_pairs):
+        return url
+    query_pairs.append((param, key))
+    query = urlencode(query_pairs, doseq=True, safe=":")
+    return urlunsplit((parsed.scheme, parsed.netloc, parsed.path, query, parsed.fragment))
+
+
+def parse_feed_configuration(
+    gbfs_feeds: Optional[str],
+    gbfs_system_ids: Optional[str] = None,
+    gbfs_api_key: Optional[str] = None,
+    gbfs_api_key_param: Optional[str] = DEFAULT_API_KEY_PARAM,
+) -> List[ConfiguredFeed]:
     feeds = _parse_feed_value(gbfs_feeds)
     if not feeds:
         raise ValueError("At least one GBFS auto-discovery URL must be provided via --gbfs-feeds or GBFS_FEEDS.")
     overrides = _parse_feed_value(gbfs_system_ids)
     if overrides and len(overrides) != len(feeds):
         raise ValueError("GBFS_SYSTEM_IDS must provide the same number of entries as GBFS_FEEDS when specified.")
+    api_keys = _aligned_values(gbfs_api_key, len(feeds), "GBFS_API_KEY")
+    api_key_params = _aligned_values(gbfs_api_key_param, len(feeds), "GBFS_API_KEY_PARAM")
     configured: List[ConfiguredFeed] = []
     for index, feed in enumerate(feeds):
-        configured.append(ConfiguredFeed(feed, overrides[index] if index < len(overrides) else None))
+        api_key = api_keys[index]
+        template_variables = dict(os.environ)
+        if api_key:
+            template_variables["GBFS_API_KEY"] = api_key
+        template_variables["GBFS_FEED_INDEX"] = str(index)
+        templated_feed, template_variables_used = _expand_url_template(feed, template_variables)
+        append_key = api_key if "GBFS_API_KEY" not in template_variables_used else None
+        configured.append(ConfiguredFeed(_append_api_key(templated_feed, append_key, api_key_params[index]), overrides[index] if index < len(overrides) else None))
     return configured
 
 
