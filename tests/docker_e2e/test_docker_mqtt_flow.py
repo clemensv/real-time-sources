@@ -6387,3 +6387,45 @@ class TestSiriMqttDockerFlow:
             except docker.errors.APIError: pass
             try: network.remove()
             except docker.errors.APIError: pass
+
+# ---- openaq -------------------------------------------------------------
+
+@pytest.fixture(scope='module')
+def openaq_mqtt_image():
+    return build_image('openaq', dockerfile='Dockerfile.mqtt', tag='test-openaq-mqtt')
+
+@pytest.fixture()
+def mosquitto_openaq():
+    container, network, host_port = _generic_mosquitto('openaq-mqtt-e2e', 'openaq-mqtt-e2e-broker')
+    try:
+        yield {'host_port': host_port, 'internal_host': 'openaq-mqtt-e2e-broker', 'internal_port': 1883, 'network': network.name}
+    finally:
+        try: container.kill()
+        except docker.errors.APIError: pass
+        try: network.remove()
+        except docker.errors.APIError: pass
+
+class TestOpenAQMqttDockerFlow:
+    def test_emits_retained_uns_topics(self, mosquitto_openaq, openaq_mqtt_image):
+        client = docker.from_env()
+        broker_url = f"mqtt://{mosquitto_openaq['internal_host']}:{mosquitto_openaq['internal_port']}"
+        feeder = client.containers.run(openaq_mqtt_image.id, detach=True, remove=False, network=mosquitto_openaq['network'], environment={'MQTT_BROKER_URL': broker_url, 'OPENAQ_MOCK': 'true', 'ONCE_MODE': 'true', 'PYTHONUNBUFFERED': '1'})
+        try:
+            result = feeder.wait(timeout=240)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, logs[-4000:]
+        finally:
+            try: feeder.remove(force=True)
+            except docker.errors.APIError: pass
+        messages = _collect_messages_topic('127.0.0.1', mosquitto_openaq['host_port'], 'air-quality/global/openaq/#', timeout=30.0)
+        assert messages, 'No retained OpenAQ MQTT messages received'
+        types = {m['user_properties'].get('type') for m in messages}
+        assert {'org.openaq.Location', 'org.openaq.Sensor', 'org.openaq.Measurement'} <= types
+        assert any(m['topic'].endswith('/info') for m in messages)
+        assert any(m['topic'].endswith('/sensor') for m in messages)
+        assert any(m['topic'].endswith('/measurement') for m in messages)
+        for sample in messages[:3]:
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in sample['user_properties'], sample
+            assert sample['retain'] is True
+            assert sample['qos'] == 1

@@ -1,0 +1,1 @@
+"""OpenAQ AMQP feeder."""

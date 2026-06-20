@@ -1,0 +1,18 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+[tool.poetry]
+name = "openaq-amqp"
+version = "0.1.0"
+packages = [{include = "openaq_amqp"}]
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+python-qpid-proton = ">=0.39.0"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+azure-identity = ">=1.17.0"
+openaq_core = {path = "../openaq_core"}
+openaq_amqp_producer_data = {path = "../openaq_amqp_producer/openaq_amqp_producer_data"}
+openaq_amqp_producer_amqp_producer = {path = "../openaq_amqp_producer/openaq_amqp_producer_amqp_producer"}

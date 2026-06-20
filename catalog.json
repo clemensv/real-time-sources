@@ -652,12 +652,23 @@
     "mqtt": true,
     "amqp": true
   },
-{
+  {
+    "id": "openaq",
+    "name": "OpenAQ",
+    "cat": "Air Quality",
+    "key": true,
+    "desc": "Global \u2014 locations, sensors, latest pollutant measurements",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "uk-bods-siri",
     "name": "UK BODS SIRI",
     "cat": "Transport",
     "key": true,
-    "desc": "England — 28,000+ buses, BODS AVL (requires free API key)",
+    "desc": "England \u2014 28,000+ buses, BODS AVL (requires free API key)",
     "kql": true,
     "notebook": true,
     "mqtt": true,

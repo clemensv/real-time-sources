@@ -1,0 +1,23 @@
+[build-system]
+requires = ["poetry-core>=1.1.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "openaq"
+version = "0.1.0"
+description = "OpenAQ global air-quality Kafka feeder"
+packages = [{include = "openaq"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+requests = ">=2.32.3"
+confluent-kafka = ">=2.5.3"
+cloudevents = ">=1.11.0,<2.0.0"
+dataclasses_json = ">=0.6.7"
+avro = ">=1.11.3"
+openaq_core = {path = "../openaq_core"}
+openaq_producer_data = {path = "../openaq_producer/openaq_producer_data"}
+openaq_producer_kafka_producer = {path = "../openaq_producer/openaq_producer_kafka_producer"}
+
+[tool.poetry.scripts]
+openaq = "openaq.app:main"

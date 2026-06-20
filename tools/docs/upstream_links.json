@@ -296,6 +296,10 @@
     "homepage": "https://www.weather.gov/",
     "api_docs": "https://www.weather.gov/documentation/services-web-api"
   },
+  "openaq": {
+    "homepage": "https://openaq.org/",
+    "api_docs": "https://docs.openaq.org/"
+  },
   "paris-bicycle-counters": {
     "homepage": "https://opendata.paris.fr/",
     "api_docs": "https://opendata.paris.fr/explore/dataset/comptage-velo-donnees-compteurs/information/"

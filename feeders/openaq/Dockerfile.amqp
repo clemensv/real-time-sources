@@ -1,0 +1,29 @@
+FROM python:3.10-slim
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources" \
+      org.opencontainers.image.title="OpenAQ AMQP 1.0 feeder" \
+      org.opencontainers.image.description="Polls OpenAQ API v3 global air-quality data and publishes binary-mode AMQP 1.0 CloudEvents." \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/openaq/CONTAINER.md" \
+      org.opencontainers.image.license="MIT"
+ENV PYTHONUNBUFFERED=1
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+WORKDIR /app
+RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            build-essential cmake pkg-config swig \
+            libssl-dev libsasl2-dev python3-dev \
+            libsasl2-2 libsasl2-modules \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip install --no-cache-dir ./openaq_amqp_producer/openaq_amqp_producer_data \
+ && pip install --no-cache-dir ./openaq_amqp_producer/openaq_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./openaq_core \
+ && pip install --no-cache-dir ./openaq_amqp
+CMD ["python", "-m", "openaq_amqp", "feed"]
+
+
+

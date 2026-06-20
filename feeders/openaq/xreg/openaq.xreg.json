@@ -1,0 +1,1333 @@
+{
+  "endpoints": {
+    "org.openaq.Locations.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "openaq",
+          "key": "{location_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.openaq.locations.kafka"
+      ],
+      "description": "Kafka endpoint for OpenAQ Location reference CloudEvents on topic `openaq`, keyed by stable `{location_id}`."
+    },
+    "org.openaq.Sensors.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "openaq",
+          "key": "{location_id}/{sensor_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.openaq.sensors.kafka"
+      ],
+      "description": "Kafka endpoint for OpenAQ Sensor reference and Measurement telemetry CloudEvents on topic `openaq`, keyed by stable `{location_id}/{sensor_id}`."
+    },
+    "org.openaq.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.openaq.locations.mqtt",
+        "#/messagegroups/org.openaq.sensors.mqtt"
+      ],
+      "description": "MQTT 5 producer endpoint for OpenAQ CloudEvents using an air-quality Unified Namespace topic hierarchy."
+    },
+    "org.openaq.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/openaq"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.openaq.locations.amqp",
+        "#/messagegroups/org.openaq.sensors.amqp"
+      ],
+      "description": "AMQP 1.0 producer endpoint for OpenAQ CloudEvents on the configured broker address."
+    }
+  },
+  "messagegroups": {
+    "org.openaq.locations": {
+      "description": "Transport-neutral OpenAQ monitoring-location reference events keyed by the stable OpenAQ location id.",
+      "messages": {
+        "org.openaq.Location": {
+          "name": "Location",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference catalog metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before measurement events and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.openaq.Location"
+            },
+            "source": {
+              "value": "https://api.openaq.org/v3",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{location_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.openaq.jstruct/schemas/org.openaq.Location"
+        }
+      }
+    },
+    "org.openaq.sensors": {
+      "description": "Transport-neutral OpenAQ sensor reference and latest-measurement telemetry events keyed by the stable location/sensor id tuple.",
+      "messages": {
+        "org.openaq.Sensor": {
+          "name": "Sensor",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference catalog metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when OpenAQ exposes it.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.openaq.Sensor"
+            },
+            "source": {
+              "value": "https://api.openaq.org/v3",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{location_id}/{sensor_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.openaq.jstruct/schemas/org.openaq.Sensor"
+        },
+        "org.openaq.Measurement": {
+          "name": "Measurement",
+          "envelope": "CloudEvents/1.0",
+          "description": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.openaq.Measurement"
+            },
+            "source": {
+              "value": "https://api.openaq.org/v3",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{location_id}/{sensor_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.openaq.jstruct/schemas/org.openaq.Measurement"
+        }
+      }
+    },
+    "org.openaq.locations.kafka": {
+      "description": "Kafka bindings for OpenAQ location reference events.",
+      "messages": {
+        "org.openaq.kafka.Location": {
+          "name": "Location",
+          "basemessageuri": "/messagegroups/org.openaq.locations/messages/org.openaq.Location",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{location_id}"
+          },
+          "description": "Reference catalog metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before measurement events and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ."
+        }
+      }
+    },
+    "org.openaq.sensors.kafka": {
+      "description": "Kafka bindings for OpenAQ sensor reference and latest-measurement events.",
+      "messages": {
+        "org.openaq.kafka.Sensor": {
+          "name": "Sensor",
+          "basemessageuri": "/messagegroups/org.openaq.sensors/messages/org.openaq.Sensor",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{location_id}/{sensor_id}"
+          },
+          "description": "Reference catalog metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when OpenAQ exposes it."
+        },
+        "org.openaq.kafka.Measurement": {
+          "name": "Measurement",
+          "basemessageuri": "/messagegroups/org.openaq.sensors/messages/org.openaq.Measurement",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{location_id}/{sensor_id}"
+          },
+          "description": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor."
+        }
+      }
+    },
+    "org.openaq.locations.mqtt": {
+      "description": "MQTT 5 retained reference topic for OpenAQ locations.",
+      "messages": {
+        "org.openaq.mqtt.Location": {
+          "name": "Location",
+          "basemessageuri": "/messagegroups/org.openaq.locations/messages/org.openaq.Location",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/global/openaq/{country_iso}/{location_id}/info",
+            "qos": 1,
+            "retain": true
+          },
+          "description": "Reference catalog metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before measurement events and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ."
+        }
+      }
+    },
+    "org.openaq.sensors.mqtt": {
+      "description": "MQTT 5 retained reference and latest-value topics for OpenAQ sensors.",
+      "messages": {
+        "org.openaq.mqtt.Sensor": {
+          "name": "Sensor",
+          "basemessageuri": "/messagegroups/org.openaq.sensors/messages/org.openaq.Sensor",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/global/openaq/{country_iso}/{location_id}/{parameter_name}/{sensor_id}/sensor",
+            "qos": 1,
+            "retain": true
+          },
+          "description": "Reference catalog metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when OpenAQ exposes it."
+        },
+        "org.openaq.mqtt.Measurement": {
+          "name": "Measurement",
+          "basemessageuri": "/messagegroups/org.openaq.sensors/messages/org.openaq.Measurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "air-quality/global/openaq/{country_iso}/{location_id}/{parameter_name}/{sensor_id}/measurement",
+            "qos": 1,
+            "retain": true
+          },
+          "description": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor."
+        }
+      }
+    },
+    "org.openaq.locations.amqp": {
+      "description": "AMQP 1.0 bindings for OpenAQ location reference events.",
+      "messages": {
+        "org.openaq.amqp.Location": {
+          "name": "Location",
+          "basemessageuri": "/messagegroups/org.openaq.locations/messages/org.openaq.Location",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{location_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key for the OpenAQ location."
+              }
+            },
+            "application-properties": {
+              "country_iso": {
+                "type": "uritemplate",
+                "value": "{country_iso}",
+                "description": "ISO 3166-1 alpha-2 country code used for broker filters and MQTT hierarchy."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{location_id}",
+                "description": "Service Bus/Event Hubs partition key matching CloudEvents subject and Kafka key."
+              }
+            }
+          },
+          "description": "Reference catalog metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before measurement events and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ."
+        }
+      }
+    },
+    "org.openaq.sensors.amqp": {
+      "description": "AMQP 1.0 bindings for OpenAQ sensor reference and measurement events.",
+      "messages": {
+        "org.openaq.amqp.Sensor": {
+          "name": "Sensor",
+          "basemessageuri": "/messagegroups/org.openaq.sensors/messages/org.openaq.Sensor",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{location_id}/{sensor_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key for the OpenAQ sensor."
+              }
+            },
+            "application-properties": {
+              "country_iso": {
+                "type": "uritemplate",
+                "value": "{country_iso}",
+                "description": "ISO country routing attribute."
+              },
+              "parameter_name": {
+                "type": "uritemplate",
+                "value": "{parameter_name}",
+                "description": "OpenAQ parameter name routing attribute such as pm25, pm10, o3, no2, so2, co, or bc."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{location_id}/{sensor_id}",
+                "description": "Service Bus/Event Hubs partition key matching CloudEvents subject and Kafka key."
+              }
+            }
+          },
+          "description": "Reference catalog metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and most recent value metadata when OpenAQ exposes it."
+        },
+        "org.openaq.amqp.Measurement": {
+          "name": "Measurement",
+          "basemessageuri": "/messagegroups/org.openaq.sensors/messages/org.openaq.Measurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{location_id}/{sensor_id}",
+                "description": "AMQP message subject matching the CloudEvent subject and Kafka key for the OpenAQ measurement."
+              }
+            },
+            "application-properties": {
+              "country_iso": {
+                "type": "uritemplate",
+                "value": "{country_iso}",
+                "description": "ISO country routing attribute."
+              },
+              "parameter_name": {
+                "type": "uritemplate",
+                "value": "{parameter_name}",
+                "description": "OpenAQ parameter name routing attribute such as pm25, pm10, o3, no2, so2, co, or bc."
+              }
+            },
+            "message_annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{location_id}/{sensor_id}",
+                "description": "Service Bus/Event Hubs partition key matching CloudEvents subject and Kafka key."
+              }
+            }
+          },
+          "description": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor."
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "org.openaq.jstruct": {
+      "schemas": {
+        "org.openaq.Location": {
+          "name": "Location",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/openaq/Location/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "name": "Location",
+                "$root": "#/definitions/org/openaq/Location",
+                "definitions": {
+                  "org": {
+                    "openaq": {
+                      "Location": {
+                        "name": "Location",
+                        "type": "object",
+                        "description": "Reference metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before telemetry and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ.",
+                        "properties": {
+                          "location_id": {
+                            "type": "int64",
+                            "description": "Stable integer OpenAQ location identifier from upstream `id` or `locationsId`. Used as the first CloudEvents subject, Kafka key, MQTT topic, and AMQP partition-key segment. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "altnames": {
+                              "json": "id"
+                            },
+                            "minimum": "1"
+                          },
+                          "name": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Human-readable OpenAQ location name from upstream `name`; can be null. Mutable label for display only, never a key. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "locality": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Locality/city label from OpenAQ `locality`; can be null and is not a stable identifier. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "timezone": {
+                            "type": "string",
+                            "description": "IANA timezone name for interpreting local operational context at the location, from OpenAQ `timezone`. Timestamps emitted by this feeder remain UTC/offset-aware. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "country_iso": {
+                            "type": "string",
+                            "description": "ISO 3166-1 alpha-2 country code supplied by OpenAQ `country.iso`; used for configuration, routing, MQTT hierarchy, and consumer filtering. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "pattern": "^[A-Z]{2}$"
+                          },
+                          "country_name": {
+                            "type": "string",
+                            "description": "Country name from the nested OpenAQ country object. Used for dashboards and attribution, not as a key. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "owner_id": {
+                            "type": [
+                              "int64",
+                              "null"
+                            ],
+                            "description": "OpenAQ owner id from nested `owner.id`; identifies the data owner/contact where provided. Null when upstream omits it. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "owner_name": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Data owner display name from nested `owner.name`; mutable attribution label. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "provider_id": {
+                            "type": [
+                              "int64",
+                              "null"
+                            ],
+                            "description": "OpenAQ provider id from nested `provider.id`; identifies the ingestion provider/source platform. Null when absent. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "provider_name": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "OpenAQ provider display name from nested `provider.name`; useful for attribution and provider-specific quality triage. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "is_mobile": {
+                            "type": "boolean",
+                            "description": "Boolean OpenAQ `isMobile` flag indicating whether the location represents a mobile platform rather than a fixed station. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "is_monitor": {
+                            "type": "boolean",
+                            "description": "Boolean OpenAQ `isMonitor` flag indicating whether OpenAQ considers this location a reference monitor. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "latitude": {
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "description": "WGS 84 latitude in decimal degrees from `coordinates.latitude`; null when unavailable. Unit: degrees north. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": -90,
+                            "maximum": 90
+                          },
+                          "longitude": {
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "description": "WGS 84 longitude in decimal degrees from `coordinates.longitude`; null when unavailable. Unit: degrees east. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": -180,
+                            "maximum": 180
+                          },
+                          "datetime_first": {
+                            "type": [
+                              "datetime",
+                              "null"
+                            ],
+                            "description": "Earliest measurement timestamp known for this location from `datetimeFirst.utc` when present. Used to understand historical coverage. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "datetime_last": {
+                            "type": [
+                              "datetime",
+                              "null"
+                            ],
+                            "description": "Most recent measurement timestamp known for this location from `datetimeLast.utc` when present. Used to prioritize active feeds. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "license": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Semicolon-separated license names/attribution strings from OpenAQ `licenses`; preserve for downstream attribution and compliance. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "sensor_count": {
+                            "type": "int32",
+                            "description": "Number of parameter-specific sensors listed in the location payload. Useful for completeness checks and dashboard summaries. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "location_id",
+                          "timezone",
+                          "country_iso",
+                          "country_name",
+                          "is_mobile",
+                          "is_monitor",
+                          "sensor_count"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "description": "Reference metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before telemetry and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ."
+              }
+            }
+          },
+          "description": "Reference metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before telemetry and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ."
+        },
+        "org.openaq.Sensor": {
+          "name": "Sensor",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/openaq/Sensor/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "name": "Sensor",
+                "$root": "#/definitions/org/openaq/Sensor",
+                "definitions": {
+                  "org": {
+                    "openaq": {
+                      "Sensor": {
+                        "name": "Sensor",
+                        "type": "object",
+                        "description": "Reference metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and latest value metadata when OpenAQ exposes it.",
+                        "properties": {
+                          "location_id": {
+                            "type": "int64",
+                            "description": "Stable integer OpenAQ location identifier from upstream `id` or `locationsId`. Used as the first CloudEvents subject, Kafka key, MQTT topic, and AMQP partition-key segment. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "minimum": "1"
+                          },
+                          "sensor_id": {
+                            "type": "int64",
+                            "description": "Stable integer OpenAQ sensor identifier from upstream `id` or `sensorsId`. Identifies one parameter-specific stream at a location. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "minimum": "1"
+                          },
+                          "country_iso": {
+                            "type": "string",
+                            "description": "ISO 3166-1 alpha-2 country code supplied by OpenAQ `country.iso`; used for configuration, routing, MQTT hierarchy, and consumer filtering. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "pattern": "^[A-Z]{2}$"
+                          },
+                          "sensor_name": {
+                            "type": "string",
+                            "description": "OpenAQ sensor name from upstream `name`; typically derived from parameter and location. Mutable label, not a key. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "parameter_id": {
+                            "type": "int64",
+                            "description": "OpenAQ parameter identifier from the parameter object. Joins to `/v3/parameters`; stable across locations and sensors. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "minimum": "1"
+                          },
+                          "parameter_name": {
+                            "type": "string",
+                            "description": "OpenAQ machine-readable parameter name, for example pm25, pm10, o3, no2, so2, co, bc, temperature, relativehumidity, pressure, or windspeed. Used as a routing segment; not localized. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "enum": [
+                              "pm25",
+                              "pm10",
+                              "o3",
+                              "no2",
+                              "so2",
+                              "co",
+                              "bc",
+                              "no",
+                              "nox",
+                              "pm1",
+                              "co2",
+                              "temperature",
+                              "relativehumidity",
+                              "pressure",
+                              "windspeed",
+                              "winddirection",
+                              "um003",
+                              "um005",
+                              "um010",
+                              "um025",
+                              "um050",
+                              "um100"
+                            ],
+                            "altenums": {
+                              "lang:en": {
+                                "pm25": "Fine particulate matter with aerodynamic diameter <= 2.5 µm; commonly reported by OpenAQ in µg/m³.",
+                                "pm10": "Particulate matter with aerodynamic diameter <= 10 µm; commonly reported by OpenAQ in µg/m³.",
+                                "o3": "Ozone concentration; commonly reported by OpenAQ in µg/m³, ppb, or ppm depending on provider.",
+                                "no2": "Nitrogen dioxide concentration; commonly reported by OpenAQ in µg/m³, ppb, or ppm depending on provider.",
+                                "so2": "Sulfur dioxide concentration; commonly reported by OpenAQ in µg/m³, ppb, or ppm depending on provider.",
+                                "co": "Carbon monoxide concentration; commonly reported by OpenAQ in µg/m³, ppm, or ppb depending on provider.",
+                                "bc": "Black carbon concentration; commonly reported by OpenAQ in µg/m³.",
+                                "no": "Nitric oxide concentration; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "nox": "Nitrogen oxides concentration; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "pm1": "Particulate matter with aerodynamic diameter <= 1 µm; commonly reported in µg/m³.",
+                                "co2": "Carbon dioxide concentration; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "temperature": "Ambient temperature measurement; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "relativehumidity": "Relative humidity measurement; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "pressure": "Atmospheric pressure measurement; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "windspeed": "Wind speed measurement; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "winddirection": "Wind direction measurement; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "um003": "Ultrafine particle count channel for particles >= 0.03 µm; units are carried in parameter_units.",
+                                "um005": "Ultrafine particle count channel for particles >= 0.05 µm; units are carried in parameter_units.",
+                                "um010": "Ultrafine particle count channel for particles >= 0.10 µm; units are carried in parameter_units.",
+                                "um025": "Ultrafine particle count channel for particles >= 0.25 µm; units are carried in parameter_units.",
+                                "um050": "Ultrafine particle count channel for particles >= 0.50 µm; units are carried in parameter_units.",
+                                "um100": "Ultrafine particle count channel for particles >= 1.00 µm; units are carried in parameter_units."
+                              }
+                            }
+                          },
+                          "parameter_units": {
+                            "type": "string",
+                            "description": "Unit string as published by OpenAQ `/v3/parameters` or nested parameter metadata, commonly µg/m³ for particulate and gas mass concentrations and ppm/ppb for some gas feeds. Preserve exactly for consumers that need unit-aware conversions. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "parameter_display_name": {
+                            "type": [
+                              "string",
+                              "null"
+                            ],
+                            "description": "Human-friendly parameter label from `parameter.displayName`; may be null. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "datetime_first": {
+                            "type": [
+                              "datetime",
+                              "null"
+                            ],
+                            "description": "Earliest timestamp for this sensor stream from `datetimeFirst.utc`; null when OpenAQ has no coverage metadata. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "datetime_last": {
+                            "type": [
+                              "datetime",
+                              "null"
+                            ],
+                            "description": "Latest timestamp for this sensor stream from `datetimeLast.utc`; used with measurement dedupe. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "latest_value": {
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "description": "Latest value embedded in the sensor reference payload when present. Unit is `parameter_units`; telemetry consumers should use Measurement events for time-series values. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "latest_datetime": {
+                            "type": [
+                              "datetime",
+                              "null"
+                            ],
+                            "description": "Timestamp of `latest_value` from nested `latest.datetime.utc`; null when the sensor reference does not include latest data. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "latitude": {
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "description": "WGS 84 latitude of the latest sensor value when present in nested `latest.coordinates`; unit degrees north. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": -90,
+                            "maximum": 90
+                          },
+                          "longitude": {
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "description": "WGS 84 longitude of the latest sensor value when present in nested `latest.coordinates`; unit degrees east. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": -180,
+                            "maximum": 180
+                          }
+                        },
+                        "required": [
+                          "location_id",
+                          "sensor_id",
+                          "country_iso",
+                          "sensor_name",
+                          "parameter_id",
+                          "parameter_name",
+                          "parameter_units"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "description": "Reference metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and latest value metadata when OpenAQ exposes it."
+              }
+            }
+          },
+          "description": "Reference metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and latest value metadata when OpenAQ exposes it."
+        },
+        "org.openaq.Measurement": {
+          "name": "Measurement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.real-time-sources.dev/org/openaq/Measurement/v1",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ],
+                "name": "Measurement",
+                "$root": "#/definitions/org/openaq/Measurement",
+                "definitions": {
+                  "org": {
+                    "openaq": {
+                      "Measurement": {
+                        "name": "Measurement",
+                        "type": "object",
+                        "description": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor.",
+                        "properties": {
+                          "location_id": {
+                            "type": "int64",
+                            "description": "Stable integer OpenAQ location identifier from upstream `id` or `locationsId`. Used as the first CloudEvents subject, Kafka key, MQTT topic, and AMQP partition-key segment. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "minimum": "1"
+                          },
+                          "sensor_id": {
+                            "type": "int64",
+                            "description": "Stable integer OpenAQ sensor identifier from upstream `id` or `sensorsId`. Identifies one parameter-specific stream at a location. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "minimum": "1"
+                          },
+                          "country_iso": {
+                            "type": "string",
+                            "description": "ISO 3166-1 alpha-2 country code supplied by OpenAQ `country.iso`; used for configuration, routing, MQTT hierarchy, and consumer filtering. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "pattern": "^[A-Z]{2}$"
+                          },
+                          "parameter_id": {
+                            "type": "int64",
+                            "description": "OpenAQ parameter identifier from the parameter object. Joins to `/v3/parameters`; stable across locations and sensors. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "minimum": "1"
+                          },
+                          "parameter_name": {
+                            "type": "string",
+                            "description": "OpenAQ machine-readable parameter name, for example pm25, pm10, o3, no2, so2, co, bc, temperature, relativehumidity, pressure, or windspeed. Used as a routing segment; not localized. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "enum": [
+                              "pm25",
+                              "pm10",
+                              "o3",
+                              "no2",
+                              "so2",
+                              "co",
+                              "bc",
+                              "no",
+                              "nox",
+                              "pm1",
+                              "co2",
+                              "temperature",
+                              "relativehumidity",
+                              "pressure",
+                              "windspeed",
+                              "winddirection",
+                              "um003",
+                              "um005",
+                              "um010",
+                              "um025",
+                              "um050",
+                              "um100"
+                            ],
+                            "altenums": {
+                              "lang:en": {
+                                "pm25": "Fine particulate matter with aerodynamic diameter <= 2.5 µm; commonly reported by OpenAQ in µg/m³.",
+                                "pm10": "Particulate matter with aerodynamic diameter <= 10 µm; commonly reported by OpenAQ in µg/m³.",
+                                "o3": "Ozone concentration; commonly reported by OpenAQ in µg/m³, ppb, or ppm depending on provider.",
+                                "no2": "Nitrogen dioxide concentration; commonly reported by OpenAQ in µg/m³, ppb, or ppm depending on provider.",
+                                "so2": "Sulfur dioxide concentration; commonly reported by OpenAQ in µg/m³, ppb, or ppm depending on provider.",
+                                "co": "Carbon monoxide concentration; commonly reported by OpenAQ in µg/m³, ppm, or ppb depending on provider.",
+                                "bc": "Black carbon concentration; commonly reported by OpenAQ in µg/m³.",
+                                "no": "Nitric oxide concentration; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "nox": "Nitrogen oxides concentration; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "pm1": "Particulate matter with aerodynamic diameter <= 1 µm; commonly reported in µg/m³.",
+                                "co2": "Carbon dioxide concentration; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "temperature": "Ambient temperature measurement; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "relativehumidity": "Relative humidity measurement; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "pressure": "Atmospheric pressure measurement; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "windspeed": "Wind speed measurement; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "winddirection": "Wind direction measurement; units are carried in parameter_units exactly as OpenAQ publishes them.",
+                                "um003": "Ultrafine particle count channel for particles >= 0.03 µm; units are carried in parameter_units.",
+                                "um005": "Ultrafine particle count channel for particles >= 0.05 µm; units are carried in parameter_units.",
+                                "um010": "Ultrafine particle count channel for particles >= 0.10 µm; units are carried in parameter_units.",
+                                "um025": "Ultrafine particle count channel for particles >= 0.25 µm; units are carried in parameter_units.",
+                                "um050": "Ultrafine particle count channel for particles >= 0.50 µm; units are carried in parameter_units.",
+                                "um100": "Ultrafine particle count channel for particles >= 1.00 µm; units are carried in parameter_units."
+                              }
+                            }
+                          },
+                          "parameter_units": {
+                            "type": "string",
+                            "description": "Unit string as published by OpenAQ `/v3/parameters` or nested parameter metadata, commonly µg/m³ for particulate and gas mass concentrations and ppm/ppb for some gas feeds. Preserve exactly for consumers that need unit-aware conversions. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "datetime": {
+                            "type": "datetime",
+                            "description": "Observation timestamp from OpenAQ `datetime.utc` for the latest measurement. This is the time the value represents, not the bridge polling time. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "value": {
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "description": "Measured concentration or meteorological value from OpenAQ `value`. Unit is carried in `parameter_units`; common air pollutant units include µg/m³ for pm25, pm10, o3, no2, so2, co, and bc, with ppm/ppb appearing for some providers. Null values are preserved when upstream flags a record without a numeric value. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "latitude": {
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "description": "WGS 84 latitude attached to the measurement from `coordinates.latitude`; unit degrees north. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": -90,
+                            "maximum": 90
+                          },
+                          "longitude": {
+                            "type": [
+                              "double",
+                              "null"
+                            ],
+                            "description": "WGS 84 longitude attached to the measurement from `coordinates.longitude`; unit degrees east. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                            "unit": "deg",
+                            "symbol": "°",
+                            "minimum": -180,
+                            "maximum": 180
+                          },
+                          "is_valid": {
+                            "type": [
+                              "boolean",
+                              "null"
+                            ],
+                            "description": "Boolean validity summary derived from OpenAQ `flagInfo.hasFlags` when the `/v3/locations/{locations_id}/latest` payload includes that optional extension: false when flags are present, true when no flags are present, null when the latest endpoint omits flag info. Definitive historical flag detail is available from OpenAQ flag/measurement endpoints outside this real-time latest-feed scope. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "has_flags": {
+                            "type": [
+                              "boolean",
+                              "null"
+                            ],
+                            "description": "OpenAQ flag summary from `flagInfo.hasFlags` when the `/v3/locations/{locations_id}/latest` payload includes that optional extension; null when the latest endpoint omits flag metadata. Full flag windows are intentionally out of scope for the real-time latest poller. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                          },
+                          "poll_time": {
+                            "type": "datetime",
+                            "description": "UTC time when the bridge fetched and emitted this latest measurement. This supports latency monitoring and replay diagnostics; it is not an upstream observation time. Source: bridge runtime."
+                          }
+                        },
+                        "required": [
+                          "location_id",
+                          "sensor_id",
+                          "country_iso",
+                          "parameter_id",
+                          "parameter_name",
+                          "parameter_units",
+                          "datetime",
+                          "poll_time"
+                        ]
+                      }
+                    }
+                  }
+                },
+                "description": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor."
+              }
+            }
+          },
+          "description": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor."
+        }
+      }
+    },
+    "org.openaq.avro": {
+      "schemas": {
+        "org.openaq.Location": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Location",
+                "namespace": "org.openaq",
+                "doc": "Reference metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before telemetry and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ. Avro mirror of the JsonStructure schema; keep field semantics and nullability in sync.",
+                "fields": [
+                  {
+                    "name": "location_id",
+                    "type": "long",
+                    "doc": "Stable integer OpenAQ location identifier from upstream `id` or `locationsId`. Used as the first CloudEvents subject, Kafka key, MQTT topic, and AMQP partition-key segment. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable OpenAQ location name from upstream `name`; can be null. Mutable label for display only, never a key. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "locality",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Locality/city label from OpenAQ `locality`; can be null and is not a stable identifier. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "timezone",
+                    "type": "string",
+                    "doc": "IANA timezone name for interpreting local operational context at the location, from OpenAQ `timezone`. Timestamps emitted by this feeder remain UTC/offset-aware. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "country_iso",
+                    "type": "string",
+                    "doc": "ISO 3166-1 alpha-2 country code supplied by OpenAQ `country.iso`; used for configuration, routing, MQTT hierarchy, and consumer filtering. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "country_name",
+                    "type": "string",
+                    "doc": "Country name from the nested OpenAQ country object. Used for dashboards and attribution, not as a key. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "owner_id",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "doc": "OpenAQ owner id from nested `owner.id`; identifies the data owner/contact where provided. Null when upstream omits it. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "owner_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Data owner display name from nested `owner.name`; mutable attribution label. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "provider_id",
+                    "type": [
+                      "null",
+                      "long"
+                    ],
+                    "doc": "OpenAQ provider id from nested `provider.id`; identifies the ingestion provider/source platform. Null when absent. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "provider_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "OpenAQ provider display name from nested `provider.name`; useful for attribution and provider-specific quality triage. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "is_mobile",
+                    "type": "boolean",
+                    "doc": "Boolean OpenAQ `isMobile` flag indicating whether the location represents a mobile platform rather than a fixed station. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "is_monitor",
+                    "type": "boolean",
+                    "doc": "Boolean OpenAQ `isMonitor` flag indicating whether OpenAQ considers this location a reference monitor. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 latitude in decimal degrees from `coordinates.latitude`; null when unavailable. Unit: degrees north. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 longitude in decimal degrees from `coordinates.longitude`; null when unavailable. Unit: degrees east. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "datetime_first",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-micros"
+                      }
+                    ],
+                    "doc": "Earliest measurement timestamp known for this location from `datetimeFirst.utc` when present. Used to understand historical coverage. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "datetime_last",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-micros"
+                      }
+                    ],
+                    "doc": "Most recent measurement timestamp known for this location from `datetimeLast.utc` when present. Used to prioritize active feeds. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "license",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Semicolon-separated license names/attribution strings from OpenAQ `licenses`; preserve for downstream attribution and compliance. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "sensor_count",
+                    "type": "int",
+                    "doc": "Number of parameter-specific sensors listed in the location payload. Useful for completeness checks and dashboard summaries. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  }
+                ],
+                "description": "Reference metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before telemetry and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ. Avro mirror of the JsonStructure schema; keep field semantics and nullability in sync."
+              }
+            }
+          },
+          "description": "Reference metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before telemetry and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ. Avro mirror of the JsonStructure schema; keep field semantics and nullability in sync."
+        },
+        "org.openaq.Sensor": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Sensor",
+                "namespace": "org.openaq",
+                "doc": "Reference metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and latest value metadata when OpenAQ exposes it. Avro mirror of the JsonStructure schema; keep field semantics and nullability in sync.",
+                "fields": [
+                  {
+                    "name": "location_id",
+                    "type": "long",
+                    "doc": "Stable integer OpenAQ location identifier from upstream `id` or `locationsId`. Used as the first CloudEvents subject, Kafka key, MQTT topic, and AMQP partition-key segment. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "sensor_id",
+                    "type": "long",
+                    "doc": "Stable integer OpenAQ sensor identifier from upstream `id` or `sensorsId`. Identifies one parameter-specific stream at a location. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "country_iso",
+                    "type": "string",
+                    "doc": "ISO 3166-1 alpha-2 country code supplied by OpenAQ `country.iso`; used for configuration, routing, MQTT hierarchy, and consumer filtering. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "sensor_name",
+                    "type": "string",
+                    "doc": "OpenAQ sensor name from upstream `name`; typically derived from parameter and location. Mutable label, not a key. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "parameter_id",
+                    "type": "long",
+                    "doc": "OpenAQ parameter identifier from the parameter object. Joins to `/v3/parameters`; stable across locations and sensors. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "parameter_name",
+                    "type": {
+                      "type": "enum",
+                      "name": "ParameterName",
+                      "namespace": "org.openaq",
+                      "symbols": [
+                        "pm25",
+                        "pm10",
+                        "o3",
+                        "no2",
+                        "so2",
+                        "co",
+                        "bc",
+                        "no",
+                        "nox",
+                        "pm1",
+                        "co2",
+                        "temperature",
+                        "relativehumidity",
+                        "pressure",
+                        "windspeed",
+                        "winddirection",
+                        "um003",
+                        "um005",
+                        "um010",
+                        "um025",
+                        "um050",
+                        "um100"
+                      ],
+                      "doc": "OpenAQ machine-readable parameter name. Symbol meanings match the JsonStructure parameter_name enum descriptions; units remain dynamic in parameter_units."
+                    },
+                    "doc": "OpenAQ machine-readable parameter name, for example pm25, pm10, o3, no2, so2, co, bc, temperature, relativehumidity, pressure, or windspeed. Used as a routing segment; not localized. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "parameter_units",
+                    "type": "string",
+                    "doc": "Unit string as published by OpenAQ `/v3/parameters` or nested parameter metadata, commonly µg/m³ for particulate and gas mass concentrations and ppm/ppb for some gas feeds. Preserve exactly for consumers that need unit-aware conversions. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "parameter_display_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-friendly parameter label from `parameter.displayName`; may be null. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "datetime_first",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-micros"
+                      }
+                    ],
+                    "doc": "Earliest timestamp for this sensor stream from `datetimeFirst.utc`; null when OpenAQ has no coverage metadata. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "datetime_last",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-micros"
+                      }
+                    ],
+                    "doc": "Latest timestamp for this sensor stream from `datetimeLast.utc`; used with measurement dedupe. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "latest_value",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Latest value embedded in the sensor reference payload when present. Unit is `parameter_units`; telemetry consumers should use Measurement events for time-series values. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "latest_datetime",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-micros"
+                      }
+                    ],
+                    "doc": "Timestamp of `latest_value` from nested `latest.datetime.utc`; null when the sensor reference does not include latest data. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 latitude of the latest sensor value when present in nested `latest.coordinates`; unit degrees north. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 longitude of the latest sensor value when present in nested `latest.coordinates`; unit degrees east. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  }
+                ],
+                "description": "Reference metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and latest value metadata when OpenAQ exposes it. Avro mirror of the JsonStructure schema; keep field semantics and nullability in sync."
+              }
+            }
+          },
+          "description": "Reference metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and latest value metadata when OpenAQ exposes it. Avro mirror of the JsonStructure schema; keep field semantics and nullability in sync."
+        },
+        "org.openaq.Measurement": {
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Measurement",
+                "namespace": "org.openaq",
+                "doc": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor. Avro mirror of the JsonStructure schema; keep field semantics and nullability in sync.",
+                "fields": [
+                  {
+                    "name": "location_id",
+                    "type": "long",
+                    "doc": "Stable integer OpenAQ location identifier from upstream `id` or `locationsId`. Used as the first CloudEvents subject, Kafka key, MQTT topic, and AMQP partition-key segment. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "sensor_id",
+                    "type": "long",
+                    "doc": "Stable integer OpenAQ sensor identifier from upstream `id` or `sensorsId`. Identifies one parameter-specific stream at a location. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "country_iso",
+                    "type": "string",
+                    "doc": "ISO 3166-1 alpha-2 country code supplied by OpenAQ `country.iso`; used for configuration, routing, MQTT hierarchy, and consumer filtering. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "parameter_id",
+                    "type": "long",
+                    "doc": "OpenAQ parameter identifier from the parameter object. Joins to `/v3/parameters`; stable across locations and sensors. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "parameter_name",
+                    "type": {
+                      "type": "enum",
+                      "name": "ParameterName",
+                      "namespace": "org.openaq",
+                      "symbols": [
+                        "pm25",
+                        "pm10",
+                        "o3",
+                        "no2",
+                        "so2",
+                        "co",
+                        "bc",
+                        "no",
+                        "nox",
+                        "pm1",
+                        "co2",
+                        "temperature",
+                        "relativehumidity",
+                        "pressure",
+                        "windspeed",
+                        "winddirection",
+                        "um003",
+                        "um005",
+                        "um010",
+                        "um025",
+                        "um050",
+                        "um100"
+                      ],
+                      "doc": "OpenAQ machine-readable parameter name. Symbol meanings match the JsonStructure parameter_name enum descriptions; units remain dynamic in parameter_units."
+                    },
+                    "doc": "OpenAQ machine-readable parameter name, for example pm25, pm10, o3, no2, so2, co, bc, temperature, relativehumidity, pressure, or windspeed. Used as a routing segment; not localized. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "parameter_units",
+                    "type": "string",
+                    "doc": "Unit string as published by OpenAQ `/v3/parameters` or nested parameter metadata, commonly µg/m³ for particulate and gas mass concentrations and ppm/ppb for some gas feeds. Preserve exactly for consumers that need unit-aware conversions. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "datetime",
+                    "type": {
+                      "type": "long",
+                      "logicalType": "timestamp-micros"
+                    },
+                    "doc": "Observation timestamp from OpenAQ `datetime.utc` for the latest measurement. This is the time the value represents, not the bridge polling time. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/)."
+                  },
+                  {
+                    "name": "value",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measured concentration or meteorological value from OpenAQ `value`. Unit is carried in `parameter_units`; common air pollutant units include µg/m³ for pm25, pm10, o3, no2, so2, co, and bc, with ppm/ppb appearing for some providers. Null values are preserved when upstream flags a record without a numeric value. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 latitude attached to the measurement from `coordinates.latitude`; unit degrees north. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 longitude attached to the measurement from `coordinates.longitude`; unit degrees east. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "is_valid",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "Boolean validity summary derived from OpenAQ `flagInfo.hasFlags` when the `/v3/locations/{locations_id}/latest` payload includes that optional extension: false when flags are present, true when no flags are present, null when the latest endpoint omits flag info. Definitive historical flag detail is available from OpenAQ flag/measurement endpoints outside this real-time latest-feed scope. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "has_flags",
+                    "type": [
+                      "null",
+                      "boolean"
+                    ],
+                    "doc": "OpenAQ flag summary from `flagInfo.hasFlags` when the `/v3/locations/{locations_id}/latest` payload includes that optional extension; null when the latest endpoint omits flag metadata. Full flag windows are intentionally out of scope for the real-time latest poller. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).",
+                    "default": null
+                  },
+                  {
+                    "name": "poll_time",
+                    "type": {
+                      "type": "long",
+                      "logicalType": "timestamp-micros"
+                    },
+                    "doc": "UTC time when the bridge fetched and emitted this latest measurement. This supports latency monitoring and replay diagnostics; it is not an upstream observation time. Source: bridge runtime."
+                  }
+                ],
+                "description": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor. Avro mirror of the JsonStructure schema; keep field semantics and nullability in sync."
+              }
+            }
+          },
+          "description": "Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor. Avro mirror of the JsonStructure schema; keep field semantics and nullability in sync."
+        }
+      }
+    }
+  }
+}

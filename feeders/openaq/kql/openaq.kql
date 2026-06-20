@@ -1,0 +1,378 @@
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['org.openaq.Location'] (
+   [location_id]: long,
+   [name]: string,
+   [locality]: string,
+   [timezone]: string,
+   [country_iso]: string,
+   [country_name]: string,
+   [owner_id]: long,
+   [owner_name]: string,
+   [provider_id]: long,
+   [provider_name]: string,
+   [is_mobile]: bool,
+   [is_monitor]: bool,
+   [latitude]: real,
+   [longitude]: real,
+   [datetime_first]: datetime,
+   [datetime_last]: datetime,
+   [license]: string,
+   [sensor_count]: int,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.openaq.Location'] docstring @"{""description"": ""Reference metadata for one OpenAQ monitoring location from API v3 `GET /v3/locations`. It identifies a physical or mobile air-quality monitoring site, its WGS 84 coordinates, country, ownership/provider context, monitor/mobile flags, license attribution, and first/last observation dates. Emitted before telemetry and refreshed periodically so consumers can interpret measurements without separately calling OpenAQ.""}";
+
+.alter table ['org.openaq.Location'] column-docstrings (
+   [location_id]: @"{""description"": ""Stable integer OpenAQ location identifier from upstream `id` or `locationsId`. Used as the first CloudEvents subject, Kafka key, MQTT topic, and AMQP partition-key segment. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [name]: @"{""description"": ""Human-readable OpenAQ location name from upstream `name`; can be null. Mutable label for display only, never a key. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [locality]: @"{""description"": ""Locality/city label from OpenAQ `locality`; can be null and is not a stable identifier. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [timezone]: @"{""description"": ""IANA timezone name for interpreting local operational context at the location, from OpenAQ `timezone`. Timestamps emitted by this feeder remain UTC/offset-aware. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [country_iso]: @"{""description"": ""ISO 3166-1 alpha-2 country code supplied by OpenAQ `country.iso`; used for configuration, routing, MQTT hierarchy, and consumer filtering. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [country_name]: @"{""description"": ""Country name from the nested OpenAQ country object. Used for dashboards and attribution, not as a key. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [owner_id]: @"{""description"": ""OpenAQ owner id from nested `owner.id`; identifies the data owner/contact where provided. Null when upstream omits it. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [owner_name]: @"{""description"": ""Data owner display name from nested `owner.name`; mutable attribution label. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [provider_id]: @"{""description"": ""OpenAQ provider id from nested `provider.id`; identifies the ingestion provider/source platform. Null when absent. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [provider_name]: @"{""description"": ""OpenAQ provider display name from nested `provider.name`; useful for attribution and provider-specific quality triage. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [is_mobile]: @"{""description"": ""Boolean OpenAQ `isMobile` flag indicating whether the location represents a mobile platform rather than a fixed station. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [is_monitor]: @"{""description"": ""Boolean OpenAQ `isMonitor` flag indicating whether OpenAQ considers this location a reference monitor. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [latitude]: @"{""description"": ""WGS 84 latitude in decimal degrees from `coordinates.latitude`; null when unavailable. Unit: degrees north. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [longitude]: @"{""description"": ""WGS 84 longitude in decimal degrees from `coordinates.longitude`; null when unavailable. Unit: degrees east. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [datetime_first]: @"{""description"": ""Earliest measurement timestamp known for this location from `datetimeFirst.utc` when present. Used to understand historical coverage. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [datetime_last]: @"{""description"": ""Most recent measurement timestamp known for this location from `datetimeLast.utc` when present. Used to prioritize active feeds. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [license]: @"{""description"": ""Semicolon-separated license names/attribution strings from OpenAQ `licenses`; preserve for downstream attribution and compliance. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [sensor_count]: @"{""description"": ""Number of parameter-specific sensors listed in the location payload. Useful for completeness checks and dashboard summaries. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.openaq.Location'] ingestion json mapping "org.openaq.Location_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.location_id"},
+  {"column": "name", "path": "$.name"},
+  {"column": "locality", "path": "$.locality"},
+  {"column": "timezone", "path": "$.timezone"},
+  {"column": "country_iso", "path": "$.country_iso"},
+  {"column": "country_name", "path": "$.country_name"},
+  {"column": "owner_id", "path": "$.owner_id"},
+  {"column": "owner_name", "path": "$.owner_name"},
+  {"column": "provider_id", "path": "$.provider_id"},
+  {"column": "provider_name", "path": "$.provider_name"},
+  {"column": "is_mobile", "path": "$.is_mobile"},
+  {"column": "is_monitor", "path": "$.is_monitor"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "datetime_first", "path": "$.datetime_first"},
+  {"column": "datetime_last", "path": "$.datetime_last"},
+  {"column": "license", "path": "$.license"},
+  {"column": "sensor_count", "path": "$.sensor_count"}
+]
+```
+
+.create-or-alter table ['org.openaq.Location'] ingestion json mapping "org.openaq.Location_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.data.location_id"},
+  {"column": "name", "path": "$.data.name"},
+  {"column": "locality", "path": "$.data.locality"},
+  {"column": "timezone", "path": "$.data.timezone"},
+  {"column": "country_iso", "path": "$.data.country_iso"},
+  {"column": "country_name", "path": "$.data.country_name"},
+  {"column": "owner_id", "path": "$.data.owner_id"},
+  {"column": "owner_name", "path": "$.data.owner_name"},
+  {"column": "provider_id", "path": "$.data.provider_id"},
+  {"column": "provider_name", "path": "$.data.provider_name"},
+  {"column": "is_mobile", "path": "$.data.is_mobile"},
+  {"column": "is_monitor", "path": "$.data.is_monitor"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "datetime_first", "path": "$.data.datetime_first"},
+  {"column": "datetime_last", "path": "$.data.datetime_last"},
+  {"column": "license", "path": "$.data.license"},
+  {"column": "sensor_count", "path": "$.data.sensor_count"}
+]
+```
+
+.create-or-alter materialized-view with (backfill=true) ['org.openaq.LocationLatest'] on table ['org.openaq.Location']
+{
+    ['org.openaq.Location']
+    | summarize arg_max(___time, *) by location_id
+}
+
+.alter table ['org.openaq.Location'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.openaq.Location') | project['location_id'] = tolong(data.['location_id']),['name'] = tostring(data.['name']),['locality'] = tostring(data.['locality']),['timezone'] = tostring(data.['timezone']),['country_iso'] = tostring(data.['country_iso']),['country_name'] = tostring(data.['country_name']),['owner_id'] = tolong(data.['owner_id']),['owner_name'] = tostring(data.['owner_name']),['provider_id'] = tolong(data.['provider_id']),['provider_name'] = tostring(data.['provider_name']),['is_mobile'] = tobool(data.['is_mobile']),['is_monitor'] = tobool(data.['is_monitor']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['datetime_first'] = todatetime(data.['datetime_first']),['datetime_last'] = todatetime(data.['datetime_last']),['license'] = tostring(data.['license']),['sensor_count'] = toint(data.['sensor_count']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['org.openaq.Sensor'] (
+   [location_id]: long,
+   [sensor_id]: long,
+   [country_iso]: string,
+   [sensor_name]: string,
+   [parameter_id]: long,
+   [parameter_name]: string,
+   [parameter_units]: string,
+   [parameter_display_name]: string,
+   [datetime_first]: datetime,
+   [datetime_last]: datetime,
+   [latest_value]: real,
+   [latest_datetime]: datetime,
+   [latitude]: real,
+   [longitude]: real,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.openaq.Sensor'] docstring @"{""description"": ""Reference metadata for one OpenAQ sensor from API v3 `GET /v3/locations/{locations_id}/sensors`. A sensor represents one parameter-specific measurement stream at a location, carrying the stable sensor id, sensor name, parameter id/name/units, date coverage, and latest value metadata when OpenAQ exposes it.""}";
+
+.alter table ['org.openaq.Sensor'] column-docstrings (
+   [location_id]: @"{""description"": ""Stable integer OpenAQ location identifier from upstream `id` or `locationsId`. Used as the first CloudEvents subject, Kafka key, MQTT topic, and AMQP partition-key segment. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [sensor_id]: @"{""description"": ""Stable integer OpenAQ sensor identifier from upstream `id` or `sensorsId`. Identifies one parameter-specific stream at a location. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [country_iso]: @"{""description"": ""ISO 3166-1 alpha-2 country code supplied by OpenAQ `country.iso`; used for configuration, routing, MQTT hierarchy, and consumer filtering. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [sensor_name]: @"{""description"": ""OpenAQ sensor name from upstream `name`; typically derived from parameter and location. Mutable label, not a key. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [parameter_id]: @"{""description"": ""OpenAQ parameter identifier from the parameter object. Joins to `/v3/parameters`; stable across locations and sensors. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [parameter_name]: @"{""description"": ""OpenAQ machine-readable parameter name, for example pm25, pm10, o3, no2, so2, co, bc, temperature, relativehumidity, pressure, or windspeed. Used as a routing segment; not localized. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [parameter_units]: @"{""description"": ""Unit string as published by OpenAQ `/v3/parameters` or nested parameter metadata, commonly \u00b5g/m\u00b3 for particulate and gas mass concentrations and ppm/ppb for some gas feeds. Preserve exactly for consumers that need unit-aware conversions. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [parameter_display_name]: @"{""description"": ""Human-friendly parameter label from `parameter.displayName`; may be null. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [datetime_first]: @"{""description"": ""Earliest timestamp for this sensor stream from `datetimeFirst.utc`; null when OpenAQ has no coverage metadata. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [datetime_last]: @"{""description"": ""Latest timestamp for this sensor stream from `datetimeLast.utc`; used with measurement dedupe. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [latest_value]: @"{""description"": ""Latest value embedded in the sensor reference payload when present. Unit is `parameter_units`; telemetry consumers should use Measurement events for time-series values. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [latest_datetime]: @"{""description"": ""Timestamp of `latest_value` from nested `latest.datetime.utc`; null when the sensor reference does not include latest data. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [latitude]: @"{""description"": ""WGS 84 latitude of the latest sensor value when present in nested `latest.coordinates`; unit degrees north. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [longitude]: @"{""description"": ""WGS 84 longitude of the latest sensor value when present in nested `latest.coordinates`; unit degrees east. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.openaq.Sensor'] ingestion json mapping "org.openaq.Sensor_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.location_id"},
+  {"column": "sensor_id", "path": "$.sensor_id"},
+  {"column": "country_iso", "path": "$.country_iso"},
+  {"column": "sensor_name", "path": "$.sensor_name"},
+  {"column": "parameter_id", "path": "$.parameter_id"},
+  {"column": "parameter_name", "path": "$.parameter_name"},
+  {"column": "parameter_units", "path": "$.parameter_units"},
+  {"column": "parameter_display_name", "path": "$.parameter_display_name"},
+  {"column": "datetime_first", "path": "$.datetime_first"},
+  {"column": "datetime_last", "path": "$.datetime_last"},
+  {"column": "latest_value", "path": "$.latest_value"},
+  {"column": "latest_datetime", "path": "$.latest_datetime"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"}
+]
+```
+
+.create-or-alter table ['org.openaq.Sensor'] ingestion json mapping "org.openaq.Sensor_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.data.location_id"},
+  {"column": "sensor_id", "path": "$.data.sensor_id"},
+  {"column": "country_iso", "path": "$.data.country_iso"},
+  {"column": "sensor_name", "path": "$.data.sensor_name"},
+  {"column": "parameter_id", "path": "$.data.parameter_id"},
+  {"column": "parameter_name", "path": "$.data.parameter_name"},
+  {"column": "parameter_units", "path": "$.data.parameter_units"},
+  {"column": "parameter_display_name", "path": "$.data.parameter_display_name"},
+  {"column": "datetime_first", "path": "$.data.datetime_first"},
+  {"column": "datetime_last", "path": "$.data.datetime_last"},
+  {"column": "latest_value", "path": "$.data.latest_value"},
+  {"column": "latest_datetime", "path": "$.data.latest_datetime"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"}
+]
+```
+
+.create-or-alter materialized-view with (backfill=true) ['org.openaq.SensorLatest'] on table ['org.openaq.Sensor']
+{
+    ['org.openaq.Sensor']
+    | summarize arg_max(___time, *) by location_id, sensor_id
+}
+
+.alter table ['org.openaq.Sensor'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.openaq.Sensor') | project['location_id'] = tolong(data.['location_id']),['sensor_id'] = tolong(data.['sensor_id']),['country_iso'] = tostring(data.['country_iso']),['sensor_name'] = tostring(data.['sensor_name']),['parameter_id'] = tolong(data.['parameter_id']),['parameter_name'] = tostring(data.['parameter_name']),['parameter_units'] = tostring(data.['parameter_units']),['parameter_display_name'] = tostring(data.['parameter_display_name']),['datetime_first'] = todatetime(data.['datetime_first']),['datetime_last'] = todatetime(data.['datetime_last']),['latest_value'] = toreal(data.['latest_value']),['latest_datetime'] = todatetime(data.['latest_datetime']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['org.openaq.Measurement'] (
+   [location_id]: long,
+   [sensor_id]: long,
+   [country_iso]: string,
+   [parameter_id]: long,
+   [parameter_name]: string,
+   [parameter_units]: string,
+   [datetime]: datetime,
+   [value]: real,
+   [latitude]: real,
+   [longitude]: real,
+   [is_valid]: bool,
+   [has_flags]: bool,
+   [poll_time]: datetime,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.openaq.Measurement'] docstring @"{""description"": ""Latest air-quality measurement for one OpenAQ sensor/location pair from API v3 `GET /v3/locations/{locations_id}/latest`. It carries the observed concentration or meteorological value, parameter metadata and units, timestamp, and coordinates. The bridge polls latest values and emits only changed timestamps/values per sensor.""}";
+
+.alter table ['org.openaq.Measurement'] column-docstrings (
+   [location_id]: @"{""description"": ""Stable integer OpenAQ location identifier from upstream `id` or `locationsId`. Used as the first CloudEvents subject, Kafka key, MQTT topic, and AMQP partition-key segment. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [sensor_id]: @"{""description"": ""Stable integer OpenAQ sensor identifier from upstream `id` or `sensorsId`. Identifies one parameter-specific stream at a location. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [country_iso]: @"{""description"": ""ISO 3166-1 alpha-2 country code supplied by OpenAQ `country.iso`; used for configuration, routing, MQTT hierarchy, and consumer filtering. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [parameter_id]: @"{""description"": ""OpenAQ parameter identifier from the parameter object. Joins to `/v3/parameters`; stable across locations and sensors. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [parameter_name]: @"{""description"": ""OpenAQ machine-readable parameter name, for example pm25, pm10, o3, no2, so2, co, bc, temperature, relativehumidity, pressure, or windspeed. Used as a routing segment; not localized. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [parameter_units]: @"{""description"": ""Unit string as published by OpenAQ `/v3/parameters` or nested parameter metadata, commonly \u00b5g/m\u00b3 for particulate and gas mass concentrations and ppm/ppb for some gas feeds. Preserve exactly for consumers that need unit-aware conversions. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [datetime]: @"{""description"": ""Observation timestamp from OpenAQ `datetime.utc` for the latest measurement. This is the time the value represents, not the bridge polling time. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [value]: @"{""description"": ""Measured concentration or meteorological value from OpenAQ `value`. Unit is carried in `parameter_units`; common air pollutant units include \u00b5g/m\u00b3 for pm25, pm10, o3, no2, so2, co, and bc, with ppm/ppb appearing for some providers. Null values are preserved when upstream flags a record without a numeric value. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [latitude]: @"{""description"": ""WGS 84 latitude attached to the measurement from `coordinates.latitude`; unit degrees north. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [longitude]: @"{""description"": ""WGS 84 longitude attached to the measurement from `coordinates.longitude`; unit degrees east. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [is_valid]: @"{""description"": ""Boolean validity flag derived from OpenAQ `flagInfo.hasFlags`: false when flags are present, true when no flags are present, null when flag info is unavailable. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [has_flags]: @"{""description"": ""OpenAQ flag summary from `flagInfo.hasFlags`, indicating quality or processing flags associated with the measurement. Source: OpenAQ API v3 docs (https://api.openaq.org/openapi.json, https://docs.openaq.org/).""}",
+   [poll_time]: @"{""description"": ""UTC time when the bridge fetched and emitted this latest measurement. This supports latency monitoring and replay diagnostics; it is not an upstream observation time. Source: bridge runtime.""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.openaq.Measurement'] ingestion json mapping "org.openaq.Measurement_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.location_id"},
+  {"column": "sensor_id", "path": "$.sensor_id"},
+  {"column": "country_iso", "path": "$.country_iso"},
+  {"column": "parameter_id", "path": "$.parameter_id"},
+  {"column": "parameter_name", "path": "$.parameter_name"},
+  {"column": "parameter_units", "path": "$.parameter_units"},
+  {"column": "datetime", "path": "$.datetime"},
+  {"column": "value", "path": "$.value"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "is_valid", "path": "$.is_valid"},
+  {"column": "has_flags", "path": "$.has_flags"},
+  {"column": "poll_time", "path": "$.poll_time"}
+]
+```
+
+.create-or-alter table ['org.openaq.Measurement'] ingestion json mapping "org.openaq.Measurement_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "location_id", "path": "$.data.location_id"},
+  {"column": "sensor_id", "path": "$.data.sensor_id"},
+  {"column": "country_iso", "path": "$.data.country_iso"},
+  {"column": "parameter_id", "path": "$.data.parameter_id"},
+  {"column": "parameter_name", "path": "$.data.parameter_name"},
+  {"column": "parameter_units", "path": "$.data.parameter_units"},
+  {"column": "datetime", "path": "$.data.datetime"},
+  {"column": "value", "path": "$.data.value"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "is_valid", "path": "$.data.is_valid"},
+  {"column": "has_flags", "path": "$.data.has_flags"},
+  {"column": "poll_time", "path": "$.data.poll_time"}
+]
+```
+
+.create-or-alter materialized-view with (backfill=true) ['org.openaq.MeasurementLatest'] on table ['org.openaq.Measurement']
+{
+    ['org.openaq.Measurement']
+    | summarize arg_max(datetime, *) by location_id, sensor_id
+}
+
+.alter table ['org.openaq.Measurement'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.openaq.Measurement') | project['location_id'] = tolong(data.['location_id']),['sensor_id'] = tolong(data.['sensor_id']),['country_iso'] = tostring(data.['country_iso']),['parameter_id'] = tolong(data.['parameter_id']),['parameter_name'] = tostring(data.['parameter_name']),['parameter_units'] = tostring(data.['parameter_units']),['datetime'] = todatetime(data.['datetime']),['value'] = toreal(data.['value']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['is_valid'] = tobool(data.['is_valid']),['has_flags'] = tobool(data.['has_flags']),['poll_time'] = todatetime(data.['poll_time']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
