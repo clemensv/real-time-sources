@@ -621,6 +621,17 @@
     "amqp": true
   },
   {
+    "id": "kiwis",
+    "name": "KiWIS",
+    "cat": "Hydrology",
+    "key": false,
+    "desc": "Global — configurable KISTERS KiWIS hydrology endpoints",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "king-county-marine",
     "name": "King County Marine",
     "cat": "Hydrology",
@@ -679,7 +690,7 @@
     "name": "UK BODS SIRI",
     "cat": "Transport",
     "key": true,
-    "desc": "England — 28,000+ buses, BODS AVL (requires free API key)",
+    "desc": "England — BODS SIRI-VM via generalized siri feeder (requires free API key)",
     "kql": true,
     "notebook": true,
     "mqtt": true,
@@ -1058,8 +1069,9 @@
     "id": "tokyo-docomo-bikeshare",
     "name": "Tokyo Docomo Bikeshare",
     "cat": "Transport",
-    "key": false,
-    "desc": "Tokyo, Japan — 1,794 stations, GBFS 2.3 via ODPT",
+    "key": true,
+    "desc": "Tokyo, Japan \u2014 Docomo Bikeshare GBFS via ODPT on gbfs-bikeshare",
+    "kafka": true,
     "kql": true,
     "mqtt": true,
     "amqp": true
