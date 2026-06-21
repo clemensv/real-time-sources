@@ -129,6 +129,10 @@ def gbfs_bikeshare_image():
     return build_image('gbfs-bikeshare')
 
 @pytest.fixture(scope='module')
+def cap_alerts_image():
+    return build_image('cap-alerts')
+
+@pytest.fixture(scope='module')
 def aisstream_image():
     return build_image('aisstream')
 
@@ -2488,6 +2492,22 @@ class TestTokyoDocomoBikeshareDockerFlow:
             extra_env={'ONCE_MODE': 'true'},
             min_messages=3,
             timeout=300,
+        )
+
+
+class TestCapAlertsDockerFlow:
+    TOPIC = 'test-cap-alerts'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, cap_alerts_image):
+        _run_kafka_flow_test(
+            kafka, cap_alerts_image, self.TOPIC,
+            reference_types=['org.oasis.cap.alerts.CapZone'],
+            telemetry_types=['org.oasis.cap.alerts.CapAlert'],
+            required_exact_types=['org.oasis.cap.alerts.CapZone', 'org.oasis.cap.alerts.CapAlert'],
+            command=['python', '-m', 'cap_alerts', 'feed', '--mock'],
+            extra_env={'KAFKA_ENABLE_TLS': 'false'},
+            min_messages=2,
+            timeout=120,
         )
 
 

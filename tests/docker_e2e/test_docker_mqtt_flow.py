@@ -61,6 +61,11 @@ def pegelonline_mqtt_image():
     return build_image('pegelonline', dockerfile='Dockerfile.mqtt', tag='test-pegelonline-mqtt')
 
 
+@pytest.fixture(scope='module')
+def cap_alerts_mqtt_image():
+    return build_image('cap-alerts', dockerfile='Dockerfile.mqtt', tag='test-cap-alerts-mqtt')
+
+
 @pytest.fixture()
 def mosquitto_container():
     client = docker.from_env()
@@ -240,6 +245,105 @@ class TestPegelonlineMqttDockerFlow:
         assert level_payload is not None, f"level payload not parseable: {level_msgs[0]['payload']!r}"
         assert 'station_id' in info_payload and 'water' in info_payload
         assert 'station_id' in level_payload and 'value' in level_payload
+
+
+def _load_cap_alerts_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, 'feeders', 'cap-alerts', 'xreg', 'cap-alerts.xreg.json')
+    with open(xreg_path, 'r', encoding='utf-8') as fh:
+        manifest = json.load(fh)
+    group = manifest['schemagroups']['org.oasis.cap.alerts.jstruct']['schemas']
+    return {
+        'org.oasis.cap.alerts.CapAlert': group['org.oasis.cap.alerts.CapAlert']['versions']['1']['schema'],
+        'org.oasis.cap.alerts.CapZone': group['org.oasis.cap.alerts.CapZone']['versions']['1']['schema'],
+    }
+
+
+class TestCapAlertsMqttDockerFlow:
+    """Verify the cap-alerts MQTT container publishes reference and alert events."""
+
+    def test_emits_cap_reference_and_telemetry(self, cap_alerts_mqtt_image):
+        container, network, host_port = _generic_mosquitto(
+            'cap-alerts-mqtt-e2e', 'cap-alerts-mqtt-e2e-broker'
+        )
+        messages: List[Dict[str, Any]] = []
+        client = mqtt.Client(callback_api_version=CallbackAPIVersion.VERSION2, protocol=MQTTv5)
+
+        def on_message(_client, _userdata, msg):
+            props: Dict[str, Any] = {}
+            if msg.properties is not None:
+                for k, v in getattr(msg.properties, 'UserProperty', []) or []:
+                    props[k] = v
+                ct = getattr(msg.properties, 'ContentType', None)
+                if ct:
+                    props['_contenttype'] = ct
+            try:
+                payload = json.loads(msg.payload)
+            except (TypeError, ValueError):
+                payload = None
+            messages.append({'topic': msg.topic, 'user_properties': props, 'payload': payload})
+
+        client.on_message = on_message
+        feeder = None
+        try:
+            client.connect('127.0.0.1', host_port, 30)
+            client.subscribe('alerts/cap/#', qos=1)
+            client.loop_start()
+
+            docker_client = docker.from_env()
+            feeder = docker_client.containers.run(
+                cap_alerts_mqtt_image.id,
+                detach=True,
+                remove=False,
+                network=network.name,
+                environment={
+                    'MQTT_BROKER_URL': 'cap-alerts-mqtt-e2e-broker:1883',
+                    'CAP_ALERTS_MOCK': 'true',
+                    'ONCE_MODE': 'true',
+                    'PYTHONUNBUFFERED': '1',
+                },
+            )
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode('utf-8', errors='replace')
+            assert result.get('StatusCode') == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+            deadline = time.time() + 10
+            while len(messages) < 2 and time.time() < deadline:
+                time.sleep(0.25)
+        finally:
+            client.loop_stop()
+            client.disconnect()
+            if feeder is not None:
+                try:
+                    feeder.remove(force=True)
+                except docker.errors.APIError:
+                    pass
+            try:
+                container.kill()
+            except docker.errors.APIError:
+                pass
+            try:
+                network.remove()
+            except docker.errors.APIError:
+                pass
+
+        assert messages, 'No MQTT messages received from broker'
+        by_type: Dict[str, List[Dict[str, Any]]] = {}
+        for message in messages:
+            by_type.setdefault(message['user_properties'].get('type'), []).append(message)
+        assert 'org.oasis.cap.alerts.CapZone' in by_type, by_type.keys()
+        assert 'org.oasis.cap.alerts.CapAlert' in by_type, by_type.keys()
+        schemas = _load_cap_alerts_schemas()
+        schema_validator = SchemaValidator(extended=True)
+        for ce_type in ('org.oasis.cap.alerts.CapZone', 'org.oasis.cap.alerts.CapAlert'):
+            sample = by_type[ce_type][0]
+            for required in ('id', 'source', 'type', 'subject', 'time', 'specversion'):
+                assert required in sample['user_properties'], sample
+            assert sample['user_properties'].get('_contenttype') == 'application/json'
+            payload = _to_dict(sample['payload'])
+            assert isinstance(payload, dict), sample
+            schema = schemas[ce_type]
+            assert not schema_validator.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
+            errors = InstanceValidator(schema, extended=True).validate_instance(payload)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
 
 
 # ---------------------------------------------------------------------------
