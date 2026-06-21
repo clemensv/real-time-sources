@@ -6,7 +6,7 @@ requires-python = ">=3.10"
 dependencies = [
     "paho-mqtt",
     "dataclasses_json",
-    "cloudevents",
+    "cloudevents>=1.12.1,<2.0.0",
     "australia-wildfires",
     "australia_wildfires_mqtt_producer_data",
     "australia_wildfires_mqtt_producer_mqtt_client",

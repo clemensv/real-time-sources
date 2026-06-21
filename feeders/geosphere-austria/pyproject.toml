@@ -7,7 +7,7 @@ requires-python = ">=3.10"
 dependencies = [
     "requests",
     "confluent-kafka",
-    "cloudevents",
+    "cloudevents>=1.12.1,<2.0.0",
     "dataclasses_json",
     "avro",
     "geosphere_austria_producer_data",
