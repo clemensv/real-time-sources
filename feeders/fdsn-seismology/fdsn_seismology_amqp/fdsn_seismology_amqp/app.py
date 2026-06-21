@@ -84,6 +84,18 @@ def _parse_broker_url(url: str) -> tuple[str, int, bool, str | None, str | None,
 
 
 
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def _build_producer(args: argparse.Namespace) -> OrgFdsnEventAmqpProducer:
     host = args.host
     port = args.port
@@ -159,7 +171,7 @@ def feed(args: argparse.Namespace) -> None:
     if not active_nodes:
         raise RuntimeError("Node selection is empty after include/exclude filters.")
 
-    producer = _build_producer(args)
+    producer = _retry_producer_init(lambda: _build_producer(args))
     state = load_state(args.state_file)
     session = requests.Session()
 

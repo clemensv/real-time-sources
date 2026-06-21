@@ -35,6 +35,19 @@ def add_amqp_arguments(parser: argparse.ArgumentParser, default_address: str) ->
     parser.add_argument("--sas-key", default=os.getenv("AMQP_SAS_KEY"))
 
 
+
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def create_amqp_producer(args: argparse.Namespace, producer_cls):
     address = args.address
     if args.broker_url:
@@ -73,7 +86,7 @@ async def run():
     args=p.parse_args();
     if args.process not in ('process','feed'): p.error("only 'process'/'feed' is supported")
     bridge.USER_DIR=args.state_dir; bridge.STATE_FILE=os.path.join(args.state_dir,'.rss-grabber.json'); bridge.FEEDSTORE_FILE=os.path.join(args.state_dir,'.rss-grabber-feedstore.xml'); os.makedirs(args.state_dir, exist_ok=True)
-    producer=create_amqp_producer(args, MicrosoftOpenDataRssFeedsAmqpProducer); wrapper=RssAmqpProducer(producer)
+    producer=_retry_producer_init(lambda: create_amqp_producer(args, MicrosoftOpenDataRssFeedsAmqpProducer)); wrapper=RssAmqpProducer(producer)
     try:
         feed_urls=load_feedstore(); feed_urls.extend([u for u in args.urls if u]);
         if args.urls: save_feedstore(list(dict.fromkeys(feed_urls)))

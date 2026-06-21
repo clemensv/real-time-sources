@@ -75,6 +75,18 @@ def topic_safe_id(value: object, default: str = "unknown") -> str:
     return re.sub(r'[^A-Za-z0-9._-]+','-',normalized).strip('-._') or default
 def _to_incident(incident) -> FireIncident:
     payload=dataclasses.asdict(incident); payload['state']=topic_slug(payload.get('state')); payload['status']=topic_slug(payload.get('status')); payload['incident_id']=topic_safe_id(payload.get('incident_id')); return FireIncident(**payload)
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 async def feed(producer, *, once=False, polling_interval=300):
     api=AustraliaWildfiresAPI(polling_interval=polling_interval)
     try:

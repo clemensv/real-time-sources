@@ -485,7 +485,7 @@ def _parse_broker(url: str) -> tuple[str, int, bool]:
 
 
 async def _run(args: argparse.Namespace) -> None:
-    producer = create_amqp_producer(args, OrgOpenStreetMapDiffsAmqpProducer)
+    producer = _retry_producer_init(lambda: create_amqp_producer(args, OrgOpenStreetMapDiffsAmqpProducer))
     client = AmqpClient(producer)
     state_store = StateStore(args.state_file) if args.state_file else None
     bridge = OsmDiffsMqttBridge(client, state_store=state_store, state_url=args.state_url, diff_base_url=args.diff_base_url, poll_interval=args.poll_interval, once=args.once)
