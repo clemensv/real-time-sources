@@ -34,7 +34,7 @@ jobs:
       sources: ${{ steps.pick.outputs.sources }}
       count: ${{ steps.pick.outputs.count }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - id: pick
         run: |
           python - <<'PY' >> "$GITHUB_OUTPUT"
@@ -70,7 +70,7 @@ jobs:
       matrix:
         source: ${{ fromJson(needs.discover.outputs.sources) }}
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v6
@@ -198,7 +198,7 @@ jobs:
     if: needs.discover.outputs.count != '0' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - uses: actions/download-artifact@v8
         with:
           path: bundles

@@ -24,7 +24,7 @@ jobs:
       matrix: ${{ fromJson(inputs.matrix) }}
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Build Docker image
         run: |
