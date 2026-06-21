@@ -101,8 +101,21 @@ def _build_producers(host, port, address, use_tls, content_mode, auth_mode, user
         kwargs.update(credential=ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential(), entra_audience=entra_audience)
     elif auth_mode=='sas': kwargs.update(sas_key_name=sas_key_name, sas_key=sas_key)
     else: kwargs.update(username=username, password=password)
-    return tuple(_apply_partition_key_workaround(p) for p in (EuEntsoeTransparencyByDomainAmqpProducer(**kwargs), EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(**kwargs), EuEntsoeTransparencyCrossBorderAmqpProducer(**kwargs)))
+    return tuple(_apply_partition_key_workaround(p) for p in (_retry_producer_init(lambda: EuEntsoeTransparencyByDomainAmqpProducer(**kwargs)), _retry_producer_init(lambda: EuEntsoeTransparencyByDomainPsrTypeAmqpProducer(**kwargs)), _retry_producer_init(lambda: EuEntsoeTransparencyCrossBorderAmqpProducer(**kwargs))))
 
+
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def _common_parser(description: str) -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description=description)
     sub = parser.add_subparsers(dest="command")

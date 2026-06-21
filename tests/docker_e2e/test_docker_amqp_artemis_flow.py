@@ -73,6 +73,11 @@ def pegelonline_amqp_image():
     return build_image("pegelonline", dockerfile="Dockerfile.amqp", tag="test-pegelonline-amqp")
 
 
+@pytest.fixture(scope="module")
+def cap_alerts_amqp_image():
+    return build_image("cap-alerts", dockerfile="Dockerfile.amqp", tag="test-cap-alerts-amqp")
+
+
 @pytest.fixture()
 def artemis_broker():
     client = docker.from_env()
@@ -226,6 +231,17 @@ def _body_to_obj(msg: Any) -> Any:
     return body
 
 
+def _load_cap_alerts_schemas() -> Dict[str, Dict[str, Any]]:
+    xreg_path = os.path.join(REPO_ROOT, "feeders", "cap-alerts", "xreg", "cap-alerts.xreg.json")
+    with open(xreg_path, "r", encoding="utf-8") as fh:
+        manifest = json.load(fh)
+    group = manifest["schemagroups"]["org.oasis.cap.alerts.jstruct"]["schemas"]
+    return {
+        "org.oasis.cap.alerts.CapAlert": group["org.oasis.cap.alerts.CapAlert"]["versions"]["1"]["schema"],
+        "org.oasis.cap.alerts.CapZone": group["org.oasis.cap.alerts.CapZone"]["versions"]["1"]["schema"],
+    }
+
+
 class TestPegelonlineAmqpArtemisFlow:
     """End-to-end: feeder pushes CloudEvents to Artemis over AMQP 1.0."""
 
@@ -326,6 +342,71 @@ class TestPegelonlineAmqpArtemisFlow:
             assert not validator_factory.validate(schema), (
                 f"Invalid JsonStructure schema for {ce_type}"
             )
+            errors = InstanceValidator(schema, extended=True).validate_instance(data)
+            assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
+
+
+class TestCapAlertsAmqpArtemisFlow:
+    """End-to-end: cap-alerts pushes reference and alert CloudEvents to Artemis."""
+
+    def test_emits_cloudevents_to_amqp_queue(self, artemis_broker, cap_alerts_amqp_image):
+        client = docker.from_env()
+        feeder = client.containers.run(
+            cap_alerts_amqp_image.id,
+            detach=True,
+            remove=False,
+            network=artemis_broker["network"],
+            environment={
+                "AMQP_HOST": artemis_broker["internal_host"],
+                "AMQP_PORT": str(artemis_broker["internal_port"]),
+                "AMQP_ADDRESS": artemis_broker["queue"],
+                "AMQP_USERNAME": artemis_broker["user"],
+                "AMQP_PASSWORD": artemis_broker["password"],
+                "AMQP_AUTH_MODE": "password",
+                "CAP_ALERTS_MOCK": "true",
+                "ONCE_MODE": "true",
+                "PYTHONUNBUFFERED": "1",
+            },
+        )
+        try:
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode("utf-8", errors="replace")
+            assert result.get("StatusCode") == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _receive_messages(
+            "127.0.0.1",
+            artemis_broker["host_port"],
+            artemis_broker["queue"],
+            artemis_broker["user"],
+            artemis_broker["password"],
+            expected=2,
+            timeout=60,
+        )
+        assert len(messages) >= 2
+        by_type: Dict[str, List[Any]] = {}
+        for message in messages:
+            ce = _extract_ce_attrs(message)
+            by_type.setdefault(ce.get("type"), []).append((message, ce))
+        assert "org.oasis.cap.alerts.CapZone" in by_type, sorted(str(k) for k in by_type)
+        assert "org.oasis.cap.alerts.CapAlert" in by_type, sorted(str(k) for k in by_type)
+
+        schemas = _load_cap_alerts_schemas()
+        from json_structure import InstanceValidator, SchemaValidator
+        validator_factory = SchemaValidator(extended=True)
+        for ce_type in ("org.oasis.cap.alerts.CapZone", "org.oasis.cap.alerts.CapAlert"):
+            sample_msg, sample_ce = by_type[ce_type][0]
+            for required in ("id", "source", "type", "subject", "specversion"):
+                assert required in sample_ce, f"Missing CE attribute {required!r} on {ce_type}: {sample_ce}"
+            assert sample_ce["type"] == ce_type
+            data = _body_to_obj(sample_msg)
+            assert isinstance(data, dict), f"{ce_type} body not a JSON object: {data!r}"
+            schema = schemas[ce_type]
+            assert not validator_factory.validate(schema), f"Invalid JsonStructure schema for {ce_type}"
             errors = InstanceValidator(schema, extended=True).validate_instance(data)
             assert not errors, f"JsonStructure validation failed for {ce_type}: {errors[:3]}"
 

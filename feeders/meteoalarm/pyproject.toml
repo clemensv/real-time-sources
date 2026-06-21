@@ -1,7 +1,7 @@
 [build-system]
 requires = [
     "setuptools>=82.0.1",
-    "setuptools-scm>=8",
+    "setuptools-scm>=10.0.5",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -30,7 +30,7 @@ meteoalarm = "meteoalarm.meteoalarm:main"
 dev = [
     "pytest-asyncio>=1.4.0",
     "pytest-cov>=7.1.0",
-    "pytest>=9.1.0",
+    "pytest>=9.1.1",
 ]
 
 [tool.setuptools_scm]

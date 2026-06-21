@@ -25,7 +25,7 @@
 ]
 ```
 
-.create-merge table ['uk.gov.dft.bods.VehiclePosition'] (
+.create-merge table ['org.siri.VehiclePosition'] (
    [operator_ref]: string,
    [vehicle_ref]: string,
    [line_ref]: string,
@@ -53,29 +53,29 @@
    [___subject]: string
 );
 
-.alter table ['uk.gov.dft.bods.VehiclePosition'] docstring "{\"description\": \"Normalized payload for one BODS SIRI 2.0 VehicleActivity element from the Department for Transport Bus Open Data Service AVL bulk archive. The bridge emits one event per monitored vehicle activity in each poll cycle, keyed by the stable operator code and vehicle fleet reference.\"}";
+.alter table ['org.siri.VehiclePosition'] docstring @"{""description"": ""Normalized payload for one SIRI 2.0 VehicleActivity element emitted by a configured provider feed. The bridge emits one event per monitored vehicle activity in each poll cycle, keyed by the stable operator code and vehicle reference.""}";
 
-.alter table ['uk.gov.dft.bods.VehiclePosition'] column-docstrings (
-   [operator_ref]: "{\"description\": \"Bus Open Data Service operator code from `MonitoredVehicleJourney/OperatorRef`. In BODS this is typically the National Operator Code (NOC) that identifies the bus operator publishing the AVL feed. This field anchors reference records, the vehicle subject/key, MQTT topic segments, and AMQP routing properties.\"}",
-   [vehicle_ref]: "{\"description\": \"Operator-scoped vehicle identifier from `MonitoredVehicleJourney/VehicleRef`. Usually the fleet number or run identifier configured in the operator AVL system. Combined with `operator_ref` it forms the stable vehicle identity for CloudEvents subjects and transport routing.\"}",
-   [line_ref]: "{\"description\": \"Service or route identifier from `MonitoredVehicleJourney/LineRef`. In the BODS SIRI-VM profile this is the line reference used to match AVL messages to the operator's published timetable data. Null when the source omits a line identifier for the monitored journey.\"}",
-   [direction_ref]: "{\"description\": \"Direction label from `MonitoredVehicleJourney/DirectionRef`, such as `inbound` or `outbound`. BODS uses this together with line and dated journey references to align live positions with the scheduled journey pattern.\"}",
-   [published_line_name]: "{\"description\": \"Public-facing route label from `MonitoredVehicleJourney/PublishedLineName`, for example `T12`. This is the human-readable service number or line name shown to passengers.\"}",
-   [origin_ref]: "{\"description\": \"NaPTAN stop reference from `MonitoredVehicleJourney/OriginRef` naming the first advertised stop of the monitored journey. Null when the AVL producer omits the origin stop code.\"}",
-   [origin_name]: "{\"description\": \"Human-readable stop name from `MonitoredVehicleJourney/OriginName` for the first advertised stop of the monitored journey.\"}",
-   [destination_ref]: "{\"description\": \"NaPTAN stop reference from `MonitoredVehicleJourney/DestinationRef` naming the last advertised stop of the monitored journey.\"}",
-   [destination_name]: "{\"description\": \"Human-readable stop name from `MonitoredVehicleJourney/DestinationName` for the final advertised destination of the monitored journey.\"}",
-   [longitude]: "{\"description\": \"WGS84 longitude from `MonitoredVehicleJourney/VehicleLocation/Longitude` expressed in decimal degrees. Positive values are east of Greenwich. Null when the AVL feed does not provide a usable vehicle location.\"}",
-   [latitude]: "{\"description\": \"WGS84 latitude from `MonitoredVehicleJourney/VehicleLocation/Latitude` expressed in decimal degrees. Positive values are north of the equator. Null when the AVL feed does not provide a usable vehicle location.\"}",
-   [bearing]: "{\"description\": \"Vehicle heading from `MonitoredVehicleJourney/Bearing` in whole degrees clockwise from true north. Null when the AVL producer omits heading information.\"}",
-   [recorded_at_time]: "{\"description\": \"Timestamp from `VehicleActivity/RecordedAtTime` stating when the AVL system recorded this vehicle activity snapshot. Encoded as an ISO 8601 / RFC 3339 date-time string with an explicit UTC offset.\"}",
-   [valid_until_time]: "{\"description\": \"Expiry timestamp from `VehicleActivity/ValidUntilTime` after which consumers should treat the vehicle activity as stale if it has not been refreshed by a newer message.\"}",
-   [block_ref]: "{\"description\": \"Block or duty identifier from `MonitoredVehicleJourney/BlockRef` describing the operational vehicle block used by the operator scheduling system.\"}",
-   [vehicle_journey_ref]: "{\"description\": \"Vehicle journey identifier from `MonitoredVehicleJourney/VehicleJourneyRef` used within the operator AVL system to refer to the monitored trip instance.\"}",
-   [origin_aimed_departure_time]: "{\"description\": \"Scheduled departure time from `MonitoredVehicleJourney/OriginAimedDepartureTime` for the origin stop of the monitored journey, encoded as an ISO 8601 / RFC 3339 date-time string.\"}",
-   [data_frame_ref]: "{\"description\": \"Service day identifier from `MonitoredVehicleJourney/FramedVehicleJourneyRef/DataFrameRef`. In BODS SIRI-VM this is normally the operating date used to pair the live journey with scheduled timetable data.\"}",
-   [dated_vehicle_journey_ref]: "{\"description\": \"Dated journey identifier from `MonitoredVehicleJourney/FramedVehicleJourneyRef/DatedVehicleJourneyRef`. This value disambiguates the scheduled journey instance within the service day defined by `data_frame_ref`.\"}",
-   [item_identifier]: "{\"description\": \"Unique `VehicleActivity/ItemIdentifier` value assigned by the BODS archive snapshot. The bridge uses this field for deduplication so repeated snapshots of the same unchanged vehicle activity are not re-emitted.\"}",
+.alter table ['org.siri.VehiclePosition'] column-docstrings (
+   [operator_ref]: @"{""description"": ""Operator identifier from `MonitoredVehicleJourney/OperatorRef`. The exact coding scheme depends on the configured provider, but the value remains the stable operator identity used for reference records, CloudEvents subjects, Kafka keys, MQTT topic segments, and AMQP routing properties.""}",
+   [vehicle_ref]: @"{""description"": ""Operator-scoped vehicle identifier from `MonitoredVehicleJourney/VehicleRef`. Usually the fleet number or run identifier configured in the operator AVL system. Combined with `operator_ref` it forms the stable vehicle identity for CloudEvents subjects and transport routing.""}",
+   [line_ref]: @"{""description"": ""Service or route identifier from `MonitoredVehicleJourney/LineRef`. Providers use this value to align the monitored vehicle journey with published line or trip definitions. Null when the source omits a line identifier for the monitored journey.""}",
+   [direction_ref]: @"{""description"": ""Direction label from `MonitoredVehicleJourney/DirectionRef`, such as `inbound` or `outbound`. Providers use this together with line and dated journey references to align live positions with the scheduled journey pattern.""}",
+   [published_line_name]: @"{""description"": ""Public-facing route label from `MonitoredVehicleJourney/PublishedLineName`, for example `T12`. This is the human-readable service number or line name shown to passengers.""}",
+   [origin_ref]: @"{""description"": ""Stop reference from `MonitoredVehicleJourney/OriginRef` naming the first advertised stop of the monitored journey. Null when the provider omits the origin stop code.""}",
+   [origin_name]: @"{""description"": ""Human-readable stop name from `MonitoredVehicleJourney/OriginName` for the first advertised stop of the monitored journey.""}",
+   [destination_ref]: @"{""description"": ""Stop reference from `MonitoredVehicleJourney/DestinationRef` naming the last advertised stop of the monitored journey.""}",
+   [destination_name]: @"{""description"": ""Human-readable stop name from `MonitoredVehicleJourney/DestinationName` for the final advertised destination of the monitored journey.""}",
+   [longitude]: @"{""description"": ""WGS84 longitude from `MonitoredVehicleJourney/VehicleLocation/Longitude` expressed in decimal degrees. Positive values are east of Greenwich. Null when the AVL feed does not provide a usable vehicle location.""}",
+   [latitude]: @"{""description"": ""WGS84 latitude from `MonitoredVehicleJourney/VehicleLocation/Latitude` expressed in decimal degrees. Positive values are north of the equator. Null when the AVL feed does not provide a usable vehicle location.""}",
+   [bearing]: @"{""description"": ""Vehicle heading from `MonitoredVehicleJourney/Bearing` in whole degrees clockwise from true north. Null when the AVL producer omits heading information.""}",
+   [recorded_at_time]: @"{""description"": ""Timestamp from `VehicleActivity/RecordedAtTime` stating when the AVL system recorded this vehicle activity snapshot. Encoded as an ISO 8601 / RFC 3339 date-time string with an explicit UTC offset.""}",
+   [valid_until_time]: @"{""description"": ""Expiry timestamp from `VehicleActivity/ValidUntilTime` after which consumers should treat the vehicle activity as stale if it has not been refreshed by a newer message.""}",
+   [block_ref]: @"{""description"": ""Block or duty identifier from `MonitoredVehicleJourney/BlockRef` describing the operational vehicle block used by the operator scheduling system.""}",
+   [vehicle_journey_ref]: @"{""description"": ""Vehicle journey identifier from `MonitoredVehicleJourney/VehicleJourneyRef` used within the operator AVL system to refer to the monitored trip instance.""}",
+   [origin_aimed_departure_time]: @"{""description"": ""Scheduled departure time from `MonitoredVehicleJourney/OriginAimedDepartureTime` for the origin stop of the monitored journey, encoded as an ISO 8601 / RFC 3339 date-time string.""}",
+   [data_frame_ref]: @"{""description"": ""Service day identifier from `MonitoredVehicleJourney/FramedVehicleJourneyRef/DataFrameRef`. Providers typically use this value to pair the live journey with the scheduled service-day context.""}",
+   [dated_vehicle_journey_ref]: @"{""description"": ""Dated journey identifier from `MonitoredVehicleJourney/FramedVehicleJourneyRef/DatedVehicleJourneyRef`. This value disambiguates the scheduled journey instance within the service day defined by `data_frame_ref`.""}",
+   [item_identifier]: @"{""description"": ""Unique `VehicleActivity/ItemIdentifier` value assigned by the upstream SIRI payload. The bridge uses this field for deduplication so repeated snapshots of the same unchanged vehicle activity are not re-emitted.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -83,7 +83,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['uk.gov.dft.bods.VehiclePosition'] ingestion json mapping "uk.gov.dft.bods.VehiclePosition_json_flat"
+.create-or-alter table ['org.siri.VehiclePosition'] ingestion json mapping "org.siri.VehiclePosition_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -110,11 +110,11 @@
   {"column": "origin_aimed_departure_time", "path": "$.origin_aimed_departure_time"},
   {"column": "data_frame_ref", "path": "$.data_frame_ref"},
   {"column": "dated_vehicle_journey_ref", "path": "$.dated_vehicle_journey_ref"},
-  {"column": "item_identifier", "path": "$.item_identifier"},
+  {"column": "item_identifier", "path": "$.item_identifier"}
 ]
 ```
 
-.create-or-alter table ['uk.gov.dft.bods.VehiclePosition'] ingestion json mapping "uk.gov.dft.bods.VehiclePosition_json_ce_structured"
+.create-or-alter table ['org.siri.VehiclePosition'] ingestion json mapping "org.siri.VehiclePosition_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -141,28 +141,28 @@
   {"column": "origin_aimed_departure_time", "path": "$.data.origin_aimed_departure_time"},
   {"column": "data_frame_ref", "path": "$.data.data_frame_ref"},
   {"column": "dated_vehicle_journey_ref", "path": "$.data.dated_vehicle_journey_ref"},
-  {"column": "item_identifier", "path": "$.data.item_identifier"},
+  {"column": "item_identifier", "path": "$.data.item_identifier"}
 ]
 ```
 
-.drop materialized-view ['uk.gov.dft.bods.VehiclePositionLatest'] ifexists;
+.drop materialized-view ['org.siri.VehiclePositionLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ['uk.gov.dft.bods.VehiclePositionLatest'] on table ['uk.gov.dft.bods.VehiclePosition'] {
-    ['uk.gov.dft.bods.VehiclePosition'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['org.siri.VehiclePositionLatest'] on table ['org.siri.VehiclePosition'] {
+    ['org.siri.VehiclePosition'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['uk.gov.dft.bods.VehiclePosition'] policy update
+.alter table ['org.siri.VehiclePosition'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.gov.dft.bods.VehiclePosition') | project['operator_ref'] = tostring(data.['operator_ref']),['vehicle_ref'] = tostring(data.['vehicle_ref']),['line_ref'] = tostring(data.['line_ref']),['direction_ref'] = tostring(data.['direction_ref']),['published_line_name'] = tostring(data.['published_line_name']),['origin_ref'] = tostring(data.['origin_ref']),['origin_name'] = tostring(data.['origin_name']),['destination_ref'] = tostring(data.['destination_ref']),['destination_name'] = tostring(data.['destination_name']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['bearing'] = toint(data.['bearing']),['recorded_at_time'] = todatetime(data.['recorded_at_time']),['valid_until_time'] = todatetime(data.['valid_until_time']),['block_ref'] = tostring(data.['block_ref']),['vehicle_journey_ref'] = tostring(data.['vehicle_journey_ref']),['origin_aimed_departure_time'] = todatetime(data.['origin_aimed_departure_time']),['data_frame_ref'] = tostring(data.['data_frame_ref']),['dated_vehicle_journey_ref'] = tostring(data.['dated_vehicle_journey_ref']),['item_identifier'] = tostring(data.['item_identifier']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.siri.VehiclePosition') | project['operator_ref'] = tostring(data.['operator_ref']),['vehicle_ref'] = tostring(data.['vehicle_ref']),['line_ref'] = tostring(data.['line_ref']),['direction_ref'] = tostring(data.['direction_ref']),['published_line_name'] = tostring(data.['published_line_name']),['origin_ref'] = tostring(data.['origin_ref']),['origin_name'] = tostring(data.['origin_name']),['destination_ref'] = tostring(data.['destination_ref']),['destination_name'] = tostring(data.['destination_name']),['longitude'] = toreal(data.['longitude']),['latitude'] = toreal(data.['latitude']),['bearing'] = toint(data.['bearing']),['recorded_at_time'] = todatetime(data.['recorded_at_time']),['valid_until_time'] = todatetime(data.['valid_until_time']),['block_ref'] = tostring(data.['block_ref']),['vehicle_journey_ref'] = tostring(data.['vehicle_journey_ref']),['origin_aimed_departure_time'] = todatetime(data.['origin_aimed_departure_time']),['data_frame_ref'] = tostring(data.['data_frame_ref']),['dated_vehicle_journey_ref'] = tostring(data.['dated_vehicle_journey_ref']),['item_identifier'] = tostring(data.['item_identifier']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 
-.create-merge table ['uk.gov.dft.bods.Operator'] (
+.create-merge table ['org.siri.Operator'] (
    [operator_ref]: string,
    [___type]: string,
    [___source]: string,
@@ -171,10 +171,10 @@
    [___subject]: string
 );
 
-.alter table ['uk.gov.dft.bods.Operator'] docstring "{\"description\": \"Reference payload for a distinct bus operator code observed in the UK BODS SIRI-VM bulk AVL archive. The bridge emits these records so telemetry consumers can keep operator identity in-stream instead of consulting a separate registry out of band.\"}";
+.alter table ['org.siri.Operator'] docstring @"{""description"": ""Reference payload for a distinct operator code observed in a configured SIRI feed. The bridge emits these records so telemetry consumers can keep operator identity in-stream instead of consulting a separate registry out of band.""}";
 
-.alter table ['uk.gov.dft.bods.Operator'] column-docstrings (
-   [operator_ref]: "{\"description\": \"Operator code from `MonitoredVehicleJourney/OperatorRef`, typically the National Operator Code (NOC) of the bus operator providing the AVL feed to BODS. This is the stable identity of the operator reference event and the prefix of every vehicle subject emitted by the source.\"}",
+.alter table ['org.siri.Operator'] column-docstrings (
+   [operator_ref]: @"{""description"": ""Operator identifier from `MonitoredVehicleJourney/OperatorRef`. This is the stable identity of the operator reference event and the prefix of every vehicle subject emitted by the source.""}",
    [___type] : 'Event type',
    [___source]: 'Context origin/source of the event',
    [___id]: 'Event identifier',
@@ -182,7 +182,7 @@
    [___subject]: 'Context subject of the event'
 );
 
-.create-or-alter table ['uk.gov.dft.bods.Operator'] ingestion json mapping "uk.gov.dft.bods.Operator_json_flat"
+.create-or-alter table ['org.siri.Operator'] ingestion json mapping "org.siri.Operator_json_flat"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -190,11 +190,11 @@
   {"column": "___id", "path": "$.id"},
   {"column": "___time", "path": "$.time"},
   {"column": "___subject", "path": "$.subject"},
-  {"column": "operator_ref", "path": "$.operator_ref"},
+  {"column": "operator_ref", "path": "$.operator_ref"}
 ]
 ```
 
-.create-or-alter table ['uk.gov.dft.bods.Operator'] ingestion json mapping "uk.gov.dft.bods.Operator_json_ce_structured"
+.create-or-alter table ['org.siri.Operator'] ingestion json mapping "org.siri.Operator_json_ce_structured"
 ```
 [
   {"column": "___type", "path": "$.type"},
@@ -202,24 +202,24 @@
   {"column": "___id", "path": "$.id"},
   {"column": "___time", "path": "$.time"},
   {"column": "___subject", "path": "$.subject"},
-  {"column": "operator_ref", "path": "$.data.operator_ref"},
+  {"column": "operator_ref", "path": "$.data.operator_ref"}
 ]
 ```
 
-.drop materialized-view ['uk.gov.dft.bods.OperatorLatest'] ifexists;
+.drop materialized-view ['org.siri.OperatorLatest'] ifexists;
 
-.create materialized-view with (backfill=true) ['uk.gov.dft.bods.OperatorLatest'] on table ['uk.gov.dft.bods.Operator'] {
-    ['uk.gov.dft.bods.Operator'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+.create materialized-view with (backfill=true) ['org.siri.OperatorLatest'] on table ['org.siri.Operator'] {
+    ['org.siri.Operator'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
 }
 
-.alter table ['uk.gov.dft.bods.Operator'] policy update
+.alter table ['org.siri.Operator'] policy update
 ```
 [{
   "IsEnabled": true,
   "Source": "_cloudevents_dispatch",
-  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'uk.gov.dft.bods.Operator') | project['operator_ref'] = tostring(data.['operator_ref']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.siri.Operator') | project['operator_ref'] = tostring(data.['operator_ref']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
   "IsTransactional": false,
-  "PropagateIngestionProperties": true,
+  "PropagateIngestionProperties": true
 }]
 ```
 

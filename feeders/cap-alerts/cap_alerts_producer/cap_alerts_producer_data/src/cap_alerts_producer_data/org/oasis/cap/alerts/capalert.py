@@ -1,0 +1,242 @@
+""" CapAlert dataclass. """
+
+# pylint: disable=too-many-lines, too-many-locals, too-many-branches, too-many-statements, too-many-arguments, line-too-long, wildcard-import
+from __future__ import annotations
+import io
+import gzip
+import enum
+import typing
+import dataclasses
+from dataclasses import dataclass
+import dataclasses_json
+from dataclasses_json import Undefined, dataclass_json
+from marshmallow import fields
+import json
+from cap_alerts_producer_data.org.oasis.cap.alerts.valuepair import ValuePair
+from cap_alerts_producer_data.org.oasis.cap.alerts.statusenum import StatusEnum
+from cap_alerts_producer_data.org.oasis.cap.alerts.capinfo import CapInfo
+from cap_alerts_producer_data.org.oasis.cap.alerts.msgtypeenum import MsgTypeenum
+from cap_alerts_producer_data.org.oasis.cap.alerts.scopeenum import ScopeEnum
+import datetime
+
+
+@dataclass_json(undefined=Undefined.EXCLUDE)
+@dataclass
+class CapAlert:
+    """
+    Generalized Common Alerting Protocol (CAP) 1.2 alert message. It preserves the full alert -> info[] -> area[]/resource[] CAP hierarchy plus standardized CAP extension arrays (eventCode, parameter, geocode) so national weather and emergency alert feeds can be represented losslessly. Convenience fields mirror typed fields emitted by existing DWD, MeteoAlarm, NOAA NWS, and NWS Alerts bespoke feeders while keeping the original CAP name/value pairs.
+    
+    Attributes:
+        cap_source_id (str)
+        identifier (str)
+        sender (str)
+        sent (datetime.datetime)
+        status (StatusEnum)
+        msg_type (MsgTypeenum)
+        source (typing.Optional[str])
+        scope (ScopeEnum)
+        restriction (typing.Optional[str])
+        addresses (typing.Optional[typing.List[str]])
+        code (typing.Optional[typing.List[ValuePair]])
+        note (typing.Optional[str])
+        references (typing.Optional[typing.List[str]])
+        incidents (typing.Optional[typing.List[str]])
+        info (typing.List[CapInfo])
+        provider_url (str)
+        raw_cap_xml (typing.Optional[str])
+        area_desc (typing.Optional[str])
+        same_codes (typing.Optional[typing.List[str]])
+        ugc_codes (typing.Optional[typing.List[str]])
+        vtec (typing.Optional[typing.List[str]])
+        awareness_level (typing.Optional[str])
+        awareness_type (typing.Optional[str])
+        event_type (typing.Optional[str])
+        state (typing.Optional[str])
+        affected_zones (typing.Optional[typing.List[str]])
+        raw_source_json (typing.Optional[str])
+    """
+    
+    
+    cap_source_id: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="cap_source_id"))
+    identifier: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="identifier"))
+    sender: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sender"))
+    sent: datetime.datetime=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="sent", encoder=lambda d: d.isoformat() if isinstance(d, datetime.datetime) else d if d else None, decoder=lambda d: datetime.datetime.fromisoformat(d) if isinstance(d, str) else d if d else None, mm_field=fields.DateTime(format='iso')))
+    status: StatusEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="status"))
+    msg_type: MsgTypeenum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="msg_type"))
+    source: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="source"))
+    scope: ScopeEnum=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="scope"))
+    restriction: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="restriction"))
+    addresses: typing.Optional[typing.List[str]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="addresses"))
+    code: typing.Optional[typing.List[ValuePair]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="code"))
+    note: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="note"))
+    references: typing.Optional[typing.List[str]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="references"))
+    incidents: typing.Optional[typing.List[str]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="incidents"))
+    info: typing.List[CapInfo]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="info"))
+    provider_url: str=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="provider_url"))
+    raw_cap_xml: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="raw_cap_xml"))
+    area_desc: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="area_desc"))
+    same_codes: typing.Optional[typing.List[str]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="same_codes"))
+    ugc_codes: typing.Optional[typing.List[str]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="ugc_codes"))
+    vtec: typing.Optional[typing.List[str]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="vtec"))
+    awareness_level: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="awareness_level"))
+    awareness_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="awareness_type"))
+    event_type: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="event_type"))
+    state: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="state"))
+    affected_zones: typing.Optional[typing.List[str]]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="affected_zones"))
+    raw_source_json: typing.Optional[str]=dataclasses.field(kw_only=True, metadata=dataclasses_json.config(field_name="raw_source_json"))
+
+    @classmethod
+    def from_serializer_dict(cls, data: dict) -> 'CapAlert':
+        """
+        Converts a dictionary to a dataclass instance.
+        
+        Args:
+            data: The dictionary to convert to a dataclass.
+        
+        Returns:
+            The dataclass representation of the dataclass.
+        """
+        return cls(**data)
+
+    def to_serializer_dict(self) -> dict:
+        """
+        Converts the dataclass to a dictionary.
+
+        Returns:
+            The dictionary representation of the dataclass.
+        """
+        asdict_result = dataclasses.asdict(self, dict_factory=self._dict_resolver)
+        return asdict_result
+
+    def _dict_resolver(self, data):
+        """
+        Helps resolving the Enum values to their actual values and fixes the key names.
+        """ 
+        def _resolve_enum(v):
+            if isinstance(v, enum.Enum):
+                return v.value
+            return v
+        def _fix_key(k):
+            return k[:-1] if k.endswith('_') else k
+        return {_fix_key(k): _resolve_enum(v) for k, v in iter(data)}
+
+    def to_byte_array(self, content_type_string: str) -> bytes:
+        """
+        Converts the dataclass to a byte array based on the content type string.
+        
+        Args:
+            content_type_string: The content type string to convert the dataclass to.
+                Supported content types:
+                    'application/json': Encodes the data to JSON format.
+                Supported content type extensions:
+                    '+gzip': Compresses the byte array using gzip, e.g. 'application/json+gzip'.
+
+        Returns:
+            The byte array representation of the dataclass.        
+        """
+        content_type = content_type_string.split(';')[0].strip()
+        result = None
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type == 'application/json':
+            #pylint: disable=no-member
+            result = self.to_json()
+            #pylint: enable=no-member
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+
+        if result is not None and content_type.endswith('+gzip'):
+            # Handle string result from to_json()
+            if isinstance(result, str):
+                result = result.encode('utf-8')
+            with io.BytesIO() as stream:
+                with gzip.GzipFile(fileobj=stream, mode='wb') as gzip_file:
+                    gzip_file.write(result)
+                result = stream.getvalue()
+
+        if result is None:
+            raise NotImplementedError(f"Unsupported media type {content_type}")
+
+        return result
+
+    @classmethod
+    def from_data(cls, data: typing.Any, content_type_string: typing.Optional[str] = None) -> typing.Optional['CapAlert']:
+        """
+        Converts the data to a dataclass based on the content type string.
+        
+        Args:
+            data: The data to convert to a dataclass.
+            content_type_string: The content type string to convert the data to. 
+                Supported content types:
+                    'application/json': Attempts to decode the data from JSON encoded format.
+                Supported content type extensions:
+                    '+gzip': First decompresses the data using gzip, e.g. 'application/json+gzip'.
+        Returns:
+            The dataclass representation of the data.
+        """
+        if data is None:
+            return None
+        if isinstance(data, cls):
+            return data
+        if isinstance(data, dict):
+            return cls.from_serializer_dict(data)
+
+        content_type = (content_type_string or 'application/octet-stream').split(';')[0].strip()
+
+        if content_type.endswith('+gzip'):
+            if isinstance(data, (bytes, io.BytesIO)):
+                stream = io.BytesIO(data) if isinstance(data, bytes) else data
+            else:
+                raise NotImplementedError('Data is not of a supported type for gzip decompression')
+            with gzip.GzipFile(fileobj=stream, mode='rb') as gzip_file:
+                data = gzip_file.read()
+        
+        # Strip compression suffix for base type matching
+        base_content_type = content_type.replace('+gzip', '')
+        if base_content_type == 'application/json':
+            if isinstance(data, (bytes, str)):
+                data_str = data.decode('utf-8') if isinstance(data, bytes) else data
+                _record = json.loads(data_str)
+                return CapAlert.from_serializer_dict(_record)
+            else:
+                raise NotImplementedError('Data is not of a supported type for JSON deserialization')
+        raise NotImplementedError(f'Unsupported media type {content_type}')
+
+    @classmethod
+    def create_instance(cls) -> 'CapAlert':
+        """
+        Creates an instance of the dataclass with test values.
+        
+        Returns:
+            An instance of the dataclass.
+        """
+        return cls(
+            cap_source_id='snktxsmqemiyyhiylxpp',
+            identifier='cbralldtnhzknhwtqkme',
+            sender='qfersdyrnpituibjeydw',
+            sent=datetime.datetime.now(datetime.timezone.utc),
+            status=StatusEnum.Actual,
+            msg_type=MsgTypeenum.Alert,
+            source='occpogiwpggdcdfbudda',
+            scope=ScopeEnum.Public,
+            restriction='umvoewuthjgtjtogvixy',
+            addresses=['vdsebyhdehmivjrjhyvo', 'hvdjnzchglvuijkvvvfp', 'wyztlfovpdmexlfoolvt', 'illntvtcltgspjqjijtb', 'sksmvmecnoyhhabkflhl'],
+            code=[None],
+            note='rghapqfjwtuzuyulbofy',
+            references=['hrblwlbeuyvykyjknwlj'],
+            incidents=['flwrrjnadkhcgcvclfqv', 'ggvezgacfgyjlvimxnqg', 'qyatbdpyleocdqlwtxir', 'futncqodvuechbaariqs', 'ectfeahwydgupdnuwrqg'],
+            info=[None, None, None, None, None],
+            provider_url='ueuzkkmrlffqnufmlftd',
+            raw_cap_xml='gwmlniojczgjcqpvihht',
+            area_desc='yjcqnzlosozxizbfehzo',
+            same_codes=['qdnfomrrvzlryrxiwrde', 'eptxljgyggttqgnlmfia', 'jpbxeillgrhiydnkvoyl', 'hwtqntiadymshrocblhr'],
+            ugc_codes=['uixbzeznugyvqfwtqxyp', 'hebegruhgcwpsmqpwarh', 'ksuniahgqicodtvzfcqx', 'sbeszwjlgszwrpuoatbv'],
+            vtec=['mlpjhngjghhefdznaqmp', 'islksewvdhwgbhkqeyle', 'lwvorfjcamznyocvslrs', 'rpclgxamjfgetofxsmmd', 'zwxrihwkyuzejqbujcnz'],
+            awareness_level='danbbjlnxssccsfzkjnb',
+            awareness_type='tvitalpziaqetpbnrucz',
+            event_type='nqyudpghogrnlkogryrx',
+            state='mikoqlammbyrcaclgzrv',
+            affected_zones=['riiumfzqmkatcwlmwsjm', 'vvifvhijtictiwociomr', 'muvqolzvyiqeaupgblpa', 'uehggiorhdgqauhpqmkr'],
+            raw_source_json='iktgunfjlqfrdppgysab'
+        )

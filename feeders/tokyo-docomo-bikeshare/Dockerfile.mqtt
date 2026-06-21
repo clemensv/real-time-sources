@@ -1,17 +1,11 @@
 # syntax=docker/dockerfile:1.6
-FROM python:3.10-slim
+FROM ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-mqtt:latest
+
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/tokyo-docomo-bikeshare"
-LABEL org.opencontainers.image.title="Tokyo Docomo Bikeshare -> MQTT/UNS bridge"
-LABEL org.opencontainers.image.description="Publishes Tokyo Docomo Bikeshare CloudEvents over MQTT 5.0 into the source-specific UNS topic tree."
+LABEL org.opencontainers.image.title="Tokyo Docomo Bikeshare thin wrapper → MQTT"
+LABEL org.opencontainers.image.description="Configuration-only wrapper over the generalized gbfs-bikeshare MQTT feeder for the Tokyo Docomo Bikeshare (docomo-cycle-tokyo) GBFS feed served via the ODPT API."
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/tokyo-docomo-bikeshare/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
-ENV PYTHONUNBUFFERED=1
-WORKDIR /app
-
-ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
-COPY . /app
-RUN pip install --no-cache-dir confluent-kafka \
- && pip install --no-cache-dir ./tokyo_docomo_bikeshare_producer/tokyo_docomo_bikeshare_producer_kafka_producer \
- && pip install --no-cache-dir ./tokyo_docomo_bikeshare_mqtt
-ENV MQTT_BROKER_URL=""
-CMD ["python", "-m", "tokyo_docomo_bikeshare_mqtt", "feed"]
+ENV GBFS_FEEDS="https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json"
+ENV GBFS_SYSTEM_IDS="docomo-cycle-tokyo"
+# GBFS_API_KEY (ODPT acl:consumerKey) and CONNECTION_STRING are injected at runtime; GBFS_API_KEY_PARAM defaults to acl:consumerKey in the base image.

@@ -18,6 +18,7 @@ const SOURCES = [
   { id: "hubeau-hydrometrie", name: "Hub'Eau Hydrometrie", cat: "Hydrology", key: false, desc: "France — ~6,300 stations", notebook: true, mqtt: true, amqp: true },
   { id: "imgw-hydro", name: "IMGW Hydro", cat: "Hydrology", key: false, desc: "Poland — IMGW-PIB", notebook: true, mqtt: true, amqp: true },
   { id: "ireland-opw-waterlevel", name: "Ireland OPW Water Level", cat: "Hydrology", key: false, desc: "Ireland — ~500 OPW hydrometric stations", notebook: true, mqtt: true, amqp: true },
+  { id: "kiwis", name: "KiWIS", cat: "Hydrology", key: false, desc: "Global — configurable KISTERS KiWIS hydrology endpoints", notebook: true, mqtt: true, amqp: true },
   { id: "king-county-marine", name: "King County Marine", cat: "Hydrology", key: false, desc: "Washington State / Puget Sound — buoy and mooring telemetry", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false },
   { id: "nepal-bipad-hydrology", name: "Nepal BIPAD Hydrology", cat: "Hydrology", key: false, desc: "Nepal — Himalayan river basins, BIPAD", notebook: true, mqtt: true, amqp: true },
   { id: "noaa-ndbc", name: "NOAA NDBC", cat: "Hydrology", key: false, desc: "United States — buoy observations", notebook: true, mqtt: true, amqp: true },
@@ -37,6 +38,7 @@ const SOURCES = [
   { id: "aviationweather", name: "AviationWeather.gov", cat: "Weather", key: false, desc: "Global — METAR, SIGMET advisories", notebook: true, mqtt: true, amqp: true },
   { id: "blitzortung", name: "Blitzortung", cat: "Weather", key: false, desc: "Global — community lightning strokes, seconds latency", mqtt: true, amqp: true },
   { id: "bom-australia", name: "BOM Australia", cat: "Weather", key: false, desc: "Australia — ~8 capital city airports, half-hourly obs", notebook: true, mqtt: true, amqp: true },
+  { id: "cap-alerts", name: "CAP Alerts", cat: "Weather", key: false, desc: "Global — configurable CAP 1.2 public alerts", notebook: true, mqtt: true, amqp: true },
   { id: "dwd", name: "DWD", cat: "Weather", key: false, desc: "Germany — ~1,450 stations, observations and CAP alerts", mqtt: true, amqp: true },
   { id: "erddap", name: "ERDDAP", cat: "Hydrology", key: false, desc: "Global — configurable ERDDAP tabledap station observations", notebook: true, mqtt: true, amqp: true },
   { id: "dwd-pollenflug", name: "DWD Pollenflug", cat: "Weather", key: false, desc: "Germany — daily pollen forecasts, 27 regions", notebook: true, mqtt: true, amqp: true },
@@ -101,6 +103,7 @@ const SOURCES = [
 
   // ── Road and Public Transport ──
   { id: "autobahn", name: "Autobahn", cat: "Transport", key: false, desc: "Germany — roadworks, warnings, closures, webcams", notebook: true, mqtt: true, amqp: true },
+  { id: "datex2", name: "DATEX II", cat: "Transport", key: false, desc: "Europe — generalized road traffic XML profiles", notebook: true, mqtt: true, amqp: true },
   { id: "digitraffic-road", name: "Digitraffic Road", cat: "Transport", key: false, desc: "Finland — TMS sensors, road weather, traffic messages", mqtt: true, amqp: true },
   { id: "french-road-traffic", name: "French Road Traffic", cat: "Transport", key: false, desc: "France — national road network, DATEX II", notebook: true, mqtt: true, amqp: true, amqpSb: false },
   { id: "gtfs", name: "GTFS Realtime", cat: "Transport", key: false, desc: "Global — 1,000+ transit agencies, vehicles, trips, alerts", mqtt: true, amqp: true, amqpSb: false },
@@ -576,6 +579,7 @@ function renderWelcome() {
 
   // A few curated quick-starts (all key-free unless noted)
   const quickStarts = [
+    { id: "kiwis", note: "Global — configurable KISTERS KiWIS hydrology endpoints. Kafka + MQTT + AMQP with station and timeseries reference data.", mqtt: true, amqp: true },
     { id: "pegelonline", note: "Germany — 3,000 river gauges, every 15 min. Reference implementation for Kafka + MQTT + AMQP transport variants.", mqtt: true, amqp: true },
     { id: "aisstream",   note: "Global — live AIS vessel positions via WebSocket. Free API key, registers in seconds.", mqtt: true, amqp: true },
     { id: "bluesky",     note: "Global — the Bluesky firehose, normalized to CloudEvents.", mqtt: true, amqp: true },
@@ -900,4 +904,3 @@ async function selectFromHash() {
 }
 window.addEventListener("hashchange", selectFromHash);
 selectFromHash();
-

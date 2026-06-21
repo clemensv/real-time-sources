@@ -1460,13 +1460,13 @@
       "dir": "feeders/tokyo-docomo-bikeshare",
       "image": "tokyo-docomo-bikeshare-mqtt",
       "file": "Dockerfile.mqtt",
-      "module": "tokyo_docomo_bikeshare_mqtt"
+      "module": "gbfs_bikeshare_mqtt.app"
     },
     {
       "dir": "feeders/tokyo-docomo-bikeshare",
       "image": "tokyo-docomo-bikeshare-amqp",
       "file": "Dockerfile.amqp",
-      "module": "tokyo_docomo_bikeshare_amqp"
+      "module": "gbfs_bikeshare_amqp.app"
     },
     {
       "dir": "feeders/gbfs-bikeshare",
@@ -1824,7 +1824,7 @@
       "dir": "feeders/tokyo-docomo-bikeshare",
       "image": "tokyo-docomo-bikeshare",
       "file": "Dockerfile",
-      "module": "tokyo_docomo_bikeshare"
+      "module": "gbfs_bikeshare"
     },
     {
       "dir": "feeders/usgs-nwis-wq",
@@ -1852,21 +1852,21 @@
     },
     {
       "dir": "feeders/uk-bods-siri",
-      "image": "uk-bods-siri-kafka",
-      "file": "Dockerfile.kafka",
-      "module": "uk_bods_siri_kafka"
+      "image": "uk-bods-siri",
+      "file": "Dockerfile",
+      "module": "siri_kafka"
     },
     {
       "dir": "feeders/uk-bods-siri",
       "image": "uk-bods-siri-mqtt",
       "file": "Dockerfile.mqtt",
-      "module": "uk_bods_siri_mqtt"
+      "module": "siri_mqtt"
     },
     {
       "dir": "feeders/uk-bods-siri",
       "image": "uk-bods-siri-amqp",
       "file": "Dockerfile.amqp",
-      "module": "uk_bods_siri_amqp"
+      "module": "siri_amqp"
     },
     {
       "dir": "feeders/erddap",
@@ -1885,6 +1885,60 @@
       "image": "erddap-amqp",
       "file": "Dockerfile.amqp",
       "module": "erddap_amqp"
+    },
+    {
+      "dir": "feeders/kiwis",
+      "image": "kiwis-kafka",
+      "file": "Dockerfile.kafka",
+      "module": "kiwis_kafka"
+    },
+    {
+      "dir": "feeders/kiwis",
+      "image": "kiwis-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "kiwis_mqtt"
+    },
+    {
+      "dir": "feeders/kiwis",
+      "image": "kiwis-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "kiwis_amqp"
+    },
+    {
+      "dir": "feeders/datex2",
+      "image": "datex2",
+      "file": "Dockerfile",
+      "module": "datex2_kafka"
+    },
+    {
+      "dir": "feeders/datex2",
+      "image": "datex2-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "datex2_mqtt"
+    },
+    {
+      "dir": "feeders/datex2",
+      "image": "datex2-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "datex2_amqp"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts",
+      "file": "Dockerfile",
+      "module": "cap_alerts"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "cap_alerts_mqtt"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "cap_alerts_amqp"
     }
   ],
   "flow": [
@@ -4134,7 +4188,9 @@
     {
       "dir": "feeders/uk-bods-siri",
       "test_file": "test_docker_kafka_flow.py",
-      "test_class": "TestUkBodsSiriKafkaDockerFlow"
+      "test_class": "TestUkBodsSiriKafkaDockerFlow",
+      "image": "uk-bods-siri",
+      "file": "Dockerfile"
     },
     {
       "dir": "feeders/uk-bods-siri",
@@ -4149,19 +4205,64 @@
       "test_class": "TestUkBodsSiriAmqpDockerFlow"
     },
     {
-      "name": "erddap-kafka",
+      "dir": "feeders/erddap",
+      "image": "erddap-kafka",
       "test_file": "test_docker_kafka_flow.py",
       "test_class": "TestErddapDockerFlow"
     },
     {
-      "name": "erddap-mqtt",
+      "dir": "feeders/erddap",
+      "image": "erddap-mqtt",
       "test_file": "test_docker_mqtt_flow.py",
       "test_class": "TestErddapMqttDockerFlow"
     },
     {
-      "name": "erddap-amqp",
+      "dir": "feeders/erddap",
+      "image": "erddap-amqp",
       "test_file": "test_docker_amqp_artemis_flow.py",
       "test_class": "TestErddapAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/kiwis",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestKiwisDockerFlow",
+      "image": "kiwis-kafka"
+    },
+    {
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestDatex2DockerFlow",
+      "dir": "feeders/datex2"
+    },
+    {
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestDatex2MqttDockerFlow",
+      "dir": "feeders/datex2"
+    },
+    {
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestDatex2AmqpDockerFlow",
+      "dir": "feeders/datex2"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestCapAlertsDockerFlow"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestCapAlertsMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestCapAlertsAmqpArtemisFlow"
     }
   ],
   "include": [

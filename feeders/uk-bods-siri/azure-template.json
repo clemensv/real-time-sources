@@ -2,21 +2,21 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the UK BODS SIRI Kafka bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics. Bring your own Kafka or Event Hubs connection string."
+    "description": "Deploys the UK BODS BODS-backed SIRI Kafka bridge as an Azure Container Instance with persistent state storage and Log Analytics diagnostics. Bring your own Kafka or Event Hubs connection string."
   },
   "parameters": {
     "connectionString": {
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Azure Event Hubs / Fabric Event Stream\u2013style connection string. Supersedes KAFKA_BOOTSTRAP_SERVERS, SASL_USERNAME, SASL_PASSWORD."
+        "description": "Azure Event Hubs / Fabric Event Stream–style connection string. Supersedes KAFKA_BOOTSTRAP_SERVERS, SASL_USERNAME, SASL_PASSWORD."
       }
     },
-    "bodsApiKey": {
+    "siriApiKey": {
       "type": "securestring",
       "minLength": 1,
       "metadata": {
-        "description": "Free BODS API key used to authenticate requests to the AVL bulk archive."
+        "description": "BODS API key passed to the generalized siri feeder as SIRI_API_KEY."
       }
     },
     "pollInterval": {
@@ -24,16 +24,17 @@
       "defaultValue": 30,
       "minValue": 5,
       "metadata": {
-        "description": "Polling interval in seconds for the BODS bulk AVL archive."
+        "description": "Polling interval in seconds for the SIRI bulk AVL archive."
       }
     },
-    "operators": {
+    "siriOperators": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Optional comma-separated operator/NOC filter. Leave empty to ingest every operator present in the archive."
+        "description": "Optional comma-separated BODS operator filter passed as SIRI_OPERATORS."
       }
-    },    "containerGroupName": {
+    },
+    "containerGroupName": {
       "type": "string",
       "defaultValue": "uk-bods-siri",
       "metadata": {
@@ -48,12 +49,38 @@
       "metadata": {
         "description": "Azure region for all resources."
       }
+    },
+    "siriProvider": {
+      "type": "string",
+      "defaultValue": "bods",
+      "allowedValues": [
+        "bods",
+        "trafiklab",
+        "custom"
+      ],
+      "metadata": {
+        "description": "Baked UK BODS provider profile for this thin wrapper; leave as bods."
+      }
+    },
+    "siriUrl": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional BODS URL override. Leave empty to use the generalized siri DEFAULT_BODS_URL bulk archive."
+      }
+    },
+    "siriDataTypes": {
+      "type": "string",
+      "defaultValue": "vm",
+      "metadata": {
+        "description": "SIRI data types for this thin wrapper. Keep vm for BODS VehicleMonitoring."
+      }
     }
   },
   "variables": {
     "storageAccountName": "[take(concat(replace(replace(parameters('containerGroupName'), '-', ''), '_', ''), 'stg', uniqueString(resourceGroup().id)), 24)]",
     "fileShareName": "bridge-state",
-    "imageName": "ghcr.io/clemensv/real-time-sources-uk-bods-siri-kafka:latest",
+    "imageName": "ghcr.io/clemensv/real-time-sources/siri:latest",
     "logAnalyticsWorkspaceName": "[concat(parameters('containerGroupName'), '-logs')]"
   },
   "resources": [
@@ -145,6 +172,34 @@
                 {
                   "name": "PYTHONUNBUFFERED",
                   "value": "1"
+                },
+                {
+                  "name": "SIRI_PROVIDER",
+                  "value": "[parameters('siriProvider')]"
+                },
+                {
+                  "name": "SIRI_DATA_TYPES",
+                  "value": "[parameters('siriDataTypes')]"
+                },
+                {
+                  "name": "SIRI_URL",
+                  "value": "[parameters('siriUrl')]"
+                },
+                {
+                  "name": "SIRI_OPERATORS",
+                  "value": "[parameters('siriOperators')]"
+                },
+                {
+                  "name": "SIRI_API_KEY",
+                  "secureValue": "[parameters('siriApiKey')]"
+                },
+                {
+                  "name": "POLLING_INTERVAL",
+                  "value": "[string(parameters('pollInterval'))]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
                 }
               ],
               "volumeMounts": [
@@ -180,6 +235,3 @@
     }
   }
 }
-
-
-

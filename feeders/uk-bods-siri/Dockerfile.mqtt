@@ -1,20 +1,11 @@
 # syntax=docker/dockerfile:1.6
-FROM python:3.10-slim
+FROM ghcr.io/clemensv/real-time-sources-siri-mqtt:latest
 
 LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/uk-bods-siri"
-LABEL org.opencontainers.image.title="UK BODS SIRI → MQTT/UNS bridge"
-LABEL org.opencontainers.image.description="Polls the UK Department for Transport Bus Open Data Service AVL bulk archive, extracts operator reference data and live SIRI-VM vehicle positions, and publishes MQTT 5.0 binary-mode CloudEvents into the transit/uk/dft/bods Unified Namespace."
+LABEL org.opencontainers.image.title="UK BODS SIRI thin wrapper → MQTT/UNS"
+LABEL org.opencontainers.image.description="Configuration-only wrapper over the generalized siri MQTT feeder for UK Bus Open Data Service BODS VehicleMonitoring."
 LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/uk-bods-siri/CONTAINER.md"
 LABEL org.opencontainers.image.license="MIT"
 
-ENV PYTHONUNBUFFERED=1
-WORKDIR /app
-COPY . /app
-
-RUN pip install --no-cache-dir ./uk_bods_siri_mqtt_producer/uk_bods_siri_mqtt_producer_data \
- && pip install --no-cache-dir ./uk_bods_siri_mqtt_producer/uk_bods_siri_mqtt_producer_mqtt_client \
- && pip install --no-cache-dir ./uk_bods_siri_core \
- && pip install --no-cache-dir ./uk_bods_siri_mqtt
-
-ENV MQTT_BROKER_URL=""
-CMD ["python", "-m", "uk_bods_siri_mqtt", "feed"]
+ENV SIRI_PROVIDER=bods
+ENV SIRI_DATA_TYPES=vm

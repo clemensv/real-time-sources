@@ -111,9 +111,9 @@ def _build_producers(args: argparse.Namespace) -> tuple[OrgGbfsAmqpSystemProduce
         credential = ManagedIdentityCredential(client_id=args.amqp_entra_client_id) if args.amqp_entra_client_id else DefaultAzureCredential()
         audience = args.amqp_entra_audience or (DEFAULT_ENTRA_AUDIENCE_SERVICEBUS if use_tls else DEFAULT_ENTRA_AUDIENCE_EVENTHUBS)
         return (
-            OrgGbfsAmqpSystemProducer(credential=credential, entra_audience=audience, **common_kwargs),
-            OrgGbfsAmqpStationsProducer(credential=credential, entra_audience=audience, **common_kwargs),
-            OrgGbfsAmqpFreeBikesProducer(credential=credential, entra_audience=audience, **common_kwargs),
+            _retry_producer_init(lambda: OrgGbfsAmqpSystemProducer(credential=credential, entra_audience=audience, **common_kwargs)),
+            _retry_producer_init(lambda: OrgGbfsAmqpStationsProducer(credential=credential, entra_audience=audience, **common_kwargs)),
+            _retry_producer_init(lambda: OrgGbfsAmqpFreeBikesProducer(credential=credential, entra_audience=audience, **common_kwargs)),
         )
     if auth_mode == "sas":
         return (
@@ -128,6 +128,19 @@ def _build_producers(args: argparse.Namespace) -> tuple[OrgGbfsAmqpSystemProduce
     )
 
 
+
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def feed(args: argparse.Namespace) -> None:
     mock_mode = getattr(args, "mock", False)
     system_producer, stations_producer, free_bikes_producer = _build_producers(args)

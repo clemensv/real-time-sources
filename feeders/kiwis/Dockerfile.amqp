@@ -1,0 +1,35 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/kiwis"
+LABEL org.opencontainers.image.title="KiWIS -> AMQP 1.0 bridge"
+LABEL org.opencontainers.image.description="Polls configurable KISTERS KiWIS hydrological REST endpoints and publishes station, timeseries metadata, and observation CloudEvents."
+LABEL org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/kiwis/CONTAINER.md"
+LABEL org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1
+WORKDIR /app
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+
+RUN set -eux; \
+    for i in 1 2 3 4 5; do \
+        apt-get update && \
+        apt-get install -y --no-install-recommends --fix-missing \
+            build-essential cmake pkg-config swig \
+            libssl-dev libsasl2-dev python3-dev \
+            libsasl2-2 libsasl2-modules \
+        && break || \
+        { echo "apt attempt $i failed, retrying..."; sleep $((i*5)); }; \
+    done; \
+    rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip install --no-cache-dir ./kiwis_amqp_producer/kiwis_amqp_producer_data \
+ && pip install --no-cache-dir ./kiwis_amqp_producer/kiwis_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./kiwis_core \
+ && pip install --no-cache-dir ./kiwis_amqp \
+ && apt-get purge -y --auto-remove build-essential cmake pkg-config swig libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+ENV KIWIS_ENDPOINTS=""
+ENV KIWIS_MOCK="false"
+ENV POLLING_INTERVAL="300"
+CMD ["python", "-m", "kiwis_amqp", "feed"]

@@ -128,7 +128,7 @@ def _build_publisher(*, host: str, port: int, address: str, use_tls: bool, conte
         if auth_mode == "entra":
             from azure.identity import DefaultAzureCredential, ManagedIdentityCredential
             credential = ManagedIdentityCredential(client_id=entra_client_id) if entra_client_id else DefaultAzureCredential()
-            producer = cls(host=host, address=address, port=port, content_mode=content_mode, credential=credential, entra_audience=entra_audience, use_tls=use_tls)
+            producer = _retry_producer_init(lambda: cls(host=host, address=address, port=port, content_mode=content_mode, credential=credential, entra_audience=entra_audience, use_tls=use_tls))
         elif auth_mode == "sas":
             if not sas_key_name or not sas_key:
                 raise RuntimeError("AMQP_AUTH_MODE=sas requires AMQP_SAS_KEY_NAME and AMQP_SAS_KEY")
@@ -232,6 +232,19 @@ def _parse_broker_url(url: str) -> tuple[str, int, bool, Optional[str], Optional
     return parsed.hostname or "localhost", parsed.port or (5671 if tls else 5672), tls, parsed.username, parsed.password, path
 
 
+
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     parser = argparse.ArgumentParser(description="USGS IV AMQP 1.0 bridge")
