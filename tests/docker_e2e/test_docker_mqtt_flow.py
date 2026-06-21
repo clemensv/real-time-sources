@@ -5707,6 +5707,7 @@ class TestSeattleStreetClosuresMqttDockerFlow:
 
 @pytest.fixture(scope='module')
 def tokyo_docomo_bikeshare_mqtt_image():
+    build_image('gbfs-bikeshare', dockerfile='Dockerfile.mqtt', tag='ghcr.io/clemensv/real-time-sources-gbfs-bikeshare-mqtt:latest')
     return build_image('tokyo-docomo-bikeshare', dockerfile='Dockerfile.mqtt', tag='test-tokyo-docomo-bikeshare-mqtt')
 
 @pytest.fixture()
@@ -5722,7 +5723,16 @@ def mosquitto_tokyo_docomo_bikeshare():
 
 class TestTokyoDocomoBikeshareMqttDockerFlow:
     def test_emits_mqtt_uns_topics(self, mosquitto_tokyo_docomo_bikeshare, tokyo_docomo_bikeshare_mqtt_image):
-        _run_mqtt_contract_flow('tokyo-docomo-bikeshare', tokyo_docomo_bikeshare_mqtt_image, mosquitto_tokyo_docomo_bikeshare, timeout=240)
+        messages = _run_mqtt_contract_flow(
+            'gbfs-bikeshare',
+            tokyo_docomo_bikeshare_mqtt_image,
+            mosquitto_tokyo_docomo_bikeshare,
+            extra_env={'GBFS_MOCK': 'true'},
+            min_messages=3,
+            timeout=240,
+        )
+        observed = {m['user_properties'].get('type') or m['user_properties'].get('ce_type') for m in messages}
+        assert {'org.gbfs.SystemInformation', 'org.gbfs.StationInformation', 'org.gbfs.StationStatus'} <= observed
 
 @pytest.fixture(scope='module')
 def gbfs_bikeshare_mqtt_image():

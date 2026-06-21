@@ -1,4 +1,0 @@
-#!/bin/bash
-
-pip install ./tokyo_docomo_bikeshare_producer_data
-pip install ./tokyo_docomo_bikeshare_producer_kafka_producer

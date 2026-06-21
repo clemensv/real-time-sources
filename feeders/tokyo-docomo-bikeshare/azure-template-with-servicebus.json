@@ -2,12 +2,12 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "metadata": {
-    "description": "Deploys the tokyo-docomo-bikeshare AMQP 1.0 bridge against a new Azure Service Bus namespace with a queue named 'tokyo-docomo-bikeshare'. A user-assigned managed identity holds Azure Service Bus Data Sender on the queue and the container authenticates via Entra ID over AMQP CBS."
+    "description": "Deploys the Tokyo Docomo Bikeshare thin-wrapper AMQP 1.0 bridge against a new Azure Service Bus namespace (Standard SKU) with a queue named 'tokyo-docomo-bikeshare'. A user-assigned managed identity holds the 'Azure Service Bus Data Sender' role on the queue. The Azure Container Instance hosts the feeder, which authenticates via Microsoft Entra ID over AMQP CBS (no SAS keys, no key rotation)."
   },
   "parameters": {
     "namePrefix": {
       "type": "string",
-      "defaultValue": "tokyo-docomo-bikeshare",
+      "defaultValue": "tokyo-docomo-bikeshare-amqp",
       "minLength": 3,
       "maxLength": 24,
       "metadata": {
@@ -29,7 +29,7 @@
         "Premium"
       ],
       "metadata": {
-        "description": "Service Bus namespace SKU. Standard is sufficient for pegelonline-class throughput."
+        "description": "Service Bus namespace SKU. Standard is sufficient for tokyo-docomo-bikeshare-class throughput."
       }
     },
     "queueName": {
@@ -41,46 +41,41 @@
         "description": "AMQP node (queue / topic) name (default tokyo-docomo-bikeshare)."
       }
     },
-    "imageName": {
-      "type": "string",
-      "defaultValue": "ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-amqp:latest",
-      "metadata": {
-        "description": "Container image reference for the AMQP companion feeder."
-      }
-    },
     "gbfsFeeds": {
       "type": "string",
+      "defaultValue": "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json",
       "metadata": {
         "description": "Tokyo Docomo GBFS autodiscovery URL served by ODPT."
-      },
-      "defaultValue": "https://api-public.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/gbfs.json"
+      }
     },
     "gbfsSystemIds": {
       "type": "string",
+      "defaultValue": "docomo-cycle-tokyo",
       "metadata": {
         "description": "Stable GBFS system id used in CloudEvents subjects and transport keys."
-      },
-      "defaultValue": "docomo-cycle-tokyo"
+      }
     },
     "gbfsApiKey": {
       "type": "securestring",
+      "minLength": 1,
       "metadata": {
         "description": "ODPT consumer key supplied at runtime. The base image appends it as acl:consumerKey=."
       }
     },
-    "gbfsApiKeyParam": {
-      "type": "string",
-      "metadata": {
-        "description": "Query-string parameter name used with GBFS_API_KEY; keep the default for ODPT."
-      },
-      "defaultValue": "acl:consumerKey"
-    },
     "pollInterval": {
-      "type": "string",
+      "type": "int",
+      "defaultValue": 60,
+      "minValue": 5,
       "metadata": {
         "description": "Station-status polling interval in seconds."
-      },
-      "defaultValue": "60"
+      }
+    },
+    "imageName": {
+      "type": "string",
+      "defaultValue": "ghcr.io/clemensv/real-time-sources-tokyo-docomo-bikeshare-amqp:latest",
+      "metadata": {
+        "description": "Container image reference. Defaults to the public ghcr.io image published by the real-time-sources repo build."
+      }
     },
     "referenceRefreshInterval": {
       "type": "string",
@@ -291,10 +286,6 @@
                   "value": "binary"
                 },
                 {
-                  "name": "STATE_FILE",
-                  "value": "/mnt/bridge-state/state.json"
-                },
-                {
                   "name": "GBFS_FEEDS",
                   "value": "[parameters('gbfsFeeds')]"
                 },
@@ -308,7 +299,7 @@
                 },
                 {
                   "name": "GBFS_API_KEY_PARAM",
-                  "value": "[parameters('gbfsApiKeyParam')]"
+                  "value": "acl:consumerKey"
                 },
                 {
                   "name": "POLL_INTERVAL",
@@ -317,6 +308,10 @@
                 {
                   "name": "REFERENCE_REFRESH_INTERVAL",
                   "value": "[parameters('referenceRefreshInterval')]"
+                },
+                {
+                  "name": "STATE_FILE",
+                  "value": "/mnt/bridge-state/state.json"
                 },
                 {
                   "name": "ONCE_MODE",
