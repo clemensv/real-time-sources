@@ -1,0 +1,18 @@
+# syntax=docker/dockerfile:1.6
+FROM python:3.10-slim
+
+LABEL org.opencontainers.image.source="https://github.com/clemensv/real-time-sources/tree/main/feeders/datex2" \
+      org.opencontainers.image.title="DATEX II -> MQTT bridge" \
+      org.opencontainers.image.description="Publishes DATEX II traffic events as MQTT 5 binary CloudEvents in a UNS topic tree." \
+      org.opencontainers.image.documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/datex2/CONTAINER.md" \
+      org.opencontainers.image.license="MIT"
+
+ENV PYTHONUNBUFFERED=1 SETUPTOOLS_SCM_PRETEND_VERSION=0 DATEX2_MOCK="false" MQTT_ENABLE_TLS="false"
+WORKDIR /app
+COPY . /app
+RUN pip install --no-cache-dir ./datex2_mqtt_producer/datex2_mqtt_producer_data \
+ && pip install --no-cache-dir ./datex2_mqtt_producer/datex2_mqtt_producer_mqtt_client \
+ && pip install --no-cache-dir ./datex2_core \
+ && pip install --no-cache-dir ./datex2_mqtt
+CMD ["python", "-m", "datex2_mqtt", "feed"]
+

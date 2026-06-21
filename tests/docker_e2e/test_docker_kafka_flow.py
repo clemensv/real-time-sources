@@ -307,6 +307,10 @@ def usgs_geomag_image():
     return build_image('usgs-geomag')
 def french_road_traffic_image():
     return build_image('french-road-traffic')
+
+@pytest.fixture(scope='module')
+def datex2_image():
+    return build_image('datex2')
 def eaws_albina_image():
     return build_image('eaws-albina')
 def geosphere_austria_image():
@@ -2026,6 +2030,26 @@ class TestFrenchRoadTrafficDockerFlow:
             telemetry_types=['TrafficFlowMeasurement', 'RoadEvent'],
             min_messages=5,
             timeout=420,
+        )
+
+
+class TestDatex2DockerFlow:
+    TOPIC = 'test-datex2'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, datex2_image):
+        _run_kafka_flow_test(
+            kafka, datex2_image, self.TOPIC,
+            project_dir='datex2',
+            reference_types=['MeasurementSite'],
+            telemetry_types=['TrafficMeasurement', 'SituationRecord'],
+            required_exact_types=[
+                'org.datex2.measured.MeasurementSite',
+                'org.datex2.measured.TrafficMeasurement',
+                'org.datex2.situation.SituationRecord',
+            ],
+            extra_env={'DATEX2_MOCK': 'true', 'ONCE_MODE': 'true'},
+            min_messages=3,
+            timeout=180,
         )
 
 

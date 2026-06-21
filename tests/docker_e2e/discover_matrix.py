@@ -469,8 +469,11 @@ def main() -> int:
     elif smoke:
         build = [m for m in matrix["build"] if m.get("smoke")]
         flow = [m for m in matrix["flow"] if m.get("smoke")]
+        if touched_dirs:
+            build.extend(m for m in matrix["build"] if m["dir"] in touched_dirs and m not in build)
+            flow.extend(m for m in matrix["flow"] if m["dir"] in touched_dirs and m not in flow)
         reason = (
-            f"{reason} -> {len(build)} build / {len(flow)} flow smoke job(s)"
+            f"{reason} -> {len(build)} build / {len(flow)} flow smoke/touched job(s)"
         )
     else:
         if len(touched_dirs) > MAX_SCOPED_FEEDER_DIRS:
