@@ -17,6 +17,18 @@ logger = logging.getLogger(__name__)
 DEFAULT_ENTRA_AUDIENCE_SERVICEBUS = "https://servicebus.azure.net/.default"
 
 
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def _build_producer(*, host: str, port: int, address: str, use_tls: bool, content_mode: str,
                     auth_mode: str, username, password, entra_audience: str, entra_client_id,
                     sas_key_name, sas_key) -> NASAFIRMSAmqpProducer:
@@ -79,8 +91,8 @@ class _AmqpProducerAdapter:
 async def feed(poller: FirmsPoller, broker_host: str, broker_port: int, *,
                username: Optional[str] = None, password: Optional[str] = None,
                tls: bool = False, content_mode: str = "binary", once: bool = False) -> None:
-    producer = _build_producer(
-        host=broker_host, port=broker_port, address=os.getenv("AMQP_ADDRESS", "nasa-firms"),
+    producer = _retry_producer_init(lambda: _build_producer(
+        host=broker_host, port=broker_port, address=os.getenv("AMQP_ADDRESS", "nasa-firms")),
         use_tls=tls, content_mode=content_mode, auth_mode=os.getenv("AMQP_AUTH_MODE", "password"),
         username=username, password=password,
         entra_audience=os.getenv("AMQP_ENTRA_AUDIENCE", DEFAULT_ENTRA_AUDIENCE_SERVICEBUS),
