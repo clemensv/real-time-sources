@@ -1,0 +1,1153 @@
+{
+  "endpoints": {
+    "org.erddap.Dataset.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "erddap",
+          "key": "{erddap_id}/{dataset_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.erddap.kafka.dataset"
+      ],
+      "description": "Kafka producer endpoint for ERDDAP dataset reference CloudEvents keyed by {erddap_id}/{dataset_id}."
+    },
+    "org.erddap.Station.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "erddap",
+          "key": "{erddap_id}/{dataset_id}/{station_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.erddap.kafka.station"
+      ],
+      "description": "Kafka producer endpoint for ERDDAP station reference and observation CloudEvents keyed by {erddap_id}/{dataset_id}/{station_id}."
+    },
+    "org.erddap.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.erddap.mqtt.dataset",
+        "#/messagegroups/org.erddap.mqtt.station"
+      ],
+      "description": "MQTT 5.0 producer endpoint for ERDDAP events using a marine/global/erddap Unified Namespace topic hierarchy."
+    },
+    "org.erddap.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "amqps://localhost:5671/erddap"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.erddap.amqp.dataset",
+        "#/messagegroups/org.erddap.amqp.station"
+      ],
+      "description": "AMQP 1.0 producer endpoint for ERDDAP CloudEvents on the configured broker address."
+    }
+  },
+  "messagegroups": {
+    "org.erddap.dataset": {
+      "description": "Transport-neutral ERDDAP dataset reference events keyed by configured server id and datasetID.",
+      "messages": {
+        "org.erddap.DatasetMetadata": {
+          "name": "DatasetMetadata",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data describing one configured ERDDAP tabledap dataset, emitted at startup and on metadata refresh so consumers can interpret station and observation events without making out-of-band ERDDAP info requests.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.erddap.DatasetMetadata"
+            },
+            "source": {
+              "value": "{base_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{erddap_id}/{dataset_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.erddap.jstruct/schemas/org.erddap.DatasetMetadata"
+        }
+      }
+    },
+    "org.erddap.station": {
+      "description": "Transport-neutral ERDDAP station reference and observation events keyed by configured server id, datasetID, and stationID.",
+      "messages": {
+        "org.erddap.StationMetadata": {
+          "name": "StationMetadata",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference data describing one station or platform identity within a configured ERDDAP tabledap TimeSeries dataset. It is derived from the dataset's cf_role=timeseries_id variable and representative coordinate columns, and is emitted before observations.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.erddap.StationMetadata"
+            },
+            "source": {
+              "value": "{base_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{erddap_id}/{dataset_id}/{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.erddap.jstruct/schemas/org.erddap.StationMetadata"
+        },
+        "org.erddap.Observation": {
+          "name": "Observation",
+          "envelope": "CloudEvents/1.0",
+          "description": "A normalized ERDDAP tabledap observation row for one station or platform at one timestamp. It carries common coordinates and a dataset-specific measurement map whose per-variable units and metadata come from the ERDDAP info endpoint.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.erddap.Observation"
+            },
+            "source": {
+              "value": "{base_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{erddap_id}/{dataset_id}/{station_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.erddap.jstruct/schemas/org.erddap.Observation"
+        }
+      }
+    },
+    "org.erddap.kafka.dataset": {
+      "description": "Kafka bindings for ERDDAP dataset metadata.",
+      "messages": {
+        "org.erddap.kafka.DatasetMetadata": {
+          "name": "DatasetMetadata",
+          "basemessageuri": "/messagegroups/org.erddap.dataset/messages/org.erddap.DatasetMetadata",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{erddap_id}/{dataset_id}"
+          }
+        }
+      }
+    },
+    "org.erddap.kafka.station": {
+      "description": "Kafka bindings for ERDDAP station metadata and observations.",
+      "messages": {
+        "org.erddap.kafka.StationMetadata": {
+          "name": "StationMetadata",
+          "basemessageuri": "/messagegroups/org.erddap.station/messages/org.erddap.StationMetadata",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{erddap_id}/{dataset_id}/{station_id}"
+          }
+        },
+        "org.erddap.kafka.Observation": {
+          "name": "Observation",
+          "basemessageuri": "/messagegroups/org.erddap.station/messages/org.erddap.Observation",
+          "protocol": "KAFKA",
+          "protocoloptions": {
+            "key": "{erddap_id}/{dataset_id}/{station_id}"
+          }
+        }
+      }
+    },
+    "org.erddap.mqtt.dataset": {
+      "description": "MQTT bindings for retained ERDDAP dataset metadata.",
+      "messages": {
+        "org.erddap.mqtt.DatasetMetadata": {
+          "name": "DatasetMetadata",
+          "basemessageuri": "/messagegroups/org.erddap.dataset/messages/org.erddap.DatasetMetadata",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "marine/global/erddap/{erddap_id}/{dataset_id}/dataset",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "org.erddap.mqtt.station": {
+      "description": "MQTT bindings for retained station metadata and non-retained observation events.",
+      "messages": {
+        "org.erddap.mqtt.StationMetadata": {
+          "name": "StationMetadata",
+          "basemessageuri": "/messagegroups/org.erddap.station/messages/org.erddap.StationMetadata",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "marine/global/erddap/{erddap_id}/{dataset_id}/{station_id}/station",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "org.erddap.mqtt.Observation": {
+          "name": "Observation",
+          "basemessageuri": "/messagegroups/org.erddap.station/messages/org.erddap.Observation",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "marine/global/erddap/{erddap_id}/{dataset_id}/{station_id}/observation",
+            "qos": 1,
+            "retain": false
+          }
+        }
+      }
+    },
+    "org.erddap.amqp.dataset": {
+      "description": "AMQP bindings for ERDDAP dataset metadata.",
+      "messages": {
+        "org.erddap.amqp.DatasetMetadata": {
+          "name": "DatasetMetadata",
+          "basemessageuri": "/messagegroups/org.erddap.dataset/messages/org.erddap.DatasetMetadata",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{erddap_id}/{dataset_id}",
+                "description": "AMQP message subject mirroring the CloudEvents subject and Kafka key for stable routing and correlation."
+              }
+            },
+            "application-properties": {
+              "erddap_id": {
+                "type": "uritemplate",
+                "value": "{erddap_id}",
+                "description": "Configured ERDDAP server identifier for broker filters."
+              },
+              "dataset_id": {
+                "type": "uritemplate",
+                "value": "{dataset_id}",
+                "description": "ERDDAP datasetID for broker filters."
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.erddap.amqp.station": {
+      "description": "AMQP bindings for ERDDAP station metadata and observations.",
+      "messages": {
+        "org.erddap.amqp.StationMetadata": {
+          "name": "StationMetadata",
+          "basemessageuri": "/messagegroups/org.erddap.station/messages/org.erddap.StationMetadata",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{erddap_id}/{dataset_id}/{station_id}",
+                "description": "AMQP message subject mirroring the CloudEvents subject and Kafka key for stable routing and correlation."
+              }
+            },
+            "application-properties": {
+              "erddap_id": {
+                "type": "uritemplate",
+                "value": "{erddap_id}",
+                "description": "Configured ERDDAP server identifier for broker filters."
+              },
+              "dataset_id": {
+                "type": "uritemplate",
+                "value": "{dataset_id}",
+                "description": "ERDDAP datasetID for broker filters."
+              }
+            }
+          }
+        },
+        "org.erddap.amqp.Observation": {
+          "name": "Observation",
+          "basemessageuri": "/messagegroups/org.erddap.station/messages/org.erddap.Observation",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{erddap_id}/{dataset_id}/{station_id}",
+                "description": "AMQP message subject mirroring the CloudEvents subject and Kafka key for stable routing and correlation."
+              }
+            },
+            "application-properties": {
+              "erddap_id": {
+                "type": "uritemplate",
+                "value": "{erddap_id}",
+                "description": "Configured ERDDAP server identifier for broker filters."
+              },
+              "dataset_id": {
+                "type": "uritemplate",
+                "value": "{dataset_id}",
+                "description": "ERDDAP datasetID for broker filters."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "org.erddap.jstruct": {
+      "schemas": {
+        "org.erddap.DatasetMetadata": {
+          "name": "DatasetMetadata",
+          "format": "JsonStructure/draft-02",
+          "description": "Reference data describing one configured ERDDAP tabledap dataset, emitted at startup and on metadata refresh so consumers can interpret station and observation events without making out-of-band ERDDAP info requests.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "type": "object",
+                "name": "DatasetMetadata",
+                "$id": "https://clemensv.github.io/real-time-sources/schemas/erddap/DatasetMetadata.jstruct.json",
+                "description": "Reference data describing one configured ERDDAP tabledap dataset, emitted at startup and on metadata refresh so consumers can interpret station and observation events without making out-of-band ERDDAP info requests.",
+                "properties": {
+                  "erddap_id": {
+                    "type": "string",
+                    "description": "Stable, operator-assigned identifier for the configured ERDDAP server instance. ERDDAP dataset identifiers are only unique within one server, so consumers use this value with dataset_id and station_id as the global identity. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.",
+                    "pattern": "^[A-Za-z0-9_.-]+$"
+                  },
+                  "dataset_id": {
+                    "type": "string",
+                    "description": "ERDDAP datasetID from the tabledap catalog and request path. It is stable within the ERDDAP server and is used with erddap_id and station_id in CloudEvents subjects, Kafka keys, MQTT topics, and AMQP subjects. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.",
+                    "pattern": "^[A-Za-z0-9_.-]+$"
+                  },
+                  "base_url": {
+                    "type": "uri",
+                    "description": "Base URL of the ERDDAP server ending at /erddap. It is the documented root for allDatasets, info, and tabledap requests and is included so consumers can trace every event back to the source server."
+                  },
+                  "title": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Dataset title from allDatasets and the NC_GLOBAL title attribute, for example '(41024 / SUN2) Sunset Nearshore Met and Water, NC'. Nullable only when a server omits titles."
+                  },
+                  "cdm_data_type": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ERDDAP cdm_data_type catalog value. This feeder keeps TimeSeries and TimeSeriesProfile tabledap datasets and documents griddap as out of scope."
+                  },
+                  "min_time": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Earliest time advertised by allDatasets for this tabledap dataset, in UTC, when the server exposes it. Used by consumers to understand historical coverage. Encoded as an RFC 3339 UTC string in the payload for generated Avro/Python round-trip stability; the CloudEvents envelope time remains a native event timestamp."
+                  },
+                  "max_time": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Latest time advertised by allDatasets for this tabledap dataset, in UTC, when the server exposes it. Used by operators to detect stale datasets. Encoded as an RFC 3339 UTC string in the payload for generated Avro/Python round-trip stability; the CloudEvents envelope time remains a native event timestamp."
+                  },
+                  "info_url": {
+                    "type": "uri",
+                    "description": "ERDDAP info endpoint URL used to build this metadata event."
+                  },
+                  "time_variable": {
+                    "type": "string",
+                    "description": "Name of the ERDDAP time column selected for polling. The generalized feeder currently uses the standard tabledap time variable."
+                  },
+                  "station_id_variable": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Variable whose metadata declares cf_role=timeseries_id. Null for single-station fallback datasets where station_id is consistently set to dataset_id."
+                  },
+                  "global_attributes": {
+                    "type": "map",
+                    "values": {
+                      "type": "string"
+                    },
+                    "description": "NC_GLOBAL attributes from the ERDDAP info table, stringified as name-to-value pairs. They include provider, licence, conventions, summary, contributor, and update metadata when published."
+                  },
+                  "variables": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "name": "VariableMetadata",
+                      "description": "Metadata for one ERDDAP dataset variable, reconstructed from rows in the /info/{datasetID}/index.json metadata table. It describes units, CF/IOOS labels, and role attributes used by the generic feeder.",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "ERDDAP variable name as shown in the Variable Name column of the info response and in tabledap columnNames."
+                        },
+                        "data_type": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "ERDDAP data type from the variable row, such as double, String, int, or byte. Null only if an unusual server omits the variable declaration row."
+                        },
+                        "unit": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Unit string from the variable units attribute, for example seconds since 1970-01-01T00:00:00Z, degrees_north, degree_Celsius, m, or millibars. Null when the variable is dimensionless or the server omits units."
+                        },
+                        "long_name": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Human-readable long_name attribute for display and diagnostics. It often carries station names for the timeseries_id variable and plain-English labels for measurement variables."
+                        },
+                        "standard_name": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "CF standard_name attribute when present. Consumers can use it to compare semantically equivalent variables across heterogeneous ERDDAP datasets."
+                        },
+                        "ioos_category": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "IOOS category attribute when present, grouping variables into categories such as Time, Location, Identifier, Temperature, Salinity, Pressure, Wind, or Other."
+                        },
+                        "cf_role": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "CF role attribute. A value of timeseries_id identifies the stable station/platform identifier variable that the feeder uses for station_id."
+                        }
+                      },
+                      "required": [
+                        "name"
+                      ]
+                    },
+                    "description": "Variables advertised by the ERDDAP info table, including units and CF/IOOS metadata used to normalize observations."
+                  }
+                },
+                "required": [
+                  "erddap_id",
+                  "dataset_id",
+                  "base_url",
+                  "info_url",
+                  "time_variable",
+                  "global_attributes",
+                  "variables"
+                ],
+                "additionalProperties": false,
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ]
+              }
+            }
+          }
+        },
+        "org.erddap.StationMetadata": {
+          "name": "StationMetadata",
+          "format": "JsonStructure/draft-02",
+          "description": "Reference data describing one station or platform identity within a configured ERDDAP tabledap TimeSeries dataset. It is derived from the dataset's cf_role=timeseries_id variable and representative coordinate columns, and is emitted before observations.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "type": "object",
+                "name": "StationMetadata",
+                "$id": "https://clemensv.github.io/real-time-sources/schemas/erddap/StationMetadata.jstruct.json",
+                "description": "Reference data describing one station or platform identity within a configured ERDDAP tabledap TimeSeries dataset. It is derived from the dataset's cf_role=timeseries_id variable and representative coordinate columns, and is emitted before observations.",
+                "properties": {
+                  "erddap_id": {
+                    "type": "string",
+                    "description": "Stable, operator-assigned identifier for the configured ERDDAP server instance. ERDDAP dataset identifiers are only unique within one server, so consumers use this value with dataset_id and station_id as the global identity. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.",
+                    "pattern": "^[A-Za-z0-9_.-]+$"
+                  },
+                  "dataset_id": {
+                    "type": "string",
+                    "description": "ERDDAP datasetID from the tabledap catalog and request path. It is stable within the ERDDAP server and is used with erddap_id and station_id in CloudEvents subjects, Kafka keys, MQTT topics, and AMQP subjects. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.",
+                    "pattern": "^[A-Za-z0-9_.-]+$"
+                  },
+                  "base_url": {
+                    "type": "uri",
+                    "description": "Base URL of the ERDDAP server ending at /erddap. It is the documented root for allDatasets, info, and tabledap requests and is included so consumers can trace every event back to the source server."
+                  },
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable station or platform identifier. For TimeSeries datasets this is read from the variable whose ERDDAP metadata declares cf_role=timeseries_id; for single-station datasets where rows carry null station values, the bridge falls back to the datasetID consistently. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.",
+                    "pattern": "^[A-Za-z0-9_.-]+$"
+                  },
+                  "station_name": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "Human-readable station or platform label from the timeseries_id variable long_name, station attributes, or dataset title. It is descriptive and never used as a key."
+                  },
+                  "station_id_variable": {
+                    "type": [
+                      "string",
+                      "null"
+                    ],
+                    "description": "ERDDAP variable name that supplied station_id through cf_role=timeseries_id, or null when the bridge uses the datasetID fallback for a single-station dataset."
+                  },
+                  "latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "WGS 84 latitude in decimal degrees north from ERDDAP latitude or station metadata. Nullable because some generic tabledap datasets do not expose a latitude column in every query result."
+                  },
+                  "longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "WGS 84 longitude in decimal degrees east from ERDDAP longitude or station metadata. Nullable because some generic tabledap datasets do not expose a longitude column in every query result."
+                  },
+                  "depth": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Vertical coordinate in metres when ERDDAP exposes depth or z metadata. Nullable because surface stations and many time-series datasets omit a vertical coordinate."
+                  },
+                  "attributes": {
+                    "type": "map",
+                    "values": {
+                      "type": "string"
+                    },
+                    "description": "Station-related ERDDAP attributes, including cf_role, ioos_code, short_name, type, long_name, and any other metadata attached to the station identifier variable."
+                  }
+                },
+                "required": [
+                  "erddap_id",
+                  "dataset_id",
+                  "base_url",
+                  "station_id",
+                  "attributes"
+                ],
+                "additionalProperties": false,
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ]
+              }
+            }
+          }
+        },
+        "org.erddap.Observation": {
+          "name": "Observation",
+          "format": "JsonStructure/draft-02",
+          "description": "A normalized ERDDAP tabledap observation row for one station or platform at one timestamp. It carries common coordinates and a dataset-specific measurement map whose per-variable units and metadata come from the ERDDAP info endpoint.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "type": "object",
+                "name": "Observation",
+                "$id": "https://clemensv.github.io/real-time-sources/schemas/erddap/Observation.jstruct.json",
+                "description": "A normalized ERDDAP tabledap observation row for one station or platform at one timestamp. It carries common coordinates and a dataset-specific measurement map whose per-variable units and metadata come from the ERDDAP info endpoint.",
+                "properties": {
+                  "erddap_id": {
+                    "type": "string",
+                    "description": "Stable, operator-assigned identifier for the configured ERDDAP server instance. ERDDAP dataset identifiers are only unique within one server, so consumers use this value with dataset_id and station_id as the global identity. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.",
+                    "pattern": "^[A-Za-z0-9_.-]+$"
+                  },
+                  "dataset_id": {
+                    "type": "string",
+                    "description": "ERDDAP datasetID from the tabledap catalog and request path. It is stable within the ERDDAP server and is used with erddap_id and station_id in CloudEvents subjects, Kafka keys, MQTT topics, and AMQP subjects. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.",
+                    "pattern": "^[A-Za-z0-9_.-]+$"
+                  },
+                  "base_url": {
+                    "type": "uri",
+                    "description": "Base URL of the ERDDAP server ending at /erddap. It is the documented root for allDatasets, info, and tabledap requests and is included so consumers can trace every event back to the source server."
+                  },
+                  "station_id": {
+                    "type": "string",
+                    "description": "Stable station or platform identifier. For TimeSeries datasets this is read from the variable whose ERDDAP metadata declares cf_role=timeseries_id; for single-station datasets where rows carry null station values, the bridge falls back to the datasetID consistently. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.",
+                    "pattern": "^[A-Za-z0-9_.-]+$"
+                  },
+                  "time": {
+                    "type": "string",
+                    "description": "Observation timestamp in UTC from the ERDDAP time column. tabledap returns ISO-8601 strings for JSON responses, and the bridge emits an RFC 3339 datetime so consumers can order and window observations. Encoded as an RFC 3339 UTC string in the payload for generated Avro/Python round-trip stability; the CloudEvents envelope time remains a native event timestamp."
+                  },
+                  "latitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "WGS 84 latitude in decimal degrees north from ERDDAP latitude or station metadata. Nullable because some generic tabledap datasets do not expose a latitude column in every query result."
+                  },
+                  "longitude": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "WGS 84 longitude in decimal degrees east from ERDDAP longitude or station metadata. Nullable because some generic tabledap datasets do not expose a longitude column in every query result."
+                  },
+                  "depth": {
+                    "type": [
+                      "double",
+                      "null"
+                    ],
+                    "description": "Vertical coordinate in metres when ERDDAP exposes depth or z metadata. Nullable because surface stations and many time-series datasets omit a vertical coordinate."
+                  },
+                  "measurements": {
+                    "type": "map",
+                    "values": {
+                      "type": "object",
+                      "name": "MeasurementValue",
+                      "description": "One dataset-specific ERDDAP variable value from a tabledap row, paired with the variable metadata discovered from /info/{datasetID}/index.json. ERDDAP datasets are heterogeneous, so variable units are data values rather than a fixed schema unit.",
+                      "properties": {
+                        "variable_name": {
+                          "type": "string",
+                          "description": "ERDDAP variable name exactly as it appears in columnNames and the info metadata table. Used as the key in the measurements map and repeated here for consumers that flatten values."
+                        },
+                        "value_double": {
+                          "type": [
+                            "double",
+                            "null"
+                          ],
+                          "description": "Numeric value for ERDDAP variables whose column type is a numeric tabledap type. Null when the upstream value is missing or the variable is textual."
+                        },
+                        "value_string": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Text value for ERDDAP string, char, or non-numeric variables, or a string representation when consumers need the original token. Null for purely numeric values."
+                        },
+                        "unit": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Unit text from the ERDDAP variable's units attribute or table columnUnits entry, for example degree_Celsius, millibars, m.s-1, or 1e-3. It varies per dataset and variable and is intentionally modeled as data."
+                        },
+                        "long_name": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Human-readable variable label from the ERDDAP long_name attribute, such as Water Temperature or Wind Speed. Consumers can use it for labels while retaining variable_name for stable joins."
+                        },
+                        "standard_name": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "CF standard_name attribute when ERDDAP metadata provides one, for example sea_water_temperature or wind_speed. Null when the dataset has no CF standard name for this variable."
+                        },
+                        "ioos_category": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "IOOS category attribute grouping the variable, for example Temperature, Wind, Pressure, Location, Identifier, or Other. Null when absent in the ERDDAP info table."
+                        },
+                        "quality_flag": {
+                          "type": [
+                            "string",
+                            "null"
+                          ],
+                          "description": "Optional quality-control flag associated with this variable when the selected tabledap columns include QARTOD or other QC fields. Null when no associated quality flag is present."
+                        }
+                      },
+                      "required": [
+                        "variable_name"
+                      ]
+                    },
+                    "description": "Map of selected ERDDAP variable name to normalized value and variable metadata. This preserves heterogeneous dataset-specific measurements without inventing fixed units in the contract."
+                  }
+                },
+                "required": [
+                  "erddap_id",
+                  "dataset_id",
+                  "base_url",
+                  "station_id",
+                  "time",
+                  "measurements"
+                ],
+                "additionalProperties": false,
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.erddap.avro": {
+      "schemas": {
+        "org.erddap.DatasetMetadata": {
+          "name": "DatasetMetadata",
+          "format": "Avro/1.11.3",
+          "description": "Reference data describing one configured ERDDAP tabledap dataset, emitted at startup and on metadata refresh so consumers can interpret station and observation events without making out-of-band ERDDAP info requests.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "DatasetMetadata",
+                "namespace": "org.erddap",
+                "doc": "Reference data describing one configured ERDDAP tabledap dataset, emitted at startup and on metadata refresh so consumers can interpret station and observation events without making out-of-band ERDDAP info requests.",
+                "fields": [
+                  {
+                    "name": "erddap_id",
+                    "type": "string",
+                    "doc": "Stable, operator-assigned identifier for the configured ERDDAP server instance. ERDDAP dataset identifiers are only unique within one server, so consumers use this value with dataset_id and station_id as the global identity."
+                  },
+                  {
+                    "name": "dataset_id",
+                    "type": "string",
+                    "doc": "ERDDAP datasetID from the tabledap catalog and request path. It is stable within the ERDDAP server and is used with erddap_id and station_id in CloudEvents subjects, Kafka keys, MQTT topics, and AMQP subjects."
+                  },
+                  {
+                    "name": "base_url",
+                    "type": "string",
+                    "doc": "Base URL of the ERDDAP server ending at /erddap. It is the documented root for allDatasets, info, and tabledap requests and is included so consumers can trace every event back to the source server."
+                  },
+                  {
+                    "name": "title",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Dataset title from allDatasets and the NC_GLOBAL title attribute, for example '(41024 / SUN2) Sunset Nearshore Met and Water, NC'. Nullable only when a server omits titles.",
+                    "default": null
+                  },
+                  {
+                    "name": "cdm_data_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ERDDAP cdm_data_type catalog value. This feeder keeps TimeSeries and TimeSeriesProfile tabledap datasets and documents griddap as out of scope.",
+                    "default": null
+                  },
+                  {
+                    "name": "min_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Earliest time advertised by allDatasets for this tabledap dataset, in UTC, when the server exposes it. Used by consumers to understand historical coverage.",
+                    "default": null
+                  },
+                  {
+                    "name": "max_time",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Latest time advertised by allDatasets for this tabledap dataset, in UTC, when the server exposes it. Used by operators to detect stale datasets.",
+                    "default": null
+                  },
+                  {
+                    "name": "info_url",
+                    "type": "string",
+                    "doc": "ERDDAP info endpoint URL used to build this metadata event."
+                  },
+                  {
+                    "name": "time_variable",
+                    "type": "string",
+                    "doc": "Name of the ERDDAP time column selected for polling. The generalized feeder currently uses the standard tabledap time variable."
+                  },
+                  {
+                    "name": "station_id_variable",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Variable whose metadata declares cf_role=timeseries_id. Null for single-station fallback datasets where station_id is consistently set to dataset_id.",
+                    "default": null
+                  },
+                  {
+                    "name": "global_attributes",
+                    "type": {
+                      "type": "map",
+                      "values": "string"
+                    },
+                    "doc": "NC_GLOBAL attributes from the ERDDAP info table, stringified as name-to-value pairs. They include provider, licence, conventions, summary, contributor, and update metadata when published."
+                  },
+                  {
+                    "name": "variables",
+                    "type": {
+                      "type": "array",
+                      "items": {
+                        "type": "record",
+                        "name": "VariableMetadata",
+                        "namespace": "org.erddap",
+                        "doc": "Metadata for one ERDDAP dataset variable, reconstructed from rows in the /info/{datasetID}/index.json metadata table. It describes units, CF/IOOS labels, and role attributes used by the generic feeder.",
+                        "fields": [
+                          {
+                            "name": "name",
+                            "type": "string",
+                            "doc": "ERDDAP variable name as shown in the Variable Name column of the info response and in tabledap columnNames."
+                          },
+                          {
+                            "name": "data_type",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "ERDDAP data type from the variable row, such as double, String, int, or byte. Null only if an unusual server omits the variable declaration row.",
+                            "default": null
+                          },
+                          {
+                            "name": "unit",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Unit string from the variable units attribute, for example seconds since 1970-01-01T00:00:00Z, degrees_north, degree_Celsius, m, or millibars. Null when the variable is dimensionless or the server omits units.",
+                            "default": null
+                          },
+                          {
+                            "name": "long_name",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Human-readable long_name attribute for display and diagnostics. It often carries station names for the timeseries_id variable and plain-English labels for measurement variables.",
+                            "default": null
+                          },
+                          {
+                            "name": "standard_name",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CF standard_name attribute when present. Consumers can use it to compare semantically equivalent variables across heterogeneous ERDDAP datasets.",
+                            "default": null
+                          },
+                          {
+                            "name": "ioos_category",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "IOOS category attribute when present, grouping variables into categories such as Time, Location, Identifier, Temperature, Salinity, Pressure, Wind, or Other.",
+                            "default": null
+                          },
+                          {
+                            "name": "cf_role",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CF role attribute. A value of timeseries_id identifies the stable station/platform identifier variable that the feeder uses for station_id.",
+                            "default": null
+                          }
+                        ]
+                      }
+                    },
+                    "doc": "Variables advertised by the ERDDAP info table, including units and CF/IOOS metadata used to normalize observations."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "org.erddap.StationMetadata": {
+          "name": "StationMetadata",
+          "format": "Avro/1.11.3",
+          "description": "Reference data describing one station or platform identity within a configured ERDDAP tabledap TimeSeries dataset. It is derived from the dataset's cf_role=timeseries_id variable and representative coordinate columns, and is emitted before observations.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "StationMetadata",
+                "namespace": "org.erddap",
+                "doc": "Reference data describing one station or platform identity within a configured ERDDAP tabledap TimeSeries dataset. It is derived from the dataset's cf_role=timeseries_id variable and representative coordinate columns, and is emitted before observations.",
+                "fields": [
+                  {
+                    "name": "erddap_id",
+                    "type": "string",
+                    "doc": "Stable, operator-assigned identifier for the configured ERDDAP server instance. ERDDAP dataset identifiers are only unique within one server, so consumers use this value with dataset_id and station_id as the global identity."
+                  },
+                  {
+                    "name": "dataset_id",
+                    "type": "string",
+                    "doc": "ERDDAP datasetID from the tabledap catalog and request path. It is stable within the ERDDAP server and is used with erddap_id and station_id in CloudEvents subjects, Kafka keys, MQTT topics, and AMQP subjects."
+                  },
+                  {
+                    "name": "base_url",
+                    "type": "string",
+                    "doc": "Base URL of the ERDDAP server ending at /erddap. It is the documented root for allDatasets, info, and tabledap requests and is included so consumers can trace every event back to the source server."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station or platform identifier. For TimeSeries datasets this is read from the variable whose ERDDAP metadata declares cf_role=timeseries_id; for single-station datasets where rows carry null station values, the bridge falls back to the datasetID consistently."
+                  },
+                  {
+                    "name": "station_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable station or platform label from the timeseries_id variable long_name, station attributes, or dataset title. It is descriptive and never used as a key.",
+                    "default": null
+                  },
+                  {
+                    "name": "station_id_variable",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "ERDDAP variable name that supplied station_id through cf_role=timeseries_id, or null when the bridge uses the datasetID fallback for a single-station dataset.",
+                    "default": null
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 latitude in decimal degrees north from ERDDAP latitude or station metadata. Nullable because some generic tabledap datasets do not expose a latitude column in every query result.",
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 longitude in decimal degrees east from ERDDAP longitude or station metadata. Nullable because some generic tabledap datasets do not expose a longitude column in every query result.",
+                    "default": null
+                  },
+                  {
+                    "name": "depth",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Vertical coordinate in metres when ERDDAP exposes depth or z metadata. Nullable because surface stations and many time-series datasets omit a vertical coordinate.",
+                    "default": null
+                  },
+                  {
+                    "name": "attributes",
+                    "type": {
+                      "type": "map",
+                      "values": "string"
+                    },
+                    "doc": "Station-related ERDDAP attributes, including cf_role, ioos_code, short_name, type, long_name, and any other metadata attached to the station identifier variable."
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "org.erddap.Observation": {
+          "name": "Observation",
+          "format": "Avro/1.11.3",
+          "description": "A normalized ERDDAP tabledap observation row for one station or platform at one timestamp. It carries common coordinates and a dataset-specific measurement map whose per-variable units and metadata come from the ERDDAP info endpoint.",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "Observation",
+                "namespace": "org.erddap",
+                "doc": "A normalized ERDDAP tabledap observation row for one station or platform at one timestamp. It carries common coordinates and a dataset-specific measurement map whose per-variable units and metadata come from the ERDDAP info endpoint.",
+                "fields": [
+                  {
+                    "name": "erddap_id",
+                    "type": "string",
+                    "doc": "Stable, operator-assigned identifier for the configured ERDDAP server instance. ERDDAP dataset identifiers are only unique within one server, so consumers use this value with dataset_id and station_id as the global identity."
+                  },
+                  {
+                    "name": "dataset_id",
+                    "type": "string",
+                    "doc": "ERDDAP datasetID from the tabledap catalog and request path. It is stable within the ERDDAP server and is used with erddap_id and station_id in CloudEvents subjects, Kafka keys, MQTT topics, and AMQP subjects."
+                  },
+                  {
+                    "name": "base_url",
+                    "type": "string",
+                    "doc": "Base URL of the ERDDAP server ending at /erddap. It is the documented root for allDatasets, info, and tabledap requests and is included so consumers can trace every event back to the source server."
+                  },
+                  {
+                    "name": "station_id",
+                    "type": "string",
+                    "doc": "Stable station or platform identifier. For TimeSeries datasets this is read from the variable whose ERDDAP metadata declares cf_role=timeseries_id; for single-station datasets where rows carry null station values, the bridge falls back to the datasetID consistently."
+                  },
+                  {
+                    "name": "time",
+                    "type": "string",
+                    "doc": "Observation timestamp in UTC from the ERDDAP time column. tabledap returns ISO-8601 strings for JSON responses, and the bridge emits an RFC 3339 datetime so consumers can order and window observations."
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 latitude in decimal degrees north from ERDDAP latitude or station metadata. Nullable because some generic tabledap datasets do not expose a latitude column in every query result.",
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS 84 longitude in decimal degrees east from ERDDAP longitude or station metadata. Nullable because some generic tabledap datasets do not expose a longitude column in every query result.",
+                    "default": null
+                  },
+                  {
+                    "name": "depth",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Vertical coordinate in metres when ERDDAP exposes depth or z metadata. Nullable because surface stations and many time-series datasets omit a vertical coordinate.",
+                    "default": null
+                  },
+                  {
+                    "name": "measurements",
+                    "type": {
+                      "type": "map",
+                      "values": {
+                        "type": "record",
+                        "name": "MeasurementValue",
+                        "namespace": "org.erddap",
+                        "doc": "One dataset-specific ERDDAP variable value from a tabledap row, paired with the variable metadata discovered from /info/{datasetID}/index.json. ERDDAP datasets are heterogeneous, so variable units are data values rather than a fixed schema unit.",
+                        "fields": [
+                          {
+                            "name": "variable_name",
+                            "type": "string",
+                            "doc": "ERDDAP variable name exactly as it appears in columnNames and the info metadata table. Used as the key in the measurements map and repeated here for consumers that flatten values."
+                          },
+                          {
+                            "name": "value_double",
+                            "type": [
+                              "null",
+                              "double"
+                            ],
+                            "doc": "Numeric value for ERDDAP variables whose column type is a numeric tabledap type. Null when the upstream value is missing or the variable is textual.",
+                            "default": null
+                          },
+                          {
+                            "name": "value_string",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Text value for ERDDAP string, char, or non-numeric variables, or a string representation when consumers need the original token. Null for purely numeric values.",
+                            "default": null
+                          },
+                          {
+                            "name": "unit",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Unit text from the ERDDAP variable's units attribute or table columnUnits entry, for example degree_Celsius, millibars, m.s-1, or 1e-3. It varies per dataset and variable and is intentionally modeled as data.",
+                            "default": null
+                          },
+                          {
+                            "name": "long_name",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Human-readable variable label from the ERDDAP long_name attribute, such as Water Temperature or Wind Speed. Consumers can use it for labels while retaining variable_name for stable joins.",
+                            "default": null
+                          },
+                          {
+                            "name": "standard_name",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "CF standard_name attribute when ERDDAP metadata provides one, for example sea_water_temperature or wind_speed. Null when the dataset has no CF standard name for this variable.",
+                            "default": null
+                          },
+                          {
+                            "name": "ioos_category",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "IOOS category attribute grouping the variable, for example Temperature, Wind, Pressure, Location, Identifier, or Other. Null when absent in the ERDDAP info table.",
+                            "default": null
+                          },
+                          {
+                            "name": "quality_flag",
+                            "type": [
+                              "null",
+                              "string"
+                            ],
+                            "doc": "Optional quality-control flag associated with this variable when the selected tabledap columns include QARTOD or other QC fields. Null when no associated quality flag is present.",
+                            "default": null
+                          }
+                        ]
+                      }
+                    },
+                    "doc": "Map of selected ERDDAP variable name to normalized value and variable metadata. This preserves heterogeneous dataset-specific measurements without inventing fixed units in the contract."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1869,6 +1869,24 @@
       "module": "siri_amqp"
     },
     {
+      "dir": "feeders/erddap",
+      "image": "erddap-kafka",
+      "file": "Dockerfile.kafka",
+      "module": "erddap_kafka"
+    },
+    {
+      "dir": "feeders/erddap",
+      "image": "erddap-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "erddap_mqtt"
+    },
+    {
+      "dir": "feeders/erddap",
+      "image": "erddap-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "erddap_amqp"
+    },
+    {
       "dir": "feeders/kiwis",
       "image": "kiwis-kafka",
       "file": "Dockerfile.kafka",
@@ -4185,6 +4203,24 @@
       "image": "uk-bods-siri-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestUkBodsSiriAmqpDockerFlow"
+    },
+    {
+      "dir": "feeders/erddap",
+      "image": "erddap-kafka",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestErddapDockerFlow"
+    },
+    {
+      "dir": "feeders/erddap",
+      "image": "erddap-mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestErddapMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/erddap",
+      "image": "erddap-amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestErddapAmqpDockerFlow"
     },
     {
       "dir": "feeders/kiwis",

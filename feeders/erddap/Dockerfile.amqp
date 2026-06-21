@@ -1,0 +1,27 @@
+FROM python:3.10-slim
+LABEL source="erddap" \
+      title="ERDDAP ERDDAP_AMQP feeder" \
+      description="Config-driven ERDDAP tabledap CloudEvents feeder" \
+      documentation="https://github.com/clemensv/real-time-sources/blob/main/feeders/erddap/CONTAINER.md" \
+      license="MIT"
+ENV PYTHONUNBUFFERED=1
+ENV SETUPTOOLS_SCM_PRETEND_VERSION=0
+WORKDIR /app
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        build-essential cmake pkg-config swig \
+        libssl-dev libsasl2-dev python3-dev \
+        libsasl2-2 libsasl2-modules; \
+    rm -rf /var/lib/apt/lists/*
+COPY . /app
+RUN pip install --no-cache-dir ./erddap_amqp_producer/erddap_amqp_producer_data \
+ && pip install --no-cache-dir ./erddap_amqp_producer/erddap_amqp_producer_amqp_producer \
+ && pip install --no-cache-dir ./erddap_core \
+ && pip install --no-cache-dir ./erddap_amqp \
+ && apt-get purge -y --auto-remove \
+        build-essential cmake pkg-config swig \
+        libssl-dev libsasl2-dev python3-dev \
+ && rm -rf /root/.cache /var/lib/apt/lists/*
+ENV ERDDAP_SOURCES="ioos-sensors|https://erddap.sensors.ioos.us/erddap|org_cormp_sun2|sea_water_temperature,sea_water_practical_salinity|station|time>=max(time)-1day"
+CMD ["python", "-m", "erddap_amqp", "feed"]

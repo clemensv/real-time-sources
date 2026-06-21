@@ -187,8 +187,15 @@ def _extract_ce_attrs(msg: Any) -> Dict[str, Any]:
     application_properties as ``msg.properties``.
     """
     attrs: Dict[str, Any] = {}
-    app_props = getattr(msg, "properties", None) or {}
-    for k, v in dict(app_props).items():
+    app_props: Dict[Any, Any] = {}
+    for candidate in (
+        getattr(msg, "properties", None),
+        getattr(msg, "application_properties", None),
+        getattr(msg, "applicationproperties", None),
+    ):
+        if candidate:
+            app_props.update(dict(candidate))
+    for k, v in app_props.items():
         if not isinstance(k, str):
             continue
         if k.startswith("cloudEvents:"):
@@ -881,3 +888,84 @@ class TestNoaaSwpcL1AmqpArtemisFlow:
         assert isinstance(body, dict), f"body not a JSON object: {body!r}"
         errors = InstanceValidator(schema, extended=True).validate_instance(body)
         assert not errors, f"JsonStructure validation failed: {errors[:3]}"
+
+
+@pytest.fixture(scope="module")
+def erddap_amqp_image():
+    return build_image("erddap", dockerfile="Dockerfile.amqp", tag="test-erddap-amqp")
+
+
+class TestErddapAmqpDockerFlow:
+    def test_emits_mock_reference_and_telemetry(self, artemis_broker, erddap_amqp_image):
+        client = docker.from_env()
+        feeder = client.containers.run(
+            erddap_amqp_image.id,
+            detach=True,
+            remove=False,
+            network=artemis_broker["network"],
+            environment={
+                "AMQP_HOST": artemis_broker["internal_host"],
+                "AMQP_PORT": str(artemis_broker["internal_port"]),
+                "AMQP_ADDRESS": artemis_broker["queue"],
+                "AMQP_USERNAME": artemis_broker["user"],
+                "AMQP_PASSWORD": artemis_broker["password"],
+                "AMQP_AUTH_MODE": "password",
+                "ERDDAP_MOCK": "true",
+                "ONCE_MODE": "true",
+                "PYTHONUNBUFFERED": "1",
+            },
+        )
+        try:
+            result = feeder.wait(timeout=300)
+            logs = feeder.logs().decode("utf-8", errors="replace")
+            assert result.get("StatusCode") == 0, f"Feeder exited non-zero: {result}\n--- LOGS ---\n{logs}"
+        finally:
+            try:
+                feeder.remove(force=True)
+            except docker.errors.APIError:
+                pass
+
+        messages = _receive_messages(
+            "127.0.0.1",
+            artemis_broker["host_port"],
+            artemis_broker["queue"],
+            artemis_broker["user"],
+            artemis_broker["password"],
+            expected=10,
+            timeout=60,
+        )
+        assert len(messages) >= 3, "No AMQP messages received from Artemis"
+        types: Dict[str, List[Any]] = {}
+        for message in messages:
+            ce = _extract_ce_attrs(message)
+            ce_type = ce.get("type")
+            if ce_type:
+                types.setdefault(ce_type, []).append((message, ce))
+        if not {
+            "org.erddap.DatasetMetadata",
+            "org.erddap.StationMetadata",
+            "org.erddap.Observation",
+        }.issubset(types):
+            first = messages[0]
+            diag = {
+                "subject": getattr(first, "subject", None),
+                "content_type": getattr(first, "content_type", None),
+                "properties": dict(getattr(first, "properties", {}) or {}),
+                "application_properties": dict(getattr(first, "application_properties", {}) or {}),
+                "applicationproperties": dict(getattr(first, "applicationproperties", {}) or {}),
+                "annotations": dict(getattr(first, "annotations", {}) or {}),
+                "body": str(getattr(first, "body", ""))[:1000],
+                "body_obj": _body_to_obj(first),
+                "extracted_ce_attrs": _extract_ce_attrs(first),
+                "types_seen": sorted(types),
+            }
+            raise AssertionError(json.dumps(diag, default=str, indent=2))
+        for ce_type, items in types.items():
+            if not ce_type.startswith("org.erddap."):
+                continue
+            sample_msg, sample_ce = items[0]
+            for required in ("id", "source", "type", "subject", "specversion"):
+                assert required in sample_ce, f"Missing CE attribute {required!r}: {sample_ce}"
+            assert sample_ce["specversion"] == "1.0"
+            body = _body_to_obj(sample_msg)
+            assert isinstance(body, dict), f"{ce_type} body not a JSON object: {body!r}"

@@ -109,6 +109,10 @@ def pegelonline_image():
     return build_image('pegelonline', dockerfile='Dockerfile.kafka')
 
 @pytest.fixture(scope='module')
+def erddap_image():
+    return build_image('erddap', dockerfile='Dockerfile.kafka')
+
+@pytest.fixture(scope='module')
 def kiwis_image():
     return build_image('kiwis', dockerfile='Dockerfile.kafka')
 
@@ -1201,6 +1205,25 @@ class TestPegelonlineDockerFlow:
             kafka, pegelonline_image, self.TOPIC,
             reference_types=['Station'],
             telemetry_types=['CurrentMeasurement'],
+        )
+
+
+class TestErddapDockerFlow:
+    TOPIC = 'test-erddap'
+
+    def test_emits_mock_reference_and_telemetry(self, kafka: KafkaFixture, erddap_image):
+        _run_kafka_flow_test(
+            kafka, erddap_image, self.TOPIC,
+            reference_types=['DatasetMetadata', 'StationMetadata'],
+            telemetry_types=['Observation'],
+            required_exact_types=[
+                'org.erddap.DatasetMetadata',
+                'org.erddap.StationMetadata',
+                'org.erddap.Observation',
+            ],
+            extra_env={'ERDDAP_MOCK': 'true', 'ONCE_MODE': 'true'},
+            min_messages=3,
+            timeout=240,
         )
 
 

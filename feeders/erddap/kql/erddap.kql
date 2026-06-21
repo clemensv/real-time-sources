@@ -1,0 +1,318 @@
+// WORKAROUND(https://github.com/clemensv/real-time-sources/issues/1413): this file is generated from
+// xreg and then patched to remove invalid trailing commas and the telemetry Latest view.
+.create-merge table [_cloudevents_dispatch] (
+    [specversion]: string,
+    [type]: string,
+    [source]: string,
+    [id]: string,
+    [time]: datetime,
+    [subject]: string,
+    [datacontenttype]: string,
+    [dataschema]: string,
+    [data]: dynamic
+);
+
+.create-or-alter table [_cloudevents_dispatch] ingestion json mapping "_cloudevents_dispatch_json"
+```
+[
+  {"column": "specversion", "path": "$.specversion"},
+  {"column": "type", "path": "$.type"},
+  {"column": "source", "path": "$.source"},
+  {"column": "id", "path": "$.id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "subject", "path": "$.subject"},
+  {"column": "datacontenttype", "path": "$.datacontenttype"},
+  {"column": "dataschema", "path": "$.dataschema"},
+  {"column": "data", "path": "$.data"}
+]
+```
+
+.create-merge table ['org.erddap.DatasetMetadata'] (
+   [erddap_id]: string,
+   [dataset_id]: string,
+   [base_url]: string,
+   [title]: string,
+   [cdm_data_type]: string,
+   [min_time]: string,
+   [max_time]: string,
+   [info_url]: string,
+   [time_variable]: string,
+   [station_id_variable]: string,
+   [global_attributes]: dynamic,
+   [variables]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.erddap.DatasetMetadata'] docstring @"{""description"": ""Reference data describing one configured ERDDAP tabledap dataset, emitted at startup and on metadata refresh so consumers can interpret station and observation events without making out-of-band ERDDAP info requests.""}";
+
+.alter table ['org.erddap.DatasetMetadata'] column-docstrings (
+   [erddap_id]: @"{""description"": ""Stable, operator-assigned identifier for the configured ERDDAP server instance. ERDDAP dataset identifiers are only unique within one server, so consumers use this value with dataset_id and station_id as the global identity. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.""}",
+   [dataset_id]: @"{""description"": ""ERDDAP datasetID from the tabledap catalog and request path. It is stable within the ERDDAP server and is used with erddap_id and station_id in CloudEvents subjects, Kafka keys, MQTT topics, and AMQP subjects. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.""}",
+   [base_url]: @"{""description"": ""Base URL of the ERDDAP server ending at /erddap. It is the documented root for allDatasets, info, and tabledap requests and is included so consumers can trace every event back to the source server.""}",
+   [title]: @"{""description"": ""Dataset title from allDatasets and the NC_GLOBAL title attribute, for example '(41024 / SUN2) Sunset Nearshore Met and Water, NC'. Nullable only when a server omits titles.""}",
+   [cdm_data_type]: @"{""description"": ""ERDDAP cdm_data_type catalog value. This feeder keeps TimeSeries and TimeSeriesProfile tabledap datasets and documents griddap as out of scope.""}",
+   [min_time]: @"{""description"": ""Earliest time advertised by allDatasets for this tabledap dataset, in UTC, when the server exposes it. Used by consumers to understand historical coverage. Encoded as an RFC 3339 UTC string in the payload for generated Avro/Python round-trip stability; the CloudEvents envelope time remains a native event timestamp.""}",
+   [max_time]: @"{""description"": ""Latest time advertised by allDatasets for this tabledap dataset, in UTC, when the server exposes it. Used by operators to detect stale datasets. Encoded as an RFC 3339 UTC string in the payload for generated Avro/Python round-trip stability; the CloudEvents envelope time remains a native event timestamp.""}",
+   [info_url]: @"{""description"": ""ERDDAP info endpoint URL used to build this metadata event.""}",
+   [time_variable]: @"{""description"": ""Name of the ERDDAP time column selected for polling. The generalized feeder currently uses the standard tabledap time variable.""}",
+   [station_id_variable]: @"{""description"": ""Variable whose metadata declares cf_role=timeseries_id. Null for single-station fallback datasets where station_id is consistently set to dataset_id.""}",
+   [global_attributes]: @"{""description"": ""NC_GLOBAL attributes from the ERDDAP info table, stringified as name-to-value pairs. They include provider, licence, conventions, summary, contributor, and update metadata when published."", ""schema"": {""type"": ""map"", ""values"": {""type"": ""string""}, ""description"": ""NC_GLOBAL attributes from the ERDDAP info table, stringified as name-to-value pairs. They include provider, licence, conventions, summary, contributor, and update metadata when published.""}}",
+   [variables]: @"{""description"": ""Variables advertised by the ERDDAP info table, including units and CF/IOOS metadata used to normalize observations."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.erddap.DatasetMetadata'] ingestion json mapping "org.erddap.DatasetMetadata_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "erddap_id", "path": "$.erddap_id"},
+  {"column": "dataset_id", "path": "$.dataset_id"},
+  {"column": "base_url", "path": "$.base_url"},
+  {"column": "title", "path": "$.title"},
+  {"column": "cdm_data_type", "path": "$.cdm_data_type"},
+  {"column": "min_time", "path": "$.min_time"},
+  {"column": "max_time", "path": "$.max_time"},
+  {"column": "info_url", "path": "$.info_url"},
+  {"column": "time_variable", "path": "$.time_variable"},
+  {"column": "station_id_variable", "path": "$.station_id_variable"},
+  {"column": "global_attributes", "path": "$.global_attributes"},
+  {"column": "variables", "path": "$.variables"}
+]
+```
+
+.create-or-alter table ['org.erddap.DatasetMetadata'] ingestion json mapping "org.erddap.DatasetMetadata_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "erddap_id", "path": "$.data.erddap_id"},
+  {"column": "dataset_id", "path": "$.data.dataset_id"},
+  {"column": "base_url", "path": "$.data.base_url"},
+  {"column": "title", "path": "$.data.title"},
+  {"column": "cdm_data_type", "path": "$.data.cdm_data_type"},
+  {"column": "min_time", "path": "$.data.min_time"},
+  {"column": "max_time", "path": "$.data.max_time"},
+  {"column": "info_url", "path": "$.data.info_url"},
+  {"column": "time_variable", "path": "$.data.time_variable"},
+  {"column": "station_id_variable", "path": "$.data.station_id_variable"},
+  {"column": "global_attributes", "path": "$.data.global_attributes"},
+  {"column": "variables", "path": "$.data.variables"}
+]
+```
+
+.drop materialized-view ['org.erddap.DatasetMetadataLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.erddap.DatasetMetadataLatest'] on table ['org.erddap.DatasetMetadata'] {
+    ['org.erddap.DatasetMetadata'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['org.erddap.DatasetMetadata'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.erddap.DatasetMetadata') | project['erddap_id'] = tostring(data.['erddap_id']),['dataset_id'] = tostring(data.['dataset_id']),['base_url'] = tostring(data.['base_url']),['title'] = tostring(data.['title']),['cdm_data_type'] = tostring(data.['cdm_data_type']),['min_time'] = tostring(data.['min_time']),['max_time'] = tostring(data.['max_time']),['info_url'] = tostring(data.['info_url']),['time_variable'] = tostring(data.['time_variable']),['station_id_variable'] = tostring(data.['station_id_variable']),['global_attributes'] = todynamic(data.['global_attributes']),['variables'] = todynamic(data.['variables']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['org.erddap.StationMetadata'] (
+   [erddap_id]: string,
+   [dataset_id]: string,
+   [base_url]: string,
+   [station_id]: string,
+   [station_name]: string,
+   [station_id_variable]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [depth]: real,
+   [attributes]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.erddap.StationMetadata'] docstring @"{""description"": ""Reference data describing one station or platform identity within a configured ERDDAP tabledap TimeSeries dataset. It is derived from the dataset's cf_role=timeseries_id variable and representative coordinate columns, and is emitted before observations.""}";
+
+.alter table ['org.erddap.StationMetadata'] column-docstrings (
+   [erddap_id]: @"{""description"": ""Stable, operator-assigned identifier for the configured ERDDAP server instance. ERDDAP dataset identifiers are only unique within one server, so consumers use this value with dataset_id and station_id as the global identity. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.""}",
+   [dataset_id]: @"{""description"": ""ERDDAP datasetID from the tabledap catalog and request path. It is stable within the ERDDAP server and is used with erddap_id and station_id in CloudEvents subjects, Kafka keys, MQTT topics, and AMQP subjects. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.""}",
+   [base_url]: @"{""description"": ""Base URL of the ERDDAP server ending at /erddap. It is the documented root for allDatasets, info, and tabledap requests and is included so consumers can trace every event back to the source server.""}",
+   [station_id]: @"{""description"": ""Stable station or platform identifier. For TimeSeries datasets this is read from the variable whose ERDDAP metadata declares cf_role=timeseries_id; for single-station datasets where rows carry null station values, the bridge falls back to the datasetID consistently. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.""}",
+   [station_name]: @"{""description"": ""Human-readable station or platform label from the timeseries_id variable long_name, station attributes, or dataset title. It is descriptive and never used as a key.""}",
+   [station_id_variable]: @"{""description"": ""ERDDAP variable name that supplied station_id through cf_role=timeseries_id, or null when the bridge uses the datasetID fallback for a single-station dataset.""}",
+   [latitude]: @"{""description"": ""WGS 84 latitude in decimal degrees north from ERDDAP latitude or station metadata. Nullable because some generic tabledap datasets do not expose a latitude column in every query result.""}",
+   [longitude]: @"{""description"": ""WGS 84 longitude in decimal degrees east from ERDDAP longitude or station metadata. Nullable because some generic tabledap datasets do not expose a longitude column in every query result.""}",
+   [depth]: @"{""description"": ""Vertical coordinate in metres when ERDDAP exposes depth or z metadata. Nullable because surface stations and many time-series datasets omit a vertical coordinate.""}",
+   [attributes]: @"{""description"": ""Station-related ERDDAP attributes, including cf_role, ioos_code, short_name, type, long_name, and any other metadata attached to the station identifier variable."", ""schema"": {""type"": ""map"", ""values"": {""type"": ""string""}, ""description"": ""Station-related ERDDAP attributes, including cf_role, ioos_code, short_name, type, long_name, and any other metadata attached to the station identifier variable.""}}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.erddap.StationMetadata'] ingestion json mapping "org.erddap.StationMetadata_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "erddap_id", "path": "$.erddap_id"},
+  {"column": "dataset_id", "path": "$.dataset_id"},
+  {"column": "base_url", "path": "$.base_url"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "station_name", "path": "$.station_name"},
+  {"column": "station_id_variable", "path": "$.station_id_variable"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "depth", "path": "$.depth"},
+  {"column": "attributes", "path": "$.attributes"}
+]
+```
+
+.create-or-alter table ['org.erddap.StationMetadata'] ingestion json mapping "org.erddap.StationMetadata_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "erddap_id", "path": "$.data.erddap_id"},
+  {"column": "dataset_id", "path": "$.data.dataset_id"},
+  {"column": "base_url", "path": "$.data.base_url"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "station_name", "path": "$.data.station_name"},
+  {"column": "station_id_variable", "path": "$.data.station_id_variable"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "depth", "path": "$.data.depth"},
+  {"column": "attributes", "path": "$.data.attributes"}
+]
+```
+
+.drop materialized-view ['org.erddap.StationMetadataLatest'] ifexists;
+
+.create materialized-view with (backfill=true) ['org.erddap.StationMetadataLatest'] on table ['org.erddap.StationMetadata'] {
+    ['org.erddap.StationMetadata'] | summarize arg_max(___time, *) by ___type, ___source, ___subject
+}
+
+.alter table ['org.erddap.StationMetadata'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.erddap.StationMetadata') | project['erddap_id'] = tostring(data.['erddap_id']),['dataset_id'] = tostring(data.['dataset_id']),['base_url'] = tostring(data.['base_url']),['station_id'] = tostring(data.['station_id']),['station_name'] = tostring(data.['station_name']),['station_id_variable'] = tostring(data.['station_id_variable']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['depth'] = toreal(data.['depth']),['attributes'] = todynamic(data.['attributes']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```
+
+.create-merge table ['org.erddap.Observation'] (
+   [erddap_id]: string,
+   [dataset_id]: string,
+   [base_url]: string,
+   [station_id]: string,
+   [time]: string,
+   [latitude]: real,
+   [longitude]: real,
+   [depth]: real,
+   [measurements]: dynamic,
+   [___type]: string,
+   [___source]: string,
+   [___id]: string,
+   [___time]: datetime,
+   [___subject]: string
+);
+
+.alter table ['org.erddap.Observation'] docstring @"{""description"": ""A normalized ERDDAP tabledap observation row for one station or platform at one timestamp. It carries common coordinates and a dataset-specific measurement map whose per-variable units and metadata come from the ERDDAP info endpoint.""}";
+
+.alter table ['org.erddap.Observation'] column-docstrings (
+   [erddap_id]: @"{""description"": ""Stable, operator-assigned identifier for the configured ERDDAP server instance. ERDDAP dataset identifiers are only unique within one server, so consumers use this value with dataset_id and station_id as the global identity. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.""}",
+   [dataset_id]: @"{""description"": ""ERDDAP datasetID from the tabledap catalog and request path. It is stable within the ERDDAP server and is used with erddap_id and station_id in CloudEvents subjects, Kafka keys, MQTT topics, and AMQP subjects. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.""}",
+   [base_url]: @"{""description"": ""Base URL of the ERDDAP server ending at /erddap. It is the documented root for allDatasets, info, and tabledap requests and is included so consumers can trace every event back to the source server.""}",
+   [station_id]: @"{""description"": ""Stable station or platform identifier. For TimeSeries datasets this is read from the variable whose ERDDAP metadata declares cf_role=timeseries_id; for single-station datasets where rows carry null station values, the bridge falls back to the datasetID consistently. The feeder normalizes or requires this identity segment to contain only letters, digits, underscore, hyphen, and dot so Kafka keys, CloudEvents subjects, MQTT topics, and AMQP subjects remain unambiguous.""}",
+   [time]: @"{""description"": ""Observation timestamp in UTC from the ERDDAP time column. tabledap returns ISO-8601 strings for JSON responses, and the bridge emits an RFC 3339 datetime so consumers can order and window observations. Encoded as an RFC 3339 UTC string in the payload for generated Avro/Python round-trip stability; the CloudEvents envelope time remains a native event timestamp.""}",
+   [latitude]: @"{""description"": ""WGS 84 latitude in decimal degrees north from ERDDAP latitude or station metadata. Nullable because some generic tabledap datasets do not expose a latitude column in every query result.""}",
+   [longitude]: @"{""description"": ""WGS 84 longitude in decimal degrees east from ERDDAP longitude or station metadata. Nullable because some generic tabledap datasets do not expose a longitude column in every query result.""}",
+   [depth]: @"{""description"": ""Vertical coordinate in metres when ERDDAP exposes depth or z metadata. Nullable because surface stations and many time-series datasets omit a vertical coordinate.""}",
+   [measurements]: @"{""description"": ""Map of selected ERDDAP variable name to normalized value and variable metadata. This preserves heterogeneous dataset-specific measurements without inventing fixed units in the contract."", ""schema"": ""{ \""doc\"": \""Schema too large to inline. Please refer to the JSON Structure schema for more details.\"" }""}",
+   [___type] : 'Event type',
+   [___source]: 'Context origin/source of the event',
+   [___id]: 'Event identifier',
+   [___time]: 'Event generation time',
+   [___subject]: 'Context subject of the event'
+);
+
+.create-or-alter table ['org.erddap.Observation'] ingestion json mapping "org.erddap.Observation_json_flat"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "erddap_id", "path": "$.erddap_id"},
+  {"column": "dataset_id", "path": "$.dataset_id"},
+  {"column": "base_url", "path": "$.base_url"},
+  {"column": "station_id", "path": "$.station_id"},
+  {"column": "time", "path": "$.time"},
+  {"column": "latitude", "path": "$.latitude"},
+  {"column": "longitude", "path": "$.longitude"},
+  {"column": "depth", "path": "$.depth"},
+  {"column": "measurements", "path": "$.measurements"}
+]
+```
+
+.create-or-alter table ['org.erddap.Observation'] ingestion json mapping "org.erddap.Observation_json_ce_structured"
+```
+[
+  {"column": "___type", "path": "$.type"},
+  {"column": "___source", "path": "$.source"},
+  {"column": "___id", "path": "$.id"},
+  {"column": "___time", "path": "$.time"},
+  {"column": "___subject", "path": "$.subject"},
+  {"column": "erddap_id", "path": "$.data.erddap_id"},
+  {"column": "dataset_id", "path": "$.data.dataset_id"},
+  {"column": "base_url", "path": "$.data.base_url"},
+  {"column": "station_id", "path": "$.data.station_id"},
+  {"column": "time", "path": "$.data.time"},
+  {"column": "latitude", "path": "$.data.latitude"},
+  {"column": "longitude", "path": "$.data.longitude"},
+  {"column": "depth", "path": "$.data.depth"},
+  {"column": "measurements", "path": "$.data.measurements"}
+]
+```
+
+
+.alter table ['org.erddap.Observation'] policy update
+```
+[{
+  "IsEnabled": true,
+  "Source": "_cloudevents_dispatch",
+  "Query": "_cloudevents_dispatch | where (specversion == '1.0' and type == 'org.erddap.Observation') | project['erddap_id'] = tostring(data.['erddap_id']),['dataset_id'] = tostring(data.['dataset_id']),['base_url'] = tostring(data.['base_url']),['station_id'] = tostring(data.['station_id']),['time'] = tostring(data.['time']),['latitude'] = toreal(data.['latitude']),['longitude'] = toreal(data.['longitude']),['depth'] = toreal(data.['depth']),['measurements'] = todynamic(data.['measurements']),___type = type,___source = source,___id = ['id'],___time = ['time'],___subject = subject",
+  "IsTransactional": false,
+  "PropagateIngestionProperties": true
+}]
+```

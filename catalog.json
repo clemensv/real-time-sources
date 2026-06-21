@@ -347,6 +347,17 @@
     "amqp": true
   },
   {
+    "id": "erddap",
+    "name": "ERDDAP",
+    "cat": "Hydrology",
+    "key": false,
+    "desc": "Global — configurable ERDDAP tabledap station observations",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "eurdep-radiation",
     "name": "EURDEP Radiation",
     "cat": "Radiation",
