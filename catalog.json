@@ -347,6 +347,17 @@
     "amqp": true
   },
   {
+    "id": "erddap",
+    "name": "ERDDAP",
+    "cat": "Hydrology",
+    "key": false,
+    "desc": "Global — configurable ERDDAP tabledap station observations",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
     "id": "eurdep-radiation",
     "name": "EURDEP Radiation",
     "cat": "Radiation",
@@ -680,6 +691,17 @@
     "cat": "Air Quality",
     "key": false,
     "desc": "Netherlands — station measurements, components, LKI index",
+    "kql": true,
+    "notebook": true,
+    "mqtt": true,
+    "amqp": true
+  },
+  {
+    "id": "openaq",
+    "name": "OpenAQ",
+    "cat": "Air Quality",
+    "key": true,
+    "desc": "Global \u2014 locations, sensors, latest pollutant measurements",
     "kql": true,
     "notebook": true,
     "mqtt": true,

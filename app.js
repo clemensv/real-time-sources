@@ -40,6 +40,7 @@ const SOURCES = [
   { id: "bom-australia", name: "BOM Australia", cat: "Weather", key: false, desc: "Australia — ~8 capital city airports, half-hourly obs", notebook: true, mqtt: true, amqp: true },
   { id: "cap-alerts", name: "CAP Alerts", cat: "Weather", key: false, desc: "Global — configurable CAP 1.2 public alerts", notebook: true, mqtt: true, amqp: true },
   { id: "dwd", name: "DWD", cat: "Weather", key: false, desc: "Germany — ~1,450 stations, observations and CAP alerts", mqtt: true, amqp: true },
+  { id: "erddap", name: "ERDDAP", cat: "Hydrology", key: false, desc: "Global — configurable ERDDAP tabledap station observations", notebook: true, mqtt: true, amqp: true },
   { id: "dwd-pollenflug", name: "DWD Pollenflug", cat: "Weather", key: false, desc: "Germany — daily pollen forecasts, 27 regions", notebook: true, mqtt: true, amqp: true },
   { id: "dmi", name: "DMI Denmark", cat: "Weather", key: true, desc: "Denmark — Danish Meteorological Institute observations", notebook: true, mqtt: true, amqp: true },
   { id: "environment-canada", name: "Environment Canada", cat: "Weather", key: false, desc: "Canada — ~963 SWOB stations, hourly obs", notebook: true, mqtt: true, amqp: true },
@@ -145,6 +146,7 @@ const SOURCES = [
 
   // ── Scientific Research ──
   { id: "gracedb", name: "GraceDB", cat: "Science", key: false, desc: "Global — LIGO/Virgo/KAGRA gravitational wave candidates", notebook: true, mqtt: true, amqp: true, mqttBasic: false, mqttEg: false, amqpSb: false },
+  { id: "openaq", name: "OpenAQ", cat: "Air Quality", key: true, desc: "Global — locations, sensors, latest pollutant measurements", kql: true, notebook: true, mqtt: true, amqp: true },
 ];
 
 /* ── Derived data ──────────────────────────────────────────────────────── */
