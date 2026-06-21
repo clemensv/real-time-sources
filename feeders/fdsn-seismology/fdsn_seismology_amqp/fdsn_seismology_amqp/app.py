@@ -84,6 +84,18 @@ def _parse_broker_url(url: str) -> tuple[str, int, bool, str | None, str | None,
 
 
 
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def _build_producer(args: argparse.Namespace) -> OrgFdsnEventAmqpProducer:
     host = args.host
     port = args.port
@@ -159,7 +171,7 @@ def feed(args: argparse.Namespace) -> None:
     if not active_nodes:
         raise RuntimeError("Node selection is empty after include/exclude filters.")
 
-    producer = _build_producer(args)
+    producer = _retry_producer_init(lambda: _build_producer(args))
     state = load_state(args.state_file)
     session = requests.Session()
 
@@ -228,8 +240,8 @@ def main() -> None:
     parser.add_argument("--entra-client-id", default=_null_if_empty(os.getenv("AMQP_ENTRA_CLIENT_ID")))
     parser.add_argument("--poll-interval", type=int, default=int(os.getenv("POLL_INTERVAL", "60")))
     parser.add_argument("--min-magnitude", type=float, default=float(os.getenv("MIN_MAGNITUDE", "0")))
-    parser.add_argument("--nodes", default=os.getenv("NODES", ""))
-    parser.add_argument("--exclude-nodes", default=os.getenv("EXCLUDE_NODES", ""))
+    parser.add_argument("--nodes", default=os.getenv("FDSN_NODES") or os.getenv("NODES", ""))
+    parser.add_argument("--exclude-nodes", default=os.getenv("FDSN_EXCLUDE_NODES") or os.getenv("EXCLUDE_NODES", ""))
     parser.add_argument("--state-file", default=os.getenv("STATE_FILE", os.path.expanduser("~/.fdsn_seismology_state_amqp.json")))
     parser.add_argument("--limit", type=int, default=int(os.getenv("FDSN_LIMIT", "500")))
     parser.add_argument("--content-mode", choices=("binary", "structured"), default=os.getenv("AMQP_CONTENT_MODE", "binary"))

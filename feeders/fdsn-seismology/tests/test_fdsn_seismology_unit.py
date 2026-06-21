@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from fdsn_seismology_core.fdsn_client import EarthquakeRecord, deduplicate_events, load_mock_events, parse_fdsn_text
-from fdsn_seismology_core.nodes import NODE_CATALOG, get_active_nodes
+from fdsn_seismology_core.nodes import NODE_CATALOG, get_active_nodes, parse_node_filter
 
 
 SAMPLE_TEXT = """#EventID|Time|Latitude|Longitude|Depth/km|Author|Catalog|Contributor|ContributorID|MagType|Magnitude|MagAuthor|EventLocationName|EventType
@@ -63,13 +63,20 @@ class TestMockEvents:
 
 class TestNodeCatalog:
     def test_catalog_contains_expected_nodes(self):
-        assert set(NODE_CATALOG) == {"emsc", "gfz", "ingv", "ethz", "resif", "ipgp", "niep"}
+        assert set(NODE_CATALOG) == {"emsc", "gfz", "ingv", "ethz", "resif", "ipgp", "niep", "usgs"}
         assert NODE_CATALOG["gfz"]["country"] == "DE"
+        assert NODE_CATALOG["usgs"]["base_url"] == "https://earthquake.usgs.gov/fdsnws/event/1/"
         assert NODE_CATALOG["emsc"]["coverage"] == "Global aggregator"
 
     def test_include_exclude_filters(self):
         active = get_active_nodes(["emsc", "gfz", "niep"], ["gfz"])
         assert list(active) == ["emsc", "niep"]
+
+    def test_usgs_node_filter(self):
+        active = get_active_nodes(parse_node_filter("usgs"), None)
+
+        assert list(active) == ["usgs"]
+        assert active["usgs"]["country"] == "US"
 
 
 class TestDeduplication:

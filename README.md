@@ -634,7 +634,7 @@ SYKE
 
 </details>
 
-<details open><summary><b>⛅ Weather and Meteorology</b> &nbsp;<sub>20 sources</sub></summary>
+<details open><summary><b>⛅ Weather and Meteorology</b> &nbsp;<sub>21 sources</sub></summary>
 
 <table width="100%">
 <tr><td>
@@ -708,6 +708,31 @@ community lightning strokes, seconds latency
 [![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fbom-australia%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fbom-australia%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fbom-australia%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-BYO%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fbom-australia%2Fazure-template-amqp.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fbom-australia%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fbom-australia%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#bom-australia/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#bom-australia/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-bom-australia)
 
 <sub>📘 <a href="feeders/bom-australia/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/bom-australia/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/bom-australia/CONTAINER.md">CONTAINER</a> &nbsp;·&nbsp; ↗ <a href="https://www.bom.gov.au/">bom.gov.au</a></sub>
+
+</details>
+
+</td></tr>
+<tr><td>
+
+<details><summary><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;<b>CAP Alerts</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-5-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;configurable CAP 1.2 public alerts</sub></summary>
+
+<table align="right">
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Global" title="Global" src="https://flagcdn.com/20x15/un.png" width="20" height="15"></picture> &nbsp;Global</td></tr>
+<tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
+<tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{cap_source_id}/{identifier}</code></td></tr>
+<tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">1 type(s)</td></tr>
+<tr><td valign="middle">✅</td><td valign="middle"><b>Build</b></td><td valign="middle"><a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml">passing</a></td></tr>
+<tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
+</table>
+
+configurable CAP 1.2 public alerts
+
+<sub><b>📍 keyed by</b> <code>{cap_source_id}/{identifier}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>CapAlert</code></sub>
+
+<sub><b>DEPLOY</b></sub><br>
+[![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcap-alerts%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcap-alerts%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcap-alerts%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcap-alerts%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fcap-alerts%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#cap-alerts/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#cap-alerts/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-cap-alerts)
+
+<sub>📘 <a href="feeders/cap-alerts/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/cap-alerts/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/cap-alerts/CONTAINER.md">CONTAINER</a></sub>
 
 </details>
 
@@ -2026,7 +2051,7 @@ virtual aviation network, pilots & controllers
 
 </details>
 
-<details open><summary><b>🚦 Road and Public Transport</b> &nbsp;<sub>14 sources</sub></summary>
+<details open><summary><b>🚦 Road and Public Transport</b> &nbsp;<sub>15 sources</sub></summary>
 
 <table width="100%">
 <tr><td>
@@ -2050,6 +2075,31 @@ roadworks, warnings, closures, webcams
 [![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fautobahn%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fautobahn%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fautobahn%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fautobahn%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fautobahn%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#autobahn/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#autobahn/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-autobahn)
 
 <sub>📘 <a href="feeders/autobahn/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/autobahn/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/autobahn/CONTAINER.md">CONTAINER</a> &nbsp;·&nbsp; ↗ <a href="https://autobahn.de/">autobahn.de</a></sub>
+
+</details>
+
+</td></tr>
+<tr><td>
+
+<details><summary><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;<b>DATEX II</b> &nbsp; <picture><img align="middle" alt="K" src="https://img.shields.io/badge/-K-231f20?style=flat-square"></picture><picture><img align="middle" alt="M" src="https://img.shields.io/badge/-M-660066?style=flat-square"></picture><picture><img align="middle" alt="A" src="https://img.shields.io/badge/-A-1a4a78?style=flat-square"></picture> &nbsp; <picture><img align="middle" alt="Az" src="https://img.shields.io/badge/Az-6-0078d4?style=flat-square"></picture><picture><img align="middle" alt="Fab" src="https://img.shields.io/badge/Fab-2-117865?style=flat-square"></picture><picture><img align="middle" alt="D" src="https://img.shields.io/badge/D-3-2496ed?style=flat-square"></picture><sub>&nbsp;&nbsp;generalized DATEX II road traffic XML profiles</sub></summary>
+
+<table align="right">
+<tr><td valign="middle">🌍</td><td valign="middle"><b>Region</b></td><td valign="middle"><picture><img align="middle" alt="Europe" title="Europe" src="https://flagcdn.com/20x15/eu.png" width="20" height="15"></picture> &nbsp;Europe</td></tr>
+<tr><td valign="middle">🔌</td><td valign="middle"><b>Transports</b></td><td valign="middle">Kafka · MQTT · AMQP</td></tr>
+<tr><td valign="middle">📍</td><td valign="middle"><b>Kafka key</b></td><td valign="middle"><code>{supplier_id}/{measurement_site_id}</code></td></tr>
+<tr><td valign="middle">📦</td><td valign="middle"><b>Events</b></td><td valign="middle">2 type(s)</td></tr>
+<tr><td valign="middle">✅</td><td valign="middle"><b>Build</b></td><td valign="middle"><a href="https://github.com/clemensv/real-time-sources/actions/workflows/build_containers.yml">passing</a></td></tr>
+<tr><td valign="middle">🗄️</td><td valign="middle"><b>KQL schema</b></td><td valign="middle">yes</td></tr>
+</table>
+
+generalized DATEX II road traffic XML profiles
+
+<sub><b>📍 keyed by</b> <code>{supplier_id}/{measurement_site_id}</code> &nbsp; · &nbsp; <b>📦 events</b> <code>MeasurementSite</code>, <code>TrafficMeasurement</code></sub>
+
+<sub><b>DEPLOY</b></sub><br>
+[![](https://img.shields.io/badge/Azure-Container%20%2B%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fdatex2%2Fazure-template-with-eventhub.json) [![](https://img.shields.io/badge/Azure-BYO%20EH-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fdatex2%2Fazure-template.json) [![](https://img.shields.io/badge/Azure-Container%20%2B%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fdatex2%2Fazure-template-with-servicebus.json) [![](https://img.shields.io/badge/Azure-BYO%20Service%20Bus-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fdatex2%2Fazure-template-amqp.json) [![](https://img.shields.io/badge/Azure-Event%20Grid%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fdatex2%2Fazure-template-with-eventgrid-mqtt.json) [![](https://img.shields.io/badge/Azure-BYO%20MQTT-0078d4?style=flat-square)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fclemensv%2Freal-time-sources%2Fmain%2Ffeeders%2Fdatex2%2Fazure-template-mqtt.json) [![](https://img.shields.io/badge/Fabric-Container%20%2B%20Event%20Stream-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#datex2/fabric-aci) [![](https://img.shields.io/badge/Fabric-Notebook-117865?style=flat-square)](https://clemensv.github.io/real-time-sources/#datex2/fabric-notebook) [![](https://img.shields.io/badge/Docker-pull-2496ed?style=flat-square&logo=docker&logoColor=white)](https://github.com/clemensv/real-time-sources/pkgs/container/real-time-sources-datex2)
+
+<sub>📘 <a href="feeders/datex2/README.md">README</a> &nbsp;·&nbsp; 📑 <a href="feeders/datex2/EVENTS.md">EVENTS</a> &nbsp;·&nbsp; 🐳 <a href="feeders/datex2/CONTAINER.md">CONTAINER</a></sub>
 
 </details>
 

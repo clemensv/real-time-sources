@@ -52,6 +52,18 @@ def _build_vehicle_position(position) -> VehiclePosition:
     )
 
 
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def _build_producer(
     *,
     host: str,
@@ -237,7 +249,7 @@ def main(argv: Optional[list] = None) -> None:
         username = args.username
         password = args.password
 
-    producer = _build_producer(
+    producer = _retry_producer_init(lambda: _build_producer(
         host=host,
         port=port,
         address=address,
@@ -249,7 +261,7 @@ def main(argv: Optional[list] = None) -> None:
         entra_client_id=args.entra_client_id,
         sas_key_name=args.sas_key_name,
         sas_key=args.sas_key,
-    )
+    ))
     api = BodsSiriClient(api_key=config.bods_api_key, operators=config.operators)
     feed(api, producer, config.polling_interval, state_file=config.state_file, once=config.once)
 

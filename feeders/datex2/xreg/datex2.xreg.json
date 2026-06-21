@@ -1,0 +1,1280 @@
+{
+  "endpoints": {
+    "org.datex2.measured.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "datex2",
+          "key": "{supplier_id}/{measurement_site_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.datex2.measured"
+      ],
+      "description": "Kafka endpoint for DATEX II measured-data and measurement-site events keyed by supplier and measurement site."
+    },
+    "org.datex2.situation.Kafka": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "KAFKA",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "structured",
+        "format": "application/cloudevents+json"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "topic": "datex2",
+          "key": "{supplier_id}/{situation_record_id}"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.datex2.situation"
+      ],
+      "description": "Kafka endpoint for DATEX II situation events keyed by supplier and situation record."
+    },
+    "org.datex2.Mqtt": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "MQTT/5.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "endpoints": [
+          {
+            "uri": "mqtt://localhost:1883"
+          }
+        ]
+      },
+      "messagegroups": [
+        "#/messagegroups/org.datex2.measured.mqtt",
+        "#/messagegroups/org.datex2.situation.mqtt"
+      ],
+      "description": "MQTT 5 binary CloudEvents companion endpoint for DATEX II UNS publication."
+    },
+    "org.datex2.Amqp": {
+      "usage": [
+        "producer"
+      ],
+      "protocol": "AMQP/1.0",
+      "envelope": "CloudEvents/1.0",
+      "envelopeoptions": {
+        "mode": "binary"
+      },
+      "protocoloptions": {
+        "deployed": false,
+        "options": {
+          "content_mode": "binary",
+          "address": "datex2"
+        }
+      },
+      "messagegroups": [
+        "#/messagegroups/org.datex2.measured_site.amqp",
+        "#/messagegroups/org.datex2.traffic_measurement.amqp",
+        "#/messagegroups/org.datex2.situation.amqp"
+      ],
+      "description": "AMQP 1.0 binary CloudEvents companion endpoint for DATEX II."
+    }
+  },
+  "messagegroups": {
+    "org.datex2.measured": {
+      "messages": {
+        "org.datex2.measured.MeasurementSite": {
+          "name": "MeasurementSite",
+          "envelope": "CloudEvents/1.0",
+          "description": "Reference measurement-site record from a DATEX II MeasurementSiteTablePublication.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.datex2.measured.MeasurementSite"
+            },
+            "source": {
+              "value": "{feed_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{supplier_id}/{measurement_site_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.datex2.jstruct/schemas/org.datex2.measured.MeasurementSite"
+        },
+        "org.datex2.measured.TrafficMeasurement": {
+          "name": "TrafficMeasurement",
+          "envelope": "CloudEvents/1.0",
+          "description": "Traffic speed, flow, occupancy, or travel-time observation from a DATEX II MeasuredDataPublication.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.datex2.measured.TrafficMeasurement"
+            },
+            "source": {
+              "value": "{feed_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{supplier_id}/{measurement_site_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.datex2.jstruct/schemas/org.datex2.measured.TrafficMeasurement"
+        }
+      },
+      "description": "DATEX II MeasuredDataPublication telemetry and MeasurementSiteTablePublication reference data."
+    },
+    "org.datex2.situation": {
+      "messages": {
+        "org.datex2.situation.SituationRecord": {
+          "name": "SituationRecord",
+          "envelope": "CloudEvents/1.0",
+          "description": "Incident, roadwork, obstruction, abnormal traffic, weather, or management record from a DATEX II SituationPublication.",
+          "envelopemetadata": {
+            "type": {
+              "value": "org.datex2.situation.SituationRecord"
+            },
+            "source": {
+              "value": "{feed_url}",
+              "type": "uritemplate"
+            },
+            "subject": {
+              "value": "{supplier_id}/{situation_record_id}",
+              "type": "uritemplate"
+            }
+          },
+          "dataschemaformat": "JsonStructure/draft-02",
+          "dataschemauri": "#/schemagroups/org.datex2.jstruct/schemas/org.datex2.situation.SituationRecord"
+        }
+      },
+      "description": "DATEX II SituationPublication event records."
+    },
+    "org.datex2.measured.mqtt": {
+      "description": "MQTT UNS bindings for DATEX II measured-data events.",
+      "messages": {
+        "org.datex2.measured.MeasurementSite.mqtt": {
+          "name": "MeasurementSite",
+          "basemessageuri": "/messagegroups/org.datex2.measured/messages/org.datex2.measured.MeasurementSite",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/{country_code}/{operator_id}/datex2/measured/{supplier_id}/{measurement_site_id}/site",
+            "qos": 1,
+            "retain": true
+          }
+        },
+        "org.datex2.measured.TrafficMeasurement.mqtt": {
+          "name": "TrafficMeasurement",
+          "basemessageuri": "/messagegroups/org.datex2.measured/messages/org.datex2.measured.TrafficMeasurement",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/{country_code}/{operator_id}/datex2/measured/{supplier_id}/{measurement_site_id}/measurement",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "org.datex2.situation.mqtt": {
+      "description": "MQTT UNS bindings for DATEX II situation records.",
+      "messages": {
+        "org.datex2.situation.SituationRecord.mqtt": {
+          "name": "SituationRecord",
+          "basemessageuri": "/messagegroups/org.datex2.situation/messages/org.datex2.situation.SituationRecord",
+          "protocol": "MQTT/5.0",
+          "protocoloptions": {
+            "topic_name": "traffic/{country_code}/{operator_id}/datex2/situations/{supplier_id}/{situation_record_id}/record",
+            "qos": 1,
+            "retain": true
+          }
+        }
+      }
+    },
+    "org.datex2.situation.amqp": {
+      "description": "AMQP bindings for DATEX II situation records.",
+      "messages": {
+        "org.datex2.situation.SituationRecord.amqp": {
+          "name": "SituationRecord",
+          "basemessageuri": "/messagegroups/org.datex2.situation/messages/org.datex2.situation.SituationRecord",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{supplier_id}/{situation_record_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{supplier_id}/{situation_record_id}",
+                "description": "Partition key mirrors the CloudEvents subject and Kafka key."
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.datex2.measured_site.amqp": {
+      "description": "AMQP binding for DATEX II measurement-site reference events.",
+      "messages": {
+        "org.datex2.measured.MeasurementSite.amqp": {
+          "name": "MeasurementSite",
+          "basemessageuri": "/messagegroups/org.datex2.measured/messages/org.datex2.measured.MeasurementSite",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{supplier_id}/{measurement_site_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{supplier_id}/{measurement_site_id}",
+                "description": "Partition key mirrors the CloudEvents subject and Kafka key."
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.datex2.traffic_measurement.amqp": {
+      "description": "AMQP binding for DATEX II traffic-measurement telemetry events.",
+      "messages": {
+        "org.datex2.measured.TrafficMeasurement.amqp": {
+          "name": "TrafficMeasurement",
+          "basemessageuri": "/messagegroups/org.datex2.measured/messages/org.datex2.measured.TrafficMeasurement",
+          "protocol": "AMQP/1.0",
+          "protocoloptions": {
+            "properties": {
+              "subject": {
+                "type": "uritemplate",
+                "value": "{supplier_id}/{measurement_site_id}",
+                "description": "AMQP subject mirrors the CloudEvents subject."
+              }
+            },
+            "message-annotations": {
+              "x-opt-partition-key": {
+                "type": "uritemplate",
+                "value": "{supplier_id}/{measurement_site_id}",
+                "description": "Partition key mirrors the CloudEvents subject and Kafka key."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "schemagroups": {
+    "org.datex2.jstruct": {
+      "format": "JsonStructure/draft-02",
+      "schemas": {
+        "org.datex2.measured.MeasurementSite": {
+          "name": "MeasurementSite",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.clemensv.github.io/real-time-sources/datex2/MeasurementSite",
+                "name": "MeasurementSite",
+                "$root": "#/definitions/org/datex2/measured/MeasurementSite",
+                "definitions": {
+                  "org": {
+                    "datex2": {
+                      "measured": {
+                        "MeasurementSite": {
+                          "name": "MeasurementSite",
+                          "type": "object",
+                          "description": "Reference event describing a DATEX II MeasurementSiteTablePublication measurement site. It contextualizes MeasuredDataPublication traffic observations with site identity, location, equipment, and lane metadata.",
+                          "properties": {
+                            "supplier_id": {
+                              "type": "string",
+                              "description": "Stable endpoint registry identifier assigned to the DATEX II supplier/operator configuration. It scopes upstream identifiers that are only guaranteed unique within one publisher."
+                            },
+                            "measurement_site_id": {
+                              "type": "string",
+                              "description": "Stable DATEX II measurement site identifier from measurementSiteReference/@id or measurementSiteRecord/@id. It is the stable identity for fixed traffic measurement equipment and route measurement sites.",
+                              "altnames": {
+                                "datex2": "measurementSiteReference"
+                              }
+                            },
+                            "feed_url": {
+                              "type": "uri",
+                              "description": "Canonical URL of the DATEX II endpoint configuration from which this normalized event was acquired. Used as the CloudEvents source value."
+                            },
+                            "country_code": {
+                              "type": "string",
+                              "description": "ISO 3166-1 alpha-2 country code from the endpoint registry, used for regional routing and filtering when the upstream feed covers a national road authority. Required for MQTT topic routing and retained in the payload for consumers."
+                            },
+                            "operator_id": {
+                              "type": "string",
+                              "description": "operator or road authority code from the endpoint registry, such as NDW, Bison Futé, Trafikverket, National Highways, Statens vegvesen, or CITA. Required for MQTT topic routing and retained in the payload for consumers."
+                            },
+                            "name": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Human-readable measurement site name from measurementSiteName or an equivalent DATEX II location label. It is descriptive only and never used as a key."
+                            },
+                            "measurement_site_type": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "DATEX II equipment or measurement-site type such as inductionLoop, microwave, floatingCar, Bluetooth, or routeSection. Values come from measurementEquipmentTypeUsed or the site table profile."
+                            },
+                            "period_seconds": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "Nominal aggregation period in seconds from measurementSpecificCharacteristics/period. Consumers use it to interpret flow, speed, and occupancy observations."
+                            },
+                            "latitude": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "WGS84 latitude in decimal degrees from pointByCoordinates/pointCoordinates/latitude. Null when the site table omits coordinates."
+                            },
+                            "longitude": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "WGS84 longitude in decimal degrees from pointByCoordinates/pointCoordinates/longitude. Null when the site table omits coordinates."
+                            },
+                            "road_number": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Road or route identifier from roadInformation/roadName, roadNumber, or a TPEG linkName descriptor, for example A10, N205, M25, or E411."
+                            },
+                            "carriageway": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "DATEX II carriageway classification affected or measured, such as mainCarriageway, entrySlipRoad, exitSlipRoad, or connectingCarriageway."
+                            },
+                            "lane": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "DATEX II lane classification when a measurement site is lane-specific, such as lane1, lane2, busLane, hardShoulder, or allLanesCompleteCarriageway."
+                            },
+                            "specific_measurements": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Compact JSON/text summary of measurementSpecificCharacteristics entries when the upstream site table exposes multiple per-lane or per-vehicle-class measurements. Preserved so bespoke NDW measurement-site detail can be represented without dropping profile-specific metadata."
+                            }
+                          },
+                          "required": [
+                            "supplier_id",
+                            "measurement_site_id",
+                            "feed_url",
+                            "country_code",
+                            "operator_id"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ]
+              }
+            }
+          }
+        },
+        "org.datex2.measured.TrafficMeasurement": {
+          "name": "TrafficMeasurement",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.clemensv.github.io/real-time-sources/datex2/TrafficMeasurement",
+                "name": "TrafficMeasurement",
+                "$root": "#/definitions/org/datex2/measured/TrafficMeasurement",
+                "definitions": {
+                  "org": {
+                    "datex2": {
+                      "measured": {
+                        "TrafficMeasurement": {
+                          "name": "TrafficMeasurement",
+                          "type": "object",
+                          "description": "Normalized traffic measurement from a DATEX II MeasuredDataPublication. The schema covers point and route observations emitted by NDW and Bison Futé including speed, flow, occupancy, and travel time.",
+                          "properties": {
+                            "supplier_id": {
+                              "type": "string",
+                              "description": "Stable endpoint registry identifier assigned to the DATEX II supplier/operator configuration. It scopes upstream identifiers that are only guaranteed unique within one publisher."
+                            },
+                            "measurement_site_id": {
+                              "type": "string",
+                              "description": "Stable DATEX II measurement site identifier from measurementSiteReference/@id or measurementSiteRecord/@id. It is the stable identity for fixed traffic measurement equipment and route measurement sites.",
+                              "altnames": {
+                                "datex2": "measurementSiteReference"
+                              }
+                            },
+                            "feed_url": {
+                              "type": "uri",
+                              "description": "Canonical URL of the DATEX II endpoint configuration from which this normalized event was acquired. Used as the CloudEvents source value."
+                            },
+                            "measurement_time": {
+                              "type": "datetime",
+                              "description": "ISO 8601 timestamp from measurementTimeDefault or the measuredValue time override. It marks the end or reference instant of the aggregation interval in a MeasuredDataPublication."
+                            },
+                            "measurement_time_key": {
+                              "type": "string",
+                              "description": "Key-safe timestamp token derived from measurement_time by replacing characters that are awkward in transport subjects. It preserves the DATEX II measured-time identity component for consumers that need per-sample addressing."
+                            },
+                            "country_code": {
+                              "type": "string",
+                              "description": "country code inherited from the endpoint registry. Required for MQTT topic routing and retained in the payload for consumers."
+                            },
+                            "operator_id": {
+                              "type": "string",
+                              "description": "operator code inherited from the endpoint registry. Required for MQTT topic routing and retained in the payload for consumers."
+                            },
+                            "road_number": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Road identifier associated with the measurement site, copied from the reference table when available."
+                            },
+                            "average_speed_kmh": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Average vehicle speed in kilometres per hour from TrafficSpeed/averageVehicleSpeed/speed. Null when the site reports flow or occupancy but not speed."
+                            },
+                            "vehicle_flow_rate_veh_per_hour": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "Vehicle flow rate in vehicles per hour from TrafficFlow/vehicleFlowRate. Null when no flow observation is present for this site in the current publication."
+                            },
+                            "occupancy_percent": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Traffic occupancy percentage from TrafficConcentration/occupancy or profile-specific occupancy elements. Null when the upstream publication omits occupancy."
+                            },
+                            "travel_time_seconds": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Measured travel time over a route section in seconds from TravelTimeData/travelTime or equivalent route measurement. Null for point sensors."
+                            },
+                            "free_flow_travel_time_seconds": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "Reference or free-flow travel time in seconds for route measurements when supplied by the DATEX II profile. Consumers compare measured travel_time_seconds with this value to derive delay."
+                            },
+                            "input_value_count": {
+                              "type": [
+                                "int32",
+                                "null"
+                              ],
+                              "description": "Number of input samples used to compute the aggregate, from numberOfInputValuesUsed. Null when the profile does not disclose sample count."
+                            },
+                            "quality_status": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "DATEX II or supplier-specific quality flag for the measurement value, such as reliable, unreliable, invalid, suspect, or unavailable."
+                            },
+                            "vehicle_type": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Vehicle class to which the measurement applies when the upstream profile splits values by vehicle type; null means all vehicles or unspecified."
+                            },
+                            "lane": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Lane or carriageway qualifier to which the measured value applies when the feed reports lane-specific measurements."
+                            },
+                            "raw_measurements": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Compact JSON/text preservation of additional measuredValue entries not normalized into the common speed, flow, occupancy, or travel-time fields. Used to remain lossless for DATEX II profile variations while keeping the primary analytics columns stable."
+                            }
+                          },
+                          "required": [
+                            "supplier_id",
+                            "measurement_site_id",
+                            "feed_url",
+                            "measurement_time",
+                            "measurement_time_key",
+                            "country_code",
+                            "operator_id"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ]
+              }
+            }
+          }
+        },
+        "org.datex2.situation.SituationRecord": {
+          "name": "SituationRecord",
+          "format": "JsonStructure/draft-02",
+          "defaultversionid": "1",
+          "versions": {
+            "1": {
+              "format": "JsonStructure/draft-02",
+              "schema": {
+                "$schema": "https://json-structure.org/meta/extended/v0/#",
+                "$id": "https://schemas.clemensv.github.io/real-time-sources/datex2/SituationRecord",
+                "name": "SituationRecord",
+                "$root": "#/definitions/org/datex2/situation/SituationRecord",
+                "definitions": {
+                  "org": {
+                    "datex2": {
+                      "situation": {
+                        "SituationRecord": {
+                          "name": "SituationRecord",
+                          "type": "object",
+                          "description": "Normalized situation record from a DATEX II SituationPublication. It represents incidents, accidents, roadworks, abnormal traffic, obstructions, weather impacts, and network-management measures with stable situation and record identifiers.",
+                          "properties": {
+                            "supplier_id": {
+                              "type": "string",
+                              "description": "Stable endpoint registry identifier assigned to the DATEX II supplier/operator configuration. It scopes upstream identifiers that are only guaranteed unique within one publisher."
+                            },
+                            "situation_id": {
+                              "type": "string",
+                              "description": "Stable DATEX II situation identifier from situation/@id. Multiple situation records can belong to the same situation container."
+                            },
+                            "situation_record_id": {
+                              "type": "string",
+                              "description": "Stable DATEX II situationRecord identifier from situationRecord/@id. It identifies the specific incident, roadwork, obstruction, or network-management record across publication updates.",
+                              "altnames": {
+                                "datex2": "situationRecord"
+                              }
+                            },
+                            "feed_url": {
+                              "type": "uri",
+                              "description": "Canonical URL of the DATEX II endpoint configuration from which this normalized event was acquired. Used as the CloudEvents source value."
+                            },
+                            "version": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "DATEX II version of the situation or situationRecord from @version. Re-emission happens when this value or the record update timestamp changes."
+                            },
+                            "record_type": {
+                              "type": "string",
+                              "description": "DATEX II situation record xsi:type or element local name, such as Accident, AbnormalTraffic, ConstructionWorks, MaintenanceWorks, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, RoadOrCarriagewayOrLaneManagement, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, or WeatherRelatedRoadConditions."
+                            },
+                            "severity": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Overall severity or impact from overallSeverity. Documented DATEX II values include low, medium, high, highest, and unknown depending on profile version."
+                            },
+                            "probability": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Probability of occurrence from probabilityOfOccurrence, such as certain, probable, or riskOf."
+                            },
+                            "validity_status": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Validity status from validity/validityStatus, for example active, suspended, definedByValidityTimeSpec, or planned."
+                            },
+                            "creation_time": {
+                              "type": [
+                                "datetime",
+                                "null"
+                              ],
+                              "description": "ISO 8601 creation timestamp from situationRecordCreationTime. It identifies when the supplier first created this situation record."
+                            },
+                            "observation_time": {
+                              "type": [
+                                "datetime",
+                                "null"
+                              ],
+                              "description": "ISO 8601 observation or last-update timestamp from situationRecordObservationTime or equivalent profile fields."
+                            },
+                            "overall_start_time": {
+                              "type": [
+                                "datetime",
+                                "null"
+                              ],
+                              "description": "ISO 8601 validity start time from overallStartTime or validityTimeSpecification/overallStartTime."
+                            },
+                            "overall_end_time": {
+                              "type": [
+                                "datetime",
+                                "null"
+                              ],
+                              "description": "ISO 8601 validity end time from overallEndTime. Null for open-ended, active, or not-yet-estimated situations."
+                            },
+                            "latitude": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "WGS84 latitude in decimal degrees from pointCoordinates/latitude when the situation has a point location."
+                            },
+                            "longitude": {
+                              "type": [
+                                "double",
+                                "null"
+                              ],
+                              "description": "WGS84 longitude in decimal degrees from pointCoordinates/longitude when the situation has a point location."
+                            },
+                            "road_number": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Road identifier from linearElement/roadNumber, roadName, or TPEG linkName descriptors."
+                            },
+                            "direction": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Affected direction from tpegDirection, directionBound, or profile-specific direction values such as positive, negative, bothWays, clockwise, or anticlockwise."
+                            },
+                            "location_description": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Human-readable location text from generalPublicComment with locationDescriptor, AlertC descriptors, TPEG descriptors, or supplier-specific comments."
+                            },
+                            "description": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Human-readable public description/comment for the situation record. This is useful for operator displays but is not stable identity."
+                            },
+                            "source_name": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Supplier or source organization name from source/sourceIdentification, sourceName, or the endpoint registry."
+                            },
+                            "cause": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "DATEX II cause, causeType, or profile-specific cause label associated with the situation, when supplied."
+                            },
+                            "management_type": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Network-management action for management records such as temporary closure, speed management, lane management, rerouting, roadworks, or operator action."
+                            },
+                            "raw_record": {
+                              "type": [
+                                "string",
+                                "null"
+                              ],
+                              "description": "Compact XML/text snapshot of selected additional DATEX II fields that are not part of the common normalized situation shape. This preserves profile-specific details during the first generalized feeder build without losing bespoke NDW/French data."
+                            },
+                            "country_code": {
+                              "type": "string",
+                              "description": "ISO 3166-1 alpha-2 country code from the endpoint registry, used in MQTT UNS topics and regional filtering. Required for MQTT topic routing and retained in the payload for consumers."
+                            },
+                            "operator_id": {
+                              "type": "string",
+                              "description": "Operator or road authority code from the endpoint registry, such as NDW, Bison Futé, Trafikverket, National Highways, Statens vegvesen, or CITA. Required for MQTT topic routing and retained in the payload for consumers."
+                            }
+                          },
+                          "required": [
+                            "supplier_id",
+                            "situation_id",
+                            "situation_record_id",
+                            "feed_url",
+                            "record_type",
+                            "country_code",
+                            "operator_id"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                "$uses": [
+                  "JSONStructureUnits",
+                  "JSONStructureAlternateNames",
+                  "JSONStructureValidation"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "org.datex2.avro": {
+      "format": "Avro/1.11.3",
+      "schemas": {
+        "org.datex2.measured.MeasurementSite": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "MeasurementSite",
+                "namespace": "org.datex2.measured",
+                "doc": "Reference event describing a DATEX II MeasurementSiteTablePublication measurement site. It contextualizes MeasuredDataPublication traffic observations with site identity, location, equipment, and lane metadata. Avro mirror of the JsonStructure schema; keep field semantics in sync.",
+                "fields": [
+                  {
+                    "name": "supplier_id",
+                    "type": "string",
+                    "doc": "Stable endpoint registry identifier assigned to the DATEX II supplier/operator configuration. It scopes upstream identifiers that are only guaranteed unique within one publisher."
+                  },
+                  {
+                    "name": "measurement_site_id",
+                    "type": "string",
+                    "doc": "Stable DATEX II measurement site identifier from measurementSiteReference/@id or measurementSiteRecord/@id. It is the stable identity for fixed traffic measurement equipment and route measurement sites."
+                  },
+                  {
+                    "name": "feed_url",
+                    "type": "string",
+                    "doc": "Canonical URL of the DATEX II endpoint configuration from which this normalized event was acquired. Used as the CloudEvents source value."
+                  },
+                  {
+                    "name": "country_code",
+                    "type": "string",
+                    "doc": "ISO 3166-1 alpha-2 country code from the endpoint registry, used for regional routing and filtering when the upstream feed covers a national road authority. Required for MQTT topic routing and retained in the payload for consumers."
+                  },
+                  {
+                    "name": "operator_id",
+                    "type": "string",
+                    "doc": "operator or road authority code from the endpoint registry, such as NDW, Bison Futé, Trafikverket, National Highways, Statens vegvesen, or CITA. Required for MQTT topic routing and retained in the payload for consumers."
+                  },
+                  {
+                    "name": "name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable measurement site name from measurementSiteName or an equivalent DATEX II location label. It is descriptive only and never used as a key.",
+                    "default": null
+                  },
+                  {
+                    "name": "measurement_site_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "DATEX II equipment or measurement-site type such as inductionLoop, microwave, floatingCar, Bluetooth, or routeSection. Values come from measurementEquipmentTypeUsed or the site table profile.",
+                    "default": null
+                  },
+                  {
+                    "name": "period_seconds",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Nominal aggregation period in seconds from measurementSpecificCharacteristics/period. Consumers use it to interpret flow, speed, and occupancy observations.",
+                    "default": null
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 latitude in decimal degrees from pointByCoordinates/pointCoordinates/latitude. Null when the site table omits coordinates.",
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 longitude in decimal degrees from pointByCoordinates/pointCoordinates/longitude. Null when the site table omits coordinates.",
+                    "default": null
+                  },
+                  {
+                    "name": "road_number",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Road or route identifier from roadInformation/roadName, roadNumber, or a TPEG linkName descriptor, for example A10, N205, M25, or E411.",
+                    "default": null
+                  },
+                  {
+                    "name": "carriageway",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "DATEX II carriageway classification affected or measured, such as mainCarriageway, entrySlipRoad, exitSlipRoad, or connectingCarriageway.",
+                    "default": null
+                  },
+                  {
+                    "name": "lane",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "DATEX II lane classification when a measurement site is lane-specific, such as lane1, lane2, busLane, hardShoulder, or allLanesCompleteCarriageway.",
+                    "default": null
+                  },
+                  {
+                    "name": "specific_measurements",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Compact JSON/text summary of measurementSpecificCharacteristics entries when the upstream site table exposes multiple per-lane or per-vehicle-class measurements. Preserved so bespoke NDW measurement-site detail can be represented without dropping profile-specific metadata.",
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "org.datex2.measured.TrafficMeasurement": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "TrafficMeasurement",
+                "namespace": "org.datex2.measured",
+                "doc": "Normalized traffic measurement from a DATEX II MeasuredDataPublication. The schema covers point and route observations emitted by NDW and Bison Futé including speed, flow, occupancy, and travel time. Avro mirror of the JsonStructure schema; keep field semantics in sync.",
+                "fields": [
+                  {
+                    "name": "supplier_id",
+                    "type": "string",
+                    "doc": "Stable endpoint registry identifier assigned to the DATEX II supplier/operator configuration. It scopes upstream identifiers that are only guaranteed unique within one publisher."
+                  },
+                  {
+                    "name": "measurement_site_id",
+                    "type": "string",
+                    "doc": "Stable DATEX II measurement site identifier from measurementSiteReference/@id or measurementSiteRecord/@id. It is the stable identity for fixed traffic measurement equipment and route measurement sites."
+                  },
+                  {
+                    "name": "feed_url",
+                    "type": "string",
+                    "doc": "Canonical URL of the DATEX II endpoint configuration from which this normalized event was acquired. Used as the CloudEvents source value."
+                  },
+                  {
+                    "name": "measurement_time",
+                    "type": {
+                      "type": "long",
+                      "logicalType": "timestamp-millis"
+                    },
+                    "doc": "ISO 8601 timestamp from measurementTimeDefault or the measuredValue time override. It marks the end or reference instant of the aggregation interval in a MeasuredDataPublication."
+                  },
+                  {
+                    "name": "measurement_time_key",
+                    "type": "string",
+                    "doc": "Key-safe timestamp token derived from measurement_time by replacing characters that are awkward in transport subjects. It preserves the DATEX II measured-time identity component for consumers that need per-sample addressing."
+                  },
+                  {
+                    "name": "country_code",
+                    "type": "string",
+                    "doc": "country code inherited from the endpoint registry. Required for MQTT topic routing and retained in the payload for consumers."
+                  },
+                  {
+                    "name": "operator_id",
+                    "type": "string",
+                    "doc": "operator code inherited from the endpoint registry. Required for MQTT topic routing and retained in the payload for consumers."
+                  },
+                  {
+                    "name": "road_number",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Road identifier associated with the measurement site, copied from the reference table when available.",
+                    "default": null
+                  },
+                  {
+                    "name": "average_speed_kmh",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Average vehicle speed in kilometres per hour from TrafficSpeed/averageVehicleSpeed/speed. Null when the site reports flow or occupancy but not speed.",
+                    "default": null
+                  },
+                  {
+                    "name": "vehicle_flow_rate_veh_per_hour",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Vehicle flow rate in vehicles per hour from TrafficFlow/vehicleFlowRate. Null when no flow observation is present for this site in the current publication.",
+                    "default": null
+                  },
+                  {
+                    "name": "occupancy_percent",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Traffic occupancy percentage from TrafficConcentration/occupancy or profile-specific occupancy elements. Null when the upstream publication omits occupancy.",
+                    "default": null
+                  },
+                  {
+                    "name": "travel_time_seconds",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Measured travel time over a route section in seconds from TravelTimeData/travelTime or equivalent route measurement. Null for point sensors.",
+                    "default": null
+                  },
+                  {
+                    "name": "free_flow_travel_time_seconds",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "Reference or free-flow travel time in seconds for route measurements when supplied by the DATEX II profile. Consumers compare measured travel_time_seconds with this value to derive delay.",
+                    "default": null
+                  },
+                  {
+                    "name": "input_value_count",
+                    "type": [
+                      "null",
+                      "int"
+                    ],
+                    "doc": "Number of input samples used to compute the aggregate, from numberOfInputValuesUsed. Null when the profile does not disclose sample count.",
+                    "default": null
+                  },
+                  {
+                    "name": "quality_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "DATEX II or supplier-specific quality flag for the measurement value, such as reliable, unreliable, invalid, suspect, or unavailable.",
+                    "default": null
+                  },
+                  {
+                    "name": "vehicle_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Vehicle class to which the measurement applies when the upstream profile splits values by vehicle type; null means all vehicles or unspecified.",
+                    "default": null
+                  },
+                  {
+                    "name": "lane",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Lane or carriageway qualifier to which the measured value applies when the feed reports lane-specific measurements.",
+                    "default": null
+                  },
+                  {
+                    "name": "raw_measurements",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Compact JSON/text preservation of additional measuredValue entries not normalized into the common speed, flow, occupancy, or travel-time fields. Used to remain lossless for DATEX II profile variations while keeping the primary analytics columns stable.",
+                    "default": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "org.datex2.situation.SituationRecord": {
+          "format": "Avro/1.11.3",
+          "versions": {
+            "1": {
+              "format": "Avro/1.11.3",
+              "schema": {
+                "type": "record",
+                "name": "SituationRecord",
+                "namespace": "org.datex2.situation",
+                "doc": "Normalized situation record from a DATEX II SituationPublication. It represents incidents, accidents, roadworks, abnormal traffic, obstructions, weather impacts, and network-management measures with stable situation and record identifiers. Avro mirror of the JsonStructure schema; keep field semantics in sync.",
+                "fields": [
+                  {
+                    "name": "supplier_id",
+                    "type": "string",
+                    "doc": "Stable endpoint registry identifier assigned to the DATEX II supplier/operator configuration. It scopes upstream identifiers that are only guaranteed unique within one publisher."
+                  },
+                  {
+                    "name": "situation_id",
+                    "type": "string",
+                    "doc": "Stable DATEX II situation identifier from situation/@id. Multiple situation records can belong to the same situation container."
+                  },
+                  {
+                    "name": "situation_record_id",
+                    "type": "string",
+                    "doc": "Stable DATEX II situationRecord identifier from situationRecord/@id. It identifies the specific incident, roadwork, obstruction, or network-management record across publication updates."
+                  },
+                  {
+                    "name": "feed_url",
+                    "type": "string",
+                    "doc": "Canonical URL of the DATEX II endpoint configuration from which this normalized event was acquired. Used as the CloudEvents source value."
+                  },
+                  {
+                    "name": "version",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "DATEX II version of the situation or situationRecord from @version. Re-emission happens when this value or the record update timestamp changes.",
+                    "default": null
+                  },
+                  {
+                    "name": "record_type",
+                    "type": "string",
+                    "doc": "DATEX II situation record xsi:type or element local name, such as Accident, AbnormalTraffic, ConstructionWorks, MaintenanceWorks, EnvironmentalObstruction, GeneralObstruction, VehicleObstruction, RoadOrCarriagewayOrLaneManagement, GeneralNetworkManagement, ReroutingManagement, SpeedManagement, or WeatherRelatedRoadConditions."
+                  },
+                  {
+                    "name": "severity",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Overall severity or impact from overallSeverity. Documented DATEX II values include low, medium, high, highest, and unknown depending on profile version.",
+                    "default": null
+                  },
+                  {
+                    "name": "probability",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Probability of occurrence from probabilityOfOccurrence, such as certain, probable, or riskOf.",
+                    "default": null
+                  },
+                  {
+                    "name": "validity_status",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Validity status from validity/validityStatus, for example active, suspended, definedByValidityTimeSpec, or planned.",
+                    "default": null
+                  },
+                  {
+                    "name": "creation_time",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "doc": "ISO 8601 creation timestamp from situationRecordCreationTime. It identifies when the supplier first created this situation record.",
+                    "default": null
+                  },
+                  {
+                    "name": "observation_time",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "doc": "ISO 8601 observation or last-update timestamp from situationRecordObservationTime or equivalent profile fields.",
+                    "default": null
+                  },
+                  {
+                    "name": "overall_start_time",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "doc": "ISO 8601 validity start time from overallStartTime or validityTimeSpecification/overallStartTime.",
+                    "default": null
+                  },
+                  {
+                    "name": "overall_end_time",
+                    "type": [
+                      "null",
+                      {
+                        "type": "long",
+                        "logicalType": "timestamp-millis"
+                      }
+                    ],
+                    "doc": "ISO 8601 validity end time from overallEndTime. Null for open-ended, active, or not-yet-estimated situations.",
+                    "default": null
+                  },
+                  {
+                    "name": "latitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 latitude in decimal degrees from pointCoordinates/latitude when the situation has a point location.",
+                    "default": null
+                  },
+                  {
+                    "name": "longitude",
+                    "type": [
+                      "null",
+                      "double"
+                    ],
+                    "doc": "WGS84 longitude in decimal degrees from pointCoordinates/longitude when the situation has a point location.",
+                    "default": null
+                  },
+                  {
+                    "name": "road_number",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Road identifier from linearElement/roadNumber, roadName, or TPEG linkName descriptors.",
+                    "default": null
+                  },
+                  {
+                    "name": "direction",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Affected direction from tpegDirection, directionBound, or profile-specific direction values such as positive, negative, bothWays, clockwise, or anticlockwise.",
+                    "default": null
+                  },
+                  {
+                    "name": "location_description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable location text from generalPublicComment with locationDescriptor, AlertC descriptors, TPEG descriptors, or supplier-specific comments.",
+                    "default": null
+                  },
+                  {
+                    "name": "description",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Human-readable public description/comment for the situation record. This is useful for operator displays but is not stable identity.",
+                    "default": null
+                  },
+                  {
+                    "name": "source_name",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Supplier or source organization name from source/sourceIdentification, sourceName, or the endpoint registry.",
+                    "default": null
+                  },
+                  {
+                    "name": "cause",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "DATEX II cause, causeType, or profile-specific cause label associated with the situation, when supplied.",
+                    "default": null
+                  },
+                  {
+                    "name": "management_type",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Network-management action for management records such as temporary closure, speed management, lane management, rerouting, roadworks, or operator action.",
+                    "default": null
+                  },
+                  {
+                    "name": "raw_record",
+                    "type": [
+                      "null",
+                      "string"
+                    ],
+                    "doc": "Compact XML/text snapshot of selected additional DATEX II fields that are not part of the common normalized situation shape. This preserves profile-specific details during the first generalized feeder build without losing bespoke NDW/French data.",
+                    "default": null
+                  },
+                  {
+                    "name": "country_code",
+                    "type": "string",
+                    "doc": "ISO 3166-1 alpha-2 country code from the endpoint registry, used in MQTT UNS topics and regional filtering. Required for MQTT topic routing and retained in the payload for consumers."
+                  },
+                  {
+                    "name": "operator_id",
+                    "type": "string",
+                    "doc": "Operator or road authority code from the endpoint registry, such as NDW, Bison Futé, Trafikverket, National Highways, Statens vegvesen, or CITA. Required for MQTT topic routing and retained in the payload for consumers."
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

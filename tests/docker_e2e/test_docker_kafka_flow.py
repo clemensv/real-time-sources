@@ -130,6 +130,10 @@ def gbfs_bikeshare_image():
     return build_image('gbfs-bikeshare')
 
 @pytest.fixture(scope='module')
+def cap_alerts_image():
+    return build_image('cap-alerts')
+
+@pytest.fixture(scope='module')
 def aisstream_image():
     return build_image('aisstream')
 
@@ -304,6 +308,10 @@ def usgs_geomag_image():
     return build_image('usgs-geomag')
 def french_road_traffic_image():
     return build_image('french-road-traffic')
+
+@pytest.fixture(scope='module')
+def datex2_image():
+    return build_image('datex2')
 def eaws_albina_image():
     return build_image('eaws-albina')
 def geosphere_austria_image():
@@ -964,7 +972,7 @@ class TestFdsnSeismologyDockerFlow:
             kafka, fdsn_seismology_image, self.TOPIC,
             reference_types=['Node'],
             telemetry_types=['Earthquake'],
-            extra_env={'FDSN_MOCK': 'true', 'ONCE_MODE': 'true'},
+            extra_env={'FDSN_MOCK': 'true', 'ONCE_MODE': 'true', 'FDSN_NODES': 'usgs'},
             min_messages=1,
             timeout=240,
         )
@@ -2028,6 +2036,26 @@ class TestFrenchRoadTrafficDockerFlow:
         )
 
 
+class TestDatex2DockerFlow:
+    TOPIC = 'test-datex2'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, datex2_image):
+        _run_kafka_flow_test(
+            kafka, datex2_image, self.TOPIC,
+            project_dir='datex2',
+            reference_types=['MeasurementSite'],
+            telemetry_types=['TrafficMeasurement', 'SituationRecord'],
+            required_exact_types=[
+                'org.datex2.measured.MeasurementSite',
+                'org.datex2.measured.TrafficMeasurement',
+                'org.datex2.situation.SituationRecord',
+            ],
+            extra_env={'DATEX2_MOCK': 'true', 'ONCE_MODE': 'true'},
+            min_messages=3,
+            timeout=180,
+        )
+
+
 # NDW Netherlands Road Traffic (reference + telemetry: speed, travel time, DRIP, MSI, situations)
 # ---------------------------------------------------------------------------
 
@@ -2469,6 +2497,22 @@ class TestTokyoDocomoBikeshareDockerFlow:
             command=['python', '-m', 'gbfs_bikeshare', 'feed', '--mock'],
             extra_env={'KAFKA_ENABLE_TLS': 'false'},
             min_messages=3,
+            timeout=120,
+        )
+
+
+class TestCapAlertsDockerFlow:
+    TOPIC = 'test-cap-alerts'
+
+    def test_emits_reference_and_telemetry(self, kafka: KafkaFixture, cap_alerts_image):
+        _run_kafka_flow_test(
+            kafka, cap_alerts_image, self.TOPIC,
+            reference_types=['org.oasis.cap.alerts.CapZone'],
+            telemetry_types=['org.oasis.cap.alerts.CapAlert'],
+            required_exact_types=['org.oasis.cap.alerts.CapZone', 'org.oasis.cap.alerts.CapAlert'],
+            command=['python', '-m', 'cap_alerts', 'feed', '--mock'],
+            extra_env={'KAFKA_ENABLE_TLS': 'false'},
+            min_messages=2,
             timeout=120,
         )
 

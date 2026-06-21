@@ -8,7 +8,7 @@
 
 # FDSN Seismology
 
-<sub>7 federated FDSN nodes · Kafka · MQTT · AMQP · <a href="https://www.fdsn.org/webservices/">upstream</a> · <a href="https://geofon.gfz-potsdam.de/fdsnws/event/1/application.wadl">event WADL</a></sub>
+<sub>8 federated FDSN nodes · Kafka · MQTT · AMQP · <a href="https://www.fdsn.org/webservices/">upstream</a> · <a href="https://geofon.gfz-potsdam.de/fdsnws/event/1/application.wadl">event WADL</a></sub>
 
 <img align="middle" alt="Kafka" src="https://img.shields.io/badge/-Kafka-231f20?style=flat-square"> <img align="middle" alt="MQTT" src="https://img.shields.io/badge/-MQTT-660066?style=flat-square"> <img align="middle" alt="AMQP" src="https://img.shields.io/badge/-AMQP-1a4a78?style=flat-square">
 &nbsp;
@@ -28,7 +28,7 @@
 </td></tr></table>
 <!-- source-hero:end -->
 
-This feeder turns the federated **FDSN Event** web-service ecosystem into one CloudEvents stream over **Kafka**, **MQTT 5.0**, or **AMQP 1.0**. It bakes in seven confirmed working nodes and polls them as one planet-scale deployment artifact, with optional `--nodes` and `--exclude-nodes` filters for region-specific deployments.
+This feeder turns the federated **FDSN Event** web-service ecosystem into one CloudEvents stream over **Kafka**, **MQTT 5.0**, or **AMQP 1.0**. It bakes in eight confirmed working nodes and polls them as one planet-scale deployment artifact, with optional `--nodes` and `--exclude-nodes` filters for region-specific deployments.
 
 <!-- upstream-links:begin -->
 ## Upstream
@@ -79,8 +79,9 @@ All three variants share:
 | `resif` | RESIF | `https://ws.resif.fr/fdsnws/event/1/` | France + global M5+ |
 | `ipgp` | IPGP | `https://ws.ipgp.fr/fdsnws/event/1/` | Mayotte volcanic swarm |
 | `niep` | NIEP | `https://eida-sc3.infp.ro/fdsnws/event/1/` | Romania + Vrancea |
+| `usgs` | USGS Earthquake Hazards Program | `https://earthquake.usgs.gov/fdsnws/event/1/` | Global earthquake catalog |
 
-The feeder emits all seven as `org.fdsn.event.Node` reference events at startup before the first earthquake poll cycle.
+The feeder emits all eight as `org.fdsn.event.Node` reference events at startup before the first earthquake poll cycle. Select only USGS with `FDSN_NODES=usgs` (or `NODES=usgs`).
 
 ## Upstream channel review
 
@@ -112,6 +113,23 @@ Earthquakes use the stable identity `{contributor}/{event_id}`. Node reference r
 - Optional filter: `--min-magnitude`
 - Cross-node dedupe key: `{contributor}/{event_id}`
 - Restart persistence: `STATE_FILE` stores per-node poll cursors plus last-seen event timestamps
+
+## USGS parity analysis and fold-in recommendation
+
+The `usgs` node uses the USGS FDSN Event endpoint verified at `https://earthquake.usgs.gov/fdsnws/event/1/`: `/version` returned `2.4.0`, and `query?format=text&limit=1&orderby=time&starttime=2026-06-19T00:00:00Z` returned pipe-delimited event rows.
+
+Do **not** treat this node as a parity replacement for the bespoke [`usgs-earthquakes`](../usgs-earthquakes/) feeder:
+
+| Capability | Bespoke `usgs-earthquakes` | FDSN `usgs` node | Parity |
+|---|---|---|---|
+| Upstream endpoint | USGS GeoJSON summary feeds such as `earthquakes/feed/v1.0/summary/all_hour.geojson` | FDSN Event `query?format=text&orderby=time&starttime=...` | Different upstream surface |
+| Latency/cadence | Polls once per minute by default | Polls once per minute by default | No sub-minute behavior in current code; cadence can match |
+| Updates/corrections | Tracks the GeoJSON `updated` timestamp and republishes changed events | Dedupe is keyed by origin `time`; FDSN text has no `updated` field | **Lost** |
+| Deletes/retractions | Schema carries `status` including `deleted`; changed `updated` values can republish that state | FDSN text schema has no `status` field | **Lost** |
+| Payload fields | Includes GeoJSON-specific fields: `url`, `detail_url`, `felt`, `cdi`, `mmi`, `alert`, `status`, `tsunami`, `sig`, `net`, `code`, `sources`, `nst`, `dmin`, `rms`, `gap`, `magnitude_bucket` | Normalized FDSN text fields only: origin, hypocenter, magnitude, provenance, location name, node URL | **Lost** |
+| Routing identity | `{net}/{code}` | `{contributor}/{event_id}` | Different key/subject shape |
+
+**RECOMMENDATION: DO-NOT-FOLD.** Adding USGS as an FDSN node is useful for federated catalog polling, but folding the bespoke `usgs-earthquakes` feeder into this FDSN poller would lose update/correction semantics, delete/retraction visibility, GeoJSON-specific fields, and the existing `{net}/{code}` routing identity. A future fold-in would need a USGS GeoJSON real-time mode in `fdsn-seismology` that preserves the current GeoJSON schema, `updated`-based dedupe, `status=deleted` propagation, and transport keys before retiring the bespoke feeder.
 
 ## Fabric Notebook
 

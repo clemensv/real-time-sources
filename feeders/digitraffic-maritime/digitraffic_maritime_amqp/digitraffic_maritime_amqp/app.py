@@ -159,6 +159,19 @@ def _run_port_calls(args: argparse.Namespace, port_call_adapter: _PortCallAdapte
     poller.poll_and_send(once=args.once)
 
 
+
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 def main() -> None:
     parser = argparse.ArgumentParser(description='Digitraffic Maritime AMQP feeder')
     parser.add_argument('command', nargs='?', default='feed', choices=['feed'])
@@ -185,10 +198,10 @@ def main() -> None:
     logging.basicConfig(level=os.getenv('LOG_LEVEL', 'INFO').upper(), format='%(asctime)s %(levelname)s %(name)s: %(message)s')
 
     kwargs, _ = _build_common_kwargs(args)
-    ais_producer = FiDigitrafficMarineAisAmqpProducer(**kwargs)
-    port_call_producer = FiDigitrafficMarinePortcallAmqpProducer(**kwargs)
-    vessel_details_producer = FiDigitrafficMarinePortcallVesseldetailsAmqpProducer(**kwargs)
-    port_location_producer = FiDigitrafficMarinePortcallPortlocationAmqpProducer(**kwargs)
+    ais_producer = _retry_producer_init(lambda: FiDigitrafficMarineAisAmqpProducer(**kwargs))
+    port_call_producer = _retry_producer_init(lambda: FiDigitrafficMarinePortcallAmqpProducer(**kwargs))
+    vessel_details_producer = _retry_producer_init(lambda: FiDigitrafficMarinePortcallVesseldetailsAmqpProducer(**kwargs))
+    port_location_producer = _retry_producer_init(lambda: FiDigitrafficMarinePortcallPortlocationAmqpProducer(**kwargs))
 
     try:
         if args.mode == 'stream':

@@ -1867,6 +1867,42 @@
       "image": "uk-bods-siri-amqp",
       "file": "Dockerfile.amqp",
       "module": "uk_bods_siri_amqp"
+    },
+    {
+      "dir": "feeders/datex2",
+      "image": "datex2",
+      "file": "Dockerfile",
+      "module": "datex2_kafka"
+    },
+    {
+      "dir": "feeders/datex2",
+      "image": "datex2-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "datex2_mqtt"
+    },
+    {
+      "dir": "feeders/datex2",
+      "image": "datex2-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "datex2_amqp"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts",
+      "file": "Dockerfile",
+      "module": "cap_alerts"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "module": "cap_alerts_mqtt"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts-amqp",
+      "file": "Dockerfile.amqp",
+      "module": "cap_alerts_amqp"
     }
   ],
   "flow": [
@@ -4129,6 +4165,42 @@
       "image": "uk-bods-siri-amqp",
       "test_file": "test_docker_amqp_flow.py",
       "test_class": "TestUkBodsSiriAmqpDockerFlow"
+    },
+    {
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestDatex2DockerFlow",
+      "dir": "feeders/datex2"
+    },
+    {
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestDatex2MqttDockerFlow",
+      "dir": "feeders/datex2"
+    },
+    {
+      "test_file": "test_docker_amqp_flow.py",
+      "test_class": "TestDatex2AmqpDockerFlow",
+      "dir": "feeders/datex2"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts",
+      "file": "Dockerfile",
+      "test_file": "test_docker_kafka_flow.py",
+      "test_class": "TestCapAlertsDockerFlow"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts-mqtt",
+      "file": "Dockerfile.mqtt",
+      "test_file": "test_docker_mqtt_flow.py",
+      "test_class": "TestCapAlertsMqttDockerFlow"
+    },
+    {
+      "dir": "feeders/cap-alerts",
+      "image": "cap-alerts-amqp",
+      "file": "Dockerfile.amqp",
+      "test_file": "test_docker_amqp_artemis_flow.py",
+      "test_class": "TestCapAlertsAmqpArtemisFlow"
     }
   ],
   "include": [

@@ -410,8 +410,20 @@ def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
     return parser
 
 
+def _retry_producer_init(factory, max_attempts=5, initial_delay=10):
+    """Retry producer construction with exponential backoff for CBS/RBAC propagation."""
+    for attempt in range(max_attempts):
+        try:
+            return factory()
+        except Exception as e:
+            if attempt == max_attempts - 1:
+                raise
+            delay = initial_delay * (2 ** attempt)
+            logging.warning("Producer init attempt %d/%d failed: %s. Retrying in %ds...",
+                          attempt + 1, max_attempts, e, delay)
+            import time; time.sleep(delay)
 async def _async_main(args: argparse.Namespace) -> None:
-    producer = _build_amqp_producer(args)
+    producer = _retry_producer_init(lambda: _build_amqp_producer(args))
     adapter = MqttToAmqpAdapter(producer)
     try:
         if args.mock_mode:
