@@ -713,8 +713,8 @@
     "cat": "Transport",
     "key": true,
     "desc": "England — BODS SIRI-VM via generalized siri feeder (requires free API key)",
+    "kafka": true,
     "kql": true,
-    "notebook": true,
     "mqtt": true,
     "amqp": true
   },
