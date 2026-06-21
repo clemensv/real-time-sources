@@ -413,7 +413,7 @@ def _add_common_args(parser: argparse.ArgumentParser) -> argparse.ArgumentParser
     parser.add_argument("--providers", default=os.getenv("NINA_BBK_PROVIDERS", "mowas,katwarn,biwapp,dwd,lhp,police"))
     parser.add_argument("--regions", default=os.getenv("EAWS_ALBINA_REGIONS", "AT-07-01"))
     parser.add_argument("--lang", default=os.getenv("EAWS_ALBINA_LANG", "en"))
-    parser.add_argument("--resources", default=os.getenv("AUTOBAHN_RESOURCES", "all"))
+    parser.add_argument("--resources", default=os.getenv("AUTOBAHN_RESOURCES", "*"))
     parser.add_argument("--roads", default=os.getenv("AUTOBAHN_ROADS", ""))
     parser.add_argument("--request-concurrency", type=int, default=int(os.getenv("AUTOBAHN_REQUEST_CONCURRENCY", "8")))
     parser.add_argument("--station-filter", default=os.getenv("STATION_FILTER", ""))
